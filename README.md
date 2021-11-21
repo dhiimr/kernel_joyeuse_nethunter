@@ -1,11 +1,17 @@
 # How to compile kernel for Redmi Note 9 Pro (joyeuse)
 ### Intro
-this source comes from [tifictive](https://github.com/tifictive) i just added some features for nethunter.
+I just added some features for nethunter and fix when adding features.
 ### Features
 Differences from stock are minimal:
-* add support external adapter
+* add support external adapter 
+* Postgresql Support
+* and others
 
 ## 1. Downloading
+install some needed for ubuntu
+```bash
+apt-get install libssl-dev make bison gcc ncurses-dev flex
+```
 Create a working folder, for example `kernel`:
 ```bash
 mkdir kernel
@@ -75,3 +81,18 @@ Place the files `Image.gz`, `dtbo.img` and `dtb` where the script is located and
 ### Flashing
 Reboot into recovery mode, backup the `boot` and `dtbo` partitions. Then install our zip archive. Reboot into the system.
 
+* Note
+if you want to enable monitor mode on wlan0 without installing nethunter type:
+```bash
+echo "4" > /sys/module/wlan/parameters/con_mode
+```
+Stop monitor mode
+```bash
+ip link set wlan0 down
+echo "0" > /sys/module/wlan/parameters/con_mode
+ip link set wlan0 up
+```
+### End
+Thank you for :
+* Allah SWT
+* original Source [tifictive](https://github.com/tifictive)
