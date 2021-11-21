@@ -15,8 +15,8 @@ Download kernel source:
 ```bash
 git clone --depth=1 https://github.com/dhiimr/kernel_joyeuse_nethunter.git kernel_joyeuse
 ```
-Download a compatible GCC toolchain. I used AOSP GCC 4.9 for 
-[arm64](https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/+/refs/heads/android10-release).
+Download a compatible GCC toolchain. I used UBERCT GCC 4.9 for 
+[arm64](https://bitbucket.org/UBERTC/aarch64-linux-android-4.9/src/master/).
 ```bash
 git clone https://bitbucket.org/UBERTC/aarch64-linux-android-4.9.git aarch64-linux-android
 ```
