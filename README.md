@@ -10,7 +10,7 @@ Differences from stock are minimal:
 ## 1. Downloading
 install some needed for ubuntu
 ```bash
-apt-get install libssl-dev make bison gcc ncurses-dev flex
+sudo apt-get install clang libssl-dev make bison gcc ncurses-dev flex
 ```
 Create a working folder, for example `kernel`:
 ```bash
