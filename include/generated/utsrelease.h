@@ -1,1 +1,0 @@
-#define UTS_RELEASE "4.14.117-IG@dhii_mr-geec2b20fa"

@@ -95,4 +95,3 @@ ip link set wlan0 up
 ### End
 Thank you for :
 * Allah SWT
-* original Source [tifictive](https://github.com/tifictive)
