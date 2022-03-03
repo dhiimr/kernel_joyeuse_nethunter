@@ -114,6 +114,7 @@ config USB_NET_RNDIS_WLAN
 
 	  If you choose to build a module, it'll be called rndis_wlan.
 
+<<<<<<< HEAD
 config WCNSS_MEM_PRE_ALLOC
        tristate "WCNSS pre-alloc memory support"
        ---help---
@@ -155,4 +156,6 @@ config VIRT_WIFI
 	  This option adds support for ethernet connections to appear as if they
 	  are wifi connections through a special rtnetlink device.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif # WLAN

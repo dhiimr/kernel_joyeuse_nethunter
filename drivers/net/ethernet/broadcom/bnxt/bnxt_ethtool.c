@@ -348,7 +348,11 @@ static int bnxt_set_ringparam(struct net_device *dev,
 
 	if ((ering->rx_pending > BNXT_MAX_RX_DESC_CNT) ||
 	    (ering->tx_pending > BNXT_MAX_TX_DESC_CNT) ||
+<<<<<<< HEAD
 	    (ering->tx_pending <= MAX_SKB_FRAGS))
+=======
+	    (ering->tx_pending < BNXT_MIN_TX_DESC_CNT))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	if (netif_running(dev))
@@ -1264,9 +1268,18 @@ static int bnxt_set_pauseparam(struct net_device *dev,
 	if (!BNXT_SINGLE_PF(bp))
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
 	if (epause->autoneg) {
 		if (!(link_info->autoneg & BNXT_AUTONEG_SPEED))
 			return -EINVAL;
+=======
+	mutex_lock(&bp->link_lock);
+	if (epause->autoneg) {
+		if (!(link_info->autoneg & BNXT_AUTONEG_SPEED)) {
+			rc = -EINVAL;
+			goto pause_exit;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		link_info->autoneg |= BNXT_AUTONEG_FLOW_CTRL;
 		if (bp->hwrm_spec_code >= 0x10201)
@@ -1289,6 +1302,12 @@ static int bnxt_set_pauseparam(struct net_device *dev,
 
 	if (netif_running(dev))
 		rc = bnxt_hwrm_set_pause(bp);
+<<<<<<< HEAD
+=======
+
+pause_exit:
+	mutex_unlock(&bp->link_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return rc;
 }
 
@@ -1339,14 +1358,30 @@ static int bnxt_flash_nvram(struct net_device *dev,
 	rc = hwrm_send_message(bp, &req, sizeof(req), FLASH_NVRAM_TIMEOUT);
 	dma_free_coherent(&bp->pdev->dev, data_len, kmem, dma_handle);
 
+<<<<<<< HEAD
+=======
+	if (rc == HWRM_ERR_CODE_RESOURCE_ACCESS_DENIED) {
+		netdev_info(dev,
+			    "PF does not have admin privileges to flash the device\n");
+		rc = -EACCES;
+	} else if (rc) {
+		rc = -EIO;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return rc;
 }
 
 static int bnxt_firmware_reset(struct net_device *dev,
 			       u16 dir_type)
 {
+<<<<<<< HEAD
 	struct bnxt *bp = netdev_priv(dev);
 	struct hwrm_fw_reset_input req = {0};
+=======
+	struct hwrm_fw_reset_input req = {0};
+	struct bnxt *bp = netdev_priv(dev);
+	int rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	bnxt_hwrm_cmd_hdr_init(bp, &req, HWRM_FW_RESET, -1, -1);
 
@@ -1380,7 +1415,19 @@ static int bnxt_firmware_reset(struct net_device *dev,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	return hwrm_send_message(bp, &req, sizeof(req), HWRM_CMD_TIMEOUT);
+=======
+	rc = hwrm_send_message(bp, &req, sizeof(req), HWRM_CMD_TIMEOUT);
+	if (rc == HWRM_ERR_CODE_RESOURCE_ACCESS_DENIED) {
+		netdev_info(dev,
+			    "PF does not have admin privileges to reset the device\n");
+		rc = -EACCES;
+	} else if (rc) {
+		rc = -EIO;
+	}
+	return rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int bnxt_flash_firmware(struct net_device *dev,
@@ -1587,9 +1634,15 @@ static int bnxt_flash_package_from_file(struct net_device *dev,
 	struct hwrm_nvm_install_update_output *resp = bp->hwrm_cmd_resp_addr;
 	struct hwrm_nvm_install_update_input install = {0};
 	const struct firmware *fw;
+<<<<<<< HEAD
 	u32 item_len;
 	u16 index;
 	int rc;
+=======
+	int rc, hwrm_err = 0;
+	u32 item_len;
+	u16 index;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	bnxt_hwrm_fw_set_time(bp);
 
@@ -1632,15 +1685,26 @@ static int bnxt_flash_package_from_file(struct net_device *dev,
 			memcpy(kmem, fw->data, fw->size);
 			modify.host_src_addr = cpu_to_le64(dma_handle);
 
+<<<<<<< HEAD
 			rc = hwrm_send_message(bp, &modify, sizeof(modify),
 					       FLASH_PACKAGE_TIMEOUT);
+=======
+			hwrm_err = hwrm_send_message(bp, &modify,
+						     sizeof(modify),
+						     FLASH_PACKAGE_TIMEOUT);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			dma_free_coherent(&bp->pdev->dev, fw->size, kmem,
 					  dma_handle);
 		}
 	}
 	release_firmware(fw);
+<<<<<<< HEAD
 	if (rc)
 		return rc;
+=======
+	if (rc || hwrm_err)
+		goto err_exit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if ((install_type & 0xffff) == 0)
 		install_type >>= 16;
@@ -1648,6 +1712,7 @@ static int bnxt_flash_package_from_file(struct net_device *dev,
 	install.install_type = cpu_to_le32(install_type);
 
 	mutex_lock(&bp->hwrm_cmd_lock);
+<<<<<<< HEAD
 	rc = _hwrm_send_message(bp, &install, sizeof(install),
 				INSTALL_PACKAGE_TIMEOUT);
 	if (rc) {
@@ -1668,6 +1733,23 @@ static int bnxt_flash_package_from_file(struct net_device *dev,
 				goto flash_pkg_exit;
 			}
 		}
+=======
+	hwrm_err = _hwrm_send_message(bp, &install, sizeof(install),
+				      INSTALL_PACKAGE_TIMEOUT);
+	if (hwrm_err) {
+		u8 error_code = ((struct hwrm_err_output *)resp)->cmd_err;
+
+		if (resp->error_code && error_code ==
+		    NVM_INSTALL_UPDATE_CMD_ERR_CODE_FRAG_ERR) {
+			install.flags |= cpu_to_le16(
+			       NVM_INSTALL_UPDATE_REQ_FLAGS_ALLOWED_TO_DEFRAG);
+			hwrm_err = _hwrm_send_message(bp, &install,
+						      sizeof(install),
+						      INSTALL_PACKAGE_TIMEOUT);
+		}
+		if (hwrm_err)
+			goto flash_pkg_exit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (resp->result) {
@@ -1677,6 +1759,17 @@ static int bnxt_flash_package_from_file(struct net_device *dev,
 	}
 flash_pkg_exit:
 	mutex_unlock(&bp->hwrm_cmd_lock);
+<<<<<<< HEAD
+=======
+err_exit:
+	if (hwrm_err == HWRM_ERR_CODE_RESOURCE_ACCESS_DENIED) {
+		netdev_info(dev,
+			    "PF does not have admin privileges to flash the device\n");
+		rc = -EACCES;
+	} else if (hwrm_err) {
+		rc = -EOPNOTSUPP;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return rc;
 }
 
@@ -1738,6 +1831,12 @@ static int bnxt_get_nvram_directory(struct net_device *dev, u32 len, u8 *data)
 	if (rc != 0)
 		return rc;
 
+<<<<<<< HEAD
+=======
+	if (!dir_entries || !entry_length)
+		return -EIO;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Insert 2 bytes of directory info (count and size of entries) */
 	if (len < 2)
 		return -EINVAL;
@@ -1951,8 +2050,12 @@ static int bnxt_set_eee(struct net_device *dev, struct ethtool_eee *edata)
 	struct bnxt *bp = netdev_priv(dev);
 	struct ethtool_eee *eee = &bp->eee;
 	struct bnxt_link_info *link_info = &bp->link_info;
+<<<<<<< HEAD
 	u32 advertising =
 		 _bnxt_fw_to_ethtool_adv_spds(link_info->advertising, 0);
+=======
+	u32 advertising;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int rc = 0;
 
 	if (!BNXT_SINGLE_PF(bp))
@@ -1961,19 +2064,34 @@ static int bnxt_set_eee(struct net_device *dev, struct ethtool_eee *edata)
 	if (!(bp->flags & BNXT_FLAG_EEE_CAP))
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&bp->link_lock);
+	advertising = _bnxt_fw_to_ethtool_adv_spds(link_info->advertising, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!edata->eee_enabled)
 		goto eee_ok;
 
 	if (!(link_info->autoneg & BNXT_AUTONEG_SPEED)) {
 		netdev_warn(dev, "EEE requires autoneg\n");
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		rc = -EINVAL;
+		goto eee_exit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	if (edata->tx_lpi_enabled) {
 		if (bp->lpi_tmr_hi && (edata->tx_lpi_timer > bp->lpi_tmr_hi ||
 				       edata->tx_lpi_timer < bp->lpi_tmr_lo)) {
 			netdev_warn(dev, "Valid LPI timer range is %d and %d microsecs\n",
 				    bp->lpi_tmr_lo, bp->lpi_tmr_hi);
+<<<<<<< HEAD
 			return -EINVAL;
+=======
+			rc = -EINVAL;
+			goto eee_exit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else if (!bp->lpi_tmr_hi) {
 			edata->tx_lpi_timer = eee->tx_lpi_timer;
 		}
@@ -1983,7 +2101,12 @@ static int bnxt_set_eee(struct net_device *dev, struct ethtool_eee *edata)
 	} else if (edata->advertised & ~advertising) {
 		netdev_warn(dev, "EEE advertised %x must be a subset of autoneg advertised speeds %x\n",
 			    edata->advertised, advertising);
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		rc = -EINVAL;
+		goto eee_exit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	eee->advertised = edata->advertised;
@@ -1995,6 +2118,11 @@ eee_ok:
 	if (netif_running(dev))
 		rc = bnxt_hwrm_set_link_setting(bp, false, true);
 
+<<<<<<< HEAD
+=======
+eee_exit:
+	mutex_unlock(&bp->link_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return rc;
 }
 
@@ -2133,7 +2261,11 @@ static int bnxt_get_module_eeprom(struct net_device *dev,
 	/* Read A2 portion of the EEPROM */
 	if (length) {
 		start -= ETH_MODULE_SFF_8436_LEN;
+<<<<<<< HEAD
 		rc = bnxt_read_sfp_module_eeprom_info(bp, I2C_DEV_ADDR_A2, 1,
+=======
+		rc = bnxt_read_sfp_module_eeprom_info(bp, I2C_DEV_ADDR_A2, 0,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						      start, length, data);
 	}
 	return rc;
@@ -2236,17 +2368,47 @@ static int bnxt_hwrm_mac_loopback(struct bnxt *bp, bool enable)
 	return hwrm_send_message(bp, &req, sizeof(req), HWRM_CMD_TIMEOUT);
 }
 
+<<<<<<< HEAD
+=======
+static int bnxt_query_force_speeds(struct bnxt *bp, u16 *force_speeds)
+{
+	struct hwrm_port_phy_qcaps_output *resp = bp->hwrm_cmd_resp_addr;
+	struct hwrm_port_phy_qcaps_input req = {0};
+	int rc;
+
+	bnxt_hwrm_cmd_hdr_init(bp, &req, HWRM_PORT_PHY_QCAPS, -1, -1);
+	mutex_lock(&bp->hwrm_cmd_lock);
+	rc = _hwrm_send_message(bp, &req, sizeof(req), HWRM_CMD_TIMEOUT);
+	if (!rc)
+		*force_speeds = le16_to_cpu(resp->supported_speeds_force_mode);
+
+	mutex_unlock(&bp->hwrm_cmd_lock);
+	return rc;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int bnxt_disable_an_for_lpbk(struct bnxt *bp,
 				    struct hwrm_port_phy_cfg_input *req)
 {
 	struct bnxt_link_info *link_info = &bp->link_info;
+<<<<<<< HEAD
 	u16 fw_advertising = link_info->advertising;
+=======
+	u16 fw_advertising;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u16 fw_speed;
 	int rc;
 
 	if (!link_info->autoneg)
 		return 0;
 
+<<<<<<< HEAD
+=======
+	rc = bnxt_query_force_speeds(bp, &fw_advertising);
+	if (rc)
+		return rc;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	fw_speed = PORT_PHY_CFG_REQ_FORCE_LINK_SPEED_1GB;
 	if (netif_carrier_ok(bp->dev))
 		fw_speed = bp->link_info.link_speed;
@@ -2421,7 +2583,11 @@ static void bnxt_self_test(struct net_device *dev, struct ethtool_test *etest,
 	bool offline = false;
 	u8 test_results = 0;
 	u8 test_mask = 0;
+<<<<<<< HEAD
 	int rc, i;
+=======
+	int rc = 0, i;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!bp->num_tests || !BNXT_SINGLE_PF(bp))
 		return;
@@ -2479,9 +2645,15 @@ static void bnxt_self_test(struct net_device *dev, struct ethtool_test *etest,
 		}
 		bnxt_hwrm_phy_loopback(bp, false);
 		bnxt_half_close_nic(bp);
+<<<<<<< HEAD
 		bnxt_open_nic(bp, false, true);
 	}
 	if (bnxt_test_irq(bp)) {
+=======
+		rc = bnxt_open_nic(bp, false, true);
+	}
+	if (rc || bnxt_test_irq(bp)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		buf[BNXT_IRQ_TEST_IDX] = 1;
 		etest->flags |= ETH_TEST_FL_FAILED;
 	}

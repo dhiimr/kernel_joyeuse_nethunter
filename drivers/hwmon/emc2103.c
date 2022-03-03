@@ -454,7 +454,11 @@ static ssize_t pwm1_enable_store(struct device *dev,
 	}
 
 	result = read_u8_from_i2c(client, REG_FAN_CONF1, &conf_reg);
+<<<<<<< HEAD
 	if (result) {
+=======
+	if (result < 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		count = result;
 		goto err;
 	}

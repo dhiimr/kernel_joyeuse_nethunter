@@ -307,7 +307,11 @@ void mlx5_unregister_device(struct mlx5_core_dev *dev)
 	struct mlx5_interface *intf;
 
 	mutex_lock(&mlx5_intf_mutex);
+<<<<<<< HEAD
 	list_for_each_entry(intf, &intf_list, list)
+=======
+	list_for_each_entry_reverse(intf, &intf_list, list)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mlx5_remove_device(intf, priv);
 	list_del(&priv->dev_list);
 	mutex_unlock(&mlx5_intf_mutex);

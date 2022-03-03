@@ -1218,6 +1218,10 @@ static int fsldma_of_probe(struct platform_device *op)
 {
 	struct fsldma_device *fdev;
 	struct device_node *child;
+<<<<<<< HEAD
+=======
+	unsigned int i;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err;
 
 	fdev = kzalloc(sizeof(*fdev), GFP_KERNEL);
@@ -1296,6 +1300,13 @@ static int fsldma_of_probe(struct platform_device *op)
 	return 0;
 
 out_free_fdev:
+<<<<<<< HEAD
+=======
+	for (i = 0; i < FSL_DMA_MAX_CHANS_PER_DEVICE; i++) {
+		if (fdev->chan[i])
+			fsl_dma_chan_remove(fdev->chan[i]);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	irq_dispose_mapping(fdev->irq);
 	iounmap(fdev->regs);
 out_free:
@@ -1318,6 +1329,10 @@ static int fsldma_of_remove(struct platform_device *op)
 		if (fdev->chan[i])
 			fsl_dma_chan_remove(fdev->chan[i]);
 	}
+<<<<<<< HEAD
+=======
+	irq_dispose_mapping(fdev->irq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	iounmap(fdev->regs);
 	kfree(fdev);

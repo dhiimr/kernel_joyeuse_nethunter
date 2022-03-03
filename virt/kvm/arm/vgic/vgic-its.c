@@ -1677,6 +1677,10 @@ static void vgic_its_destroy(struct kvm_device *kvm_dev)
 	mutex_unlock(&its->its_lock);
 
 	kfree(its);
+<<<<<<< HEAD
+=======
+	kfree(kvm_dev);/* alloc by kvm_ioctl_create_device, free by .destroy */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 int vgic_its_has_attr_regs(struct kvm_device *dev,
@@ -2209,7 +2213,12 @@ static int vgic_its_restore_cte(struct vgic_its *its, gpa_t gpa, int esz)
 	target_addr = (u32)(val >> KVM_ITS_CTE_RDBASE_SHIFT);
 	coll_id = val & KVM_ITS_CTE_ICID_MASK;
 
+<<<<<<< HEAD
 	if (target_addr >= atomic_read(&kvm->online_vcpus))
+=======
+	if (target_addr != COLLECTION_NOT_MAPPED &&
+	    target_addr >= atomic_read(&kvm->online_vcpus))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	collection = find_collection(its, coll_id);

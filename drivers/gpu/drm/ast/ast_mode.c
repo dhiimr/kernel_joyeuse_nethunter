@@ -600,7 +600,11 @@ static int ast_crtc_mode_set(struct drm_crtc *crtc,
 		return -EINVAL;
 	ast_open_key(ast);
 
+<<<<<<< HEAD
 	ast_set_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xa1, 0xff, 0x04);
+=======
+	ast_set_index_reg(ast, AST_IO_CRTC_PORT, 0xa1, 0x06);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ast_set_std_reg(crtc, adjusted_mode, &vbios_mode);
 	ast_set_crtc_reg(crtc, adjusted_mode, &vbios_mode);
@@ -715,7 +719,11 @@ static struct drm_encoder *ast_best_single_encoder(struct drm_connector *connect
 	int enc_id = connector->encoder_ids[0];
 	/* pick the encoder ids */
 	if (enc_id)
+<<<<<<< HEAD
 		return drm_encoder_find(connector->dev, NULL, enc_id);
+=======
+		return drm_encoder_find(connector->dev, enc_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return NULL;
 }
 

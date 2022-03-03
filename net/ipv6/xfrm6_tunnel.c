@@ -391,6 +391,13 @@ static void __exit xfrm6_tunnel_fini(void)
 	xfrm6_tunnel_deregister(&xfrm6_tunnel_handler, AF_INET6);
 	xfrm_unregister_type(&xfrm6_tunnel_type, AF_INET6);
 	unregister_pernet_subsys(&xfrm6_tunnel_net_ops);
+<<<<<<< HEAD
+=======
+	/* Someone maybe has gotten the xfrm6_tunnel_spi.
+	 * So need to wait it.
+	 */
+	rcu_barrier();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kmem_cache_destroy(xfrm6_tunnel_spi_kmem);
 }
 

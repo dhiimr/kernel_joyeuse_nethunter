@@ -57,6 +57,12 @@ static int pcm_open(struct snd_pcm_substream *substream)
 		goto err_locked;
 
 	err = snd_tscm_stream_get_clock(tscm, &clock);
+<<<<<<< HEAD
+=======
+	if (err < 0)
+		goto err_locked;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (clock != SND_TSCM_CLOCK_INTERNAL ||
 	    amdtp_stream_pcm_running(&tscm->rx_stream) ||
 	    amdtp_stream_pcm_running(&tscm->tx_stream)) {

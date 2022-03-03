@@ -4,4 +4,7 @@
 obj-$(CONFIG_TEGRA_HOST1X)	+= host1x/
 obj-y			+= drm/ vga/
 obj-$(CONFIG_IMX_IPUV3_CORE)	+= ipu-v3/
+<<<<<<< HEAD
 obj-$(CONFIG_QCOM_KGSL) += msm/
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

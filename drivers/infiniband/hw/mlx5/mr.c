@@ -460,7 +460,11 @@ struct mlx5_ib_mr *mlx5_mr_cache_alloc(struct mlx5_ib_dev *dev, int entry)
 
 	if (entry < 0 || entry >= MAX_MR_CACHE_ENTRIES) {
 		mlx5_ib_err(dev, "cache entry %d is out of range\n", entry);
+<<<<<<< HEAD
 		return NULL;
+=======
+		return ERR_PTR(-EINVAL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ent = &cache->ent[entry];
@@ -538,6 +542,7 @@ void mlx5_mr_cache_free(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr)
 	int c;
 
 	c = order2idx(dev, mr->order);
+<<<<<<< HEAD
 	if (c < 0 || c >= MAX_MR_CACHE_ENTRIES) {
 		mlx5_ib_warn(dev, "order %d, cache index %d\n", mr->order, c);
 		return;
@@ -546,6 +551,19 @@ void mlx5_mr_cache_free(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr)
 	if (unreg_umr(dev, mr))
 		return;
 
+=======
+	WARN_ON(c < 0 || c >= MAX_MR_CACHE_ENTRIES);
+
+	if (unreg_umr(dev, mr)) {
+		mr->allocated_from_cache = false;
+		destroy_mkey(dev, mr);
+		ent = &cache->ent[c];
+		if (ent->cur < ent->limit)
+			queue_work(cache->wq, &ent->work);
+		return;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ent = &cache->ent[c];
 	spin_lock_irq(&ent->lock);
 	list_add_tail(&mr->list, &ent->head);
@@ -1303,9 +1321,17 @@ static int unreg_umr(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr)
 		return 0;
 
 	umrwr.wr.send_flags = MLX5_IB_SEND_UMR_DISABLE_MR |
+<<<<<<< HEAD
 			      MLX5_IB_SEND_UMR_FAIL_IF_FREE;
 	umrwr.wr.opcode = MLX5_IB_WR_UMR;
 	umrwr.mkey = mr->mmkey.key;
+=======
+			      MLX5_IB_SEND_UMR_UPDATE_PD_ACCESS;
+	umrwr.wr.opcode = MLX5_IB_WR_UMR;
+	umrwr.pd = dev->umrc.pd;
+	umrwr.mkey = mr->mmkey.key;
+	umrwr.ignore_free_state = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return mlx5_ib_post_send_wait(dev, &umrwr);
 }

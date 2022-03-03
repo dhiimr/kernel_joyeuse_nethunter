@@ -150,6 +150,11 @@ struct raw3270_fn {
 struct raw3270_view {
 	struct list_head list;
 	spinlock_t lock;
+<<<<<<< HEAD
+=======
+#define RAW3270_VIEW_LOCK_IRQ	0
+#define RAW3270_VIEW_LOCK_BH	1
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	atomic_t ref_count;
 	struct raw3270 *dev;
 	struct raw3270_fn *fn;
@@ -158,7 +163,11 @@ struct raw3270_view {
 	unsigned char *ascebc;		/* ascii -> ebcdic table */
 };
 
+<<<<<<< HEAD
 int raw3270_add_view(struct raw3270_view *, struct raw3270_fn *, int);
+=======
+int raw3270_add_view(struct raw3270_view *, struct raw3270_fn *, int, int);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int raw3270_activate_view(struct raw3270_view *);
 void raw3270_del_view(struct raw3270_view *);
 void raw3270_deactivate_view(struct raw3270_view *);

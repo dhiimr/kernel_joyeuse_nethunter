@@ -2284,7 +2284,11 @@ static int __init sxgbe_cmdline_opt(char *str)
 	if (!str || !*str)
 		return -EINVAL;
 	while ((opt = strsep(&str, ",")) != NULL) {
+<<<<<<< HEAD
 		if (!strncmp(opt, "eee_timer:", 6)) {
+=======
+		if (!strncmp(opt, "eee_timer:", 10)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (kstrtoint(opt + 10, 0, &eee_timer))
 				goto err;
 		}

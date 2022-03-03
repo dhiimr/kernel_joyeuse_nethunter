@@ -487,6 +487,7 @@ static int __init xgbe_mod_init(void)
 
 	ret = xgbe_platform_init();
 	if (ret)
+<<<<<<< HEAD
 		return ret;
 
 	ret = xgbe_pci_init();
@@ -494,6 +495,21 @@ static int __init xgbe_mod_init(void)
 		return ret;
 
 	return 0;
+=======
+		goto err_platform_init;
+
+	ret = xgbe_pci_init();
+	if (ret)
+		goto err_pci_init;
+
+	return 0;
+
+err_pci_init:
+	xgbe_platform_exit();
+err_platform_init:
+	unregister_netdevice_notifier(&xgbe_netdev_notifier);
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void __exit xgbe_mod_exit(void)

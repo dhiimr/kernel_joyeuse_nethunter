@@ -135,11 +135,21 @@ static int uio_dmem_genirq_irqcontrol(struct uio_info *dev_info, s32 irq_on)
 	if (irq_on) {
 		if (test_and_clear_bit(0, &priv->flags))
 			enable_irq(dev_info->irq);
+<<<<<<< HEAD
 	} else {
 		if (!test_and_set_bit(0, &priv->flags))
 			disable_irq(dev_info->irq);
 	}
 	spin_unlock_irqrestore(&priv->lock, flags);
+=======
+		spin_unlock_irqrestore(&priv->lock, flags);
+	} else {
+		if (!test_and_set_bit(0, &priv->flags)) {
+			spin_unlock_irqrestore(&priv->lock, flags);
+			disable_irq(dev_info->irq);
+		}
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }

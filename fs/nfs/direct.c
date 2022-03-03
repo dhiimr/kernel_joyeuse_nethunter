@@ -122,6 +122,7 @@ static inline int put_dreq(struct nfs_direct_req *dreq)
 }
 
 static void
+<<<<<<< HEAD
 nfs_direct_good_bytes(struct nfs_direct_req *dreq, struct nfs_pgio_header *hdr)
 {
 	int i;
@@ -148,6 +149,51 @@ nfs_direct_good_bytes(struct nfs_direct_req *dreq, struct nfs_pgio_header *hdr)
 
 		dreq->count = count;
 	}
+=======
+nfs_direct_handle_truncated(struct nfs_direct_req *dreq,
+			    const struct nfs_pgio_header *hdr,
+			    ssize_t dreq_len)
+{
+	struct nfs_direct_mirror *mirror = &dreq->mirrors[hdr->pgio_mirror_idx];
+
+	if (!(test_bit(NFS_IOHDR_ERROR, &hdr->flags) ||
+	      test_bit(NFS_IOHDR_EOF, &hdr->flags)))
+		return;
+	if (dreq->max_count >= dreq_len) {
+		dreq->max_count = dreq_len;
+		if (dreq->count > dreq_len)
+			dreq->count = dreq_len;
+
+		if (test_bit(NFS_IOHDR_ERROR, &hdr->flags))
+			dreq->error = hdr->error;
+		else /* Clear outstanding error if this is EOF */
+			dreq->error = 0;
+	}
+	if (mirror->count > dreq_len)
+		mirror->count = dreq_len;
+}
+
+static void
+nfs_direct_count_bytes(struct nfs_direct_req *dreq,
+		       const struct nfs_pgio_header *hdr)
+{
+	struct nfs_direct_mirror *mirror = &dreq->mirrors[hdr->pgio_mirror_idx];
+	loff_t hdr_end = hdr->io_start + hdr->good_bytes;
+	ssize_t dreq_len = 0;
+
+	if (hdr_end > dreq->io_start)
+		dreq_len = hdr_end - dreq->io_start;
+
+	nfs_direct_handle_truncated(dreq, hdr, dreq_len);
+
+	if (dreq_len > dreq->max_count)
+		dreq_len = dreq->max_count;
+
+	if (mirror->count < dreq_len)
+		mirror->count = dreq_len;
+	if (dreq->count < dreq_len)
+		dreq->count = dreq_len;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -244,10 +290,17 @@ static int nfs_direct_cmp_commit_data_verf(struct nfs_direct_req *dreq,
 					 data->ds_commit_index);
 
 	/* verifier not set so always fail */
+<<<<<<< HEAD
 	if (verfp->committed < 0)
 		return 1;
 
 	return nfs_direct_cmp_verf(verfp, &data->verf);
+=======
+	if (verfp->committed < 0 || data->res.verf->committed <= NFS_UNSTABLE)
+		return 1;
+
+	return nfs_direct_cmp_verf(verfp, data->res.verf);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -400,6 +453,7 @@ static void nfs_direct_read_completion(struct nfs_pgio_header *hdr)
 	unsigned long bytes = 0;
 	struct nfs_direct_req *dreq = hdr->dreq;
 
+<<<<<<< HEAD
 	if (test_bit(NFS_IOHDR_REDO, &hdr->flags))
 		goto out_put;
 
@@ -409,6 +463,15 @@ static void nfs_direct_read_completion(struct nfs_pgio_header *hdr)
 	else
 		nfs_direct_good_bytes(dreq, hdr);
 
+=======
+	spin_lock(&dreq->lock);
+	if (test_bit(NFS_IOHDR_REDO, &hdr->flags)) {
+		spin_unlock(&dreq->lock);
+		goto out_put;
+	}
+
+	nfs_direct_count_bytes(dreq, hdr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_unlock(&dreq->lock);
 
 	while (!list_empty(&hdr->pages)) {
@@ -428,7 +491,11 @@ out_put:
 	hdr->release(hdr);
 }
 
+<<<<<<< HEAD
 static void nfs_read_sync_pgio_error(struct list_head *head)
+=======
+static void nfs_read_sync_pgio_error(struct list_head *head, int error)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct nfs_page *req;
 
@@ -585,6 +652,10 @@ ssize_t nfs_file_direct_read(struct kiocb *iocb, struct iov_iter *iter)
 	l_ctx = nfs_get_lock_context(dreq->ctx);
 	if (IS_ERR(l_ctx)) {
 		result = PTR_ERR(l_ctx);
+<<<<<<< HEAD
+=======
+		nfs_direct_req_release(dreq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out_release;
 	}
 	dreq->l_ctx = l_ctx;
@@ -645,6 +716,12 @@ static void nfs_direct_write_reschedule(struct nfs_direct_req *dreq)
 	nfs_direct_write_scan_commit_list(dreq->inode, &reqs, &cinfo);
 
 	dreq->count = 0;
+<<<<<<< HEAD
+=======
+	dreq->max_count = 0;
+	list_for_each_entry(req, &reqs, wb_list)
+		dreq->max_count += req->wb_bytes;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dreq->verf.committed = NFS_INVALID_STABLE_HOW;
 	nfs_clear_pnfs_ds_commit_verifiers(&dreq->ds_cinfo);
 	for (i = 0; i < dreq->mirror_count; i++)
@@ -664,8 +741,12 @@ static void nfs_direct_write_reschedule(struct nfs_direct_req *dreq)
 
 	list_for_each_entry_safe(req, tmp, &reqs, wb_list) {
 		if (!nfs_pageio_add_request(&desc, req)) {
+<<<<<<< HEAD
 			nfs_list_remove_request(req);
 			nfs_list_add_request(req, &failed);
+=======
+			nfs_list_move_request(req, &failed);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			spin_lock(&cinfo.inode->i_lock);
 			dreq->flags = 0;
 			if (desc.pg_error < 0)
@@ -775,6 +856,7 @@ static void nfs_direct_write_completion(struct nfs_pgio_header *hdr)
 	bool request_commit = false;
 	struct nfs_page *req = nfs_list_entry(hdr->pages.next);
 
+<<<<<<< HEAD
 	if (test_bit(NFS_IOHDR_REDO, &hdr->flags))
 		goto out_put;
 
@@ -786,6 +868,18 @@ static void nfs_direct_write_completion(struct nfs_pgio_header *hdr)
 		dreq->error = hdr->error;
 	if (dreq->error == 0) {
 		nfs_direct_good_bytes(dreq, hdr);
+=======
+	nfs_init_cinfo_from_dreq(&cinfo, dreq);
+
+	spin_lock(&dreq->lock);
+	if (test_bit(NFS_IOHDR_REDO, &hdr->flags)) {
+		spin_unlock(&dreq->lock);
+		goto out_put;
+	}
+
+	nfs_direct_count_bytes(dreq, hdr);
+	if (hdr->good_bytes != 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (nfs_write_need_commit(hdr)) {
 			if (dreq->flags == NFS_ODIRECT_RESCHED_WRITES)
 				request_commit = true;
@@ -821,7 +915,11 @@ out_put:
 	hdr->release(hdr);
 }
 
+<<<<<<< HEAD
 static void nfs_write_sync_pgio_error(struct list_head *head)
+=======
+static void nfs_write_sync_pgio_error(struct list_head *head, int error)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct nfs_page *req;
 
@@ -1007,6 +1105,10 @@ ssize_t nfs_file_direct_write(struct kiocb *iocb, struct iov_iter *iter)
 	l_ctx = nfs_get_lock_context(dreq->ctx);
 	if (IS_ERR(l_ctx)) {
 		result = PTR_ERR(l_ctx);
+<<<<<<< HEAD
+=======
+		nfs_direct_req_release(dreq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out_release;
 	}
 	dreq->l_ctx = l_ctx;

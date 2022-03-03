@@ -343,7 +343,11 @@ init_record_index_pools(void)
 
 	/* - 2 - */
 	sect_min_size = sal_log_sect_min_sizes[0];
+<<<<<<< HEAD
 	for (i = 1; i < sizeof sal_log_sect_min_sizes/sizeof(size_t); i++)
+=======
+	for (i = 1; i < ARRAY_SIZE(sal_log_sect_min_sizes); i++)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (sect_min_size > sal_log_sect_min_sizes[i])
 			sect_min_size = sal_log_sect_min_sizes[i];
 

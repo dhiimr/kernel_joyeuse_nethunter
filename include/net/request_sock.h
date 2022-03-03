@@ -181,7 +181,11 @@ void reqsk_fastopen_remove(struct sock *sk, struct request_sock *req,
 
 static inline bool reqsk_queue_empty(const struct request_sock_queue *queue)
 {
+<<<<<<< HEAD
 	return queue->rskq_accept_head == NULL;
+=======
+	return READ_ONCE(queue->rskq_accept_head) == NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline struct request_sock *reqsk_queue_remove(struct request_sock_queue *queue,
@@ -193,7 +197,11 @@ static inline struct request_sock *reqsk_queue_remove(struct request_sock_queue 
 	req = queue->rskq_accept_head;
 	if (req) {
 		sk_acceptq_removed(parent);
+<<<<<<< HEAD
 		queue->rskq_accept_head = req->dl_next;
+=======
+		WRITE_ONCE(queue->rskq_accept_head, req->dl_next);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (queue->rskq_accept_head == NULL)
 			queue->rskq_accept_tail = NULL;
 	}

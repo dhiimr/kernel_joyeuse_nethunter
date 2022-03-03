@@ -316,8 +316,11 @@ static void audit_update_watch(struct audit_parent *parent,
 			if (oentry->rule.exe)
 				audit_remove_mark(oentry->rule.exe);
 
+<<<<<<< HEAD
 			audit_watch_log_rule_change(r, owatch, "updated_rules");
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			call_rcu(&oentry->rcu, audit_free_rule_rcu);
 		}
 
@@ -365,12 +368,19 @@ static int audit_get_nd(struct audit_watch *watch, struct path *parent)
 	struct dentry *d = kern_path_locked(watch->path, parent);
 	if (IS_ERR(d))
 		return PTR_ERR(d);
+<<<<<<< HEAD
 	inode_unlock(d_backing_inode(parent->dentry));
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (d_is_positive(d)) {
 		/* update watch filter fields */
 		watch->dev = d->d_sb->s_dev;
 		watch->ino = d_backing_inode(d)->i_ino;
 	}
+<<<<<<< HEAD
+=======
+	inode_unlock(d_backing_inode(parent->dentry));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dput(d);
 	return 0;
 }

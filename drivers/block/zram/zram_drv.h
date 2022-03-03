@@ -18,12 +18,34 @@
 #include <linux/rwsem.h>
 #include <linux/zsmalloc.h>
 #include <linux/crypto.h>
+<<<<<<< HEAD
 #include <linux/spinlock.h>
 
 #include "zcomp.h"
 #include "zram_dedup.h"
 
 #define SECTOR_SHIFT		9
+=======
+
+#include "zcomp.h"
+
+/*-- Configurable parameters */
+
+/*
+ * Pages that compress to size greater than this are stored
+ * uncompressed in memory.
+ */
+static const size_t max_zpage_size = PAGE_SIZE / 4 * 3;
+
+/*
+ * NOTE: max_zpage_size must be less than or equal to:
+ *   ZS_MAX_ALLOC_SIZE. Otherwise, zs_malloc() would
+ * always return failure.
+ */
+
+/*-- End of configurable params */
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define SECTORS_PER_PAGE_SHIFT	(PAGE_SHIFT - SECTOR_SHIFT)
 #define SECTORS_PER_PAGE	(1 << SECTORS_PER_PAGE_SHIFT)
 #define ZRAM_LOGICAL_BLOCK_SHIFT 12
@@ -33,7 +55,11 @@
 
 
 /*
+<<<<<<< HEAD
  * The lower ZRAM_FLAG_SHIFT bits of table.flags is for
+=======
+ * The lower ZRAM_FLAG_SHIFT bits of table.value is for
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * object size (excluding header), the higher bits is for
  * zram_pageflags.
  *
@@ -44,6 +70,7 @@
  */
 #define ZRAM_FLAG_SHIFT 24
 
+<<<<<<< HEAD
 /* Flags for zram pages (table[page_no].flags) */
 enum zram_pageflags {
 	/* zram slot is locked */
@@ -53,12 +80,21 @@ enum zram_pageflags {
 	ZRAM_UNDER_WB,	/* page is under writeback */
 	ZRAM_HUGE,	/* Incompressible page */
 	ZRAM_IDLE,	/* not accessed page since last idle marking */
+=======
+/* Flags for zram pages (table[page_no].value) */
+enum zram_pageflags {
+	/* Page consists the same element */
+	ZRAM_SAME = ZRAM_FLAG_SHIFT,
+	ZRAM_ACCESS,	/* page is now accessed */
+	ZRAM_WB,	/* page is stored on backing_device */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	__NR_ZRAM_PAGEFLAGS,
 };
 
 /*-- Data structures */
 
+<<<<<<< HEAD
 struct zram_entry {
 	struct rb_node rb_node;
 	u32 len;
@@ -77,6 +113,15 @@ struct zram_table_entry {
 #ifdef CONFIG_ZRAM_MEMORY_TRACKING
 	ktime_t ac_time;
 #endif
+=======
+/* Allocated for each disk page */
+struct zram_table_entry {
+	union {
+		unsigned long handle;
+		unsigned long element;
+	};
+	unsigned long value;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct zram_stats {
@@ -88,6 +133,7 @@ struct zram_stats {
 	atomic64_t invalid_io;	/* non-page-aligned I/O requests */
 	atomic64_t notify_free;	/* no. of swap slot free notifications */
 	atomic64_t same_pages;		/* no. of same element filled pages */
+<<<<<<< HEAD
 	atomic64_t huge_pages;		/* no. of huge pages */
 	atomic64_t pages_stored;	/* no. of pages currently stored */
 	atomic_long_t max_used_pages;	/* no. of maximum pages stored */
@@ -108,6 +154,11 @@ struct zram_stats {
 struct zram_hash {
 	spinlock_t lock;
 	struct rb_root rb_root;
+=======
+	atomic64_t pages_stored;	/* no. of pages currently stored */
+	atomic_long_t max_used_pages;	/* no. of maximum pages stored */
+	atomic64_t writestall;		/* no. of write slow paths */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct zram {
@@ -115,8 +166,11 @@ struct zram {
 	struct zs_pool *mem_pool;
 	struct zcomp *comp;
 	struct gendisk *disk;
+<<<<<<< HEAD
 	struct zram_hash *hash;
 	size_t hash_size;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Prevent concurrent execution of device init */
 	struct rw_semaphore init_lock;
 	/*
@@ -135,16 +189,22 @@ struct zram {
 	 * zram is claimed so open request will be failed
 	 */
 	bool claim; /* Protected by bdev->bd_mutex */
+<<<<<<< HEAD
 	bool use_dedup;
 	struct file *backing_dev;
 #ifdef CONFIG_ZRAM_WRITEBACK
 	spinlock_t wb_limit_lock;
 	bool wb_limit_enable;
 	u64 bd_wb_limit;
+=======
+#ifdef CONFIG_ZRAM_WRITEBACK
+	struct file *backing_dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct block_device *bdev;
 	unsigned int old_block_size;
 	unsigned long *bitmap;
 	unsigned long nr_pages;
+<<<<<<< HEAD
 #endif
 #ifdef CONFIG_ZRAM_MEMORY_TRACKING
 	struct dentry *debugfs_dir;
@@ -161,4 +221,9 @@ static inline bool zram_dedup_enabled(struct zram *zram)
 }
 
 void zram_entry_free(struct zram *zram, struct zram_entry *entry);
+=======
+	spinlock_t bitmap_lock;
+#endif
+};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif

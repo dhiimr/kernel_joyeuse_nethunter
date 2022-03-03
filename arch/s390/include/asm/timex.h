@@ -10,8 +10,14 @@
 #ifndef _ASM_S390_TIMEX_H
 #define _ASM_S390_TIMEX_H
 
+<<<<<<< HEAD
 #include <asm/lowcore.h>
 #include <linux/time64.h>
+=======
+#include <linux/preempt.h>
+#include <linux/time64.h>
+#include <asm/lowcore.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* The value of the TOD clock for 1.1.1970. */
 #define TOD_UNIX_EPOCH 0x7d91048bca000000ULL
@@ -154,7 +160,11 @@ static inline void get_tod_clock_ext(char *clk)
 
 static inline unsigned long long get_tod_clock(void)
 {
+<<<<<<< HEAD
 	unsigned char clk[STORE_CLOCK_EXT_SIZE];
+=======
+	char clk[STORE_CLOCK_EXT_SIZE];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	get_tod_clock_ext(clk);
 	return *((unsigned long long *)&clk[1]);
@@ -186,6 +196,7 @@ extern unsigned char tod_clock_base[16] __aligned(8);
 /**
  * get_clock_monotonic - returns current time in clock rate units
  *
+<<<<<<< HEAD
  * The caller must ensure that preemption is disabled.
  * The clock and tod_clock_base get changed via stop_machine.
  * Therefore preemption must be disabled when calling this
@@ -195,6 +206,20 @@ extern unsigned char tod_clock_base[16] __aligned(8);
 static inline unsigned long long get_tod_clock_monotonic(void)
 {
 	return get_tod_clock() - *(unsigned long long *) &tod_clock_base[1];
+=======
+ * The clock and tod_clock_base get changed via stop_machine.
+ * Therefore preemption must be disabled, otherwise the returned
+ * value is not guaranteed to be monotonic.
+ */
+static inline unsigned long long get_tod_clock_monotonic(void)
+{
+	unsigned long long tod;
+
+	preempt_disable_notrace();
+	tod = get_tod_clock() - *(unsigned long long *) &tod_clock_base[1];
+	preempt_enable_notrace();
+	return tod;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**

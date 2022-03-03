@@ -4,6 +4,11 @@
 
 #define KSTRTOX_OVERFLOW	(1U << 31)
 const char *_parse_integer_fixup_radix(const char *s, unsigned int *base);
+<<<<<<< HEAD
+=======
+unsigned int _parse_integer_limit(const char *s, unsigned int base, unsigned long long *res,
+				  size_t max_chars);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 unsigned int _parse_integer(const char *s, unsigned int base, unsigned long long *res);
 
 #endif

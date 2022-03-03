@@ -91,7 +91,11 @@ struct ib_ah *hns_roce_create_ah(struct ib_pd *ibpd,
 			     HNS_ROCE_VLAN_SL_BIT_MASK) <<
 			     HNS_ROCE_VLAN_SL_SHIFT;
 
+<<<<<<< HEAD
 	ah->av.port_pd = cpu_to_be32(to_hr_pd(ibpd)->pdn |
+=======
+	ah->av.port_pd = cpu_to_le32(to_hr_pd(ibpd)->pdn |
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				     (rdma_ah_get_port_num(ah_attr) <<
 				     HNS_ROCE_PORT_NUM_SHIFT));
 	ah->av.gid_index = grh->sgid_index;

@@ -840,9 +840,17 @@ static int do_reloc32(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
 	case R_386_PC32:
 	case R_386_PC16:
 	case R_386_PC8:
+<<<<<<< HEAD
 		/*
 		 * NONE can be ignored and PC relative relocations don't
 		 * need to be adjusted.
+=======
+	case R_386_PLT32:
+		/*
+		 * NONE can be ignored and PC relative relocations don't need
+		 * to be adjusted. Because sym must be defined, R_386_PLT32 can
+		 * be treated the same way as R_386_PC32.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		 */
 		break;
 
@@ -883,9 +891,17 @@ static int do_reloc_real(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
 	case R_386_PC32:
 	case R_386_PC16:
 	case R_386_PC8:
+<<<<<<< HEAD
 		/*
 		 * NONE can be ignored and PC relative relocations don't
 		 * need to be adjusted.
+=======
+	case R_386_PLT32:
+		/*
+		 * NONE can be ignored and PC relative relocations don't need
+		 * to be adjusted. Because sym must be defined, R_386_PLT32 can
+		 * be treated the same way as R_386_PC32.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		 */
 		break;
 

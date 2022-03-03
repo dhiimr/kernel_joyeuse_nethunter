@@ -61,6 +61,28 @@ static int __init_cache_level(unsigned int cpu)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void fill_cpumask_siblings(int cpu, cpumask_t *cpu_map)
+{
+	int cpu1;
+
+	for_each_possible_cpu(cpu1)
+		if (cpus_are_siblings(cpu, cpu1))
+			cpumask_set_cpu(cpu1, cpu_map);
+}
+
+static void fill_cpumask_cluster(int cpu, cpumask_t *cpu_map)
+{
+	int cpu1;
+	int cluster = cpu_cluster(&cpu_data[cpu]);
+
+	for_each_possible_cpu(cpu1)
+		if (cpu_cluster(&cpu_data[cpu1]) == cluster)
+			cpumask_set_cpu(cpu1, cpu_map);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int __populate_cache_leaves(unsigned int cpu)
 {
 	struct cpuinfo_mips *c = &current_cpu_data;
@@ -68,18 +90,38 @@ static int __populate_cache_leaves(unsigned int cpu)
 	struct cacheinfo *this_leaf = this_cpu_ci->info_list;
 
 	if (c->icache.waysize) {
+<<<<<<< HEAD
 		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_DATA);
+=======
+		/* L1 caches are per core */
+		fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
+		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_DATA);
+		fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		populate_cache(icache, this_leaf, 1, CACHE_TYPE_INST);
 	} else {
 		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_UNIFIED);
 	}
 
+<<<<<<< HEAD
 	if (c->scache.waysize)
 		populate_cache(scache, this_leaf, 2, CACHE_TYPE_UNIFIED);
+=======
+	if (c->scache.waysize) {
+		/* L2 cache is per cluster */
+		fill_cpumask_cluster(cpu, &this_leaf->shared_cpu_map);
+		populate_cache(scache, this_leaf, 2, CACHE_TYPE_UNIFIED);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (c->tcache.waysize)
 		populate_cache(tcache, this_leaf, 3, CACHE_TYPE_UNIFIED);
 
+<<<<<<< HEAD
+=======
+	this_cpu_ci->cpu_map_populated = true;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 

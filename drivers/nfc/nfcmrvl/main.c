@@ -244,7 +244,11 @@ void nfcmrvl_chip_reset(struct nfcmrvl_private *priv)
 	/* Reset possible fault of previous session */
 	clear_bit(NFCMRVL_PHY_ERROR, &priv->flags);
 
+<<<<<<< HEAD
 	if (priv->config.reset_n_io) {
+=======
+	if (gpio_is_valid(priv->config.reset_n_io)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		nfc_info(priv->dev, "reset the chip\n");
 		gpio_set_value(priv->config.reset_n_io, 0);
 		usleep_range(5000, 10000);
@@ -255,7 +259,11 @@ void nfcmrvl_chip_reset(struct nfcmrvl_private *priv)
 
 void nfcmrvl_chip_halt(struct nfcmrvl_private *priv)
 {
+<<<<<<< HEAD
 	if (priv->config.reset_n_io)
+=======
+	if (gpio_is_valid(priv->config.reset_n_io))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		gpio_set_value(priv->config.reset_n_io, 0);
 }
 

@@ -133,7 +133,13 @@ static struct ieee80211_supported_band wcn_band_2ghz = {
 		.cap =	IEEE80211_HT_CAP_GRN_FLD |
 			IEEE80211_HT_CAP_SGI_20 |
 			IEEE80211_HT_CAP_DSSSCCK40 |
+<<<<<<< HEAD
 			IEEE80211_HT_CAP_LSIG_TXOP_PROT,
+=======
+			IEEE80211_HT_CAP_LSIG_TXOP_PROT |
+			IEEE80211_HT_CAP_SGI_40 |
+			IEEE80211_HT_CAP_SUP_WIDTH_20_40,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.ht_supported = true,
 		.ampdu_factor = IEEE80211_HT_MAX_AMPDU_64K,
 		.ampdu_density = IEEE80211_HT_MPDU_DENSITY_16,
@@ -162,7 +168,11 @@ static struct ieee80211_supported_band wcn_band_5ghz = {
 		.ampdu_density = IEEE80211_HT_MPDU_DENSITY_16,
 		.mcs = {
 			.rx_mask = { 0xff, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+<<<<<<< HEAD
 			.rx_highest = cpu_to_le16(72),
+=======
+			.rx_highest = cpu_to_le16(150),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.tx_params = IEEE80211_HT_MCS_TX_DEFINED,
 		}
 	}
@@ -1280,7 +1290,11 @@ static int wcn36xx_probe(struct platform_device *pdev)
 	if (addr && ret != ETH_ALEN) {
 		wcn36xx_err("invalid local-mac-address\n");
 		ret = -EINVAL;
+<<<<<<< HEAD
 		goto out_wq;
+=======
+		goto out_destroy_ept;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else if (addr) {
 		wcn36xx_info("mac address: %pM\n", addr);
 		SET_IEEE80211_PERM_ADDR(wcn->hw, addr);
@@ -1288,7 +1302,11 @@ static int wcn36xx_probe(struct platform_device *pdev)
 
 	ret = wcn36xx_platform_get_resources(wcn, pdev);
 	if (ret)
+<<<<<<< HEAD
 		goto out_wq;
+=======
+		goto out_destroy_ept;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	wcn36xx_init_ieee80211(wcn);
 	ret = ieee80211_register_hw(wcn->hw);
@@ -1300,6 +1318,11 @@ static int wcn36xx_probe(struct platform_device *pdev)
 out_unmap:
 	iounmap(wcn->ccu_base);
 	iounmap(wcn->dxe_base);
+<<<<<<< HEAD
+=======
+out_destroy_ept:
+	rpmsg_destroy_ept(wcn->smd_channel);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out_wq:
 	ieee80211_free_hw(hw);
 out_err:

@@ -429,11 +429,21 @@ void netlink_table_ungrab(void)
 static inline void
 netlink_lock_table(void)
 {
+<<<<<<< HEAD
 	/* read_lock() synchronizes us to netlink_table_grab */
 
 	read_lock(&nl_table_lock);
 	atomic_inc(&nl_table_users);
 	read_unlock(&nl_table_lock);
+=======
+	unsigned long flags;
+
+	/* read_lock() synchronizes us to netlink_table_grab */
+
+	read_lock_irqsave(&nl_table_lock, flags);
+	atomic_inc(&nl_table_users);
+	read_unlock_irqrestore(&nl_table_lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void
@@ -565,7 +575,14 @@ static int netlink_insert(struct sock *sk, u32 portid)
 
 	/* We need to ensure that the socket is hashed and visible. */
 	smp_wmb();
+<<<<<<< HEAD
 	nlk_sk(sk)->bound = portid;
+=======
+	/* Paired with lockless reads from netlink_bind(),
+	 * netlink_connect() and netlink_sendmsg().
+	 */
+	WRITE_ONCE(nlk_sk(sk)->bound, portid);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 err:
 	release_sock(sk);
@@ -984,7 +1001,12 @@ static int netlink_bind(struct socket *sock, struct sockaddr *addr,
 	else if (nlk->ngroups < 8*sizeof(groups))
 		groups &= (1UL << nlk->ngroups) - 1;
 
+<<<<<<< HEAD
 	bound = nlk->bound;
+=======
+	/* Paired with WRITE_ONCE() in netlink_insert() */
+	bound = READ_ONCE(nlk->bound);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (bound) {
 		/* Ensure nlk->portid is up-to-date. */
 		smp_rmb();
@@ -997,7 +1019,12 @@ static int netlink_bind(struct socket *sock, struct sockaddr *addr,
 	if (nlk->netlink_bind && groups) {
 		int group;
 
+<<<<<<< HEAD
 		for (group = 0; group < nlk->ngroups; group++) {
+=======
+		/* nl_groups is a u32, so cap the maximum groups we can bind */
+		for (group = 0; group < BITS_PER_TYPE(u32); group++) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (!test_bit(group, &groups))
 				continue;
 			err = nlk->netlink_bind(net, group + 1);
@@ -1016,7 +1043,11 @@ static int netlink_bind(struct socket *sock, struct sockaddr *addr,
 			netlink_insert(sk, nladdr->nl_pid) :
 			netlink_autobind(sock);
 		if (err) {
+<<<<<<< HEAD
 			netlink_undo_bind(nlk->ngroups, groups, sk);
+=======
+			netlink_undo_bind(BITS_PER_TYPE(u32), groups, sk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto unlock;
 		}
 	}
@@ -1069,8 +1100,14 @@ static int netlink_connect(struct socket *sock, struct sockaddr *addr,
 
 	/* No need for barriers here as we return to user-space without
 	 * using any of the bound attributes.
+<<<<<<< HEAD
 	 */
 	if (!nlk->bound)
+=======
+	 * Paired with WRITE_ONCE() in netlink_insert().
+	 */
+	if (!READ_ONCE(nlk->bound))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		err = netlink_autobind(sock);
 
 	if (err == 0) {
@@ -1814,6 +1851,14 @@ static int netlink_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
 	if (msg->msg_flags&MSG_OOB)
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
+=======
+	if (len == 0) {
+		pr_warn_once("Zero length message leads to an empty skb\n");
+		return -ENODATA;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = scm_send(sock, msg, &scm, true);
 	if (err < 0)
 		return err;
@@ -1836,7 +1881,12 @@ static int netlink_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
 		dst_group = nlk->dst_group;
 	}
 
+<<<<<<< HEAD
 	if (!nlk->bound) {
+=======
+	/* Paired with WRITE_ONCE() in netlink_insert() */
+	if (!READ_ONCE(nlk->bound)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		err = netlink_autobind(sock);
 		if (err)
 			goto out;
@@ -2388,7 +2438,11 @@ void netlink_ack(struct sk_buff *in_skb, struct nlmsghdr *nlh, int err,
 							       in_skb->len))
 				WARN_ON(nla_put_u32(skb, NLMSGERR_ATTR_OFFS,
 						    (u8 *)extack->bad_attr -
+<<<<<<< HEAD
 						    in_skb->data));
+=======
+						    (u8 *)nlh));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else {
 			if (extack->cookie_len)
 				WARN_ON(nla_put(skb, NLMSGERR_ATTR_COOKIE,
@@ -2473,13 +2527,22 @@ int nlmsg_notify(struct sock *sk, struct sk_buff *skb, u32 portid,
 		/* errors reported via destination sk->sk_err, but propagate
 		 * delivery errors if NETLINK_BROADCAST_ERROR flag is set */
 		err = nlmsg_multicast(sk, skb, exclude_portid, group, flags);
+<<<<<<< HEAD
+=======
+		if (err == -ESRCH)
+			err = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (report) {
 		int err2;
 
 		err2 = nlmsg_unicast(sk, skb, portid);
+<<<<<<< HEAD
 		if (!err || err == -ESRCH)
+=======
+		if (!err)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			err = err2;
 	}
 

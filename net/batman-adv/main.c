@@ -153,6 +153,10 @@ int batadv_mesh_init(struct net_device *soft_iface)
 	spin_lock_init(&bat_priv->tt.commit_lock);
 	spin_lock_init(&bat_priv->gw.list_lock);
 #ifdef CONFIG_BATMAN_ADV_MCAST
+<<<<<<< HEAD
+=======
+	spin_lock_init(&bat_priv->mcast.mla_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_init(&bat_priv->mcast.want_lists_lock);
 #endif
 	spin_lock_init(&bat_priv->tvlv.container_list_lock);
@@ -179,6 +183,7 @@ int batadv_mesh_init(struct net_device *soft_iface)
 	INIT_HLIST_HEAD(&bat_priv->softif_vlan_list);
 	INIT_HLIST_HEAD(&bat_priv->tp_list);
 
+<<<<<<< HEAD
 	ret = batadv_v_mesh_init(bat_priv);
 	if (ret < 0)
 		goto err;
@@ -202,6 +207,43 @@ int batadv_mesh_init(struct net_device *soft_iface)
 	ret = batadv_nc_mesh_init(bat_priv);
 	if (ret < 0)
 		goto err;
+=======
+	ret = batadv_originator_init(bat_priv);
+	if (ret < 0) {
+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
+		goto err_orig;
+	}
+
+	ret = batadv_tt_init(bat_priv);
+	if (ret < 0) {
+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
+		goto err_tt;
+	}
+
+	ret = batadv_v_mesh_init(bat_priv);
+	if (ret < 0) {
+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
+		goto err_v;
+	}
+
+	ret = batadv_bla_init(bat_priv);
+	if (ret < 0) {
+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
+		goto err_bla;
+	}
+
+	ret = batadv_dat_init(bat_priv);
+	if (ret < 0) {
+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
+		goto err_dat;
+	}
+
+	ret = batadv_nc_mesh_init(bat_priv);
+	if (ret < 0) {
+		atomic_set(&bat_priv->mesh_state, BATADV_MESH_DEACTIVATING);
+		goto err_nc;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	batadv_gw_init(bat_priv);
 	batadv_mcast_init(bat_priv);
@@ -211,8 +253,25 @@ int batadv_mesh_init(struct net_device *soft_iface)
 
 	return 0;
 
+<<<<<<< HEAD
 err:
 	batadv_mesh_free(soft_iface);
+=======
+err_nc:
+	batadv_dat_free(bat_priv);
+err_dat:
+	batadv_bla_free(bat_priv);
+err_bla:
+	batadv_v_mesh_free(bat_priv);
+err_v:
+	batadv_tt_free(bat_priv);
+err_tt:
+	batadv_originator_free(bat_priv);
+err_orig:
+	batadv_purge_outstanding_packets(bat_priv, NULL);
+	atomic_set(&bat_priv->mesh_state, BATADV_MESH_INACTIVE);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 

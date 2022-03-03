@@ -1101,6 +1101,7 @@ static u32 *gen9_init_indirectctx_bb(struct intel_engine_cs *engine, u32 *batch)
 
 	*batch++ = MI_NOOP;
 
+<<<<<<< HEAD
 	/* WaClearSlmSpaceAtContextSwitch:kbl */
 	/* Actual scratch location is at 128 bytes offset */
 	if (IS_KBL_REVID(engine->i915, 0, KBL_REVID_A0)) {
@@ -1112,6 +1113,16 @@ static u32 *gen9_init_indirectctx_bb(struct intel_engine_cs *engine, u32 *batch)
 					       i915_ggtt_offset(engine->scratch)
 					       + 2 * CACHELINE_BYTES);
 	}
+=======
+	/* WaClearSlmSpaceAtContextSwitch:skl,bxt,kbl,glk,cfl */
+	batch = gen8_emit_pipe_control(batch,
+				       PIPE_CONTROL_FLUSH_L3 |
+				       PIPE_CONTROL_GLOBAL_GTT_IVB |
+				       PIPE_CONTROL_CS_STALL |
+				       PIPE_CONTROL_QW_WRITE,
+				       i915_ggtt_offset(engine->scratch) +
+				       2 * CACHELINE_BYTES);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* WaMediaPoolStateCmdInWABB:bxt,glk */
 	if (HAS_POOLED_EU(engine->i915)) {

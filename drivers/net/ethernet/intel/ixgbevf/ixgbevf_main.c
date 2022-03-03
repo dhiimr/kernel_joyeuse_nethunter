@@ -1858,11 +1858,14 @@ static int ixgbevf_write_uc_addr_list(struct net_device *netdev)
 	struct ixgbe_hw *hw = &adapter->hw;
 	int count = 0;
 
+<<<<<<< HEAD
 	if ((netdev_uc_count(netdev)) > 10) {
 		pr_err("Too many unicast filters - No Space\n");
 		return -ENOSPC;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!netdev_uc_empty(netdev)) {
 		struct netdev_hw_addr *ha;
 

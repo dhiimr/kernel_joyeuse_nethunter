@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2013, Sony Mobile Communications AB.
+<<<<<<< HEAD
  * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -44,8 +47,11 @@ struct msm_function {
  * @intr_status_reg:      Offset of the register holding the status bits for this group.
  * @intr_target_reg:      Offset of the register specifying routing of the interrupts
  *                        from this group.
+<<<<<<< HEAD
  * @dir_conn_reg:         Offset of the register specifying direct connect
  *                        setup of this group.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @mux_bit:              Offset in @ctl_reg for the pinmux function selection.
  * @pull_bit:             Offset in @ctl_reg for the bias configuration.
  * @drv_bit:              Offset in @ctl_reg for the drive strength configuration.
@@ -73,23 +79,32 @@ struct msm_pingroup {
 	unsigned *funcs;
 	unsigned nfuncs;
 
+<<<<<<< HEAD
 #ifdef CONFIG_FRAGMENTED_GPIO_ADDRESS_SPACE
 	u32 tile_base;
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 ctl_reg;
 	u32 io_reg;
 	u32 intr_cfg_reg;
 	u32 intr_status_reg;
 	u32 intr_target_reg;
+<<<<<<< HEAD
 	u32 dir_conn_reg;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	unsigned mux_bit:5;
 
 	unsigned pull_bit:5;
 	unsigned drv_bit:5;
 
+<<<<<<< HEAD
 	unsigned egpio_enable:5;
 	unsigned egpio_present:5;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned oe_bit:5;
 	unsigned in_bit:5;
 	unsigned out_bit:5;
@@ -104,6 +119,7 @@ struct msm_pingroup {
 	unsigned intr_polarity_bit:5;
 	unsigned intr_detection_bit:5;
 	unsigned intr_detection_width:5;
+<<<<<<< HEAD
 	unsigned dir_conn_en_bit:8;
 };
 
@@ -139,10 +155,13 @@ struct msm_dir_conn {
 	int gpio;
 	irq_hw_number_t hwirq;
 	bool tlmm_dc;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
  * struct msm_pinctrl_soc_data - Qualcomm pin controller driver configuration
+<<<<<<< HEAD
  * @pins:       An array describing all pins the pin controller affects.
  * @npins:      The number of entries in @pins.
  * @functions:  An array describing all mux functions the SoC supports.
@@ -159,6 +178,16 @@ struct msm_dir_conn {
  * @pdc_mux_out:	Map of GPIO mux to PDC port.
  * @n_pdc_mux_out:	The number of entries in @pdc_mux_out.
  * @n_pdc_offset:	The offset for the PDC mux pins
+=======
+ * @pins:	    An array describing all pins the pin controller affects.
+ * @npins:	    The number of entries in @pins.
+ * @functions:	    An array describing all mux functions the SoC supports.
+ * @nfunctions:	    The number of entries in @functions.
+ * @groups:	    An array describing all pin groups the pin SoC supports.
+ * @ngroups:	    The numbmer of entries in @groups.
+ * @ngpio:	    The number of pingroups the driver should expose as GPIOs.
+ * @pull_no_keeper: The SoC does not support keeper bias.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 struct msm_pinctrl_soc_data {
 	const struct pinctrl_pin_desc *pins;
@@ -169,6 +198,7 @@ struct msm_pinctrl_soc_data {
 	unsigned ngroups;
 	unsigned ngpios;
 	bool pull_no_keeper;
+<<<<<<< HEAD
 	const struct msm_dir_conn *dir_conn;
 	unsigned int n_dir_conns;
 	unsigned int dir_conn_irq_base;
@@ -188,16 +218,21 @@ struct msm_pinctrl_soc_data {
 	void __iomem **pin_base;
 	const u32 *tile_end;
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 int msm_pinctrl_probe(struct platform_device *pdev,
 		      const struct msm_pinctrl_soc_data *soc_data);
 int msm_pinctrl_remove(struct platform_device *pdev);
 
+<<<<<<< HEAD
 #ifdef CONFIG_QCOM_SHOW_RESUME_IRQ
 extern int msm_show_resume_irq_mask;
 #else
 #define msm_show_resume_irq_mask 0
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif

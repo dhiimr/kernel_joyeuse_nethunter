@@ -120,7 +120,10 @@ static int vimc_streamer_thread(void *data)
 	int i;
 
 	set_freezable();
+<<<<<<< HEAD
 	set_current_state(TASK_UNINTERRUPTIBLE);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (;;) {
 		try_to_freeze();
@@ -137,6 +140,10 @@ static int vimc_streamer_thread(void *data)
 				break;
 		}
 		//wait for 60hz
+<<<<<<< HEAD
+=======
+		set_current_state(TASK_UNINTERRUPTIBLE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		schedule_timeout(HZ / 60);
 	}
 

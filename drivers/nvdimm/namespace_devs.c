@@ -1229,12 +1229,33 @@ static int namespace_update_uuid(struct nd_region *nd_region,
 	for (i = 0; i < nd_region->ndr_mappings; i++) {
 		struct nd_mapping *nd_mapping = &nd_region->mapping[i];
 		struct nvdimm_drvdata *ndd = to_ndd(nd_mapping);
+<<<<<<< HEAD
+=======
+		struct nd_label_ent *label_ent;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct resource *res;
 
 		for_each_dpa_resource(ndd, res)
 			if (strcmp(res->name, old_label_id.id) == 0)
 				sprintf((void *) res->name, "%s",
 						new_label_id.id);
+<<<<<<< HEAD
+=======
+
+		mutex_lock(&nd_mapping->lock);
+		list_for_each_entry(label_ent, &nd_mapping->labels, list) {
+			struct nd_namespace_label *nd_label = label_ent->label;
+			struct nd_label_id label_id;
+
+			if (!nd_label)
+				continue;
+			nd_label_gen_id(&label_id, nd_label->uuid,
+					__le32_to_cpu(nd_label->flags));
+			if (strcmp(old_label_id.id, label_id.id) == 0)
+				set_bit(ND_LABEL_REAP, &label_ent->flags);
+		}
+		mutex_unlock(&nd_mapping->lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	kfree(*old_uuid);
  out:
@@ -1963,7 +1984,11 @@ struct device *create_namespace_pmem(struct nd_region *nd_region,
 		nd_mapping = &nd_region->mapping[i];
 		label_ent = list_first_entry_or_null(&nd_mapping->labels,
 				typeof(*label_ent), list);
+<<<<<<< HEAD
 		label0 = label_ent ? label_ent->label : 0;
+=======
+		label0 = label_ent ? label_ent->label : NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (!label0) {
 			WARN_ON(1);
@@ -2234,9 +2259,18 @@ struct device *create_namespace_blk(struct nd_region *nd_region,
 	if (!nsblk->uuid)
 		goto blk_err;
 	memcpy(name, nd_label->name, NSLABEL_NAME_LEN);
+<<<<<<< HEAD
 	if (name[0])
 		nsblk->alt_name = kmemdup(name, NSLABEL_NAME_LEN,
 				GFP_KERNEL);
+=======
+	if (name[0]) {
+		nsblk->alt_name = kmemdup(name, NSLABEL_NAME_LEN,
+				GFP_KERNEL);
+		if (!nsblk->alt_name)
+			goto blk_err;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	res = nsblk_add_resource(nd_region, ndd, nsblk,
 			__le64_to_cpu(nd_label->dpa));
 	if (!res)
@@ -2297,8 +2331,14 @@ static struct device **scan_labels(struct nd_region *nd_region)
 			continue;
 
 		/* skip labels that describe extents outside of the region */
+<<<<<<< HEAD
 		if (nd_label->dpa < nd_mapping->start || nd_label->dpa > map_end)
 			continue;
+=======
+		if (__le64_to_cpu(nd_label->dpa) < nd_mapping->start ||
+		    __le64_to_cpu(nd_label->dpa) > map_end)
+				continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		i = add_namespace_resource(nd_region, nd_label, devs, count);
 		if (i < 0)

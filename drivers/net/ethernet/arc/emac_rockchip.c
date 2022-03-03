@@ -261,6 +261,12 @@ static int emac_rockchip_remove(struct platform_device *pdev)
 	if (priv->regulator)
 		regulator_disable(priv->regulator);
 
+<<<<<<< HEAD
+=======
+	if (priv->soc_data->need_div_macclk)
+		clk_disable_unprepare(priv->macclk);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	free_netdev(ndev);
 	return err;
 }

@@ -24,6 +24,16 @@ ENTRY(_text)
 
 jiffies = jiffies_64;
 
+<<<<<<< HEAD
+=======
+
+#define HYPERVISOR_EXTABLE					\
+	. = ALIGN(SZ_8);					\
+	VMLINUX_SYMBOL(__start___kvm_ex_table) = .;		\
+	*(__kvm_ex_table)					\
+	VMLINUX_SYMBOL(__stop___kvm_ex_table) = .;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define HYPERVISOR_TEXT					\
 	/*						\
 	 * Align to 4 KB so that			\
@@ -39,6 +49,10 @@ jiffies = jiffies_64;
 	VMLINUX_SYMBOL(__hyp_idmap_text_end) = .;	\
 	VMLINUX_SYMBOL(__hyp_text_start) = .;		\
 	*(.hyp.text)					\
+<<<<<<< HEAD
+=======
+	HYPERVISOR_EXTABLE				\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	VMLINUX_SYMBOL(__hyp_text_end) = .;
 
 #define IDMAP_TEXT					\
@@ -61,19 +75,26 @@ jiffies = jiffies_64;
 #define TRAMP_TEXT					\
 	. = ALIGN(PAGE_SIZE);				\
 	VMLINUX_SYMBOL(__entry_tramp_text_start) = .;	\
+<<<<<<< HEAD
 	KEEP(*(.entry.tramp.text))			\
+=======
+	*(.entry.tramp.text)				\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	. = ALIGN(PAGE_SIZE);				\
 	VMLINUX_SYMBOL(__entry_tramp_text_end) = .;
 #else
 #define TRAMP_TEXT
 #endif
 
+<<<<<<< HEAD
 #define RTIC_BSS					\
 	. = ALIGN(PAGE_SIZE);				\
 	VMLINUX_SYMBOL(__bss_rtic_start) = .;	\
 	KEEP(*(.bss.rtic))			\
 	. = ALIGN(PAGE_SIZE);				\
 	VMLINUX_SYMBOL(__bss_rtic_end) = .;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * The size of the PE/COFF section that covers the kernel image, which
  * runs from stext to _edata, must be a round multiple of the PE/COFF
@@ -157,12 +178,18 @@ SECTIONS
 	. = ALIGN(4);
 	.altinstructions : {
 		__alt_instructions = .;
+<<<<<<< HEAD
 		KEEP(*(.altinstructions))
 		__alt_instructions_end = .;
 	}
 	.altinstr_replacement : {
 		KEEP(*(.altinstr_replacement))
 	}
+=======
+		*(.altinstructions)
+		__alt_instructions_end = .;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	. = ALIGN(PAGE_SIZE);
 	__inittext_end = .;
@@ -244,10 +271,13 @@ SECTIONS
 	STABS_DEBUG
 
 	HEAD_SYMBOLS
+<<<<<<< HEAD
 
 	.bss : {			/* bss segment		*/
          RTIC_BSS
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*

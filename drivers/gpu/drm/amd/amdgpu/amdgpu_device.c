@@ -1823,7 +1823,11 @@ static int amdgpu_sriov_reinit_early(struct amdgpu_device *adev)
 		AMD_IP_BLOCK_TYPE_IH,
 	};
 
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(ip_order); i++) {
+=======
+	for (i = 0; i < adev->num_ip_blocks; i++) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		int j;
 		struct amdgpu_ip_block *block;
 

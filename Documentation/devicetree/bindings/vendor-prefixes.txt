@@ -25,6 +25,7 @@ amlogic	Amlogic, Inc.
 ampire	Ampire Co., Ltd.
 ams	AMS AG
 amstaos	AMS-Taos Inc.
+<<<<<<< HEAD
 android        Google Inc.
 analogix	Analogix Semiconductor, Inc.
 andestech	Andes Technology Corporation
@@ -32,6 +33,12 @@ android	Google
 apm	Applied Micro Circuits Corporation (APM)
 aptina	Aptina Imaging
 aquantia	Aquantia Corporation
+=======
+analogix	Analogix Semiconductor, Inc.
+andestech	Andes Technology Corporation
+apm	Applied Micro Circuits Corporation (APM)
+aptina	Aptina Imaging
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 arasan	Arasan Chip Systems
 arctic	Arctic Sand
 aries	Aries Embedded GmbH
@@ -115,13 +122,19 @@ everest	Everest Semiconductor Co. Ltd.
 everspin	Everspin Technologies, Inc.
 exar	Exar Corporation
 excito	Excito
+<<<<<<< HEAD
 explore Explore Semiconductor, Inc. Limited
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 ezchip	EZchip Semiconductor
 faraday	Faraday Technology Corporation
 fcs	Fairchild Semiconductor
 firefly	Firefly
 focaltech	FocalTech Systems Co.,Ltd
+<<<<<<< HEAD
 fpc	Fingerprint Cards AB.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 friendlyarm	Guangzhou FriendlyARM Computer Tech Co., Ltd
 fsl	Freescale Semiconductor
 fujitsu	Fujitsu Ltd.
@@ -139,7 +152,10 @@ grinn	Grinn
 grmn	Garmin Limited
 gumstix	Gumstix, Inc.
 gw	Gateworks Corporation
+<<<<<<< HEAD
 halo	Halo Microelectronics Co., Ltd.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 hannstar	HannStar Display Corporation
 haoyu	Haoyu Microelectronic Co. Ltd.
 hardkernel	Hardkernel Co., Ltd
@@ -197,7 +213,10 @@ linux	Linux-specific binding
 lltc	Linear Technology Corporation
 lsi	LSI Corp. (LSI Logic)
 lwn	Liebherr-Werk Nenzing GmbH
+<<<<<<< HEAD
 lt	Lontium Semiconductor Corporation
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 macnica	Macnica Americas
 marvell	Marvell Technology Group Ltd.
 maxim	Maxim Integrated Products
@@ -278,7 +297,10 @@ qemu	QEMU, a generic and open source machine emulator and virtualizer
 qi	Qi Hardware
 qiaodian	QiaoDian XianShi Corporation
 qnap	QNAP Systems, Inc.
+<<<<<<< HEAD
 qvm	BlackBerry Ltd
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 radxa	Radxa
 raidsonic	RaidSonic Technology GmbH
 ralink	Mediatek/Ralink Technology Corp.
@@ -335,7 +357,11 @@ summit	Summit microelectronics
 sunchip	Shenzhen Sunchip Technology Co., Ltd
 SUNW	Sun Microsystems, Inc
 swir	Sierra Wireless
+<<<<<<< HEAD
 synaptics	Synaptics Inc.
+=======
+syna	Synaptics Inc.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 synology	Synology, Inc.
 tbs	TBS Technologies
 tcg	Trusted Computing Group

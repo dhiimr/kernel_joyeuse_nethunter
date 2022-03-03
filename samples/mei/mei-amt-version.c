@@ -370,7 +370,11 @@ static uint32_t amt_host_if_call(struct amt_host_if *acmd,
 			unsigned int expected_sz)
 {
 	uint32_t in_buf_sz;
+<<<<<<< HEAD
 	uint32_t out_buf_sz;
+=======
+	ssize_t out_buf_sz;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ssize_t written;
 	uint32_t status;
 	struct amt_host_if_resp_header *msg_hdr;

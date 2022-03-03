@@ -464,6 +464,13 @@ EXC_COMMON_BEGIN(machine_check_handle_early)
 	RFI_TO_USER_OR_KERNEL
 9:
 	/* Deliver the machine check to host kernel in V mode. */
+<<<<<<< HEAD
+=======
+BEGIN_FTR_SECTION
+	ld	r10,ORIG_GPR3(r1)
+	mtspr	SPRN_CFAR,r10
+END_FTR_SECTION_IFSET(CPU_FTR_CFAR)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	MACHINE_CHECK_HANDLER_WINDUP
 	b	machine_check_pSeries
 
@@ -480,7 +487,11 @@ EXC_COMMON_BEGIN(unrecover_mce)
 	b	1b
 
 
+<<<<<<< HEAD
 EXC_REAL(data_access, 0x300, 0x80)
+=======
+EXC_REAL_OOL(data_access, 0x300, 0x80)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 EXC_VIRT(data_access, 0x4300, 0x80, 0x300)
 TRAMP_KVM_SKIP(PACA_EXGEN, 0x300)
 
@@ -512,13 +523,23 @@ ALT_MMU_FTR_SECTION_END_IFCLR(MMU_FTR_TYPE_RADIX)
 EXC_REAL_BEGIN(data_access_slb, 0x380, 0x80)
 	SET_SCRATCH0(r13)
 	EXCEPTION_PROLOG_0(PACA_EXSLB)
+<<<<<<< HEAD
+=======
+	b tramp_data_access_slb
+EXC_REAL_END(data_access_slb, 0x380, 0x80)
+
+TRAMP_REAL_BEGIN(tramp_data_access_slb)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	EXCEPTION_PROLOG_1(PACA_EXSLB, KVMTEST_PR, 0x380)
 	mr	r12,r3	/* save r3 */
 	mfspr	r3,SPRN_DAR
 	mfspr	r11,SPRN_SRR1
 	crset	4*cr6+eq
 	BRANCH_TO_COMMON(r10, slb_miss_common)
+<<<<<<< HEAD
 EXC_REAL_END(data_access_slb, 0x380, 0x80)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 EXC_VIRT_BEGIN(data_access_slb, 0x4380, 0x80)
 	SET_SCRATCH0(r13)
@@ -533,7 +554,11 @@ EXC_VIRT_END(data_access_slb, 0x4380, 0x80)
 TRAMP_KVM_SKIP(PACA_EXSLB, 0x380)
 
 
+<<<<<<< HEAD
 EXC_REAL(instruction_access, 0x400, 0x80)
+=======
+EXC_REAL_OOL(instruction_access, 0x400, 0x80)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 EXC_VIRT(instruction_access, 0x4400, 0x80, 0x400)
 TRAMP_KVM(PACA_EXGEN, 0x400)
 
@@ -556,13 +581,23 @@ ALT_MMU_FTR_SECTION_END_IFCLR(MMU_FTR_TYPE_RADIX)
 EXC_REAL_BEGIN(instruction_access_slb, 0x480, 0x80)
 	SET_SCRATCH0(r13)
 	EXCEPTION_PROLOG_0(PACA_EXSLB)
+<<<<<<< HEAD
+=======
+	b tramp_instruction_access_slb
+EXC_REAL_END(instruction_access_slb, 0x480, 0x80)
+
+TRAMP_REAL_BEGIN(tramp_instruction_access_slb)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	EXCEPTION_PROLOG_1(PACA_EXSLB, KVMTEST_PR, 0x480)
 	mr	r12,r3	/* save r3 */
 	mfspr	r3,SPRN_SRR0		/* SRR0 is faulting address */
 	mfspr	r11,SPRN_SRR1
 	crclr	4*cr6+eq
 	BRANCH_TO_COMMON(r10, slb_miss_common)
+<<<<<<< HEAD
 EXC_REAL_END(instruction_access_slb, 0x480, 0x80)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 EXC_VIRT_BEGIN(instruction_access_slb, 0x4480, 0x80)
 	SET_SCRATCH0(r13)
@@ -826,13 +861,22 @@ END_FTR_SECTION_IFSET(CPU_FTR_TM)
 
 
 EXC_REAL_OOL_MASKABLE(decrementer, 0x900, 0x80)
+<<<<<<< HEAD
 EXC_VIRT_MASKABLE(decrementer, 0x4900, 0x80, 0x900)
+=======
+EXC_VIRT_OOL_MASKABLE(decrementer, 0x4900, 0x80, 0x900)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 TRAMP_KVM(PACA_EXGEN, 0x900)
 EXC_COMMON_ASYNC(decrementer_common, 0x900, timer_interrupt)
 
 
+<<<<<<< HEAD
 EXC_REAL_HV(hdecrementer, 0x980, 0x80)
 EXC_VIRT_HV(hdecrementer, 0x4980, 0x80, 0x980)
+=======
+EXC_REAL_OOL_HV(hdecrementer, 0x980, 0x80)
+EXC_VIRT_OOL_HV(hdecrementer, 0x4980, 0x80, 0x980)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 TRAMP_KVM_HV(PACA_EXGEN, 0x980)
 EXC_COMMON(hdecrementer_common, 0x980, hdec_interrupt)
 
@@ -1449,6 +1493,7 @@ TRAMP_REAL_BEGIN(stf_barrier_fallback)
 	.endr
 	blr
 
+<<<<<<< HEAD
 TRAMP_REAL_BEGIN(rfi_flush_fallback)
 	SET_SCRATCH0(r13);
 	GET_PACA(r13);
@@ -1458,6 +1503,10 @@ TRAMP_REAL_BEGIN(rfi_flush_fallback)
 	std	r10,PACA_EXRFI+EX_R10(r13)
 	std	r11,PACA_EXRFI+EX_R11(r13)
 	mfctr	r9
+=======
+/* Clobbers r10, r11, ctr */
+.macro L1D_DISPLACEMENT_FLUSH
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ld	r10,PACA_RFI_FLUSH_FALLBACK_AREA(r13)
 	ld	r11,PACA_L1D_FLUSH_SIZE(r13)
 	srdi	r11,r11,(7 + 3) /* 128 byte lines, unrolled 8x */
@@ -1468,7 +1517,11 @@ TRAMP_REAL_BEGIN(rfi_flush_fallback)
 	sync
 
 	/*
+<<<<<<< HEAD
 	 * The load adresses are at staggered offsets within cachelines,
+=======
+	 * The load addresses are at staggered offsets within cachelines,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * which suits some pipelines better (on others it should not
 	 * hurt).
 	 */
@@ -1483,7 +1536,34 @@ TRAMP_REAL_BEGIN(rfi_flush_fallback)
 	ld	r11,(0x80 + 8)*7(r10)
 	addi	r10,r10,0x80*8
 	bdnz	1b
+<<<<<<< HEAD
 
+=======
+.endm
+
+TRAMP_REAL_BEGIN(entry_flush_fallback)
+	std	r9,PACA_EXRFI+EX_R9(r13)
+	std	r10,PACA_EXRFI+EX_R10(r13)
+	std	r11,PACA_EXRFI+EX_R11(r13)
+	mfctr	r9
+	L1D_DISPLACEMENT_FLUSH
+	mtctr	r9
+	ld	r9,PACA_EXRFI+EX_R9(r13)
+	ld	r10,PACA_EXRFI+EX_R10(r13)
+	ld	r11,PACA_EXRFI+EX_R11(r13)
+	blr
+
+TRAMP_REAL_BEGIN(rfi_flush_fallback)
+	SET_SCRATCH0(r13);
+	GET_PACA(r13);
+	std	r1,PACA_EXRFI+EX_R12(r13)
+	ld	r1,PACAKSAVE(r13)
+	std	r9,PACA_EXRFI+EX_R9(r13)
+	std	r10,PACA_EXRFI+EX_R10(r13)
+	std	r11,PACA_EXRFI+EX_R11(r13)
+	mfctr	r9
+	L1D_DISPLACEMENT_FLUSH
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mtctr	r9
 	ld	r9,PACA_EXRFI+EX_R9(r13)
 	ld	r10,PACA_EXRFI+EX_R10(r13)
@@ -1501,6 +1581,7 @@ TRAMP_REAL_BEGIN(hrfi_flush_fallback)
 	std	r10,PACA_EXRFI+EX_R10(r13)
 	std	r11,PACA_EXRFI+EX_R11(r13)
 	mfctr	r9
+<<<<<<< HEAD
 	ld	r10,PACA_RFI_FLUSH_FALLBACK_AREA(r13)
 	ld	r11,PACA_L1D_FLUSH_SIZE(r13)
 	srdi	r11,r11,(7 + 3) /* 128 byte lines, unrolled 8x */
@@ -1527,6 +1608,9 @@ TRAMP_REAL_BEGIN(hrfi_flush_fallback)
 	addi	r10,r10,0x80*8
 	bdnz	1b
 
+=======
+	L1D_DISPLACEMENT_FLUSH
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mtctr	r9
 	ld	r9,PACA_EXRFI+EX_R9(r13)
 	ld	r10,PACA_EXRFI+EX_R10(r13)
@@ -1535,6 +1619,22 @@ TRAMP_REAL_BEGIN(hrfi_flush_fallback)
 	GET_SCRATCH0(r13);
 	hrfid
 
+<<<<<<< HEAD
+=======
+USE_TEXT_SECTION()
+
+_GLOBAL(do_uaccess_flush)
+	UACCESS_FLUSH_FIXUP_SECTION
+	nop
+	nop
+	nop
+	blr
+	L1D_DISPLACEMENT_FLUSH
+	blr
+_ASM_NOKPROBE_SYMBOL(do_uaccess_flush)
+EXPORT_SYMBOL(do_uaccess_flush)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Real mode exceptions actually use this too, but alternate
  * instruction code patches (which end up in the common .text area)
@@ -1675,7 +1775,11 @@ handle_page_fault:
 	addi	r3,r1,STACK_FRAME_OVERHEAD
 	bl	do_page_fault
 	cmpdi	r3,0
+<<<<<<< HEAD
 	beq+	12f
+=======
+	beq+	ret_from_except_lite
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bl	save_nvgprs
 	mr	r5,r3
 	addi	r3,r1,STACK_FRAME_OVERHEAD
@@ -1690,7 +1794,16 @@ handle_dabr_fault:
 	ld      r5,_DSISR(r1)
 	addi    r3,r1,STACK_FRAME_OVERHEAD
 	bl      do_break
+<<<<<<< HEAD
 12:	b       ret_from_except_lite
+=======
+	/*
+	 * do_break() may have changed the NV GPRS while handling a breakpoint.
+	 * If so, we need to restore them with their updated values. Don't use
+	 * ret_from_except_lite here.
+	 */
+	b       ret_from_except
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 
 #ifdef CONFIG_PPC_STD_MMU_64

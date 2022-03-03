@@ -52,6 +52,7 @@
 	.endm
 
 /*
+<<<<<<< HEAD
  * Save/disable and restore interrupts.
  */
 	.macro	save_and_disable_irqs, olddaif
@@ -64,6 +65,8 @@
 	.endm
 
 /*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Enable and disable debug exceptions.
  */
 	.macro	disable_dbg

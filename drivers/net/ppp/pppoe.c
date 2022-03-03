@@ -497,6 +497,12 @@ static int pppoe_disc_rcv(struct sk_buff *skb, struct net_device *dev,
 	if (!skb)
 		goto out;
 
+<<<<<<< HEAD
+=======
+	if (skb->pkt_type != PACKET_HOST)
+		goto abort;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!pskb_may_pull(skb, sizeof(struct pppoe_hdr)))
 		goto abort;
 
@@ -1137,6 +1143,12 @@ static const struct proto_ops pppoe_ops = {
 	.recvmsg	= pppoe_recvmsg,
 	.mmap		= sock_no_mmap,
 	.ioctl		= pppox_ioctl,
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_COMPAT
+	.compat_ioctl	= pppox_compat_ioctl,
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const struct pppox_proto pppoe_proto = {

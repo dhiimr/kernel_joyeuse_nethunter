@@ -49,7 +49,12 @@ static debug_info_t *debug_info;
 
 static void __init pkey_debug_init(void)
 {
+<<<<<<< HEAD
 	debug_info = debug_register("pkey", 1, 1, 4 * sizeof(long));
+=======
+	/* 5 arguments per dbf entry (including the format string ptr) */
+	debug_info = debug_register("pkey", 1, 1, 5 * sizeof(long));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	debug_register_view(debug_info, &debug_sprintf_view);
 	debug_set_level(debug_info, 3);
 }

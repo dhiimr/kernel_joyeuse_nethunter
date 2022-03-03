@@ -84,11 +84,25 @@
 	nop;								\
 	nop
 
+<<<<<<< HEAD
+=======
+#define ENTRY_FLUSH_SLOT						\
+	ENTRY_FLUSH_FIXUP_SECTION;					\
+	nop;								\
+	nop;								\
+	nop;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * r10 must be free to use, r13 must be paca
  */
 #define INTERRUPT_TO_KERNEL						\
+<<<<<<< HEAD
 	STF_ENTRY_BARRIER_SLOT
+=======
+	STF_ENTRY_BARRIER_SLOT;						\
+	ENTRY_FLUSH_SLOT
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Macros for annotating the expected destination of (h)rfid
@@ -645,6 +659,13 @@ END_FTR_SECTION_NESTED(ftr,ftr,943)
 	EXCEPTION_PROLOG_1(PACA_EXGEN, SOFTEN_TEST_HV, vec);		\
 	EXCEPTION_RELON_PROLOG_PSERIES_1(label, EXC_HV)
 
+<<<<<<< HEAD
+=======
+#define MASKABLE_RELON_EXCEPTION_PSERIES_OOL(vec, label)               \
+       EXCEPTION_PROLOG_1(PACA_EXGEN, SOFTEN_NOTEST_PR, vec);          \
+       EXCEPTION_PROLOG_PSERIES_1(label, EXC_STD)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Our exception common code can be passed various "additions"
  * to specify the behaviour of interrupts, whether to kick the

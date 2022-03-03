@@ -1062,6 +1062,11 @@ static void	usa49_glocont_callback(struct urb *urb)
 	for (i = 0; i < serial->num_ports; ++i) {
 		port = serial->port[i];
 		p_priv = usb_get_serial_port_data(port);
+<<<<<<< HEAD
+=======
+		if (!p_priv)
+			continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (p_priv->resend_cont) {
 			dev_dbg(&port->dev, "%s - sending setup\n", __func__);
@@ -1463,6 +1468,11 @@ static void usa67_glocont_callback(struct urb *urb)
 	for (i = 0; i < serial->num_ports; ++i) {
 		port = serial->port[i];
 		p_priv = usb_get_serial_port_data(port);
+<<<<<<< HEAD
+=======
+		if (!p_priv)
+			continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (p_priv->resend_cont) {
 			dev_dbg(&port->dev, "%s - sending setup\n", __func__);
@@ -1745,8 +1755,13 @@ static struct urb *keyspan_setup_urb(struct usb_serial *serial, int endpoint,
 
 	ep_desc = find_ep(serial, endpoint);
 	if (!ep_desc) {
+<<<<<<< HEAD
 		/* leak the urb, something's wrong and the callers don't care */
 		return urb;
+=======
+		usb_free_urb(urb);
+		return NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	if (usb_endpoint_xfer_int(ep_desc)) {
 		ep_type_name = "INT";
@@ -2910,22 +2925,38 @@ static int keyspan_port_probe(struct usb_serial_port *port)
 	for (i = 0; i < ARRAY_SIZE(p_priv->in_buffer); ++i) {
 		p_priv->in_buffer[i] = kzalloc(IN_BUFLEN, GFP_KERNEL);
 		if (!p_priv->in_buffer[i])
+<<<<<<< HEAD
 			goto err_in_buffer;
+=======
+			goto err_free_in_buffer;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	for (i = 0; i < ARRAY_SIZE(p_priv->out_buffer); ++i) {
 		p_priv->out_buffer[i] = kzalloc(OUT_BUFLEN, GFP_KERNEL);
 		if (!p_priv->out_buffer[i])
+<<<<<<< HEAD
 			goto err_out_buffer;
+=======
+			goto err_free_out_buffer;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	p_priv->inack_buffer = kzalloc(INACK_BUFLEN, GFP_KERNEL);
 	if (!p_priv->inack_buffer)
+<<<<<<< HEAD
 		goto err_inack_buffer;
 
 	p_priv->outcont_buffer = kzalloc(OUTCONT_BUFLEN, GFP_KERNEL);
 	if (!p_priv->outcont_buffer)
 		goto err_outcont_buffer;
+=======
+		goto err_free_out_buffer;
+
+	p_priv->outcont_buffer = kzalloc(OUTCONT_BUFLEN, GFP_KERNEL);
+	if (!p_priv->outcont_buffer)
+		goto err_free_inack_buffer;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	p_priv->device_details = d_details;
 
@@ -2971,6 +3002,7 @@ static int keyspan_port_probe(struct usb_serial_port *port)
 
 	return 0;
 
+<<<<<<< HEAD
 err_outcont_buffer:
 	kfree(p_priv->inack_buffer);
 err_inack_buffer:
@@ -2980,6 +3012,16 @@ err_out_buffer:
 	for (i = 0; i < ARRAY_SIZE(p_priv->in_buffer); ++i)
 		kfree(p_priv->in_buffer[i]);
 err_in_buffer:
+=======
+err_free_inack_buffer:
+	kfree(p_priv->inack_buffer);
+err_free_out_buffer:
+	for (i = 0; i < ARRAY_SIZE(p_priv->out_buffer); ++i)
+		kfree(p_priv->out_buffer[i]);
+err_free_in_buffer:
+	for (i = 0; i < ARRAY_SIZE(p_priv->in_buffer); ++i)
+		kfree(p_priv->in_buffer[i]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(p_priv);
 
 	return -ENOMEM;

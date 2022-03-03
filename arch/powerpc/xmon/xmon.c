@@ -465,8 +465,15 @@ static int xmon_core(struct pt_regs *regs, int fromipi)
 	local_irq_save(flags);
 	hard_irq_disable();
 
+<<<<<<< HEAD
 	tracing_enabled = tracing_is_on();
 	tracing_off();
+=======
+	if (!fromipi) {
+		tracing_enabled = tracing_is_on();
+		tracing_off();
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	bp = in_breakpoint_table(regs->nip, &offset);
 	if (bp != NULL) {
@@ -1828,15 +1835,25 @@ static void dump_300_sprs(void)
 
 	printf("pidr   = %.16lx  tidr  = %.16lx\n",
 		mfspr(SPRN_PID), mfspr(SPRN_TIDR));
+<<<<<<< HEAD
 	printf("asdr   = %.16lx  psscr = %.16lx\n",
 		mfspr(SPRN_ASDR), hv ? mfspr(SPRN_PSSCR)
 					: mfspr(SPRN_PSSCR_PR));
+=======
+	printf("psscr  = %.16lx\n",
+		hv ? mfspr(SPRN_PSSCR) : mfspr(SPRN_PSSCR_PR));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!hv)
 		return;
 
+<<<<<<< HEAD
 	printf("ptcr   = %.16lx\n",
 		mfspr(SPRN_PTCR));
+=======
+	printf("ptcr   = %.16lx  asdr  = %.16lx\n",
+		mfspr(SPRN_PTCR), mfspr(SPRN_ASDR));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 }
 
@@ -2436,6 +2453,7 @@ static void dump_pacas(void)
 static void dump_one_xive(int cpu)
 {
 	unsigned int hwid = get_hard_smp_processor_id(cpu);
+<<<<<<< HEAD
 
 	opal_xive_dump(XIVE_DUMP_TM_HYP, hwid);
 	opal_xive_dump(XIVE_DUMP_TM_POOL, hwid);
@@ -2443,6 +2461,18 @@ static void dump_one_xive(int cpu)
 	opal_xive_dump(XIVE_DUMP_TM_USER, hwid);
 	opal_xive_dump(XIVE_DUMP_VP, hwid);
 	opal_xive_dump(XIVE_DUMP_EMU_STATE, hwid);
+=======
+	bool hv = cpu_has_feature(CPU_FTR_HVMODE);
+
+	if (hv) {
+		opal_xive_dump(XIVE_DUMP_TM_HYP, hwid);
+		opal_xive_dump(XIVE_DUMP_TM_POOL, hwid);
+		opal_xive_dump(XIVE_DUMP_TM_OS, hwid);
+		opal_xive_dump(XIVE_DUMP_TM_USER, hwid);
+		opal_xive_dump(XIVE_DUMP_VP, hwid);
+		opal_xive_dump(XIVE_DUMP_EMU_STATE, hwid);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (setjmp(bus_error_jmp) != 0) {
 		catch_memory_errors = 0;
@@ -3288,7 +3318,11 @@ void dump_segments(void)
 
 	printf("sr0-15 =");
 	for (i = 0; i < 16; ++i)
+<<<<<<< HEAD
 		printf(" %x", mfsrin(i));
+=======
+		printf(" %x", mfsrin(i << 28));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	printf("\n");
 }
 #endif

@@ -23,6 +23,10 @@
 
 #include <linux/bpf.h>
 #include <stddef.h>
+<<<<<<< HEAD
+=======
+#include <stdint.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 int bpf_create_map_node(enum bpf_map_type map_type, int key_size,
 			int value_size, int max_entries, __u32 map_flags,

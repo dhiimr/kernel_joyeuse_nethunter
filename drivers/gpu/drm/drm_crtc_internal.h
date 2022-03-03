@@ -106,7 +106,10 @@ int drm_mode_object_add(struct drm_device *dev, struct drm_mode_object *obj,
 void drm_mode_object_register(struct drm_device *dev,
 			      struct drm_mode_object *obj);
 struct drm_mode_object *__drm_mode_object_find(struct drm_device *dev,
+<<<<<<< HEAD
 					       struct drm_file *file_priv,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					       uint32_t id, uint32_t type);
 void drm_mode_object_unregister(struct drm_device *dev,
 				struct drm_mode_object *object);

@@ -4,6 +4,10 @@ config SCSI_BNX2X_FCOE
 	depends on (IPV6 || IPV6=n)
 	depends on LIBFC
 	depends on LIBFCOE
+<<<<<<< HEAD
+=======
+	depends on MMU
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select NETDEVICES
 	select ETHERNET
 	select NET_VENDOR_BROADCOM

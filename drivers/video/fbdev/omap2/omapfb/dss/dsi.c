@@ -1148,8 +1148,16 @@ static int dsi_runtime_get(struct platform_device *dsidev)
 	DSSDBG("dsi_runtime_get\n");
 
 	r = pm_runtime_get_sync(&dsi->pdev->dev);
+<<<<<<< HEAD
 	WARN_ON(r < 0);
 	return r < 0 ? r : 0;
+=======
+	if (WARN_ON(r < 0)) {
+		pm_runtime_put_sync(&dsi->pdev->dev);
+		return r;
+	}
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void dsi_runtime_put(struct platform_device *dsidev)

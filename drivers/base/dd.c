@@ -227,6 +227,7 @@ void device_unblock_probing(void)
 	driver_deferred_probe_trigger();
 }
 
+<<<<<<< HEAD
 static void enable_trigger_defer_cycle(void)
 {
 	driver_deferred_probe_enable = true;
@@ -238,11 +239,14 @@ static void enable_trigger_defer_cycle(void)
 	flush_work(&deferred_probe_work);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * deferred_probe_initcall() - Enable probing of deferred devices
  *
  * We don't want to get in the way when the bulk of drivers are getting probed.
  * Instead, this initcall makes sure that deferred probing is delayed until
+<<<<<<< HEAD
  * all the registered initcall functions at a particular level are completed.
  * This function is invoked at every *_initcall_sync level.
  */
@@ -265,6 +269,20 @@ static int deferred_probe_enable_fn(void)
 	return 0;
 }
 late_initcall(deferred_probe_enable_fn);
+=======
+ * late_initcall time.
+ */
+static int deferred_probe_initcall(void)
+{
+	driver_deferred_probe_enable = true;
+	driver_deferred_probe_trigger();
+	/* Sort as many dependencies as possible before exiting initcalls */
+	flush_work(&deferred_probe_work);
+	initcalls_done = true;
+	return 0;
+}
+late_initcall(deferred_probe_initcall);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**
  * device_is_bound() - Check if device is bound to a driver
@@ -396,7 +414,15 @@ static int really_probe(struct device *dev, struct device_driver *drv)
 	atomic_inc(&probe_count);
 	pr_debug("bus: '%s': %s: probing driver %s with device %s\n",
 		 drv->bus->name, __func__, drv->name, dev_name(dev));
+<<<<<<< HEAD
 	WARN_ON(!list_empty(&dev->devres_head));
+=======
+	if (!list_empty(&dev->devres_head)) {
+		dev_crit(dev, "Resources present before probing\n");
+		ret = -EBUSY;
+		goto done;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 re_probe:
 	dev->driver = drv;
@@ -408,7 +434,11 @@ re_probe:
 
 	ret = dma_configure(dev);
 	if (ret)
+<<<<<<< HEAD
 		goto dma_failed;
+=======
+		goto probe_failed;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (driver_sysfs_add(dev)) {
 		printk(KERN_ERR "%s: driver_sysfs_add(%s) failed\n",
@@ -463,14 +493,21 @@ re_probe:
 	goto done;
 
 probe_failed:
+<<<<<<< HEAD
 	dma_deconfigure(dev);
 dma_failed:
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (dev->bus)
 		blocking_notifier_call_chain(&dev->bus->p->bus_notifier,
 					     BUS_NOTIFY_DRIVER_NOT_BOUND, dev);
 pinctrl_bind_failed:
 	device_links_no_driver(dev);
 	devres_release_all(dev);
+<<<<<<< HEAD
+=======
+	dma_deconfigure(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	driver_sysfs_remove(dev);
 	dev->driver = NULL;
 	dev_set_drvdata(dev, NULL);
@@ -505,7 +542,11 @@ pinctrl_bind_failed:
 	ret = 0;
 done:
 	atomic_dec(&probe_count);
+<<<<<<< HEAD
 	wake_up(&probe_waitqueue);
+=======
+	wake_up_all(&probe_waitqueue);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -834,6 +875,11 @@ static void __device_release_driver(struct device *dev, struct device *parent)
 
 	drv = dev->driver;
 	if (drv) {
+<<<<<<< HEAD
+=======
+		pm_runtime_get_sync(dev);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		while (device_links_busy(dev)) {
 			device_unlock(dev);
 			if (parent)
@@ -849,11 +895,20 @@ static void __device_release_driver(struct device *dev, struct device *parent)
 			 * have released the driver successfully while this one
 			 * was waiting, so check for that.
 			 */
+<<<<<<< HEAD
 			if (dev->driver != drv)
 				return;
 		}
 
 		pm_runtime_get_sync(dev);
+=======
+			if (dev->driver != drv) {
+				pm_runtime_put(dev);
+				return;
+			}
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pm_runtime_clean_up_links(dev);
 
 		driver_sysfs_remove(dev);

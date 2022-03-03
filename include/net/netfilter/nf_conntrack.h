@@ -18,7 +18,10 @@
 #include <linux/bitops.h>
 #include <linux/compiler.h>
 #include <linux/atomic.h>
+<<<<<<< HEAD
 #include <linux/list.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <linux/netfilter/nf_conntrack_tcp.h>
 #include <linux/netfilter/nf_conntrack_dccp.h>
@@ -28,6 +31,7 @@
 
 #include <net/netfilter/nf_conntrack_tuple.h>
 
+<<<<<<< HEAD
 #define SIP_LIST_ELEMENTS	2
 
 struct sip_length {
@@ -36,6 +40,8 @@ struct sip_length {
 	int data_len[SIP_LIST_ELEMENTS];
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* per conntrack: protocol private data */
 union nf_conntrack_proto {
 	/* insert conntrack proto private data here */
@@ -56,11 +62,14 @@ union nf_conntrack_expect_proto {
 #include <net/netfilter/ipv4/nf_conntrack_ipv4.h>
 #include <net/netfilter/ipv6/nf_conntrack_ipv6.h>
 
+<<<<<<< HEAD
 /* Handle NATTYPE Stuff,only if NATTYPE module was defined */
 #ifdef CONFIG_IP_NF_TARGET_NATTYPE_MODULE
 #include <linux/netfilter_ipv4/ipt_NATTYPE.h>
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct nf_conn {
 	/* Usage count in here is 1 for hash table, 1 per skb,
 	 * plus 1 for any connection(s) we are `master' for
@@ -94,7 +103,11 @@ struct nf_conn {
 	struct hlist_node	nat_bysource;
 #endif
 	/* all members below initialized via memset */
+<<<<<<< HEAD
 	u8 __nfct_init_offset[0];
+=======
+	struct { } __nfct_init_offset;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* If we were expected by an expectation, this will be it */
 	struct nf_conn *master;
@@ -110,6 +123,7 @@ struct nf_conn {
 	/* Extensions */
 	struct nf_ct_ext *ext;
 
+<<<<<<< HEAD
 	void *sfe_entry;
 	struct list_head sip_segment_list;
 	const char *dptr_prev;
@@ -121,6 +135,8 @@ struct nf_conn {
 	unsigned long nattype_entry;
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Storage reserved for other modules, must be the last member */
 	union nf_conntrack_proto proto;
 };
@@ -310,14 +326,21 @@ static inline bool nf_ct_should_gc(const struct nf_conn *ct)
 
 struct kernel_param;
 
+<<<<<<< HEAD
 int nf_conntrack_set_hashsize(const char *val, const struct kernel_param *kp);
+=======
+int nf_conntrack_set_hashsize(const char *val, struct kernel_param *kp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int nf_conntrack_hash_resize(unsigned int hashsize);
 
 extern struct hlist_nulls_head *nf_conntrack_hash;
 extern unsigned int nf_conntrack_htable_size;
 extern seqcount_t nf_conntrack_generation;
 extern unsigned int nf_conntrack_max;
+<<<<<<< HEAD
 extern unsigned int nf_conntrack_pkt_threshold;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* must be called with rcu read lock held */
 static inline void
@@ -341,6 +364,11 @@ struct nf_conn *nf_ct_tmpl_alloc(struct net *net,
 				 gfp_t flags);
 void nf_ct_tmpl_free(struct nf_conn *tmpl);
 
+<<<<<<< HEAD
+=======
+u32 nf_ct_get_id(const struct nf_conn *ct);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline void
 nf_ct_set(struct sk_buff *skb, struct nf_conn *ct, enum ip_conntrack_info info)
 {

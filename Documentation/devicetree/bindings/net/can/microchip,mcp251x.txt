@@ -4,6 +4,10 @@ Required properties:
  - compatible: Should be one of the following:
    - "microchip,mcp2510" for MCP2510.
    - "microchip,mcp2515" for MCP2515.
+<<<<<<< HEAD
+=======
+   - "microchip,mcp25625" for MCP25625.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  - reg: SPI chip select.
  - clocks: The clock feeding the CAN controller.
  - interrupt-parent: The parent interrupt controller.

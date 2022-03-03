@@ -1242,7 +1242,11 @@ static int dev_get_regmap_match(struct device *dev, void *res, void *data)
 
 	/* If the user didn't specify a name match any */
 	if (data)
+<<<<<<< HEAD
 		return (*r)->name == data;
+=======
+		return !strcmp((*r)->name, data);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	else
 		return 1;
 }
@@ -1378,7 +1382,11 @@ int _regmap_raw_write(struct regmap *map, unsigned int reg,
 			if (ret) {
 				dev_err(map->dev,
 					"Error in caching of register: %x ret: %d\n",
+<<<<<<< HEAD
 					reg + i, ret);
+=======
+					reg + regmap_get_offset(map, i), ret);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				return ret;
 			}
 		}
@@ -1509,6 +1517,11 @@ int _regmap_raw_write(struct regmap *map, unsigned int reg,
 					     map->format.reg_bytes +
 					     map->format.pad_bytes,
 					     val, val_len);
+<<<<<<< HEAD
+=======
+	else
+		ret = -ENOTSUPP;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* If that didn't work fall back on linearising by hand. */
 	if (ret == -ENOTSUPP) {

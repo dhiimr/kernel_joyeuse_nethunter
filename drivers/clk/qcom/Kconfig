@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 source "drivers/clk/qcom/mdss/Kconfig"
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config QCOM_GDSC
 	bool
 	select PM_GENERIC_DOMAINS if PM
@@ -198,6 +201,7 @@ config MSM_MMCC_8996
 	  Support for the multimedia clock controller on msm8996 devices.
 	  Say Y if you want to support multimedia devices such as display,
 	  graphics, video encode/decode, camera, etc.
+<<<<<<< HEAD
 
 config SPMI_PMIC_CLKDIV
 	tristate "SPMI PMIC clkdiv Support"
@@ -621,3 +625,5 @@ config SM_DEBUGCC_ATOLL
 	  Support for the debug clock controller on Qualcomm Technologies, Inc
 	  ATOLL devices.
 	  Say Y if you want to support the clock measurement functionality.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

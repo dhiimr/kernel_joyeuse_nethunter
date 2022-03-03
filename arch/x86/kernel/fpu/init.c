@@ -249,9 +249,15 @@ static void __init fpu__init_system_ctx_switch(void)
  */
 static void __init fpu__init_parse_early_param(void)
 {
+<<<<<<< HEAD
 	char arg[32];
 	char *argptr = arg;
 	int bit;
+=======
+	char arg[128];
+	char *argptr = arg;
+	int arglen, res, bit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (cmdline_find_option_bool(boot_command_line, "no387"))
 		setup_clear_cpu_cap(X86_FEATURE_FPU);
@@ -271,12 +277,35 @@ static void __init fpu__init_parse_early_param(void)
 	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
 		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
 
+<<<<<<< HEAD
 	if (cmdline_find_option(boot_command_line, "clearcpuid", arg,
 				sizeof(arg)) &&
 	    get_option(&argptr, &bit) &&
 	    bit >= 0 &&
 	    bit < NCAPINTS * 32)
 		setup_clear_cpu_cap(bit);
+=======
+	arglen = cmdline_find_option(boot_command_line, "clearcpuid", arg, sizeof(arg));
+	if (arglen <= 0)
+		return;
+
+	pr_info("Clearing CPUID bits:");
+	do {
+		res = get_option(&argptr, &bit);
+		if (res == 0 || res == 3)
+			break;
+
+		/* If the argument was too long, the last bit may be cut off */
+		if (res == 1 && arglen >= sizeof(arg))
+			break;
+
+		if (bit >= 0 && bit < NCAPINTS * 32) {
+			pr_cont(" " X86_CAP_FMT, x86_cap_flag(bit));
+			setup_clear_cpu_cap(bit);
+		}
+	} while (res == 2);
+	pr_cont("\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*

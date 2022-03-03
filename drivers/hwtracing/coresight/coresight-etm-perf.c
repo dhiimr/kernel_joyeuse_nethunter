@@ -23,6 +23,10 @@
 #include <linux/mm.h>
 #include <linux/init.h>
 #include <linux/perf_event.h>
+<<<<<<< HEAD
+=======
+#include <linux/percpu-defs.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/slab.h>
 #include <linux/types.h>
 #include <linux/workqueue.h>
@@ -44,7 +48,11 @@ struct etm_event_data {
 	struct work_struct work;
 	cpumask_t mask;
 	void *snk_config;
+<<<<<<< HEAD
 	struct list_head **path;
+=======
+	struct list_head * __percpu *path;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static DEFINE_PER_CPU(struct perf_output_handle, ctx_handle);
@@ -72,6 +80,21 @@ static const struct attribute_group *etm_pmu_attr_groups[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
+=======
+static inline struct list_head **
+etm_event_cpu_path_ptr(struct etm_event_data *data, int cpu)
+{
+	return per_cpu_ptr(data->path, cpu);
+}
+
+static inline struct list_head *
+etm_event_cpu_path(struct etm_event_data *data, int cpu)
+{
+	return *etm_event_cpu_path_ptr(data, cpu);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void etm_event_read(struct perf_event *event) {}
 
 static int etm_addr_filters_alloc(struct perf_event *event)
@@ -122,7 +145,10 @@ static void free_event_data(struct work_struct *work)
 	cpumask_t *mask;
 	struct etm_event_data *event_data;
 	struct coresight_device *sink;
+<<<<<<< HEAD
 	struct coresight_device *source;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	event_data = container_of(work, struct etm_event_data, work);
 	mask = &event_data->mask;
@@ -132,24 +158,43 @@ static void free_event_data(struct work_struct *work)
 	 */
 	if (event_data->snk_config) {
 		cpu = cpumask_first(mask);
+<<<<<<< HEAD
 		sink = coresight_get_sink(event_data->path[cpu]);
+=======
+		sink = coresight_get_sink(etm_event_cpu_path(event_data, cpu));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (sink_ops(sink)->free_buffer)
 			sink_ops(sink)->free_buffer(event_data->snk_config);
 	}
 
 	for_each_cpu(cpu, mask) {
+<<<<<<< HEAD
 		source = coresight_get_source(event_data->path[cpu]);
 		if (!(IS_ERR_OR_NULL(event_data->path[cpu])))
 			coresight_release_path(source, event_data->path[cpu]);
 	}
 
 	kfree(event_data->path);
+=======
+		struct list_head **ppath;
+
+		ppath = etm_event_cpu_path_ptr(event_data, cpu);
+		if (!(IS_ERR_OR_NULL(*ppath)))
+			coresight_release_path(*ppath);
+		*ppath = NULL;
+	}
+
+	free_percpu(event_data->path);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(event_data);
 }
 
 static void *alloc_event_data(int cpu)
 {
+<<<<<<< HEAD
 	int size;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cpumask_t *mask;
 	struct etm_event_data *event_data;
 
@@ -160,7 +205,10 @@ static void *alloc_event_data(int cpu)
 
 	/* Make sure nothing disappears under us */
 	get_online_cpus();
+<<<<<<< HEAD
 	size = num_online_cpus();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mask = &event_data->mask;
 	if (cpu != -1)
@@ -177,8 +225,13 @@ static void *alloc_event_data(int cpu)
 	 * unused memory when dealing with single CPU trace scenarios is small
 	 * compared to the cost of searching through an optimized array.
 	 */
+<<<<<<< HEAD
 	event_data->path = kcalloc(size,
 				   sizeof(struct list_head *), GFP_KERNEL);
+=======
+	event_data->path = alloc_percpu(struct list_head *);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!event_data->path) {
 		kfree(event_data);
 		return NULL;
@@ -226,6 +279,10 @@ static void *etm_setup_aux(int event_cpu, void **pages,
 
 	/* Setup the path for each CPU in a trace session */
 	for_each_cpu(cpu, mask) {
+<<<<<<< HEAD
+=======
+		struct list_head *path;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct coresight_device *csdev;
 
 		csdev = per_cpu(csdev_src, cpu);
@@ -237,9 +294,17 @@ static void *etm_setup_aux(int event_cpu, void **pages,
 		 * list of devices from source to sink that can be
 		 * referenced later when the path is actually needed.
 		 */
+<<<<<<< HEAD
 		event_data->path[cpu] = coresight_build_path(csdev, sink);
 		if (IS_ERR(event_data->path[cpu]))
 			goto err;
+=======
+		path = coresight_build_path(csdev, sink);
+		if (IS_ERR(path))
+			goto err;
+
+		*etm_event_cpu_path_ptr(event_data, cpu) = path;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (!sink_ops(sink)->alloc_buffer)
@@ -268,6 +333,10 @@ static void etm_event_start(struct perf_event *event, int flags)
 	struct etm_event_data *event_data;
 	struct perf_output_handle *handle = this_cpu_ptr(&ctx_handle);
 	struct coresight_device *sink, *csdev = per_cpu(csdev_src, cpu);
+<<<<<<< HEAD
+=======
+	struct list_head *path;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!csdev)
 		goto fail;
@@ -280,8 +349,14 @@ static void etm_event_start(struct perf_event *event, int flags)
 	if (!event_data)
 		goto fail;
 
+<<<<<<< HEAD
 	/* We need a sink, no need to continue without one */
 	sink = coresight_get_sink(event_data->path[cpu]);
+=======
+	path = etm_event_cpu_path(event_data, cpu);
+	/* We need a sink, no need to continue without one */
+	sink = coresight_get_sink(path);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (WARN_ON_ONCE(!sink || !sink_ops(sink)->set_buffer))
 		goto fail_end_stop;
 
@@ -291,7 +366,11 @@ static void etm_event_start(struct perf_event *event, int flags)
 		goto fail_end_stop;
 
 	/* Nothing will happen without a path */
+<<<<<<< HEAD
 	if (coresight_enable_path(event_data->path[cpu], CS_MODE_PERF))
+=======
+	if (coresight_enable_path(path, CS_MODE_PERF))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto fail_end_stop;
 
 	/* Tell the perf core the event is alive */
@@ -299,11 +378,20 @@ static void etm_event_start(struct perf_event *event, int flags)
 
 	/* Finally enable the tracer */
 	if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF))
+<<<<<<< HEAD
 		goto fail_end_stop;
+=======
+		goto fail_disable_path;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 out:
 	return;
 
+<<<<<<< HEAD
+=======
+fail_disable_path:
+	coresight_disable_path(path);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 fail_end_stop:
 	perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
 	perf_aux_output_end(handle, 0);
@@ -319,6 +407,10 @@ static void etm_event_stop(struct perf_event *event, int mode)
 	struct coresight_device *sink, *csdev = per_cpu(csdev_src, cpu);
 	struct perf_output_handle *handle = this_cpu_ptr(&ctx_handle);
 	struct etm_event_data *event_data = perf_get_aux(handle);
+<<<<<<< HEAD
+=======
+	struct list_head *path;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (event->hw.state == PERF_HES_STOPPED)
 		return;
@@ -326,7 +418,15 @@ static void etm_event_stop(struct perf_event *event, int mode)
 	if (!csdev)
 		return;
 
+<<<<<<< HEAD
 	sink = coresight_get_sink(event_data->path[cpu]);
+=======
+	path = etm_event_cpu_path(event_data, cpu);
+	if (!path)
+		return;
+
+	sink = coresight_get_sink(path);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!sink)
 		return;
 
@@ -357,7 +457,11 @@ static void etm_event_stop(struct perf_event *event, int mode)
 	}
 
 	/* Disabling the path make its elements available to other sessions */
+<<<<<<< HEAD
 	coresight_disable_path(event_data->path[cpu]);
+=======
+	coresight_disable_path(path);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int etm_event_add(struct perf_event *event, int mode)

@@ -24,7 +24,10 @@ struct seq_file;
 struct vm_area_struct;
 struct super_block;
 struct file_system_type;
+<<<<<<< HEAD
 struct poll_table_struct;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct kernfs_open_node;
 struct kernfs_iattrs;
@@ -186,6 +189,10 @@ struct kernfs_root {
 
 	/* private fields, do not use outside kernfs proper */
 	struct idr		ino_idr;
+<<<<<<< HEAD
+=======
+	u32			last_ino;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32			next_generation;
 	struct kernfs_syscall_ops *syscall_ops;
 
@@ -261,9 +268,12 @@ struct kernfs_ops {
 	ssize_t (*write)(struct kernfs_open_file *of, char *buf, size_t bytes,
 			 loff_t off);
 
+<<<<<<< HEAD
 	unsigned int (*poll)(struct kernfs_open_file *of,
 			     struct poll_table_struct *pt);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int (*mmap)(struct kernfs_open_file *of, struct vm_area_struct *vma);
 
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
@@ -351,8 +361,11 @@ int kernfs_remove_by_name_ns(struct kernfs_node *parent, const char *name,
 int kernfs_rename_ns(struct kernfs_node *kn, struct kernfs_node *new_parent,
 		     const char *new_name, const void *new_ns);
 int kernfs_setattr(struct kernfs_node *kn, const struct iattr *iattr);
+<<<<<<< HEAD
 unsigned int kernfs_generic_poll(struct kernfs_open_file *of,
 				 struct poll_table_struct *pt);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void kernfs_notify(struct kernfs_node *kn);
 
 const void *kernfs_super_ns(struct super_block *sb);

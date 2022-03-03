@@ -22,7 +22,11 @@
 #include <linux/errno.h>
 #include <linux/skbuff.h>
 #include <linux/random.h>
+<<<<<<< HEAD
 #include <linux/jhash.h>
+=======
+#include <linux/siphash.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <net/ip.h>
 #include <net/pkt_sched.h>
 #include <net/pkt_cls.h>
@@ -49,7 +53,11 @@ struct sfb_bucket {
  * (Section 4.4 of SFB reference : moving hash functions)
  */
 struct sfb_bins {
+<<<<<<< HEAD
 	u32		  perturbation; /* jhash perturbation */
+=======
+	siphash_key_t	  perturbation; /* siphash key */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct sfb_bucket bins[SFB_LEVELS][SFB_NUMBUCKETS];
 };
 
@@ -221,7 +229,12 @@ static u32 sfb_compute_qlen(u32 *prob_r, u32 *avgpm_r, const struct sfb_sched_da
 
 static void sfb_init_perturbation(u32 slot, struct sfb_sched_data *q)
 {
+<<<<<<< HEAD
 	q->bins[slot].perturbation = prandom_u32();
+=======
+	get_random_bytes(&q->bins[slot].perturbation,
+			 sizeof(q->bins[slot].perturbation));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void sfb_swap_slot(struct sfb_sched_data *q)
@@ -317,9 +330,15 @@ static int sfb_enqueue(struct sk_buff *skb, struct Qdisc *sch,
 		/* If using external classifiers, get result and record it. */
 		if (!sfb_classify(skb, fl, &ret, &salt))
 			goto other_drop;
+<<<<<<< HEAD
 		sfbhash = jhash_1word(salt, q->bins[slot].perturbation);
 	} else {
 		sfbhash = skb_get_hash_perturb(skb, q->bins[slot].perturbation);
+=======
+		sfbhash = siphash_1u32(salt, &q->bins[slot].perturbation);
+	} else {
+		sfbhash = skb_get_hash_perturb(skb, &q->bins[slot].perturbation);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 
@@ -355,7 +374,11 @@ static int sfb_enqueue(struct sk_buff *skb, struct Qdisc *sch,
 		/* Inelastic flow */
 		if (q->double_buffering) {
 			sfbhash = skb_get_hash_perturb(skb,
+<<<<<<< HEAD
 			    q->bins[slot].perturbation);
+=======
+			    &q->bins[slot].perturbation);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (!sfbhash)
 				sfbhash = 1;
 			sfb_skb_cb(skb)->hashes[slot] = sfbhash;

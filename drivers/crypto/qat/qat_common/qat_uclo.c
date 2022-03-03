@@ -332,13 +332,26 @@ static int qat_uclo_create_batch_init_list(struct icp_qat_fw_loader_handle
 	}
 	return 0;
 out_err:
+<<<<<<< HEAD
+=======
+	/* Do not free the list head unless we allocated it. */
+	tail_old = tail_old->next;
+	if (flag) {
+		kfree(*init_tab_base);
+		*init_tab_base = NULL;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	while (tail_old) {
 		mem_init = tail_old->next;
 		kfree(tail_old);
 		tail_old = mem_init;
 	}
+<<<<<<< HEAD
 	if (flag)
 		kfree(*init_tab_base);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return -ENOMEM;
 }
 
@@ -380,7 +393,10 @@ static int qat_uclo_init_umem_seg(struct icp_qat_fw_loader_handle *handle,
 	return 0;
 }
 
+<<<<<<< HEAD
 #define ICP_DH895XCC_PESRAM_BAR_SIZE 0x80000
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int qat_uclo_init_ae_memory(struct icp_qat_fw_loader_handle *handle,
 				   struct icp_qat_uof_initmem *init_mem)
 {

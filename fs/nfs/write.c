@@ -406,22 +406,44 @@ nfs_destroy_unlinked_subrequests(struct nfs_page *destroy_list,
 		destroy_list = (subreq->wb_this_page == old_head) ?
 				   NULL : subreq->wb_this_page;
 
+<<<<<<< HEAD
+=======
+		/* Note: lock subreq in order to change subreq->wb_head */
+		nfs_page_set_headlock(subreq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		WARN_ON_ONCE(old_head != subreq->wb_head);
 
 		/* make sure old group is not used */
 		subreq->wb_this_page = subreq;
+<<<<<<< HEAD
+=======
+		subreq->wb_head = subreq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		clear_bit(PG_REMOVE, &subreq->wb_flags);
 
 		/* Note: races with nfs_page_group_destroy() */
 		if (!kref_read(&subreq->wb_kref)) {
 			/* Check if we raced with nfs_page_group_destroy() */
+<<<<<<< HEAD
 			if (test_and_clear_bit(PG_TEARDOWN, &subreq->wb_flags))
 				nfs_free_request(subreq);
 			continue;
 		}
 
 		subreq->wb_head = subreq;
+=======
+			if (test_and_clear_bit(PG_TEARDOWN, &subreq->wb_flags)) {
+				nfs_page_clear_headlock(subreq);
+				nfs_free_request(subreq);
+			} else
+				nfs_page_clear_headlock(subreq);
+			continue;
+		}
+		nfs_page_clear_headlock(subreq);
+
+		nfs_release_request(old_head);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (test_and_clear_bit(PG_INODE_REF, &subreq->wb_flags)) {
 			nfs_release_request(subreq);
@@ -643,7 +665,11 @@ out:
 	return ret;
 out_launder:
 	nfs_write_error_remove_page(req);
+<<<<<<< HEAD
 	return ret;
+=======
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int nfs_do_writepage(struct page *page, struct writeback_control *wbc,
@@ -783,7 +809,10 @@ static void nfs_inode_remove_request(struct nfs_page *req)
 	struct nfs_inode *nfsi = NFS_I(inode);
 	struct nfs_page *head;
 
+<<<<<<< HEAD
 	atomic_long_dec(&nfsi->nrequests);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (nfs_page_group_sync_on_bit(req, PG_REMOVE)) {
 		head = req->wb_head;
 
@@ -796,8 +825,15 @@ static void nfs_inode_remove_request(struct nfs_page *req)
 		spin_unlock(&mapping->private_lock);
 	}
 
+<<<<<<< HEAD
 	if (test_and_clear_bit(PG_INODE_REF, &req->wb_flags))
 		nfs_release_request(req);
+=======
+	if (test_and_clear_bit(PG_INODE_REF, &req->wb_flags)) {
+		nfs_release_request(req);
+		atomic_long_dec(&nfsi->nrequests);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void
@@ -1029,6 +1065,7 @@ nfs_scan_commit_list(struct list_head *src, struct list_head *dst,
 	struct nfs_page *req, *tmp;
 	int ret = 0;
 
+<<<<<<< HEAD
 restart:
 	list_for_each_entry_safe(req, tmp, src, wb_list) {
 		kref_get(&req->wb_kref);
@@ -1048,6 +1085,13 @@ restart:
 			if (status < 0)
 				break;
 			goto restart;
+=======
+	list_for_each_entry_safe(req, tmp, src, wb_list) {
+		kref_get(&req->wb_kref);
+		if (!nfs_lock_request(req)) {
+			nfs_release_request(req);
+			continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		nfs_request_remove_commit_list(req, cinfo);
 		clear_bit(PG_COMMIT_TO_DS, &req->wb_flags);
@@ -1397,20 +1441,38 @@ static void nfs_redirty_request(struct nfs_page *req)
 	nfs_release_request(req);
 }
 
+<<<<<<< HEAD
 static void nfs_async_write_error(struct list_head *head)
+=======
+static void nfs_async_write_error(struct list_head *head, int error)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct nfs_page	*req;
 
 	while (!list_empty(head)) {
 		req = nfs_list_entry(head->next);
 		nfs_list_remove_request(req);
+<<<<<<< HEAD
+=======
+		if (nfs_error_is_fatal(error)) {
+			nfs_context_set_write_error(req->wb_context, error);
+			if (nfs_error_is_fatal_on_server(error)) {
+				nfs_write_error_remove_page(req);
+				continue;
+			}
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		nfs_redirty_request(req);
 	}
 }
 
 static void nfs_async_write_reschedule_io(struct nfs_pgio_header *hdr)
 {
+<<<<<<< HEAD
 	nfs_async_write_error(&hdr->pages);
+=======
+	nfs_async_write_error(&hdr->pages, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct nfs_pgio_completion_ops nfs_async_write_completion_ops = {
@@ -1799,6 +1861,10 @@ static void nfs_commit_done(struct rpc_task *task, void *calldata)
 
 static void nfs_commit_release_pages(struct nfs_commit_data *data)
 {
+<<<<<<< HEAD
+=======
+	const struct nfs_writeverf *verf = data->res.verf;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct nfs_page	*req;
 	int status = data->task.tk_status;
 	struct nfs_commit_info cinfo;
@@ -1825,7 +1891,12 @@ static void nfs_commit_release_pages(struct nfs_commit_data *data)
 
 		/* Okay, COMMIT succeeded, apparently. Check the verifier
 		 * returned by the server against all stored verfs. */
+<<<<<<< HEAD
 		if (!nfs_write_verifier_cmp(&req->wb_verf, &data->verf.verifier)) {
+=======
+		if (verf->committed > NFS_UNSTABLE &&
+		    !nfs_write_verifier_cmp(&req->wb_verf, &verf->verifier)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/* We have a match */
 			if (req->wb_page)
 				nfs_inode_remove_request(req);
@@ -1887,6 +1958,10 @@ static int __nfs_commit_inode(struct inode *inode, int how,
 	int may_wait = how & FLUSH_SYNC;
 	int ret, nscan;
 
+<<<<<<< HEAD
+=======
+	how &= ~FLUSH_SYNC;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	nfs_init_cinfo_from_inode(&cinfo, inode);
 	nfs_commit_begin(cinfo.mds);
 	for (;;) {

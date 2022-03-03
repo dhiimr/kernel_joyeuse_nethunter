@@ -90,6 +90,10 @@ struct fs {
 	const char * const	*mounts;
 	char			 path[PATH_MAX];
 	bool			 found;
+<<<<<<< HEAD
+=======
+	bool			 checked;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	long			 magic;
 };
 
@@ -111,31 +115,55 @@ static struct fs fs__entries[] = {
 		.name	= "sysfs",
 		.mounts	= sysfs__fs_known_mountpoints,
 		.magic	= SYSFS_MAGIC,
+<<<<<<< HEAD
+=======
+		.checked = false,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	[FS__PROCFS] = {
 		.name	= "proc",
 		.mounts	= procfs__known_mountpoints,
 		.magic	= PROC_SUPER_MAGIC,
+<<<<<<< HEAD
+=======
+		.checked = false,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	[FS__DEBUGFS] = {
 		.name	= "debugfs",
 		.mounts	= debugfs__known_mountpoints,
 		.magic	= DEBUGFS_MAGIC,
+<<<<<<< HEAD
+=======
+		.checked = false,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	[FS__TRACEFS] = {
 		.name	= "tracefs",
 		.mounts	= tracefs__known_mountpoints,
 		.magic	= TRACEFS_MAGIC,
+<<<<<<< HEAD
+=======
+		.checked = false,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	[FS__HUGETLBFS] = {
 		.name	= "hugetlbfs",
 		.mounts = hugetlbfs__known_mountpoints,
 		.magic	= HUGETLBFS_MAGIC,
+<<<<<<< HEAD
+=======
+		.checked = false,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	[FS__BPF_FS] = {
 		.name	= "bpf",
 		.mounts = bpf_fs__known_mountpoints,
 		.magic	= BPF_FS_MAGIC,
+<<<<<<< HEAD
+=======
+		.checked = false,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 };
 
@@ -158,6 +186,10 @@ static bool fs__read_mounts(struct fs *fs)
 	}
 
 	fclose(fp);
+<<<<<<< HEAD
+=======
+	fs->checked = true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return fs->found = found;
 }
 
@@ -210,6 +242,10 @@ static bool fs__env_override(struct fs *fs)
 	size_t name_len = strlen(fs->name);
 	/* name + "_PATH" + '\0' */
 	char upper_name[name_len + 5 + 1];
+<<<<<<< HEAD
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	memcpy(upper_name, fs->name, name_len);
 	mem_toupper(upper_name, name_len);
 	strcpy(&upper_name[name_len], "_PATH");
@@ -219,7 +255,13 @@ static bool fs__env_override(struct fs *fs)
 		return false;
 
 	fs->found = true;
+<<<<<<< HEAD
 	strncpy(fs->path, override_path, sizeof(fs->path));
+=======
+	fs->checked = true;
+	strncpy(fs->path, override_path, sizeof(fs->path) - 1);
+	fs->path[sizeof(fs->path) - 1] = '\0';
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return true;
 }
 
@@ -244,6 +286,17 @@ static const char *fs__mountpoint(int idx)
 	if (fs->found)
 		return (const char *)fs->path;
 
+<<<<<<< HEAD
+=======
+	/* the mount point was already checked for the mount point
+	 * but and did not exist, so return NULL to avoid scanning again.
+	 * This makes the found and not found paths cost equivalent
+	 * in case of multiple calls.
+	 */
+	if (fs->checked)
+		return NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return fs__get_mountpoint(fs);
 }
 

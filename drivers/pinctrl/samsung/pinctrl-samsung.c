@@ -277,6 +277,10 @@ static int samsung_dt_node_to_map(struct pinctrl_dev *pctldev,
 						&reserved_maps, num_maps);
 		if (ret < 0) {
 			samsung_dt_free_map(pctldev, *map, *num_maps);
+<<<<<<< HEAD
+=======
+			of_node_put(np);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return ret;
 		}
 	}
@@ -761,8 +765,15 @@ static struct samsung_pmx_func *samsung_pinctrl_create_functions(
 		if (!of_get_child_count(cfg_np)) {
 			ret = samsung_pinctrl_create_function(dev, drvdata,
 							cfg_np, func);
+<<<<<<< HEAD
 			if (ret < 0)
 				return ERR_PTR(ret);
+=======
+			if (ret < 0) {
+				of_node_put(cfg_np);
+				return ERR_PTR(ret);
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (ret > 0) {
 				++func;
 				++func_cnt;
@@ -773,8 +784,16 @@ static struct samsung_pmx_func *samsung_pinctrl_create_functions(
 		for_each_child_of_node(cfg_np, func_np) {
 			ret = samsung_pinctrl_create_function(dev, drvdata,
 						func_np, func);
+<<<<<<< HEAD
 			if (ret < 0)
 				return ERR_PTR(ret);
+=======
+			if (ret < 0) {
+				of_node_put(func_np);
+				of_node_put(cfg_np);
+				return ERR_PTR(ret);
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (ret > 0) {
 				++func;
 				++func_cnt;
@@ -885,7 +904,11 @@ static int samsung_pinctrl_register(struct platform_device *pdev,
 		pin_bank->grange.pin_base = drvdata->pin_base
 						+ pin_bank->pin_base;
 		pin_bank->grange.base = pin_bank->grange.pin_base;
+<<<<<<< HEAD
 		pin_bank->grange.npins = pin_bank->gpio_chip.ngpio;
+=======
+		pin_bank->grange.npins = pin_bank->nr_pins;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pin_bank->grange.gc = &pin_bank->gpio_chip;
 		pinctrl_add_gpio_range(drvdata->pctl_dev, &pin_bank->grange);
 	}

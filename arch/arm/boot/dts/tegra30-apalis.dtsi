@@ -166,14 +166,23 @@
 
 			/* Apalis MMC1 */
 			sdmmc3_clk_pa6 {
+<<<<<<< HEAD
 				nvidia,pins = "sdmmc3_clk_pa6",
 					      "sdmmc3_cmd_pa7";
+=======
+				nvidia,pins = "sdmmc3_clk_pa6";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				nvidia,function = "sdmmc3";
 				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
 			};
 			sdmmc3_dat0_pb7 {
+<<<<<<< HEAD
 				nvidia,pins = "sdmmc3_dat0_pb7",
+=======
+				nvidia,pins = "sdmmc3_cmd_pa7",
+					      "sdmmc3_dat0_pb7",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					      "sdmmc3_dat1_pb6",
 					      "sdmmc3_dat2_pb5",
 					      "sdmmc3_dat3_pb4",

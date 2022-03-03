@@ -1353,7 +1353,11 @@ int etnaviv_gpu_submit(struct etnaviv_gpu *gpu,
 	gpu->active_fence = submit->fence->seqno;
 
 	if (gpu->lastctx != cmdbuf->ctx) {
+<<<<<<< HEAD
 		gpu->mmu->need_flush = true;
+=======
+		gpu->mmu->flush_seq++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		gpu->switch_context = true;
 		gpu->lastctx = cmdbuf->ctx;
 	}

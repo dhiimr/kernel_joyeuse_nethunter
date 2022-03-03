@@ -251,7 +251,11 @@ static int omap1_spi100k_setup_transfer(struct spi_device *spi,
 	else
 		word_len = spi->bits_per_word;
 
+<<<<<<< HEAD
 	if (spi->bits_per_word > 32)
+=======
+	if (word_len > 32)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 	cs->word_len = word_len;
 
@@ -435,7 +439,11 @@ err:
 
 static int omap1_spi100k_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct spi_master *master = spi_master_get(platform_get_drvdata(pdev));
+=======
+	struct spi_master *master = platform_get_drvdata(pdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct omap1_spi100k *spi100k = spi_master_get_devdata(master);
 
 	pm_runtime_disable(&pdev->dev);
@@ -449,7 +457,11 @@ static int omap1_spi100k_remove(struct platform_device *pdev)
 #ifdef CONFIG_PM
 static int omap1_spi100k_runtime_suspend(struct device *dev)
 {
+<<<<<<< HEAD
 	struct spi_master *master = spi_master_get(dev_get_drvdata(dev));
+=======
+	struct spi_master *master = dev_get_drvdata(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct omap1_spi100k *spi100k = spi_master_get_devdata(master);
 
 	clk_disable_unprepare(spi100k->ick);
@@ -460,7 +472,11 @@ static int omap1_spi100k_runtime_suspend(struct device *dev)
 
 static int omap1_spi100k_runtime_resume(struct device *dev)
 {
+<<<<<<< HEAD
 	struct spi_master *master = spi_master_get(dev_get_drvdata(dev));
+=======
+	struct spi_master *master = dev_get_drvdata(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct omap1_spi100k *spi100k = spi_master_get_devdata(master);
 	int ret;
 

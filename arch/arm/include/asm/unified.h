@@ -20,8 +20,15 @@
 #ifndef __ASM_UNIFIED_H
 #define __ASM_UNIFIED_H
 
+<<<<<<< HEAD
 #if defined(__ASSEMBLY__) && defined(CONFIG_ARM_ASM_UNIFIED)
 	.syntax unified
+=======
+#if defined(__ASSEMBLY__)
+	.syntax unified
+#else
+__asm__(".syntax unified");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 #ifdef CONFIG_CPU_V7M
@@ -64,6 +71,7 @@
 
 #endif	/* CONFIG_THUMB2_KERNEL */
 
+<<<<<<< HEAD
 #ifndef CONFIG_ARM_ASM_UNIFIED
 
 /*
@@ -137,4 +145,6 @@ __asm__(
 
 #endif	/* CONFIG_ARM_ASM_UNIFIED */
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif	/* !__ASM_UNIFIED_H */

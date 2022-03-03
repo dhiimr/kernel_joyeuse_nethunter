@@ -50,11 +50,14 @@ void __init efi_bgrt_init(struct acpi_table_header *table)
 		       bgrt->version);
 		goto out;
 	}
+<<<<<<< HEAD
 	if (bgrt->status & 0xfe) {
 		pr_notice("Ignoring BGRT: reserved status bits are non-zero %u\n",
 		       bgrt->status);
 		goto out;
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (bgrt->image_type != 0) {
 		pr_notice("Ignoring BGRT: invalid image type %u (expected 0)\n",
 		       bgrt->image_type);

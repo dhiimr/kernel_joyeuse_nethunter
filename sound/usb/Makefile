@@ -15,8 +15,12 @@ snd-usb-audio-objs := 	card.o \
 			pcm.o \
 			proc.o \
 			quirks.o \
+<<<<<<< HEAD
 			stream.o \
 			badd.o
+=======
+			stream.o
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 snd-usbmidi-lib-objs := midi.o
 
@@ -29,4 +33,7 @@ obj-$(CONFIG_SND_USB_US122L) += snd-usbmidi-lib.o
 
 obj-$(CONFIG_SND) += misc/ usx2y/ caiaq/ 6fire/ hiface/ bcd2000/
 obj-$(CONFIG_SND_USB_LINE6)	+= line6/
+<<<<<<< HEAD
 obj-$(CONFIG_SND_USB_AUDIO_QMI) += usb_audio_qmi_v01.o usb_audio_qmi_svc.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

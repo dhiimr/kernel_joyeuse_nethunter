@@ -82,10 +82,26 @@ static int pmu_parse_irq_affinity(struct device_node *node, int i)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	cpu = of_cpu_node_to_id(dn);
 	if (cpu < 0) {
 		pr_warn("failed to find logical CPU for %s\n", dn->name);
 		cpu = nr_cpu_ids;
+=======
+	/* Now look up the logical CPU number */
+	for_each_possible_cpu(cpu) {
+		struct device_node *cpu_dn;
+
+		cpu_dn = of_cpu_device_node_get(cpu);
+		of_node_put(cpu_dn);
+
+		if (dn == cpu_dn)
+			break;
+	}
+
+	if (cpu >= nr_cpu_ids) {
+		pr_warn("failed to find logical CPU for %s\n", dn->name);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	of_node_put(dn);
@@ -213,7 +229,11 @@ int arm_pmu_device_probe(struct platform_device *pdev,
 
 	ret = armpmu_register(pmu);
 	if (ret)
+<<<<<<< HEAD
 		goto out_free;
+=======
+		goto out_free_irqs;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 

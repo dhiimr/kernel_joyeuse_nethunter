@@ -996,6 +996,10 @@ static void qlt_free_session_done(struct work_struct *work)
 
 	if (logout_started) {
 		bool traced = false;
+<<<<<<< HEAD
+=======
+		u16 cnt = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		while (!ACCESS_ONCE(sess->logout_completed)) {
 			if (!traced) {
@@ -1005,6 +1009,12 @@ static void qlt_free_session_done(struct work_struct *work)
 				traced = true;
 			}
 			msleep(100);
+<<<<<<< HEAD
+=======
+			cnt++;
+			if (cnt > 200)
+				break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		ql_dbg(ql_dbg_disc, vha, 0xf087,
@@ -1206,7 +1216,10 @@ void qlt_schedule_sess_for_deletion(struct fc_port *sess,
 	    "Scheduling sess %p for deletion %8phC\n",
 	    sess, sess->port_name);
 
+<<<<<<< HEAD
 	INIT_WORK(&sess->del_work, qla24xx_delete_sess_fn);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	queue_work(sess->vha->hw->wq, &sess->del_work);
 }
 
@@ -1514,10 +1527,18 @@ void qlt_stop_phase2(struct qla_tgt *tgt)
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&tgt->ha->optrom_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_lock(&vha->vha_tgt.tgt_mutex);
 	tgt->tgt_stop = 0;
 	tgt->tgt_stopped = 1;
 	mutex_unlock(&vha->vha_tgt.tgt_mutex);
+<<<<<<< HEAD
+=======
+	mutex_unlock(&tgt->ha->optrom_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ql_dbg(ql_dbg_tgt_mgt, vha, 0xf00c, "Stop of tgt %p finished\n",
 	    tgt);
@@ -2119,6 +2140,7 @@ void qlt_send_resp_ctio(struct qla_qpair *qpair, struct qla_tgt_cmd *cmd,
 		ctio->u.status1.scsi_status |=
 		    cpu_to_le16(SS_RESIDUAL_UNDER);
 
+<<<<<<< HEAD
 	/* Response code and sense key */
 	put_unaligned_le32(((0x70 << 24) | (sense_key << 8)),
 	    (&ctio->u.status1.sense_data)[0]);
@@ -2127,6 +2149,16 @@ void qlt_send_resp_ctio(struct qla_qpair *qpair, struct qla_tgt_cmd *cmd,
 	/* ASC and ASCQ */
 	put_unaligned_le32(((asc << 24) | (ascq << 16)),
 	    (&ctio->u.status1.sense_data)[3]);
+=======
+	/* Fixed format sense data. */
+	ctio->u.status1.sense_data[0] = 0x70;
+	ctio->u.status1.sense_data[2] = sense_key;
+	/* Additional sense length */
+	ctio->u.status1.sense_data[7] = 0xa;
+	/* ASC and ASCQ */
+	ctio->u.status1.sense_data[12] = asc;
+	ctio->u.status1.sense_data[13] = ascq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Memory Barrier */
 	wmb();
@@ -2176,7 +2208,11 @@ void qlt_xmit_tm_rsp(struct qla_tgt_mgmt_cmd *mcmd)
 		    mcmd->orig_iocb.imm_ntfy.u.isp24.status_subcode ==
 		    ELS_TPRLO) {
 			ql_dbg(ql_dbg_disc, vha, 0x2106,
+<<<<<<< HEAD
 			    "TM response logo %phC status %#x state %#x",
+=======
+			    "TM response logo %8phC status %#x state %#x",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			    mcmd->sess->port_name, mcmd->fc_tm_rsp,
 			    mcmd->flags);
 			qlt_schedule_sess_for_deletion_lock(mcmd->sess);
@@ -3090,8 +3126,12 @@ int qlt_xmit_response(struct qla_tgt_cmd *cmd, int xmit_type,
 			"RESET-RSP online/active/old-count/new-count = %d/%d/%d/%d.\n",
 			vha->flags.online, qla2x00_reset_active(vha),
 			cmd->reset_count, qpair->chip_reset);
+<<<<<<< HEAD
 		spin_unlock_irqrestore(qpair->qp_lock_ptr, flags);
 		return 0;
+=======
+		goto out_unmap_unlock;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Does F/W have an IOCBs for this request */
@@ -3213,10 +3253,13 @@ int qlt_rdy_to_xfer(struct qla_tgt_cmd *cmd)
 	prm.sg = NULL;
 	prm.req_cnt = 1;
 
+<<<<<<< HEAD
 	/* Calculate number of entries and segments required */
 	if (qlt_pci_map_calc_cnt(&prm) != 0)
 		return -EAGAIN;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!qpair->fw_started || (cmd->reset_count != qpair->chip_reset) ||
 	    (cmd->sess && cmd->sess->deleted)) {
 		/*
@@ -3232,6 +3275,13 @@ int qlt_rdy_to_xfer(struct qla_tgt_cmd *cmd)
 		return 0;
 	}
 
+<<<<<<< HEAD
+=======
+	/* Calculate number of entries and segments required */
+	if (qlt_pci_map_calc_cnt(&prm) != 0)
+		return -EAGAIN;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(qpair->qp_lock_ptr, flags);
 	/* Does F/W have an IOCBs for this request */
 	res = qlt_check_reserve_free_req(qpair, prm.req_cnt);
@@ -3666,9 +3716,12 @@ void qlt_free_cmd(struct qla_tgt_cmd *cmd)
 
 	BUG_ON(cmd->cmd_in_wq);
 
+<<<<<<< HEAD
 	if (cmd->sg_mapped)
 		qlt_unmap_sg(cmd->vha, cmd);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!cmd->q_full)
 		qlt_decr_num_pend_cmds(cmd->vha);
 
@@ -5914,7 +5967,10 @@ static void qlt_abort_work(struct qla_tgt *tgt,
 	struct qla_hw_data *ha = vha->hw;
 	struct fc_port *sess = NULL;
 	unsigned long flags = 0, flags2 = 0;
+<<<<<<< HEAD
 	uint32_t be_s_id;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	uint8_t s_id[3];
 	int rc;
 
@@ -5927,8 +5983,12 @@ static void qlt_abort_work(struct qla_tgt *tgt,
 	s_id[1] = prm->abts.fcp_hdr_le.s_id[1];
 	s_id[2] = prm->abts.fcp_hdr_le.s_id[0];
 
+<<<<<<< HEAD
 	sess = ha->tgt.tgt_ops->find_sess_by_s_id(vha,
 	    (unsigned char *)&be_s_id);
+=======
+	sess = ha->tgt.tgt_ops->find_sess_by_s_id(vha, s_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!sess) {
 		spin_unlock_irqrestore(&ha->tgt.sess_lock, flags2);
 
@@ -6392,7 +6452,12 @@ qlt_enable_vha(struct scsi_qla_host *vha)
 	} else {
 		set_bit(ISP_ABORT_NEEDED, &base_vha->dpc_flags);
 		qla2xxx_wake_dpc(base_vha);
+<<<<<<< HEAD
 		qla2x00_wait_for_hba_online(base_vha);
+=======
+		WARN_ON_ONCE(qla2x00_wait_for_hba_online(base_vha) !=
+			     QLA_SUCCESS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 EXPORT_SYMBOL(qlt_enable_vha);
@@ -6422,7 +6487,13 @@ static void qlt_disable_vha(struct scsi_qla_host *vha)
 
 	set_bit(ISP_ABORT_NEEDED, &vha->dpc_flags);
 	qla2xxx_wake_dpc(vha);
+<<<<<<< HEAD
 	qla2x00_wait_for_hba_online(vha);
+=======
+	if (qla2x00_wait_for_hba_online(vha) != QLA_SUCCESS)
+		ql_dbg(ql_dbg_tgt, vha, 0xe081,
+		       "qla2x00_wait_for_hba_online() failed\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*

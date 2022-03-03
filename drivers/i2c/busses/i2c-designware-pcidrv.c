@@ -50,10 +50,17 @@ enum dw_pci_ctl_id_t {
 };
 
 struct dw_scl_sda_cfg {
+<<<<<<< HEAD
 	u32 ss_hcnt;
 	u32 fs_hcnt;
 	u32 ss_lcnt;
 	u32 fs_lcnt;
+=======
+	u16 ss_hcnt;
+	u16 fs_hcnt;
+	u16 ss_lcnt;
+	u16 fs_lcnt;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 sda_hold;
 };
 

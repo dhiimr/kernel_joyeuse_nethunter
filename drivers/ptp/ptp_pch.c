@@ -698,6 +698,10 @@ static const struct pci_device_id pch_ieee1588_pcidev_id[] = {
 	 },
 	{0}
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(pci, pch_ieee1588_pcidev_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct pci_driver pch_driver = {
 	.name = KBUILD_MODNAME,

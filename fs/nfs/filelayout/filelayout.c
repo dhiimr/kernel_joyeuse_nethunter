@@ -717,7 +717,11 @@ filelayout_decode_layout(struct pnfs_layout_hdr *flo,
 		if (unlikely(!p))
 			goto out_err;
 		fl->fh_array[i]->size = be32_to_cpup(p++);
+<<<<<<< HEAD
 		if (sizeof(struct nfs_fh) < fl->fh_array[i]->size) {
+=======
+		if (fl->fh_array[i]->size > NFS_MAXFHSIZE) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			printk(KERN_ERR "NFS: Too big fh %d received %d\n",
 			       i, fl->fh_array[i]->size);
 			goto out_err;
@@ -904,7 +908,11 @@ fl_pnfs_update_layout(struct inode *ino,
 	status = filelayout_check_deviceid(lo, fl, gfp_flags);
 	if (status) {
 		pnfs_put_lseg(lseg);
+<<<<<<< HEAD
 		lseg = ERR_PTR(status);
+=======
+		lseg = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 out:
 	return lseg;

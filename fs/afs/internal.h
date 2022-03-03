@@ -485,7 +485,11 @@ extern const struct file_operations afs_file_operations;
 
 extern int afs_open(struct inode *, struct file *);
 extern int afs_release(struct inode *, struct file *);
+<<<<<<< HEAD
 extern int afs_page_filler(struct file *, struct page *);
+=======
+extern int afs_page_filler(void *, struct page *);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void afs_put_read(struct afs_read *);
 
 /*

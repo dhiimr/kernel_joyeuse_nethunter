@@ -82,13 +82,21 @@ void __xtensa_libgcc_window_spill(void)
 }
 EXPORT_SYMBOL(__xtensa_libgcc_window_spill);
 
+<<<<<<< HEAD
 unsigned long __sync_fetch_and_and_4(unsigned long *p, unsigned long v)
+=======
+unsigned int __sync_fetch_and_and_4(volatile void *p, unsigned int v)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	BUG();
 }
 EXPORT_SYMBOL(__sync_fetch_and_and_4);
 
+<<<<<<< HEAD
 unsigned long __sync_fetch_and_or_4(unsigned long *p, unsigned long v)
+=======
+unsigned int __sync_fetch_and_or_4(volatile void *p, unsigned int v)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	BUG();
 }
@@ -114,6 +122,7 @@ EXPORT_SYMBOL(__invalidate_icache_range);
 // FIXME EXPORT_SYMBOL(screen_info);
 #endif
 
+<<<<<<< HEAD
 EXPORT_SYMBOL(outsb);
 EXPORT_SYMBOL(outsw);
 EXPORT_SYMBOL(outsl);
@@ -121,6 +130,8 @@ EXPORT_SYMBOL(insb);
 EXPORT_SYMBOL(insw);
 EXPORT_SYMBOL(insl);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern long common_exception_return;
 EXPORT_SYMBOL(common_exception_return);
 

@@ -537,7 +537,11 @@ static int sur40_probe(struct usb_interface *interface,
 	int error;
 
 	/* Check if we really have the right interface. */
+<<<<<<< HEAD
 	iface_desc = &interface->altsetting[0];
+=======
+	iface_desc = interface->cur_altsetting;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (iface_desc->desc.bInterfaceClass != 0xFF)
 		return -ENODEV;
 

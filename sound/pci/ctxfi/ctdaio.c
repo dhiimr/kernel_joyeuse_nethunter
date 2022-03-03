@@ -55,12 +55,20 @@ static struct daio_rsc_idx idx_20k2[NUM_DAIOTYP] = {
 	[SPDIFIO] = {.left = 0x05, .right = 0x85},
 };
 
+<<<<<<< HEAD
 static int daio_master(struct rsc *rsc)
+=======
+static void daio_master(struct rsc *rsc)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	/* Actually, this is not the resource index of DAIO.
 	 * For DAO, it is the input mapper index. And, for DAI,
 	 * it is the output time-slot index. */
+<<<<<<< HEAD
 	return rsc->conj = rsc->idx;
+=======
+	rsc->conj = rsc->idx;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int daio_index(const struct rsc *rsc)
@@ -68,6 +76,7 @@ static int daio_index(const struct rsc *rsc)
 	return rsc->conj;
 }
 
+<<<<<<< HEAD
 static int daio_out_next_conj(struct rsc *rsc)
 {
 	return rsc->conj += 2;
@@ -81,6 +90,21 @@ static int daio_in_next_conj_20k1(struct rsc *rsc)
 static int daio_in_next_conj_20k2(struct rsc *rsc)
 {
 	return rsc->conj += 0x100;
+=======
+static void daio_out_next_conj(struct rsc *rsc)
+{
+	rsc->conj += 2;
+}
+
+static void daio_in_next_conj_20k1(struct rsc *rsc)
+{
+	rsc->conj += 0x200;
+}
+
+static void daio_in_next_conj_20k2(struct rsc *rsc)
+{
+	rsc->conj += 0x100;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct rsc_ops daio_out_rsc_ops = {

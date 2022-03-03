@@ -17,6 +17,7 @@ config ARM_PMU_ACPI
 	depends on ARM_PMU && ACPI
 	def_bool y
 
+<<<<<<< HEAD
 config ARM_DSU_PMU
        tristate "ARM DynamIQ Shared Unit (DSU) PMU"
        depends on ARM64
@@ -26,6 +27,8 @@ config ARM_DSU_PMU
          system, control logic. The PMU allows counting various events related
          to DSU.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config QCOM_L2_PMU
 	bool "Qualcomm Technologies L2-cache PMU"
 	depends on ARCH_QCOM && ARM64 && ACPI
@@ -45,6 +48,7 @@ config QCOM_L3_PMU
 	   Adds the L3 cache PMU into the perf events subsystem for
 	   monitoring L3 cache events.
 
+<<<<<<< HEAD
 config QCOM_LLCC_PMU
 	bool "Qualcomm Technologies LLCC PMU"
 	depends on ARCH_QCOM && ARM64
@@ -54,6 +58,8 @@ config QCOM_LLCC_PMU
 	   Adds the LLCC PMU into the perf events subsystem for monitoring
 	   LLCC miss events.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config XGENE_PMU
         depends on ARCH_XGENE
         bool "APM X-Gene SoC PMU"

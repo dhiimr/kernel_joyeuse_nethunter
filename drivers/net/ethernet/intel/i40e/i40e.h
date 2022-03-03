@@ -163,6 +163,10 @@ enum i40e_vsi_state_t {
 	__I40E_VSI_OVERFLOW_PROMISC,
 	__I40E_VSI_REINIT_REQUESTED,
 	__I40E_VSI_DOWN_REQUESTED,
+<<<<<<< HEAD
+=======
+	__I40E_VSI_RELEASING,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* This must be last as it determines the size of the BITMAP */
 	__I40E_VSI_STATE_SIZE__,
 };
@@ -626,12 +630,21 @@ struct i40e_vsi {
 	struct rtnl_link_stats64 net_stats_offsets;
 	struct i40e_eth_stats eth_stats;
 	struct i40e_eth_stats eth_stats_offsets;
+<<<<<<< HEAD
 	u32 tx_restart;
 	u32 tx_busy;
 	u64 tx_linearize;
 	u64 tx_force_wb;
 	u32 rx_buf_failed;
 	u32 rx_page_failed;
+=======
+	u64 tx_restart;
+	u64 tx_busy;
+	u64 tx_linearize;
+	u64 tx_force_wb;
+	u64 rx_buf_failed;
+	u64 rx_page_failed;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* These are containers of ring pointers, allocated at run-time */
 	struct i40e_ring **rx_rings;

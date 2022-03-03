@@ -199,7 +199,11 @@ int mlx4_check_port_params(struct mlx4_dev *dev,
 		for (i = 0; i < dev->caps.num_ports - 1; i++) {
 			if (port_type[i] != port_type[i + 1]) {
 				mlx4_err(dev, "Only same port types supported on this HCA, aborting\n");
+<<<<<<< HEAD
 				return -EINVAL;
+=======
+				return -EOPNOTSUPP;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 		}
 	}
@@ -208,7 +212,11 @@ int mlx4_check_port_params(struct mlx4_dev *dev,
 		if (!(port_type[i] & dev->caps.supported_type[i+1])) {
 			mlx4_err(dev, "Requested port type for port %d is not supported on this HCA\n",
 				 i + 1);
+<<<<<<< HEAD
 			return -EINVAL;
+=======
+			return -EOPNOTSUPP;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 	return 0;
@@ -1152,8 +1160,12 @@ static int __set_port_type(struct mlx4_port_info *info,
 		mlx4_err(mdev,
 			 "Requested port type for port %d is not supported on this HCA\n",
 			 info->port);
+<<<<<<< HEAD
 		err = -EINVAL;
 		goto err_sup;
+=======
+		return -EOPNOTSUPP;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	mlx4_stop_sense(mdev);
@@ -1175,7 +1187,11 @@ static int __set_port_type(struct mlx4_port_info *info,
 		for (i = 1; i <= mdev->caps.num_ports; i++) {
 			if (mdev->caps.possible_type[i] == MLX4_PORT_TYPE_AUTO) {
 				mdev->caps.possible_type[i] = mdev->caps.port_type[i];
+<<<<<<< HEAD
 				err = -EINVAL;
+=======
+				err = -EOPNOTSUPP;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 		}
 	}
@@ -1201,7 +1217,11 @@ static int __set_port_type(struct mlx4_port_info *info,
 out:
 	mlx4_start_sense(mdev);
 	mutex_unlock(&priv->port_mutex);
+<<<<<<< HEAD
 err_sup:
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return err;
 }
 
@@ -2504,6 +2524,10 @@ static int mlx4_allocate_default_counters(struct mlx4_dev *dev)
 
 		if (!err || err == -ENOSPC) {
 			priv->def_counter[port] = idx;
+<<<<<<< HEAD
+=======
+			err = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else if (err == -ENOENT) {
 			err = 0;
 			continue;
@@ -2554,7 +2578,12 @@ int mlx4_counter_alloc(struct mlx4_dev *dev, u32 *idx, u8 usage)
 				   MLX4_CMD_TIME_CLASS_A, MLX4_CMD_WRAPPED);
 		if (!err)
 			*idx = get_param_l(&out_param);
+<<<<<<< HEAD
 
+=======
+		if (WARN_ON(err == -ENOSPC))
+			err = -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return err;
 	}
 	return __mlx4_counter_alloc(dev, idx);
@@ -3468,6 +3497,10 @@ slave_start:
 
 		if (!SRIOV_VALID_STATE(dev->flags)) {
 			mlx4_err(dev, "Invalid SRIOV state\n");
+<<<<<<< HEAD
+=======
+			err = -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto err_close;
 		}
 	}
@@ -4189,12 +4222,20 @@ end:
 static void mlx4_shutdown(struct pci_dev *pdev)
 {
 	struct mlx4_dev_persistent *persist = pci_get_drvdata(pdev);
+<<<<<<< HEAD
+=======
+	struct mlx4_dev *dev = persist->dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mlx4_info(persist->dev, "mlx4_shutdown was called\n");
 	mutex_lock(&persist->interface_state_mutex);
 	if (persist->interface_state & MLX4_INTERFACE_STATE_UP)
 		mlx4_unload_one(pdev);
 	mutex_unlock(&persist->interface_state_mutex);
+<<<<<<< HEAD
+=======
+	mlx4_pci_disable_device(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct pci_error_handlers mlx4_err_handler = {

@@ -63,6 +63,10 @@
 #include <asm/byteorder.h>  
 #include <linux/vmalloc.h>
 #include <linux/jiffies.h>
+<<<<<<< HEAD
+=======
+#include <linux/nospec.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "iphase.h"		  
 #include "suni.h"		  
 #define swap_byte_order(x) (((x & 0xff) << 8) | ((x & 0xff00) >> 8))
@@ -2760,8 +2764,16 @@ static int ia_ioctl(struct atm_dev *dev, unsigned int cmd, void __user *arg)
    }
    if (copy_from_user(&ia_cmds, arg, sizeof ia_cmds)) return -EFAULT; 
    board = ia_cmds.status;
+<<<<<<< HEAD
    if ((board < 0) || (board > iadev_count))
          board = 0;    
+=======
+
+	if ((board < 0) || (board > iadev_count))
+		board = 0;
+	board = array_index_nospec(board, iadev_count + 1);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
    iadev = ia_dev[board];
    switch (ia_cmds.cmd) {
    case MEMDUMP:
@@ -3297,7 +3309,11 @@ static void __exit ia_module_exit(void)
 {
 	pci_unregister_driver(&ia_driver);
 
+<<<<<<< HEAD
         del_timer(&ia_timer);
+=======
+	del_timer_sync(&ia_timer);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 module_init(ia_module_init);

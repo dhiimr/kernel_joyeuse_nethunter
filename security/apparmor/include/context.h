@@ -191,6 +191,11 @@ static inline struct aa_label *begin_current_label_crit_section(void)
 {
 	struct aa_label *label = aa_current_raw_label();
 
+<<<<<<< HEAD
+=======
+	might_sleep();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (label_is_stale(label)) {
 		label = aa_get_newest_label(label);
 		if (aa_replace_current_label(label) == 0)

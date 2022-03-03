@@ -19,7 +19,10 @@ static unsigned int
 ebt_dnat_tg(struct sk_buff *skb, const struct xt_action_param *par)
 {
 	const struct ebt_nat_info *info = par->targinfo;
+<<<<<<< HEAD
 	struct net_device *dev;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!skb_make_writable(skb, 0))
 		return EBT_DROP;
@@ -32,10 +35,29 @@ ebt_dnat_tg(struct sk_buff *skb, const struct xt_action_param *par)
 		else
 			skb->pkt_type = PACKET_MULTICAST;
 	} else {
+<<<<<<< HEAD
 		if (xt_hooknum(par) != NF_BR_BROUTING)
 			dev = br_port_get_rcu(xt_in(par))->br->dev;
 		else
 			dev = xt_in(par);
+=======
+		const struct net_device *dev;
+
+		switch (xt_hooknum(par)) {
+		case NF_BR_BROUTING:
+			dev = xt_in(par);
+			break;
+		case NF_BR_PRE_ROUTING:
+			dev = br_port_get_rcu(xt_in(par))->br->dev;
+			break;
+		default:
+			dev = NULL;
+			break;
+		}
+
+		if (!dev) /* NF_BR_LOCAL_OUT */
+			return info->target;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (ether_addr_equal(info->mac, dev->dev_addr))
 			skb->pkt_type = PACKET_HOST;

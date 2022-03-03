@@ -79,8 +79,13 @@ struct lmp91000_data {
 
 	struct completion completion;
 	u8 chan_select;
+<<<<<<< HEAD
 
 	u32 buffer[4]; /* 64-bit data + 64-bit timestamp */
+=======
+	/* 64-bit data + 64-bit naturally aligned timestamp */
+	u32 buffer[4] __aligned(8);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const struct iio_chan_spec lmp91000_channels[] = {

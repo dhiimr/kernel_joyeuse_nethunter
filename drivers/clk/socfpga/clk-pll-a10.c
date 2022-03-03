@@ -95,6 +95,10 @@ static struct clk * __init __socfpga_pll_init(struct device_node *node,
 
 	clkmgr_np = of_find_compatible_node(NULL, NULL, "altr,clk-mgr");
 	clk_mgr_a10_base_addr = of_iomap(clkmgr_np, 0);
+<<<<<<< HEAD
+=======
+	of_node_put(clkmgr_np);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	BUG_ON(!clk_mgr_a10_base_addr);
 	pll_clk->hw.reg = clk_mgr_a10_base_addr + reg;
 

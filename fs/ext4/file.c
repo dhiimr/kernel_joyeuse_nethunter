@@ -38,9 +38,16 @@ static ssize_t ext4_dax_read_iter(struct kiocb *iocb, struct iov_iter *to)
 	struct inode *inode = file_inode(iocb->ki_filp);
 	ssize_t ret;
 
+<<<<<<< HEAD
 	if (!inode_trylock_shared(inode)) {
 		if (iocb->ki_flags & IOCB_NOWAIT)
 			return -EAGAIN;
+=======
+	if (iocb->ki_flags & IOCB_NOWAIT) {
+		if (!inode_trylock_shared(inode))
+			return -EAGAIN;
+	} else {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		inode_lock_shared(inode);
 	}
 	/*
@@ -163,6 +170,13 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
 	ret = generic_write_checks(iocb, from);
 	if (ret <= 0)
 		return ret;
+<<<<<<< HEAD
+=======
+
+	if (unlikely(IS_IMMUTABLE(inode)))
+		return -EPERM;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * If we have encountered a bitmap-format file, the size limit
 	 * is smaller than s_maxbytes, which is for extent-mapped files.
@@ -184,9 +198,16 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
 	struct inode *inode = file_inode(iocb->ki_filp);
 	ssize_t ret;
 
+<<<<<<< HEAD
 	if (!inode_trylock(inode)) {
 		if (iocb->ki_flags & IOCB_NOWAIT)
 			return -EAGAIN;
+=======
+	if (iocb->ki_flags & IOCB_NOWAIT) {
+		if (!inode_trylock(inode))
+			return -EAGAIN;
+	} else {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		inode_lock(inode);
 	}
 	ret = ext4_write_checks(iocb, from);
@@ -262,6 +283,16 @@ ext4_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
 	}
 
 	ret = __generic_file_write_iter(iocb, from);
+<<<<<<< HEAD
+=======
+	/*
+	 * Unaligned direct AIO must be the only IO in flight. Otherwise
+	 * overlapping aligned IO after unaligned might result in data
+	 * corruption.
+	 */
+	if (ret == -EIOCBQUEUED && unaligned_aio)
+		ext4_unwritten_wait(inode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	inode_unlock(inode);
 
 	if (ret > 0)

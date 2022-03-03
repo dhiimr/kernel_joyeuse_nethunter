@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2013-2019, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2013-2017, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,6 +20,7 @@
 #include "rmnet_private.h"
 #include "rmnet_vnd.h"
 
+<<<<<<< HEAD
 #define RMNET_DL_IND_HDR_SIZE (sizeof(struct rmnet_map_dl_ind_hdr) + \
 			       sizeof(struct rmnet_map_header) + \
 			       sizeof(struct rmnet_map_control_command_header))
@@ -32,6 +37,12 @@ static u8 rmnet_map_do_flow_control(struct sk_buff *skb,
 				    int enable)
 {
 	struct rmnet_map_header *qmap;
+=======
+static u8 rmnet_map_do_flow_control(struct sk_buff *skb,
+				    struct rmnet_port *rdinfo,
+				    int enable)
+{
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct rmnet_map_control_command *cmd;
 	struct rmnet_endpoint *ep;
 	struct net_device *vnd;
@@ -41,21 +52,30 @@ static u8 rmnet_map_do_flow_control(struct sk_buff *skb,
 	u8 mux_id;
 	int r;
 
+<<<<<<< HEAD
 	qmap = (struct rmnet_map_header *)rmnet_map_data_ptr(skb);
 	mux_id = qmap->mux_id;
 	cmd = rmnet_map_get_cmd_start(skb);
+=======
+	mux_id = RMNET_MAP_GET_MUX_ID(skb);
+	cmd = RMNET_MAP_GET_CMD_START(skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (mux_id >= RMNET_MAX_LOGICAL_EP) {
 		kfree_skb(skb);
 		return RX_HANDLER_CONSUMED;
 	}
 
+<<<<<<< HEAD
 	ep = rmnet_get_endpoint(port, mux_id);
 	if (!ep) {
 		kfree_skb(skb);
 		return RX_HANDLER_CONSUMED;
 	}
 
+=======
+	ep = &rdinfo->muxed_ep[mux_id];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	vnd = ep->egress_dev;
 
 	ip_family = cmd->flow_control.ip_family;
@@ -76,6 +96,7 @@ static u8 rmnet_map_do_flow_control(struct sk_buff *skb,
 }
 
 static void rmnet_map_send_ack(struct sk_buff *skb,
+<<<<<<< HEAD
 			       unsigned char type,
 			       struct rmnet_port *port)
 {
@@ -250,18 +271,42 @@ static void rmnet_map_process_flow_end(struct sk_buff *skb,
 			pull_size += sizeof(struct rmnet_map_dl_csum_trailer);
 		pskb_pull(skb, pull_size);
 	}
+=======
+			       unsigned char type)
+{
+	struct rmnet_map_control_command *cmd;
+	int xmit_status;
+
+	skb->protocol = htons(ETH_P_MAP);
+
+	cmd = RMNET_MAP_GET_CMD_START(skb);
+	cmd->cmd_type = type & 0x03;
+
+	netif_tx_lock(skb->dev);
+	xmit_status = skb->dev->netdev_ops->ndo_start_xmit(skb, skb->dev);
+	netif_tx_unlock(skb->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Process MAP command frame and send N/ACK message as appropriate. Message cmd
  * name is decoded here and appropriate handler is called.
  */
+<<<<<<< HEAD
 void rmnet_map_command(struct sk_buff *skb, struct rmnet_port *port)
+=======
+rx_handler_result_t rmnet_map_command(struct sk_buff *skb,
+				      struct rmnet_port *port)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct rmnet_map_control_command *cmd;
 	unsigned char command_name;
 	unsigned char rc = 0;
 
+<<<<<<< HEAD
 	cmd = rmnet_map_get_cmd_start(skb);
+=======
+	cmd = RMNET_MAP_GET_CMD_START(skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	command_name = cmd->command_name;
 
 	switch (command_name) {
@@ -279,6 +324,7 @@ void rmnet_map_command(struct sk_buff *skb, struct rmnet_port *port)
 		break;
 	}
 	if (rc == RMNET_MAP_COMMAND_ACK)
+<<<<<<< HEAD
 		rmnet_map_send_ack(skb, rc, port);
 }
 
@@ -386,3 +432,8 @@ done:
 	return 0;
 }
 EXPORT_SYMBOL(rmnet_map_dl_ind_deregister);
+=======
+		rmnet_map_send_ack(skb, rc);
+	return RX_HANDLER_CONSUMED;
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

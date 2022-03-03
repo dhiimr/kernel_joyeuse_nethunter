@@ -25,7 +25,11 @@
 
 	leds {
 		act {
+<<<<<<< HEAD
 			gpios = <&gpio 47 GPIO_ACTIVE_HIGH>;
+=======
+			gpios = <&gpio 47 GPIO_ACTIVE_LOW>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		};
 	};
 
@@ -118,6 +122,10 @@
 &sdhci {
 	#address-cells = <1>;
 	#size-cells = <0>;
+<<<<<<< HEAD
+=======
+	pinctrl-names = "default";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pinctrl-0 = <&emmc_gpio34 &gpclk2_gpio43>;
 	mmc-pwrseq = <&wifi_pwrseq>;
 	non-removable;

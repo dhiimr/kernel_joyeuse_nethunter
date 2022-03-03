@@ -108,12 +108,20 @@ static int apparmor_ptrace_access_check(struct task_struct *child,
 	struct aa_label *tracer, *tracee;
 	int error;
 
+<<<<<<< HEAD
 	tracer = begin_current_label_crit_section();
+=======
+	tracer = __begin_current_label_crit_section();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tracee = aa_get_task_label(child);
 	error = aa_may_ptrace(tracer, tracee,
 		  mode == PTRACE_MODE_READ ? AA_PTRACE_READ : AA_PTRACE_TRACE);
 	aa_put_label(tracee);
+<<<<<<< HEAD
 	end_current_label_crit_section(tracer);
+=======
+	__end_current_label_crit_section(tracer);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return error;
 }
@@ -123,11 +131,19 @@ static int apparmor_ptrace_traceme(struct task_struct *parent)
 	struct aa_label *tracer, *tracee;
 	int error;
 
+<<<<<<< HEAD
 	tracee = begin_current_label_crit_section();
 	tracer = aa_get_task_label(parent);
 	error = aa_may_ptrace(tracer, tracee, AA_PTRACE_TRACE);
 	aa_put_label(tracer);
 	end_current_label_crit_section(tracee);
+=======
+	tracee = __begin_current_label_crit_section();
+	tracer = aa_get_task_label(parent);
+	error = aa_may_ptrace(tracer, tracee, AA_PTRACE_TRACE);
+	aa_put_label(tracer);
+	__end_current_label_crit_section(tracee);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return error;
 }
@@ -813,11 +829,19 @@ static const struct kernel_param_ops param_ops_aalockpolicy = {
 	.get = param_get_aalockpolicy
 };
 
+<<<<<<< HEAD
 static int param_set_audit(const char *val, const struct kernel_param *kp);
 static int param_get_audit(char *buffer, const struct kernel_param *kp);
 
 static int param_set_mode(const char *val, const struct kernel_param *kp);
 static int param_get_mode(char *buffer, const struct kernel_param *kp);
+=======
+static int param_set_audit(const char *val, struct kernel_param *kp);
+static int param_get_audit(char *buffer, struct kernel_param *kp);
+
+static int param_set_mode(const char *val, struct kernel_param *kp);
+static int param_get_mode(char *buffer, struct kernel_param *kp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Flag values, also controllable via /sys/module/apparmor/parameters
  * We define special types as we want to do additional mediation.
@@ -951,7 +975,11 @@ static int param_get_aauint(char *buffer, const struct kernel_param *kp)
 	return param_get_uint(buffer, kp);
 }
 
+<<<<<<< HEAD
 static int param_get_audit(char *buffer, const struct kernel_param *kp)
+=======
+static int param_get_audit(char *buffer, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (!apparmor_enabled)
 		return -EINVAL;
@@ -960,7 +988,11 @@ static int param_get_audit(char *buffer, const struct kernel_param *kp)
 	return sprintf(buffer, "%s", audit_mode_names[aa_g_audit]);
 }
 
+<<<<<<< HEAD
 static int param_set_audit(const char *val, const struct kernel_param *kp)
+=======
+static int param_set_audit(const char *val, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int i;
 
@@ -981,7 +1013,11 @@ static int param_set_audit(const char *val, const struct kernel_param *kp)
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int param_get_mode(char *buffer, const struct kernel_param *kp)
+=======
+static int param_get_mode(char *buffer, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (!apparmor_enabled)
 		return -EINVAL;
@@ -991,7 +1027,11 @@ static int param_get_mode(char *buffer, const struct kernel_param *kp)
 	return sprintf(buffer, "%s", aa_profile_mode_names[aa_g_profile_mode]);
 }
 
+<<<<<<< HEAD
 static int param_set_mode(const char *val, const struct kernel_param *kp)
+=======
+static int param_set_mode(const char *val, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int i;
 

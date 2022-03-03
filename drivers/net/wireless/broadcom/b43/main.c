@@ -5596,7 +5596,11 @@ static struct b43_wl *b43_wireless_init(struct b43_bus_dev *dev)
 	/* fill hw info */
 	ieee80211_hw_set(hw, RX_INCLUDES_FCS);
 	ieee80211_hw_set(hw, SIGNAL_DBM);
+<<<<<<< HEAD
 
+=======
+	ieee80211_hw_set(hw, MFP_CAPABLE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hw->wiphy->interface_modes =
 		BIT(NL80211_IFTYPE_AP) |
 		BIT(NL80211_IFTYPE_MESH_POINT) |

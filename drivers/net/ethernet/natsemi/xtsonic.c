@@ -128,7 +128,11 @@ static const struct net_device_ops xtsonic_netdev_ops = {
 	.ndo_set_mac_address	= eth_mac_addr,
 };
 
+<<<<<<< HEAD
 static int __init sonic_probe1(struct net_device *dev)
+=======
+static int sonic_probe1(struct net_device *dev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	static unsigned version_printed = 0;
 	unsigned int silicon_revision;

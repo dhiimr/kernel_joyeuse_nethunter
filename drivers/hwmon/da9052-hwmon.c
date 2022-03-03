@@ -250,9 +250,15 @@ static ssize_t da9052_read_tsi(struct device *dev,
 	int channel = to_sensor_dev_attr(devattr)->index;
 	int ret;
 
+<<<<<<< HEAD
 	mutex_lock(&hwmon->hwmon_lock);
 	ret = __da9052_read_tsi(dev, channel);
 	mutex_unlock(&hwmon->hwmon_lock);
+=======
+	mutex_lock(&hwmon->da9052->auxadc_lock);
+	ret = __da9052_read_tsi(dev, channel);
+	mutex_unlock(&hwmon->da9052->auxadc_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (ret < 0)
 		return ret;

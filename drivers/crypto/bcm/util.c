@@ -401,7 +401,11 @@ char *spu_alg_name(enum spu_cipher_alg alg, enum spu_cipher_mode mode)
 static ssize_t spu_debugfs_read(struct file *filp, char __user *ubuf,
 				size_t count, loff_t *offp)
 {
+<<<<<<< HEAD
 	struct device_private *ipriv;
+=======
+	struct bcm_device_private *ipriv;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	char *buf;
 	ssize_t ret, out_offset, out_count;
 	int i;

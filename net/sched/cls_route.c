@@ -539,8 +539,13 @@ static int route4_change(struct net *net, struct sk_buff *in_skb,
 			fp = &b->ht[h];
 			for (pfp = rtnl_dereference(*fp); pfp;
 			     fp = &pfp->next, pfp = rtnl_dereference(*fp)) {
+<<<<<<< HEAD
 				if (pfp == f) {
 					*fp = f->next;
+=======
+				if (pfp == fold) {
+					rcu_assign_pointer(*fp, fold->next);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					break;
 				}
 			}

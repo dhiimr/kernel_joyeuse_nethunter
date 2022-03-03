@@ -38,7 +38,10 @@ LINECOMMENT	"//".*\n
 #include "srcpos.h"
 #include "dtc-parser.tab.h"
 
+<<<<<<< HEAD
 YYLTYPE yylloc;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern bool treesource_error;
 
 /* CAUTION: this will stop working if we ever use yyless() or yyunput() */

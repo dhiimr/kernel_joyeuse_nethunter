@@ -28,6 +28,12 @@
 #include <linux/syscalls.h>
 #include <linux/sysctl.h>
 
+<<<<<<< HEAD
+=======
+/* Not exposed in headers: strictly internal use only. */
+#define SECCOMP_MODE_DEAD	(SECCOMP_MODE_FILTER + 1)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
 #include <asm/syscall.h>
 #endif
@@ -632,6 +638,10 @@ static void __secure_computing_strict(int this_syscall)
 #ifdef SECCOMP_DEBUG
 	dump_stack();
 #endif
+<<<<<<< HEAD
+=======
+	current->seccomp.mode = SECCOMP_MODE_DEAD;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	seccomp_log(this_syscall, SIGKILL, SECCOMP_RET_KILL_THREAD, true);
 	do_exit(SIGKILL);
 }
@@ -746,6 +756,10 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
 	case SECCOMP_RET_KILL_THREAD:
 	case SECCOMP_RET_KILL_PROCESS:
 	default:
+<<<<<<< HEAD
+=======
+		current->seccomp.mode = SECCOMP_MODE_DEAD;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		seccomp_log(this_syscall, SIGSYS, action, true);
 		/* Dump core only if this is the last remaining thread. */
 		if (action == SECCOMP_RET_KILL_PROCESS ||
@@ -775,6 +789,11 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
 			    const bool recheck_after_trace)
 {
 	BUG();
+<<<<<<< HEAD
+=======
+
+	return -1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #endif
 
@@ -796,6 +815,14 @@ int __secure_computing(const struct seccomp_data *sd)
 		return 0;
 	case SECCOMP_MODE_FILTER:
 		return __seccomp_filter(this_syscall, sd, false);
+<<<<<<< HEAD
+=======
+	/* Surviving SECCOMP_RET_KILL_* must be proactively impossible. */
+	case SECCOMP_MODE_DEAD:
+		WARN_ON_ONCE(1);
+		do_exit(SIGKILL);
+		return -1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	default:
 		BUG();
 	}

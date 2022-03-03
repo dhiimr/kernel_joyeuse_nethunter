@@ -231,11 +231,19 @@ static void qca_wq_awake_device(struct work_struct *work)
 
 	BT_DBG("hu %p wq awake device", hu);
 
+<<<<<<< HEAD
 	spin_lock(&qca->hci_ibs_lock);
 
 	/* Vote for serial clock */
 	serial_clock_vote(HCI_IBS_TX_VOTE_CLOCK_ON, hu);
 
+=======
+	/* Vote for serial clock */
+	serial_clock_vote(HCI_IBS_TX_VOTE_CLOCK_ON, hu);
+
+	spin_lock(&qca->hci_ibs_lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Send wake indication to device */
 	if (send_hci_ibs_cmd(HCI_IBS_WAKE_IND, hu) < 0)
 		BT_ERR("Failed to send WAKE to device");
@@ -260,10 +268,16 @@ static void qca_wq_awake_rx(struct work_struct *work)
 
 	BT_DBG("hu %p wq awake rx", hu);
 
+<<<<<<< HEAD
 	spin_lock(&qca->hci_ibs_lock);
 
 	serial_clock_vote(HCI_IBS_RX_VOTE_CLOCK_ON, hu);
 
+=======
+	serial_clock_vote(HCI_IBS_RX_VOTE_CLOCK_ON, hu);
+
+	spin_lock(&qca->hci_ibs_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	qca->rx_ibs_state = HCI_IBS_RX_AWAKE;
 
 	/* Always acknowledge device wake up,
@@ -288,11 +302,15 @@ static void qca_wq_serial_rx_clock_vote_off(struct work_struct *work)
 
 	BT_DBG("hu %p rx clock vote off", hu);
 
+<<<<<<< HEAD
 	spin_lock(&qca->hci_ibs_lock);
 
 	serial_clock_vote(HCI_IBS_RX_VOTE_CLOCK_OFF, hu);
 
 	spin_unlock(&qca->hci_ibs_lock);
+=======
+	serial_clock_vote(HCI_IBS_RX_VOTE_CLOCK_OFF, hu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void qca_wq_serial_tx_clock_vote_off(struct work_struct *work)
@@ -303,8 +321,11 @@ static void qca_wq_serial_tx_clock_vote_off(struct work_struct *work)
 
 	BT_DBG("hu %p tx clock vote off", hu);
 
+<<<<<<< HEAD
 	spin_lock(&qca->hci_ibs_lock);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Run HCI tx handling unlocked */
 	hci_uart_tx_wakeup(hu);
 
@@ -312,8 +333,11 @@ static void qca_wq_serial_tx_clock_vote_off(struct work_struct *work)
 	 * It is up to the tty driver to pend the clocks off until tx done.
 	 */
 	serial_clock_vote(HCI_IBS_TX_VOTE_CLOCK_OFF, hu);
+<<<<<<< HEAD
 
 	spin_unlock(&qca->hci_ibs_lock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void hci_ibs_tx_idle_timeout(unsigned long arg)
@@ -526,12 +550,17 @@ static int qca_close(struct hci_uart *hu)
 
 	BT_DBG("hu %p qca close", hu);
 
+<<<<<<< HEAD
 	spin_lock(&qca->hci_ibs_lock);
 
 	serial_clock_vote(HCI_IBS_VOTE_STATS_UPDATE, hu);
 
 	spin_unlock(&qca->hci_ibs_lock);
 
+=======
+	serial_clock_vote(HCI_IBS_VOTE_STATS_UPDATE, hu);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	skb_queue_purge(&qca->tx_wait_q);
 	skb_queue_purge(&qca->txq);
 	del_timer(&qca->tx_idle_timer);

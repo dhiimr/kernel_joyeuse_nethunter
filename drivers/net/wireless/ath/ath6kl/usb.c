@@ -132,6 +132,13 @@ ath6kl_usb_alloc_urb_from_pipe(struct ath6kl_usb_pipe *pipe)
 	struct ath6kl_urb_context *urb_context = NULL;
 	unsigned long flags;
 
+<<<<<<< HEAD
+=======
+	/* bail if this pipe is not initialized */
+	if (!pipe->ar_usb)
+		return NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&pipe->ar_usb->cs_lock, flags);
 	if (!list_empty(&pipe->urb_list_head)) {
 		urb_context =
@@ -150,6 +157,13 @@ static void ath6kl_usb_free_urb_to_pipe(struct ath6kl_usb_pipe *pipe,
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
+=======
+	/* bail if this pipe is not initialized */
+	if (!pipe->ar_usb)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&pipe->ar_usb->cs_lock, flags);
 	pipe->urb_cnt++;
 
@@ -332,6 +346,14 @@ static int ath6kl_usb_setup_pipe_resources(struct ath6kl_usb *ar_usb)
 				   le16_to_cpu(endpoint->wMaxPacketSize),
 				   endpoint->bInterval);
 		}
+<<<<<<< HEAD
+=======
+
+		/* Ignore broken descriptors. */
+		if (usb_endpoint_maxp(endpoint) == 0)
+			continue;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		urbcount = 0;
 
 		pipe_num =
@@ -899,7 +921,11 @@ static int ath6kl_usb_submit_ctrl_in(struct ath6kl_usb *ar_usb,
 				 req,
 				 USB_DIR_IN | USB_TYPE_VENDOR |
 				 USB_RECIP_DEVICE, value, index, buf,
+<<<<<<< HEAD
 				 size, 2 * HZ);
+=======
+				 size, 2000);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (ret < 0) {
 		ath6kl_warn("Failed to read usb control message: %d\n", ret);

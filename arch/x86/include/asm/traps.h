@@ -40,7 +40,11 @@ asmlinkage void simd_coprocessor_error(void);
 asmlinkage void xen_divide_error(void);
 asmlinkage void xen_xennmi(void);
 asmlinkage void xen_xendebug(void);
+<<<<<<< HEAD
 asmlinkage void xen_xenint3(void);
+=======
+asmlinkage void xen_int3(void);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 asmlinkage void xen_overflow(void);
 asmlinkage void xen_bounds(void);
 asmlinkage void xen_invalid_op(void);

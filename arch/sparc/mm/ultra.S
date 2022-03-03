@@ -587,7 +587,11 @@ xcall_flush_tlb_kernel_range:	/* 44 insns */
 	sub		%g7, %g1, %g3
 	srlx		%g3, 18, %g2
 	brnz,pn		%g2, 2f
+<<<<<<< HEAD
 	 add		%g2, 1, %g2
+=======
+	 sethi		%hi(PAGE_SIZE), %g2
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sub		%g3, %g2, %g3
 	or		%g1, 0x20, %g1		! Nucleus
 1:	stxa		%g0, [%g1 + %g3] ASI_DMMU_DEMAP
@@ -751,7 +755,11 @@ __cheetah_xcall_flush_tlb_kernel_range:	/* 44 insns */
 	sub		%g7, %g1, %g3
 	srlx		%g3, 18, %g2
 	brnz,pn		%g2, 2f
+<<<<<<< HEAD
 	 add		%g2, 1, %g2
+=======
+	 sethi		%hi(PAGE_SIZE), %g2
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sub		%g3, %g2, %g3
 	or		%g1, 0x20, %g1		! Nucleus
 1:	stxa		%g0, [%g1 + %g3] ASI_DMMU_DEMAP

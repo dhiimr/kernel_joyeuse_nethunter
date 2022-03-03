@@ -390,7 +390,11 @@ static int __exit txx9ndfmc_remove(struct platform_device *dev)
 		chip = mtd_to_nand(mtd);
 		txx9_priv = nand_get_controller_data(chip);
 
+<<<<<<< HEAD
 		nand_release(mtd);
+=======
+		nand_release(chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kfree(txx9_priv->mtdname);
 		kfree(txx9_priv);
 	}

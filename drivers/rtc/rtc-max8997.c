@@ -221,7 +221,11 @@ static int max8997_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alrm)
 
 out:
 	mutex_unlock(&info->lock);
+<<<<<<< HEAD
 	return 0;
+=======
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int max8997_rtc_stop_alarm(struct max8997_rtc_info *info)

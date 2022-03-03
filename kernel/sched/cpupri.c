@@ -27,8 +27,11 @@
  *  of the License.
  */
 
+<<<<<<< HEAD
 #include "sched.h"
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/gfp.h>
 #include <linux/sched.h>
 #include <linux/sched/rt.h>
@@ -53,6 +56,7 @@ static int convert_prio(int prio)
 }
 
 /**
+<<<<<<< HEAD
  * drop_nopreempt_cpus - remove a cpu from the mask if it is likely
  *			 non-preemptible
  * @lowest_mask: mask with selected CPUs (non-NULL)
@@ -74,6 +78,8 @@ drop_nopreempt_cpus(struct cpumask *lowest_mask)
 }
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * cpupri_find - find the best (lowest-pri) CPU in the system
  * @cp: The cpupri context
  * @p: The task
@@ -93,11 +99,17 @@ int cpupri_find(struct cpupri *cp, struct task_struct *p,
 {
 	int idx = 0;
 	int task_pri = convert_prio(p->prio);
+<<<<<<< HEAD
 	bool drop_nopreempts = task_pri <= MAX_RT_PRIO;
 
 	BUG_ON(task_pri >= CPUPRI_NR_PRIORITIES);
 
 retry:
+=======
+
+	BUG_ON(task_pri >= CPUPRI_NR_PRIORITIES);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (idx = 0; idx < task_pri; idx++) {
 		struct cpupri_vec *vec  = &cp->pri_to_cpu[idx];
 		int skip = 0;
@@ -133,10 +145,14 @@ retry:
 
 		if (lowest_mask) {
 			cpumask_and(lowest_mask, &p->cpus_allowed, vec->mask);
+<<<<<<< HEAD
 			cpumask_andnot(lowest_mask, lowest_mask,
 				       cpu_isolated_mask);
 			if (drop_nopreempts)
 				drop_nopreempt_cpus(lowest_mask);
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/*
 			 * We have to ensure that we have at least one bit
 			 * still set in the array, since the map could have
@@ -151,6 +167,7 @@ retry:
 
 		return 1;
 	}
+<<<<<<< HEAD
 	/*
 	 * If we can't find any non-preemptible cpu's, retry so we can
 	 * find the lowest priority target and avoid priority inversion.
@@ -159,6 +176,9 @@ retry:
 		drop_nopreempts = false;
 		goto retry;
 	}
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -279,6 +299,7 @@ void cpupri_cleanup(struct cpupri *cp)
 	for (i = 0; i < CPUPRI_NR_PRIORITIES; i++)
 		free_cpumask_var(cp->pri_to_cpu[i].mask);
 }
+<<<<<<< HEAD
 
 /*
  * cpupri_check_rt - check if CPU has a RT task
@@ -290,3 +311,5 @@ bool cpupri_check_rt(void)
 
 	return cpu_rq(cpu)->rd->cpupri.cpu_to_pri[cpu] > CPUPRI_NORMAL;
 }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

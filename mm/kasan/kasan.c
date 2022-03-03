@@ -489,6 +489,7 @@ void kasan_slab_alloc(struct kmem_cache *cache, void *object, gfp_t flags)
 	kasan_kmalloc(cache, object, cache->object_size, flags);
 }
 
+<<<<<<< HEAD
 static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
 			      unsigned long ip, bool quarantine)
 {
@@ -500,6 +501,23 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
 		kasan_report_invalid_free(object, ip);
 		return true;
 	}
+=======
+static void kasan_poison_slab_free(struct kmem_cache *cache, void *object)
+{
+	unsigned long size = cache->object_size;
+	unsigned long rounded_up_size = round_up(size, KASAN_SHADOW_SCALE_SIZE);
+
+	/* RCU slabs could be legally used after free within the RCU period */
+	if (unlikely(cache->flags & SLAB_TYPESAFE_BY_RCU))
+		return;
+
+	kasan_poison_shadow(object, rounded_up_size, KASAN_KMALLOC_FREE);
+}
+
+bool kasan_slab_free(struct kmem_cache *cache, void *object)
+{
+	s8 shadow_byte;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* RCU slabs could be legally used after free within the RCU period */
 	if (unlikely(cache->flags & SLAB_TYPESAFE_BY_RCU))
@@ -507,6 +525,7 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
 
 	shadow_byte = READ_ONCE(*(s8 *)kasan_mem_to_shadow(object));
 	if (shadow_byte < 0 || shadow_byte >= KASAN_SHADOW_SCALE_SIZE) {
+<<<<<<< HEAD
 		kasan_report_invalid_free(object, ip);
 		return true;
 	}
@@ -515,6 +534,16 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
 	kasan_poison_shadow(object, rounded_up_size, KASAN_KMALLOC_FREE);
 
 	if (!quarantine || unlikely(!(cache->flags & SLAB_KASAN)))
+=======
+		kasan_report_double_free(cache, object,
+				__builtin_return_address(1));
+		return true;
+	}
+
+	kasan_poison_slab_free(cache, object);
+
+	if (unlikely(!(cache->flags & SLAB_KASAN)))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return false;
 
 	set_track(&get_alloc_info(cache, object)->free_track, GFP_NOWAIT);
@@ -522,11 +551,14 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
 	return true;
 }
 
+<<<<<<< HEAD
 bool kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
 {
 	return __kasan_slab_free(cache, object, ip, true);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void kasan_kmalloc(struct kmem_cache *cache, const void *object, size_t size,
 		   gfp_t flags)
 {
@@ -590,12 +622,17 @@ void kasan_krealloc(const void *object, size_t size, gfp_t flags)
 		kasan_kmalloc(page->slab_cache, object, size, flags);
 }
 
+<<<<<<< HEAD
 void kasan_poison_kfree(void *ptr, unsigned long ip)
+=======
+void kasan_poison_kfree(void *ptr)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct page *page;
 
 	page = virt_to_head_page(ptr);
 
+<<<<<<< HEAD
 	if (unlikely(!PageSlab(page))) {
 		if (ptr != page_address(page)) {
 			kasan_report_invalid_free(ptr, ip);
@@ -613,6 +650,21 @@ void kasan_kfree_large(void *ptr, unsigned long ip)
 	if (ptr != page_address(virt_to_head_page(ptr)))
 		kasan_report_invalid_free(ptr, ip);
 	/* The object will be poisoned by page_alloc. */
+=======
+	if (unlikely(!PageSlab(page)))
+		kasan_poison_shadow(ptr, PAGE_SIZE << compound_order(page),
+				KASAN_FREE_PAGE);
+	else
+		kasan_poison_slab_free(page->slab_cache, ptr);
+}
+
+void kasan_kfree_large(const void *ptr)
+{
+	struct page *page = virt_to_page(ptr);
+
+	kasan_poison_shadow(ptr, PAGE_SIZE << compound_order(page),
+			KASAN_FREE_PAGE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 int kasan_module_alloc(void *addr, size_t size)
@@ -742,6 +794,7 @@ void __asan_unpoison_stack_memory(const void *addr, size_t size)
 }
 EXPORT_SYMBOL(__asan_unpoison_stack_memory);
 
+<<<<<<< HEAD
 /* Emitted by compiler to poison alloca()ed objects. */
 void __asan_alloca_poison(unsigned long addr, size_t size)
 {
@@ -791,6 +844,8 @@ DEFINE_ASAN_SET_SHADOW(f3);
 DEFINE_ASAN_SET_SHADOW(f5);
 DEFINE_ASAN_SET_SHADOW(f8);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_MEMORY_HOTPLUG
 static bool shadow_mapped(unsigned long addr)
 {

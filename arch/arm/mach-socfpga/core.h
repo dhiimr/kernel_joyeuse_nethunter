@@ -48,7 +48,11 @@ extern void __iomem *sdr_ctl_base_addr;
 u32 socfpga_sdram_self_refresh(u32 sdr_base);
 extern unsigned int socfpga_sdram_self_refresh_sz;
 
+<<<<<<< HEAD
 extern char secondary_trampoline, secondary_trampoline_end;
+=======
+extern char secondary_trampoline[], secondary_trampoline_end[];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 extern unsigned long socfpga_cpu1start_addr;
 

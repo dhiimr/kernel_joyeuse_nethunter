@@ -33,8 +33,13 @@ enum {
 };
 
 /* Callback for vpd_decode_string to invoke. */
+<<<<<<< HEAD
 typedef int vpd_decode_callback(const u8 *key, s32 key_len,
 				const u8 *value, s32 value_len,
+=======
+typedef int vpd_decode_callback(const u8 *key, u32 key_len,
+				const u8 *value, u32 value_len,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				void *arg);
 
 /*
@@ -52,7 +57,11 @@ typedef int vpd_decode_callback(const u8 *key, s32 key_len,
  * If one entry is successfully decoded, sends it to callback and returns the
  * result.
  */
+<<<<<<< HEAD
 int vpd_decode_string(const s32 max_len, const u8 *input_buf, s32 *consumed,
+=======
+int vpd_decode_string(const u32 max_len, const u8 *input_buf, u32 *consumed,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		      vpd_decode_callback callback, void *callback_arg);
 
 #endif  /* __VPD_DECODE_H */

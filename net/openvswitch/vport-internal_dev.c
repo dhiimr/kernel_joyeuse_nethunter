@@ -44,7 +44,12 @@ static struct internal_dev *internal_dev_priv(struct net_device *netdev)
 }
 
 /* Called with rcu_read_lock_bh. */
+<<<<<<< HEAD
 static int internal_dev_xmit(struct sk_buff *skb, struct net_device *netdev)
+=======
+static netdev_tx_t
+internal_dev_xmit(struct sk_buff *skb, struct net_device *netdev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int len, err;
 
@@ -63,7 +68,11 @@ static int internal_dev_xmit(struct sk_buff *skb, struct net_device *netdev)
 	} else {
 		netdev->stats.tx_errors++;
 	}
+<<<<<<< HEAD
 	return 0;
+=======
+	return NETDEV_TX_OK;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int internal_dev_open(struct net_device *netdev)
@@ -156,7 +165,11 @@ static void do_setup(struct net_device *netdev)
 	netdev->priv_flags |= IFF_LIVE_ADDR_CHANGE | IFF_OPENVSWITCH |
 			      IFF_PHONY_HEADROOM | IFF_NO_QUEUE;
 	netdev->needs_free_netdev = true;
+<<<<<<< HEAD
 	netdev->priv_destructor = internal_dev_destructor;
+=======
+	netdev->priv_destructor = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	netdev->ethtool_ops = &internal_dev_ethtool_ops;
 	netdev->rtnl_link_ops = &internal_dev_link_ops;
 
@@ -176,6 +189,10 @@ static struct vport *internal_dev_create(const struct vport_parms *parms)
 {
 	struct vport *vport;
 	struct internal_dev *internal_dev;
+<<<<<<< HEAD
+=======
+	struct net_device *dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err;
 
 	vport = ovs_vport_alloc(0, &ovs_internal_vport_ops, parms);
@@ -184,8 +201,14 @@ static struct vport *internal_dev_create(const struct vport_parms *parms)
 		goto error;
 	}
 
+<<<<<<< HEAD
 	vport->dev = alloc_netdev(sizeof(struct internal_dev),
 				  parms->name, NET_NAME_USER, do_setup);
+=======
+	dev = alloc_netdev(sizeof(struct internal_dev),
+			   parms->name, NET_NAME_USER, do_setup);
+	vport->dev = dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!vport->dev) {
 		err = -ENOMEM;
 		goto error_free_vport;
@@ -209,6 +232,10 @@ static struct vport *internal_dev_create(const struct vport_parms *parms)
 	err = register_netdevice(vport->dev);
 	if (err)
 		goto error_unlock;
+<<<<<<< HEAD
+=======
+	vport->dev->priv_destructor = internal_dev_destructor;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dev_set_promiscuity(vport->dev, 1);
 	rtnl_unlock();
@@ -218,9 +245,15 @@ static struct vport *internal_dev_create(const struct vport_parms *parms)
 
 error_unlock:
 	rtnl_unlock();
+<<<<<<< HEAD
 	free_percpu(vport->dev->tstats);
 error_free_netdev:
 	free_netdev(vport->dev);
+=======
+	free_percpu(dev->tstats);
+error_free_netdev:
+	free_netdev(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 error_free_vport:
 	ovs_vport_free(vport);
 error:

@@ -43,6 +43,10 @@ struct drm_crtc_crc_entry {
  * @lock: protects the fields in this struct
  * @source: name of the currently configured source of CRCs
  * @opened: whether userspace has opened the data file for reading
+<<<<<<< HEAD
+=======
+ * @overflow: whether an overflow occured.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @entries: array of entries, with size of %DRM_CRC_ENTRIES_NR
  * @head: head of circular queue
  * @tail: tail of circular queue
@@ -52,7 +56,11 @@ struct drm_crtc_crc_entry {
 struct drm_crtc_crc {
 	spinlock_t lock;
 	const char *source;
+<<<<<<< HEAD
 	bool opened;
+=======
+	bool opened, overflow;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct drm_crtc_crc_entry *entries;
 	int head, tail;
 	size_t values_cnt;

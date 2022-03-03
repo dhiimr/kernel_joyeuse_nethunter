@@ -473,7 +473,10 @@ static int hinic_close(struct net_device *netdev)
 {
 	struct hinic_dev *nic_dev = netdev_priv(netdev);
 	unsigned int flags;
+<<<<<<< HEAD
 	int err;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	down(&nic_dev->mgmt_lock);
 
@@ -487,6 +490,7 @@ static int hinic_close(struct net_device *netdev)
 
 	up(&nic_dev->mgmt_lock);
 
+<<<<<<< HEAD
 	err = hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
 	if (err) {
 		netif_err(nic_dev, drv, netdev,
@@ -501,6 +505,11 @@ static int hinic_close(struct net_device *netdev)
 		nic_dev->flags |= (flags & HINIC_INTF_UP);
 		return err;
 	}
+=======
+	hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
+
+	hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	free_rxqs(nic_dev);
 	free_txqs(nic_dev);
@@ -598,9 +607,12 @@ static int add_mac_addr(struct net_device *netdev, const u8 *addr)
 	u16 vid = 0;
 	int err;
 
+<<<<<<< HEAD
 	if (!is_valid_ether_addr(addr))
 		return -EADDRNOTAVAIL;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	netif_info(nic_dev, drv, netdev, "set mac addr = %02x %02x %02x %02x %02x %02x\n",
 		   addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
 
@@ -724,6 +736,10 @@ static void set_rx_mode(struct work_struct *work)
 {
 	struct hinic_rx_mode_work *rx_mode_work = work_to_rx_mode_work(work);
 	struct hinic_dev *nic_dev = rx_mode_work_to_nic_dev(rx_mode_work);
+<<<<<<< HEAD
+=======
+	struct netdev_hw_addr *ha;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	netif_info(nic_dev, drv, nic_dev->netdev, "set rx mode work\n");
 
@@ -731,6 +747,12 @@ static void set_rx_mode(struct work_struct *work)
 
 	__dev_uc_sync(nic_dev->netdev, add_mac_addr, remove_mac_addr);
 	__dev_mc_sync(nic_dev->netdev, add_mac_addr, remove_mac_addr);
+<<<<<<< HEAD
+=======
+
+	netdev_for_each_mc_addr(ha, nic_dev->netdev)
+		add_mac_addr(nic_dev->netdev, ha->addr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void hinic_set_rx_mode(struct net_device *netdev)

@@ -265,15 +265,30 @@ static int enh_desc_get_rx_status(void *data, struct stmmac_extra_stats *x,
 }
 
 static void enh_desc_init_rx_desc(struct dma_desc *p, int disable_rx_ic,
+<<<<<<< HEAD
 				  int mode, int end)
 {
 	p->des0 |= cpu_to_le32(RDES0_OWN);
 	p->des1 |= cpu_to_le32(BUF_SIZE_8KiB & ERDES1_BUFFER1_SIZE_MASK);
+=======
+				  int mode, int end, int bfsize)
+{
+	int bfsize1;
+
+	p->des0 |= cpu_to_le32(RDES0_OWN);
+
+	bfsize1 = min(bfsize, BUF_SIZE_8KiB);
+	p->des1 |= cpu_to_le32(bfsize1 & ERDES1_BUFFER1_SIZE_MASK);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (mode == STMMAC_CHAIN_MODE)
 		ehn_desc_rx_set_on_chain(p);
 	else
+<<<<<<< HEAD
 		ehn_desc_rx_set_on_ring(p, end);
+=======
+		ehn_desc_rx_set_on_ring(p, end, bfsize);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (disable_rx_ic)
 		p->des1 |= cpu_to_le32(ERDES1_DISABLE_IC);

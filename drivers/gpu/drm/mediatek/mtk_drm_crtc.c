@@ -307,6 +307,10 @@ err_pm_runtime_put:
 static void mtk_crtc_ddp_hw_fini(struct mtk_drm_crtc *mtk_crtc)
 {
 	struct drm_device *drm = mtk_crtc->base.dev;
+<<<<<<< HEAD
+=======
+	struct drm_crtc *crtc = &mtk_crtc->base;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int i;
 
 	DRM_DEBUG_DRIVER("%s\n", __func__);
@@ -328,6 +332,16 @@ static void mtk_crtc_ddp_hw_fini(struct mtk_drm_crtc *mtk_crtc)
 	mtk_disp_mutex_unprepare(mtk_crtc->mutex);
 
 	pm_runtime_put(drm->dev);
+<<<<<<< HEAD
+=======
+
+	if (crtc->state->event && !crtc->state->active) {
+		spin_lock_irq(&crtc->dev->event_lock);
+		drm_crtc_send_vblank_event(crtc, crtc->state->event);
+		crtc->state->event = NULL;
+		spin_unlock_irq(&crtc->dev->event_lock);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void mtk_crtc_ddp_config(struct drm_crtc *crtc)

@@ -38,6 +38,14 @@ struct max1118 {
 	struct spi_device *spi;
 	struct mutex lock;
 	struct regulator *reg;
+<<<<<<< HEAD
+=======
+	/* Ensure natural alignment of buffer elements */
+	struct {
+		u8 channels[2];
+		s64 ts __aligned(8);
+	} scan;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	u8 data ____cacheline_aligned;
 };
@@ -163,7 +171,10 @@ static irqreturn_t max1118_trigger_handler(int irq, void *p)
 	struct iio_poll_func *pf = p;
 	struct iio_dev *indio_dev = pf->indio_dev;
 	struct max1118 *adc = iio_priv(indio_dev);
+<<<<<<< HEAD
 	u8 data[16] = { }; /* 2x 8-bit ADC data + padding + 8 bytes timestamp */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int scan_index;
 	int i = 0;
 
@@ -181,10 +192,17 @@ static irqreturn_t max1118_trigger_handler(int irq, void *p)
 			goto out;
 		}
 
+<<<<<<< HEAD
 		data[i] = ret;
 		i++;
 	}
 	iio_push_to_buffers_with_timestamp(indio_dev, data,
+=======
+		adc->scan.channels[i] = ret;
+		i++;
+	}
+	iio_push_to_buffers_with_timestamp(indio_dev, &adc->scan,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					   iio_get_time_ns(indio_dev));
 out:
 	mutex_unlock(&adc->lock);

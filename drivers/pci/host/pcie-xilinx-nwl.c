@@ -10,6 +10,10 @@
  * (at your option) any later version.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/clk.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/delay.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
@@ -171,6 +175,10 @@ struct nwl_pcie {
 	u8 root_busno;
 	struct nwl_msi msi;
 	struct irq_domain *legacy_irq_domain;
+<<<<<<< HEAD
+=======
+	struct clk *clk;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	raw_spinlock_t leg_mask_lock;
 };
 
@@ -485,15 +493,24 @@ static int nwl_irq_domain_alloc(struct irq_domain *domain, unsigned int virq,
 	int i;
 
 	mutex_lock(&msi->lock);
+<<<<<<< HEAD
 	bit = bitmap_find_next_zero_area(msi->bitmap, INT_PCI_MSI_NR, 0,
 					 nr_irqs, 0);
 	if (bit >= INT_PCI_MSI_NR) {
+=======
+	bit = bitmap_find_free_region(msi->bitmap, INT_PCI_MSI_NR,
+				      get_count_order(nr_irqs));
+	if (bit < 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mutex_unlock(&msi->lock);
 		return -ENOSPC;
 	}
 
+<<<<<<< HEAD
 	bitmap_set(msi->bitmap, bit, nr_irqs);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (i = 0; i < nr_irqs; i++) {
 		irq_domain_set_info(domain, virq + i, bit + i, &nwl_irq_chip,
 				domain->host_data, handle_simple_irq,
@@ -511,7 +528,12 @@ static void nwl_irq_domain_free(struct irq_domain *domain, unsigned int virq,
 	struct nwl_msi *msi = &pcie->msi;
 
 	mutex_lock(&msi->lock);
+<<<<<<< HEAD
 	bitmap_clear(msi->bitmap, data->hwirq, nr_irqs);
+=======
+	bitmap_release_region(msi->bitmap, data->hwirq,
+			      get_count_order(nr_irqs));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(&msi->lock);
 }
 
@@ -853,6 +875,19 @@ static int nwl_pcie_probe(struct platform_device *pdev)
 		return err;
 	}
 
+<<<<<<< HEAD
+=======
+	pcie->clk = devm_clk_get(dev, NULL);
+	if (IS_ERR(pcie->clk))
+		return PTR_ERR(pcie->clk);
+
+	err = clk_prepare_enable(pcie->clk);
+	if (err) {
+		dev_err(dev, "can't enable PCIe ref clock\n");
+		return err;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = nwl_pcie_bridge_init(pcie);
 	if (err) {
 		dev_err(dev, "HW Initialization failed\n");

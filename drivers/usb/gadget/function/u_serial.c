@@ -715,8 +715,15 @@ static int gs_start_io(struct gs_port *port)
 	port->n_read = 0;
 	started = gs_start_rx(port);
 
+<<<<<<< HEAD
 	/* unblock any pending writes into our circular buffer */
 	if (started) {
+=======
+	if (started) {
+		gs_start_tx(port);
+		/* Unblock any pending writes into our circular buffer, in case
+		 * we didn't in gs_start_tx() */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		tty_wakeup(port->port.tty);
 	} else {
 		gs_free_requests(ep, head, &port->read_allocated);
@@ -1301,14 +1308,20 @@ gs_port_alloc(unsigned port_num, struct usb_cdc_line_coding *coding)
 	}
 
 	tty_port_init(&port->port);
+<<<<<<< HEAD
 	tty_buffer_set_limit(&port->port, 8388608);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_init(&port->port_lock);
 	init_waitqueue_head(&port->drain_wait);
 	init_waitqueue_head(&port->close_wait);
 
+<<<<<<< HEAD
 	pr_debug("%s open:ttyGS%d and set 8388608, avail:%d\n", __func__,
 		port_num, tty_buffer_space_avail(&port->port));
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tasklet_init(&port->push, gs_rx_push, (unsigned long) port);
 
 	INIT_LIST_HEAD(&port->read_pool);
@@ -1396,8 +1409,15 @@ int gserial_alloc_line(unsigned char *line_num)
 				__func__, port_num, PTR_ERR(tty_dev));
 
 		ret = PTR_ERR(tty_dev);
+<<<<<<< HEAD
 		port = ports[port_num].port;
 		ports[port_num].port = NULL;
+=======
+		mutex_lock(&ports[port_num].lock);
+		port = ports[port_num].port;
+		ports[port_num].port = NULL;
+		mutex_unlock(&ports[port_num].lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		gserial_free_port(port);
 		goto err;
 	}

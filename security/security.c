@@ -12,7 +12,10 @@
  *	(at your option) any later version.
  */
 
+<<<<<<< HEAD
 #include <linux/bpf.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/capability.h>
 #include <linux/dcache.h>
 #include <linux/module.h>
@@ -223,25 +226,44 @@ EXPORT_SYMBOL(unregister_lsm_notifier);
 
 /* Security operations */
 
+<<<<<<< HEAD
 int security_binder_set_context_mgr(struct task_struct *mgr)
+=======
+int security_binder_set_context_mgr(const struct cred *mgr)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return call_int_hook(binder_set_context_mgr, 0, mgr);
 }
 
+<<<<<<< HEAD
 int security_binder_transaction(struct task_struct *from,
 				struct task_struct *to)
+=======
+int security_binder_transaction(const struct cred *from,
+				const struct cred *to)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return call_int_hook(binder_transaction, 0, from, to);
 }
 
+<<<<<<< HEAD
 int security_binder_transfer_binder(struct task_struct *from,
 				    struct task_struct *to)
+=======
+int security_binder_transfer_binder(const struct cred *from,
+				    const struct cred *to)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return call_int_hook(binder_transfer_binder, 0, from, to);
 }
 
+<<<<<<< HEAD
 int security_binder_transfer_file(struct task_struct *from,
 				  struct task_struct *to, struct file *file)
+=======
+int security_binder_transfer_file(const struct cred *from,
+				  const struct cred *to, struct file *file)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return call_int_hook(binder_transfer_file, 0, from, to, file);
 }
@@ -598,7 +620,10 @@ int security_path_chown(const struct path *path, kuid_t uid, kgid_t gid)
 		return 0;
 	return call_int_hook(path_chown, 0, path, uid, gid);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(security_path_chown);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 int security_path_chroot(const struct path *path)
 {
@@ -614,6 +639,7 @@ int security_inode_create(struct inode *dir, struct dentry *dentry, umode_t mode
 }
 EXPORT_SYMBOL_GPL(security_inode_create);
 
+<<<<<<< HEAD
 int security_inode_post_create(struct inode *dir, struct dentry *dentry,
 				umode_t mode)
 {
@@ -622,6 +648,8 @@ int security_inode_post_create(struct inode *dir, struct dentry *dentry,
 	return call_int_hook(inode_post_create, 0, dir, dentry, mode);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int security_inode_link(struct dentry *old_dentry, struct inode *dir,
 			 struct dentry *new_dentry)
 {
@@ -1722,6 +1750,7 @@ int security_audit_rule_match(u32 secid, u32 field, u32 op, void *lsmrule,
 				actx);
 }
 #endif /* CONFIG_AUDIT */
+<<<<<<< HEAD
 
 #ifdef CONFIG_BPF_SYSCALL
 int security_bpf(int cmd, union bpf_attr *attr, unsigned int size)
@@ -1753,3 +1782,5 @@ void security_bpf_prog_free(struct bpf_prog_aux *aux)
 	call_void_hook(bpf_prog_free_security, aux);
 }
 #endif /* CONFIG_BPF_SYSCALL */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

@@ -20,6 +20,10 @@ void ftrace_caller(void);
 
 extern char ftrace_graph_caller_end;
 extern unsigned long ftrace_plt;
+<<<<<<< HEAD
+=======
+extern void *ftrace_func;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct dyn_arch_ftrace { };
 

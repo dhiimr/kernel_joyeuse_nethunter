@@ -206,6 +206,17 @@ int gpiod_get_direction(struct gpio_desc *desc)
 	chip = gpiod_to_chip(desc);
 	offset = gpio_chip_hwgpio(desc);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Open drain emulation using input mode may incorrectly report
+	 * input here, fix that up.
+	 */
+	if (test_bit(FLAG_OPEN_DRAIN, &desc->flags) &&
+	    test_bit(FLAG_IS_OUT, &desc->flags))
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!chip->get_direction)
 		return status;
 
@@ -444,12 +455,29 @@ static int linehandle_create(struct gpio_device *gdev, void __user *ip)
 	struct linehandle_state *lh;
 	struct file *file;
 	int fd, i, count = 0, ret;
+<<<<<<< HEAD
+=======
+	u32 lflags;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (copy_from_user(&handlereq, ip, sizeof(handlereq)))
 		return -EFAULT;
 	if ((handlereq.lines == 0) || (handlereq.lines > GPIOHANDLES_MAX))
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	lflags = handlereq.flags;
+
+	/*
+	 * Do not allow both INPUT & OUTPUT flags to be set as they are
+	 * contradictory.
+	 */
+	if ((lflags & GPIOHANDLE_REQUEST_INPUT) &&
+	    (lflags & GPIOHANDLE_REQUEST_OUTPUT))
+		return -EINVAL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	lh = kzalloc(sizeof(*lh), GFP_KERNEL);
 	if (!lh)
 		return -ENOMEM;
@@ -470,7 +498,10 @@ static int linehandle_create(struct gpio_device *gdev, void __user *ip)
 	/* Request each GPIO */
 	for (i = 0; i < handlereq.lines; i++) {
 		u32 offset = handlereq.lineoffsets[i];
+<<<<<<< HEAD
 		u32 lflags = handlereq.flags;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct gpio_desc *desc;
 
 		if (offset >= gdev->ngpio) {
@@ -805,7 +836,13 @@ static int lineevent_create(struct gpio_device *gdev, void __user *ip)
 	}
 
 	/* This is just wrong: we don't look for events on output lines */
+<<<<<<< HEAD
 	if (lflags & GPIOHANDLE_REQUEST_OUTPUT) {
+=======
+	if ((lflags & GPIOHANDLE_REQUEST_OUTPUT) ||
+	    (lflags & GPIOHANDLE_REQUEST_OPEN_DRAIN) ||
+	    (lflags & GPIOHANDLE_REQUEST_OPEN_SOURCE)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = -EINVAL;
 		goto out_free_label;
 	}
@@ -819,10 +856,13 @@ static int lineevent_create(struct gpio_device *gdev, void __user *ip)
 
 	if (lflags & GPIOHANDLE_REQUEST_ACTIVE_LOW)
 		set_bit(FLAG_ACTIVE_LOW, &desc->flags);
+<<<<<<< HEAD
 	if (lflags & GPIOHANDLE_REQUEST_OPEN_DRAIN)
 		set_bit(FLAG_OPEN_DRAIN, &desc->flags);
 	if (lflags & GPIOHANDLE_REQUEST_OPEN_SOURCE)
 		set_bit(FLAG_OPEN_SOURCE, &desc->flags);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = gpiod_direction_input(desc);
 	if (ret)
@@ -835,9 +875,17 @@ static int lineevent_create(struct gpio_device *gdev, void __user *ip)
 	}
 
 	if (eflags & GPIOEVENT_REQUEST_RISING_EDGE)
+<<<<<<< HEAD
 		irqflags |= IRQF_TRIGGER_RISING;
 	if (eflags & GPIOEVENT_REQUEST_FALLING_EDGE)
 		irqflags |= IRQF_TRIGGER_FALLING;
+=======
+		irqflags |= test_bit(FLAG_ACTIVE_LOW, &desc->flags) ?
+			IRQF_TRIGGER_FALLING : IRQF_TRIGGER_RISING;
+	if (eflags & GPIOEVENT_REQUEST_FALLING_EDGE)
+		irqflags |= test_bit(FLAG_ACTIVE_LOW, &desc->flags) ?
+			IRQF_TRIGGER_RISING : IRQF_TRIGGER_FALLING;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	irqflags |= IRQF_ONESHOT;
 	irqflags |= IRQF_SHARED;
 
@@ -969,9 +1017,17 @@ static long gpio_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		if (test_bit(FLAG_ACTIVE_LOW, &desc->flags))
 			lineinfo.flags |= GPIOLINE_FLAG_ACTIVE_LOW;
 		if (test_bit(FLAG_OPEN_DRAIN, &desc->flags))
+<<<<<<< HEAD
 			lineinfo.flags |= GPIOLINE_FLAG_OPEN_DRAIN;
 		if (test_bit(FLAG_OPEN_SOURCE, &desc->flags))
 			lineinfo.flags |= GPIOLINE_FLAG_OPEN_SOURCE;
+=======
+			lineinfo.flags |= (GPIOLINE_FLAG_OPEN_DRAIN |
+					   GPIOLINE_FLAG_IS_OUT);
+		if (test_bit(FLAG_OPEN_SOURCE, &desc->flags))
+			lineinfo.flags |= (GPIOLINE_FLAG_OPEN_SOURCE |
+					   GPIOLINE_FLAG_IS_OUT);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (copy_to_user(ip, &lineinfo, sizeof(lineinfo)))
 			return -EFAULT;
@@ -2300,8 +2356,15 @@ static int _gpiod_direction_output_raw(struct gpio_desc *desc, int value)
 		if (!ret)
 			goto set_output_value;
 		/* Emulate open drain by not actively driving the line high */
+<<<<<<< HEAD
 		if (val)
 			return gpiod_direction_input(desc);
+=======
+		if (val) {
+			ret = gpiod_direction_input(desc);
+			goto set_output_flag;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	else if (test_bit(FLAG_OPEN_SOURCE, &desc->flags)) {
 		ret = gpio_set_drive_single_ended(gc, gpio_chip_hwgpio(desc),
@@ -2309,8 +2372,15 @@ static int _gpiod_direction_output_raw(struct gpio_desc *desc, int value)
 		if (!ret)
 			goto set_output_value;
 		/* Emulate open source by not actively driving the line low */
+<<<<<<< HEAD
 		if (!val)
 			return gpiod_direction_input(desc);
+=======
+		if (!val) {
+			ret = gpiod_direction_input(desc);
+			goto set_output_flag;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		gpio_set_drive_single_ended(gc, gpio_chip_hwgpio(desc),
 					    PIN_CONFIG_DRIVE_PUSH_PULL);
@@ -2330,6 +2400,20 @@ set_output_value:
 	trace_gpio_value(desc_to_gpio(desc), 0, val);
 	trace_gpio_direction(desc_to_gpio(desc), 0, ret);
 	return ret;
+<<<<<<< HEAD
+=======
+
+set_output_flag:
+	/*
+	 * When emulating open-source or open-drain functionalities by not
+	 * actively driving the line (setting mode to input) we still need to
+	 * set the IS_OUT flag or otherwise we won't be able to set the line
+	 * value anymore.
+	 */
+	if (ret == 0)
+		set_bit(FLAG_IS_OUT, &desc->flags);
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -2463,7 +2547,11 @@ static int _gpiod_get_raw_value(const struct gpio_desc *desc)
 int gpiod_get_raw_value(const struct gpio_desc *desc)
 {
 	VALIDATE_DESC(desc);
+<<<<<<< HEAD
 	/* Should be using gpio_get_value_cansleep() */
+=======
+	/* Should be using gpiod_get_raw_value_cansleep() */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	WARN_ON(desc->gdev->chip->can_sleep);
 	return _gpiod_get_raw_value(desc);
 }
@@ -2484,7 +2572,11 @@ int gpiod_get_value(const struct gpio_desc *desc)
 	int value;
 
 	VALIDATE_DESC(desc);
+<<<<<<< HEAD
 	/* Should be using gpio_get_value_cansleep() */
+=======
+	/* Should be using gpiod_get_value_cansleep() */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	WARN_ON(desc->gdev->chip->can_sleep);
 
 	value = _gpiod_get_raw_value(desc);
@@ -2511,8 +2603,11 @@ static void _gpio_set_open_drain_value(struct gpio_desc *desc, bool value)
 
 	if (value) {
 		err = chip->direction_input(chip, offset);
+<<<<<<< HEAD
 		if (!err)
 			clear_bit(FLAG_IS_OUT, &desc->flags);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		err = chip->direction_output(chip, offset, 0);
 		if (!err)
@@ -2542,8 +2637,11 @@ static void _gpio_set_open_source_value(struct gpio_desc *desc, bool value)
 			set_bit(FLAG_IS_OUT, &desc->flags);
 	} else {
 		err = chip->direction_input(chip, offset);
+<<<<<<< HEAD
 		if (!err)
 			clear_bit(FLAG_IS_OUT, &desc->flags);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	trace_gpio_direction(desc_to_gpio(desc), !value, err);
 	if (err < 0)
@@ -2653,7 +2751,11 @@ void gpiod_set_array_value_complex(bool raw, bool can_sleep,
 void gpiod_set_raw_value(struct gpio_desc *desc, int value)
 {
 	VALIDATE_DESC_VOID(desc);
+<<<<<<< HEAD
 	/* Should be using gpiod_set_value_cansleep() */
+=======
+	/* Should be using gpiod_set_raw_value_cansleep() */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	WARN_ON(desc->gdev->chip->can_sleep);
 	_gpiod_set_raw_value(desc, value);
 }
@@ -3119,8 +3221,14 @@ static struct gpio_desc *gpiod_find(struct device *dev, const char *con_id,
 
 		if (chip->ngpio <= p->chip_hwnum) {
 			dev_err(dev,
+<<<<<<< HEAD
 				"requested GPIO %d is out of range [0..%d] for chip %s\n",
 				idx, chip->ngpio, chip->label);
+=======
+				"requested GPIO %u (%u) is out of range [0..%u] for chip %s\n",
+				idx, p->chip_hwnum, chip->ngpio - 1,
+				chip->label);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return ERR_PTR(-EINVAL);
 		}
 

@@ -608,7 +608,11 @@ static struct attribute *nd_device_attributes[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 /**
+=======
+/*
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * nd_device_attribute_group - generic attributes for all devices on an nd bus
  */
 struct attribute_group nd_device_attribute_group = {
@@ -637,7 +641,11 @@ static umode_t nd_numa_attr_visible(struct kobject *kobj, struct attribute *a,
 	return a->mode;
 }
 
+<<<<<<< HEAD
 /**
+=======
+/*
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * nd_numa_attribute_group - NUMA attributes for all devices on an nd bus
  */
 struct attribute_group nd_numa_attribute_group = {
@@ -951,8 +959,15 @@ static int __nd_ioctl(struct nvdimm_bus *nvdimm_bus, struct nvdimm *nvdimm,
 			return -EFAULT;
 	}
 
+<<<<<<< HEAD
 	if (!desc || (desc->out_num + desc->in_num == 0) ||
 			!test_bit(cmd, &cmd_mask))
+=======
+	if (!desc ||
+	    (desc->out_num + desc->in_num == 0) ||
+	    cmd > ND_CMD_CALL ||
+	    !test_bit(cmd, &cmd_mask))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -ENOTTY;
 
 	/* fail write commands (when read-only) */

@@ -140,7 +140,11 @@ int ib_nl_handle_ip_res_resp(struct sk_buff *skb,
 	if (ib_nl_is_good_ip_resp(nlh))
 		ib_nl_process_good_ip_rsep(nlh);
 
+<<<<<<< HEAD
 	return skb->len;
+=======
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int ib_nl_ip_send_msg(struct rdma_dev_addr *dev_addr,
@@ -450,16 +454,25 @@ static int addr6_resolve(struct sockaddr_in6 *src_in,
 	struct flowi6 fl6;
 	struct dst_entry *dst;
 	struct rt6_info *rt;
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	memset(&fl6, 0, sizeof fl6);
 	fl6.daddr = dst_in->sin6_addr;
 	fl6.saddr = src_in->sin6_addr;
 	fl6.flowi6_oif = addr->bound_dev_if;
 
+<<<<<<< HEAD
 	ret = ipv6_stub->ipv6_dst_lookup(addr->net, NULL, &dst, &fl6);
 	if (ret < 0)
 		return ret;
+=======
+	dst = ipv6_stub->ipv6_dst_lookup_flow(addr->net, NULL, &fl6, NULL);
+	if (IS_ERR(dst))
+		return PTR_ERR(dst);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rt = (struct rt6_info *)dst;
 	if (ipv6_addr_any(&src_in->sin6_addr)) {
@@ -794,14 +807,22 @@ int rdma_addr_find_l2_eth_by_grh(const union ib_gid *sgid,
 	struct net_device *dev;
 
 	union {
+<<<<<<< HEAD
 		struct sockaddr     _sockaddr;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct sockaddr_in  _sockaddr_in;
 		struct sockaddr_in6 _sockaddr_in6;
 	} sgid_addr, dgid_addr;
 
 
+<<<<<<< HEAD
 	rdma_gid2ip(&sgid_addr._sockaddr, sgid);
 	rdma_gid2ip(&dgid_addr._sockaddr, dgid);
+=======
+	rdma_gid2ip((struct sockaddr *)&sgid_addr, sgid);
+	rdma_gid2ip((struct sockaddr *)&dgid_addr, dgid);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	memset(&dev_addr, 0, sizeof(dev_addr));
 	if (if_index)
@@ -810,8 +831,14 @@ int rdma_addr_find_l2_eth_by_grh(const union ib_gid *sgid,
 
 	ctx.addr = &dev_addr;
 	init_completion(&ctx.comp);
+<<<<<<< HEAD
 	ret = rdma_resolve_ip(&self, &sgid_addr._sockaddr, &dgid_addr._sockaddr,
 			&dev_addr, 1000, resolve_cb, &ctx);
+=======
+	ret = rdma_resolve_ip(&self, (struct sockaddr *)&sgid_addr,
+			      (struct sockaddr *)&dgid_addr, &dev_addr, 1000,
+			      resolve_cb, &ctx);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		return ret;
 
@@ -841,16 +868,27 @@ int rdma_addr_find_smac_by_sgid(union ib_gid *sgid, u8 *smac, u16 *vlan_id)
 	int ret = 0;
 	struct rdma_dev_addr dev_addr;
 	union {
+<<<<<<< HEAD
 		struct sockaddr     _sockaddr;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct sockaddr_in  _sockaddr_in;
 		struct sockaddr_in6 _sockaddr_in6;
 	} gid_addr;
 
+<<<<<<< HEAD
 	rdma_gid2ip(&gid_addr._sockaddr, sgid);
 
 	memset(&dev_addr, 0, sizeof(dev_addr));
 	dev_addr.net = &init_net;
 	ret = rdma_translate_ip(&gid_addr._sockaddr, &dev_addr, vlan_id);
+=======
+	rdma_gid2ip((struct sockaddr *)&gid_addr, sgid);
+
+	memset(&dev_addr, 0, sizeof(dev_addr));
+	dev_addr.net = &init_net;
+	ret = rdma_translate_ip((struct sockaddr *)&gid_addr, &dev_addr, vlan_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		return ret;
 

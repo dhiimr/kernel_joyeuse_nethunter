@@ -195,7 +195,12 @@ static int bq27xxx_battery_i2c_probe(struct i2c_client *client,
 			dev_err(&client->dev,
 				"Unable to register IRQ %d error %d\n",
 				client->irq, ret);
+<<<<<<< HEAD
 			return ret;
+=======
+			bq27xxx_battery_teardown(di);
+			goto err_failed;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 

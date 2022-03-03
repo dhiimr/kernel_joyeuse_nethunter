@@ -23,10 +23,14 @@
 #include <linux/cpumask.h>
 #include <linux/percpu.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/swap.h>
 #include <linux/vmalloc.h>
 #include <linux/cgroupstats.h>
 #include <linux/sysstats.h>
+=======
+#include <linux/cgroupstats.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/cgroup.h>
 #include <linux/fs.h>
 #include <linux/file.h>
@@ -34,7 +38,10 @@
 #include <net/genetlink.h>
 #include <linux/atomic.h>
 #include <linux/sched/cputime.h>
+<<<<<<< HEAD
 #include <linux/oom.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Maximum length of a cpumask that can be specified in
@@ -52,8 +59,12 @@ static const struct nla_policy taskstats_cmd_get_policy[TASKSTATS_CMD_ATTR_MAX+1
 	[TASKSTATS_CMD_ATTR_PID]  = { .type = NLA_U32 },
 	[TASKSTATS_CMD_ATTR_TGID] = { .type = NLA_U32 },
 	[TASKSTATS_CMD_ATTR_REGISTER_CPUMASK] = { .type = NLA_STRING },
+<<<<<<< HEAD
 	[TASKSTATS_CMD_ATTR_DEREGISTER_CPUMASK] = { .type = NLA_STRING },
 	[TASKSTATS_CMD_ATTR_FOREACH] = { .type = NLA_U32 },};
+=======
+	[TASKSTATS_CMD_ATTR_DEREGISTER_CPUMASK] = { .type = NLA_STRING },};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * We have to use TASKSTATS_CMD_ATTR_MAX here, it is the maxattr in the family.
@@ -63,11 +74,14 @@ static const struct nla_policy cgroupstats_cmd_get_policy[TASKSTATS_CMD_ATTR_MAX
 	[CGROUPSTATS_CMD_ATTR_FD] = { .type = NLA_U32 },
 };
 
+<<<<<<< HEAD
 static const struct nla_policy
 		sysstats_cmd_get_policy[TASKSTATS_CMD_ATTR_MAX+1] = {
 	[SYSSTATS_CMD_ATTR_SYSMEM_STATS] = { .type = NLA_U32 },
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct listener {
 	struct list_head list;
 	pid_t pid;
@@ -80,11 +94,14 @@ struct listener_list {
 };
 static DEFINE_PER_CPU(struct listener_list, listener_array);
 
+<<<<<<< HEAD
 struct tgid_iter {
 	unsigned int tgid;
 	struct task_struct *task;
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 enum actions {
 	REGISTER,
 	DEREGISTER,
@@ -415,6 +432,7 @@ err:
 	return NULL;
 }
 
+<<<<<<< HEAD
 #define K(x) ((x) << (PAGE_SHIFT - 10))
 #ifndef CONFIG_NUMA
 static void sysstats_fill_zoneinfo(struct sys_memstats *stats)
@@ -551,6 +569,8 @@ err:
 	return rc;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int cgroupstats_user_cmd(struct sk_buff *skb, struct genl_info *info)
 {
 	int rc = 0;
@@ -644,6 +664,7 @@ static size_t taskstats_packet_size(void)
 	return size;
 }
 
+<<<<<<< HEAD
 static int taskstats2_cmd_attr_pid(struct genl_info *info)
 {
 	struct taskstats2 *stats;
@@ -703,6 +724,8 @@ err:
 	return rc;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int cmd_attr_pid(struct genl_info *info)
 {
 	struct taskstats *stats;
@@ -761,6 +784,7 @@ err:
 	return rc;
 }
 
+<<<<<<< HEAD
 static struct tgid_iter next_tgid(struct pid_namespace *ns,
 					struct tgid_iter iter)
 {
@@ -869,6 +893,8 @@ static int taskstats2_user_cmd(struct sk_buff *skb, struct genl_info *info)
 		return -EINVAL;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int taskstats_user_cmd(struct sk_buff *skb, struct genl_info *info)
 {
 	if (info->attrs[TASKSTATS_CMD_ATTR_REGISTER_CPUMASK])
@@ -886,6 +912,7 @@ static int taskstats_user_cmd(struct sk_buff *skb, struct genl_info *info)
 static struct taskstats *taskstats_tgid_alloc(struct task_struct *tsk)
 {
 	struct signal_struct *sig = tsk->signal;
+<<<<<<< HEAD
 	struct taskstats *stats;
 
 	if (sig->stats || thread_group_empty(tsk))
@@ -905,6 +932,35 @@ static struct taskstats *taskstats_tgid_alloc(struct task_struct *tsk)
 		kmem_cache_free(taskstats_cache, stats);
 ret:
 	return sig->stats;
+=======
+	struct taskstats *stats_new, *stats;
+
+	/* Pairs with smp_store_release() below. */
+	stats = smp_load_acquire(&sig->stats);
+	if (stats || thread_group_empty(tsk))
+		return stats;
+
+	/* No problem if kmem_cache_zalloc() fails */
+	stats_new = kmem_cache_zalloc(taskstats_cache, GFP_KERNEL);
+
+	spin_lock_irq(&tsk->sighand->siglock);
+	stats = sig->stats;
+	if (!stats) {
+		/*
+		 * Pairs with smp_store_release() above and order the
+		 * kmem_cache_zalloc().
+		 */
+		smp_store_release(&sig->stats, stats_new);
+		stats = stats_new;
+		stats_new = NULL;
+	}
+	spin_unlock_irq(&tsk->sighand->siglock);
+
+	if (stats_new)
+		kmem_cache_free(taskstats_cache, stats_new);
+
+	return stats;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Send pid data out on exit */
@@ -976,21 +1032,27 @@ static const struct genl_ops taskstats_ops[] = {
 		.flags		= GENL_ADMIN_PERM,
 	},
 	{
+<<<<<<< HEAD
 		.cmd		= TASKSTATS2_CMD_GET,
 		.doit		= taskstats2_user_cmd,
 		.dumpit		= taskstats2_foreach,
 		.policy		= taskstats_cmd_get_policy,
 	},
 	{
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.cmd		= CGROUPSTATS_CMD_GET,
 		.doit		= cgroupstats_user_cmd,
 		.policy		= cgroupstats_cmd_get_policy,
 	},
+<<<<<<< HEAD
 	{
 		.cmd		= SYSSTATS_CMD_GET,
 		.doit		= sysstats_user_cmd,
 		.policy		= sysstats_cmd_get_policy,
 	},
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static struct genl_family family __ro_after_init = {

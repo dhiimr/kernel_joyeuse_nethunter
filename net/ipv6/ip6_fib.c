@@ -893,8 +893,12 @@ static int fib6_add_rt2node(struct fib6_node *fn, struct rt6_info *rt,
 					found++;
 					break;
 				}
+<<<<<<< HEAD
 				if (rt_can_ecmp)
 					fallback_ins = fallback_ins ?: ins;
+=======
+				fallback_ins = fallback_ins ?: ins;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				goto next_iter;
 			}
 
@@ -934,7 +938,13 @@ next_iter:
 	}
 
 	if (fallback_ins && !found) {
+<<<<<<< HEAD
 		/* No ECMP-able route found, replace first non-ECMP one */
+=======
+		/* No matching route with same ecmp-able-ness found, replace
+		 * first matching route
+		 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ins = fallback_ins;
 		iter = *ins;
 		found++;

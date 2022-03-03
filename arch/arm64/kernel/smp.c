@@ -57,10 +57,13 @@
 #include <asm/tlbflush.h>
 #include <asm/ptrace.h>
 #include <asm/virt.h>
+<<<<<<< HEAD
 #include <asm/system_misc.h>
 #include <soc/qcom/minidump.h>
 
 #include <soc/qcom/scm.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/ipi.h>
@@ -87,6 +90,7 @@ enum ipi_msg_type {
 	IPI_WAKEUP
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARM64_VHE
 
 /* Whether the boot CPU is running in HYP mode or not*/
@@ -124,6 +128,8 @@ void verify_cpu_run_el(void)
 static inline void save_boot_cpu_run_el(void) {}
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_HOTPLUG_CPU
 static int op_cpu_kill(unsigned int cpu);
 #else
@@ -147,6 +153,10 @@ static int boot_secondary(unsigned int cpu, struct task_struct *idle)
 }
 
 static DECLARE_COMPLETION(cpu_running);
+<<<<<<< HEAD
+=======
+bool va52mismatch __ro_after_init;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 int __cpu_up(unsigned int cpu, struct task_struct *idle)
 {
@@ -176,10 +186,21 @@ int __cpu_up(unsigned int cpu, struct task_struct *idle)
 
 		if (!cpu_online(cpu)) {
 			pr_crit("CPU%u: failed to come online\n", cpu);
+<<<<<<< HEAD
+=======
+
+			if (IS_ENABLED(CONFIG_ARM64_52BIT_VA) && va52mismatch)
+				pr_crit("CPU%u: does not support 52-bit VAs\n", cpu);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ret = -EIO;
 		}
 	} else {
 		pr_err("CPU%u: failed to boot: %d\n", cpu, ret);
+<<<<<<< HEAD
+=======
+		return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	secondary_data.task = NULL;
@@ -355,7 +376,11 @@ void __cpu_die(unsigned int cpu)
 		pr_crit("CPU%u: cpu didn't die\n", cpu);
 		return;
 	}
+<<<<<<< HEAD
 	pr_info("CPU%u: shutdown\n", cpu);
+=======
+	pr_notice("CPU%u: shutdown\n", cpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Now that the dying CPU is beyond the point of no return w.r.t.
@@ -440,7 +465,10 @@ void __init smp_cpus_done(unsigned int max_cpus)
 	setup_cpu_features();
 	hyp_mode_check();
 	apply_alternatives_all();
+<<<<<<< HEAD
 	scm_enable_mem_protection();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mark_linear_text_alias_ro();
 }
 
@@ -453,6 +481,7 @@ void __init smp_prepare_boot_cpu(void)
 	 */
 	jump_label_init();
 	cpuinfo_store_boot_cpu();
+<<<<<<< HEAD
 	save_boot_cpu_run_el();
 	/*
 	 * Run the errata work around checks on the boot CPU, once we have
@@ -460,6 +489,8 @@ void __init smp_prepare_boot_cpu(void)
 	 * cpuinfo_store_boot_cpu() above.
 	 */
 	update_cpu_errata_workarounds();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static u64 __init of_get_cpu_mpidr(struct device_node *dn)
@@ -615,8 +646,11 @@ acpi_parse_gic_cpu_interface(struct acpi_subtable_header *header,
 #else
 #define acpi_table_parse_madt(...)	do { } while (0)
 #endif
+<<<<<<< HEAD
 void (*__smp_cross_call)(const struct cpumask *, unsigned int);
 DEFINE_PER_CPU(bool, pending_ipi);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Enumerate the possible CPU set from the device tree and build the
@@ -763,6 +797,11 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 	}
 }
 
+<<<<<<< HEAD
+=======
+void (*__smp_cross_call)(const struct cpumask *, unsigned int);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void __init set_smp_cross_call(void (*fn)(const struct cpumask *, unsigned int))
 {
 	__smp_cross_call = fn;
@@ -785,6 +824,7 @@ static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
 	__smp_cross_call(target, ipinr);
 }
 
+<<<<<<< HEAD
 static void smp_cross_call_common(const struct cpumask *cpumask,
 				  unsigned int func)
 {
@@ -796,6 +836,8 @@ static void smp_cross_call_common(const struct cpumask *cpumask,
 	smp_cross_call(cpumask, func);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void show_ipi_list(struct seq_file *p, int prec)
 {
 	unsigned int cpu, i;
@@ -823,18 +865,30 @@ u64 smp_irq_stat_cpu(unsigned int cpu)
 
 void arch_send_call_function_ipi_mask(const struct cpumask *mask)
 {
+<<<<<<< HEAD
 	smp_cross_call_common(mask, IPI_CALL_FUNC);
+=======
+	smp_cross_call(mask, IPI_CALL_FUNC);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void arch_send_call_function_single_ipi(int cpu)
 {
+<<<<<<< HEAD
 	smp_cross_call_common(cpumask_of(cpu), IPI_CALL_FUNC);
+=======
+	smp_cross_call(cpumask_of(cpu), IPI_CALL_FUNC);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #ifdef CONFIG_ARM64_ACPI_PARKING_PROTOCOL
 void arch_send_wakeup_ipi_mask(const struct cpumask *mask)
 {
+<<<<<<< HEAD
 	smp_cross_call_common(mask, IPI_WAKEUP);
+=======
+	smp_cross_call(mask, IPI_WAKEUP);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #endif
 
@@ -842,6 +896,7 @@ void arch_send_wakeup_ipi_mask(const struct cpumask *mask)
 void arch_irq_work_raise(void)
 {
 	if (__smp_cross_call)
+<<<<<<< HEAD
 		smp_cross_call_common(cpumask_of(smp_processor_id()),
 				      IPI_IRQ_WORK);
 }
@@ -870,6 +925,19 @@ static void ipi_cpu_stop(unsigned int cpu, struct pt_regs *regs)
 	set_cpu_active(cpu, false);
 
 	flush_cache_all();
+=======
+		smp_cross_call(cpumask_of(smp_processor_id()), IPI_IRQ_WORK);
+}
+#endif
+
+/*
+ * ipi_cpu_stop - handle IPI from smp_send_stop()
+ */
+static void ipi_cpu_stop(unsigned int cpu)
+{
+	set_cpu_online(cpu, false);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	local_irq_disable();
 
 	while (1)
@@ -925,7 +993,11 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 
 	case IPI_CPU_STOP:
 		irq_enter();
+<<<<<<< HEAD
 		ipi_cpu_stop(cpu, regs);
+=======
+		ipi_cpu_stop(cpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		irq_exit();
 		break;
 
@@ -969,28 +1041,57 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 
 	if ((unsigned)ipinr < NR_IPI)
 		trace_ipi_exit_rcuidle(ipi_types[ipinr]);
+<<<<<<< HEAD
 	per_cpu(pending_ipi, cpu) = false;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	set_irq_regs(old_regs);
 }
 
 void smp_send_reschedule(int cpu)
 {
+<<<<<<< HEAD
 	BUG_ON(cpu_is_offline(cpu));
 	smp_cross_call_common(cpumask_of(cpu), IPI_RESCHEDULE);
+=======
+	smp_cross_call(cpumask_of(cpu), IPI_RESCHEDULE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
 void tick_broadcast(const struct cpumask *mask)
 {
+<<<<<<< HEAD
 	smp_cross_call_common(mask, IPI_TIMER);
 }
 #endif
 
+=======
+	smp_cross_call(mask, IPI_TIMER);
+}
+#endif
+
+/*
+ * The number of CPUs online, not counting this CPU (which may not be
+ * fully online and so not counted in num_online_cpus()).
+ */
+static inline unsigned int num_other_online_cpus(void)
+{
+	unsigned int this_cpu_online = cpu_online(smp_processor_id());
+
+	return num_online_cpus() - this_cpu_online;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void smp_send_stop(void)
 {
 	unsigned long timeout;
 
+<<<<<<< HEAD
 	if (num_online_cpus() > 1) {
+=======
+	if (num_other_online_cpus()) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cpumask_t mask;
 
 		cpumask_copy(&mask, cpu_online_mask);
@@ -998,15 +1099,26 @@ void smp_send_stop(void)
 
 		if (system_state <= SYSTEM_RUNNING)
 			pr_crit("SMP: stopping secondary CPUs\n");
+<<<<<<< HEAD
 		smp_cross_call_common(&mask, IPI_CPU_STOP);
+=======
+		smp_cross_call(&mask, IPI_CPU_STOP);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Wait up to one second for other CPUs to stop */
 	timeout = USEC_PER_SEC;
+<<<<<<< HEAD
 	while (num_active_cpus() > 1 && timeout--)
 		udelay(1);
 
 	if (num_active_cpus() > 1)
+=======
+	while (num_other_online_cpus() && timeout--)
+		udelay(1);
+
+	if (num_other_online_cpus())
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pr_warning("SMP: failed to stop secondary CPUs %*pbl\n",
 			   cpumask_pr_args(cpu_online_mask));
 }
@@ -1027,13 +1139,25 @@ void crash_smp_send_stop(void)
 
 	cpus_stopped = 1;
 
+<<<<<<< HEAD
 	if (num_online_cpus() == 1)
+=======
+	/*
+	 * If this cpu is the only one alive at this point in time, online or
+	 * not, there are no stop messages to be sent around, so just back out.
+	 */
+	if (num_other_online_cpus() == 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 
 	cpumask_copy(&mask, cpu_online_mask);
 	cpumask_clear_cpu(smp_processor_id(), &mask);
 
+<<<<<<< HEAD
 	atomic_set(&waiting_for_crash_ipi, num_online_cpus() - 1);
+=======
+	atomic_set(&waiting_for_crash_ipi, num_other_online_cpus());
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	pr_crit("SMP: stopping secondary CPUs\n");
 	smp_cross_call(&mask, IPI_CPU_CRASH_STOP);

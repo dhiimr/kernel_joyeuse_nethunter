@@ -96,8 +96,13 @@ config USB_GADGET_DEBUG_FS
 	   to conserve kernel memory, say "N".
 
 config USB_GADGET_VBUS_DRAW
+<<<<<<< HEAD
 	int "Maximum VBUS Power usage (2-900 mA)"
 	range 2 900
+=======
+	int "Maximum VBUS Power usage (2-500 mA)"
+	range 2 500
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	default 2
 	help
 	   Some devices need to draw power from USB when they are
@@ -106,9 +111,13 @@ config USB_GADGET_VBUS_DRAW
 	   such as an AC adapter or batteries.
 
 	   Enter the maximum power your device draws through USB, in
+<<<<<<< HEAD
 	   milliAmperes.  The permitted range of values depends on the
 	   connected speed: for SuperSpeed and up it is 2 - 900 mA, but
 	   connections at High Speed or slower will be capped at 500 mA;
+=======
+	   milliAmperes.  The permitted range of values is 2 - 500 mA;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	   0 mA would be legal, but can make some hosts misbehave.
 
 	   This value will be used except for system-specific gadget
@@ -184,9 +193,12 @@ config USB_F_EEM
 config USB_F_SUBSET
 	tristate
 
+<<<<<<< HEAD
 config USB_RNDIS
 	tristate
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config USB_F_RNDIS
 	tristate
 
@@ -220,6 +232,7 @@ config USB_F_PRINTER
 config USB_F_TCM
 	tristate
 
+<<<<<<< HEAD
 config USB_F_MTP
 	tristate
 
@@ -247,6 +260,8 @@ config USB_F_GSI
 config USB_F_QDSS
 	tristate
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # this first set of drivers all depend on bulk-capable hardware.
 
 config USB_CONFIGFS
@@ -296,6 +311,10 @@ config USB_CONFIGFS_NCM
 	depends on NET
 	select USB_U_ETHER
 	select USB_F_NCM
+<<<<<<< HEAD
+=======
+	select CRC32
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  NCM is an advanced protocol for Ethernet encapsulation, allows
 	  grouping of several ethernet frames into one USB transfer and
@@ -328,7 +347,10 @@ config USB_CONFIGFS_RNDIS
 	depends on USB_CONFIGFS
 	depends on NET
 	select USB_U_ETHER
+<<<<<<< HEAD
 	select USB_RNDIS
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select USB_F_RNDIS
 	help
 	   Microsoft Windows XP bundles the "Remote NDIS" (RNDIS) protocol,
@@ -346,6 +368,10 @@ config USB_CONFIGFS_EEM
 	depends on NET
 	select USB_U_ETHER
 	select USB_F_EEM
+<<<<<<< HEAD
+=======
+	select CRC32
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  CDC EEM is a newer USB standard that is somewhat simpler than CDC ECM
 	  and therefore can be supported by more hardware.  Technically ECM and
@@ -401,6 +427,7 @@ config USB_CONFIGFS_F_FS
 	  implemented in kernel space (for instance Ethernet, serial or
 	  mass storage) and other are implemented in user space.
 
+<<<<<<< HEAD
 config USB_CONFIGFS_F_MTP
 	boolean "MTP gadget"
 	depends on USB_CONFIGFS
@@ -439,6 +466,8 @@ config USB_CONFIGFS_UEVENT
 	  state changes. The gadget can be in any of the following
 	  three states: "CONNECTED/DISCONNECTED/CONFIGURED"
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config USB_CONFIGFS_F_UAC1
 	bool "Audio Class 1.0"
 	depends on USB_CONFIGFS
@@ -553,6 +582,7 @@ config USB_CONFIGFS_F_TCM
 	  Both protocols can work on USB2.0 and USB3.0.
 	  UAS utilizes the USB 3.0 feature called streams support.
 
+<<<<<<< HEAD
 config USB_CONFIGFS_F_DIAG
 	bool "USB Diag function"
 	select USB_F_DIAG
@@ -606,6 +636,8 @@ config USB_CONFIGFS_F_QDSS
 	help
 	  USB QDSS function driver to get hwtracing related data over USB.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 choice
 	tristate "USB Gadget precomposed configurations"
 	default USB_ETH

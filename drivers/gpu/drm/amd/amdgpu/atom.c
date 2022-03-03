@@ -742,8 +742,13 @@ static void atom_op_jump(atom_exec_context *ctx, int *ptr, int arg)
 			cjiffies = jiffies;
 			if (time_after(cjiffies, ctx->last_jump_jiffies)) {
 				cjiffies -= ctx->last_jump_jiffies;
+<<<<<<< HEAD
 				if ((jiffies_to_msecs(cjiffies) > 5000)) {
 					DRM_ERROR("atombios stuck in loop for more than 5secs aborting\n");
+=======
+				if ((jiffies_to_msecs(cjiffies) > 10000)) {
+					DRM_ERROR("atombios stuck in loop for more than 10secs aborting\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					ctx->abort = true;
 				}
 			} else {

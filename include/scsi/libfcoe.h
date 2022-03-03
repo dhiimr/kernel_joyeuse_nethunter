@@ -241,6 +241,10 @@ struct fcoe_fcf {
  * @vn_mac:	VN_Node assigned MAC address for data
  */
 struct fcoe_rport {
+<<<<<<< HEAD
+=======
+	struct fc_rport_priv rdata;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long time;
 	u16 fcoe_len;
 	u16 flags;
@@ -260,7 +264,11 @@ int fcoe_ctlr_recv_flogi(struct fcoe_ctlr *, struct fc_lport *,
 			 struct fc_frame *);
 
 /* libfcoe funcs */
+<<<<<<< HEAD
 u64 fcoe_wwn_from_mac(unsigned char mac[], unsigned int, unsigned int);
+=======
+u64 fcoe_wwn_from_mac(unsigned char mac[MAX_ADDR_LEN], unsigned int, unsigned int);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int fcoe_libfc_config(struct fc_lport *, struct fcoe_ctlr *,
 		      const struct libfc_function_template *, int init_fcp);
 u32 fcoe_fc_crc(struct fc_frame *fp);

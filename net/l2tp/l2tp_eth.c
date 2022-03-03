@@ -54,7 +54,11 @@ struct l2tp_eth {
 
 /* via l2tp_session_priv() */
 struct l2tp_eth_sess {
+<<<<<<< HEAD
 	struct net_device	*dev;
+=======
+	struct net_device __rcu *dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 
@@ -72,7 +76,18 @@ static int l2tp_eth_dev_init(struct net_device *dev)
 
 static void l2tp_eth_dev_uninit(struct net_device *dev)
 {
+<<<<<<< HEAD
 	dev_put(dev);
+=======
+	struct l2tp_eth *priv = netdev_priv(dev);
+	struct l2tp_eth_sess *spriv;
+
+	spriv = l2tp_session_priv(priv->session);
+	RCU_INIT_POINTER(spriv->dev, NULL);
+	/* No need for synchronize_net() here. We're called by
+	 * unregister_netdev*(), which does the synchronisation for us.
+	 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int l2tp_eth_dev_xmit(struct sk_buff *skb, struct net_device *dev)
@@ -130,8 +145,13 @@ static void l2tp_eth_dev_setup(struct net_device *dev)
 static void l2tp_eth_dev_recv(struct l2tp_session *session, struct sk_buff *skb, int data_len)
 {
 	struct l2tp_eth_sess *spriv = l2tp_session_priv(session);
+<<<<<<< HEAD
 	struct net_device *dev = spriv->dev;
 	struct l2tp_eth *priv = netdev_priv(dev);
+=======
+	struct net_device *dev;
+	struct l2tp_eth *priv;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (session->debug & L2TP_MSG_DATA) {
 		unsigned int length;
@@ -155,16 +175,35 @@ static void l2tp_eth_dev_recv(struct l2tp_session *session, struct sk_buff *skb,
 	skb_dst_drop(skb);
 	nf_reset(skb);
 
+<<<<<<< HEAD
+=======
+	rcu_read_lock();
+	dev = rcu_dereference(spriv->dev);
+	if (!dev)
+		goto error_rcu;
+
+	priv = netdev_priv(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (dev_forward_skb(dev, skb) == NET_RX_SUCCESS) {
 		atomic_long_inc(&priv->rx_packets);
 		atomic_long_add(data_len, &priv->rx_bytes);
 	} else {
 		atomic_long_inc(&priv->rx_errors);
 	}
+<<<<<<< HEAD
 	return;
 
 error:
 	atomic_long_inc(&priv->rx_errors);
+=======
+	rcu_read_unlock();
+
+	return;
+
+error_rcu:
+	rcu_read_unlock();
+error:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree_skb(skb);
 }
 
@@ -175,11 +214,23 @@ static void l2tp_eth_delete(struct l2tp_session *session)
 
 	if (session) {
 		spriv = l2tp_session_priv(session);
+<<<<<<< HEAD
 		dev = spriv->dev;
 		if (dev) {
 			unregister_netdev(dev);
 			spriv->dev = NULL;
 			module_put(THIS_MODULE);
+=======
+
+		rtnl_lock();
+		dev = rtnl_dereference(spriv->dev);
+		if (dev) {
+			unregister_netdevice(dev);
+			rtnl_unlock();
+			module_put(THIS_MODULE);
+		} else {
+			rtnl_unlock();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 }
@@ -189,9 +240,26 @@ static void l2tp_eth_show(struct seq_file *m, void *arg)
 {
 	struct l2tp_session *session = arg;
 	struct l2tp_eth_sess *spriv = l2tp_session_priv(session);
+<<<<<<< HEAD
 	struct net_device *dev = spriv->dev;
 
 	seq_printf(m, "   interface %s\n", dev->name);
+=======
+	struct net_device *dev;
+
+	rcu_read_lock();
+	dev = rcu_dereference(spriv->dev);
+	if (!dev) {
+		rcu_read_unlock();
+		return;
+	}
+	dev_hold(dev);
+	rcu_read_unlock();
+
+	seq_printf(m, "   interface %s\n", dev->name);
+
+	dev_put(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #endif
 
@@ -268,14 +336,22 @@ static int l2tp_eth_create(struct net *net, struct l2tp_tunnel *tunnel,
 				      peer_session_id, cfg);
 	if (IS_ERR(session)) {
 		rc = PTR_ERR(session);
+<<<<<<< HEAD
 		goto out;
+=======
+		goto err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	dev = alloc_netdev(sizeof(*priv), name, name_assign_type,
 			   l2tp_eth_dev_setup);
 	if (!dev) {
 		rc = -ENOMEM;
+<<<<<<< HEAD
 		goto out_del_session;
+=======
+		goto err_sess;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	dev_net_set(dev, net);
@@ -295,6 +371,7 @@ static int l2tp_eth_create(struct net *net, struct l2tp_tunnel *tunnel,
 #endif
 
 	spriv = l2tp_session_priv(session);
+<<<<<<< HEAD
 	spriv->dev = dev;
 
 	rc = register_netdev(dev);
@@ -315,6 +392,50 @@ out_del_dev:
 out_del_session:
 	l2tp_session_delete(session);
 out:
+=======
+
+	l2tp_session_inc_refcount(session);
+
+	rtnl_lock();
+
+	/* Register both device and session while holding the rtnl lock. This
+	 * ensures that l2tp_eth_delete() will see that there's a device to
+	 * unregister, even if it happened to run before we assign spriv->dev.
+	 */
+	rc = l2tp_session_register(session, tunnel);
+	if (rc < 0) {
+		rtnl_unlock();
+		goto err_sess_dev;
+	}
+
+	rc = register_netdevice(dev);
+	if (rc < 0) {
+		rtnl_unlock();
+		l2tp_session_delete(session);
+		l2tp_session_dec_refcount(session);
+		free_netdev(dev);
+
+		return rc;
+	}
+
+	strlcpy(session->ifname, dev->name, IFNAMSIZ);
+	rcu_assign_pointer(spriv->dev, dev);
+
+	rtnl_unlock();
+
+	l2tp_session_dec_refcount(session);
+
+	__module_get(THIS_MODULE);
+
+	return 0;
+
+err_sess_dev:
+	l2tp_session_dec_refcount(session);
+	free_netdev(dev);
+err_sess:
+	kfree(session);
+err:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return rc;
 }
 

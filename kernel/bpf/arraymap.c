@@ -19,9 +19,12 @@
 
 #include "map_in_map.h"
 
+<<<<<<< HEAD
 #define ARRAY_CREATE_FLAG_MASK \
 	(BPF_F_NUMA_NODE | BPF_F_RDONLY | BPF_F_WRONLY)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void bpf_array_free_percpu(struct bpf_array *array)
 {
 	int i;
@@ -63,8 +66,12 @@ static struct bpf_map *array_map_alloc(union bpf_attr *attr)
 
 	/* check sanity of attributes */
 	if (attr->max_entries == 0 || attr->key_size != 4 ||
+<<<<<<< HEAD
 	    attr->value_size == 0 ||
 	    attr->map_flags & ~ARRAY_CREATE_FLAG_MASK ||
+=======
+	    attr->value_size == 0 || attr->map_flags & ~BPF_F_NUMA_NODE ||
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    (percpu && numa_node != NUMA_NO_NODE))
 		return ERR_PTR(-EINVAL);
 

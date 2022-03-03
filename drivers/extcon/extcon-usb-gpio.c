@@ -36,7 +36,10 @@ struct usb_extcon_info {
 
 	struct gpio_desc *id_gpiod;
 	struct gpio_desc *vbus_gpiod;
+<<<<<<< HEAD
 	struct gpio_desc *vbus_out_gpiod;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int id_irq;
 	int vbus_irq;
 
@@ -81,17 +84,25 @@ static void usb_extcon_detect_cable(struct work_struct *work)
 		gpiod_get_value_cansleep(info->vbus_gpiod) : id;
 
 	/* at first we clean states which are no longer active */
+<<<<<<< HEAD
 	if (id) {
 		if (info->vbus_out_gpiod)
 			gpiod_set_value_cansleep(info->vbus_out_gpiod, 0);
 		extcon_set_state_sync(info->edev, EXTCON_USB_HOST, false);
 	}
+=======
+	if (id)
+		extcon_set_state_sync(info->edev, EXTCON_USB_HOST, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!vbus)
 		extcon_set_state_sync(info->edev, EXTCON_USB, false);
 
 	if (!id) {
+<<<<<<< HEAD
 		if (info->vbus_out_gpiod)
 			gpiod_set_value_cansleep(info->vbus_out_gpiod, 1);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		extcon_set_state_sync(info->edev, EXTCON_USB_HOST, true);
 	} else {
 		if (vbus)
@@ -127,8 +138,11 @@ static int usb_extcon_probe(struct platform_device *pdev)
 	info->id_gpiod = devm_gpiod_get_optional(&pdev->dev, "id", GPIOD_IN);
 	info->vbus_gpiod = devm_gpiod_get_optional(&pdev->dev, "vbus",
 						   GPIOD_IN);
+<<<<<<< HEAD
 	info->vbus_out_gpiod = devm_gpiod_get_optional(&pdev->dev, "vbus-out",
 						   GPIOD_OUT_HIGH);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!info->id_gpiod && !info->vbus_gpiod) {
 		dev_err(dev, "failed to get gpios\n");
@@ -141,9 +155,12 @@ static int usb_extcon_probe(struct platform_device *pdev)
 	if (IS_ERR(info->vbus_gpiod))
 		return PTR_ERR(info->vbus_gpiod);
 
+<<<<<<< HEAD
 	if (IS_ERR(info->vbus_out_gpiod))
 		return PTR_ERR(info->vbus_out_gpiod);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	info->edev = devm_extcon_dev_allocate(dev, usb_extcon_cable);
 	if (IS_ERR(info->edev)) {
 		dev_err(dev, "failed to allocate extcon device\n");
@@ -205,7 +222,11 @@ static int usb_extcon_probe(struct platform_device *pdev)
 	}
 
 	platform_set_drvdata(pdev, info);
+<<<<<<< HEAD
 	device_init_wakeup(&pdev->dev, true);
+=======
+	device_set_wakeup_capable(&pdev->dev, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Perform initial detection */
 	usb_extcon_detect_cable(&info->wq_detcable.work);

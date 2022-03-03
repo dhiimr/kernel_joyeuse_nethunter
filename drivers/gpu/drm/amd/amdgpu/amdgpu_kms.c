@@ -87,6 +87,7 @@ int amdgpu_driver_load_kms(struct drm_device *dev, unsigned long flags)
 	struct amdgpu_device *adev;
 	int r, acpi_status;
 
+<<<<<<< HEAD
 #ifdef CONFIG_DRM_AMDGPU_SI
 	if (!amdgpu_si_support) {
 		switch (flags & AMD_ASIC_MASK) {
@@ -122,6 +123,8 @@ int amdgpu_driver_load_kms(struct drm_device *dev, unsigned long flags)
 	}
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	adev = kzalloc(sizeof(struct amdgpu_device), GFP_KERNEL);
 	if (adev == NULL) {
 		return -ENOMEM;
@@ -537,8 +540,20 @@ static int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file
 		 * in the bitfields */
 		if (se_num == AMDGPU_INFO_MMR_SE_INDEX_MASK)
 			se_num = 0xffffffff;
+<<<<<<< HEAD
 		if (sh_num == AMDGPU_INFO_MMR_SH_INDEX_MASK)
 			sh_num = 0xffffffff;
+=======
+		else if (se_num >= AMDGPU_GFX_MAX_SE)
+			return -EINVAL;
+		if (sh_num == AMDGPU_INFO_MMR_SH_INDEX_MASK)
+			sh_num = 0xffffffff;
+		else if (sh_num >= AMDGPU_GFX_MAX_SH_PER_SE)
+			return -EINVAL;
+
+		if (info->read_mmr_reg.count > 128)
+			return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		regs = kmalloc_array(info->read_mmr_reg.count, sizeof(*regs), GFP_KERNEL);
 		if (!regs)
@@ -559,8 +574,14 @@ static int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file
 		return n ? -EFAULT : 0;
 	}
 	case AMDGPU_INFO_DEV_INFO: {
+<<<<<<< HEAD
 		struct drm_amdgpu_info_device dev_info = {};
 
+=======
+		struct drm_amdgpu_info_device dev_info;
+
+		memset(&dev_info, 0, sizeof(dev_info));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_info.device_id = dev->pdev->device;
 		dev_info.chip_rev = adev->rev_id;
 		dev_info.external_rev = adev->external_rev_id;
@@ -816,7 +837,11 @@ int amdgpu_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
 
 	r = pm_runtime_get_sync(dev->dev);
 	if (r < 0)
+<<<<<<< HEAD
 		return r;
+=======
+		goto pm_put;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	fpriv = kzalloc(sizeof(*fpriv), GFP_KERNEL);
 	if (unlikely(!fpriv)) {
@@ -855,6 +880,10 @@ int amdgpu_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
 
 out_suspend:
 	pm_runtime_mark_last_busy(dev->dev);
+<<<<<<< HEAD
+=======
+pm_put:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pm_runtime_put_autosuspend(dev->dev);
 
 	return r;

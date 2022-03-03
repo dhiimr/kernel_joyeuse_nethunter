@@ -135,7 +135,11 @@ static int pv88060_set_current_limit(struct regulator_dev *rdev, int min,
 	int i;
 
 	/* search for closest to maximum */
+<<<<<<< HEAD
 	for (i = info->n_current_limits; i >= 0; i--) {
+=======
+	for (i = info->n_current_limits - 1; i >= 0; i--) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (min <= info->current_limits[i]
 			&& max >= info->current_limits[i]) {
 			return regmap_update_bits(rdev->regmap,

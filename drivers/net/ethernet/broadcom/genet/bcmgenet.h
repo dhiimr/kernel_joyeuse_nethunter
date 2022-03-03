@@ -368,6 +368,10 @@ struct bcmgenet_mib_counters {
 #define  EXT_PWR_DOWN_PHY_EN		(1 << 20)
 
 #define EXT_RGMII_OOB_CTRL		0x0C
+<<<<<<< HEAD
+=======
+#define  RGMII_MODE_EN_V123		(1 << 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define  RGMII_LINK			(1 << 4)
 #define  OOB_DISABLE			(1 << 5)
 #define  RGMII_MODE_EN			(1 << 6)

@@ -528,6 +528,12 @@ static void flush_to_ldisc(struct work_struct *work)
 		if (!count)
 			break;
 		head->read += count;
+<<<<<<< HEAD
+=======
+
+		if (need_resched())
+			cond_resched();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	mutex_unlock(&buf->lock);

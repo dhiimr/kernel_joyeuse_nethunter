@@ -1305,6 +1305,21 @@ static void mlx4_ib_tunnel_comp_handler(struct ib_cq *cq, void *arg)
 	spin_unlock_irqrestore(&dev->sriov.going_down_lock, flags);
 }
 
+<<<<<<< HEAD
+=======
+static void mlx4_ib_wire_comp_handler(struct ib_cq *cq, void *arg)
+{
+	unsigned long flags;
+	struct mlx4_ib_demux_pv_ctx *ctx = cq->cq_context;
+	struct mlx4_ib_dev *dev = to_mdev(ctx->ib_dev);
+
+	spin_lock_irqsave(&dev->sriov.going_down_lock, flags);
+	if (!dev->sriov.is_going_down && ctx->state == DEMUX_PV_STATE_ACTIVE)
+		queue_work(ctx->wi_wq, &ctx->work);
+	spin_unlock_irqrestore(&dev->sriov.going_down_lock, flags);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int mlx4_ib_post_pv_qp_buf(struct mlx4_ib_demux_pv_ctx *ctx,
 				  struct mlx4_ib_demux_pv_qp *tun_qp,
 				  int index)
@@ -1680,8 +1695,11 @@ tx_err:
 				    tx_buf_size, DMA_TO_DEVICE);
 		kfree(tun_qp->tx_ring[i].buf.addr);
 	}
+<<<<<<< HEAD
 	kfree(tun_qp->tx_ring);
 	tun_qp->tx_ring = NULL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	i = MLX4_NUM_TUNNEL_BUFS;
 err:
 	while (i > 0) {
@@ -1690,6 +1708,11 @@ err:
 				    rx_buf_size, DMA_FROM_DEVICE);
 		kfree(tun_qp->ring[i].addr);
 	}
+<<<<<<< HEAD
+=======
+	kfree(tun_qp->tx_ring);
+	tun_qp->tx_ring = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(tun_qp->ring);
 	tun_qp->ring = NULL;
 	return -ENOMEM;
@@ -2012,7 +2035,12 @@ static int create_pv_resources(struct ib_device *ibdev, int slave, int port,
 		cq_size *= 2;
 
 	cq_attr.cqe = cq_size;
+<<<<<<< HEAD
 	ctx->cq = ib_create_cq(ctx->ib_dev, mlx4_ib_tunnel_comp_handler,
+=======
+	ctx->cq = ib_create_cq(ctx->ib_dev,
+			       create_tun ? mlx4_ib_tunnel_comp_handler : mlx4_ib_wire_comp_handler,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			       NULL, ctx, &cq_attr);
 	if (IS_ERR(ctx->cq)) {
 		ret = PTR_ERR(ctx->cq);
@@ -2049,6 +2077,10 @@ static int create_pv_resources(struct ib_device *ibdev, int slave, int port,
 		INIT_WORK(&ctx->work, mlx4_ib_sqp_comp_worker);
 
 	ctx->wq = to_mdev(ibdev)->sriov.demux[port - 1].wq;
+<<<<<<< HEAD
+=======
+	ctx->wi_wq = to_mdev(ibdev)->sriov.demux[port - 1].wi_wq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = ib_req_notify_cq(ctx->cq, IB_CQ_NEXT_COMP);
 	if (ret) {
@@ -2192,7 +2224,11 @@ static int mlx4_ib_alloc_demux_ctx(struct mlx4_ib_dev *dev,
 		goto err_mcg;
 	}
 
+<<<<<<< HEAD
 	snprintf(name, sizeof name, "mlx4_ibt%d", port);
+=======
+	snprintf(name, sizeof(name), "mlx4_ibt%d", port);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ctx->wq = alloc_ordered_workqueue(name, WQ_MEM_RECLAIM);
 	if (!ctx->wq) {
 		pr_err("Failed to create tunnelling WQ for port %d\n", port);
@@ -2200,7 +2236,19 @@ static int mlx4_ib_alloc_demux_ctx(struct mlx4_ib_dev *dev,
 		goto err_wq;
 	}
 
+<<<<<<< HEAD
 	snprintf(name, sizeof name, "mlx4_ibud%d", port);
+=======
+	snprintf(name, sizeof(name), "mlx4_ibwi%d", port);
+	ctx->wi_wq = alloc_ordered_workqueue(name, WQ_MEM_RECLAIM);
+	if (!ctx->wi_wq) {
+		pr_err("Failed to create wire WQ for port %d\n", port);
+		ret = -ENOMEM;
+		goto err_wiwq;
+	}
+
+	snprintf(name, sizeof(name), "mlx4_ibud%d", port);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ctx->ud_wq = alloc_ordered_workqueue(name, WQ_MEM_RECLAIM);
 	if (!ctx->ud_wq) {
 		pr_err("Failed to create up/down WQ for port %d\n", port);
@@ -2211,6 +2259,13 @@ static int mlx4_ib_alloc_demux_ctx(struct mlx4_ib_dev *dev,
 	return 0;
 
 err_udwq:
+<<<<<<< HEAD
+=======
+	destroy_workqueue(ctx->wi_wq);
+	ctx->wi_wq = NULL;
+
+err_wiwq:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	destroy_workqueue(ctx->wq);
 	ctx->wq = NULL;
 
@@ -2258,12 +2313,20 @@ static void mlx4_ib_free_demux_ctx(struct mlx4_ib_demux_ctx *ctx)
 				ctx->tun[i]->state = DEMUX_PV_STATE_DOWNING;
 		}
 		flush_workqueue(ctx->wq);
+<<<<<<< HEAD
+=======
+		flush_workqueue(ctx->wi_wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		for (i = 0; i < dev->dev->caps.sqp_demux; i++) {
 			destroy_pv_resources(dev, i, ctx->port, ctx->tun[i], 0);
 			free_pv_object(dev, i, ctx->port);
 		}
 		kfree(ctx->tun);
 		destroy_workqueue(ctx->ud_wq);
+<<<<<<< HEAD
+=======
+		destroy_workqueue(ctx->wi_wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		destroy_workqueue(ctx->wq);
 	}
 }

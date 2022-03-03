@@ -22,7 +22,11 @@ static int tpmrm_open(struct inode *inode, struct file *file)
 	if (priv == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	rc = tpm2_init_space(&priv->space);
+=======
+	rc = tpm2_init_space(&priv->space, TPM2_SPACE_BUFFER_SIZE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (rc) {
 		kfree(priv);
 		return -ENOMEM;

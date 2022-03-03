@@ -10,6 +10,10 @@
 
 #include <linux/io.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/init.h>
 #include <linux/sizes.h>
 #include <linux/of_fdt.h>
@@ -27,6 +31,10 @@
 
 __iomem void *rt_sysc_membase;
 __iomem void *rt_memc_membase;
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(rt_sysc_membase);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 __iomem void *plat_of_remap_node(const char *node)
 {

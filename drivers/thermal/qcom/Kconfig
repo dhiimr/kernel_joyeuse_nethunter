@@ -9,6 +9,7 @@ config QCOM_TSENS
 	  thermal zone device via the mode file results in disabling the sensor.
 	  Also able to set threshold temperature for both hot and cold and update
 	  when a threshold is reached.
+<<<<<<< HEAD
 
 config QTI_THERMAL_LIMITS_DCVS
 	bool "QTI LMH DCVS Driver"
@@ -134,3 +135,5 @@ config QTI_RPM_SMD_COOLING_DEVICE
 	  railway at predefined voltage corner using RPM hardware.
 
 	  If you want this support, you should say Y here.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

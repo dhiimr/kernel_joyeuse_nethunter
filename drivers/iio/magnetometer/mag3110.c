@@ -52,6 +52,15 @@ struct mag3110_data {
 	struct i2c_client *client;
 	struct mutex lock;
 	u8 ctrl_reg1;
+<<<<<<< HEAD
+=======
+	/* Ensure natural alignment of timestamp */
+	struct {
+		__be16 channels[3];
+		u8 temperature;
+		s64 ts __aligned(8);
+	} scan;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static int mag3110_request(struct mag3110_data *data)
@@ -262,10 +271,16 @@ static irqreturn_t mag3110_trigger_handler(int irq, void *p)
 	struct iio_poll_func *pf = p;
 	struct iio_dev *indio_dev = pf->indio_dev;
 	struct mag3110_data *data = iio_priv(indio_dev);
+<<<<<<< HEAD
 	u8 buffer[16]; /* 3 16-bit channels + 1 byte temp + padding + ts */
 	int ret;
 
 	ret = mag3110_read(data, (__be16 *) buffer);
+=======
+	int ret;
+
+	ret = mag3110_read(data, data->scan.channels);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret < 0)
 		goto done;
 
@@ -274,10 +289,17 @@ static irqreturn_t mag3110_trigger_handler(int irq, void *p)
 			MAG3110_DIE_TEMP);
 		if (ret < 0)
 			goto done;
+<<<<<<< HEAD
 		buffer[6] = ret;
 	}
 
 	iio_push_to_buffers_with_timestamp(indio_dev, buffer,
+=======
+		data->scan.temperature = ret;
+	}
+
+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		iio_get_time_ns(indio_dev));
 
 done:

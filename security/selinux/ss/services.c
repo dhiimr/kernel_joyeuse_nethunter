@@ -91,7 +91,11 @@ static DEFINE_RWLOCK(policy_rwlock);
 
 static struct sidtab sidtab;
 struct policydb policydb;
+<<<<<<< HEAD
 int ss_initialized __rticdata;
+=======
+int ss_initialized;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * The largest sequence number that has been used when
@@ -2736,8 +2740,17 @@ err:
 	if (*names) {
 		for (i = 0; i < *len; i++)
 			kfree((*names)[i]);
+<<<<<<< HEAD
 	}
 	kfree(*values);
+=======
+		kfree(*names);
+	}
+	kfree(*values);
+	*len = 0;
+	*names = NULL;
+	*values = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	goto out;
 }
 

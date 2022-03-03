@@ -122,7 +122,13 @@ static void setup_sch_info(struct usb_device *udev,
 		}
 
 		if (ep_type == ISOC_IN_EP || ep_type == ISOC_OUT_EP) {
+<<<<<<< HEAD
 			if (esit_pkts <= sch_ep->esit)
+=======
+			if (sch_ep->esit == 1)
+				sch_ep->pkts = esit_pkts;
+			else if (esit_pkts <= sch_ep->esit)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				sch_ep->pkts = 1;
 			else
 				sch_ep->pkts = roundup_pow_of_two(esit_pkts)
@@ -282,6 +288,13 @@ static bool need_bw_sch(struct usb_host_endpoint *ep,
 	if (is_fs_or_ls(speed) && !has_tt)
 		return false;
 
+<<<<<<< HEAD
+=======
+	/* skip endpoint with zero maxpkt */
+	if (usb_endpoint_maxp(&ep->desc) == 0)
+		return false;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return true;
 }
 

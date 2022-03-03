@@ -2585,7 +2585,10 @@ static int pkt_new_dev(struct pktcdvd_device *pd, dev_t dev)
 	if (ret)
 		return ret;
 	if (!blk_queue_scsi_passthrough(bdev_get_queue(bdev))) {
+<<<<<<< HEAD
 		WARN_ONCE(true, "Attempt to register a non-SCSI queue\n");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		blkdev_put(bdev, FMODE_READ | FMODE_NDELAY);
 		return -EINVAL;
 	}

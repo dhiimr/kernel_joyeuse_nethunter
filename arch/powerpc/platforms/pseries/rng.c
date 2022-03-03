@@ -40,6 +40,10 @@ static __init int rng_init(void)
 
 	ppc_md.get_random_seed = pseries_get_random_long;
 
+<<<<<<< HEAD
+=======
+	of_node_put(dn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 machine_subsys_initcall(pseries, rng_init);

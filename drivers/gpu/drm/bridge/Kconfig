@@ -25,6 +25,7 @@ config DRM_ANALOGIX_ANX78XX
 	  the HDMI output of an application processor to MyDP
 	  or DisplayPort.
 
+<<<<<<< HEAD
 config DRM_ANALOGIX_ANX7625
 	tristate "Analogix ANX7625 bridge"
 	select DRM_KMS_HELPER
@@ -34,6 +35,8 @@ config DRM_ANALOGIX_ANX7625
 	  only, USB type C interface is not supported in
 	  this driver.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config DRM_DUMB_VGA_DAC
 	tristate "Dumb VGA DAC Bridge support"
 	depends on OF
@@ -44,6 +47,10 @@ config DRM_DUMB_VGA_DAC
 config DRM_LVDS_ENCODER
 	tristate "Transparent parallel to LVDS encoder support"
 	depends on OF
+<<<<<<< HEAD
+=======
+	select DRM_KMS_HELPER
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select DRM_PANEL_BRIDGE
 	help
 	  Support for transparent parallel to LVDS encoders that don't require
@@ -109,6 +116,7 @@ config DRM_TI_TFP410
 	---help---
 	  Texas Instruments TFP410 DVI/HDMI Transmitter driver
 
+<<<<<<< HEAD
 config DRM_LT_LT9611
 	bool "LT LT9611 DSI/HDMI Bridge"
 	depends on OF
@@ -118,6 +126,8 @@ config DRM_LT_LT9611
 	help
           upport for the LT Devices LT9611 DSI to HDMI encoder.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 source "drivers/gpu/drm/bridge/analogix/Kconfig"
 
 source "drivers/gpu/drm/bridge/adv7511/Kconfig"

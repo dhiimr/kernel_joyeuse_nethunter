@@ -236,6 +236,10 @@ EXPORT_SYMBOL(bcma_core_irq);
 
 void bcma_prepare_core(struct bcma_bus *bus, struct bcma_device *core)
 {
+<<<<<<< HEAD
+=======
+	device_initialize(&core->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	core->dev.release = bcma_release_core_dev;
 	core->dev.bus = &bcma_bus_type;
 	dev_set_name(&core->dev, "bcma%d:%d", bus->num, core->core_index);
@@ -299,11 +303,18 @@ static void bcma_register_core(struct bcma_bus *bus, struct bcma_device *core)
 {
 	int err;
 
+<<<<<<< HEAD
 	err = device_register(&core->dev);
 	if (err) {
 		bcma_err(bus, "Could not register dev for core 0x%03X\n",
 			 core->id.id);
 		put_device(&core->dev);
+=======
+	err = device_add(&core->dev);
+	if (err) {
+		bcma_err(bus, "Could not register dev for core 0x%03X\n",
+			 core->id.id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 	}
 	core->dev_registered = true;
@@ -394,7 +405,11 @@ void bcma_unregister_cores(struct bcma_bus *bus)
 	/* Now noone uses internally-handled cores, we can free them */
 	list_for_each_entry_safe(core, tmp, &bus->cores, list) {
 		list_del(&core->list);
+<<<<<<< HEAD
 		kfree(core);
+=======
+		put_device(&core->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 

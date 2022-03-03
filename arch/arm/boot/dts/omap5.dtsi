@@ -25,6 +25,14 @@
 		i2c2 = &i2c3;
 		i2c3 = &i2c4;
 		i2c4 = &i2c5;
+<<<<<<< HEAD
+=======
+		mmc0 = &mmc1;
+		mmc1 = &mmc2;
+		mmc2 = &mmc3;
+		mmc3 = &mmc4;
+		mmc4 = &mmc5;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		serial0 = &uart1;
 		serial1 = &uart2;
 		serial2 = &uart3;
@@ -131,6 +139,10 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 		ranges = <0 0 0 0xc0000000>;
+<<<<<<< HEAD
+=======
+		dma-ranges = <0x80000000 0x0 0x80000000 0x80000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ti,hwmods = "l3_main_1", "l3_main_2", "l3_main_3";
 		reg = <0 0x44000000 0 0x2000>,
 		      <0 0x44800000 0 0x3000>,

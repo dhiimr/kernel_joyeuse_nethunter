@@ -243,6 +243,12 @@ enum mddev_flags {
 	MD_UPDATING_SB,		/* md_check_recovery is updating the metadata
 				 * without explicitly holding reconfig_mutex.
 				 */
+<<<<<<< HEAD
+=======
+	MD_NOT_READY,		/* do_md_run() is active, so 'array_state'
+				 * must not report that array is ready yet
+				 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 enum mddev_sb_flags {

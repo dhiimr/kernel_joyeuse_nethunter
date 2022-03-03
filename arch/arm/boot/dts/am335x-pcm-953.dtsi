@@ -197,7 +197,11 @@
 	bus-width = <4>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&mmc1_pins>;
+<<<<<<< HEAD
 	cd-gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>;
+=======
+	cd-gpios = <&gpio0 6 GPIO_ACTIVE_LOW>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	status = "okay";
 };
 

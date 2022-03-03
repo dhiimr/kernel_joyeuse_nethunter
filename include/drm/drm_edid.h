@@ -279,11 +279,14 @@ struct detailed_timing {
 
 #define DRM_ELD_CEA_SAD(mnl, sad)	(20 + (mnl) + 3 * (sad))
 
+<<<<<<< HEAD
 /* HDMI 2.0 */
 #define DRM_EDID_3D_INDEPENDENT_VIEW	(1 << 2)
 #define DRM_EDID_3D_DUAL_VIEW		(1 << 1)
 #define DRM_EDID_3D_OSD_DISPARITY	(1 << 0)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct edid {
 	u8 header[8];
 	/* Vendor & product info */

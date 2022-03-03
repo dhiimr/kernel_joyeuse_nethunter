@@ -75,7 +75,11 @@ struct ports_driver_data {
 	/* All the console devices handled by this driver */
 	struct list_head consoles;
 };
+<<<<<<< HEAD
 static struct ports_driver_data pdrvdata;
+=======
+static struct ports_driver_data pdrvdata = { .next_vtermno = 1};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static DEFINE_SPINLOCK(pdrvdata_lock);
 static DECLARE_COMPLETION(early_console_added);
@@ -489,7 +493,11 @@ static struct port_buffer *get_inbuf(struct port *port)
 
 	buf = virtqueue_get_buf(port->in_vq, &len);
 	if (buf) {
+<<<<<<< HEAD
 		buf->len = len;
+=======
+		buf->len = min_t(size_t, len, buf->size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		buf->offset = 0;
 		port->stats.bytes_received += len;
 	}
@@ -1366,24 +1374,39 @@ static void set_console_size(struct port *port, u16 rows, u16 cols)
 	port->cons.ws.ws_col = cols;
 }
 
+<<<<<<< HEAD
 static unsigned int fill_queue(struct virtqueue *vq, spinlock_t *lock)
 {
 	struct port_buffer *buf;
 	unsigned int nr_added_bufs;
+=======
+static int fill_queue(struct virtqueue *vq, spinlock_t *lock)
+{
+	struct port_buffer *buf;
+	int nr_added_bufs;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 
 	nr_added_bufs = 0;
 	do {
 		buf = alloc_buf(vq->vdev, PAGE_SIZE, 0);
 		if (!buf)
+<<<<<<< HEAD
 			break;
+=======
+			return -ENOMEM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		spin_lock_irq(lock);
 		ret = add_inbuf(vq, buf);
 		if (ret < 0) {
 			spin_unlock_irq(lock);
 			free_buf(buf, true);
+<<<<<<< HEAD
 			break;
+=======
+			return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		nr_added_bufs++;
 		spin_unlock_irq(lock);
@@ -1403,7 +1426,10 @@ static int add_port(struct ports_device *portdev, u32 id)
 	char debugfs_name[16];
 	struct port *port;
 	dev_t devt;
+<<<<<<< HEAD
 	unsigned int nr_added_bufs;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err;
 
 	port = kmalloc(sizeof(*port), GFP_KERNEL);
@@ -1422,6 +1448,10 @@ static int add_port(struct ports_device *portdev, u32 id)
 	port->async_queue = NULL;
 
 	port->cons.ws.ws_row = port->cons.ws.ws_col = 0;
+<<<<<<< HEAD
+=======
+	port->cons.vtermno = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	port->host_connected = port->guest_connected = false;
 	port->stats = (struct port_stats) { 0 };
@@ -1461,11 +1491,21 @@ static int add_port(struct ports_device *portdev, u32 id)
 	spin_lock_init(&port->outvq_lock);
 	init_waitqueue_head(&port->waitqueue);
 
+<<<<<<< HEAD
 	/* Fill the in_vq with buffers so the host can send us data. */
 	nr_added_bufs = fill_queue(port->in_vq, &port->inbuf_lock);
 	if (!nr_added_bufs) {
 		dev_err(port->dev, "Error allocating inbufs\n");
 		err = -ENOMEM;
+=======
+	/* We can safely ignore ENOSPC because it means
+	 * the queue already has buffers. Buffers are removed
+	 * only by virtcons_remove(), not by unplug_port()
+	 */
+	err = fill_queue(port->in_vq, &port->inbuf_lock);
+	if (err < 0 && err != -ENOSPC) {
+		dev_err(port->dev, "Error allocating inbufs\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto free_device;
 	}
 
@@ -1753,7 +1793,11 @@ static void control_work_handler(struct work_struct *work)
 	while ((buf = virtqueue_get_buf(vq, &len))) {
 		spin_unlock(&portdev->c_ivq_lock);
 
+<<<<<<< HEAD
 		buf->len = len;
+=======
+		buf->len = min_t(size_t, len, buf->size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		buf->offset = 0;
 
 		handle_control_message(vq->vdev, portdev, buf);
@@ -2098,6 +2142,7 @@ static int virtcons_probe(struct virtio_device *vdev)
 	INIT_WORK(&portdev->control_work, &control_work_handler);
 
 	if (multiport) {
+<<<<<<< HEAD
 		unsigned int nr_added_bufs;
 
 		spin_lock_init(&portdev->c_ivq_lock);
@@ -2106,6 +2151,13 @@ static int virtcons_probe(struct virtio_device *vdev)
 		nr_added_bufs = fill_queue(portdev->c_ivq,
 					   &portdev->c_ivq_lock);
 		if (!nr_added_bufs) {
+=======
+		spin_lock_init(&portdev->c_ivq_lock);
+		spin_lock_init(&portdev->c_ovq_lock);
+
+		err = fill_queue(portdev->c_ivq, &portdev->c_ivq_lock);
+		if (err < 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			dev_err(&vdev->dev,
 				"Error allocating buffers for control queue\n");
 			/*
@@ -2116,7 +2168,11 @@ static int virtcons_probe(struct virtio_device *vdev)
 					   VIRTIO_CONSOLE_DEVICE_READY, 0);
 			/* Device was functional: we need full cleanup. */
 			virtcons_remove(vdev);
+<<<<<<< HEAD
 			return -ENOMEM;
+=======
+			return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	} else {
 		/*
@@ -2159,6 +2215,10 @@ static struct virtio_device_id id_table[] = {
 	{ VIRTIO_ID_CONSOLE, VIRTIO_DEV_ANY_ID },
 	{ 0 },
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(virtio, id_table);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static unsigned int features[] = {
 	VIRTIO_CONSOLE_F_SIZE,
@@ -2171,6 +2231,10 @@ static struct virtio_device_id rproc_serial_id_table[] = {
 #endif
 	{ 0 },
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(virtio, rproc_serial_id_table);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static unsigned int rproc_serial_features[] = {
 };
@@ -2323,6 +2387,9 @@ static void __exit fini(void)
 module_init(init);
 module_exit(fini);
 
+<<<<<<< HEAD
 MODULE_DEVICE_TABLE(virtio, id_table);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 MODULE_DESCRIPTION("Virtio console driver");
 MODULE_LICENSE("GPL");

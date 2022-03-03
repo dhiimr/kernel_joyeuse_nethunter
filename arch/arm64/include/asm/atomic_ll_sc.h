@@ -37,7 +37,11 @@
  * (the optimize attribute silently ignores these options).
  */
 
+<<<<<<< HEAD
 #define ATOMIC_OP(op, asm_op)						\
+=======
+#define ATOMIC_OP(op, asm_op, constraint)				\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 __LL_SC_INLINE void							\
 __LL_SC_PREFIX(atomic_##op(int i, atomic_t *v))				\
 {									\
@@ -51,11 +55,19 @@ __LL_SC_PREFIX(atomic_##op(int i, atomic_t *v))				\
 "	stxr	%w1, %w0, %2\n"						\
 "	cbnz	%w1, 1b"						\
 	: "=&r" (result), "=&r" (tmp), "+Q" (v->counter)		\
+<<<<<<< HEAD
 	: "Ir" (i));							\
 }									\
 __LL_SC_EXPORT(atomic_##op);
 
 #define ATOMIC_OP_RETURN(name, mb, acq, rel, cl, op, asm_op)		\
+=======
+	: #constraint "r" (i));						\
+}									\
+__LL_SC_EXPORT(atomic_##op);
+
+#define ATOMIC_OP_RETURN(name, mb, acq, rel, cl, op, asm_op, constraint)\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 __LL_SC_INLINE int							\
 __LL_SC_PREFIX(atomic_##op##_return##name(int i, atomic_t *v))		\
 {									\
@@ -70,14 +82,22 @@ __LL_SC_PREFIX(atomic_##op##_return##name(int i, atomic_t *v))		\
 "	cbnz	%w1, 1b\n"						\
 "	" #mb								\
 	: "=&r" (result), "=&r" (tmp), "+Q" (v->counter)		\
+<<<<<<< HEAD
 	: "Ir" (i)							\
+=======
+	: #constraint "r" (i)						\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	: cl);								\
 									\
 	return result;							\
 }									\
 __LL_SC_EXPORT(atomic_##op##_return##name);
 
+<<<<<<< HEAD
 #define ATOMIC_FETCH_OP(name, mb, acq, rel, cl, op, asm_op)		\
+=======
+#define ATOMIC_FETCH_OP(name, mb, acq, rel, cl, op, asm_op, constraint)	\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 __LL_SC_INLINE int							\
 __LL_SC_PREFIX(atomic_fetch_##op##name(int i, atomic_t *v))		\
 {									\
@@ -92,7 +112,11 @@ __LL_SC_PREFIX(atomic_fetch_##op##name(int i, atomic_t *v))		\
 "	cbnz	%w2, 1b\n"						\
 "	" #mb								\
 	: "=&r" (result), "=&r" (val), "=&r" (tmp), "+Q" (v->counter)	\
+<<<<<<< HEAD
 	: "Ir" (i)							\
+=======
+	: #constraint "r" (i)						\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	: cl);								\
 									\
 	return result;							\
@@ -110,8 +134,13 @@ __LL_SC_EXPORT(atomic_fetch_##op##name);
 	ATOMIC_FETCH_OP (_acquire,        , a,  , "memory", __VA_ARGS__)\
 	ATOMIC_FETCH_OP (_release,        ,  , l, "memory", __VA_ARGS__)
 
+<<<<<<< HEAD
 ATOMIC_OPS(add, add)
 ATOMIC_OPS(sub, sub)
+=======
+ATOMIC_OPS(add, add, I)
+ATOMIC_OPS(sub, sub, J)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #undef ATOMIC_OPS
 #define ATOMIC_OPS(...)							\
@@ -121,17 +150,28 @@ ATOMIC_OPS(sub, sub)
 	ATOMIC_FETCH_OP (_acquire,        , a,  , "memory", __VA_ARGS__)\
 	ATOMIC_FETCH_OP (_release,        ,  , l, "memory", __VA_ARGS__)
 
+<<<<<<< HEAD
 ATOMIC_OPS(and, and)
 ATOMIC_OPS(andnot, bic)
 ATOMIC_OPS(or, orr)
 ATOMIC_OPS(xor, eor)
+=======
+ATOMIC_OPS(and, and, )
+ATOMIC_OPS(andnot, bic, )
+ATOMIC_OPS(or, orr, )
+ATOMIC_OPS(xor, eor, )
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #undef ATOMIC_OPS
 #undef ATOMIC_FETCH_OP
 #undef ATOMIC_OP_RETURN
 #undef ATOMIC_OP
 
+<<<<<<< HEAD
 #define ATOMIC64_OP(op, asm_op)						\
+=======
+#define ATOMIC64_OP(op, asm_op, constraint)				\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 __LL_SC_INLINE void							\
 __LL_SC_PREFIX(atomic64_##op(long i, atomic64_t *v))			\
 {									\
@@ -145,11 +185,19 @@ __LL_SC_PREFIX(atomic64_##op(long i, atomic64_t *v))			\
 "	stxr	%w1, %0, %2\n"						\
 "	cbnz	%w1, 1b"						\
 	: "=&r" (result), "=&r" (tmp), "+Q" (v->counter)		\
+<<<<<<< HEAD
 	: "Ir" (i));							\
 }									\
 __LL_SC_EXPORT(atomic64_##op);
 
 #define ATOMIC64_OP_RETURN(name, mb, acq, rel, cl, op, asm_op)		\
+=======
+	: #constraint "r" (i));						\
+}									\
+__LL_SC_EXPORT(atomic64_##op);
+
+#define ATOMIC64_OP_RETURN(name, mb, acq, rel, cl, op, asm_op, constraint)\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 __LL_SC_INLINE long							\
 __LL_SC_PREFIX(atomic64_##op##_return##name(long i, atomic64_t *v))	\
 {									\
@@ -164,14 +212,22 @@ __LL_SC_PREFIX(atomic64_##op##_return##name(long i, atomic64_t *v))	\
 "	cbnz	%w1, 1b\n"						\
 "	" #mb								\
 	: "=&r" (result), "=&r" (tmp), "+Q" (v->counter)		\
+<<<<<<< HEAD
 	: "Ir" (i)							\
+=======
+	: #constraint "r" (i)						\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	: cl);								\
 									\
 	return result;							\
 }									\
 __LL_SC_EXPORT(atomic64_##op##_return##name);
 
+<<<<<<< HEAD
 #define ATOMIC64_FETCH_OP(name, mb, acq, rel, cl, op, asm_op)		\
+=======
+#define ATOMIC64_FETCH_OP(name, mb, acq, rel, cl, op, asm_op, constraint)\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 __LL_SC_INLINE long							\
 __LL_SC_PREFIX(atomic64_fetch_##op##name(long i, atomic64_t *v))	\
 {									\
@@ -186,7 +242,11 @@ __LL_SC_PREFIX(atomic64_fetch_##op##name(long i, atomic64_t *v))	\
 "	cbnz	%w2, 1b\n"						\
 "	" #mb								\
 	: "=&r" (result), "=&r" (val), "=&r" (tmp), "+Q" (v->counter)	\
+<<<<<<< HEAD
 	: "Ir" (i)							\
+=======
+	: #constraint "r" (i)						\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	: cl);								\
 									\
 	return result;							\
@@ -204,8 +264,13 @@ __LL_SC_EXPORT(atomic64_fetch_##op##name);
 	ATOMIC64_FETCH_OP (_acquire,, a,  , "memory", __VA_ARGS__)	\
 	ATOMIC64_FETCH_OP (_release,,  , l, "memory", __VA_ARGS__)
 
+<<<<<<< HEAD
 ATOMIC64_OPS(add, add)
 ATOMIC64_OPS(sub, sub)
+=======
+ATOMIC64_OPS(add, add, I)
+ATOMIC64_OPS(sub, sub, J)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #undef ATOMIC64_OPS
 #define ATOMIC64_OPS(...)						\
@@ -215,10 +280,17 @@ ATOMIC64_OPS(sub, sub)
 	ATOMIC64_FETCH_OP (_acquire,, a,  , "memory", __VA_ARGS__)	\
 	ATOMIC64_FETCH_OP (_release,,  , l, "memory", __VA_ARGS__)
 
+<<<<<<< HEAD
 ATOMIC64_OPS(and, and)
 ATOMIC64_OPS(andnot, bic)
 ATOMIC64_OPS(or, orr)
 ATOMIC64_OPS(xor, eor)
+=======
+ATOMIC64_OPS(and, and, L)
+ATOMIC64_OPS(andnot, bic, )
+ATOMIC64_OPS(or, orr, L)
+ATOMIC64_OPS(xor, eor, L)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #undef ATOMIC64_OPS
 #undef ATOMIC64_FETCH_OP
@@ -248,6 +320,7 @@ __LL_SC_PREFIX(atomic64_dec_if_positive(atomic64_t *v))
 }
 __LL_SC_EXPORT(atomic64_dec_if_positive);
 
+<<<<<<< HEAD
 #define __CMPXCHG_CASE(w, sz, name, mb, acq, rel, cl)			\
 __LL_SC_INLINE unsigned long						\
 __LL_SC_PREFIX(__cmpxchg_case_##name(volatile void *ptr,		\
@@ -262,16 +335,39 @@ __LL_SC_PREFIX(__cmpxchg_case_##name(volatile void *ptr,		\
 	"	eor	%" #w "[tmp], %" #w "[oldval], %" #w "[old]\n"	\
 	"	cbnz	%" #w "[tmp], 2f\n"				\
 	"	st" #rel "xr" #sz "\t%w[tmp], %" #w "[new], %[v]\n"	\
+=======
+#define __CMPXCHG_CASE(w, sfx, name, sz, mb, acq, rel, cl, constraint)	\
+__LL_SC_INLINE u##sz							\
+__LL_SC_PREFIX(__cmpxchg_case_##name##sz(volatile void *ptr,		\
+					 unsigned long old,		\
+					 u##sz new))			\
+{									\
+	unsigned long tmp;						\
+	u##sz oldval;							\
+									\
+	asm volatile(							\
+	"	prfm	pstl1strm, %[v]\n"				\
+	"1:	ld" #acq "xr" #sfx "\t%" #w "[oldval], %[v]\n"		\
+	"	eor	%" #w "[tmp], %" #w "[oldval], %" #w "[old]\n"	\
+	"	cbnz	%" #w "[tmp], 2f\n"				\
+	"	st" #rel "xr" #sfx "\t%w[tmp], %" #w "[new], %[v]\n"	\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	"	cbnz	%w[tmp], 1b\n"					\
 	"	" #mb "\n"						\
 	"2:"								\
 	: [tmp] "=&r" (tmp), [oldval] "=&r" (oldval),			\
+<<<<<<< HEAD
 	  [v] "+Q" (*(unsigned long *)ptr)				\
 	: [old] "Lr" (old), [new] "r" (new)				\
+=======
+	  [v] "+Q" (*(u##sz *)ptr)					\
+	: [old] #constraint "r" (old), [new] "r" (new)			\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	: cl);								\
 									\
 	return oldval;							\
 }									\
+<<<<<<< HEAD
 __LL_SC_EXPORT(__cmpxchg_case_##name);
 
 __CMPXCHG_CASE(w, b,     1,        ,  ,  ,         )
@@ -290,6 +386,31 @@ __CMPXCHG_CASE(w, b,  mb_1, dmb ish,  , l, "memory")
 __CMPXCHG_CASE(w, h,  mb_2, dmb ish,  , l, "memory")
 __CMPXCHG_CASE(w,  ,  mb_4, dmb ish,  , l, "memory")
 __CMPXCHG_CASE( ,  ,  mb_8, dmb ish,  , l, "memory")
+=======
+__LL_SC_EXPORT(__cmpxchg_case_##name##sz);
+
+/*
+ * Earlier versions of GCC (no later than 8.1.0) appear to incorrectly
+ * handle the 'K' constraint for the value 4294967295 - thus we use no
+ * constraint for 32 bit operations.
+ */
+__CMPXCHG_CASE(w, b,     ,  8,        ,  ,  ,         , )
+__CMPXCHG_CASE(w, h,     , 16,        ,  ,  ,         , )
+__CMPXCHG_CASE(w,  ,     , 32,        ,  ,  ,         , )
+__CMPXCHG_CASE( ,  ,     , 64,        ,  ,  ,         , L)
+__CMPXCHG_CASE(w, b, acq_,  8,        , a,  , "memory", )
+__CMPXCHG_CASE(w, h, acq_, 16,        , a,  , "memory", )
+__CMPXCHG_CASE(w,  , acq_, 32,        , a,  , "memory", )
+__CMPXCHG_CASE( ,  , acq_, 64,        , a,  , "memory", L)
+__CMPXCHG_CASE(w, b, rel_,  8,        ,  , l, "memory", )
+__CMPXCHG_CASE(w, h, rel_, 16,        ,  , l, "memory", )
+__CMPXCHG_CASE(w,  , rel_, 32,        ,  , l, "memory", )
+__CMPXCHG_CASE( ,  , rel_, 64,        ,  , l, "memory", L)
+__CMPXCHG_CASE(w, b,  mb_,  8, dmb ish,  , l, "memory", )
+__CMPXCHG_CASE(w, h,  mb_, 16, dmb ish,  , l, "memory", )
+__CMPXCHG_CASE(w,  ,  mb_, 32, dmb ish,  , l, "memory", )
+__CMPXCHG_CASE( ,  ,  mb_, 64, dmb ish,  , l, "memory", L)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #undef __CMPXCHG_CASE
 

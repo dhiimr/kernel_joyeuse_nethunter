@@ -7,7 +7,11 @@
 ENTRY(	\name		)
 UNWIND(	.fnstart	)
 	ands	ip, r1, #3
+<<<<<<< HEAD
 	strneb	r1, [ip]		@ assert word-aligned
+=======
+	strbne	r1, [ip]		@ assert word-aligned
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mov	r2, #1
 	and	r3, r0, #31		@ Get bit offset
 	mov	r0, r0, lsr #5
@@ -32,7 +36,11 @@ ENDPROC(\name		)
 ENTRY(	\name		)
 UNWIND(	.fnstart	)
 	ands	ip, r1, #3
+<<<<<<< HEAD
 	strneb	r1, [ip]		@ assert word-aligned
+=======
+	strbne	r1, [ip]		@ assert word-aligned
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mov	r2, #1
 	and	r3, r0, #31		@ Get bit offset
 	mov	r0, r0, lsr #5
@@ -62,7 +70,11 @@ ENDPROC(\name		)
 ENTRY(	\name		)
 UNWIND(	.fnstart	)
 	ands	ip, r1, #3
+<<<<<<< HEAD
 	strneb	r1, [ip]		@ assert word-aligned
+=======
+	strbne	r1, [ip]		@ assert word-aligned
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	and	r2, r0, #31
 	mov	r0, r0, lsr #5
 	mov	r3, #1
@@ -89,7 +101,11 @@ ENDPROC(\name		)
 ENTRY(	\name		)
 UNWIND(	.fnstart	)
 	ands	ip, r1, #3
+<<<<<<< HEAD
 	strneb	r1, [ip]		@ assert word-aligned
+=======
+	strbne	r1, [ip]		@ assert word-aligned
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	and	r3, r0, #31
 	mov	r0, r0, lsr #5
 	save_and_disable_irqs ip

@@ -62,9 +62,12 @@
 	}
 
 
+<<<<<<< HEAD
 #define ep_event_rate(ev, c, p, dt)	\
 	((dt) ? ((c.ev - p.ev) * (MSEC_PER_SEC)) / (dt) : 0)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const struct debugfs_reg32 dwc3_regs[] = {
 	dump_register(GSBUSCFG0),
 	dump_register(GSBUSCFG1),
@@ -285,6 +288,7 @@ static const struct debugfs_reg32 dwc3_regs[] = {
 	dump_register(OSTS),
 };
 
+<<<<<<< HEAD
 static int dwc3_regdump_show(struct seq_file *s, void *unused)
 {
 	struct dwc3		*dwc = s->private;
@@ -311,17 +315,22 @@ static const struct file_operations dwc3_regdump_fops = {
 	.release		= single_release,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int dwc3_mode_show(struct seq_file *s, void *unused)
 {
 	struct dwc3		*dwc = s->private;
 	unsigned long		flags;
 	u32			reg;
 
+<<<<<<< HEAD
 	if (atomic_read(&dwc->in_lpm)) {
 		seq_puts(s, "USB device is powered off\n");
 		return 0;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&dwc->lock, flags);
 	reg = dwc3_readl(dwc->regs, DWC3_GCTL);
 	spin_unlock_irqrestore(&dwc->lock, flags);
@@ -354,12 +363,16 @@ static ssize_t dwc3_mode_write(struct file *file,
 	struct seq_file		*s = file->private_data;
 	struct dwc3		*dwc = s->private;
 	u32			mode = 0;
+<<<<<<< HEAD
 	char			buf[32] = {};
 
 	if (atomic_read(&dwc->in_lpm)) {
 		dev_err(dwc->dev, "USB device is powered off\n");
 		return count;
 	}
+=======
+	char			buf[32];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
 		return -EFAULT;
@@ -392,11 +405,14 @@ static int dwc3_testmode_show(struct seq_file *s, void *unused)
 	unsigned long		flags;
 	u32			reg;
 
+<<<<<<< HEAD
 	if (atomic_read(&dwc->in_lpm)) {
 		seq_puts(s, "USB device is powered off\n");
 		return 0;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&dwc->lock, flags);
 	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
 	reg &= DWC3_DCTL_TSTCTRL_MASK;
@@ -441,12 +457,16 @@ static ssize_t dwc3_testmode_write(struct file *file,
 	struct dwc3		*dwc = s->private;
 	unsigned long		flags;
 	u32			testmode = 0;
+<<<<<<< HEAD
 	char			buf[32] = {};
 
 	if (atomic_read(&dwc->in_lpm)) {
 		seq_puts(s, "USB device is powered off\n");
 		return 0;
 	}
+=======
+	char			buf[32];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
 		return -EFAULT;
@@ -485,18 +505,31 @@ static int dwc3_link_state_show(struct seq_file *s, void *unused)
 	unsigned long		flags;
 	enum dwc3_link_state	state;
 	u32			reg;
+<<<<<<< HEAD
 
 	if (atomic_read(&dwc->in_lpm)) {
 		seq_puts(s, "USB device is powered off\n");
 		return 0;
 	}
+=======
+	u8			speed;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	spin_lock_irqsave(&dwc->lock, flags);
 	reg = dwc3_readl(dwc->regs, DWC3_DSTS);
 	state = DWC3_DSTS_USBLNKST(reg);
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&dwc->lock, flags);
 
 	seq_printf(s, "%s\n", dwc3_gadget_link_string(state));
+=======
+	speed = reg & DWC3_DSTS_CONNECTSPD;
+
+	seq_printf(s, "%s\n", (speed >= DWC3_DSTS_SUPERSPEED) ?
+		   dwc3_gadget_link_string(state) :
+		   dwc3_gadget_hs_link_string(state));
+	spin_unlock_irqrestore(&dwc->lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -513,12 +546,18 @@ static ssize_t dwc3_link_state_write(struct file *file,
 	struct dwc3		*dwc = s->private;
 	unsigned long		flags;
 	enum dwc3_link_state	state = 0;
+<<<<<<< HEAD
 	char			buf[32] = {};
 
 	if (atomic_read(&dwc->in_lpm)) {
 		seq_puts(s, "USB device is powered off\n");
 		return 0;
 	}
+=======
+	char			buf[32];
+	u32			reg;
+	u8			speed;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
 		return -EFAULT;
@@ -539,6 +578,18 @@ static ssize_t dwc3_link_state_write(struct file *file,
 		return -EINVAL;
 
 	spin_lock_irqsave(&dwc->lock, flags);
+<<<<<<< HEAD
+=======
+	reg = dwc3_readl(dwc->regs, DWC3_DSTS);
+	speed = reg & DWC3_DSTS_CONNECTSPD;
+
+	if (speed < DWC3_DSTS_SUPERSPEED &&
+	    state != DWC3_LINK_STATE_RECOV) {
+		spin_unlock_irqrestore(&dwc->lock, flags);
+		return -EINVAL;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dwc3_gadget_set_link_state(dwc, state);
 	spin_unlock_irqrestore(&dwc->lock, flags);
 
@@ -565,11 +616,14 @@ static int dwc3_tx_fifo_queue_show(struct seq_file *s, void *unused)
 	unsigned long		flags;
 	u32			val;
 
+<<<<<<< HEAD
 	if (atomic_read(&dwc->in_lpm)) {
 		seq_puts(s, "USB device is powered off\n");
 		return 0;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&dwc->lock, flags);
 	val = dwc3_core_fifo_space(dep, DWC3_TXFIFOQ);
 	seq_printf(s, "%u\n", val);
@@ -585,11 +639,14 @@ static int dwc3_rx_fifo_queue_show(struct seq_file *s, void *unused)
 	unsigned long		flags;
 	u32			val;
 
+<<<<<<< HEAD
 	if (atomic_read(&dwc->in_lpm)) {
 		seq_puts(s, "USB device is powered off\n");
 		return 0;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&dwc->lock, flags);
 	val = dwc3_core_fifo_space(dep, DWC3_RXFIFOQ);
 	seq_printf(s, "%u\n", val);
@@ -620,11 +677,14 @@ static int dwc3_rx_request_queue_show(struct seq_file *s, void *unused)
 	unsigned long		flags;
 	u32			val;
 
+<<<<<<< HEAD
 	if (atomic_read(&dwc->in_lpm)) {
 		seq_puts(s, "USB device is powered off\n");
 		return 0;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&dwc->lock, flags);
 	val = dwc3_core_fifo_space(dep, DWC3_RXREQQ);
 	seq_printf(s, "%u\n", val);
@@ -640,11 +700,14 @@ static int dwc3_rx_info_queue_show(struct seq_file *s, void *unused)
 	unsigned long		flags;
 	u32			val;
 
+<<<<<<< HEAD
 	if (atomic_read(&dwc->in_lpm)) {
 		seq_puts(s, "USB device is powered off\n");
 		return 0;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&dwc->lock, flags);
 	val = dwc3_core_fifo_space(dep, DWC3_RXINFOQ);
 	seq_printf(s, "%u\n", val);
@@ -660,11 +723,14 @@ static int dwc3_descriptor_fetch_queue_show(struct seq_file *s, void *unused)
 	unsigned long		flags;
 	u32			val;
 
+<<<<<<< HEAD
 	if (atomic_read(&dwc->in_lpm)) {
 		seq_puts(s, "USB device is powered off\n");
 		return 0;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&dwc->lock, flags);
 	val = dwc3_core_fifo_space(dep, DWC3_DESCFETCHQ);
 	seq_printf(s, "%u\n", val);
@@ -680,11 +746,14 @@ static int dwc3_event_queue_show(struct seq_file *s, void *unused)
 	unsigned long		flags;
 	u32			val;
 
+<<<<<<< HEAD
 	if (atomic_read(&dwc->in_lpm)) {
 		seq_puts(s, "USB device is powered off\n");
 		return 0;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&dwc->lock, flags);
 	val = dwc3_core_fifo_space(dep, DWC3_EVENTQ);
 	seq_printf(s, "%u\n", val);
@@ -848,6 +917,7 @@ static void dwc3_debugfs_create_endpoint_dirs(struct dwc3 *dwc,
 	}
 }
 
+<<<<<<< HEAD
 static ssize_t dwc3_store_int_events(struct file *file,
 			const char __user *ubuf, size_t count, loff_t *ppos)
 {
@@ -1021,6 +1091,8 @@ const struct file_operations dwc3_gadget_dbg_events_fops = {
 	.release	= single_release,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void dwc3_debugfs_init(struct dwc3 *dwc)
 {
 	struct dentry		*root;
@@ -1044,8 +1116,12 @@ void dwc3_debugfs_init(struct dwc3 *dwc)
 	dwc->regset->nregs = ARRAY_SIZE(dwc3_regs);
 	dwc->regset->base = dwc->regs - DWC3_GLOBALS_REGS_START;
 
+<<<<<<< HEAD
 	file = debugfs_create_file("regdump", 0444, root, dwc,
 			&dwc3_regdump_fops);
+=======
+	file = debugfs_create_regset32("regdump", S_IRUGO, root, dwc->regset);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!file)
 		dev_dbg(dwc->dev, "Can't create debugfs regdump\n");
 
@@ -1069,11 +1145,14 @@ void dwc3_debugfs_init(struct dwc3 *dwc)
 			dev_dbg(dwc->dev, "Can't create debugfs link_state\n");
 
 		dwc3_debugfs_create_endpoint_dirs(dwc, root);
+<<<<<<< HEAD
 
 		file = debugfs_create_file("int_events", 0644, root, dwc,
 				&dwc3_gadget_dbg_events_fops);
 		if (!file)
 			dev_dbg(dwc->dev, "Can't create debugfs int_events\n");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 

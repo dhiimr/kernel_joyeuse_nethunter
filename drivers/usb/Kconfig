@@ -172,12 +172,18 @@ source "drivers/usb/gadget/Kconfig"
 
 source "drivers/usb/typec/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/usb/pd/Kconfig"
 
 config USB_LED_TRIG
 	bool "USB LED Triggers"
 	depends on LEDS_CLASS && LEDS_TRIGGERS
 	select USB_COMMON
+=======
+config USB_LED_TRIG
+	bool "USB LED Triggers"
+	depends on LEDS_CLASS && USB_COMMON && LEDS_TRIGGERS
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  This option adds LED triggers for USB host and/or gadget activity.
 

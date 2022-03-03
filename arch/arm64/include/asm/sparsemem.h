@@ -18,11 +18,15 @@
 
 #ifdef CONFIG_SPARSEMEM
 #define MAX_PHYSMEM_BITS	48
+<<<<<<< HEAD
 #ifndef CONFIG_MEMORY_HOTPLUG
 #define SECTION_SIZE_BITS	30
 #else
 #define SECTION_SIZE_BITS	CONFIG_HOTPLUG_SIZE_BITS
 #endif
+=======
+#define SECTION_SIZE_BITS	30
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 #endif

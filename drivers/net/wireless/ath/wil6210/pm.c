@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2014,2017 Qualcomm Atheros, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,6 +20,7 @@
 
 #include "wil6210.h"
 #include <linux/jiffies.h>
+<<<<<<< HEAD
 #include <linux/pm_runtime.h>
 
 #define WIL6210_AUTOSUSPEND_DELAY_MS (1000)
@@ -112,6 +116,18 @@ int wil_can_suspend(struct wil6210_priv *wil, bool is_runtime)
 	mutex_unlock(&wil->vif_mutex);
 
 	if (!active_ifaces) {
+=======
+
+int wil_can_suspend(struct wil6210_priv *wil, bool is_runtime)
+{
+	int rc = 0;
+	struct wireless_dev *wdev = wil->wdev;
+	struct net_device *ndev = wil_to_ndev(wil);
+
+	wil_dbg_pm(wil, "can_suspend: %s\n", is_runtime ? "runtime" : "system");
+
+	if (!(ndev->flags & IFF_UP)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* can always sleep when down */
 		wil_dbg_pm(wil, "Interface is down\n");
 		goto out;
@@ -128,6 +144,7 @@ int wil_can_suspend(struct wil6210_priv *wil, bool is_runtime)
 	}
 
 	/* interface is running */
+<<<<<<< HEAD
 	mutex_lock(&wil->vif_mutex);
 	for (i = 0; i < wil->max_vifs; i++) {
 		struct wil6210_vif *vif = wil->vifs[i];
@@ -141,6 +158,24 @@ int wil_can_suspend(struct wil6210_priv *wil, bool is_runtime)
 		}
 	}
 	mutex_unlock(&wil->vif_mutex);
+=======
+	switch (wdev->iftype) {
+	case NL80211_IFTYPE_MONITOR:
+	case NL80211_IFTYPE_STATION:
+	case NL80211_IFTYPE_P2P_CLIENT:
+		if (test_bit(wil_status_fwconnecting, wil->status)) {
+			wil_dbg_pm(wil, "Delay suspend when connecting\n");
+			rc = -EBUSY;
+			goto out;
+		}
+		break;
+	/* AP-like interface - can't suspend */
+	default:
+		wil_dbg_pm(wil, "AP-like interface\n");
+		rc = -EBUSY;
+		break;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 out:
 	wil_dbg_pm(wil, "can_suspend: %s => %s (%d)\n",
@@ -185,7 +220,12 @@ static int wil_resume_keep_radio_on(struct wil6210_priv *wil)
 	}
 
 	/* Wake all queues */
+<<<<<<< HEAD
 	wil_pm_wake_connected_net_queues(wil);
+=======
+	if (test_bit(wil_status_fwconnected, wil->status))
+		wil_update_net_queues_bh(wil, NULL, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 out:
 	if (rc)
@@ -201,6 +241,7 @@ static int wil_suspend_keep_radio_on(struct wil6210_priv *wil)
 	wil_dbg_pm(wil, "suspend keep radio on\n");
 
 	/* Prevent handling of new tx and wmi commands */
+<<<<<<< HEAD
 	rc = down_write_trylock(&wil->mem_lock);
 	if (!rc) {
 		wil_err(wil,
@@ -214,6 +255,10 @@ static int wil_suspend_keep_radio_on(struct wil6210_priv *wil)
 	up_write(&wil->mem_lock);
 
 	wil_pm_stop_all_net_queues(wil);
+=======
+	set_bit(wil_status_suspending, wil->status);
+	wil_update_net_queues_bh(wil, NULL, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!wil_is_tx_idle(wil)) {
 		wil_dbg_pm(wil, "Pending TX data, reject suspend\n");
@@ -221,7 +266,11 @@ static int wil_suspend_keep_radio_on(struct wil6210_priv *wil)
 		goto reject_suspend;
 	}
 
+<<<<<<< HEAD
 	if (!wil->txrx_ops.is_rx_idle(wil)) {
+=======
+	if (!wil_is_rx_idle(wil)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		wil_dbg_pm(wil, "Pending RX data, reject suspend\n");
 		wil->suspend_stats.rejected_by_host++;
 		goto reject_suspend;
@@ -245,6 +294,7 @@ static int wil_suspend_keep_radio_on(struct wil6210_priv *wil)
 	start = jiffies;
 	data_comp_to = jiffies + msecs_to_jiffies(WIL_DATA_COMPLETION_TO_MS);
 	if (test_bit(wil_status_napi_en, wil->status)) {
+<<<<<<< HEAD
 		while (!wil->txrx_ops.is_rx_idle(wil)) {
 			if (time_after(jiffies, data_comp_to)) {
 				if (wil->txrx_ops.is_rx_idle(wil))
@@ -252,6 +302,15 @@ static int wil_suspend_keep_radio_on(struct wil6210_priv *wil)
 				wil_err(wil,
 					"TO waiting for idle RX, suspend failed\n");
 				wil->suspend_stats.r_on.failed_suspends++;
+=======
+		while (!wil_is_rx_idle(wil)) {
+			if (time_after(jiffies, data_comp_to)) {
+				if (wil_is_rx_idle(wil))
+					break;
+				wil_err(wil,
+					"TO waiting for idle RX, suspend failed\n");
+				wil->suspend_stats.failed_suspends++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				goto resume_after_fail;
 			}
 			wil_dbg_ratelimited(wil, "rx vring is not empty -> NAPI\n");
@@ -267,7 +326,11 @@ static int wil_suspend_keep_radio_on(struct wil6210_priv *wil)
 	 */
 	if (!wil_is_wmi_idle(wil)) {
 		wil_err(wil, "suspend failed due to pending WMI events\n");
+<<<<<<< HEAD
 		wil->suspend_stats.r_on.failed_suspends++;
+=======
+		wil->suspend_stats.failed_suspends++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto resume_after_fail;
 	}
 
@@ -281,7 +344,11 @@ static int wil_suspend_keep_radio_on(struct wil6210_priv *wil)
 		if (rc) {
 			wil_err(wil, "platform device failed to suspend (%d)\n",
 				rc);
+<<<<<<< HEAD
 			wil->suspend_stats.r_on.failed_suspends++;
+=======
+			wil->suspend_stats.failed_suspends++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			wil_c(wil, RGF_USER_CLKS_CTL_0, BIT_USER_CLKS_RST_PWGD);
 			wil_unmask_irq(wil);
 			goto resume_after_fail;
@@ -304,19 +371,30 @@ resume_after_fail:
 	/* if resume succeeded, reject the suspend */
 	if (!rc) {
 		rc = -EBUSY;
+<<<<<<< HEAD
 		wil_pm_wake_connected_net_queues(wil);
+=======
+		if (test_bit(wil_status_fwconnected, wil->status))
+			wil_update_net_queues_bh(wil, NULL, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return rc;
 
 reject_suspend:
 	clear_bit(wil_status_suspending, wil->status);
+<<<<<<< HEAD
 	wil_pm_wake_connected_net_queues(wil);
+=======
+	if (test_bit(wil_status_fwconnected, wil->status))
+		wil_update_net_queues_bh(wil, NULL, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return -EBUSY;
 }
 
 static int wil_suspend_radio_off(struct wil6210_priv *wil)
 {
 	int rc = 0;
+<<<<<<< HEAD
 	bool active_ifaces;
 
 	wil_dbg_pm(wil, "suspend radio off\n");
@@ -343,6 +421,17 @@ static int wil_suspend_radio_off(struct wil6210_priv *wil)
 		if (rc) {
 			wil_err(wil, "wil_down : %d\n", rc);
 			wil->suspend_stats.r_off.failed_suspends++;
+=======
+	struct net_device *ndev = wil_to_ndev(wil);
+
+	wil_dbg_pm(wil, "suspend radio off\n");
+
+	/* if netif up, hardware is alive, shut it down */
+	if (ndev->flags & IFF_UP) {
+		rc = wil_down(wil);
+		if (rc) {
+			wil_err(wil, "wil_down : %d\n", rc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto out;
 		}
 	}
@@ -355,7 +444,10 @@ static int wil_suspend_radio_off(struct wil6210_priv *wil)
 		rc = wil->platform_ops.suspend(wil->platform_handle, false);
 		if (rc) {
 			wil_enable_irq(wil);
+<<<<<<< HEAD
 			wil->suspend_stats.r_off.failed_suspends++;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto out;
 		}
 	}
@@ -363,7 +455,10 @@ static int wil_suspend_radio_off(struct wil6210_priv *wil)
 	set_bit(wil_status_suspended, wil->status);
 
 out:
+<<<<<<< HEAD
 	clear_bit(wil_status_suspending, wil->status);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	wil_dbg_pm(wil, "suspend radio off: %d\n", rc);
 
 	return rc;
@@ -372,19 +467,31 @@ out:
 static int wil_resume_radio_off(struct wil6210_priv *wil)
 {
 	int rc = 0;
+<<<<<<< HEAD
 	bool active_ifaces;
 
 	wil_dbg_pm(wil, "Enabling PCIe IRQ\n");
 	wil_enable_irq(wil);
 	/* if any netif up, bring hardware up
+=======
+	struct net_device *ndev = wil_to_ndev(wil);
+
+	wil_dbg_pm(wil, "Enabling PCIe IRQ\n");
+	wil_enable_irq(wil);
+	/* if netif up, bring hardware up
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * During open(), IFF_UP set after actual device method
 	 * invocation. This prevent recursive call to wil_up()
 	 * wil_status_suspended will be cleared in wil_reset
 	 */
+<<<<<<< HEAD
 	mutex_lock(&wil->vif_mutex);
 	active_ifaces = wil_has_active_ifaces(wil, true, false);
 	mutex_unlock(&wil->vif_mutex);
 	if (active_ifaces)
+=======
+	if (ndev->flags & IFF_UP)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rc = wil_up(wil);
 	else
 		clear_bit(wil_status_suspended, wil->status);
@@ -411,12 +518,22 @@ int wil_suspend(struct wil6210_priv *wil, bool is_runtime, bool keep_radio_on)
 	wil_dbg_pm(wil, "suspend: %s => %d\n",
 		   is_runtime ? "runtime" : "system", rc);
 
+<<<<<<< HEAD
+=======
+	if (!rc)
+		wil->suspend_stats.suspend_start_time = ktime_get();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return rc;
 }
 
 int wil_resume(struct wil6210_priv *wil, bool is_runtime, bool keep_radio_on)
 {
 	int rc = 0;
+<<<<<<< HEAD
+=======
+	unsigned long long suspend_time_usec = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	wil_dbg_pm(wil, "resume: %s\n", is_runtime ? "runtime" : "system");
 
@@ -434,6 +551,7 @@ int wil_resume(struct wil6210_priv *wil, bool is_runtime, bool keep_radio_on)
 	else
 		rc = wil_resume_radio_off(wil);
 
+<<<<<<< HEAD
 out:
 	wil_dbg_pm(wil, "resume: %s => %d\n", is_runtime ? "runtime" : "system",
 		   rc);
@@ -479,4 +597,22 @@ void wil_pm_runtime_put(struct wil6210_priv *wil)
 
 	pm_runtime_mark_last_busy(dev);
 	pm_runtime_put_autosuspend(dev);
+=======
+	if (rc)
+		goto out;
+
+	suspend_time_usec =
+		ktime_to_us(ktime_sub(ktime_get(),
+				      wil->suspend_stats.suspend_start_time));
+	wil->suspend_stats.total_suspend_time += suspend_time_usec;
+	if (suspend_time_usec < wil->suspend_stats.min_suspend_time)
+		wil->suspend_stats.min_suspend_time = suspend_time_usec;
+	if (suspend_time_usec > wil->suspend_stats.max_suspend_time)
+		wil->suspend_stats.max_suspend_time = suspend_time_usec;
+
+out:
+	wil_dbg_pm(wil, "resume: %s => %d, suspend time %lld usec\n",
+		   is_runtime ? "runtime" : "system", rc, suspend_time_usec);
+	return rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }

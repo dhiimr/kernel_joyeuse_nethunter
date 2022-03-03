@@ -7,6 +7,15 @@ OUTPUT_ARCH(ELF_ARCH)
 ENTRY(_start)
 jiffies = jiffies_64;
 
+<<<<<<< HEAD
+=======
+VERSION {
+  {
+    local: *;
+  };
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 SECTIONS
 {
   PROVIDE (__executable_start = START);

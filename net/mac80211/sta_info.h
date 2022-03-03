@@ -101,6 +101,10 @@ enum ieee80211_sta_info_flags {
 	WLAN_STA_MPSP_OWNER,
 	WLAN_STA_MPSP_RECIPIENT,
 	WLAN_STA_PS_DELIVER,
+<<<<<<< HEAD
+=======
+	WLAN_STA_USES_ENCRYPTION,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	NUM_WLAN_STA_FLAGS,
 };
@@ -398,6 +402,37 @@ struct ieee80211_sta_rx_stats {
 	u64 msdu[IEEE80211_NUM_TIDS + 1];
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * IEEE 802.11-2016 (10.6 "Defragmentation") recommends support for "concurrent
+ * reception of at least one MSDU per access category per associated STA"
+ * on APs, or "at least one MSDU per access category" on other interface types.
+ *
+ * This limit can be increased by changing this define, at the cost of slower
+ * frame reassembly and increased memory use while fragments are pending.
+ */
+#define IEEE80211_FRAGMENT_MAX 4
+
+struct ieee80211_fragment_entry {
+	struct sk_buff_head skb_list;
+	unsigned long first_frag_time;
+	u16 seq;
+	u16 extra_len;
+	u16 last_frag;
+	u8 rx_queue;
+	u8 check_sequential_pn:1, /* needed for CCMP/GCMP */
+	   is_protected:1;
+	u8 last_pn[6]; /* PN of the last fragment if CCMP was used */
+	unsigned int key_color;
+};
+
+struct ieee80211_fragment_cache {
+	struct ieee80211_fragment_entry	entries[IEEE80211_FRAGMENT_MAX];
+	unsigned int next;
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * The bandwidth threshold below which the per-station CoDel parameters will be
  * scaled to be more lenient (to prevent starvation of slow stations). This
@@ -470,6 +505,10 @@ struct ieee80211_sta_rx_stats {
  * @pcpu_rx_stats: per-CPU RX statistics, assigned only if the driver needs
  *	this (by advertising the USES_RSS hw flag)
  * @status_stats: TX status statistics
+<<<<<<< HEAD
+=======
+ * @frags: fragment cache
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 struct sta_info {
 	/* General information, mostly static */
@@ -569,6 +608,11 @@ struct sta_info {
 
 	struct cfg80211_chan_def tdls_chandef;
 
+<<<<<<< HEAD
+=======
+	struct ieee80211_fragment_cache frags;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* keep last! */
 	struct ieee80211_sta sta;
 };

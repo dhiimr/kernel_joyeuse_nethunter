@@ -303,8 +303,15 @@ static int audio_bind(struct usb_composite_dev *cdev)
 		struct usb_descriptor_header *usb_desc;
 
 		usb_desc = usb_otg_descriptor_alloc(cdev->gadget);
+<<<<<<< HEAD
 		if (!usb_desc)
 			goto fail;
+=======
+		if (!usb_desc) {
+			status = -ENOMEM;
+			goto fail;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		usb_otg_descriptor_init(cdev->gadget, usb_desc);
 		otg_desc[0] = usb_desc;
 		otg_desc[1] = NULL;

@@ -392,8 +392,11 @@ static int __init xen_guest_init(void)
 		return -ENOMEM;
 	}
 	gnttab_init();
+<<<<<<< HEAD
 	if (!xen_initial_domain())
 		xenbus_probe(NULL);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Making sure board specific code will not set up ops for

@@ -79,13 +79,21 @@ static int nft_limit_init(struct nft_limit *limit,
 		return -EOVERFLOW;
 
 	if (pkts) {
+<<<<<<< HEAD
 		tokens = div_u64(limit->nsecs, limit->rate) * limit->burst;
+=======
+		tokens = div64_u64(limit->nsecs, limit->rate) * limit->burst;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		/* The token bucket size limits the number of tokens can be
 		 * accumulated. tokens_max specifies the bucket size.
 		 * tokens_max = unit * (rate + burst) / rate.
 		 */
+<<<<<<< HEAD
 		tokens = div_u64(limit->nsecs * (limit->rate + limit->burst),
+=======
+		tokens = div64_u64(limit->nsecs * (limit->rate + limit->burst),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				 limit->rate);
 	}
 

@@ -50,7 +50,11 @@ EXPORT_SYMBOL_GPL(svc_pool_map);
 static DEFINE_MUTEX(svc_pool_map_mutex);/* protects svc_pool_map.count only */
 
 static int
+<<<<<<< HEAD
 param_set_pool_mode(const char *val, const struct kernel_param *kp)
+=======
+param_set_pool_mode(const char *val, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int *ip = (int *)kp->arg;
 	struct svc_pool_map *m = &svc_pool_map;
@@ -80,7 +84,11 @@ out:
 }
 
 static int
+<<<<<<< HEAD
 param_get_pool_mode(char *buf, const struct kernel_param *kp)
+=======
+param_get_pool_mode(char *buf, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int *ip = (int *)kp->arg;
 
@@ -1329,7 +1337,11 @@ svc_process_common(struct svc_rqst *rqstp, struct kvec *argv, struct kvec *resv)
 
  sendit:
 	if (svc_authorise(rqstp))
+<<<<<<< HEAD
 		goto close;
+=======
+		goto close_xprt;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 1;		/* Caller can now send it */
 
  dropit:
@@ -1338,6 +1350,11 @@ svc_process_common(struct svc_rqst *rqstp, struct kvec *argv, struct kvec *resv)
 	return 0;
 
  close:
+<<<<<<< HEAD
+=======
+	svc_authorise(rqstp);
+close_xprt:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (rqstp->rq_xprt && test_bit(XPT_TEMP, &rqstp->rq_xprt->xpt_flags))
 		svc_close_xprt(rqstp->rq_xprt);
 	dprintk("svc: svc_process close\n");
@@ -1346,7 +1363,11 @@ svc_process_common(struct svc_rqst *rqstp, struct kvec *argv, struct kvec *resv)
 err_short_len:
 	svc_printk(rqstp, "short len %zd, dropping request\n",
 			argv->iov_len);
+<<<<<<< HEAD
 	goto close;
+=======
+	goto close_xprt;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 err_bad_rpc:
 	serv->sv_stats->rpcbadfmt++;

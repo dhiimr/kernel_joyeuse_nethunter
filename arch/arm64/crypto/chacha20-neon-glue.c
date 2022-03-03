@@ -19,7 +19,11 @@
  */
 
 #include <crypto/algapi.h>
+<<<<<<< HEAD
 #include <crypto/chacha.h>
+=======
+#include <crypto/chacha20.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <crypto/internal/skcipher.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -34,6 +38,7 @@ asmlinkage void chacha20_4block_xor_neon(u32 *state, u8 *dst, const u8 *src);
 static void chacha20_doneon(u32 *state, u8 *dst, const u8 *src,
 			    unsigned int bytes)
 {
+<<<<<<< HEAD
 	u8 buf[CHACHA_BLOCK_SIZE];
 
 	while (bytes >= CHACHA_BLOCK_SIZE * 4) {
@@ -48,6 +53,22 @@ static void chacha20_doneon(u32 *state, u8 *dst, const u8 *src,
 		bytes -= CHACHA_BLOCK_SIZE;
 		src += CHACHA_BLOCK_SIZE;
 		dst += CHACHA_BLOCK_SIZE;
+=======
+	u8 buf[CHACHA20_BLOCK_SIZE];
+
+	while (bytes >= CHACHA20_BLOCK_SIZE * 4) {
+		chacha20_4block_xor_neon(state, dst, src);
+		bytes -= CHACHA20_BLOCK_SIZE * 4;
+		src += CHACHA20_BLOCK_SIZE * 4;
+		dst += CHACHA20_BLOCK_SIZE * 4;
+		state[12] += 4;
+	}
+	while (bytes >= CHACHA20_BLOCK_SIZE) {
+		chacha20_block_xor_neon(state, dst, src);
+		bytes -= CHACHA20_BLOCK_SIZE;
+		src += CHACHA20_BLOCK_SIZE;
+		dst += CHACHA20_BLOCK_SIZE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		state[12]++;
 	}
 	if (bytes) {
@@ -60,17 +81,30 @@ static void chacha20_doneon(u32 *state, u8 *dst, const u8 *src,
 static int chacha20_neon(struct skcipher_request *req)
 {
 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+<<<<<<< HEAD
 	struct chacha_ctx *ctx = crypto_skcipher_ctx(tfm);
+=======
+	struct chacha20_ctx *ctx = crypto_skcipher_ctx(tfm);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct skcipher_walk walk;
 	u32 state[16];
 	int err;
 
+<<<<<<< HEAD
 	if (!may_use_simd() || req->cryptlen <= CHACHA_BLOCK_SIZE)
 		return crypto_chacha_crypt(req);
 
 	err = skcipher_walk_virt(&walk, req, true);
 
 	crypto_chacha_init(state, ctx, walk.iv);
+=======
+	if (!may_use_simd() || req->cryptlen <= CHACHA20_BLOCK_SIZE)
+		return crypto_chacha20_crypt(req);
+
+	err = skcipher_walk_virt(&walk, req, true);
+
+	crypto_chacha20_init(state, ctx, walk.iv);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	kernel_neon_begin();
 	while (walk.nbytes > 0) {
@@ -93,6 +127,7 @@ static struct skcipher_alg alg = {
 	.base.cra_driver_name	= "chacha20-neon",
 	.base.cra_priority	= 300,
 	.base.cra_blocksize	= 1,
+<<<<<<< HEAD
 	.base.cra_ctxsize	= sizeof(struct chacha_ctx),
 	.base.cra_module	= THIS_MODULE,
 
@@ -101,6 +136,16 @@ static struct skcipher_alg alg = {
 	.ivsize			= CHACHA_IV_SIZE,
 	.chunksize		= CHACHA_BLOCK_SIZE,
 	.walksize		= 4 * CHACHA_BLOCK_SIZE,
+=======
+	.base.cra_ctxsize	= sizeof(struct chacha20_ctx),
+	.base.cra_module	= THIS_MODULE,
+
+	.min_keysize		= CHACHA20_KEY_SIZE,
+	.max_keysize		= CHACHA20_KEY_SIZE,
+	.ivsize			= CHACHA20_IV_SIZE,
+	.chunksize		= CHACHA20_BLOCK_SIZE,
+	.walksize		= 4 * CHACHA20_BLOCK_SIZE,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.setkey			= crypto_chacha20_setkey,
 	.encrypt		= chacha20_neon,
 	.decrypt		= chacha20_neon,

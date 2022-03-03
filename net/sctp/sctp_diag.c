@@ -221,6 +221,7 @@ static size_t inet_assoc_attr_size(struct sctp_association *asoc)
 		addrcnt++;
 
 	return	  nla_total_size(sizeof(struct sctp_info))
+<<<<<<< HEAD
 		+ nla_total_size(1) /* INET_DIAG_SHUTDOWN */
 		+ nla_total_size(1) /* INET_DIAG_TOS */
 		+ nla_total_size(1) /* INET_DIAG_TCLASS */
@@ -230,6 +231,13 @@ static size_t inet_assoc_attr_size(struct sctp_association *asoc)
 		+ nla_total_size(addrlen * addrcnt)
 		+ nla_total_size(sizeof(struct inet_diag_meminfo))
 		+ nla_total_size(sizeof(struct inet_diag_msg))
+=======
+		+ nla_total_size(addrlen * asoc->peer.transport_count)
+		+ nla_total_size(addrlen * addrcnt)
+		+ nla_total_size(sizeof(struct inet_diag_msg))
+		+ inet_diag_msg_attrs_size()
+		+ nla_total_size(sizeof(struct inet_diag_meminfo))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		+ 64;
 }
 
@@ -280,9 +288,14 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int sctp_sock_dump(struct sctp_transport *tsp, void *p)
 {
 	struct sctp_endpoint *ep = tsp->asoc->ep;
+=======
+static int sctp_sock_dump(struct sctp_endpoint *ep, struct sctp_transport *tsp, void *p)
+{
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct sctp_comm_param *commp = p;
 	struct sock *sk = ep->base.sk;
 	struct sk_buff *skb = commp->skb;
@@ -292,6 +305,11 @@ static int sctp_sock_dump(struct sctp_transport *tsp, void *p)
 	int err = 0;
 
 	lock_sock(sk);
+<<<<<<< HEAD
+=======
+	if (ep != tsp->asoc->ep)
+		goto release;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	list_for_each_entry(assoc, &ep->asocs, asocs) {
 		if (cb->args[4] < cb->args[1])
 			goto next;
@@ -334,9 +352,14 @@ release:
 	return err;
 }
 
+<<<<<<< HEAD
 static int sctp_sock_filter(struct sctp_transport *tsp, void *p)
 {
 	struct sctp_endpoint *ep = tsp->asoc->ep;
+=======
+static int sctp_sock_filter(struct sctp_endpoint *ep, struct sctp_transport *tsp, void *p)
+{
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct sctp_comm_param *commp = p;
 	struct sock *sk = ep->base.sk;
 	const struct inet_diag_req_v2 *r = commp->r;
@@ -494,8 +517,13 @@ skip:
 	if (!(idiag_states & ~(TCPF_LISTEN | TCPF_CLOSE)))
 		goto done;
 
+<<<<<<< HEAD
 	sctp_for_each_transport(sctp_sock_filter, sctp_sock_dump,
 				net, &pos, &commp);
+=======
+	sctp_transport_traverse_process(sctp_sock_filter, sctp_sock_dump,
+					net, &pos, &commp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cb->args[2] = pos;
 
 done:

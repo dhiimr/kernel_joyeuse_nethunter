@@ -234,6 +234,10 @@ enum clk_id {
 	tegra_clk_sdmmc4_8,
 	tegra_clk_sdmmc4_9,
 	tegra_clk_se,
+<<<<<<< HEAD
+=======
+	tegra_clk_se_10,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tegra_clk_soc_therm,
 	tegra_clk_soc_therm_8,
 	tegra_clk_sor0,

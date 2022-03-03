@@ -3,6 +3,10 @@
 #define _IPV6_H
 
 #include <uapi/linux/ipv6.h>
+<<<<<<< HEAD
+=======
+#include <uapi/linux/icmpv6.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define ipv6_optlen(p)  (((p)->hdrlen+1) << 3)
 #define ipv6_authlen(p) (((p)->hdrlen+2) << 2)
@@ -42,7 +46,10 @@ struct ipv6_devconf {
 	__s32		accept_ra_rt_info_max_plen;
 #endif
 #endif
+<<<<<<< HEAD
 	__s32		accept_ra_rt_table;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__s32		proxy_ndp;
 	__s32		accept_source_route;
 	__s32		accept_ra_from_local;
@@ -74,7 +81,11 @@ struct ipv6_devconf {
 	__u32		enhanced_dad;
 	__u32		addr_gen_mode;
 	__s32		disable_policy;
+<<<<<<< HEAD
 	__s32		accept_ra_prefix_route;
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct ctl_table_header *sysctl_header;
 };
 
@@ -83,7 +94,10 @@ struct ipv6_params {
 	__s32 autoconf;
 };
 extern struct ipv6_params ipv6_defaults;
+<<<<<<< HEAD
 #include <linux/icmpv6.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/tcp.h>
 #include <linux/udp.h>
 

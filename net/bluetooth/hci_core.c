@@ -802,8 +802,13 @@ static int hci_init4_req(struct hci_request *req, unsigned long opt)
 	if (hdev->le_features[0] & HCI_LE_DATA_LEN_EXT) {
 		struct hci_cp_le_write_def_data_len cp;
 
+<<<<<<< HEAD
 		cp.tx_len = hdev->le_max_tx_len;
 		cp.tx_time = hdev->le_max_tx_time;
+=======
+		cp.tx_len = cpu_to_le16(hdev->le_max_tx_len);
+		cp.tx_time = cpu_to_le16(hdev->le_max_tx_time);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		hci_req_add(req, HCI_OP_LE_WRITE_DEF_DATA_LEN, sizeof(cp), &cp);
 	}
 
@@ -1258,6 +1263,15 @@ int hci_inquiry(void __user *arg)
 		goto done;
 	}
 
+<<<<<<< HEAD
+=======
+	/* Restrict maximum inquiry length to 60 seconds */
+	if (ir.length > 60) {
+		err = -EINVAL;
+		goto done;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hci_dev_lock(hdev);
 	if (inquiry_cache_age(hdev) > INQUIRY_CACHE_AGE_MAX ||
 	    inquiry_cache_empty(hdev) || ir.flags & IREQ_CACHE_FLUSH) {
@@ -1278,8 +1292,15 @@ int hci_inquiry(void __user *arg)
 		 * cleared). If it is interrupted by a signal, return -EINTR.
 		 */
 		if (wait_on_bit(&hdev->flags, HCI_INQUIRY,
+<<<<<<< HEAD
 				TASK_INTERRUPTIBLE))
 			return -EINTR;
+=======
+				TASK_INTERRUPTIBLE)) {
+			err = -EINTR;
+			goto done;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* for unlimited number of responses we will use buffer with
@@ -1456,8 +1477,18 @@ static int hci_dev_do_open(struct hci_dev *hdev)
 	} else {
 		/* Init failed, cleanup */
 		flush_work(&hdev->tx_work);
+<<<<<<< HEAD
 		flush_work(&hdev->cmd_work);
 		flush_work(&hdev->rx_work);
+=======
+
+		/* Since hci_rx_work() is possible to awake new cmd_work
+		 * it should be flushed first to avoid unexpected call of
+		 * hci_cmd_work()
+		 */
+		flush_work(&hdev->rx_work);
+		flush_work(&hdev->cmd_work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		skb_queue_purge(&hdev->cmd_q);
 		skb_queue_purge(&hdev->rx_q);
@@ -1575,6 +1606,17 @@ int hci_dev_do_close(struct hci_dev *hdev)
 	hci_request_cancel_all(hdev);
 	hci_req_sync_lock(hdev);
 
+<<<<<<< HEAD
+=======
+	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+	    test_bit(HCI_UP, &hdev->flags)) {
+		/* Execute vendor specific shutdown routine */
+		if (hdev->shutdown)
+			hdev->shutdown(hdev);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
 		cancel_delayed_work_sync(&hdev->cmd_timer);
 		hci_req_sync_unlock(hdev);
@@ -3162,6 +3204,10 @@ int hci_register_dev(struct hci_dev *hdev)
 	return id;
 
 err_wqueue:
+<<<<<<< HEAD
+=======
+	debugfs_remove_recursive(hdev->debugfs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	destroy_workqueue(hdev->workqueue);
 	destroy_workqueue(hdev->req_workqueue);
 err:
@@ -3174,14 +3220,20 @@ EXPORT_SYMBOL(hci_register_dev);
 /* Unregister HCI device */
 void hci_unregister_dev(struct hci_dev *hdev)
 {
+<<<<<<< HEAD
 	int id;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	BT_DBG("%p name %s bus %d", hdev, hdev->name, hdev->bus);
 
 	hci_dev_set_flag(hdev, HCI_UNREGISTER);
 
+<<<<<<< HEAD
 	id = hdev->id;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	write_lock(&hci_dev_list_lock);
 	list_del(&hdev->list);
 	write_unlock(&hci_dev_list_lock);
@@ -3210,7 +3262,18 @@ void hci_unregister_dev(struct hci_dev *hdev)
 	}
 
 	device_del(&hdev->dev);
+<<<<<<< HEAD
 
+=======
+	/* Actual cleanup is deferred until hci_cleanup_dev(). */
+	hci_dev_put(hdev);
+}
+EXPORT_SYMBOL(hci_unregister_dev);
+
+/* Cleanup HCI device */
+void hci_cleanup_dev(struct hci_dev *hdev)
+{
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	debugfs_remove_recursive(hdev->debugfs);
 	kfree_const(hdev->hw_info);
 	kfree_const(hdev->fw_info);
@@ -3232,11 +3295,16 @@ void hci_unregister_dev(struct hci_dev *hdev)
 	hci_discovery_filter_clear(hdev);
 	hci_dev_unlock(hdev);
 
+<<<<<<< HEAD
 	hci_dev_put(hdev);
 
 	ida_simple_remove(&hci_index_ida, id);
 }
 EXPORT_SYMBOL(hci_unregister_dev);
+=======
+	ida_simple_remove(&hci_index_ida, hdev->id);
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Suspend HCI device */
 int hci_suspend_dev(struct hci_dev *hdev)
@@ -4215,7 +4283,18 @@ static void hci_rx_work(struct work_struct *work)
 			hci_send_to_sock(hdev, skb);
 		}
 
+<<<<<<< HEAD
 		if (hci_dev_test_flag(hdev, HCI_USER_CHANNEL)) {
+=======
+		/* If the device has been opened in HCI_USER_CHANNEL,
+		 * the userspace has exclusive access to device.
+		 * When device is HCI_INIT, we still need to process
+		 * the data packets to the driver in order
+		 * to complete its setup().
+		 */
+		if (hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+		    !test_bit(HCI_INIT, &hdev->flags)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			kfree_skb(skb);
 			continue;
 		}

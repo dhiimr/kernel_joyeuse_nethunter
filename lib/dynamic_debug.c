@@ -85,6 +85,7 @@ static struct { unsigned flag:8; char opt_char; } opt_array[] = {
 	{ _DPRINTK_FLAGS_NONE, '_' },
 };
 
+<<<<<<< HEAD
 /* format a string into buf[] which describes the _ddebug's flags */
 static char *ddebug_describe_flags(struct _ddebug *dp, char *buf,
 				    size_t maxlen)
@@ -101,6 +102,24 @@ static char *ddebug_describe_flags(struct _ddebug *dp, char *buf,
 	*p = '\0';
 
 	return buf;
+=======
+struct flagsbuf { char buf[ARRAY_SIZE(opt_array)+1]; };
+
+/* format a string into buf[] which describes the _ddebug's flags */
+static char *ddebug_describe_flags(unsigned int flags, struct flagsbuf *fb)
+{
+	char *p = fb->buf;
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(opt_array); ++i)
+		if (flags & opt_array[i].flag)
+			*p++ = opt_array[i].opt_char;
+	if (p == fb->buf)
+		*p++ = '_';
+	*p = '\0';
+
+	return fb->buf;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #define vpr_info(fmt, ...)					\
@@ -142,7 +161,11 @@ static int ddebug_change(const struct ddebug_query *query,
 	struct ddebug_table *dt;
 	unsigned int newflags;
 	unsigned int nfound = 0;
+<<<<<<< HEAD
 	char flagbuf[10];
+=======
+	struct flagsbuf fbuf;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* search for matching ddebugs */
 	mutex_lock(&ddebug_lock);
@@ -199,8 +222,12 @@ static int ddebug_change(const struct ddebug_query *query,
 			vpr_info("changed %s:%d [%s]%s =%s\n",
 				 trim_prefix(dp->filename), dp->lineno,
 				 dt->mod_name, dp->function,
+<<<<<<< HEAD
 				 ddebug_describe_flags(dp, flagbuf,
 						       sizeof(flagbuf)));
+=======
+				 ddebug_describe_flags(dp->flags, &fbuf));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 	mutex_unlock(&ddebug_lock);
@@ -779,7 +806,11 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
 {
 	struct ddebug_iter *iter = m->private;
 	struct _ddebug *dp = p;
+<<<<<<< HEAD
 	char flagsbuf[10];
+=======
+	struct flagsbuf flags;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	vpr_info("called m=%p p=%p\n", m, p);
 
@@ -792,7 +823,11 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
 	seq_printf(m, "%s:%u [%s]%s =%s \"",
 		   trim_prefix(dp->filename), dp->lineno,
 		   iter->table->mod_name, dp->function,
+<<<<<<< HEAD
 		   ddebug_describe_flags(dp, flagsbuf, sizeof(flagsbuf)));
+=======
+		   ddebug_describe_flags(dp->flags, &flags));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	seq_escape(m, dp->format, "\t\r\n\"");
 	seq_puts(m, "\"\n");
 

@@ -18,6 +18,10 @@
  */
 
 #include <asm/ppc_asm.h>
+<<<<<<< HEAD
+=======
+#include <asm/code-patching-asm.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/kvm_asm.h>
 #include <asm/reg.h>
 #include <asm/mmu.h>
@@ -1445,6 +1449,13 @@ mc_cont:
 1:
 #endif /* CONFIG_KVM_XICS */
 
+<<<<<<< HEAD
+=======
+	/* Possibly flush the link stack here. */
+1:	nop
+	patch_site 1b patch__call_kvm_flush_link_stack
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	stw	r12, STACK_SLOT_TRAP(r1)
 	mr 	r3, r12
 	/* Increment exit count, poke other threads to exit */
@@ -1957,6 +1968,31 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_TYPE_RADIX)
 	mtlr	r0
 	blr
 
+<<<<<<< HEAD
+=======
+.balign 32
+.global kvm_flush_link_stack
+kvm_flush_link_stack:
+	/* Save LR into r0 */
+	mflr	r0
+
+	/* Flush the link stack. On Power8 it's up to 32 entries in size. */
+	.rept 32
+	bl	.+4
+	.endr
+
+	/* And on Power9 it's up to 64. */
+BEGIN_FTR_SECTION
+	.rept 32
+	bl	.+4
+	.endr
+END_FTR_SECTION_IFSET(CPU_FTR_ARCH_300)
+
+	/* Restore LR */
+	mtlr	r0
+	blr
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Check whether an HDSI is an HPTE not found fault or something else.
  * If it is an HPTE not found fault that is due to the guest accessing

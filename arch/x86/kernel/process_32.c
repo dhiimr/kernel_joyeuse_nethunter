@@ -132,6 +132,16 @@ int copy_thread_tls(unsigned long clone_flags, unsigned long sp,
 	struct task_struct *tsk;
 	int err;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * For a new task use the RESET flags value since there is no before.
+	 * All the status flags are zero; DF and all the system flags must also
+	 * be 0, specifically IF must be 0 because we context switch to the new
+	 * task with interrupts disabled.
+	 */
+	frame->flags = X86_EFLAGS_FIXED;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	frame->bp = 0;
 	frame->ret_addr = (unsigned long) ret_from_fork;
 	p->thread.sp = (unsigned long) fork_frame;

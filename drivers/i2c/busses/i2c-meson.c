@@ -8,6 +8,10 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/bitfield.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/clk.h>
 #include <linux/completion.h>
 #include <linux/i2c.h>
@@ -39,6 +43,15 @@
 #define REG_CTRL_CLKDIVEXT_SHIFT 28
 #define REG_CTRL_CLKDIVEXT_MASK	GENMASK(29, 28)
 
+<<<<<<< HEAD
+=======
+#define REG_SLV_ADDR		GENMASK(7, 0)
+#define REG_SLV_SDA_FILTER	GENMASK(10, 8)
+#define REG_SLV_SCL_FILTER	GENMASK(13, 11)
+#define REG_SLV_SCL_LOW		GENMASK(27, 16)
+#define REG_SLV_SCL_LOW_EN	BIT(28)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define I2C_TIMEOUT_MS		500
 
 enum {
@@ -142,6 +155,12 @@ static void meson_i2c_set_clk_div(struct meson_i2c *i2c, unsigned int freq)
 	meson_i2c_set_mask(i2c, REG_CTRL, REG_CTRL_CLKDIVEXT_MASK,
 			   (div >> 10) << REG_CTRL_CLKDIVEXT_SHIFT);
 
+<<<<<<< HEAD
+=======
+	/* Disable HIGH/LOW mode */
+	meson_i2c_set_mask(i2c, REG_SLAVE_ADDR, REG_SLV_SCL_LOW_EN, 0);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev_dbg(i2c->dev, "%s: clk %lu, freq %u, div %u\n", __func__,
 		clk_rate, freq, div);
 }
@@ -269,7 +288,14 @@ static void meson_i2c_do_start(struct meson_i2c *i2c, struct i2c_msg *msg)
 	token = (msg->flags & I2C_M_RD) ? TOKEN_SLAVE_ADDR_READ :
 		TOKEN_SLAVE_ADDR_WRITE;
 
+<<<<<<< HEAD
 	writel(msg->addr << 1, i2c->regs + REG_SLAVE_ADDR);
+=======
+
+	meson_i2c_set_mask(i2c, REG_SLAVE_ADDR, REG_SLV_ADDR,
+			   FIELD_PREP(REG_SLV_ADDR, msg->addr << 1));
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	meson_i2c_add_token(i2c, TOKEN_START);
 	meson_i2c_add_token(i2c, token);
 }
@@ -425,6 +451,13 @@ static int meson_i2c_probe(struct platform_device *pdev)
 		return ret;
 	}
 
+<<<<<<< HEAD
+=======
+	/* Disable filtering */
+	meson_i2c_set_mask(i2c, REG_SLAVE_ADDR,
+			   REG_SLV_SDA_FILTER | REG_SLV_SCL_FILTER, 0);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	meson_i2c_set_clk_div(i2c, timings.bus_freq_hz);
 
 	return 0;

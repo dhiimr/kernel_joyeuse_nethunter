@@ -498,10 +498,17 @@ enum mwifiex_channel_flags {
 
 #define RF_ANTENNA_AUTO                 0xFFFF
 
+<<<<<<< HEAD
 #define HostCmd_SET_SEQ_NO_BSS_INFO(seq, num, type) {   \
 	(((seq) & 0x00ff) |                             \
 	 (((num) & 0x000f) << 8)) |                     \
 	(((type) & 0x000f) << 12);                  }
+=======
+#define HostCmd_SET_SEQ_NO_BSS_INFO(seq, num, type) \
+	((((seq) & 0x00ff) |                        \
+	 (((num) & 0x000f) << 8)) |                 \
+	(((type) & 0x000f) << 12))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define HostCmd_GET_SEQ_NO(seq)       \
 	((seq) & HostCmd_SEQ_NUM_MASK)
@@ -938,7 +945,11 @@ struct mwifiex_tkip_param {
 struct mwifiex_aes_param {
 	u8 pn[WPA_PN_SIZE];
 	__le16 key_len;
+<<<<<<< HEAD
 	u8 key[WLAN_KEY_LEN_CCMP];
+=======
+	u8 key[WLAN_KEY_LEN_CCMP_256];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 } __packed;
 
 struct mwifiex_wapi_param {
@@ -1744,9 +1755,16 @@ struct mwifiex_ie_types_wmm_queue_status {
 struct ieee_types_vendor_header {
 	u8 element_id;
 	u8 len;
+<<<<<<< HEAD
 	u8 oui[4];	/* 0~2: oui, 3: oui_type */
 	u8 oui_subtype;
 	u8 version;
+=======
+	struct {
+		u8 oui[3];
+		u8 oui_type;
+	} __packed oui;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 } __packed;
 
 struct ieee_types_wmm_parameter {
@@ -1760,6 +1778,12 @@ struct ieee_types_wmm_parameter {
 	 *   Version     [1]
 	 */
 	struct ieee_types_vendor_header vend_hdr;
+<<<<<<< HEAD
+=======
+	u8 oui_subtype;
+	u8 version;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8 qos_info_bitmap;
 	u8 reserved;
 	struct ieee_types_wmm_ac_parameters ac_params[IEEE80211_NUM_ACS];
@@ -1777,6 +1801,11 @@ struct ieee_types_wmm_info {
 	 *   Version     [1]
 	 */
 	struct ieee_types_vendor_header vend_hdr;
+<<<<<<< HEAD
+=======
+	u8 oui_subtype;
+	u8 version;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	u8 qos_info_bitmap;
 } __packed;

@@ -37,6 +37,11 @@ static int ip_local_port_range_min[] = { 1, 1 };
 static int ip_local_port_range_max[] = { 65535, 65535 };
 static int tcp_adv_win_scale_min = -31;
 static int tcp_adv_win_scale_max = 31;
+<<<<<<< HEAD
+=======
+static int tcp_min_snd_mss_min = TCP_MIN_SND_MSS;
+static int tcp_min_snd_mss_max = 65535;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int ip_privileged_port_min;
 static int ip_privileged_port_max = 65535;
 static int ip_ttl_min = 1;
@@ -45,10 +50,13 @@ static int tcp_syn_retries_min = 1;
 static int tcp_syn_retries_max = MAX_TCP_SYNCNT;
 static int ip_ping_group_range_min[] = { 0, 0 };
 static int ip_ping_group_range_max[] = { GID_T_MAX, GID_T_MAX };
+<<<<<<< HEAD
 static int tcp_delack_seg_min = TCP_DELACK_MIN;
 static int tcp_delack_seg_max = 60;
 static int tcp_use_userconfig_min;
 static int tcp_use_userconfig_max = 1;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int one_day_secs = 24 * 3600;
 
 /* obsolete */
@@ -203,6 +211,7 @@ static int ipv4_ping_group_range(struct ctl_table *table, int write,
 	return ret;
 }
 
+<<<<<<< HEAD
 /* Validate changes from /proc interface. */
 static int proc_tcp_default_init_rwnd(struct ctl_table *ctl, int write,
 				      void __user *buffer,
@@ -218,6 +227,8 @@ static int proc_tcp_default_init_rwnd(struct ctl_table *ctl, int write,
 	return ret;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int proc_tcp_congestion_control(struct ctl_table *ctl, int write,
 				       void __user *buffer, size_t *lenp, loff_t *ppos)
 {
@@ -746,6 +757,7 @@ static struct ctl_table ipv4_table[] = {
 		.proc_handler   = proc_tcp_available_ulp,
 	},
 	{
+<<<<<<< HEAD
 		.procname       = "tcp_default_init_rwnd",
 		.data           = &sysctl_tcp_default_init_rwnd,
 		.maxlen         = sizeof(int),
@@ -753,6 +765,8 @@ static struct ctl_table ipv4_table[] = {
 		.proc_handler   = proc_tcp_default_init_rwnd
 	},
 	{
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.procname	= "icmp_msgs_per_sec",
 		.data		= &sysctl_icmp_msgs_per_sec,
 		.maxlen		= sizeof(int),
@@ -791,6 +805,7 @@ static struct ctl_table ipv4_table[] = {
 		.proc_handler	= proc_dointvec_minmax,
 		.extra1		= &one
 	},
+<<<<<<< HEAD
 	{
 		.procname	= "tcp_delack_seg",
 		.data		= &sysctl_tcp_delack_seg,
@@ -810,6 +825,8 @@ static struct ctl_table ipv4_table[] = {
 		.extra2		= &tcp_use_userconfig_max,
 	},
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ }
 };
 
@@ -929,6 +946,7 @@ static struct ctl_table ipv4_net_table[] = {
 		.proc_handler	= proc_do_large_bitmap,
 	},
 	{
+<<<<<<< HEAD
 		.procname       = "reserved_port_bind",
 		.data           = &sysctl_reserved_port_bind,
 		.maxlen         = sizeof(int),
@@ -936,6 +954,8 @@ static struct ctl_table ipv4_net_table[] = {
 		.proc_handler   = proc_dointvec
 	},
 	{
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.procname	= "ip_no_pmtu_disc",
 		.data		= &init_net.ipv4.sysctl_ip_no_pmtu_disc,
 		.maxlen		= sizeof(int),
@@ -996,6 +1016,18 @@ static struct ctl_table ipv4_net_table[] = {
 		.proc_handler	= proc_dointvec,
 	},
 	{
+<<<<<<< HEAD
+=======
+		.procname	= "tcp_min_snd_mss",
+		.data		= &init_net.ipv4.sysctl_tcp_min_snd_mss,
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= proc_dointvec_minmax,
+		.extra1		= &tcp_min_snd_mss_min,
+		.extra2		= &tcp_min_snd_mss_max,
+	},
+	{
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.procname	= "tcp_probe_threshold",
 		.data		= &init_net.ipv4.sysctl_tcp_probe_threshold,
 		.maxlen		= sizeof(int),

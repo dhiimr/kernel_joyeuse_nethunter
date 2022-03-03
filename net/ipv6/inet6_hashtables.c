@@ -118,7 +118,11 @@ static inline int compute_score(struct sock *sk, struct net *net,
 			if (sk->sk_bound_dev_if)
 				score++;
 		}
+<<<<<<< HEAD
 		if (sk->sk_incoming_cpu == raw_smp_processor_id())
+=======
+		if (READ_ONCE(sk->sk_incoming_cpu) == raw_smp_processor_id())
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			score++;
 	}
 	return score;
@@ -137,9 +141,16 @@ struct sock *inet6_lookup_listener(struct net *net,
 	int score, hiscore = 0, matches = 0, reuseport = 0;
 	bool exact_dif = inet6_exact_dif_match(net, skb);
 	struct sock *sk, *result = NULL;
+<<<<<<< HEAD
 	u32 phash = 0;
 
 	sk_for_each(sk, &ilb->head) {
+=======
+	struct hlist_nulls_node *node;
+	u32 phash = 0;
+
+	sk_nulls_for_each(sk, node, &ilb->nulls_head) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		score = compute_score(sk, net, hnum, daddr, dif, sdif, exact_dif);
 		if (score > hiscore) {
 			reuseport = sk->sk_reuseport;

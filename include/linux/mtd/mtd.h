@@ -401,7 +401,11 @@ static inline struct device_node *mtd_get_of_node(struct mtd_info *mtd)
 	return dev_of_node(&mtd->dev);
 }
 
+<<<<<<< HEAD
 static inline int mtd_oobavail(struct mtd_info *mtd, struct mtd_oob_ops *ops)
+=======
+static inline u32 mtd_oobavail(struct mtd_info *mtd, struct mtd_oob_ops *ops)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return ops->mode == MTD_OPS_AUTO_OOB ? mtd->oobavail : mtd->oobsize;
 }

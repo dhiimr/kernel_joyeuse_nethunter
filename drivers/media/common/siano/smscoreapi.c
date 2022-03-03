@@ -910,7 +910,11 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
 					 void *buffer, size_t size)
 {
 	struct sms_firmware *firmware = (struct sms_firmware *) buffer;
+<<<<<<< HEAD
 	struct sms_msg_data4 *msg;
+=======
+	struct sms_msg_data5 *msg;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 mem_address,  calc_checksum = 0;
 	u32 i, *ptr;
 	u8 *payload = firmware->payload;
@@ -991,6 +995,7 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
 		goto exit_fw_download;
 
 	if (coredev->mode == DEVICE_MODE_NONE) {
+<<<<<<< HEAD
 		struct sms_msg_data *trigger_msg =
 			(struct sms_msg_data *) msg;
 
@@ -1009,6 +1014,22 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
 
 		rc = smscore_sendrequest_and_wait(coredev, trigger_msg,
 					trigger_msg->x_msg_header.msg_length,
+=======
+		pr_debug("sending MSG_SMS_SWDOWNLOAD_TRIGGER_REQ\n");
+		SMS_INIT_MSG(&msg->x_msg_header,
+				MSG_SMS_SWDOWNLOAD_TRIGGER_REQ,
+				sizeof(*msg));
+
+		msg->msg_data[0] = firmware->start_address;
+					/* Entry point */
+		msg->msg_data[1] = 6; /* Priority */
+		msg->msg_data[2] = 0x200; /* Stack size */
+		msg->msg_data[3] = 0; /* Parameter */
+		msg->msg_data[4] = 4; /* Task ID */
+
+		rc = smscore_sendrequest_and_wait(coredev, msg,
+					msg->x_msg_header.msg_length,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					&coredev->trigger_done);
 	} else {
 		SMS_INIT_MSG(&msg->x_msg_header, MSG_SW_RELOAD_EXEC_REQ,

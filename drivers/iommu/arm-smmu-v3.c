@@ -1145,7 +1145,12 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_device *smmu, u32 sid,
 	}
 
 	arm_smmu_sync_ste_for_sid(smmu, sid);
+<<<<<<< HEAD
 	dst[0] = cpu_to_le64(val);
+=======
+	/* See comment in arm_smmu_write_ctx_desc() */
+	WRITE_ONCE(dst[0], cpu_to_le64(val));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	arm_smmu_sync_ste_for_sid(smmu, sid);
 
 	/* It's likely that we'll want to use the new STE soon */
@@ -2868,9 +2873,21 @@ static int arm_smmu_device_remove(struct platform_device *pdev)
 	struct arm_smmu_device *smmu = platform_get_drvdata(pdev);
 
 	arm_smmu_device_disable(smmu);
+<<<<<<< HEAD
 	return 0;
 }
 
+=======
+
+	return 0;
+}
+
+static void arm_smmu_device_shutdown(struct platform_device *pdev)
+{
+	arm_smmu_device_remove(pdev);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const struct of_device_id arm_smmu_of_match[] = {
 	{ .compatible = "arm,smmu-v3", },
 	{ },
@@ -2884,6 +2901,10 @@ static struct platform_driver arm_smmu_driver = {
 	},
 	.probe	= arm_smmu_device_probe,
 	.remove	= arm_smmu_device_remove,
+<<<<<<< HEAD
+=======
+	.shutdown = arm_smmu_device_shutdown,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 module_platform_driver(arm_smmu_driver);
 

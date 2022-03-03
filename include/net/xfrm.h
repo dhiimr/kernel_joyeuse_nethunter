@@ -23,7 +23,10 @@
 #include <net/ipv6.h>
 #include <net/ip6_fib.h>
 #include <net/flow.h>
+<<<<<<< HEAD
 #include <net/gro_cells.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <linux/interrupt.h>
 
@@ -148,7 +151,10 @@ struct xfrm_state {
 	struct xfrm_id		id;
 	struct xfrm_selector	sel;
 	struct xfrm_mark	mark;
+<<<<<<< HEAD
 	u32			if_id;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32			tfcpad;
 
 	u32			genid;
@@ -168,7 +174,11 @@ struct xfrm_state {
 		int		header_len;
 		int		trailer_len;
 		u32		extra_flags;
+<<<<<<< HEAD
 		struct xfrm_mark	smark;
+=======
+		u32		output_mark;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} props;
 
 	struct xfrm_lifetime_cfg lft;
@@ -294,6 +304,7 @@ struct xfrm_replay {
 	int	(*overflow)(struct xfrm_state *x, struct sk_buff *skb);
 };
 
+<<<<<<< HEAD
 struct xfrm_if_cb {
 	struct xfrm_if	*(*decode_session)(struct sk_buff *skb);
 };
@@ -301,6 +312,8 @@ struct xfrm_if_cb {
 void xfrm_if_register_cb(const struct xfrm_if_cb *ifcb);
 void xfrm_if_unregister_cb(void);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct net_device;
 struct xfrm_type;
 struct xfrm_dst;
@@ -332,7 +345,10 @@ int xfrm_policy_register_afinfo(const struct xfrm_policy_afinfo *afinfo, int fam
 void xfrm_policy_unregister_afinfo(const struct xfrm_policy_afinfo *afinfo);
 void km_policy_notify(struct xfrm_policy *xp, int dir,
 		      const struct km_event *c);
+<<<<<<< HEAD
 void xfrm_policy_cache_flush(void);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void km_state_notify(struct xfrm_state *x, const struct km_event *c);
 
 struct xfrm_tmpl;
@@ -582,7 +598,10 @@ struct xfrm_policy {
 	atomic_t		genid;
 	u32			priority;
 	u32			index;
+<<<<<<< HEAD
 	u32			if_id;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct xfrm_mark	mark;
 	struct xfrm_selector	selector;
 	struct xfrm_lifetime_cfg lft;
@@ -1016,6 +1035,7 @@ static inline void xfrm_dst_destroy(struct xfrm_dst *xdst)
 
 void xfrm_dst_ifdown(struct dst_entry *dst, struct net_device *dev);
 
+<<<<<<< HEAD
 struct xfrm_if_parms {
 	char name[IFNAMSIZ];	/* name of XFRM device */
 	int link;		/* ifindex of underlying L2 interface */
@@ -1032,6 +1052,8 @@ struct xfrm_if {
 	struct gro_cells gro_cells;
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct xfrm_offload {
 	/* Output sequence number for replay protection on offloading. */
 	struct {
@@ -1393,6 +1415,26 @@ static inline int xfrm_state_kern(const struct xfrm_state *x)
 	return atomic_read(&x->tunnel_users);
 }
 
+<<<<<<< HEAD
+=======
+static inline bool xfrm_id_proto_valid(u8 proto)
+{
+	switch (proto) {
+	case IPPROTO_AH:
+	case IPPROTO_ESP:
+	case IPPROTO_COMP:
+#if IS_ENABLED(CONFIG_IPV6)
+	case IPPROTO_ROUTING:
+	case IPPROTO_DSTOPTS:
+#endif
+		return true;
+	default:
+		return false;
+	}
+}
+
+/* IPSEC_PROTO_ANY only matches 3 IPsec protocols, 0 could match all. */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline int xfrm_id_proto_match(u8 proto, u8 userproto)
 {
 	return (!userproto || proto == userproto ||
@@ -1526,8 +1568,13 @@ struct xfrm_state *xfrm_state_find(const xfrm_address_t *daddr,
 				   const struct flowi *fl,
 				   struct xfrm_tmpl *tmpl,
 				   struct xfrm_policy *pol, int *err,
+<<<<<<< HEAD
 				   unsigned short family, u32 if_id);
 struct xfrm_state *xfrm_stateonly_find(struct net *net, u32 mark, u32 if_id,
+=======
+				   unsigned short family);
+struct xfrm_state *xfrm_stateonly_find(struct net *net, u32 mark,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				       xfrm_address_t *daddr,
 				       xfrm_address_t *saddr,
 				       unsigned short family,
@@ -1684,20 +1731,33 @@ int xfrm_policy_walk(struct net *net, struct xfrm_policy_walk *walk,
 		     void *);
 void xfrm_policy_walk_done(struct xfrm_policy_walk *walk, struct net *net);
 int xfrm_policy_insert(int dir, struct xfrm_policy *policy, int excl);
+<<<<<<< HEAD
 struct xfrm_policy *xfrm_policy_bysel_ctx(struct net *net, u32 mark, u32 if_id,
+=======
+struct xfrm_policy *xfrm_policy_bysel_ctx(struct net *net, u32 mark,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					  u8 type, int dir,
 					  struct xfrm_selector *sel,
 					  struct xfrm_sec_ctx *ctx, int delete,
 					  int *err);
+<<<<<<< HEAD
 struct xfrm_policy *xfrm_policy_byid(struct net *net, u32 mark, u32 if_id, u8,
 				     int dir, u32 id, int delete, int *err);
+=======
+struct xfrm_policy *xfrm_policy_byid(struct net *net, u32 mark, u8, int dir,
+				     u32 id, int delete, int *err);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int xfrm_policy_flush(struct net *net, u8 type, bool task_valid);
 void xfrm_policy_hash_rebuild(struct net *net);
 u32 xfrm_get_acqseq(void);
 int verify_spi_info(u8 proto, u32 min, u32 max);
 int xfrm_alloc_spi(struct xfrm_state *x, u32 minspi, u32 maxspi);
 struct xfrm_state *xfrm_find_acq(struct net *net, const struct xfrm_mark *mark,
+<<<<<<< HEAD
 				 u8 mode, u32 reqid, u32 if_id, u8 proto,
+=======
+				 u8 mode, u32 reqid, u8 proto,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				 const xfrm_address_t *daddr,
 				 const xfrm_address_t *saddr, int create,
 				 unsigned short family);
@@ -1818,6 +1878,7 @@ static inline int xfrm_replay_state_esn_len(struct xfrm_replay_state_esn *replay
 static inline int xfrm_replay_clone(struct xfrm_state *x,
 				     struct xfrm_state *orig)
 {
+<<<<<<< HEAD
 	x->replay_esn = kzalloc(xfrm_replay_state_esn_len(orig->replay_esn),
 				GFP_KERNEL);
 	if (!x->replay_esn)
@@ -1833,6 +1894,19 @@ static inline int xfrm_replay_clone(struct xfrm_state *x,
 		kfree(x->replay_esn);
 		return -ENOMEM;
 	}
+=======
+
+	x->replay_esn = kmemdup(orig->replay_esn,
+				xfrm_replay_state_esn_len(orig->replay_esn),
+				GFP_KERNEL);
+	if (!x->replay_esn)
+		return -ENOMEM;
+	x->preplay_esn = kmemdup(orig->preplay_esn,
+				 xfrm_replay_state_esn_len(orig->preplay_esn),
+				 GFP_KERNEL);
+	if (!x->preplay_esn)
+		return -ENOMEM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -1974,6 +2048,7 @@ static inline int xfrm_mark_put(struct sk_buff *skb, const struct xfrm_mark *m)
 	return ret;
 }
 
+<<<<<<< HEAD
 static inline __u32 xfrm_smark_get(__u32 mark, struct xfrm_state *x)
 {
 	struct xfrm_mark *m = &x->props.smark;
@@ -1990,6 +2065,8 @@ static inline int xfrm_if_id_put(struct sk_buff *skb, __u32 if_id)
 	return ret;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline int xfrm_tunnel_check(struct sk_buff *skb, struct xfrm_state *x,
 				    unsigned int family)
 {

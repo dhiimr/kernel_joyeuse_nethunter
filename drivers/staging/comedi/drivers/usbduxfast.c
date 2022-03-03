@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  *  Copyright (C) 2004-2014 Bernd Porr, mail@berndporr.me.uk
+=======
+ *  Copyright (C) 2004-2019 Bernd Porr, mail@berndporr.me.uk
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +21,11 @@
  * Description: University of Stirling USB DAQ & INCITE Technology Limited
  * Devices: [ITL] USB-DUX-FAST (usbduxfast)
  * Author: Bernd Porr <mail@berndporr.me.uk>
+<<<<<<< HEAD
  * Updated: 10 Oct 2014
+=======
+ * Updated: 16 Nov 2019
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Status: stable
  */
 
@@ -31,6 +39,10 @@
  *
  *
  * Revision history:
+<<<<<<< HEAD
+=======
+ * 1.0: Fixed a rounding error in usbduxfast_ai_cmdtest
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * 0.9: Dropping the first data packet which seems to be from the last transfer.
  *      Buffer overflows in the FX2 are handed over to comedi.
  * 0.92: Dropping now 4 packets. The quad buffer has to be emptied.
@@ -359,6 +371,10 @@ static int usbduxfast_ai_cmdtest(struct comedi_device *dev,
 				 struct comedi_cmd *cmd)
 {
 	int err = 0;
+<<<<<<< HEAD
+=======
+	int err2 = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int steps;
 	unsigned int arg;
 
@@ -408,11 +424,24 @@ static int usbduxfast_ai_cmdtest(struct comedi_device *dev,
 	 */
 	steps = (cmd->convert_arg * 30) / 1000;
 	if (cmd->chanlist_len !=  1)
+<<<<<<< HEAD
 		err |= comedi_check_trigger_arg_min(&steps,
 						    MIN_SAMPLING_PERIOD);
 	err |= comedi_check_trigger_arg_max(&steps, MAX_SAMPLING_PERIOD);
 	arg = (steps * 1000) / 30;
 	err |= comedi_check_trigger_arg_is(&cmd->convert_arg, arg);
+=======
+		err2 |= comedi_check_trigger_arg_min(&steps,
+						     MIN_SAMPLING_PERIOD);
+	else
+		err2 |= comedi_check_trigger_arg_min(&steps, 1);
+	err2 |= comedi_check_trigger_arg_max(&steps, MAX_SAMPLING_PERIOD);
+	if (err2) {
+		err |= err2;
+		arg = (steps * 1000) / 30;
+		err |= comedi_check_trigger_arg_is(&cmd->convert_arg, arg);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (cmd->stop_src == TRIG_COUNT)
 		err |= comedi_check_trigger_arg_min(&cmd->stop_arg, 1);

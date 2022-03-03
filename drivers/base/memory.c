@@ -447,6 +447,7 @@ out:
 static DEVICE_ATTR(valid_zones, 0444, show_valid_zones, NULL);
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_MEMORY_HOTPLUG
 static int count_num_free_block_pages(struct zone *zone, int bid)
 {
@@ -496,13 +497,18 @@ static ssize_t show_allocated_bytes(struct device *dev,
 }
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static DEVICE_ATTR(phys_index, 0444, show_mem_start_phys_index, NULL);
 static DEVICE_ATTR(state, 0644, show_mem_state, store_mem_state);
 static DEVICE_ATTR(phys_device, 0444, show_phys_device, NULL);
 static DEVICE_ATTR(removable, 0444, show_mem_removable, NULL);
+<<<<<<< HEAD
 #ifdef CONFIG_MEMORY_HOTPLUG
 static DEVICE_ATTR(allocated_bytes, 0444, show_allocated_bytes, NULL);
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Block size attribute stuff
@@ -569,19 +575,34 @@ memory_probe_store(struct device *dev, struct device_attribute *attr,
 	if (phys_addr & ((pages_per_block << PAGE_SHIFT) - 1))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	nid = memory_add_physaddr_to_nid(phys_addr);
 	ret = add_memory(nid, phys_addr,
 			 MIN_MEMORY_BLOCK_SIZE * sections_per_block);
+=======
+	ret = lock_device_hotplug_sysfs();
+	if (ret)
+		return ret;
+
+	nid = memory_add_physaddr_to_nid(phys_addr);
+	ret = __add_memory(nid, phys_addr,
+			   MIN_MEMORY_BLOCK_SIZE * sections_per_block);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (ret)
 		goto out;
 
 	ret = count;
 out:
+<<<<<<< HEAD
+=======
+	unlock_device_hotplug();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
 static DEVICE_ATTR(probe, S_IWUSR, NULL, memory_probe_store);
+<<<<<<< HEAD
 
 #ifdef CONFIG_MEMORY_HOTREMOVE
 static ssize_t
@@ -612,6 +633,9 @@ memory_remove_store(struct device *dev,
 static DEVICE_ATTR(remove, S_IWUSR, NULL, memory_remove_store);
 #endif /* CONFIG_MEMORY_HOTREMOVE */
 #endif /* CONFIG_ARCH_MEMORY_PROBE */
+=======
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_MEMORY_FAILURE
 /*
@@ -633,6 +657,12 @@ store_soft_offline_page(struct device *dev,
 	pfn >>= PAGE_SHIFT;
 	if (!pfn_valid(pfn))
 		return -ENXIO;
+<<<<<<< HEAD
+=======
+	/* Only online pages can be soft-offlined (esp., not ZONE_DEVICE). */
+	if (!pfn_to_online_page(pfn))
+		return -EIO;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = soft_offline_page(pfn_to_page(pfn), 0);
 	return ret == 0 ? count : ret;
 }
@@ -708,9 +738,12 @@ static struct attribute *memory_memblk_attrs[] = {
 #ifdef CONFIG_MEMORY_HOTREMOVE
 	&dev_attr_valid_zones.attr,
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_MEMORY_HOTPLUG
 	&dev_attr_allocated_bytes.attr,
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	NULL
 };
 
@@ -874,9 +907,12 @@ bool is_memblock_offlined(struct memory_block *mem)
 static struct attribute *memory_root_attrs[] = {
 #ifdef CONFIG_ARCH_MEMORY_PROBE
 	&dev_attr_probe.attr,
+<<<<<<< HEAD
 #ifdef CONFIG_MEMORY_HOTREMOVE
 	&dev_attr_remove.attr,
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 #ifdef CONFIG_MEMORY_FAILURE

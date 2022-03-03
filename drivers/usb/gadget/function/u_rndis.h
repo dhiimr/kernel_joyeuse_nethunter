@@ -42,9 +42,12 @@ struct f_rndis_opts {
 	 */
 	struct mutex			lock;
 	int				refcnt;
+<<<<<<< HEAD
 
 	/* "Wireless" RNDIS; auto-detected by Windows */
 	bool	wceis;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 void rndis_borrow_net(struct usb_function_instance *f, struct net_device *net);

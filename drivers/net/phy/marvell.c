@@ -907,6 +907,7 @@ static int m88e1118_config_aneg(struct phy_device *phydev)
 {
 	int err;
 
+<<<<<<< HEAD
 	err = genphy_soft_reset(phydev);
 	if (err < 0)
 		return err;
@@ -917,6 +918,17 @@ static int m88e1118_config_aneg(struct phy_device *phydev)
 
 	err = genphy_config_aneg(phydev);
 	return 0;
+=======
+	err = marvell_set_polarity(phydev, phydev->mdix_ctrl);
+	if (err < 0)
+		return err;
+
+	err = genphy_config_aneg(phydev);
+	if (err < 0)
+		return err;
+
+	return genphy_soft_reset(phydev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int m88e1118_config_init(struct phy_device *phydev)
@@ -938,6 +950,15 @@ static int m88e1118_config_init(struct phy_device *phydev)
 	if (err < 0)
 		return err;
 
+<<<<<<< HEAD
+=======
+	if (phy_interface_is_rgmii(phydev)) {
+		err = m88e1121_config_aneg_rgmii_delays(phydev);
+		if (err < 0)
+			return err;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Adjust LED Control */
 	if (phydev->dev_flags & MARVELL_PHY_M1118_DNS323_LEDS)
 		err = phy_write(phydev, 0x10, 0x1100);

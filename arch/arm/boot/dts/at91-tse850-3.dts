@@ -267,7 +267,11 @@
 &macb1 {
 	status = "okay";
 
+<<<<<<< HEAD
 	phy-mode = "rgmii";
+=======
+	phy-mode = "rmii";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	#address-cells = <1>;
 	#size-cells = <0>;

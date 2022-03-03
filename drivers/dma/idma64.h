@@ -216,12 +216,20 @@ static inline void idma64_writel(struct idma64 *idma64, int offset, u32 value)
 /**
  * struct idma64_chip - representation of iDMA 64-bit controller hardware
  * @dev:		struct device of the DMA controller
+<<<<<<< HEAD
+=======
+ * @sysdev:		struct device of the physical device that does DMA
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @irq:		irq line
  * @regs:		memory mapped I/O space
  * @idma64:		struct idma64 that is filed by idma64_probe()
  */
 struct idma64_chip {
 	struct device	*dev;
+<<<<<<< HEAD
+=======
+	struct device	*sysdev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int		irq;
 	void __iomem	*regs;
 	struct idma64	*idma64;

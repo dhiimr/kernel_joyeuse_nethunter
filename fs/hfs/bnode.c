@@ -15,6 +15,7 @@
 
 #include "btree.h"
 
+<<<<<<< HEAD
 void hfs_bnode_read(struct hfs_bnode *node, void *buf,
 		int off, int len)
 {
@@ -25,6 +26,33 @@ void hfs_bnode_read(struct hfs_bnode *node, void *buf,
 
 	memcpy(buf, kmap(page) + off, len);
 	kunmap(page);
+=======
+void hfs_bnode_read(struct hfs_bnode *node, void *buf, int off, int len)
+{
+	struct page *page;
+	int pagenum;
+	int bytes_read;
+	int bytes_to_read;
+	void *vaddr;
+
+	off += node->page_offset;
+	pagenum = off >> PAGE_SHIFT;
+	off &= ~PAGE_MASK; /* compute page offset for the first page */
+
+	for (bytes_read = 0; bytes_read < len; bytes_read += bytes_to_read) {
+		if (pagenum >= node->tree->pages_per_bnode)
+			break;
+		page = node->page[pagenum];
+		bytes_to_read = min_t(int, len - bytes_read, PAGE_SIZE - off);
+
+		vaddr = kmap_atomic(page);
+		memcpy(buf + bytes_read, vaddr + off, bytes_to_read);
+		kunmap_atomic(vaddr);
+
+		pagenum++;
+		off = 0; /* page offset only applies to the first page */
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 u16 hfs_bnode_read_u16(struct hfs_bnode *node, int off)

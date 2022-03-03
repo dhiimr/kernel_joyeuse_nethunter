@@ -118,7 +118,11 @@ struct task_group;
  * the comment with set_special_state().
  */
 #define is_special_task_state(state)				\
+<<<<<<< HEAD
 	((state) & (__TASK_STOPPED | __TASK_TRACED | TASK_PARKED | TASK_DEAD))
+=======
+	((state) & (__TASK_STOPPED | __TASK_TRACED | TASK_DEAD))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define __set_current_state(state_value)			\
 	do {							\
@@ -206,6 +210,7 @@ struct task_group;
 /* Task command name length: */
 #define TASK_COMM_LEN			16
 
+<<<<<<< HEAD
 enum task_event {
 	PUT_PREV_TASK   = 0,
 	PICK_NEXT_TASK  = 1,
@@ -258,6 +263,10 @@ static inline int sched_unisolate_cpu_unlocked(int cpu)
 }
 #endif
 
+=======
+extern cpumask_var_t			cpu_isolated_map;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void scheduler_tick(void);
 
 #define	MAX_SCHEDULE_TIMEOUT		LONG_MAX
@@ -274,7 +283,10 @@ extern int __must_check io_schedule_prepare(void);
 extern void io_schedule_finish(int token);
 extern long io_schedule_timeout(long timeout);
 extern void io_schedule(void);
+<<<<<<< HEAD
 extern int set_task_boost(int boost, u64 period);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**
  * struct prev_cputime - snapshot of system and user cputime
@@ -368,6 +380,7 @@ struct load_weight {
 	u32				inv_weight;
 };
 
+<<<<<<< HEAD
 /**
  * struct util_est - Estimation utilization of FAIR tasks
  * @enqueued: instantaneous estimated utilization of a task/cpu
@@ -396,6 +409,8 @@ struct util_est {
 #define UTIL_EST_WEIGHT_SHIFT		2
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * The load_avg/util_avg accumulates an infinite geometric series
  * (see __update_load_avg() in kernel/sched/fair.c).
@@ -455,7 +470,10 @@ struct sched_avg {
 	u32				period_contrib;
 	unsigned long			load_avg;
 	unsigned long			util_avg;
+<<<<<<< HEAD
 	struct util_est			util_est;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct sched_statistics {
@@ -530,6 +548,7 @@ struct sched_entity {
 #endif
 };
 
+<<<<<<< HEAD
 struct sched_load {
 	unsigned long prev_load;
 	unsigned long new_task_load;
@@ -626,6 +645,8 @@ static inline void sched_update_cpu_freq_min_max(const cpumask_t *cpus,
 					u32 fmin, u32 fmax) { }
 #endif /* CONFIG_SCHED_WALT */
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct sched_rt_entity {
 	struct list_head		run_list;
 	unsigned long			timeout;
@@ -778,6 +799,7 @@ struct task_struct {
 	const struct sched_class	*sched_class;
 	struct sched_entity		se;
 	struct sched_rt_entity		rt;
+<<<<<<< HEAD
 	u64				 last_sleep_ts;
 
 	int				boost;
@@ -798,6 +820,8 @@ struct task_struct {
 	bool misfit;
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_CGROUP_SCHED
 	struct task_group		*sched_task_group;
 #endif
@@ -815,7 +839,10 @@ struct task_struct {
 	unsigned int			policy;
 	int				nr_cpus_allowed;
 	cpumask_t			cpus_allowed;
+<<<<<<< HEAD
 	cpumask_t			cpus_requested;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_PREEMPT_RCU
 	int				rcu_read_lock_nesting;
@@ -865,10 +892,13 @@ struct task_struct {
 	unsigned			sched_contributes_to_load:1;
 	unsigned			sched_migrated:1;
 	unsigned			sched_remote_wakeup:1;
+<<<<<<< HEAD
 #ifdef CONFIG_PSI
 	unsigned			sched_psi_wake_requeue:1;
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Force alignment to the next boundary: */
 	unsigned			:0;
 
@@ -881,7 +911,11 @@ struct task_struct {
 	unsigned			restore_sigmask:1;
 #endif
 #ifdef CONFIG_MEMCG
+<<<<<<< HEAD
 	unsigned			in_user_fault:1;
+=======
+	unsigned			memcg_may_oom:1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifndef CONFIG_SLOB
 	unsigned			memcg_kmem_skip_account:1;
 #endif
@@ -953,10 +987,13 @@ struct task_struct {
 	u64				stimescaled;
 #endif
 	u64				gtime;
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_FREQ_TIMES
 	u64				*time_in_state;
 	unsigned int			max_state;
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct prev_cputime		prev_cputime;
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN
 	struct vtime			vtime;
@@ -1011,9 +1048,13 @@ struct task_struct {
 	struct sysv_shm			sysvshm;
 #endif
 #ifdef CONFIG_DETECT_HUNG_TASK
+<<<<<<< HEAD
 	/* hung task detection */
 	unsigned long			last_switch_count;
 	bool hang_detection_enabled;
+=======
+	unsigned long			last_switch_count;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 	/* Filesystem information: */
 	struct fs_struct		*fs;
@@ -1046,8 +1087,13 @@ struct task_struct {
 	struct seccomp			seccomp;
 
 	/* Thread group tracking: */
+<<<<<<< HEAD
 	u32				parent_exec_id;
 	u32				self_exec_id;
+=======
+	u64				parent_exec_id;
+	u64				self_exec_id;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Protection against (de-)allocation: mm, files, fs, tty, keyrings, mems_allowed, mempolicy: */
 	spinlock_t			alloc_lock;
@@ -1133,10 +1179,13 @@ struct task_struct {
 	siginfo_t			*last_siginfo;
 
 	struct task_io_accounting	ioac;
+<<<<<<< HEAD
 #ifdef CONFIG_PSI
 	/* Pressure stall state */
 	unsigned int			psi_flags;
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_TASK_XACCT
 	/* Accumulated RSS usage: */
 	u64				acct_rss_mem1;
@@ -1170,6 +1219,11 @@ struct task_struct {
 #endif
 	struct list_head		pi_state_list;
 	struct futex_pi_state		*pi_state_cache;
+<<<<<<< HEAD
+=======
+	struct mutex			futex_exit_mutex;
+	unsigned int			futex_state;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 #ifdef CONFIG_PERF_EVENTS
 	struct perf_event_context	*perf_event_ctxp[perf_nr_task_contexts];
@@ -1545,7 +1599,10 @@ extern struct pid *cad_pid;
  */
 #define PF_IDLE			0x00000002	/* I am an IDLE thread */
 #define PF_EXITING		0x00000004	/* Getting shut down */
+<<<<<<< HEAD
 #define PF_EXITPIDONE		0x00000008	/* PI exit done on shut down */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define PF_VCPU			0x00000010	/* I'm a virtual CPU */
 #define PF_WQ_WORKER		0x00000020	/* I'm a workqueue worker */
 #define PF_FORKNOEXEC		0x00000040	/* Forked but didn't exec */
@@ -1556,7 +1613,10 @@ extern struct pid *cad_pid;
 #define PF_MEMALLOC		0x00000800	/* Allocating memory */
 #define PF_NPROC_EXCEEDED	0x00001000	/* set_user() noticed that RLIMIT_NPROC was exceeded */
 #define PF_USED_MATH		0x00002000	/* If unset the fpu must be initialized before use */
+<<<<<<< HEAD
 #define PF_USED_ASYNC		0x00004000	/* Used async_schedule*(), used by module init */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define PF_NOFREEZE		0x00008000	/* This thread should not be frozen */
 #define PF_FROZEN		0x00010000	/* Frozen for system suspend */
 #define PF_KSWAPD		0x00020000	/* I am kswapd */
@@ -1566,10 +1626,15 @@ extern struct pid *cad_pid;
 #define PF_KTHREAD		0x00200000	/* I am a kernel thread */
 #define PF_RANDOMIZE		0x00400000	/* Randomize virtual address space */
 #define PF_SWAPWRITE		0x00800000	/* Allowed to write to swap */
+<<<<<<< HEAD
 #define PF_MEMSTALL		0x01000000	/* Stalled due to lack of memory */
 #define PF_NO_SETAFFINITY	0x04000000	/* Userland is not allowed to meddle with cpus_allowed */
 #define PF_MCE_EARLY		0x08000000      /* Early kill for mce process policy */
 #define PF_WAKE_UP_IDLE         0x10000000	/* TTWU on an idle CPU */
+=======
+#define PF_NO_SETAFFINITY	0x04000000	/* Userland is not allowed to meddle with cpus_allowed */
+#define PF_MCE_EARLY		0x08000000      /* Early kill for mce process policy */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define PF_MUTEX_TESTER		0x20000000	/* Thread belongs to the rt mutex tester */
 #define PF_FREEZER_SKIP		0x40000000	/* Freezer should not count it as freezable */
 #define PF_SUSPEND_TASK		0x80000000      /* This thread called freeze_processes() and should not be frozen */
@@ -1602,7 +1667,11 @@ extern struct pid *cad_pid;
 #define tsk_used_math(p)			((p)->flags & PF_USED_MATH)
 #define used_math()				tsk_used_math(current)
 
+<<<<<<< HEAD
 static inline bool is_percpu_thread(void)
+=======
+static __always_inline bool is_percpu_thread(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 #ifdef CONFIG_SMP
 	return (current->flags & PF_NO_SETAFFINITY) &&
@@ -1620,7 +1689,10 @@ static inline bool is_percpu_thread(void)
 #define PFA_SPEC_SSB_FORCE_DISABLE	4	/* Speculative Store Bypass force disabled*/
 #define PFA_SPEC_IB_DISABLE		5	/* Indirect branch speculation restricted */
 #define PFA_SPEC_IB_FORCE_DISABLE	6	/* Indirect branch speculation permanently restricted */
+<<<<<<< HEAD
 #define PFA_LMK_WAITING			7	/* Lowmemorykiller is waiting */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define TASK_PFA_TEST(name, func)					\
 	static inline bool task_##func(struct task_struct *p)		\
@@ -1659,9 +1731,12 @@ TASK_PFA_CLEAR(SPEC_IB_DISABLE, spec_ib_disable)
 TASK_PFA_TEST(SPEC_IB_FORCE_DISABLE, spec_ib_force_disable)
 TASK_PFA_SET(SPEC_IB_FORCE_DISABLE, spec_ib_force_disable)
 
+<<<<<<< HEAD
 TASK_PFA_TEST(LMK_WAITING, lmk_waiting)
 TASK_PFA_SET(LMK_WAITING, lmk_waiting)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline void
 current_restore_flags(unsigned long orig_flags, unsigned long flags)
 {
@@ -1674,7 +1749,10 @@ extern int task_can_attach(struct task_struct *p, const struct cpumask *cs_cpus_
 #ifdef CONFIG_SMP
 extern void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask);
 extern int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask);
+<<<<<<< HEAD
 extern bool cpupri_check_rt(void);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else
 static inline void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
 {
@@ -1685,10 +1763,13 @@ static inline int set_cpus_allowed_ptr(struct task_struct *p, const struct cpuma
 		return -EINVAL;
 	return 0;
 }
+<<<<<<< HEAD
 static inline bool cpupri_check_rt(void)
 {
 	return false;
 }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 #ifndef cpu_relax_yield
@@ -1943,7 +2024,10 @@ static inline void set_task_cpu(struct task_struct *p, unsigned int cpu)
 # define vcpu_is_preempted(cpu)	false
 #endif
 
+<<<<<<< HEAD
 extern long msm_sched_setaffinity(pid_t pid, struct cpumask *new_mask);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern long sched_setaffinity(pid_t pid, const struct cpumask *new_mask);
 extern long sched_getaffinity(pid_t pid, struct cpumask *mask);
 
@@ -1951,6 +2035,7 @@ extern long sched_getaffinity(pid_t pid, struct cpumask *mask);
 #define TASK_SIZE_OF(tsk)	TASK_SIZE
 #endif
 
+<<<<<<< HEAD
 static inline u32 sched_get_wake_up_idle(struct task_struct *p)
 {
 	u32 enabled = p->flags & PF_WAKE_UP_IDLE;
@@ -1979,4 +2064,6 @@ static inline void set_wake_up_idle(bool enabled)
 		current->flags &= ~PF_WAKE_UP_IDLE;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif

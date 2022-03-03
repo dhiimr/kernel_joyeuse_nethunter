@@ -1400,6 +1400,12 @@ static int mlx5e_set_pauseparam(struct net_device *netdev,
 	struct mlx5_core_dev *mdev = priv->mdev;
 	int err;
 
+<<<<<<< HEAD
+=======
+	if (!MLX5_CAP_GEN(mdev, vport_group_manager))
+		return -EOPNOTSUPP;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (pauseparam->autoneg)
 		return -EINVAL;
 
@@ -1622,7 +1628,11 @@ static int mlx5e_get_module_info(struct net_device *netdev,
 		break;
 	case MLX5_MODULE_ID_SFP:
 		modinfo->type       = ETH_MODULE_SFF_8472;
+<<<<<<< HEAD
 		modinfo->eeprom_len = MLX5_EEPROM_PAGE_LENGTH;
+=======
+		modinfo->eeprom_len = ETH_MODULE_SFF_8472_LEN;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	default:
 		netdev_err(priv->netdev, "%s: cable type not recognized:0x%x\n",
@@ -1659,7 +1669,11 @@ static int mlx5e_get_module_eeprom(struct net_device *netdev,
 		if (size_read < 0) {
 			netdev_err(priv->netdev, "%s: mlx5_query_eeprom failed:0x%x\n",
 				   __func__, size_read);
+<<<<<<< HEAD
 			return 0;
+=======
+			return size_read;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		i += size_read;
@@ -1744,6 +1758,10 @@ static int set_pflag_rx_cqe_compress(struct net_device *netdev,
 {
 	struct mlx5e_priv *priv = netdev_priv(netdev);
 	struct mlx5_core_dev *mdev = priv->mdev;
+<<<<<<< HEAD
+=======
+	int err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!MLX5_CAP_GEN(mdev, cqe_compression))
 		return -EOPNOTSUPP;
@@ -1753,7 +1771,14 @@ static int set_pflag_rx_cqe_compress(struct net_device *netdev,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	mlx5e_modify_rx_cqe_compression_locked(priv, enable);
+=======
+	err = mlx5e_modify_rx_cqe_compression_locked(priv, enable);
+	if (err)
+		return err;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	priv->channels.params.rx_cqe_compress_def = enable;
 
 	return 0;

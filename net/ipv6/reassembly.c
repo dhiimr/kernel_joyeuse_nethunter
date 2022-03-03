@@ -347,7 +347,11 @@ static int ipv6_frag_rcv(struct sk_buff *skb)
 	hdr = ipv6_hdr(skb);
 	fhdr = (struct frag_hdr *)skb_transport_header(skb);
 
+<<<<<<< HEAD
 	if (!(fhdr->frag_off & htons(0xFFF9))) {
+=======
+	if (!(fhdr->frag_off & htons(IP6_OFFSET | IP6_MF))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* It is not a fragmented frame */
 		skb->transport_header += sizeof(struct frag_hdr);
 		__IP6_INC_STATS(net,
@@ -355,6 +359,11 @@ static int ipv6_frag_rcv(struct sk_buff *skb)
 
 		IP6CB(skb)->nhoff = (u8 *)fhdr - skb_network_header(skb);
 		IP6CB(skb)->flags |= IP6SKB_FRAGMENTED;
+<<<<<<< HEAD
+=======
+		IP6CB(skb)->frag_max_size = ntohs(hdr->payload_len) +
+					    sizeof(struct ipv6hdr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 1;
 	}
 
@@ -593,8 +602,15 @@ err_protocol:
 
 void ipv6_frag_exit(void)
 {
+<<<<<<< HEAD
 	inet_frags_fini(&ip6_frags);
 	ip6_frags_sysctl_unregister();
 	unregister_pernet_subsys(&ip6_frags_ops);
 	inet6_del_protocol(&frag_protocol, IPPROTO_FRAGMENT);
+=======
+	ip6_frags_sysctl_unregister();
+	unregister_pernet_subsys(&ip6_frags_ops);
+	inet6_del_protocol(&frag_protocol, IPPROTO_FRAGMENT);
+	inet_frags_fini(&ip6_frags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }

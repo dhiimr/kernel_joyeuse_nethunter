@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 config MTD_NAND_IDS
 	tristate "Include chip ids for known NAND devices."
 	depends on MTD
@@ -5,6 +6,8 @@ config MTD_NAND_IDS
 	  Useful for NAND drivers that do not use the NAND subsystem but
 	  still like to take advantage of the known chip information.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config MTD_NAND_ECC
 	tristate
 

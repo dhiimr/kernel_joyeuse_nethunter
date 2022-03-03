@@ -44,6 +44,7 @@ static struct freq_attr *cpufreq_dt_attr[] = {
 static int set_target(struct cpufreq_policy *policy, unsigned int index)
 {
 	struct private_data *priv = policy->driver_data;
+<<<<<<< HEAD
 	unsigned long freq = policy->freq_table[index].frequency;
 	int ret;
 
@@ -55,6 +56,11 @@ static int set_target(struct cpufreq_policy *policy, unsigned int index)
 	}
 
 	return ret;
+=======
+
+	return dev_pm_opp_set_rate(priv->cpu_dev,
+				   policy->freq_table[index].frequency * 1000);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*

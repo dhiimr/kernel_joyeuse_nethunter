@@ -2126,8 +2126,13 @@ exit_done:
 	return status;
 }
 
+<<<<<<< HEAD
 static int altera_get_note(u8 *p, s32 program_size,
 			s32 *offset, char *key, char *value, int length)
+=======
+static int altera_get_note(u8 *p, s32 program_size, s32 *offset,
+			   char *key, char *value, int keylen, int vallen)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Gets key and value of NOTE fields in the JBC file.
  * Can be called in two modes:  if offset pointer is NULL,
@@ -2176,8 +2181,12 @@ static int altera_get_note(u8 *p, s32 program_size,
 			key_ptr = &p[note_strings +
 					get_unaligned_be32(
 					&p[note_table + (8 * i)])];
+<<<<<<< HEAD
 			if ((strncasecmp(key, key_ptr, strlen(key_ptr)) == 0) &&
 						(key != NULL)) {
+=======
+			if (key && !strncasecmp(key, key_ptr, strlen(key_ptr))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				status = 0;
 
 				value_ptr = &p[note_strings +
@@ -2185,7 +2194,11 @@ static int altera_get_note(u8 *p, s32 program_size,
 						&p[note_table + (8 * i) + 4])];
 
 				if (value != NULL)
+<<<<<<< HEAD
 					strlcpy(value, value_ptr, length);
+=======
+					strlcpy(value, value_ptr, vallen);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			}
 		}
@@ -2204,13 +2217,21 @@ static int altera_get_note(u8 *p, s32 program_size,
 				strlcpy(key, &p[note_strings +
 						get_unaligned_be32(
 						&p[note_table + (8 * i)])],
+<<<<<<< HEAD
 					length);
+=======
+					keylen);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			if (value != NULL)
 				strlcpy(value, &p[note_strings +
 						get_unaligned_be32(
 						&p[note_table + (8 * i) + 4])],
+<<<<<<< HEAD
 					length);
+=======
+					vallen);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			*offset = i + 1;
 		}
@@ -2464,7 +2485,11 @@ int altera_init(struct altera_config *config, const struct firmware *fw)
 			__func__, (format_version == 2) ? "Jam STAPL" :
 						"pre-standardized Jam 1.1");
 		while (altera_get_note((u8 *)fw->data, fw->size,
+<<<<<<< HEAD
 					&offset, key, value, 256) == 0)
+=======
+					&offset, key, value, 32, 256) == 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			printk(KERN_INFO "%s: NOTE \"%s\" = \"%s\"\n",
 					__func__, key, value);
 	}

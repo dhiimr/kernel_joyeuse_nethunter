@@ -93,8 +93,13 @@ struct br_vlan_stats {
 };
 
 struct br_tunnel_info {
+<<<<<<< HEAD
 	__be64			tunnel_id;
 	struct metadata_dst	*tunnel_dst;
+=======
+	__be64				tunnel_id;
+	struct metadata_dst __rcu	*tunnel_dst;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -190,8 +195,13 @@ struct net_bridge_port_group {
 	struct rcu_head			rcu;
 	struct timer_list		timer;
 	struct br_ip			addr;
+<<<<<<< HEAD
 	unsigned char			flags;
 	unsigned char			eth_addr[ETH_ALEN];
+=======
+	unsigned char			eth_addr[ETH_ALEN] __aligned(2);
+	unsigned char			flags;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct net_bridge_mdb_entry

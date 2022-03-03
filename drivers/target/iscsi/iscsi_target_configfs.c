@@ -1503,20 +1503,35 @@ static void lio_tpg_close_session(struct se_session *se_sess)
 	spin_lock(&sess->conn_lock);
 	if (atomic_read(&sess->session_fall_back_to_erl0) ||
 	    atomic_read(&sess->session_logout) ||
+<<<<<<< HEAD
+=======
+	    atomic_read(&sess->session_close) ||
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    (sess->time2retain_timer_flags & ISCSI_TF_EXPIRED)) {
 		spin_unlock(&sess->conn_lock);
 		spin_unlock_bh(&se_tpg->session_lock);
 		return;
 	}
+<<<<<<< HEAD
 	atomic_set(&sess->session_reinstatement, 1);
 	atomic_set(&sess->session_fall_back_to_erl0, 1);
+=======
+	iscsit_inc_session_usage_count(sess);
+	atomic_set(&sess->session_reinstatement, 1);
+	atomic_set(&sess->session_fall_back_to_erl0, 1);
+	atomic_set(&sess->session_close, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_unlock(&sess->conn_lock);
 
 	iscsit_stop_time2retain_timer(sess);
 	spin_unlock_bh(&se_tpg->session_lock);
 
 	iscsit_stop_session(sess, 1, 1);
+<<<<<<< HEAD
 	iscsit_close_session(sess);
+=======
+	iscsit_dec_session_usage_count(sess);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static u32 lio_tpg_get_inst_index(struct se_portal_group *se_tpg)

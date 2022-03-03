@@ -480,7 +480,11 @@ struct hclge_vport {
 	u16 alloc_rss_size;
 
 	u16 qs_offset;
+<<<<<<< HEAD
 	u16 bw_limit;		/* VSI BW Limit (0 = disabled) */
+=======
+	u32 bw_limit;		/* VSI BW Limit (0 = disabled) */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8  dwrr;
 
 	int vport_id;

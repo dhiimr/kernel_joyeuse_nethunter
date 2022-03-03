@@ -184,6 +184,7 @@ config DA8XX_MSTPRI
 	  configuration. Allows to adjust the priorities of all master
 	  peripherals.
 
+<<<<<<< HEAD
 config MHI_BUS
 	tristate "Modem Host Interface"
 	help
@@ -204,4 +205,6 @@ config MHI_DEBUG
 source drivers/bus/mhi/controllers/Kconfig
 source drivers/bus/mhi/devices/Kconfig
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endmenu

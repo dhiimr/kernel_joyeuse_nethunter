@@ -49,6 +49,7 @@ struct udp_sock {
 	unsigned int	 corkflag;	/* Cork is required */
 	__u8		 encap_type;	/* Is this an Encapsulation socket? */
 	unsigned char	 no_check6_tx:1,/* Send zero UDP6 checksums on TX? */
+<<<<<<< HEAD
 			 no_check6_rx:1,/* Allow zero UDP6 checksums on RX? */
 			 encap_enabled:1,/* This socket enabled encap
 					  * processing; UDP tunnels and
@@ -56,12 +57,18 @@ struct udp_sock {
 					  * this
 					  */
 			 gro_enabled:1; /* Can accept GRO packets */
+=======
+			 no_check6_rx:1;/* Allow zero UDP6 checksums on RX? */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Following member retains the information to create a UDP header
 	 * when the socket is uncorked.
 	 */
 	__u16		 len;		/* total length of pending frames */
+<<<<<<< HEAD
 	__u16		 gso_size;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Fields specific to UDP-Lite.
 	 */
@@ -94,8 +101,11 @@ struct udp_sock {
 	int		forward_deficit;
 };
 
+<<<<<<< HEAD
 #define UDP_MAX_SEGMENTS	(1 << 6UL)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline struct udp_sock *udp_sk(const struct sock *sk)
 {
 	return (struct udp_sock *)sk;
@@ -121,6 +131,7 @@ static inline bool udp_get_no_check6_rx(struct sock *sk)
 	return udp_sk(sk)->no_check6_rx;
 }
 
+<<<<<<< HEAD
 static inline void udp_cmsg_recv(struct msghdr *msg, struct sock *sk,
 				 struct sk_buff *skb)
 {
@@ -138,6 +149,8 @@ static inline bool udp_unexpected_gso(struct sock *sk, struct sk_buff *skb)
 	       skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define udp_portaddr_for_each_entry(__sk, list) \
 	hlist_for_each_entry(__sk, list, __sk_common.skc_portaddr_node)
 

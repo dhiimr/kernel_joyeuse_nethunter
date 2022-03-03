@@ -34,8 +34,12 @@
  */
 
 
+<<<<<<< HEAD
 #define TASKSTATS_VERSION	9
 #define TASKSTATS2_VERSION	1
+=======
+#define TASKSTATS_VERSION	8
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define TS_COMM_LEN		32	/* should be >= TASK_COMM_LEN
 					 * in linux/sched.h */
 
@@ -165,6 +169,7 @@ struct taskstats {
 	/* Delay waiting for memory reclaim */
 	__u64	freepages_count;
 	__u64	freepages_delay_total;
+<<<<<<< HEAD
 
 	/* Delay waiting for thrashing page */
 	__u64	thrashing_count;
@@ -182,6 +187,10 @@ struct taskstats2 {
 	__u64 unreclaimable;	/* KB */
 	/* version 1 ends here */
 };
+=======
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Commands sent from userspace
@@ -193,7 +202,10 @@ enum {
 	TASKSTATS_CMD_UNSPEC = 0,	/* Reserved */
 	TASKSTATS_CMD_GET,		/* user->kernel request/get-response */
 	TASKSTATS_CMD_NEW,		/* kernel->user event */
+<<<<<<< HEAD
 	TASKSTATS2_CMD_GET,		/* user->kernel request/get-response */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__TASKSTATS_CMD_MAX,
 };
 
@@ -207,7 +219,10 @@ enum {
 	TASKSTATS_TYPE_AGGR_PID,	/* contains pid + stats */
 	TASKSTATS_TYPE_AGGR_TGID,	/* contains tgid + stats */
 	TASKSTATS_TYPE_NULL,		/* contains nothing */
+<<<<<<< HEAD
 	TASKSTATS_TYPE_FOREACH,		/* contains stats */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__TASKSTATS_TYPE_MAX,
 };
 
@@ -219,7 +234,10 @@ enum {
 	TASKSTATS_CMD_ATTR_TGID,
 	TASKSTATS_CMD_ATTR_REGISTER_CPUMASK,
 	TASKSTATS_CMD_ATTR_DEREGISTER_CPUMASK,
+<<<<<<< HEAD
 	TASKSTATS_CMD_ATTR_FOREACH,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__TASKSTATS_CMD_ATTR_MAX,
 };
 

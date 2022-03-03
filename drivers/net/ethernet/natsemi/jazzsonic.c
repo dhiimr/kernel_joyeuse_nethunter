@@ -247,13 +247,23 @@ static int jazz_sonic_probe(struct platform_device *pdev)
 		goto out;
 	err = register_netdev(dev);
 	if (err)
+<<<<<<< HEAD
 		goto out1;
+=======
+		goto undo_probe1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	printk("%s: MAC %pM IRQ %d\n", dev->name, dev->dev_addr, dev->irq);
 
 	return 0;
 
+<<<<<<< HEAD
 out1:
+=======
+undo_probe1:
+	dma_free_coherent(lp->device, SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
+			  lp->descriptors, lp->descriptors_laddr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	release_mem_region(dev->base_addr, SONIC_MEM_SIZE);
 out:
 	free_netdev(dev);

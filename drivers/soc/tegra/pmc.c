@@ -395,7 +395,11 @@ static int tegra_powergate_power_up(struct tegra_powergate *pg,
 
 	err = tegra_powergate_enable_clocks(pg);
 	if (err)
+<<<<<<< HEAD
 		goto disable_clks;
+=======
+		goto powergate_off;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	usleep_range(10, 20);
 
@@ -407,7 +411,11 @@ static int tegra_powergate_power_up(struct tegra_powergate *pg,
 
 	err = tegra_powergate_reset_deassert(pg);
 	if (err)
+<<<<<<< HEAD
 		goto powergate_off;
+=======
+		goto disable_clks;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	usleep_range(10, 20);
 

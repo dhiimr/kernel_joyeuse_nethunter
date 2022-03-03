@@ -11,7 +11,10 @@
 #include <linux/netfilter.h>
 #include <linux/module.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
 #include <linux/inetdevice.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <net/netns/generic.h>
 #include <net/route.h>
 #include <net/ip.h>
@@ -82,6 +85,7 @@ static unsigned int ipv4_conntrack_defrag(void *priv,
 #endif
 	/* Gather fragments. */
 	if (ip_is_fragment(ip_hdr(skb))) {
+<<<<<<< HEAD
 		enum ip_defrag_users user;
 
 		if (skb->dev &&
@@ -89,6 +93,10 @@ static unsigned int ipv4_conntrack_defrag(void *priv,
 			return NF_ACCEPT;
 
 		user = nf_ct_defrag_user(state->hook, skb);
+=======
+		enum ip_defrag_users user =
+			nf_ct_defrag_user(state->hook, skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (nf_ct_ipv4_gather_frags(state->net, skb, user))
 			return NF_STOLEN;

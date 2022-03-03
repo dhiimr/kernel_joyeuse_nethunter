@@ -66,9 +66,12 @@ struct fgraph_data {
 
 #define TRACE_GRAPH_INDENT	2
 
+<<<<<<< HEAD
 /* Flag options */
 #define TRACE_GRAPH_PRINT_FLAT		0x80
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 unsigned int fgraph_max_depth;
 
 static struct tracer_opt trace_opts[] = {
@@ -92,8 +95,11 @@ static struct tracer_opt trace_opts[] = {
 	{ TRACER_OPT(sleep-time, TRACE_GRAPH_SLEEP_TIME) },
 	/* Include time within nested functions */
 	{ TRACER_OPT(graph-time, TRACE_GRAPH_GRAPH_TIME) },
+<<<<<<< HEAD
 	/* Use standard trace formatting rather than hierarchical */
 	{ TRACER_OPT(funcgraph-flat, TRACE_GRAPH_PRINT_FLAT) },
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ } /* Empty entry */
 };
 
@@ -487,6 +493,11 @@ void trace_graph_return(struct ftrace_graph_ret *trace)
 	int cpu;
 	int pc;
 
+<<<<<<< HEAD
+=======
+	ftrace_graph_addr_finish(trace);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	local_irq_save(flags);
 	cpu = raw_smp_processor_id();
 	data = per_cpu_ptr(tr->trace_buffer.data, cpu);
@@ -510,6 +521,11 @@ void set_graph_array(struct trace_array *tr)
 
 static void trace_graph_thresh_return(struct ftrace_graph_ret *trace)
 {
+<<<<<<< HEAD
+=======
+	ftrace_graph_addr_finish(trace);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (tracing_thresh &&
 	    (trace->rettime - trace->calltime < tracing_thresh))
 		return;
@@ -1252,9 +1268,12 @@ print_graph_function_flags(struct trace_iterator *iter, u32 flags)
 	int cpu = iter->cpu;
 	int ret;
 
+<<<<<<< HEAD
 	if (flags & TRACE_GRAPH_PRINT_FLAT)
 		return TRACE_TYPE_UNHANDLED;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (data && per_cpu_ptr(data->cpu_data, cpu)->ignore) {
 		per_cpu_ptr(data->cpu_data, cpu)->ignore = 0;
 		return TRACE_TYPE_HANDLED;
@@ -1312,6 +1331,16 @@ print_graph_function(struct trace_iterator *iter)
 	return print_graph_function_flags(iter, tracer_flags.val);
 }
 
+<<<<<<< HEAD
+=======
+static enum print_line_t
+print_graph_function_event(struct trace_iterator *iter, int flags,
+			   struct trace_event *event)
+{
+	return print_graph_function(iter);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void print_lat_header(struct seq_file *s, u32 flags)
 {
 	static const char spaces[] = "                "	/* 16 spaces */
@@ -1380,11 +1409,14 @@ void print_graph_headers_flags(struct seq_file *s, u32 flags)
 	struct trace_iterator *iter = s->private;
 	struct trace_array *tr = iter->tr;
 
+<<<<<<< HEAD
 	if (flags & TRACE_GRAPH_PRINT_FLAT) {
 		trace_default_header(s);
 		return;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!(tr->trace_flags & TRACE_ITER_CONTEXT_INFO))
 		return;
 
@@ -1466,6 +1498,22 @@ func_graph_set_flag(struct trace_array *tr, u32 old_flags, u32 bit, int set)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static struct trace_event_functions graph_functions = {
+	.trace		= print_graph_function_event,
+};
+
+static struct trace_event graph_trace_entry_event = {
+	.type		= TRACE_GRAPH_ENT,
+	.funcs		= &graph_functions,
+};
+
+static struct trace_event graph_trace_ret_event = {
+	.type		= TRACE_GRAPH_RET,
+	.funcs		= &graph_functions
+};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct tracer graph_trace __tracer_data = {
 	.name		= "function_graph",
@@ -1542,6 +1590,19 @@ static __init int init_graph_trace(void)
 {
 	max_bytes_for_cpu = snprintf(NULL, 0, "%u", nr_cpu_ids - 1);
 
+<<<<<<< HEAD
+=======
+	if (!register_trace_event(&graph_trace_entry_event)) {
+		pr_warn("Warning: could not register graph trace events\n");
+		return 1;
+	}
+
+	if (!register_trace_event(&graph_trace_ret_event)) {
+		pr_warn("Warning: could not register graph trace events\n");
+		return 1;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return register_tracer(&graph_trace);
 }
 

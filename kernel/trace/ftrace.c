@@ -123,9 +123,14 @@ static void ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
 				 struct ftrace_ops *op, struct pt_regs *regs);
 #else
 /* See comment below, where ftrace_ops_list_func is defined */
+<<<<<<< HEAD
 static void ftrace_ops_no_ops(unsigned long ip, unsigned long parent_ip,
 			      struct ftrace_ops *op, struct pt_regs *regs);
 #define ftrace_ops_list_func ftrace_ops_no_ops
+=======
+static void ftrace_ops_no_ops(unsigned long ip, unsigned long parent_ip);
+#define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 /*
@@ -623,8 +628,12 @@ static int function_stat_show(struct seq_file *m, void *v)
 	}
 
 #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+<<<<<<< HEAD
 	avg = rec->time;
 	do_div(avg, rec->counter);
+=======
+	avg = div64_ul(rec->time, rec->counter);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (tracing_thresh && (avg < tracing_thresh))
 		goto out;
 #endif
@@ -650,7 +659,12 @@ static int function_stat_show(struct seq_file *m, void *v)
 		 * Divide only 1000 for ns^2 -> us^2 conversion.
 		 * trace_print_graph_duration will divide 1000 again.
 		 */
+<<<<<<< HEAD
 		do_div(stddev, rec->counter * (rec->counter - 1) * 1000);
+=======
+		stddev = div64_ul(stddev,
+				  rec->counter * (rec->counter - 1) * 1000);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	trace_seq_init(&s);
@@ -1713,6 +1727,16 @@ static bool test_rec_ops_needs_regs(struct dyn_ftrace *rec)
 	return  keep_regs;
 }
 
+<<<<<<< HEAD
+=======
+static struct ftrace_ops *
+ftrace_find_tramp_ops_any(struct dyn_ftrace *rec);
+static struct ftrace_ops *
+ftrace_find_tramp_ops_any_other(struct dyn_ftrace *rec, struct ftrace_ops *op_exclude);
+static struct ftrace_ops *
+ftrace_find_tramp_ops_next(struct dyn_ftrace *rec, struct ftrace_ops *ops);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static bool __ftrace_hash_rec_update(struct ftrace_ops *ops,
 				     int filter_hash,
 				     bool inc)
@@ -1841,6 +1865,7 @@ static bool __ftrace_hash_rec_update(struct ftrace_ops *ops,
 			}
 
 			/*
+<<<<<<< HEAD
 			 * If the rec had TRAMP enabled, then it needs to
 			 * be cleared. As TRAMP can only be enabled iff
 			 * there is only a single ops attached to it.
@@ -1850,6 +1875,19 @@ static bool __ftrace_hash_rec_update(struct ftrace_ops *ops,
 			 * has a trampoline.
 			 */
 			rec->flags &= ~FTRACE_FL_TRAMP;
+=======
+			 * The TRAMP needs to be set only if rec count
+			 * is decremented to one, and the ops that is
+			 * left has a trampoline. As TRAMP can only be
+			 * enabled if there is only a single ops attached
+			 * to it.
+			 */
+			if (ftrace_rec_count(rec) == 1 &&
+			    ftrace_find_tramp_ops_any_other(rec, ops))
+				rec->flags |= FTRACE_FL_TRAMP;
+			else
+				rec->flags &= ~FTRACE_FL_TRAMP;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			/*
 			 * flags will be cleared in ftrace_check_record()
@@ -2034,6 +2072,7 @@ static int ftrace_hash_ipmodify_update(struct ftrace_ops *ops,
 
 static void print_ip_ins(const char *fmt, const unsigned char *p)
 {
+<<<<<<< HEAD
 	int i;
 
 	printk(KERN_CONT "%s", fmt);
@@ -2047,6 +2086,22 @@ ftrace_find_tramp_ops_any(struct dyn_ftrace *rec);
 static struct ftrace_ops *
 ftrace_find_tramp_ops_next(struct dyn_ftrace *rec, struct ftrace_ops *ops);
 
+=======
+	char ins[MCOUNT_INSN_SIZE];
+	int i;
+
+	if (probe_kernel_read(ins, p, MCOUNT_INSN_SIZE)) {
+		printk(KERN_CONT "%s[FAULT] %px\n", fmt, p);
+		return;
+	}
+
+	printk(KERN_CONT "%s", fmt);
+
+	for (i = 0; i < MCOUNT_INSN_SIZE; i++)
+		printk(KERN_CONT "%s%02x", i ? ":" : "", ins[i]);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 enum ftrace_bug_type ftrace_bug_type;
 const void *ftrace_expected;
 
@@ -2280,6 +2335,27 @@ ftrace_find_tramp_ops_any(struct dyn_ftrace *rec)
 }
 
 static struct ftrace_ops *
+<<<<<<< HEAD
+=======
+ftrace_find_tramp_ops_any_other(struct dyn_ftrace *rec, struct ftrace_ops *op_exclude)
+{
+	struct ftrace_ops *op;
+	unsigned long ip = rec->ip;
+
+	do_for_each_ftrace_op(op, ftrace_ops_list) {
+
+		if (op == op_exclude || !op->trampoline)
+			continue;
+
+		if (hash_contains_ip(ip, op->func_hash))
+			return op;
+	} while_for_each_ftrace_op(op);
+
+	return NULL;
+}
+
+static struct ftrace_ops *
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 ftrace_find_tramp_ops_next(struct dyn_ftrace *rec,
 			   struct ftrace_ops *op)
 {
@@ -3183,6 +3259,17 @@ t_probe_next(struct seq_file *m, loff_t *pos)
 		hnd = &iter->probe_entry->hlist;
 
 	hash = iter->probe->ops.func_hash->filter_hash;
+<<<<<<< HEAD
+=======
+
+	/*
+	 * A probe being registered may temporarily have an empty hash
+	 * and it's at the end of the func_probes list.
+	 */
+	if (!hash || hash == EMPTY_HASH)
+		return NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	size = 1 << hash->size_bits;
 
  retry:
@@ -3620,13 +3707,18 @@ ftrace_regex_open(struct ftrace_ops *ops, int flag,
 	struct ftrace_hash *hash;
 	struct list_head *mod_head;
 	struct trace_array *tr = ops->private;
+<<<<<<< HEAD
 	int ret = 0;
+=======
+	int ret = -ENOMEM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ftrace_ops_init(ops);
 
 	if (unlikely(ftrace_disabled))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	iter = kzalloc(sizeof(*iter), GFP_KERNEL);
 	if (!iter)
 		return -ENOMEM;
@@ -3635,6 +3727,17 @@ ftrace_regex_open(struct ftrace_ops *ops, int flag,
 		kfree(iter);
 		return -ENOMEM;
 	}
+=======
+	if (tr && trace_array_get(tr) < 0)
+		return -ENODEV;
+
+	iter = kzalloc(sizeof(*iter), GFP_KERNEL);
+	if (!iter)
+		goto out;
+
+	if (trace_parser_get_init(&iter->parser, FTRACE_BUFF_MAX))
+		goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	iter->ops = ops;
 	iter->flags = flag;
@@ -3664,13 +3767,21 @@ ftrace_regex_open(struct ftrace_ops *ops, int flag,
 
 		if (!iter->hash) {
 			trace_parser_put(&iter->parser);
+<<<<<<< HEAD
 			kfree(iter);
 			ret = -ENOMEM;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto out_unlock;
 		}
 	} else
 		iter->hash = hash;
 
+<<<<<<< HEAD
+=======
+	ret = 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (file->f_mode & FMODE_READ) {
 		iter->pg = ftrace_pages_start;
 
@@ -3682,7 +3793,10 @@ ftrace_regex_open(struct ftrace_ops *ops, int flag,
 			/* Failed */
 			free_ftrace_hash(iter->hash);
 			trace_parser_put(&iter->parser);
+<<<<<<< HEAD
 			kfree(iter);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	} else
 		file->private_data = iter;
@@ -3690,6 +3804,16 @@ ftrace_regex_open(struct ftrace_ops *ops, int flag,
  out_unlock:
 	mutex_unlock(&ops->func_hash->regex_lock);
 
+<<<<<<< HEAD
+=======
+ out:
+	if (ret) {
+		kfree(iter);
+		if (tr)
+			trace_array_put(tr);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -4281,10 +4405,20 @@ void free_ftrace_func_mapper(struct ftrace_func_mapper *mapper,
 	struct ftrace_func_entry *entry;
 	struct ftrace_func_map *map;
 	struct hlist_head *hhd;
+<<<<<<< HEAD
 	int size = 1 << mapper->hash.size_bits;
 	int i;
 
 	if (free_func && mapper->hash.count) {
+=======
+	int size, i;
+
+	if (!mapper)
+		return;
+
+	if (free_func && mapper->hash.count) {
+		size = 1 << mapper->hash.size_bits;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		for (i = 0; i < size; i++) {
 			hhd = &mapper->hash.buckets[i];
 			hlist_for_each_entry(entry, hhd, hlist) {
@@ -4376,12 +4510,27 @@ register_ftrace_function_probe(char *glob, struct trace_array *tr,
 
 	mutex_unlock(&ftrace_lock);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Note, there's a small window here that the func_hash->filter_hash
+	 * may be NULL or empty. Need to be carefule when reading the loop.
+	 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_lock(&probe->ops.func_hash->regex_lock);
 
 	orig_hash = &probe->ops.func_hash->filter_hash;
 	old_hash = *orig_hash;
 	hash = alloc_and_copy_ftrace_hash(FTRACE_HASH_DEFAULT_BITS, old_hash);
 
+<<<<<<< HEAD
+=======
+	if (!hash) {
+		ret = -ENOMEM;
+		goto out;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = ftrace_match_records(hash, glob, strlen(glob));
 
 	/* Nothing found? */
@@ -5048,8 +5197,16 @@ int ftrace_regex_release(struct inode *inode, struct file *file)
 
 	parser = &iter->parser;
 	if (trace_parser_loaded(parser)) {
+<<<<<<< HEAD
 		parser->buffer[parser->idx] = 0;
 		ftrace_match_records(iter->hash, parser->buffer, parser->idx);
+=======
+		int enable = !(iter->flags & FTRACE_ITER_NOTRACE);
+
+		parser->buffer[parser->idx] = 0;
+		ftrace_process_regex(iter, parser->buffer,
+				     parser->idx, enable);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	trace_parser_put(parser);
@@ -5077,6 +5234,11 @@ int ftrace_regex_release(struct inode *inode, struct file *file)
 
 	mutex_unlock(&iter->ops->func_hash->regex_lock);
 	free_ftrace_hash(iter->hash);
+<<<<<<< HEAD
+=======
+	if (iter->tr)
+		trace_array_put(iter->tr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(iter);
 
 	return 0;
@@ -5116,8 +5278,13 @@ static const struct file_operations ftrace_notrace_fops = {
 
 static DEFINE_MUTEX(graph_lock);
 
+<<<<<<< HEAD
 struct ftrace_hash *ftrace_graph_hash = EMPTY_HASH;
 struct ftrace_hash *ftrace_graph_notrace_hash = EMPTY_HASH;
+=======
+struct ftrace_hash __rcu *ftrace_graph_hash = EMPTY_HASH;
+struct ftrace_hash __rcu *ftrace_graph_notrace_hash = EMPTY_HASH;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 enum graph_filter_type {
 	GRAPH_FILTER_NOTRACE	= 0,
@@ -5389,8 +5556,20 @@ ftrace_graph_release(struct inode *inode, struct file *file)
 
 		mutex_unlock(&graph_lock);
 
+<<<<<<< HEAD
 		/* Wait till all users are no longer using the old hash */
 		synchronize_sched();
+=======
+		/*
+		 * We need to do a hard force of sched synchronization.
+		 * This is because we use preempt_disable() to do RCU, but
+		 * the function tracers can be called where RCU is not watching
+		 * (like before user_exit()). We can not rely on the RCU
+		 * infrastructure to do the synchronization, thus we must do it
+		 * ourselves.
+		 */
+		schedule_on_each_cpu(ftrace_sync);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		free_ftrace_hash(old_hash);
 	}
@@ -5575,9 +5754,15 @@ static int ftrace_cmp_ips(const void *a, const void *b)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __norecordmcount ftrace_process_locs(struct module *mod,
 						unsigned long *start,
 						unsigned long *end)
+=======
+static int ftrace_process_locs(struct module *mod,
+			       unsigned long *start,
+			       unsigned long *end)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct ftrace_page *start_pg;
 	struct ftrace_page *pg;
@@ -5684,8 +5869,16 @@ static int referenced_filters(struct dyn_ftrace *rec)
 	int cnt = 0;
 
 	for (ops = ftrace_ops_list; ops != &ftrace_list_end; ops = ops->next) {
+<<<<<<< HEAD
 		if (ops_references_rec(ops, rec))
 		    cnt++;
+=======
+		if (ops_references_rec(ops, rec)) {
+			cnt++;
+			if (ops->flags & FTRACE_OPS_FL_SAVE_REGS)
+				rec->flags |= FTRACE_FL_REGS;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return cnt;
@@ -5834,8 +6027,13 @@ void ftrace_module_enable(struct module *mod)
 		if (ftrace_start_up)
 			cnt += referenced_filters(rec);
 
+<<<<<<< HEAD
 		/* This clears FTRACE_FL_DISABLED */
 		rec->flags = cnt;
+=======
+		rec->flags &= ~FTRACE_FL_DISABLED;
+		rec->flags += cnt;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (ftrace_start_up && cnt) {
 			int failed = __ftrace_replace_code(rec, 1);
@@ -6044,7 +6242,11 @@ __ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
 	struct ftrace_ops *op;
 	int bit;
 
+<<<<<<< HEAD
 	bit = trace_test_and_set_recursion(TRACE_LIST_START, TRACE_LIST_MAX);
+=======
+	bit = trace_test_and_set_recursion(TRACE_LIST_START);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (bit < 0)
 		return;
 
@@ -6102,8 +6304,12 @@ static void ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
 }
 NOKPROBE_SYMBOL(ftrace_ops_list_func);
 #else
+<<<<<<< HEAD
 static void ftrace_ops_no_ops(unsigned long ip, unsigned long parent_ip,
 			      struct ftrace_ops *op, struct pt_regs *regs)
+=======
+static void ftrace_ops_no_ops(unsigned long ip, unsigned long parent_ip)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	__ftrace_ops_list_func(ip, parent_ip, NULL, NULL);
 }
@@ -6120,17 +6326,27 @@ static void ftrace_ops_assist_func(unsigned long ip, unsigned long parent_ip,
 {
 	int bit;
 
+<<<<<<< HEAD
 	if ((op->flags & FTRACE_OPS_FL_RCU) && !rcu_is_watching())
 		return;
 
 	bit = trace_test_and_set_recursion(TRACE_LIST_START, TRACE_LIST_MAX);
+=======
+	bit = trace_test_and_set_recursion(TRACE_LIST_START);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (bit < 0)
 		return;
 
 	preempt_disable_notrace();
 
+<<<<<<< HEAD
 	if (!(op->flags & FTRACE_OPS_FL_PER_CPU) ||
 	    !ftrace_function_local_disabled(op)) {
+=======
+	if ((!(op->flags & FTRACE_OPS_FL_RCU) || rcu_is_watching()) &&
+	    (!(op->flags & FTRACE_OPS_FL_PER_CPU) ||
+	     !ftrace_function_local_disabled(op))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		op->func(ip, parent_ip, op, regs);
 	}
 
@@ -6203,12 +6419,20 @@ void ftrace_pid_follow_fork(struct trace_array *tr, bool enable)
 	if (enable) {
 		register_trace_sched_process_fork(ftrace_pid_follow_sched_process_fork,
 						  tr);
+<<<<<<< HEAD
 		register_trace_sched_process_exit(ftrace_pid_follow_sched_process_exit,
+=======
+		register_trace_sched_process_free(ftrace_pid_follow_sched_process_exit,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						  tr);
 	} else {
 		unregister_trace_sched_process_fork(ftrace_pid_follow_sched_process_fork,
 						    tr);
+<<<<<<< HEAD
 		unregister_trace_sched_process_exit(ftrace_pid_follow_sched_process_exit,
+=======
+		unregister_trace_sched_process_free(ftrace_pid_follow_sched_process_exit,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						    tr);
 	}
 }
@@ -6281,9 +6505,16 @@ static void *fpid_next(struct seq_file *m, void *v, loff_t *pos)
 	struct trace_array *tr = m->private;
 	struct trace_pid_list *pid_list = rcu_dereference_sched(tr->function_pids);
 
+<<<<<<< HEAD
 	if (v == FTRACE_NO_PIDS)
 		return NULL;
 
+=======
+	if (v == FTRACE_NO_PIDS) {
+		(*pos)++;
+		return NULL;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return trace_pid_next(pid_list, v, pos);
 }
 
@@ -6569,17 +6800,25 @@ void ftrace_graph_graph_time_control(bool enable)
 	fgraph_graph_time = enable;
 }
 
+<<<<<<< HEAD
 void ftrace_graph_return_stub(struct ftrace_graph_ret *trace)
 {
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace)
 {
 	return 0;
 }
 
 /* The callbacks that hook a function */
+<<<<<<< HEAD
 trace_func_graph_ret_t ftrace_graph_return = ftrace_graph_return_stub;
+=======
+trace_func_graph_ret_t ftrace_graph_return =
+			(trace_func_graph_ret_t)ftrace_stub;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 trace_func_graph_ent_t ftrace_graph_entry = ftrace_graph_entry_stub;
 static trace_func_graph_ent_t __ftrace_graph_entry = ftrace_graph_entry_stub;
 
@@ -6611,7 +6850,10 @@ static int alloc_retstack_tasklist(struct ftrace_ret_stack **ret_stack_list)
 		}
 
 		if (t->ret_stack == NULL) {
+<<<<<<< HEAD
 			atomic_set(&t->tracing_graph_pause, 0);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			atomic_set(&t->trace_overrun, 0);
 			t->curr_ret_stack = -1;
 			/* Make sure the tasks see the -1 first: */
@@ -6807,7 +7049,11 @@ void unregister_ftrace_graph(void)
 		goto out;
 
 	ftrace_graph_active--;
+<<<<<<< HEAD
 	ftrace_graph_return = ftrace_graph_return_stub;
+=======
+	ftrace_graph_return = (trace_func_graph_ret_t)ftrace_stub;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ftrace_graph_entry = ftrace_graph_entry_stub;
 	__ftrace_graph_entry = ftrace_graph_entry_stub;
 	ftrace_shutdown(&graph_ops, FTRACE_STOP_FUNC_RET);
@@ -6823,7 +7069,10 @@ static DEFINE_PER_CPU(struct ftrace_ret_stack *, idle_ret_stack);
 static void
 graph_init_task(struct task_struct *t, struct ftrace_ret_stack *ret_stack)
 {
+<<<<<<< HEAD
 	atomic_set(&t->tracing_graph_pause, 0);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	atomic_set(&t->trace_overrun, 0);
 	t->ftrace_timestamp = 0;
 	/* make curr_ret_stack visible before we add the ret_stack */

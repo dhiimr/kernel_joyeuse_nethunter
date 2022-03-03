@@ -67,6 +67,7 @@ void snd_pcm_timer_resolution_change(struct snd_pcm_substream *substream)
 static unsigned long snd_pcm_timer_resolution(struct snd_timer * timer)
 {
 	struct snd_pcm_substream *substream;
+<<<<<<< HEAD
 	unsigned long ret = 0, flags = 0;
 
 	substream = timer->private_data;
@@ -77,6 +78,11 @@ static unsigned long snd_pcm_timer_resolution(struct snd_timer * timer)
 		ret = 0;
 	spin_unlock_irqrestore(&substream->runtime_lock, flags);
 	return ret;
+=======
+
+	substream = timer->private_data;
+	return substream->runtime ? substream->runtime->timer_resolution : 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int snd_pcm_timer_start(struct snd_timer * timer)

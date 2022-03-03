@@ -970,8 +970,15 @@ static void delta_run_work(struct work_struct *work)
 	/* enable the hardware */
 	if (!dec->pm) {
 		ret = delta_get_sync(ctx);
+<<<<<<< HEAD
 		if (ret)
 			goto err;
+=======
+		if (ret) {
+			delta_put_autosuspend(ctx);
+			goto err;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* decode this access unit */

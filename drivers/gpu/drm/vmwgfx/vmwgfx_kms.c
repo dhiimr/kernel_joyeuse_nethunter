@@ -1719,7 +1719,11 @@ int vmw_kms_cursor_bypass_ioctl(struct drm_device *dev, void *data,
 		return 0;
 	}
 
+<<<<<<< HEAD
 	crtc = drm_crtc_find(dev, file_priv, arg->crtc_id);
+=======
+	crtc = drm_crtc_find(dev, arg->crtc_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!crtc) {
 		ret = -ENOENT;
 		goto out;
@@ -2511,7 +2515,11 @@ void vmw_kms_helper_buffer_finish(struct vmw_private *dev_priv,
 	if (file_priv)
 		vmw_execbuf_copy_fence_user(dev_priv, vmw_fpriv(file_priv),
 					    ret, user_fence_rep, fence,
+<<<<<<< HEAD
 					    handle, -1, NULL);
+=======
+					    handle, -1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (out_fence)
 		*out_fence = fence;
 	else
@@ -2707,7 +2715,11 @@ int vmw_kms_fbdev_init_data(struct vmw_private *dev_priv,
 		++i;
 	}
 
+<<<<<<< HEAD
 	if (i != unit) {
+=======
+	if (&con->head == &dev_priv->dev->mode_config.connector_list) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		DRM_ERROR("Could not find initial display unit.\n");
 		return -EINVAL;
 	}
@@ -2729,13 +2741,22 @@ int vmw_kms_fbdev_init_data(struct vmw_private *dev_priv,
 			break;
 	}
 
+<<<<<<< HEAD
 	if (mode->type & DRM_MODE_TYPE_PREFERRED)
 		*p_mode = mode;
 	else {
+=======
+	if (&mode->head == &con->modes) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		WARN_ONCE(true, "Could not find initial preferred mode.\n");
 		*p_mode = list_first_entry(&con->modes,
 					   struct drm_display_mode,
 					   head);
+<<<<<<< HEAD
+=======
+	} else {
+		*p_mode = mode;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return 0;

@@ -258,8 +258,13 @@ static void __exit nfeth_cleanup(void)
 
 	for (i = 0; i < MAX_UNIT; i++) {
 		if (nfeth_dev[i]) {
+<<<<<<< HEAD
 			unregister_netdev(nfeth_dev[0]);
 			free_netdev(nfeth_dev[0]);
+=======
+			unregister_netdev(nfeth_dev[i]);
+			free_netdev(nfeth_dev[i]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 	free_irq(nfEtherIRQ, nfeth_interrupt);

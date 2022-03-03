@@ -302,6 +302,13 @@ static void usb_wwan_indat_callback(struct urb *urb)
 	if (status) {
 		dev_dbg(dev, "%s: nonzero status: %d on endpoint %02x.\n",
 			__func__, status, endpoint);
+<<<<<<< HEAD
+=======
+
+		/* don't resubmit on fatal errors */
+		if (status == -ESHUTDOWN || status == -ENOENT)
+			return;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		if (urb->actual_length) {
 			tty_insert_flip_string(&port->port, data,
@@ -492,6 +499,10 @@ static struct urb *usb_wwan_setup_urb(struct usb_serial_port *port,
 				      void (*callback) (struct urb *))
 {
 	struct usb_serial *serial = port->serial;
+<<<<<<< HEAD
+=======
+	struct usb_wwan_intf_private *intfdata = usb_get_serial_data(serial);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct urb *urb;
 
 	urb = usb_alloc_urb(0, GFP_KERNEL);	/* No ISO */
@@ -502,6 +513,12 @@ static struct urb *usb_wwan_setup_urb(struct usb_serial_port *port,
 			  usb_sndbulkpipe(serial->dev, endpoint) | dir,
 			  buf, len, callback, ctx);
 
+<<<<<<< HEAD
+=======
+	if (intfdata->use_zlp && dir == USB_DIR_OUT)
+		urb->transfer_flags |= URB_ZERO_PACKET;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return urb;
 }
 

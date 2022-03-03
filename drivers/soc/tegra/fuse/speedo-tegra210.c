@@ -105,7 +105,11 @@ static int get_process_id(int value, const u32 *speedos, unsigned int num)
 	unsigned int i;
 
 	for (i = 0; i < num; i++)
+<<<<<<< HEAD
 		if (value < speedos[num])
+=======
+		if (value < speedos[i])
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return i;
 
 	return -EINVAL;

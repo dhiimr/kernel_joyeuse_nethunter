@@ -167,6 +167,7 @@ static int vrf_ip6_local_out(struct net *net, struct sock *sk,
 static netdev_tx_t vrf_process_v6_outbound(struct sk_buff *skb,
 					   struct net_device *dev)
 {
+<<<<<<< HEAD
 	const struct ipv6hdr *iph = ipv6_hdr(skb);
 	struct net *net = dev_net(skb->dev);
 	struct flowi6 fl6 = {
@@ -180,10 +181,34 @@ static netdev_tx_t vrf_process_v6_outbound(struct sk_buff *skb,
 		.flowi6_proto = iph->nexthdr,
 		.flowi6_flags = FLOWI_FLAG_SKIP_NH_OIF,
 	};
+=======
+	const struct ipv6hdr *iph;
+	struct net *net = dev_net(skb->dev);
+	struct flowi6 fl6;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret = NET_XMIT_DROP;
 	struct dst_entry *dst;
 	struct dst_entry *dst_null = &net->ipv6.ip6_null_entry->dst;
 
+<<<<<<< HEAD
+=======
+	if (!pskb_may_pull(skb, ETH_HLEN + sizeof(struct ipv6hdr)))
+		goto err;
+
+	iph = ipv6_hdr(skb);
+
+	memset(&fl6, 0, sizeof(fl6));
+	/* needed to match OIF rule */
+	fl6.flowi6_oif = dev->ifindex;
+	fl6.flowi6_iif = LOOPBACK_IFINDEX;
+	fl6.daddr = iph->daddr;
+	fl6.saddr = iph->saddr;
+	fl6.flowlabel = ip6_flowinfo(iph);
+	fl6.flowi6_mark = skb->mark;
+	fl6.flowi6_proto = iph->nexthdr;
+	fl6.flowi6_flags = FLOWI_FLAG_SKIP_NH_OIF;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dst = ip6_route_output(net, NULL, &fl6);
 	if (dst == dst_null)
 		goto err;
@@ -202,6 +227,10 @@ static netdev_tx_t vrf_process_v6_outbound(struct sk_buff *skb,
 	/* strip the ethernet header added for pass through VRF device */
 	__skb_pull(skb, skb_network_offset(skb));
 
+<<<<<<< HEAD
+=======
+	memset(IP6CB(skb), 0, sizeof(*IP6CB(skb)));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = vrf_ip6_local_out(net, skb->sk, skb);
 	if (unlikely(net_xmit_eval(ret)))
 		dev->stats.tx_errors++;
@@ -239,6 +268,7 @@ static int vrf_ip_local_out(struct net *net, struct sock *sk,
 static netdev_tx_t vrf_process_v4_outbound(struct sk_buff *skb,
 					   struct net_device *vrf_dev)
 {
+<<<<<<< HEAD
 	struct iphdr *ip4h = ip_hdr(skb);
 	int ret = NET_XMIT_DROP;
 	struct flowi4 fl4 = {
@@ -254,6 +284,29 @@ static netdev_tx_t vrf_process_v4_outbound(struct sk_buff *skb,
 	struct net *net = dev_net(vrf_dev);
 	struct rtable *rt;
 
+=======
+	struct iphdr *ip4h;
+	int ret = NET_XMIT_DROP;
+	struct flowi4 fl4;
+	struct net *net = dev_net(vrf_dev);
+	struct rtable *rt;
+
+	if (!pskb_may_pull(skb, ETH_HLEN + sizeof(struct iphdr)))
+		goto err;
+
+	ip4h = ip_hdr(skb);
+
+	memset(&fl4, 0, sizeof(fl4));
+	/* needed to match OIF rule */
+	fl4.flowi4_oif = vrf_dev->ifindex;
+	fl4.flowi4_iif = LOOPBACK_IFINDEX;
+	fl4.flowi4_tos = RT_TOS(ip4h->tos);
+	fl4.flowi4_flags = FLOWI_FLAG_ANYSRC | FLOWI_FLAG_SKIP_NH_OIF;
+	fl4.flowi4_proto = ip4h->protocol;
+	fl4.daddr = ip4h->daddr;
+	fl4.saddr = ip4h->saddr;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rt = ip_route_output_flow(net, &fl4, NULL);
 	if (IS_ERR(rt))
 		goto err;
@@ -277,6 +330,10 @@ static netdev_tx_t vrf_process_v4_outbound(struct sk_buff *skb,
 					       RT_SCOPE_LINK);
 	}
 
+<<<<<<< HEAD
+=======
+	memset(IPCB(skb), 0, sizeof(*IPCB(skb)));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = vrf_ip_local_out(dev_net(skb_dst(skb)->dev), skb->sk, skb);
 	if (unlikely(net_xmit_eval(ret)))
 		vrf_dev->stats.tx_errors++;
@@ -322,8 +379,12 @@ static netdev_tx_t vrf_xmit(struct sk_buff *skb, struct net_device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int vrf_finish_direct(struct net *net, struct sock *sk,
 			     struct sk_buff *skb)
+=======
+static void vrf_finish_direct(struct sk_buff *skb)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct net_device *vrf_dev = skb->dev;
 
@@ -342,7 +403,12 @@ static int vrf_finish_direct(struct net *net, struct sock *sk,
 		skb_pull(skb, ETH_HLEN);
 	}
 
+<<<<<<< HEAD
 	return 1;
+=======
+	/* reset skb device */
+	nf_reset(skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #if IS_ENABLED(CONFIG_IPV6)
@@ -421,6 +487,7 @@ static struct sk_buff *vrf_ip6_out_redirect(struct net_device *vrf_dev,
 	return skb;
 }
 
+<<<<<<< HEAD
 static int vrf_output6_direct(struct net *net, struct sock *sk,
 			      struct sk_buff *skb)
 {
@@ -430,6 +497,43 @@ static int vrf_output6_direct(struct net *net, struct sock *sk,
 			    net, sk, skb, NULL, skb->dev,
 			    vrf_finish_direct,
 			    !(IPCB(skb)->flags & IPSKB_REROUTED));
+=======
+static int vrf_output6_direct_finish(struct net *net, struct sock *sk,
+				     struct sk_buff *skb)
+{
+	vrf_finish_direct(skb);
+
+	return vrf_ip6_local_out(net, sk, skb);
+}
+
+static int vrf_output6_direct(struct net *net, struct sock *sk,
+			      struct sk_buff *skb)
+{
+	int err = 1;
+
+	skb->protocol = htons(ETH_P_IPV6);
+
+	if (!(IPCB(skb)->flags & IPSKB_REROUTED))
+		err = nf_hook(NFPROTO_IPV6, NF_INET_POST_ROUTING, net, sk, skb,
+			      NULL, skb->dev, vrf_output6_direct_finish);
+
+	if (likely(err == 1))
+		vrf_finish_direct(skb);
+
+	return err;
+}
+
+static int vrf_ip6_out_direct_finish(struct net *net, struct sock *sk,
+				     struct sk_buff *skb)
+{
+	int err;
+
+	err = vrf_output6_direct(net, sk, skb);
+	if (likely(err == 1))
+		err = vrf_ip6_local_out(net, sk, skb);
+
+	return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct sk_buff *vrf_ip6_out_direct(struct net_device *vrf_dev,
@@ -442,11 +546,16 @@ static struct sk_buff *vrf_ip6_out_direct(struct net_device *vrf_dev,
 	skb->dev = vrf_dev;
 
 	err = nf_hook(NFPROTO_IPV6, NF_INET_LOCAL_OUT, net, sk,
+<<<<<<< HEAD
 		      skb, NULL, vrf_dev, vrf_output6_direct);
+=======
+		      skb, NULL, vrf_dev, vrf_ip6_out_direct_finish);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (likely(err == 1))
 		err = vrf_output6_direct(net, sk, skb);
 
+<<<<<<< HEAD
 	/* reset skb device */
 	if (likely(err == 1))
 		nf_reset(skb);
@@ -454,6 +563,12 @@ static struct sk_buff *vrf_ip6_out_direct(struct net_device *vrf_dev,
 		skb = NULL;
 
 	return skb;
+=======
+	if (likely(err == 1))
+		return skb;
+
+	return NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct sk_buff *vrf_ip6_out(struct net_device *vrf_dev,
@@ -464,7 +579,12 @@ static struct sk_buff *vrf_ip6_out(struct net_device *vrf_dev,
 	if (rt6_need_strict(&ipv6_hdr(skb)->daddr))
 		return skb;
 
+<<<<<<< HEAD
 	if (qdisc_tx_is_default(vrf_dev))
+=======
+	if (qdisc_tx_is_default(vrf_dev) ||
+	    IP6CB(skb)->flags & IP6SKB_XFRM_TRANSFORMED)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return vrf_ip6_out_direct(vrf_dev, sk, skb);
 
 	return vrf_ip6_out_redirect(vrf_dev, skb);
@@ -636,6 +756,7 @@ static struct sk_buff *vrf_ip_out_redirect(struct net_device *vrf_dev,
 	return skb;
 }
 
+<<<<<<< HEAD
 static int vrf_output_direct(struct net *net, struct sock *sk,
 			     struct sk_buff *skb)
 {
@@ -645,6 +766,43 @@ static int vrf_output_direct(struct net *net, struct sock *sk,
 			    net, sk, skb, NULL, skb->dev,
 			    vrf_finish_direct,
 			    !(IPCB(skb)->flags & IPSKB_REROUTED));
+=======
+static int vrf_output_direct_finish(struct net *net, struct sock *sk,
+				    struct sk_buff *skb)
+{
+	vrf_finish_direct(skb);
+
+	return vrf_ip_local_out(net, sk, skb);
+}
+
+static int vrf_output_direct(struct net *net, struct sock *sk,
+			     struct sk_buff *skb)
+{
+	int err = 1;
+
+	skb->protocol = htons(ETH_P_IP);
+
+	if (!(IPCB(skb)->flags & IPSKB_REROUTED))
+		err = nf_hook(NFPROTO_IPV4, NF_INET_POST_ROUTING, net, sk, skb,
+			      NULL, skb->dev, vrf_output_direct_finish);
+
+	if (likely(err == 1))
+		vrf_finish_direct(skb);
+
+	return err;
+}
+
+static int vrf_ip_out_direct_finish(struct net *net, struct sock *sk,
+				    struct sk_buff *skb)
+{
+	int err;
+
+	err = vrf_output_direct(net, sk, skb);
+	if (likely(err == 1))
+		err = vrf_ip_local_out(net, sk, skb);
+
+	return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct sk_buff *vrf_ip_out_direct(struct net_device *vrf_dev,
@@ -657,11 +815,16 @@ static struct sk_buff *vrf_ip_out_direct(struct net_device *vrf_dev,
 	skb->dev = vrf_dev;
 
 	err = nf_hook(NFPROTO_IPV4, NF_INET_LOCAL_OUT, net, sk,
+<<<<<<< HEAD
 		      skb, NULL, vrf_dev, vrf_output_direct);
+=======
+		      skb, NULL, vrf_dev, vrf_ip_out_direct_finish);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (likely(err == 1))
 		err = vrf_output_direct(net, sk, skb);
 
+<<<<<<< HEAD
 	/* reset skb device */
 	if (likely(err == 1))
 		nf_reset(skb);
@@ -669,6 +832,12 @@ static struct sk_buff *vrf_ip_out_direct(struct net_device *vrf_dev,
 		skb = NULL;
 
 	return skb;
+=======
+	if (likely(err == 1))
+		return skb;
+
+	return NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct sk_buff *vrf_ip_out(struct net_device *vrf_dev,
@@ -680,7 +849,12 @@ static struct sk_buff *vrf_ip_out(struct net_device *vrf_dev,
 	    ipv4_is_lbcast(ip_hdr(skb)->daddr))
 		return skb;
 
+<<<<<<< HEAD
 	if (qdisc_tx_is_default(vrf_dev))
+=======
+	if (qdisc_tx_is_default(vrf_dev) ||
+	    IPCB(skb)->flags & IPSKB_XFRM_TRANSFORMED)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return vrf_ip_out_direct(vrf_dev, sk, skb);
 
 	return vrf_ip_out_redirect(vrf_dev, skb);

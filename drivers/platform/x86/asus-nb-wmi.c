@@ -78,10 +78,18 @@ static bool asus_q500a_i8042_filter(unsigned char data, unsigned char str,
 
 static struct quirk_entry quirk_asus_unknown = {
 	.wapf = 0,
+<<<<<<< HEAD
+=======
+	.wmi_backlight_set_devstate = true,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static struct quirk_entry quirk_asus_q500a = {
 	.i8042_filter = asus_q500a_i8042_filter,
+<<<<<<< HEAD
+=======
+	.wmi_backlight_set_devstate = true,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /*
@@ -92,19 +100,32 @@ static struct quirk_entry quirk_asus_q500a = {
 static struct quirk_entry quirk_asus_x55u = {
 	.wapf = 4,
 	.wmi_backlight_power = true,
+<<<<<<< HEAD
+=======
+	.wmi_backlight_set_devstate = true,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.no_display_toggle = true,
 };
 
 static struct quirk_entry quirk_asus_wapf4 = {
 	.wapf = 4,
+<<<<<<< HEAD
+=======
+	.wmi_backlight_set_devstate = true,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static struct quirk_entry quirk_asus_x200ca = {
 	.wapf = 2,
+<<<<<<< HEAD
+=======
+	.wmi_backlight_set_devstate = true,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static struct quirk_entry quirk_asus_ux303ub = {
 	.wmi_backlight_native = true,
+<<<<<<< HEAD
 };
 
 static struct quirk_entry quirk_asus_x550lb = {
@@ -112,6 +133,18 @@ static struct quirk_entry quirk_asus_x550lb = {
 };
 
 static struct quirk_entry quirk_asus_ux330uak = {
+=======
+	.wmi_backlight_set_devstate = true,
+};
+
+static struct quirk_entry quirk_asus_x550lb = {
+	.wmi_backlight_set_devstate = true,
+	.xusb2pr = 0x01D9,
+};
+
+static struct quirk_entry quirk_asus_forceals = {
+	.wmi_backlight_set_devstate = true,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.wmi_force_als_set = true,
 };
 
@@ -387,7 +420,11 @@ static const struct dmi_system_id asus_quirks[] = {
 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
 			DMI_MATCH(DMI_PRODUCT_NAME, "UX330UAK"),
 		},
+<<<<<<< HEAD
 		.driver_data = &quirk_asus_ux330uak,
+=======
+		.driver_data = &quirk_asus_forceals,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	{
 		.callback = dmi_matched,
@@ -398,6 +435,18 @@ static const struct dmi_system_id asus_quirks[] = {
 		},
 		.driver_data = &quirk_asus_x550lb,
 	},
+<<<<<<< HEAD
+=======
+	{
+		.callback = dmi_matched,
+		.ident = "ASUSTeK COMPUTER INC. UX430UQ",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "UX430UQ"),
+		},
+		.driver_data = &quirk_asus_forceals,
+	},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{},
 };
 
@@ -500,9 +549,39 @@ static struct asus_wmi_driver asus_nb_wmi_driver = {
 	.detect_quirks = asus_nb_wmi_quirks,
 };
 
+<<<<<<< HEAD
 
 static int __init asus_nb_wmi_init(void)
 {
+=======
+static const struct dmi_system_id asus_nb_wmi_blacklist[] __initconst = {
+	{
+		/*
+		 * asus-nb-wm adds no functionality. The T100TA has a detachable
+		 * USB kbd, so no hotkeys and it has no WMI rfkill; and loading
+		 * asus-nb-wm causes the camera LED to turn and _stay_ on.
+		 */
+		.matches = {
+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TA"),
+		},
+	},
+	{
+		/* The Asus T200TA has the same issue as the T100TA */
+		.matches = {
+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T200TA"),
+		},
+	},
+	{} /* Terminating entry */
+};
+
+static int __init asus_nb_wmi_init(void)
+{
+	if (dmi_check_system(asus_nb_wmi_blacklist))
+		return -ENODEV;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return asus_wmi_register_driver(&asus_nb_wmi_driver);
 }
 

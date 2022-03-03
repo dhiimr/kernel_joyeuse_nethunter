@@ -12,7 +12,10 @@
  * published by the Free Software Foundation.
  *
  */
+<<<<<<< HEAD
 #include <linux/debugfs.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/module.h>
 #include <linux/param.h>
 #include <linux/err.h>
@@ -21,7 +24,10 @@
 #include <linux/regulator/machine.h>
 #include <linux/regulator/of_regulator.h>
 #include <linux/of_device.h>
+<<<<<<< HEAD
 #include <linux/of_gpio.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/i2c.h>
 #include <linux/slab.h>
 #include <linux/regmap.h>
@@ -42,10 +48,14 @@
 /* VSEL bit definitions */
 #define VSEL_BUCK_EN	(1 << 7)
 #define VSEL_MODE		(1 << 6)
+<<<<<<< HEAD
 #define HL7503_VSEL0_MODE	BIT(0)
 #define HL7503_VSEL1_MODE	BIT(1)
 #define VSEL_NSEL_MASK		0x3F
 #define HL7503_VSEL_NSEL_MASK	0x7F
+=======
+#define VSEL_NSEL_MASK	0x3F
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Chip ID and Verison */
 #define DIE_ID		0x0F	/* ID1 */
 #define DIE_REV		0x0F	/* ID2 */
@@ -56,13 +66,19 @@
 #define CTL_RESET			(1 << 2)
 
 #define FAN53555_NVOLTAGES	64	/* Numbers of voltages */
+<<<<<<< HEAD
 #define HL7503_NVOLTAGES	128
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 enum fan53555_vendor {
 	FAN53555_VENDOR_FAIRCHILD = 0,
 	FAN53555_VENDOR_SILERGY,
+<<<<<<< HEAD
 	HALO_HL7509,
 	HALO_HL7503,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* IC Type */
@@ -106,29 +122,42 @@ struct fan53555_device_info {
 	unsigned int slew_rate;
 	/* Sleep voltage cache */
 	unsigned int sleep_vol_cache;
+<<<<<<< HEAD
 	unsigned int peek_poke_address;
 	/* Disable suspend */
 	bool disable_suspend;
 	struct dentry *debug_root;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static int fan53555_set_suspend_voltage(struct regulator_dev *rdev, int uV)
 {
 	struct fan53555_device_info *di = rdev_get_drvdata(rdev);
+<<<<<<< HEAD
 	u8 vsel_mask;
 	int ret;
 
 	if (di->disable_suspend)
 		return 0;
+=======
+	int ret;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (di->sleep_vol_cache == uV)
 		return 0;
 	ret = regulator_map_voltage_linear(rdev, uV, uV);
 	if (ret < 0)
 		return ret;
+<<<<<<< HEAD
 
 	vsel_mask = (di->vendor == HALO_HL7503) ? HL7503_VSEL_NSEL_MASK
 						 : VSEL_NSEL_MASK;
 	ret = regmap_update_bits(di->regmap, di->sleep_reg, vsel_mask, ret);
+=======
+	ret = regmap_update_bits(di->regmap, di->sleep_reg,
+					VSEL_NSEL_MASK, ret);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret < 0)
 		return ret;
 	/* Cache the sleep voltage setting.
@@ -142,9 +171,12 @@ static int fan53555_set_suspend_enable(struct regulator_dev *rdev)
 {
 	struct fan53555_device_info *di = rdev_get_drvdata(rdev);
 
+<<<<<<< HEAD
 	if (di->disable_suspend)
 		return 0;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return regmap_update_bits(di->regmap, di->sleep_reg,
 				  VSEL_BUCK_EN, VSEL_BUCK_EN);
 }
@@ -153,9 +185,12 @@ static int fan53555_set_suspend_disable(struct regulator_dev *rdev)
 {
 	struct fan53555_device_info *di = rdev_get_drvdata(rdev);
 
+<<<<<<< HEAD
 	if (di->disable_suspend)
 		return 0;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return regmap_update_bits(di->regmap, di->sleep_reg,
 				  VSEL_BUCK_EN, 0);
 }
@@ -163,6 +198,7 @@ static int fan53555_set_suspend_disable(struct regulator_dev *rdev)
 static int fan53555_set_mode(struct regulator_dev *rdev, unsigned int mode)
 {
 	struct fan53555_device_info *di = rdev_get_drvdata(rdev);
+<<<<<<< HEAD
 	unsigned int reg, mask;
 
 	reg = di->vol_reg;
@@ -180,6 +216,16 @@ static int fan53555_set_mode(struct regulator_dev *rdev, unsigned int mode)
 		break;
 	case REGULATOR_MODE_NORMAL:
 		regmap_update_bits(di->regmap, reg, mask, 0);
+=======
+
+	switch (mode) {
+	case REGULATOR_MODE_FAST:
+		regmap_update_bits(di->regmap, di->vol_reg,
+				VSEL_MODE, VSEL_MODE);
+		break;
+	case REGULATOR_MODE_NORMAL:
+		regmap_update_bits(di->regmap, di->vol_reg, VSEL_MODE, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	default:
 		return -EINVAL;
@@ -190,6 +236,7 @@ static int fan53555_set_mode(struct regulator_dev *rdev, unsigned int mode)
 static unsigned int fan53555_get_mode(struct regulator_dev *rdev)
 {
 	struct fan53555_device_info *di = rdev_get_drvdata(rdev);
+<<<<<<< HEAD
 	unsigned int val, reg, mask;
 	int ret = 0;
 
@@ -206,6 +253,15 @@ static unsigned int fan53555_get_mode(struct regulator_dev *rdev)
 	if (ret < 0)
 		return ret;
 	if (val & mask)
+=======
+	unsigned int val;
+	int ret = 0;
+
+	ret = regmap_read(di->regmap, di->vol_reg, &val);
+	if (ret < 0)
+		return ret;
+	if (val & VSEL_MODE)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return REGULATOR_MODE_FAST;
 	else
 		return REGULATOR_MODE_NORMAL;
@@ -318,6 +374,7 @@ static int fan53555_voltages_setup_silergy(struct fan53555_device_info *di)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int hl7503_voltages_setup_halo(struct fan53555_device_info *di)
 {
 	/* Init voltage range and step */
@@ -335,6 +392,8 @@ static int hl7503_voltages_setup_halo(struct fan53555_device_info *di)
 	return 0;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* For 00,01,03,05 options:
  * VOUT = 0.60V + NSELx * 10mV, from 0.60 to 1.23V.
  * For 04 option:
@@ -367,12 +426,15 @@ static int fan53555_device_setup(struct fan53555_device_info *di,
 	case FAN53555_VENDOR_SILERGY:
 		ret = fan53555_voltages_setup_silergy(di);
 		break;
+<<<<<<< HEAD
 	case HALO_HL7509:
 		ret = fan53555_voltages_setup_fairchild(di);
 		break;
 	case HALO_HL7503:
 		ret = hl7503_voltages_setup_halo(di);
 		break;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	default:
 		dev_err(di->dev, "vendor %d not supported!\n", di->vendor);
 		return -EINVAL;
@@ -390,11 +452,16 @@ static int fan53555_regulator_register(struct fan53555_device_info *di,
 	rdesc->supply_name = "vin";
 	rdesc->ops = &fan53555_regulator_ops;
 	rdesc->type = REGULATOR_VOLTAGE;
+<<<<<<< HEAD
+=======
+	rdesc->n_voltages = FAN53555_NVOLTAGES;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rdesc->enable_reg = di->vol_reg;
 	rdesc->enable_mask = VSEL_BUCK_EN;
 	rdesc->min_uV = di->vsel_min;
 	rdesc->uV_step = di->vsel_step;
 	rdesc->vsel_reg = di->vol_reg;
+<<<<<<< HEAD
 	rdesc->owner = THIS_MODULE;
 
 	if (di->vendor == HALO_HL7503) {
@@ -405,6 +472,11 @@ static int fan53555_regulator_register(struct fan53555_device_info *di,
 		rdesc->vsel_mask = VSEL_NSEL_MASK;
 	}
 
+=======
+	rdesc->vsel_mask = VSEL_NSEL_MASK;
+	rdesc->owner = THIS_MODULE;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	di->rdev = devm_regulator_register(di->dev, &di->desc, config);
 	return PTR_ERR_OR_ZERO(di->rdev);
 }
@@ -412,6 +484,7 @@ static int fan53555_regulator_register(struct fan53555_device_info *di,
 static const struct regmap_config fan53555_regmap_config = {
 	.reg_bits = 8,
 	.val_bits = 8,
+<<<<<<< HEAD
 	.max_register = 0x05,
 };
 
@@ -474,15 +547,36 @@ static int fan53555_parse_dt(struct fan53555_device_info *di,
 		dev_err(dev, "regulator init data is missing\n");
 		return -ENODEV;
 	}
+=======
+};
+
+static struct fan53555_platform_data *fan53555_parse_dt(struct device *dev,
+					      struct device_node *np,
+					      const struct regulator_desc *desc)
+{
+	struct fan53555_platform_data *pdata;
+	int ret;
+	u32 tmp;
+
+	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata)
+		return NULL;
+
+	pdata->regulator = of_get_regulator_init_data(dev, np, desc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = of_property_read_u32(np, "fcs,suspend-voltage-selector",
 				   &tmp);
 	if (!ret)
 		pdata->sleep_vsel_id = tmp;
 
+<<<<<<< HEAD
 	di->disable_suspend = of_property_read_bool(np, "fcs,disable-suspend");
 
 	return ret;
+=======
+	return pdata;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct of_device_id fan53555_dt_ids[] = {
@@ -495,17 +589,21 @@ static const struct of_device_id fan53555_dt_ids[] = {
 	}, {
 		.compatible = "silergy,syr828",
 		.data = (void *)FAN53555_VENDOR_SILERGY,
+<<<<<<< HEAD
 	}, {
 		.compatible = "halo,hl7509",
 		.data = (void *)HALO_HL7509,
 	}, {
 		.compatible = "halo,hl7503",
 		.data = (void *)HALO_HL7503,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	{ }
 };
 MODULE_DEVICE_TABLE(of, fan53555_dt_ids);
 
+<<<<<<< HEAD
 static int get_reg(void *data, u64 *val)
 {
 	struct fan53555_device_info *di = data;
@@ -541,6 +639,12 @@ DEFINE_SIMPLE_ATTRIBUTE(poke_poke_debug_ops, get_reg, set_reg, "0x%02llx\n");
 static int fan53555_regulator_probe(struct i2c_client *client,
 				const struct i2c_device_id *id)
 {
+=======
+static int fan53555_regulator_probe(struct i2c_client *client,
+				const struct i2c_device_id *id)
+{
+	struct device_node *np = client->dev.of_node;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct fan53555_device_info *di;
 	struct fan53555_platform_data *pdata;
 	struct regulator_config config = { };
@@ -553,6 +657,7 @@ static int fan53555_regulator_probe(struct i2c_client *client,
 		return -ENOMEM;
 
 	pdata = dev_get_platdata(&client->dev);
+<<<<<<< HEAD
 	if (!pdata) {
 		pdata = devm_kzalloc(&client->dev, sizeof(*pdata), GFP_KERNEL);
 		if (!pdata)
@@ -563,6 +668,15 @@ static int fan53555_regulator_probe(struct i2c_client *client,
 	ret = fan53555_parse_dt(di, pdata, &di->desc);
 	if (ret)
 		return ret;
+=======
+	if (!pdata)
+		pdata = fan53555_parse_dt(&client->dev, np, &di->desc);
+
+	if (!pdata || !pdata->regulator) {
+		dev_err(&client->dev, "Platform data not found!\n");
+		return -ENODEV;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	di->regulator = pdata->regulator;
 	if (client->dev.of_node) {
@@ -586,6 +700,10 @@ static int fan53555_regulator_probe(struct i2c_client *client,
 		dev_err(&client->dev, "Failed to allocate regmap!\n");
 		return PTR_ERR(di->regmap);
 	}
+<<<<<<< HEAD
+=======
+	di->dev = &client->dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	i2c_set_clientdata(client, di);
 	/* Get chip ID */
 	ret = regmap_read(di->regmap, FAN53555_ID1, &val);
@@ -609,6 +727,7 @@ static int fan53555_regulator_probe(struct i2c_client *client,
 		dev_err(&client->dev, "Failed to setup device!\n");
 		return ret;
 	}
+<<<<<<< HEAD
 
 	ret = fan53555_parse_vsel_gpio(di);
 	if (ret < 0) {
@@ -616,16 +735,23 @@ static int fan53555_regulator_probe(struct i2c_client *client,
 		return ret;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Register regulator */
 	config.dev = di->dev;
 	config.init_data = di->regulator;
 	config.regmap = di->regmap;
 	config.driver_data = di;
+<<<<<<< HEAD
 	config.of_node = client->dev.of_node;
+=======
+	config.of_node = np;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = fan53555_regulator_register(di, &config);
 	if (ret < 0)
 		dev_err(&client->dev, "Failed to register regulator!\n");
+<<<<<<< HEAD
 
 	di->debug_root = debugfs_create_dir("fan53555", NULL);
 	if (!di->debug_root)
@@ -647,6 +773,10 @@ static int fan53555_regulator_probe(struct i2c_client *client,
 			dev_err(&client->dev, "Couldn't create data debug file\n");
 	}
 	return ret;
+=======
+	return ret;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct i2c_device_id fan53555_id[] = {
@@ -659,9 +789,12 @@ static const struct i2c_device_id fan53555_id[] = {
 	}, {
 		.name = "syr828",
 		.driver_data = FAN53555_VENDOR_SILERGY
+<<<<<<< HEAD
 	}, {
 		.name = "hl7509",
 		.driver_data = HALO_HL7509
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	{ },
 };

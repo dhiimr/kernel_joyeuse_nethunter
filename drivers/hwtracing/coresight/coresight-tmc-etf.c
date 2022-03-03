@@ -183,12 +183,15 @@ out:
 	if (!used)
 		kfree(buf);
 
+<<<<<<< HEAD
 	if (!ret) {
 		coresight_cti_map_trigin(drvdata->cti_reset, 0, 0);
 		coresight_cti_map_trigout(drvdata->cti_flush, 1, 0);
 		dev_info(drvdata->dev, "TMC-ETB/ETF enabled\n");
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -266,9 +269,12 @@ static void tmc_disable_etf_sink(struct coresight_device *csdev)
 
 	spin_unlock_irqrestore(&drvdata->spinlock, flags);
 
+<<<<<<< HEAD
 	coresight_cti_unmap_trigin(drvdata->cti_reset, 0, 0);
 	coresight_cti_unmap_trigout(drvdata->cti_flush, 1, 0);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev_info(drvdata->dev, "TMC-ETB/ETF disabled\n");
 }
 
@@ -317,9 +323,13 @@ static void *tmc_alloc_etf_buffer(struct coresight_device *csdev, int cpu,
 	int node;
 	struct cs_buffers *buf;
 
+<<<<<<< HEAD
 	if (cpu == -1)
 		cpu = smp_processor_id();
 	node = cpu_to_node(cpu);
+=======
+	node = (cpu == -1) ? NUMA_NO_NODE : cpu_to_node(cpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Allocate memory structure for interaction with Perf */
 	buf = kzalloc_node(sizeof(struct cs_buffers), GFP_KERNEL, node);
@@ -451,10 +461,17 @@ static void tmc_update_etf_buffer(struct coresight_device *csdev,
 		case TMC_MEM_INTF_WIDTH_32BITS:
 		case TMC_MEM_INTF_WIDTH_64BITS:
 		case TMC_MEM_INTF_WIDTH_128BITS:
+<<<<<<< HEAD
 			mask = GENMASK(31, 5);
 			break;
 		case TMC_MEM_INTF_WIDTH_256BITS:
 			mask = GENMASK(31, 6);
+=======
+			mask = GENMASK(31, 4);
+			break;
+		case TMC_MEM_INTF_WIDTH_256BITS:
+			mask = GENMASK(31, 5);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		}
 
@@ -513,6 +530,7 @@ static void tmc_update_etf_buffer(struct coresight_device *csdev,
 	CS_LOCK(drvdata->base);
 }
 
+<<<<<<< HEAD
 static void tmc_abort_etf_sink(struct coresight_device *csdev)
 {
 	struct tmc_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
@@ -543,6 +561,8 @@ out1:
 	spin_unlock_irqrestore(&drvdata->spinlock, flags);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const struct coresight_ops_sink tmc_etf_sink_ops = {
 	.enable		= tmc_enable_etf_sink,
 	.disable	= tmc_disable_etf_sink,
@@ -551,7 +571,10 @@ static const struct coresight_ops_sink tmc_etf_sink_ops = {
 	.set_buffer	= tmc_set_etf_buffer,
 	.reset_buffer	= tmc_reset_etf_buffer,
 	.update_buffer	= tmc_update_etf_buffer,
+<<<<<<< HEAD
 	.abort		= tmc_abort_etf_sink,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const struct coresight_ops_link tmc_etf_link_ops = {
@@ -586,6 +609,7 @@ int tmc_read_prepare_etb(struct tmc_drvdata *drvdata)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (drvdata->enable) {
 		/* There is no point in reading a TMC in HW FIFO mode */
 		mode = readl_relaxed(drvdata->base + TMC_MODE);
@@ -593,6 +617,13 @@ int tmc_read_prepare_etb(struct tmc_drvdata *drvdata)
 			ret = -EINVAL;
 			goto out;
 		}
+=======
+	/* There is no point in reading a TMC in HW FIFO mode */
+	mode = readl_relaxed(drvdata->base + TMC_MODE);
+	if (mode != TMC_MODE_CIRCULAR_BUFFER) {
+		ret = -EINVAL;
+		goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Don't interfere if operated from Perf */
@@ -631,17 +662,25 @@ int tmc_read_unprepare_etb(struct tmc_drvdata *drvdata)
 
 	spin_lock_irqsave(&drvdata->spinlock, flags);
 
+<<<<<<< HEAD
 	if (drvdata->enable) {
+=======
+	/* Re-enable the TMC if need be */
+	if (drvdata->mode == CS_MODE_SYSFS) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* There is no point in reading a TMC in HW FIFO mode */
 		mode = readl_relaxed(drvdata->base + TMC_MODE);
 		if (mode != TMC_MODE_CIRCULAR_BUFFER) {
 			spin_unlock_irqrestore(&drvdata->spinlock, flags);
 			return -EINVAL;
 		}
+<<<<<<< HEAD
 	}
 
 	/* Re-enable the TMC if need be */
 	if (drvdata->mode == CS_MODE_SYSFS) {
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/*
 		 * The trace run will continue with the same allocated trace
 		 * buffer. As such zero-out the buffer so that we don't end

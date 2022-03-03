@@ -63,6 +63,7 @@
 #include <asm/efi.h>
 #include <asm/xen/hypervisor.h>
 #include <asm/mmu_context.h>
+<<<<<<< HEAD
 #include <asm/system_misc.h>
 #include <asm/bootinfo.h>
 
@@ -82,6 +83,11 @@ EXPORT_SYMBOL(boot_reason);
 unsigned int cold_boot;
 EXPORT_SYMBOL(cold_boot);
 
+=======
+
+phys_addr_t __fdt_pointer __initdata;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Standard memory resources
  */
@@ -193,6 +199,7 @@ static void __init smp_build_mpidr_hash(void)
 		pr_warn("Large number of MPIDR hash buckets detected\n");
 }
 
+<<<<<<< HEAD
 const char * __init __weak arch_read_machine_name(void)
 {
 	return of_flat_dt_get_machine_name();
@@ -202,6 +209,12 @@ static void __init setup_machine_fdt(phys_addr_t dt_phys)
 {
 	void *dt_virt = fixmap_remap_fdt(dt_phys);
 	const char *machine_name;
+=======
+static void __init setup_machine_fdt(phys_addr_t dt_phys)
+{
+	void *dt_virt = fixmap_remap_fdt(dt_phys);
+	const char *name;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!dt_virt || !early_init_dt_scan(dt_virt)) {
 		pr_crit("\n"
@@ -214,12 +227,21 @@ static void __init setup_machine_fdt(phys_addr_t dt_phys)
 			cpu_relax();
 	}
 
+<<<<<<< HEAD
 	machine_name = arch_read_machine_name();
 	if (!machine_name)
 		return;
 
 	pr_info("Machine: %s\n", machine_name);
 	dump_stack_set_arch_desc("%s (DT)", machine_name);
+=======
+	name = of_flat_dt_get_machine_name();
+	if (!name)
+		return;
+
+	pr_info("Machine model: %s\n", name);
+	dump_stack_set_arch_desc("%s (DT)", name);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void __init request_standard_resources(void)
@@ -263,8 +285,11 @@ static void __init request_standard_resources(void)
 
 u64 __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1] = INVALID_HWID };
 
+<<<<<<< HEAD
 void __init __weak init_random_pool(void) { }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void __init setup_arch(char **cmdline_p)
 {
 	pr_info("Boot CPU: AArch64 Processor [%08x]\n", read_cpuid_id());
@@ -349,8 +374,11 @@ void __init setup_arch(char **cmdline_p)
 			"This indicates a broken bootloader or old kernel\n",
 			boot_args[1], boot_args[2], boot_args[3]);
 	}
+<<<<<<< HEAD
 
 	init_random_pool();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int __init topology_init(void)
@@ -368,7 +396,11 @@ static int __init topology_init(void)
 
 	return 0;
 }
+<<<<<<< HEAD
 postcore_initcall(topology_init);
+=======
+subsys_initcall(topology_init);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Dump out kernel offset information on panic.

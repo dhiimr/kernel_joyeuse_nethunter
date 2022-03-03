@@ -3,11 +3,15 @@ obj-$(CONFIG_IOMMU_API) += iommu.o
 obj-$(CONFIG_IOMMU_API) += iommu-traces.o
 obj-$(CONFIG_IOMMU_API) += iommu-sysfs.o
 obj-$(CONFIG_IOMMU_DMA) += dma-iommu.o
+<<<<<<< HEAD
 obj-$(CONFIG_QCOM_LAZY_MAPPING) += msm_dma_iommu_mapping.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-$(CONFIG_IOMMU_IO_PGTABLE) += io-pgtable.o
 obj-$(CONFIG_IOMMU_IO_PGTABLE_ARMV7S) += io-pgtable-arm-v7s.o
 obj-$(CONFIG_IOMMU_IO_PGTABLE_LPAE) += io-pgtable-arm.o
 obj-$(CONFIG_IOMMU_IOVA) += iova.o
+<<<<<<< HEAD
 obj-$(CONFIG_MSM_TZ_SMMU) += io-pgtable-msm-secure.o
 obj-$(CONFIG_IOMMU_IO_PGTABLE_FAST) += io-pgtable-fast.o dma-mapping-fast.o
 obj-$(CONFIG_OF_IOMMU)	+= of_iommu.o
@@ -16,6 +20,13 @@ obj-$(CONFIG_MSM_IOMMU) += msm_iommu.o
 obj-$(CONFIG_AMD_IOMMU) += amd_iommu.o amd_iommu_init.o
 obj-$(CONFIG_AMD_IOMMU_V2) += amd_iommu_v2.o
 obj-$(CONFIG_ARM_SMMU) += arm-smmu.o arm-smmu-errata.o arm-smmu-debug.o
+=======
+obj-$(CONFIG_OF_IOMMU)	+= of_iommu.o
+obj-$(CONFIG_MSM_IOMMU) += msm_iommu.o
+obj-$(CONFIG_AMD_IOMMU) += amd_iommu.o amd_iommu_init.o
+obj-$(CONFIG_AMD_IOMMU_V2) += amd_iommu_v2.o
+obj-$(CONFIG_ARM_SMMU) += arm-smmu.o
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-$(CONFIG_ARM_SMMU_V3) += arm-smmu-v3.o
 obj-$(CONFIG_DMAR_TABLE) += dmar.o
 obj-$(CONFIG_INTEL_IOMMU) += intel-iommu.o

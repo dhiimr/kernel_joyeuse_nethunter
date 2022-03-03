@@ -265,6 +265,10 @@ struct lpfc_fcf {
 #define FCF_REDISC_EVT	0x100 /* FCF rediscovery event to worker thread */
 #define FCF_REDISC_FOV	0x200 /* Post FCF rediscovery fast failover */
 #define FCF_REDISC_PROG (FCF_REDISC_PEND | FCF_REDISC_EVT)
+<<<<<<< HEAD
+=======
+	uint16_t fcf_redisc_attempted;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	uint32_t addr_mode;
 	uint32_t eligible_fcf_cnt;
 	struct lpfc_fcf_rec current_rec;

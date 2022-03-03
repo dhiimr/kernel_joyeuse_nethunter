@@ -220,10 +220,15 @@ struct pnp_card {
 #define global_to_pnp_card(n) list_entry(n, struct pnp_card, global_list)
 #define protocol_to_pnp_card(n) list_entry(n, struct pnp_card, protocol_list)
 #define to_pnp_card(n) container_of(n, struct pnp_card, dev)
+<<<<<<< HEAD
 #define pnp_for_each_card(card) \
 	for((card) = global_to_pnp_card(pnp_cards.next); \
 	(card) != global_to_pnp_card(&pnp_cards); \
 	(card) = global_to_pnp_card((card)->global_list.next))
+=======
+#define pnp_for_each_card(card)	\
+	list_for_each_entry(card, &pnp_cards, global_list)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct pnp_card_link {
 	struct pnp_card *card;
@@ -276,6 +281,7 @@ struct pnp_dev {
 #define card_to_pnp_dev(n) list_entry(n, struct pnp_dev, card_list)
 #define protocol_to_pnp_dev(n) list_entry(n, struct pnp_dev, protocol_list)
 #define	to_pnp_dev(n) container_of(n, struct pnp_dev, dev)
+<<<<<<< HEAD
 #define pnp_for_each_dev(dev) \
 	for((dev) = global_to_pnp_dev(pnp_global.next); \
 	(dev) != global_to_pnp_dev(&pnp_global); \
@@ -284,6 +290,11 @@ struct pnp_dev {
 	for((dev) = card_to_pnp_dev((card)->devices.next); \
 	(dev) != card_to_pnp_dev(&(card)->devices); \
 	(dev) = card_to_pnp_dev((dev)->card_list.next))
+=======
+#define pnp_for_each_dev(dev) list_for_each_entry(dev, &pnp_global, global_list)
+#define card_for_each_dev(card, dev)	\
+	list_for_each_entry(dev, &(card)->devices, card_list)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define pnp_dev_name(dev) (dev)->name
 
 static inline void *pnp_get_drvdata(struct pnp_dev *pdev)
@@ -437,6 +448,7 @@ struct pnp_protocol {
 };
 
 #define to_pnp_protocol(n) list_entry(n, struct pnp_protocol, protocol_list)
+<<<<<<< HEAD
 #define protocol_for_each_card(protocol,card) \
 	for((card) = protocol_to_pnp_card((protocol)->cards.next); \
 	(card) != protocol_to_pnp_card(&(protocol)->cards); \
@@ -445,6 +457,12 @@ struct pnp_protocol {
 	for((dev) = protocol_to_pnp_dev((protocol)->devices.next); \
 	(dev) != protocol_to_pnp_dev(&(protocol)->devices); \
 	(dev) = protocol_to_pnp_dev((dev)->protocol_list.next))
+=======
+#define protocol_for_each_card(protocol, card)	\
+	list_for_each_entry(card, &(protocol)->cards, protocol_list)
+#define protocol_for_each_dev(protocol, dev)	\
+	list_for_each_entry(dev, &(protocol)->devices, protocol_list)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 extern struct bus_type pnp_bus_type;
 

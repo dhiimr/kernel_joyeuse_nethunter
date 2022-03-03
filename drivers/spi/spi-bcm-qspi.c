@@ -522,7 +522,11 @@ static void bcm_qspi_chip_select(struct bcm_qspi *qspi, int cs)
 	u32 rd = 0;
 	u32 wr = 0;
 
+<<<<<<< HEAD
 	if (qspi->base[CHIP_SELECT]) {
+=======
+	if (cs >= 0 && qspi->base[CHIP_SELECT]) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rd = bcm_qspi_read(qspi, CHIP_SELECT, 0);
 		wr = (rd & ~0xff) | (1 << cs);
 		if (rd == wr)
@@ -683,7 +687,11 @@ static void read_from_hw(struct bcm_qspi *qspi, int slots)
 			if (buf)
 				buf[tp.byte] = read_rxram_slot_u8(qspi, slot);
 			dev_dbg(&qspi->pdev->dev, "RD %02x\n",
+<<<<<<< HEAD
 				buf ? buf[tp.byte] : 0xff);
+=======
+				buf ? buf[tp.byte] : 0x0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else {
 			u16 *buf = tp.trans->rx_buf;
 
@@ -691,7 +699,11 @@ static void read_from_hw(struct bcm_qspi *qspi, int slots)
 				buf[tp.byte / 2] = read_rxram_slot_u16(qspi,
 								      slot);
 			dev_dbg(&qspi->pdev->dev, "RD %04x\n",
+<<<<<<< HEAD
 				buf ? buf[tp.byte] : 0xffff);
+=======
+				buf ? buf[tp.byte / 2] : 0x0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		update_qspi_trans_byte_count(qspi, &tp,
@@ -746,13 +758,21 @@ static int write_to_hw(struct bcm_qspi *qspi, struct spi_device *spi)
 	while (!tstatus && slot < MSPI_NUM_CDRAM) {
 		if (tp.trans->bits_per_word <= 8) {
 			const u8 *buf = tp.trans->tx_buf;
+<<<<<<< HEAD
 			u8 val = buf ? buf[tp.byte] : 0xff;
+=======
+			u8 val = buf ? buf[tp.byte] : 0x00;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			write_txram_slot_u8(qspi, slot, val);
 			dev_dbg(&qspi->pdev->dev, "WR %02x\n", val);
 		} else {
 			const u16 *buf = tp.trans->tx_buf;
+<<<<<<< HEAD
 			u16 val = buf ? buf[tp.byte / 2] : 0xffff;
+=======
+			u16 val = buf ? buf[tp.byte / 2] : 0x0000;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			write_txram_slot_u16(qspi, slot, val);
 			dev_dbg(&qspi->pdev->dev, "WR %04x\n", val);
@@ -1219,7 +1239,11 @@ int bcm_qspi_probe(struct platform_device *pdev,
 	if (!of_match_node(bcm_qspi_of_match, dev->of_node))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	master = spi_alloc_master(dev, sizeof(struct bcm_qspi));
+=======
+	master = devm_spi_alloc_master(dev, sizeof(struct bcm_qspi));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!master) {
 		dev_err(dev, "error allocating spi_master\n");
 		return -ENOMEM;
@@ -1253,21 +1277,33 @@ int bcm_qspi_probe(struct platform_device *pdev,
 
 	if (res) {
 		qspi->base[MSPI]  = devm_ioremap_resource(dev, res);
+<<<<<<< HEAD
 		if (IS_ERR(qspi->base[MSPI])) {
 			ret = PTR_ERR(qspi->base[MSPI]);
 			goto qspi_resource_err;
 		}
 	} else {
 		goto qspi_resource_err;
+=======
+		if (IS_ERR(qspi->base[MSPI]))
+			return PTR_ERR(qspi->base[MSPI]);
+	} else {
+		return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "bspi");
 	if (res) {
 		qspi->base[BSPI]  = devm_ioremap_resource(dev, res);
+<<<<<<< HEAD
 		if (IS_ERR(qspi->base[BSPI])) {
 			ret = PTR_ERR(qspi->base[BSPI]);
 			goto qspi_resource_err;
 		}
+=======
+		if (IS_ERR(qspi->base[BSPI]))
+			return PTR_ERR(qspi->base[BSPI]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		qspi->bspi_mode = true;
 	} else {
 		qspi->bspi_mode = false;
@@ -1278,18 +1314,28 @@ int bcm_qspi_probe(struct platform_device *pdev,
 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cs_reg");
 	if (res) {
 		qspi->base[CHIP_SELECT]  = devm_ioremap_resource(dev, res);
+<<<<<<< HEAD
 		if (IS_ERR(qspi->base[CHIP_SELECT])) {
 			ret = PTR_ERR(qspi->base[CHIP_SELECT]);
 			goto qspi_resource_err;
 		}
+=======
+		if (IS_ERR(qspi->base[CHIP_SELECT]))
+			return PTR_ERR(qspi->base[CHIP_SELECT]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	qspi->dev_ids = kcalloc(num_irqs, sizeof(struct bcm_qspi_dev_id),
 				GFP_KERNEL);
+<<<<<<< HEAD
 	if (!qspi->dev_ids) {
 		ret = -ENOMEM;
 		goto qspi_resource_err;
 	}
+=======
+	if (!qspi->dev_ids)
+		return -ENOMEM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (val = 0; val < num_irqs; val++) {
 		irq = -1;
@@ -1309,7 +1355,11 @@ int bcm_qspi_probe(struct platform_device *pdev,
 					       &qspi->dev_ids[val]);
 			if (ret < 0) {
 				dev_err(&pdev->dev, "IRQ %s not found\n", name);
+<<<<<<< HEAD
 				goto qspi_probe_err;
+=======
+				goto qspi_unprepare_err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 
 			qspi->dev_ids[val].dev = qspi;
@@ -1324,7 +1374,11 @@ int bcm_qspi_probe(struct platform_device *pdev,
 	if (!num_ints) {
 		dev_err(&pdev->dev, "no IRQs registered, cannot init driver\n");
 		ret = -EINVAL;
+<<<<<<< HEAD
 		goto qspi_probe_err;
+=======
+		goto qspi_unprepare_err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/*
@@ -1365,7 +1419,11 @@ int bcm_qspi_probe(struct platform_device *pdev,
 	qspi->xfer_mode.addrlen = -1;
 	qspi->xfer_mode.hp = -1;
 
+<<<<<<< HEAD
 	ret = devm_spi_register_master(&pdev->dev, master);
+=======
+	ret = spi_register_master(master);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret < 0) {
 		dev_err(dev, "can't register master\n");
 		goto qspi_reg_err;
@@ -1375,11 +1433,18 @@ int bcm_qspi_probe(struct platform_device *pdev,
 
 qspi_reg_err:
 	bcm_qspi_hw_uninit(qspi);
+<<<<<<< HEAD
 	clk_disable_unprepare(qspi->clk);
 qspi_probe_err:
 	kfree(qspi->dev_ids);
 qspi_resource_err:
 	spi_master_put(master);
+=======
+qspi_unprepare_err:
+	clk_disable_unprepare(qspi->clk);
+qspi_probe_err:
+	kfree(qspi->dev_ids);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 /* probe function to be called by SoC specific platform driver probe */
@@ -1389,10 +1454,17 @@ int bcm_qspi_remove(struct platform_device *pdev)
 {
 	struct bcm_qspi *qspi = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	bcm_qspi_hw_uninit(qspi);
 	clk_disable_unprepare(qspi->clk);
 	kfree(qspi->dev_ids);
 	spi_unregister_master(qspi->master);
+=======
+	spi_unregister_master(qspi->master);
+	bcm_qspi_hw_uninit(qspi);
+	clk_disable_unprepare(qspi->clk);
+	kfree(qspi->dev_ids);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }

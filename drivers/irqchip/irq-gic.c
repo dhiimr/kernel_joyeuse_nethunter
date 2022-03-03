@@ -41,7 +41,10 @@
 #include <linux/irqchip.h>
 #include <linux/irqchip/chained_irq.h>
 #include <linux/irqchip/arm-gic.h>
+<<<<<<< HEAD
 #include <linux/msm_rtb.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <asm/cputype.h>
 #include <asm/irq.h>
@@ -325,10 +328,15 @@ static int gic_irq_set_vcpu_affinity(struct irq_data *d, void *vcpu)
 static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
 			    bool force)
 {
+<<<<<<< HEAD
 	void __iomem *reg = gic_dist_base(d) + GIC_DIST_TARGET + (gic_irq(d) & ~3);
 	unsigned int cpu, shift = (gic_irq(d) % 4) * 8;
 	u32 val, mask, bit;
 	unsigned long flags;
+=======
+	void __iomem *reg = gic_dist_base(d) + GIC_DIST_TARGET + gic_irq(d);
+	unsigned int cpu;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!force)
 		cpu = cpumask_any_and(mask_val, cpu_online_mask);
@@ -338,6 +346,7 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
 	if (cpu >= NR_GIC_CPU_IF || cpu >= nr_cpu_ids)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	gic_lock_irqsave(flags);
 	mask = 0xff << shift;
 	bit = gic_cpu_map[cpu] << shift;
@@ -345,6 +354,9 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
 	writel_relaxed(val | bit, reg);
 	gic_unlock_irqrestore(flags);
 
+=======
+	writeb_relaxed(gic_cpu_map[cpu], reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	irq_data_update_effective_affinity(d, cpumask_of(cpu));
 
 	return IRQ_SET_MASK_OK_DONE;
@@ -366,7 +378,10 @@ static void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
 				writel_relaxed(irqstat, cpu_base + GIC_CPU_EOI);
 			isb();
 			handle_domain_irq(gic->domain, irqnr, regs);
+<<<<<<< HEAD
 			uncached_logk(LOGK_IRQ, (void *)(uintptr_t)irqnr);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			continue;
 		}
 		if (irqnr < 16) {
@@ -384,7 +399,10 @@ static void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
 			smp_rmb();
 			handle_IPI(irqnr, regs);
 #endif
+<<<<<<< HEAD
 			uncached_logk(LOGK_IRQ, (void *)(uintptr_t)irqnr);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			continue;
 		}
 		break;
@@ -718,8 +736,12 @@ void gic_cpu_restore(struct gic_chip_data *gic)
 	gic_cpu_if_up(gic);
 }
 
+<<<<<<< HEAD
 static int gic_notifier(struct notifier_block *self, unsigned long cmd,
 			void *aff_level)
+=======
+static int gic_notifier(struct notifier_block *self, unsigned long cmd,	void *v)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int i;
 
@@ -738,6 +760,7 @@ static int gic_notifier(struct notifier_block *self, unsigned long cmd,
 			gic_cpu_restore(&gic_data[i]);
 			break;
 		case CPU_CLUSTER_PM_ENTER:
+<<<<<<< HEAD
 			/*
 			 * Affinity level of the node
 			 * eg:
@@ -752,6 +775,13 @@ static int gic_notifier(struct notifier_block *self, unsigned long cmd,
 		case CPU_CLUSTER_PM_EXIT:
 			if (!(unsigned long)aff_level)
 				gic_dist_restore(&gic_data[i]);
+=======
+			gic_dist_save(&gic_data[i]);
+			break;
+		case CPU_CLUSTER_PM_ENTER_FAILED:
+		case CPU_CLUSTER_PM_EXIT:
+			gic_dist_restore(&gic_data[i]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		}
 	}

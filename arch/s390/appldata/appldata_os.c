@@ -24,6 +24,13 @@
 
 #include "appldata.h"
 
+<<<<<<< HEAD
+=======
+
+#define LOAD_INT(x) ((x) >> FSHIFT)
+#define LOAD_FRAC(x) LOAD_INT(((x) & (FIXED_1-1)) * 100)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * OS data
  *

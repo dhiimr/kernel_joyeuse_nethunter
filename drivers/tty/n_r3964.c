@@ -1080,7 +1080,11 @@ static ssize_t r3964_read(struct tty_struct *tty, struct file *file,
 		pMsg = remove_msg(pInfo, pClient);
 		if (pMsg == NULL) {
 			/* no messages available. */
+<<<<<<< HEAD
 			if (file->f_flags & O_NONBLOCK) {
+=======
+			if (tty_io_nonblock(tty, file)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				ret = -EAGAIN;
 				goto unlock;
 			}

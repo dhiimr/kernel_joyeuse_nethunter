@@ -1812,6 +1812,10 @@ static inline int uld_send(struct adapter *adap, struct sk_buff *skb,
 	txq_info = adap->sge.uld_txq_info[tx_uld_type];
 	if (unlikely(!txq_info)) {
 		WARN_ON(true);
+<<<<<<< HEAD
+=======
+		kfree_skb(skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return NET_XMIT_DROP;
 	}
 
@@ -2088,7 +2092,11 @@ static noinline int t4_systim_to_hwstamp(struct adapter *adapter,
 
 	hwtstamps = skb_hwtstamps(skb);
 	memset(hwtstamps, 0, sizeof(*hwtstamps));
+<<<<<<< HEAD
 	hwtstamps->hwtstamp = ns_to_ktime(be64_to_cpu(*((u64 *)data)));
+=======
+	hwtstamps->hwtstamp = ns_to_ktime(get_unaligned_be64(data));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return RX_PTP_PKT_SUC;
 }

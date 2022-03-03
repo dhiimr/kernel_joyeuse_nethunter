@@ -1,6 +1,10 @@
 config WIL6210
 	tristate "Wilocity 60g WiFi card wil6210 support"
 	select WANT_DEV_COREDUMP
+<<<<<<< HEAD
+=======
+	select CRC32
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	depends on CFG80211
 	depends on PCI
 	default n
@@ -41,6 +45,7 @@ config WIL6210_TRACING
 
 	  If unsure, say Y to make it easier to debug problems.
 
+<<<<<<< HEAD
 config WIL6210_PLATFORM_MSM
 	bool "wil6210 MSM platform specific support"
 	depends on WIL6210
@@ -53,6 +58,8 @@ config WIL6210_PLATFORM_MSM
 
 	  If unsure, say N.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config WIL6210_DEBUGFS
 	bool "wil6210 debugfs support"
 	depends on WIL6210
@@ -64,6 +71,7 @@ config WIL6210_DEBUGFS
 	  option if you are interested in debugging the driver.
 
 	  If unsure, say Y to make it easier to debug problems.
+<<<<<<< HEAD
 
 config WIL6210_WRITE_IOCTL
 	bool "wil6210 write ioctl to the device"
@@ -75,3 +83,5 @@ config WIL6210_WRITE_IOCTL
 	  debugging purposes only.
 
 	  If unsure, say N.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

@@ -169,6 +169,11 @@
 		reg = <0x66>;
 		interrupt-parent = <&gpx3>;
 		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
+<<<<<<< HEAD
+=======
+		pinctrl-names = "default";
+		pinctrl-0 = <&s5m8767_irq>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		vinb1-supply = <&main_dc_reg>;
 		vinb2-supply = <&main_dc_reg>;
@@ -544,6 +549,16 @@
 	cap-sd-highspeed;
 };
 
+<<<<<<< HEAD
+=======
+&pinctrl_0 {
+	s5m8767_irq: s5m8767-irq {
+		samsung,pins = "gpx3-2";
+		samsung,pin-pud = <EXYNOS_PIN_PULL_NONE>;
+	};
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 &rtc {
 	status = "okay";
 };

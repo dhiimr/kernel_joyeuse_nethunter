@@ -30,7 +30,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+<<<<<<< HEAD
 
+=======
+#include <linux/vmalloc.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "rxe.h"
 #include "rxe_loc.h"
 #include "rxe_queue.h"
@@ -97,7 +101,11 @@ int rxe_cq_from_init(struct rxe_dev *rxe, struct rxe_cq *cq, int cqe,
 	err = do_mmap_info(rxe, udata, false, context, cq->queue->buf,
 			   cq->queue->buf_size, &cq->queue->ip);
 	if (err) {
+<<<<<<< HEAD
 		kvfree(cq->queue->buf);
+=======
+		vfree(cq->queue->buf);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kfree(cq->queue);
 		return err;
 	}

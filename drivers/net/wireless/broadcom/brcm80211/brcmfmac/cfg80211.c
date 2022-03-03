@@ -2841,6 +2841,10 @@ static s32 brcmf_inform_single_bss(struct brcmf_cfg80211_info *cfg,
 				   struct brcmf_bss_info_le *bi)
 {
 	struct wiphy *wiphy = cfg_to_wiphy(cfg);
+<<<<<<< HEAD
+=======
+	struct ieee80211_channel *notify_channel;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct cfg80211_bss *bss;
 	struct ieee80211_supported_band *band;
 	struct brcmu_chan ch;
@@ -2850,7 +2854,11 @@ static s32 brcmf_inform_single_bss(struct brcmf_cfg80211_info *cfg,
 	u16 notify_interval;
 	u8 *notify_ie;
 	size_t notify_ielen;
+<<<<<<< HEAD
 	struct cfg80211_inform_bss bss_data = {};
+=======
+	s32 notify_signal;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (le32_to_cpu(bi->length) > WL_BSS_INFO_MAX) {
 		brcmf_err("Bss info is larger than buffer. Discarding\n");
@@ -2870,20 +2878,29 @@ static s32 brcmf_inform_single_bss(struct brcmf_cfg80211_info *cfg,
 		band = wiphy->bands[NL80211_BAND_5GHZ];
 
 	freq = ieee80211_channel_to_frequency(channel, band->band);
+<<<<<<< HEAD
 	bss_data.chan = ieee80211_get_channel(wiphy, freq);
 	bss_data.scan_width = NL80211_BSS_CHAN_WIDTH_20;
 	bss_data.boottime_ns = ktime_to_ns(ktime_get_boottime());
+=======
+	notify_channel = ieee80211_get_channel(wiphy, freq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	notify_capability = le16_to_cpu(bi->capability);
 	notify_interval = le16_to_cpu(bi->beacon_period);
 	notify_ie = (u8 *)bi + le16_to_cpu(bi->ie_offset);
 	notify_ielen = le32_to_cpu(bi->ie_length);
+<<<<<<< HEAD
 	bss_data.signal = (s16)le16_to_cpu(bi->RSSI) * 100;
+=======
+	notify_signal = (s16)le16_to_cpu(bi->RSSI) * 100;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	brcmf_dbg(CONN, "bssid: %pM\n", bi->BSSID);
 	brcmf_dbg(CONN, "Channel: %d(%d)\n", channel, freq);
 	brcmf_dbg(CONN, "Capability: %X\n", notify_capability);
 	brcmf_dbg(CONN, "Beacon interval: %d\n", notify_interval);
+<<<<<<< HEAD
 	brcmf_dbg(CONN, "Signal: %d\n", bss_data.signal);
 
 	bss = cfg80211_inform_bss_data(wiphy, &bss_data,
@@ -2892,6 +2909,17 @@ static s32 brcmf_inform_single_bss(struct brcmf_cfg80211_info *cfg,
 				       0, notify_capability,
 				       notify_interval, notify_ie,
 				       notify_ielen, GFP_KERNEL);
+=======
+	brcmf_dbg(CONN, "Signal: %d\n", notify_signal);
+
+	bss = cfg80211_inform_bss(wiphy, notify_channel,
+				  CFG80211_BSS_FTYPE_UNKNOWN,
+				  (const u8 *)bi->BSSID,
+				  0, notify_capability,
+				  notify_interval, notify_ie,
+				  notify_ielen, notify_signal,
+				  GFP_KERNEL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!bss)
 		return -ENOMEM;
@@ -3581,6 +3609,11 @@ brcmf_wowl_nd_results(struct brcmf_if *ifp, const struct brcmf_event_msg *e,
 	}
 
 	netinfo = brcmf_get_netinfo_array(pfn_result);
+<<<<<<< HEAD
+=======
+	if (netinfo->SSID_len > IEEE80211_MAX_SSID_LEN)
+		netinfo->SSID_len = IEEE80211_MAX_SSID_LEN;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	memcpy(cfg->wowl.nd->ssid.ssid, netinfo->SSID, netinfo->SSID_len);
 	cfg->wowl.nd->ssid.ssid_len = netinfo->SSID_len;
 	cfg->wowl.nd->n_channels = 1;
@@ -5379,7 +5412,12 @@ static bool brcmf_is_linkup(struct brcmf_cfg80211_vif *vif,
 	return false;
 }
 
+<<<<<<< HEAD
 static bool brcmf_is_linkdown(const struct brcmf_event_msg *e)
+=======
+static bool brcmf_is_linkdown(struct brcmf_cfg80211_vif *vif,
+			    const struct brcmf_event_msg *e)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u32 event = e->event_code;
 	u16 flags = e->flags;
@@ -5388,6 +5426,11 @@ static bool brcmf_is_linkdown(const struct brcmf_event_msg *e)
 	    (event == BRCMF_E_DISASSOC_IND) ||
 	    ((event == BRCMF_E_LINK) && (!(flags & BRCMF_EVENT_MSG_LINK)))) {
 		brcmf_dbg(CONN, "Processing link down\n");
+<<<<<<< HEAD
+=======
+		clear_bit(BRCMF_VIF_STATUS_EAP_SUCCESS, &vif->sme_state);
+		clear_bit(BRCMF_VIF_STATUS_ASSOC_SUCCESS, &vif->sme_state);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return true;
 	}
 	return false;
@@ -5465,6 +5508,11 @@ static s32 brcmf_get_assoc_ies(struct brcmf_cfg80211_info *cfg,
 		conn_info->req_ie =
 		    kmemdup(cfg->extra_buf, conn_info->req_ie_len,
 			    GFP_KERNEL);
+<<<<<<< HEAD
+=======
+		if (!conn_info->req_ie)
+			conn_info->req_ie_len = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		conn_info->req_ie_len = 0;
 		conn_info->req_ie = NULL;
@@ -5481,6 +5529,11 @@ static s32 brcmf_get_assoc_ies(struct brcmf_cfg80211_info *cfg,
 		conn_info->resp_ie =
 		    kmemdup(cfg->extra_buf, conn_info->resp_ie_len,
 			    GFP_KERNEL);
+<<<<<<< HEAD
+=======
+		if (!conn_info->resp_ie)
+			conn_info->resp_ie_len = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		conn_info->resp_ie_len = 0;
 		conn_info->resp_ie = NULL;
@@ -5668,7 +5721,11 @@ brcmf_notify_connect_status(struct brcmf_if *ifp,
 		} else
 			brcmf_bss_connect_done(cfg, ndev, e, true);
 		brcmf_net_setcarrier(ifp, true);
+<<<<<<< HEAD
 	} else if (brcmf_is_linkdown(e)) {
+=======
+	} else if (brcmf_is_linkdown(ifp->vif, e)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		brcmf_dbg(CONN, "Linkdown\n");
 		if (!brcmf_is_ibssmode(ifp->vif)) {
 			brcmf_bss_connect_done(cfg, ndev, e, false);

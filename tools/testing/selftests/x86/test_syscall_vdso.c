@@ -100,12 +100,28 @@ asm (
 	"	shl	$32, %r8\n"
 	"	orq	$0x7f7f7f7f, %r8\n"
 	"	movq	%r8, %r9\n"
+<<<<<<< HEAD
 	"	movq	%r8, %r10\n"
 	"	movq	%r8, %r11\n"
 	"	movq	%r8, %r12\n"
 	"	movq	%r8, %r13\n"
 	"	movq	%r8, %r14\n"
 	"	movq	%r8, %r15\n"
+=======
+	"	incq	%r9\n"
+	"	movq	%r9, %r10\n"
+	"	incq	%r10\n"
+	"	movq	%r10, %r11\n"
+	"	incq	%r11\n"
+	"	movq	%r11, %r12\n"
+	"	incq	%r12\n"
+	"	movq	%r12, %r13\n"
+	"	incq	%r13\n"
+	"	movq	%r13, %r14\n"
+	"	incq	%r14\n"
+	"	movq	%r14, %r15\n"
+	"	incq	%r15\n"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	"	ret\n"
 	"	.code32\n"
 	"	.popsection\n"
@@ -128,12 +144,20 @@ int check_regs64(void)
 	int err = 0;
 	int num = 8;
 	uint64_t *r64 = &regs64.r8;
+<<<<<<< HEAD
+=======
+	uint64_t expected = 0x7f7f7f7f7f7f7f7fULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!kernel_is_64bit)
 		return 0;
 
 	do {
+<<<<<<< HEAD
 		if (*r64 == 0x7f7f7f7f7f7f7f7fULL)
+=======
+		if (*r64 == expected++)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			continue; /* register did not change */
 		if (syscall_addr != (long)&int80) {
 			/*
@@ -147,11 +171,17 @@ int check_regs64(void)
 				continue;
 			}
 		} else {
+<<<<<<< HEAD
 			/* INT80 syscall entrypoint can be used by
+=======
+			/*
+			 * INT80 syscall entrypoint can be used by
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			 * 64-bit programs too, unlike SYSCALL/SYSENTER.
 			 * Therefore it must preserve R12+
 			 * (they are callee-saved registers in 64-bit C ABI).
 			 *
+<<<<<<< HEAD
 			 * This was probably historically not intended,
 			 * but R8..11 are clobbered (cleared to 0).
 			 * IOW: they are the only registers which aren't
@@ -159,6 +189,13 @@ int check_regs64(void)
 			 */
 			if (*r64 == 0 && num <= 11)
 				continue;
+=======
+			 * Starting in Linux 4.17 (and any kernel that
+			 * backports the change), R8..11 are preserved.
+			 * Historically (and probably unintentionally), they
+			 * were clobbered or zeroed.
+			 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		printf("[FAIL]\tR%d has changed:%016llx\n", num, *r64);
 		err++;

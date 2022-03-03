@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2014, 2016, 2018 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2014 The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Copyright (C) 2013 Red Hat
  * Author: Rob Clark <robdclark@gmail.com>
  *
@@ -648,7 +652,10 @@ static struct platform_driver msm_hdmi_driver = {
 	.driver = {
 		.name = "hdmi_msm",
 		.of_match_table = msm_hdmi_dt_match,
+<<<<<<< HEAD
 		.suppress_bind_attrs = true,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 };
 

@@ -1,8 +1,14 @@
 /*
+<<<<<<< HEAD
  *  Airplane mode button for HP laptops
  *
  *  Copyright (C) 2014-2017 Alex Hung <alex.hung@canonical.com>
  *  Copyright (C) 2020 XiaoMi, Inc.
+=======
+ *  Airplane mode button for HP & Xiaomi laptops
+ *
+ *  Copyright (C) 2014-2017 Alex Hung <alex.hung@canonical.com>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,12 +37,20 @@ MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Alex Hung");
 MODULE_ALIAS("acpi*:HPQ6001:*");
 MODULE_ALIAS("acpi*:WSTADEF:*");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("acpi*:AMDI0051:*");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct input_dev *hpwl_input_dev;
 
 static const struct acpi_device_id hpwl_ids[] = {
 	{"HPQ6001", 0},
 	{"WSTADEF", 0},
+<<<<<<< HEAD
+=======
+	{"AMDI0051", 0},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{"", 0},
 };
 

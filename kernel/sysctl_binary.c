@@ -140,8 +140,11 @@ static const struct bin_table bin_kern_table[] = {
 	{ CTL_INT,	KERN_MAX_LOCK_DEPTH,		"max_lock_depth" },
 	{ CTL_INT,	KERN_PANIC_ON_NMI,		"panic_on_unrecovered_nmi" },
 	{ CTL_INT,	KERN_PANIC_ON_WARN,		"panic_on_warn" },
+<<<<<<< HEAD
 	{ CTL_INT,	KERN_BOOT_REASON,		"boot_reason" },
 	{ CTL_INT,	KERN_COLD_BOOT,			"cold_boot" },
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{}
 };
 
@@ -257,7 +260,10 @@ static const struct bin_table bin_net_ipv4_conf_vars_table[] = {
 	{ CTL_INT,	NET_IPV4_CONF_NOPOLICY,			"disable_policy" },
 	{ CTL_INT,	NET_IPV4_CONF_FORCE_IGMP_VERSION,	"force_igmp_version" },
 	{ CTL_INT,	NET_IPV4_CONF_PROMOTE_SECONDARIES,	"promote_secondaries" },
+<<<<<<< HEAD
 	{ CTL_INT, NET_IPV4_CONF_NF_IPV4_DEFRAG_SKIP, "nf_ipv4_defrag_skip" },
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{}
 };
 
@@ -528,7 +534,10 @@ static const struct bin_table bin_net_ipv6_conf_var_table[] = {
 	{ CTL_INT,	NET_IPV6_PROXY_NDP,			"proxy_ndp" },
 	{ CTL_INT,	NET_IPV6_ACCEPT_SOURCE_ROUTE,		"accept_source_route" },
 	{ CTL_INT,	NET_IPV6_ACCEPT_RA_FROM_LOCAL,		"accept_ra_from_local" },
+<<<<<<< HEAD
 	{ CTL_INT, NET_IPV6_ACCEPT_RA_PREFIX_ROUTE, "accept_ra_prefix_route" },
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{}
 };
 

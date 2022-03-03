@@ -3386,8 +3386,15 @@ static int em28xx_init_dev(struct em28xx *dev, struct usb_device *udev,
 
 	if (dev->is_audio_only) {
 		retval = em28xx_audio_setup(dev);
+<<<<<<< HEAD
 		if (retval)
 			return -ENODEV;
+=======
+		if (retval) {
+			retval = -ENODEV;
+			goto err_deinit_media;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		em28xx_init_extension(dev);
 
 		return 0;
@@ -3417,7 +3424,11 @@ static int em28xx_init_dev(struct em28xx *dev, struct usb_device *udev,
 		dev_err(&dev->intf->dev,
 			"%s: em28xx_i2c_register bus 0 - error [%d]!\n",
 		       __func__, retval);
+<<<<<<< HEAD
 		return retval;
+=======
+		goto err_deinit_media;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* register i2c bus 1 */
@@ -3433,9 +3444,13 @@ static int em28xx_init_dev(struct em28xx *dev, struct usb_device *udev,
 			       "%s: em28xx_i2c_register bus 1 - error [%d]!\n",
 			       __func__, retval);
 
+<<<<<<< HEAD
 			em28xx_i2c_unregister(dev, 0);
 
 			return retval;
+=======
+			goto err_unreg_i2c;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 
@@ -3443,6 +3458,15 @@ static int em28xx_init_dev(struct em28xx *dev, struct usb_device *udev,
 	em28xx_card_setup(dev);
 
 	return 0;
+<<<<<<< HEAD
+=======
+
+err_unreg_i2c:
+	em28xx_i2c_unregister(dev, 0);
+err_deinit_media:
+	em28xx_unregister_media_device(dev);
+	return retval;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* high bandwidth multiplier, as encoded in highspeed endpoint descriptors */

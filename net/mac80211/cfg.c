@@ -661,7 +661,12 @@ void sta_set_rate_info_tx(struct sta_info *sta,
 		u16 brate;
 
 		sband = ieee80211_get_sband(sta->sdata);
+<<<<<<< HEAD
 		if (sband) {
+=======
+		WARN_ON_ONCE(sband && !sband->bitrates);
+		if (sband && sband->bitrates) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			brate = sband->bitrates[rate->idx].bitrate;
 			rinfo->legacy = DIV_ROUND_UP(brate, 1 << shift);
 		}
@@ -1089,6 +1094,7 @@ static int ieee80211_stop_ap(struct wiphy *wiphy, struct net_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Layer 2 Update frame (802.2 Type 1 LLC XID Update response) */
 struct iapp_layer2_update {
 	u8 da[ETH_ALEN];	/* broadcast */
@@ -1133,6 +1139,8 @@ static void ieee80211_send_layer2_update(struct sta_info *sta)
 	netif_rx_ni(skb);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int sta_apply_auth_flags(struct ieee80211_local *local,
 				struct sta_info *sta,
 				u32 mask, u32 set)
@@ -1442,7 +1450,10 @@ static int ieee80211_add_station(struct wiphy *wiphy, struct net_device *dev,
 	struct sta_info *sta;
 	struct ieee80211_sub_if_data *sdata;
 	int err;
+<<<<<<< HEAD
 	int layer2_update;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (params->vlan) {
 		sdata = IEEE80211_DEV_TO_SUB_IF(params->vlan);
@@ -1459,6 +1470,14 @@ static int ieee80211_add_station(struct wiphy *wiphy, struct net_device *dev,
 	if (is_multicast_ether_addr(mac))
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if (params->sta_flags_set & BIT(NL80211_STA_FLAG_TDLS_PEER) &&
+	    sdata->vif.type == NL80211_IFTYPE_STATION &&
+	    !sdata->u.mgd.associated)
+		return -EINVAL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sta = sta_info_alloc(sdata, mac, GFP_KERNEL);
 	if (!sta)
 		return -ENOMEM;
@@ -1466,10 +1485,13 @@ static int ieee80211_add_station(struct wiphy *wiphy, struct net_device *dev,
 	if (params->sta_flags_set & BIT(NL80211_STA_FLAG_TDLS_PEER))
 		sta->sta.tdls = true;
 
+<<<<<<< HEAD
 	if (sta->sta.tdls && sdata->vif.type == NL80211_IFTYPE_STATION &&
 	    !sdata->u.mgd.associated)
 		return -EINVAL;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = sta_apply_parameters(local, sta, params);
 	if (err) {
 		sta_info_free(local, sta);
@@ -1485,18 +1507,24 @@ static int ieee80211_add_station(struct wiphy *wiphy, struct net_device *dev,
 	    test_sta_flag(sta, WLAN_STA_ASSOC))
 		rate_control_rate_init(sta);
 
+<<<<<<< HEAD
 	layer2_update = sdata->vif.type == NL80211_IFTYPE_AP_VLAN ||
 		sdata->vif.type == NL80211_IFTYPE_AP;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = sta_info_insert_rcu(sta);
 	if (err) {
 		rcu_read_unlock();
 		return err;
 	}
 
+<<<<<<< HEAD
 	if (layer2_update)
 		ieee80211_send_layer2_update(sta);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rcu_read_unlock();
 
 	return 0;
@@ -1585,8 +1613,15 @@ static int ieee80211_change_station(struct wiphy *wiphy,
 		}
 
 		if (sta->sdata->vif.type == NL80211_IFTYPE_AP_VLAN &&
+<<<<<<< HEAD
 		    sta->sdata->u.vlan.sta)
 			RCU_INIT_POINTER(sta->sdata->u.vlan.sta, NULL);
+=======
+		    sta->sdata->u.vlan.sta) {
+			ieee80211_clear_fast_rx(sta);
+			RCU_INIT_POINTER(sta->sdata->u.vlan.sta, NULL);
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (test_sta_flag(sta, WLAN_STA_AUTHORIZED))
 			ieee80211_vif_dec_num_mcast(sta->sdata);
@@ -1594,10 +1629,18 @@ static int ieee80211_change_station(struct wiphy *wiphy,
 		sta->sdata = vlansdata;
 		ieee80211_check_fast_xmit(sta);
 
+<<<<<<< HEAD
 		if (test_sta_flag(sta, WLAN_STA_AUTHORIZED))
 			ieee80211_vif_inc_num_mcast(sta->sdata);
 
 		ieee80211_send_layer2_update(sta);
+=======
+		if (test_sta_flag(sta, WLAN_STA_AUTHORIZED)) {
+			ieee80211_vif_inc_num_mcast(sta->sdata);
+			cfg80211_send_layer2_update(sta->sdata->dev,
+						    sta->sta.addr);
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	err = sta_apply_parameters(local, sta, params);
@@ -2046,6 +2089,10 @@ static int ieee80211_leave_mesh(struct wiphy *wiphy, struct net_device *dev)
 	ieee80211_stop_mesh(sdata);
 	mutex_lock(&sdata->local->mtx);
 	ieee80211_vif_release_channel(sdata);
+<<<<<<< HEAD
+=======
+	kfree(sdata->u.mesh.ie);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(&sdata->local->mtx);
 
 	return 0;
@@ -2799,14 +2846,22 @@ static int ieee80211_set_bitrate_mask(struct wiphy *wiphy,
 			continue;
 
 		for (j = 0; j < IEEE80211_HT_MCS_MASK_LEN; j++) {
+<<<<<<< HEAD
 			if (~sdata->rc_rateidx_mcs_mask[i][j]) {
+=======
+			if (sdata->rc_rateidx_mcs_mask[i][j] != 0xff) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				sdata->rc_has_mcs_mask[i] = true;
 				break;
 			}
 		}
 
 		for (j = 0; j < NL80211_VHT_NSS_MAX; j++) {
+<<<<<<< HEAD
 			if (~sdata->rc_rateidx_vht_mcs_mask[i][j]) {
+=======
+			if (sdata->rc_rateidx_vht_mcs_mask[i][j] != 0xffff) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				sdata->rc_has_vht_mcs_mask[i] = true;
 				break;
 			}
@@ -2849,6 +2904,31 @@ static int ieee80211_start_radar_detection(struct wiphy *wiphy,
 	return err;
 }
 
+<<<<<<< HEAD
+=======
+static void ieee80211_end_cac(struct wiphy *wiphy,
+			      struct net_device *dev)
+{
+	struct ieee80211_sub_if_data *sdata = IEEE80211_DEV_TO_SUB_IF(dev);
+	struct ieee80211_local *local = sdata->local;
+
+	mutex_lock(&local->mtx);
+	list_for_each_entry(sdata, &local->interfaces, list) {
+		/* it might be waiting for the local->mtx, but then
+		 * by the time it gets it, sdata->wdev.cac_started
+		 * will no longer be true
+		 */
+		cancel_delayed_work(&sdata->dfs_cac_timer_work);
+
+		if (sdata->wdev.cac_started) {
+			ieee80211_vif_release_channel(sdata);
+			sdata->wdev.cac_started = false;
+		}
+	}
+	mutex_unlock(&local->mtx);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct cfg80211_beacon_data *
 cfg80211_beacon_dup(struct cfg80211_beacon_data *beacon)
 {
@@ -3779,6 +3859,10 @@ const struct cfg80211_ops mac80211_config_ops = {
 #endif
 	.get_channel = ieee80211_cfg_get_channel,
 	.start_radar_detection = ieee80211_start_radar_detection,
+<<<<<<< HEAD
+=======
+	.end_cac = ieee80211_end_cac,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.channel_switch = ieee80211_channel_switch,
 	.set_qos_map = ieee80211_set_qos_map,
 	.set_ap_chanwidth = ieee80211_set_ap_chanwidth,

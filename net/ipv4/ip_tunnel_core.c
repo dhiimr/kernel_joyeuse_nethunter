@@ -89,9 +89,18 @@ void iptunnel_xmit(struct sock *sk, struct rtable *rt, struct sk_buff *skb,
 	__ip_select_ident(net, iph, skb_shinfo(skb)->gso_segs ?: 1);
 
 	err = ip_local_out(net, sk, skb);
+<<<<<<< HEAD
 	if (unlikely(net_xmit_eval(err)))
 		pkt_len = 0;
 	iptunnel_xmit_stats(dev, pkt_len);
+=======
+
+	if (dev) {
+		if (unlikely(net_xmit_eval(err)))
+			pkt_len = 0;
+		iptunnel_xmit_stats(dev, pkt_len);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(iptunnel_xmit);
 

@@ -160,6 +160,7 @@ DEFINE_EVENT(softirq, softirq_raise,
 	TP_ARGS(vec_nr)
 );
 
+<<<<<<< HEAD
 DECLARE_EVENT_CLASS(tasklet,
 
 	TP_PROTO(void *func),
@@ -205,6 +206,8 @@ DEFINE_EVENT(tasklet, tasklet_hi_exit,
 	TP_ARGS(func)
 );
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /*  _TRACE_IRQ_H */
 
 /* This part must be outside protection */

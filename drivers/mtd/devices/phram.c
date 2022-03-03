@@ -247,12 +247,18 @@ static int phram_setup(const char *val)
 
 	ret = parse_num64(&start, token[1]);
 	if (ret) {
+<<<<<<< HEAD
 		kfree(name);
 		parse_err("illegal start address\n");
+=======
+		parse_err("illegal start address\n");
+		goto error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ret = parse_num64(&len, token[2]);
 	if (ret) {
+<<<<<<< HEAD
 		kfree(name);
 		parse_err("illegal device length\n");
 	}
@@ -267,6 +273,25 @@ static int phram_setup(const char *val)
 }
 
 static int phram_param_call(const char *val, const struct kernel_param *kp)
+=======
+		parse_err("illegal device length\n");
+		goto error;
+	}
+
+	ret = register_device(name, start, len);
+	if (ret)
+		goto error;
+
+	pr_info("%s device: %#llx at %#llx\n", name, len, start);
+	return 0;
+
+error:
+	kfree(name);
+	return ret;
+}
+
+static int phram_param_call(const char *val, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 #ifdef MODULE
 	return phram_setup(val);

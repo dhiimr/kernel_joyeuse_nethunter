@@ -266,6 +266,29 @@ static u16 bnxt_xmit_get_cfa_action(struct sk_buff *skb)
 	return md_dst->u.port_info.port_id;
 }
 
+<<<<<<< HEAD
+=======
+static bool bnxt_txr_netif_try_stop_queue(struct bnxt *bp,
+					  struct bnxt_tx_ring_info *txr,
+					  struct netdev_queue *txq)
+{
+	netif_tx_stop_queue(txq);
+
+	/* netif_tx_stop_queue() must be done before checking
+	 * tx index in bnxt_tx_avail() below, because in
+	 * bnxt_tx_int(), we update tx index before checking for
+	 * netif_tx_queue_stopped().
+	 */
+	smp_mb();
+	if (bnxt_tx_avail(bp, txr) >= bp->tx_wake_thresh) {
+		netif_tx_wake_queue(txq);
+		return false;
+	}
+
+	return true;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static netdev_tx_t bnxt_start_xmit(struct sk_buff *skb, struct net_device *dev)
 {
 	struct bnxt *bp = netdev_priv(dev);
@@ -293,8 +316,13 @@ static netdev_tx_t bnxt_start_xmit(struct sk_buff *skb, struct net_device *dev)
 
 	free_size = bnxt_tx_avail(bp, txr);
 	if (unlikely(free_size < skb_shinfo(skb)->nr_frags + 2)) {
+<<<<<<< HEAD
 		netif_tx_stop_queue(txq);
 		return NETDEV_TX_BUSY;
+=======
+		if (bnxt_txr_netif_try_stop_queue(bp, txr, txq))
+			return NETDEV_TX_BUSY;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	length = skb->len;
@@ -505,6 +533,7 @@ tx_done:
 		if (skb->xmit_more && !tx_buf->is_push)
 			bnxt_db_write(bp, txr->tx_doorbell, DB_KEY_TX | prod);
 
+<<<<<<< HEAD
 		netif_tx_stop_queue(txq);
 
 		/* netif_tx_stop_queue() must be done before checking
@@ -515,6 +544,9 @@ tx_done:
 		smp_mb();
 		if (bnxt_tx_avail(bp, txr) > bp->tx_wake_thresh)
 			netif_tx_wake_queue(txq);
+=======
+		bnxt_txr_netif_try_stop_queue(bp, txr, txq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return NETDEV_TX_OK;
 
@@ -598,6 +630,7 @@ next_tx_int:
 	smp_mb();
 
 	if (unlikely(netif_tx_queue_stopped(txq)) &&
+<<<<<<< HEAD
 	    (bnxt_tx_avail(bp, txr) > bp->tx_wake_thresh)) {
 		__netif_tx_lock(txq, smp_processor_id());
 		if (netif_tx_queue_stopped(txq) &&
@@ -606,6 +639,11 @@ next_tx_int:
 			netif_tx_wake_queue(txq);
 		__netif_tx_unlock(txq);
 	}
+=======
+	    bnxt_tx_avail(bp, txr) >= bp->tx_wake_thresh &&
+	    READ_ONCE(txr->dev_state) != BNXT_DEV_STATE_CLOSING)
+		netif_tx_wake_queue(txq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct page *__bnxt_alloc_rx_page(struct bnxt *bp, dma_addr_t *mapping,
@@ -1583,6 +1621,11 @@ static int bnxt_rx_pkt(struct bnxt *bp, struct bnxt_napi *bnapi, u32 *raw_cons,
 		skb = bnxt_copy_skb(bnapi, data_ptr, len, dma_addr);
 		bnxt_reuse_rx_data(rxr, cons, data);
 		if (!skb) {
+<<<<<<< HEAD
+=======
+			if (agg_bufs)
+				bnxt_reuse_rx_agg_bufs(bnapi, cp_cons, agg_bufs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			rc = -ENOMEM;
 			goto next_rx;
 		}
@@ -1880,7 +1923,11 @@ static int bnxt_poll_work(struct bnxt *bp, struct bnxt_napi *bnapi, int budget)
 		if (TX_CMP_TYPE(txcmp) == CMP_TYPE_TX_L2_CMP) {
 			tx_pkts++;
 			/* return full budget so NAPI will complete. */
+<<<<<<< HEAD
 			if (unlikely(tx_pkts > bp->tx_wake_thresh)) {
+=======
+			if (unlikely(tx_pkts >= bp->tx_wake_thresh)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				rx_pkts = budget;
 				raw_cons = NEXT_RAW_CMP(raw_cons);
 				break;
@@ -2654,7 +2701,11 @@ static int bnxt_init_tx_rings(struct bnxt *bp)
 	u16 i;
 
 	bp->tx_wake_thresh = max_t(int, bp->tx_ring_size / 2,
+<<<<<<< HEAD
 				   MAX_SKB_FRAGS + 1);
+=======
+				   BNXT_MIN_TX_DESC_CNT);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (i = 0; i < bp->tx_nr_rings; i++) {
 		struct bnxt_tx_ring_info *txr = &bp->tx_ring[i];
@@ -4789,7 +4840,10 @@ static int bnxt_hwrm_func_qcaps(struct bnxt *bp)
 
 		pf->fw_fid = le16_to_cpu(resp->fid);
 		pf->port_id = le16_to_cpu(resp->port_id);
+<<<<<<< HEAD
 		bp->dev->dev_port = pf->port_id;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		memcpy(pf->mac_addr, resp->mac_address, ETH_ALEN);
 		pf->max_rsscos_ctxs = le16_to_cpu(resp->max_rsscos_ctx);
 		pf->max_cp_rings = le16_to_cpu(resp->max_cmpl_rings);
@@ -5373,7 +5427,11 @@ static void bnxt_setup_msix(struct bnxt *bp)
 	int tcs, i;
 
 	tcs = netdev_get_num_tc(dev);
+<<<<<<< HEAD
 	if (tcs > 1) {
+=======
+	if (tcs) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		int i, off, count;
 
 		for (i = 0; i < tcs; i++) {
@@ -5747,12 +5805,24 @@ void bnxt_tx_disable(struct bnxt *bp)
 	if (bp->tx_ring) {
 		for (i = 0; i < bp->tx_nr_rings; i++) {
 			txr = &bp->tx_ring[i];
+<<<<<<< HEAD
 			txr->dev_state = BNXT_DEV_STATE_CLOSING;
 		}
 	}
 	/* Stop all TX queues */
 	netif_tx_disable(bp->dev);
 	netif_carrier_off(bp->dev);
+=======
+			WRITE_ONCE(txr->dev_state, BNXT_DEV_STATE_CLOSING);
+		}
+	}
+	/* Make sure napi polls see @dev_state change */
+	synchronize_net();
+	/* Drop carrier first to prevent TX timeout */
+	netif_carrier_off(bp->dev);
+	/* Stop all TX queues */
+	netif_tx_disable(bp->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void bnxt_tx_enable(struct bnxt *bp)
@@ -5762,8 +5832,15 @@ void bnxt_tx_enable(struct bnxt *bp)
 
 	for (i = 0; i < bp->tx_nr_rings; i++) {
 		txr = &bp->tx_ring[i];
+<<<<<<< HEAD
 		txr->dev_state = 0;
 	}
+=======
+		WRITE_ONCE(txr->dev_state, 0);
+	}
+	/* Make sure napi polls see @dev_state change */
+	synchronize_net();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	netif_tx_wake_all_queues(bp->dev);
 	if (bp->link_info.link_up)
 		netif_carrier_on(bp->dev);
@@ -5778,6 +5855,14 @@ static void bnxt_report_link(struct bnxt *bp)
 		u16 fec;
 
 		netif_carrier_on(bp->dev);
+<<<<<<< HEAD
+=======
+		speed = bnxt_fw_to_ethtool_speed(bp->link_info.link_speed);
+		if (speed == SPEED_UNKNOWN) {
+			netdev_info(bp->dev, "NIC Link is Up, speed unknown\n");
+			return;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (bp->link_info.duplex == BNXT_LINK_DUPLEX_FULL)
 			duplex = "full";
 		else
@@ -5790,7 +5875,10 @@ static void bnxt_report_link(struct bnxt *bp)
 			flow_ctrl = "ON - receive";
 		else
 			flow_ctrl = "none";
+<<<<<<< HEAD
 		speed = bnxt_fw_to_ethtool_speed(bp->link_info.link_speed);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		netdev_info(bp->dev, "NIC Link is Up, %u Mbps %s duplex, Flow control: %s\n",
 			    speed, duplex, flow_ctrl);
 		if (bp->flags & BNXT_FLAG_EEE_CAP)
@@ -6376,6 +6464,7 @@ static int __bnxt_open_nic(struct bnxt *bp, bool irq_re_init, bool link_re_init)
 		}
 	}
 
+<<<<<<< HEAD
 	bnxt_enable_napi(bp);
 
 	rc = bnxt_init_nic(bp, irq_re_init);
@@ -6384,6 +6473,16 @@ static int __bnxt_open_nic(struct bnxt *bp, bool irq_re_init, bool link_re_init)
 		goto open_err;
 	}
 
+=======
+	rc = bnxt_init_nic(bp, irq_re_init);
+	if (rc) {
+		netdev_err(bp->dev, "bnxt_init_nic err: %x\n", rc);
+		goto open_err_irq;
+	}
+
+	bnxt_enable_napi(bp);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (link_re_init) {
 		mutex_lock(&bp->link_lock);
 		rc = bnxt_update_phy_setting(bp);
@@ -6408,9 +6507,12 @@ static int __bnxt_open_nic(struct bnxt *bp, bool irq_re_init, bool link_re_init)
 		bnxt_vf_reps_open(bp);
 	return 0;
 
+<<<<<<< HEAD
 open_err:
 	bnxt_disable_napi(bp);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 open_err_irq:
 	bnxt_del_napi(bp);
 
@@ -6825,6 +6927,10 @@ static netdev_features_t bnxt_fix_features(struct net_device *dev,
 					   netdev_features_t features)
 {
 	struct bnxt *bp = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+	netdev_features_t vlan_features;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if ((features & NETIF_F_NTUPLE) && !bnxt_rfs_capable(bp))
 		features &= ~NETIF_F_NTUPLE;
@@ -6832,12 +6938,23 @@ static netdev_features_t bnxt_fix_features(struct net_device *dev,
 	/* Both CTAG and STAG VLAN accelaration on the RX side have to be
 	 * turned on or off together.
 	 */
+<<<<<<< HEAD
 	if ((features & (NETIF_F_HW_VLAN_CTAG_RX | NETIF_F_HW_VLAN_STAG_RX)) !=
 	    (NETIF_F_HW_VLAN_CTAG_RX | NETIF_F_HW_VLAN_STAG_RX)) {
 		if (dev->features & NETIF_F_HW_VLAN_CTAG_RX)
 			features &= ~(NETIF_F_HW_VLAN_CTAG_RX |
 				      NETIF_F_HW_VLAN_STAG_RX);
 		else
+=======
+	vlan_features = features & (NETIF_F_HW_VLAN_CTAG_RX |
+				    NETIF_F_HW_VLAN_STAG_RX);
+	if (vlan_features != (NETIF_F_HW_VLAN_CTAG_RX |
+			      NETIF_F_HW_VLAN_STAG_RX)) {
+		if (dev->features & NETIF_F_HW_VLAN_CTAG_RX)
+			features &= ~(NETIF_F_HW_VLAN_CTAG_RX |
+				      NETIF_F_HW_VLAN_STAG_RX);
+		else if (vlan_features)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			features |= NETIF_F_HW_VLAN_CTAG_RX |
 				    NETIF_F_HW_VLAN_STAG_RX;
 	}
@@ -7206,7 +7323,12 @@ static int bnxt_init_board(struct pci_dev *pdev, struct net_device *dev)
 	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64)) != 0 &&
 	    dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32)) != 0) {
 		dev_err(&pdev->dev, "System does not support DMA, aborting\n");
+<<<<<<< HEAD
 		goto init_err_disable;
+=======
+		rc = -EIO;
+		goto init_err_release;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	pci_set_master(pdev);
@@ -7308,13 +7430,21 @@ static int bnxt_change_mtu(struct net_device *dev, int new_mtu)
 	struct bnxt *bp = netdev_priv(dev);
 
 	if (netif_running(dev))
+<<<<<<< HEAD
 		bnxt_close_nic(bp, false, false);
+=======
+		bnxt_close_nic(bp, true, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dev->mtu = new_mtu;
 	bnxt_set_ring_params(bp);
 
 	if (netif_running(dev))
+<<<<<<< HEAD
 		return bnxt_open_nic(bp, false, false);
+=======
+		return bnxt_open_nic(bp, true, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -7400,11 +7530,31 @@ static bool bnxt_fltr_match(struct bnxt_ntuple_filter *f1,
 	struct flow_keys *keys1 = &f1->fkeys;
 	struct flow_keys *keys2 = &f2->fkeys;
 
+<<<<<<< HEAD
 	if (keys1->addrs.v4addrs.src == keys2->addrs.v4addrs.src &&
 	    keys1->addrs.v4addrs.dst == keys2->addrs.v4addrs.dst &&
 	    keys1->ports.ports == keys2->ports.ports &&
 	    keys1->basic.ip_proto == keys2->basic.ip_proto &&
 	    keys1->basic.n_proto == keys2->basic.n_proto &&
+=======
+	if (keys1->basic.n_proto != keys2->basic.n_proto ||
+	    keys1->basic.ip_proto != keys2->basic.ip_proto)
+		return false;
+
+	if (keys1->basic.n_proto == htons(ETH_P_IP)) {
+		if (keys1->addrs.v4addrs.src != keys2->addrs.v4addrs.src ||
+		    keys1->addrs.v4addrs.dst != keys2->addrs.v4addrs.dst)
+			return false;
+	} else {
+		if (memcmp(&keys1->addrs.v6addrs.src, &keys2->addrs.v6addrs.src,
+			   sizeof(keys1->addrs.v6addrs.src)) ||
+		    memcmp(&keys1->addrs.v6addrs.dst, &keys2->addrs.v6addrs.dst,
+			   sizeof(keys1->addrs.v6addrs.dst)))
+			return false;
+	}
+
+	if (keys1->ports.ports == keys2->ports.ports &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    keys1->control.flags == keys2->control.flags &&
 	    ether_addr_equal(f1->src_mac_addr, f2->src_mac_addr) &&
 	    ether_addr_equal(f1->dst_mac_addr, f2->dst_mac_addr))
@@ -8215,6 +8365,10 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 				create_singlethread_workqueue("bnxt_pf_wq");
 			if (!bnxt_pf_wq) {
 				dev_err(&pdev->dev, "Unable to create workqueue.\n");
+<<<<<<< HEAD
+=======
+				rc = -ENOMEM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				goto init_err_pci_clean;
 			}
 		}
@@ -8234,6 +8388,10 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	bnxt_parse_log_pcie_link(bp);
 
+<<<<<<< HEAD
+=======
+	pci_save_state(pdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 
 init_err_cleanup_tc:
@@ -8395,6 +8553,11 @@ static pci_ers_result_t bnxt_io_slot_reset(struct pci_dev *pdev)
 			"Cannot re-enable PCI device after reset.\n");
 	} else {
 		pci_set_master(pdev);
+<<<<<<< HEAD
+=======
+		pci_restore_state(pdev);
+		pci_save_state(pdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		err = bnxt_hwrm_func_reset(bp);
 		if (!err && netif_running(netdev))
@@ -8406,8 +8569,16 @@ static pci_ers_result_t bnxt_io_slot_reset(struct pci_dev *pdev)
 		}
 	}
 
+<<<<<<< HEAD
 	if (result != PCI_ERS_RESULT_RECOVERED && netif_running(netdev))
 		dev_close(netdev);
+=======
+	if (result != PCI_ERS_RESULT_RECOVERED) {
+		if (netif_running(netdev))
+			dev_close(netdev);
+		pci_disable_device(pdev);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rtnl_unlock();
 
@@ -8418,7 +8589,11 @@ static pci_ers_result_t bnxt_io_slot_reset(struct pci_dev *pdev)
 			 err); /* non-fatal, continue */
 	}
 
+<<<<<<< HEAD
 	return PCI_ERS_RESULT_RECOVERED;
+=======
+	return result;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**

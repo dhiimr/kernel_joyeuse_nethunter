@@ -24,6 +24,7 @@
 #include <linux/net.h>
 #include <net/regulatory.h>
 
+<<<<<<< HEAD
 /* Indicate backport support for processing user cell base hint */
 #define CFG80211_USER_HINT_CELL_BASE_SELF_MANAGED 1
 /* Backport support for DFS offload */
@@ -59,6 +60,8 @@
 /* Indicate backport support for DH IE creation/update*/
 #define CFG80211_EXTERNAL_DH_UPDATE_SUPPORT 1
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * DOC: Introduction
  *
@@ -767,6 +770,7 @@ struct cfg80211_bitrate_mask {
 };
 
 /**
+<<<<<<< HEAD
  * enum cfg80211_ap_settings_flags - AP settings flags
  *
  * Used by cfg80211_ap_settings
@@ -778,6 +782,8 @@ enum cfg80211_ap_settings_flags {
 };
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * struct cfg80211_ap_settings - AP configuration
  *
  * Used to configure an AP interface.
@@ -806,7 +812,10 @@ enum cfg80211_ap_settings_flags {
  * @vht_cap: VHT capabilities (or %NULL if VHT isn't enabled)
  * @ht_required: stations must support HT
  * @vht_required: stations must support VHT
+<<<<<<< HEAD
  * @flags: flags, as defined in enum cfg80211_ap_settings_flags
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 struct cfg80211_ap_settings {
 	struct cfg80211_chan_def chandef;
@@ -831,7 +840,10 @@ struct cfg80211_ap_settings {
 	const struct ieee80211_ht_cap *ht_cap;
 	const struct ieee80211_vht_cap *vht_cap;
 	bool ht_required, vht_required;
+<<<<<<< HEAD
 	u32 flags;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -1195,10 +1207,13 @@ struct cfg80211_tid_stats {
  * @rx_duration: aggregate PPDU duration(usecs) for all the frames from a peer
  * @pertid: per-TID statistics, see &struct cfg80211_tid_stats, using the last
  *	(IEEE80211_NUM_TIDS) index for MSDUs not encapsulated in QoS-MPDUs.
+<<<<<<< HEAD
  * @rx_mpdu_count: number of MPDUs received from this station
  * @fcs_err_count: number of packets (MPDUs) received from this station with
  *	an FCS error. This counter should be incremented only when TA of the
  *	received packet with an FCS error matches the peer MAC address.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 struct station_info {
 	u64 filled;
@@ -1243,9 +1258,12 @@ struct station_info {
 	u64 rx_duration;
 	u8 rx_beacon_signal_avg;
 	struct cfg80211_tid_stats pertid[IEEE80211_NUM_TIDS + 1];
+<<<<<<< HEAD
 
 	u32 rx_mpdu_count;
 	u32 fcs_err_count;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #if IS_ENABLED(CONFIG_CFG80211)
@@ -1830,8 +1848,11 @@ enum cfg80211_signal_type {
  *	by %parent_bssid.
  * @parent_bssid: the BSS according to which %parent_tsf is set. This is set to
  *	the BSS that requested the scan in which the beacon/probe was received.
+<<<<<<< HEAD
  * @chains: bitmask for filled values in @chain_signal.
  * @chain_signal: per-chain signal strength of last received BSS in dBm.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 struct cfg80211_inform_bss {
 	struct ieee80211_channel *chan;
@@ -1840,8 +1861,11 @@ struct cfg80211_inform_bss {
 	u64 boottime_ns;
 	u64 parent_tsf;
 	u8 parent_bssid[ETH_ALEN] __aligned(2);
+<<<<<<< HEAD
 	u8 chains;
 	s8 chain_signal[IEEE80211_MAX_CHAINS];
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -1885,8 +1909,11 @@ struct cfg80211_bss_ies {
  *	that holds the beacon data. @beacon_ies is still valid, of course, and
  *	points to the same data as hidden_beacon_bss->beacon_ies in that case.
  * @signal: signal strength value (type depends on the wiphy's signal_type)
+<<<<<<< HEAD
  * @chains: bitmask for filled values in @chain_signal.
  * @chain_signal: per-chain signal strength of last received BSS in dBm.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @priv: private area for driver use, has at least wiphy->bss_priv_size bytes
  */
 struct cfg80211_bss {
@@ -1905,8 +1932,11 @@ struct cfg80211_bss {
 	u16 capability;
 
 	u8 bssid[ETH_ALEN];
+<<<<<<< HEAD
 	u8 chains;
 	s8 chain_signal[IEEE80211_MAX_CHAINS];
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	u8 priv[0] __aligned(sizeof(void *));
 };
@@ -1960,6 +1990,7 @@ struct cfg80211_auth_request {
  * @ASSOC_REQ_DISABLE_HT:  Disable HT (802.11n)
  * @ASSOC_REQ_DISABLE_VHT:  Disable VHT
  * @ASSOC_REQ_USE_RRM: Declare RRM capability in this association
+<<<<<<< HEAD
  * @CONNECT_REQ_EXTERNAL_AUTH_SUPPORT: User space indicates external
  *	authentication capability. Drivers can offload authentication to
  *	userspace if this flag is set. Only applicable for cfg80211_connect()
@@ -1970,6 +2001,13 @@ enum cfg80211_assoc_req_flags {
 	ASSOC_REQ_DISABLE_VHT			= BIT(1),
 	ASSOC_REQ_USE_RRM			= BIT(2),
 	CONNECT_REQ_EXTERNAL_AUTH_SUPPORT	= BIT(3),
+=======
+ */
+enum cfg80211_assoc_req_flags {
+	ASSOC_REQ_DISABLE_HT		= BIT(0),
+	ASSOC_REQ_DISABLE_VHT		= BIT(1),
+	ASSOC_REQ_USE_RRM		= BIT(2),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -2226,6 +2264,7 @@ struct cfg80211_connect_params {
  * have to be updated as part of update_connect_params() call.
  *
  * @UPDATE_ASSOC_IES: Indicates whether association request IEs are updated
+<<<<<<< HEAD
  * @UPDATE_FILS_ERP_INFO: Indicates that FILS connection parameters (realm,
  *	username, erp sequence number and rrk) are updated
  * @UPDATE_AUTH_TYPE: Indicates that Authentication type is updated
@@ -2234,6 +2273,11 @@ enum cfg80211_connect_params_changed {
 	UPDATE_ASSOC_IES		= BIT(0),
 	UPDATE_FILS_ERP_INFO		= BIT(1),
 	UPDATE_AUTH_TYPE		= BIT(2),
+=======
+ */
+enum cfg80211_connect_params_changed {
+	UPDATE_ASSOC_IES		= BIT(0),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -2455,6 +2499,7 @@ struct cfg80211_wowlan_wakeup {
 
 /**
  * struct cfg80211_gtk_rekey_data - rekey data
+<<<<<<< HEAD
  * @kek: key encryption key
  * @kck: key confirmation key (NL80211_KCK_LEN bytes)
  * @replay_ctr: replay counter (NL80211_REPLAY_CTR_LEN bytes)
@@ -2463,6 +2508,14 @@ struct cfg80211_wowlan_wakeup {
 struct cfg80211_gtk_rekey_data {
 	const u8 *kek, *kck, *replay_ctr;
 	size_t kek_len;
+=======
+ * @kek: key encryption key (NL80211_KEK_LEN bytes)
+ * @kck: key confirmation key (NL80211_KCK_LEN bytes)
+ * @replay_ctr: replay counter (NL80211_REPLAY_CTR_LEN bytes)
+ */
+struct cfg80211_gtk_rekey_data {
+	const u8 *kek, *kck, *replay_ctr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -2663,6 +2716,7 @@ struct cfg80211_pmk_conf {
 };
 
 /**
+<<<<<<< HEAD
  * struct cfg80211_external_auth_params - Trigger External authentication.
  *
  * Commonly used across the external auth request and event interfaces.
@@ -2718,6 +2772,8 @@ struct cfg80211_update_owe_info {
 };
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * struct cfg80211_ops - backend description for wireless configuration
  *
  * This struct is registered by fullmac card drivers and/or wireless stacks
@@ -2973,6 +3029,12 @@ struct cfg80211_update_owe_info {
  *
  * @start_radar_detection: Start radar detection in the driver.
  *
+<<<<<<< HEAD
+=======
+ * @end_cac: End running CAC, probably because a related CAC
+ *	was finished on another phy.
+ *
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @update_ft_ies: Provide updated Fast BSS Transition information to the
  *	driver. If the SME is in the driver/firmware, this information can be
  *	used in building Authentication and Reassociation Request frames.
@@ -3040,6 +3102,7 @@ struct cfg80211_update_owe_info {
  *	(invoked with the wireless_dev mutex held)
  * @del_pmk: delete the previously configured PMK for the given authenticator.
  *	(invoked with the wireless_dev mutex held)
+<<<<<<< HEAD
  *
  * @external_auth: indicates result of offloaded authentication processing from
  *     user space
@@ -3047,6 +3110,8 @@ struct cfg80211_update_owe_info {
  * @update_owe_info: Provide updated OWE info to driver. Driver implementing SME
  *	but offloading OWE processing to the user space will get the updated
  *	DH IE through this interface.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 struct cfg80211_ops {
 	int	(*suspend)(struct wiphy *wiphy, struct cfg80211_wowlan *wow);
@@ -3285,6 +3350,11 @@ struct cfg80211_ops {
 					 struct net_device *dev,
 					 struct cfg80211_chan_def *chandef,
 					 u32 cac_time_ms);
+<<<<<<< HEAD
+=======
+	void	(*end_cac)(struct wiphy *wiphy,
+				struct net_device *dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int	(*update_ft_ies)(struct wiphy *wiphy, struct net_device *dev,
 				 struct cfg80211_update_ft_ies_params *ftie);
 	int	(*crit_proto_start)(struct wiphy *wiphy,
@@ -3340,10 +3410,13 @@ struct cfg80211_ops {
 			   const struct cfg80211_pmk_conf *conf);
 	int	(*del_pmk)(struct wiphy *wiphy, struct net_device *dev,
 			   const u8 *aa);
+<<<<<<< HEAD
 	int     (*external_auth)(struct wiphy *wiphy, struct net_device *dev,
 				 struct cfg80211_external_auth_params *params);
 	int	(*update_owe_info)(struct wiphy *wiphy, struct net_device *dev,
 				   struct cfg80211_update_owe_info *owe_info);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /*
@@ -4474,7 +4547,12 @@ unsigned int ieee80211_get_mesh_hdrlen(struct ieee80211s_hdr *meshhdr);
  * Return: 0 on success. Non-zero on error.
  */
 int ieee80211_data_to_8023_exthdr(struct sk_buff *skb, struct ethhdr *ehdr,
+<<<<<<< HEAD
 				  const u8 *addr, enum nl80211_iftype iftype);
+=======
+				  const u8 *addr, enum nl80211_iftype iftype,
+				  bool is_amsdu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**
  * ieee80211_data_to_8023 - convert an 802.11 data frame to 802.3
@@ -4486,7 +4564,11 @@ int ieee80211_data_to_8023_exthdr(struct sk_buff *skb, struct ethhdr *ehdr,
 static inline int ieee80211_data_to_8023(struct sk_buff *skb, const u8 *addr,
 					 enum nl80211_iftype iftype)
 {
+<<<<<<< HEAD
 	return ieee80211_data_to_8023_exthdr(skb, NULL, addr, iftype);
+=======
+	return ieee80211_data_to_8023_exthdr(skb, NULL, addr, iftype, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -4621,6 +4703,20 @@ const u8 *cfg80211_find_vendor_ie(unsigned int oui, int oui_type,
 				  const u8 *ies, int len);
 
 /**
+<<<<<<< HEAD
+=======
+ * cfg80211_send_layer2_update - send layer 2 update frame
+ *
+ * @dev: network device
+ * @addr: STA MAC address
+ *
+ * Wireless drivers can use this function to update forwarding tables in bridge
+ * devices upon STA association.
+ */
+void cfg80211_send_layer2_update(struct net_device *dev, const u8 *addr);
+
+/**
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * DOC: Regulatory enforcement infrastructure
  *
  * TODO
@@ -4682,6 +4778,7 @@ int regulatory_set_wiphy_regd_sync_rtnl(struct wiphy *wiphy,
 					struct ieee80211_regdomain *rd);
 
 /**
+<<<<<<< HEAD
  * regulatory_hint_user - hint to the wireless core a regulatory domain
  * which the driver has received from an application
  * @alpha2: the ISO/IEC 3166 alpha2 the driver claims its regulatory domain
@@ -4708,6 +4805,8 @@ int regulatory_hint_user(const char *alpha2,
 			 enum nl80211_user_reg_hint_type user_reg_hint_type);
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * wiphy_apply_custom_regulatory - apply a custom driver regulatory domain
  * @wiphy: the wireless device we want to process the regulatory domain on
  * @regd: the custom regulatory domain to use for this wiphy
@@ -6187,6 +6286,7 @@ void cfg80211_report_wowlan_wakeup(struct wireless_dev *wdev,
 void cfg80211_crit_proto_stopped(struct wireless_dev *wdev, gfp_t gfp);
 
 /**
+<<<<<<< HEAD
  * cfg80211_ap_stopped - notify userspace that AP mode stopped
  * @netdev: network device
  * @gfp: context flags
@@ -6194,6 +6294,8 @@ void cfg80211_crit_proto_stopped(struct wireless_dev *wdev, gfp_t gfp);
 void cfg80211_ap_stopped(struct net_device *netdev, gfp_t gfp);
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * ieee80211_get_num_supported_channels - get number of channels device has
  * @wiphy: the wiphy
  *
@@ -6362,6 +6464,7 @@ void cfg80211_nan_func_terminated(struct wireless_dev *wdev,
 /* ethtool helper */
 void cfg80211_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info);
 
+<<<<<<< HEAD
 /**
  * cfg80211_is_gratuitous_arp_unsolicited_na - packet is grat. ARP/unsol. NA
  * @skb: the input packet, must be an ethernet frame already
@@ -6383,6 +6486,8 @@ int cfg80211_external_auth_request(struct net_device *netdev,
 				   struct cfg80211_external_auth_params *params,
 				   gfp_t gfp);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Logging, debugging and troubleshooting/diagnostic helpers. */
 
 /* wiphy_printk helpers, similar to dev_printk */
@@ -6429,6 +6534,7 @@ int cfg80211_external_auth_request(struct net_device *netdev,
 #define wiphy_WARN(wiphy, format, args...)			\
 	WARN(1, "wiphy: %s\n" format, wiphy_name(wiphy), ##args);
 
+<<<<<<< HEAD
 /**
  * cfg80211_update_owe_info_event - Notify the peer's OWE info to user space
  * @netdev: network device
@@ -6439,4 +6545,6 @@ void cfg80211_update_owe_info_event(struct net_device *netdev,
 				    struct cfg80211_update_owe_info *owe_info,
 				    gfp_t gfp);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* __NET_CFG80211_H */

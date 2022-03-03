@@ -102,6 +102,10 @@ isofs_find_entry(struct inode *dir, struct dentry *dentry,
 			printk(KERN_NOTICE "iso9660: Corrupted directory entry"
 			       " in block %lu of inode %lu\n", block,
 			       dir->i_ino);
+<<<<<<< HEAD
+=======
+			brelse(bh);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return 0;
 		}
 

@@ -312,6 +312,10 @@ static const struct iio_chan_spec ads1115_channels[] = {
 	IIO_CHAN_SOFT_TIMESTAMP(ADS1015_TIMESTAMP),
 };
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int ads1015_set_power_state(struct ads1015_data *data, bool on)
 {
 	int ret;
@@ -329,6 +333,18 @@ static int ads1015_set_power_state(struct ads1015_data *data, bool on)
 	return ret < 0 ? ret : 0;
 }
 
+<<<<<<< HEAD
+=======
+#else /* !CONFIG_PM */
+
+static int ads1015_set_power_state(struct ads1015_data *data, bool on)
+{
+	return 0;
+}
+
+#endif /* !CONFIG_PM */
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static
 int ads1015_get_adc_result(struct ads1015_data *data, int chan, int *val)
 {
@@ -382,10 +398,21 @@ static irqreturn_t ads1015_trigger_handler(int irq, void *p)
 	struct iio_poll_func *pf = p;
 	struct iio_dev *indio_dev = pf->indio_dev;
 	struct ads1015_data *data = iio_priv(indio_dev);
+<<<<<<< HEAD
 	s16 buf[8]; /* 1x s16 ADC val + 3x s16 padding +  4x s16 timestamp */
 	int chan, ret, res;
 
 	memset(buf, 0, sizeof(buf));
+=======
+	/* Ensure natural alignment of timestamp */
+	struct {
+		s16 chan;
+		s64 timestamp __aligned(8);
+	} scan;
+	int chan, ret, res;
+
+	memset(&scan, 0, sizeof(scan));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_lock(&data->lock);
 	chan = find_first_bit(indio_dev->active_scan_mask,
@@ -396,10 +423,17 @@ static irqreturn_t ads1015_trigger_handler(int irq, void *p)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	buf[0] = res;
 	mutex_unlock(&data->lock);
 
 	iio_push_to_buffers_with_timestamp(indio_dev, buf,
+=======
+	scan.chan = res;
+	mutex_unlock(&data->lock);
+
+	iio_push_to_buffers_with_timestamp(indio_dev, &scan,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					   iio_get_time_ns(indio_dev));
 
 err:

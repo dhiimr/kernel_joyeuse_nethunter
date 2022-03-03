@@ -43,7 +43,10 @@
  */
 static bool clean_pages_on_read;
 static bool clean_pages_on_decompress;
+<<<<<<< HEAD
 static bool noswap_randomize;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  *	The swap map is a data structure used for keeping track of each page
@@ -293,7 +296,11 @@ static int hib_submit_io(int op, int op_flags, pgoff_t page_off, void *addr,
 	return error;
 }
 
+<<<<<<< HEAD
 static blk_status_t hib_wait_io(struct hib_bio_batch *hb)
+=======
+static int hib_wait_io(struct hib_bio_batch *hb)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	wait_event(hb->wait, atomic_read(&hb->count) == 0);
 	return blk_status_to_errno(hb->error);
@@ -606,10 +613,16 @@ static int crc32_threadfn(void *data)
 		}
 		atomic_set(&d->ready, 0);
 
+<<<<<<< HEAD
 		if (!IS_ENABLED(CONFIG_HIBERNATION_SKIP_CRC))
 			for (i = 0; i < d->run_threads; i++)
 				*d->crc32 = crc32_le(*d->crc32,
 						d->unc[i], *d->unc_len[i]);
+=======
+		for (i = 0; i < d->run_threads; i++)
+			*d->crc32 = crc32_le(*d->crc32,
+			                     d->unc[i], *d->unc_len[i]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		atomic_set(&d->stop, 1);
 		wake_up(&d->done);
 	}
@@ -1455,8 +1468,12 @@ out_finish:
 		if (!snapshot_image_loaded(snapshot))
 			ret = -ENODATA;
 		if (!ret) {
+<<<<<<< HEAD
 			if ((swsusp_header->flags & SF_CRC32_MODE) &&
 			    (!IS_ENABLED(CONFIG_HIBERNATION_SKIP_CRC))) {
+=======
+			if (swsusp_header->flags & SF_CRC32_MODE) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				if(handle->crc32 != swsusp_header->crc32) {
 					printk(KERN_ERR
 					       "PM: Invalid image CRC32!\n");
@@ -1529,6 +1546,7 @@ end:
 int swsusp_check(void)
 {
 	int error;
+<<<<<<< HEAD
 
 	hib_resume_bdev = blkdev_get_by_dev(swsusp_resume_device,
 					    FMODE_READ, NULL);
@@ -1537,6 +1555,14 @@ int swsusp_check(void)
 		if (noswap_randomize)
 			hib_resume_bdev->bd_disk->flags |=
 					GENHD_FL_NO_RANDOMIZE;
+=======
+	void *holder;
+
+	hib_resume_bdev = blkdev_get_by_dev(swsusp_resume_device,
+					    FMODE_READ | FMODE_EXCL, &holder);
+	if (!IS_ERR(hib_resume_bdev)) {
+		set_blocksize(hib_resume_bdev, PAGE_SIZE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		clear_page(swsusp_header);
 		error = hib_submit_io(REQ_OP_READ, 0,
 					swsusp_resume_block,
@@ -1546,19 +1572,29 @@ int swsusp_check(void)
 
 		if (!memcmp(HIBERNATE_SIG, swsusp_header->sig, 10)) {
 			memcpy(swsusp_header->sig, swsusp_header->orig_sig, 10);
+<<<<<<< HEAD
 #ifndef CONFIG_HIBERNATION_IMAGE_REUSE
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/* Reset swap signature now */
 			error = hib_submit_io(REQ_OP_WRITE, REQ_SYNC,
 						swsusp_resume_block,
 						swsusp_header, NULL);
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else {
 			error = -EINVAL;
 		}
 
 put:
 		if (error)
+<<<<<<< HEAD
 			blkdev_put(hib_resume_bdev, FMODE_READ);
+=======
+			blkdev_put(hib_resume_bdev, FMODE_READ | FMODE_EXCL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		else
 			pr_debug("PM: Image signature found, resuming\n");
 	} else {
@@ -1624,6 +1660,7 @@ static int swsusp_header_init(void)
 }
 
 core_initcall(swsusp_header_init);
+<<<<<<< HEAD
 
 static int __init noswap_randomize_setup(char *str)
 {
@@ -1632,3 +1669,5 @@ static int __init noswap_randomize_setup(char *str)
 }
 
 __setup("noswap_randomize", noswap_randomize_setup);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

@@ -563,6 +563,7 @@ config SPI_QUP
 	  This driver can also be built as a module.  If so, the module
 	  will be called spi_qup.
 
+<<<<<<< HEAD
 config SPI_QCOM_GENI
         tristate "Qualcomm Technologies Inc.'s GENI based SPI controller"
         depends on ARCH_QCOM
@@ -575,6 +576,8 @@ config SPI_QCOM_GENI
           This driver can also be built as a module.  If so, the module
           will be called spi-geni-qcom.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config SPI_S3C24XX
 	tristate "Samsung S3C24XX series SPI"
 	depends on ARCH_S3C24XX
@@ -839,4 +842,10 @@ config SPI_SLAVE_SYSTEM_CONTROL
 
 endif # SPI_SLAVE
 
+<<<<<<< HEAD
+=======
+config SPI_DYNAMIC
+	def_bool ACPI || OF_DYNAMIC || SPI_SLAVE
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif # SPI

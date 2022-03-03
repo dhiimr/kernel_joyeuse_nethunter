@@ -581,6 +581,17 @@ static void sci_stop_tx(struct uart_port *port)
 	ctrl &= ~SCSCR_TIE;
 
 	serial_port_out(port, SCSCR, ctrl);
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_SERIAL_SH_SCI_DMA
+	if (to_sci_port(port)->chan_tx &&
+	    !dma_submit_error(to_sci_port(port)->cookie_tx)) {
+		dmaengine_terminate_async(to_sci_port(port)->chan_tx);
+		to_sci_port(port)->cookie_tx = -EINVAL;
+	}
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void sci_start_rx(struct uart_port *port)
@@ -841,9 +852,22 @@ static void sci_receive_chars(struct uart_port *port)
 				tty_insert_flip_char(tport, c, TTY_NORMAL);
 		} else {
 			for (i = 0; i < count; i++) {
+<<<<<<< HEAD
 				char c = serial_port_in(port, SCxRDR);
 
 				status = serial_port_in(port, SCxSR);
+=======
+				char c;
+
+				if (port->type == PORT_SCIF ||
+				    port->type == PORT_HSCIF) {
+					status = serial_port_in(port, SCxSR);
+					c = serial_port_in(port, SCxRDR);
+				} else {
+					c = serial_port_in(port, SCxRDR);
+					status = serial_port_in(port, SCxSR);
+				}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				if (uart_handle_sysrq_char(port, c)) {
 					count--; i--;
 					continue;
@@ -987,10 +1011,17 @@ static int scif_set_rtrg(struct uart_port *port, int rx_trig)
 {
 	unsigned int bits;
 
+<<<<<<< HEAD
 	if (rx_trig < 1)
 		rx_trig = 1;
 	if (rx_trig >= port->fifosize)
 		rx_trig = port->fifosize;
+=======
+	if (rx_trig >= port->fifosize)
+		rx_trig = port->fifosize - 1;
+	if (rx_trig < 1)
+		rx_trig = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* HSCIF can be set to an arbitrary level. */
 	if (sci_getreg(port, HSRTRGR)->size) {
@@ -1319,6 +1350,10 @@ static void work_fn_tx(struct work_struct *work)
 	struct uart_port *port = &s->port;
 	struct circ_buf *xmit = &port->state->xmit;
 	dma_addr_t buf;
+<<<<<<< HEAD
+=======
+	int head, tail;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * DMA is idle now.
@@ -1328,16 +1363,34 @@ static void work_fn_tx(struct work_struct *work)
 	 * consistent xmit buffer state.
 	 */
 	spin_lock_irq(&port->lock);
+<<<<<<< HEAD
 	buf = s->tx_dma_addr + (xmit->tail & (UART_XMIT_SIZE - 1));
 	s->tx_dma_len = min_t(unsigned int,
 		CIRC_CNT(xmit->head, xmit->tail, UART_XMIT_SIZE),
 		CIRC_CNT_TO_END(xmit->head, xmit->tail, UART_XMIT_SIZE));
 	spin_unlock_irq(&port->lock);
+=======
+	head = xmit->head;
+	tail = xmit->tail;
+	buf = s->tx_dma_addr + (tail & (UART_XMIT_SIZE - 1));
+	s->tx_dma_len = min_t(unsigned int,
+		CIRC_CNT(head, tail, UART_XMIT_SIZE),
+		CIRC_CNT_TO_END(head, tail, UART_XMIT_SIZE));
+	if (!s->tx_dma_len) {
+		/* Transmit buffer has been flushed */
+		spin_unlock_irq(&port->lock);
+		return;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	desc = dmaengine_prep_slave_single(chan, buf, s->tx_dma_len,
 					   DMA_MEM_TO_DEV,
 					   DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
 	if (!desc) {
+<<<<<<< HEAD
+=======
+		spin_unlock_irq(&port->lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_warn(port->dev, "Failed preparing Tx DMA descriptor\n");
 		/* switch to PIO */
 		sci_tx_dma_release(s, true);
@@ -1347,20 +1400,34 @@ static void work_fn_tx(struct work_struct *work)
 	dma_sync_single_for_device(chan->device->dev, buf, s->tx_dma_len,
 				   DMA_TO_DEVICE);
 
+<<<<<<< HEAD
 	spin_lock_irq(&port->lock);
 	desc->callback = sci_dma_tx_complete;
 	desc->callback_param = s;
 	spin_unlock_irq(&port->lock);
 	s->cookie_tx = dmaengine_submit(desc);
 	if (dma_submit_error(s->cookie_tx)) {
+=======
+	desc->callback = sci_dma_tx_complete;
+	desc->callback_param = s;
+	s->cookie_tx = dmaengine_submit(desc);
+	if (dma_submit_error(s->cookie_tx)) {
+		spin_unlock_irq(&port->lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_warn(port->dev, "Failed submitting Tx DMA descriptor\n");
 		/* switch to PIO */
 		sci_tx_dma_release(s, true);
 		return;
 	}
 
+<<<<<<< HEAD
 	dev_dbg(port->dev, "%s: %p: %d...%d, cookie %d\n",
 		__func__, xmit->buf, xmit->tail, xmit->head, s->cookie_tx);
+=======
+	spin_unlock_irq(&port->lock);
+	dev_dbg(port->dev, "%s: %p: %d...%d, cookie %d\n",
+		__func__, xmit->buf, tail, head, s->cookie_tx);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dma_async_issue_pending(chan);
 }
@@ -1479,6 +1546,16 @@ static void sci_request_dma(struct uart_port *port)
 
 	dev_dbg(port->dev, "%s: port %d\n", __func__, port->line);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * DMA on console may interfere with Kernel log messages which use
+	 * plain putchar(). So, simply don't use it with a console.
+	 */
+	if (uart_console(port))
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!port->dev->of_node)
 		return;
 
@@ -1564,11 +1641,26 @@ static void sci_free_dma(struct uart_port *port)
 
 static void sci_flush_buffer(struct uart_port *port)
 {
+<<<<<<< HEAD
 	/*
 	 * In uart_flush_buffer(), the xmit circular buffer has just been
 	 * cleared, so we have to reset tx_dma_len accordingly.
 	 */
 	to_sci_port(port)->tx_dma_len = 0;
+=======
+	struct sci_port *s = to_sci_port(port);
+
+	/*
+	 * In uart_flush_buffer(), the xmit circular buffer has just been
+	 * cleared, so we have to reset tx_dma_len accordingly, and stop any
+	 * pending transfers
+	 */
+	s->tx_dma_len = 0;
+	if (s->chan_tx) {
+		dmaengine_terminate_async(s->chan_tx);
+		s->cookie_tx = -EINVAL;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #else /* !CONFIG_SERIAL_SH_SCI_DMA */
 static inline void sci_request_dma(struct uart_port *port)

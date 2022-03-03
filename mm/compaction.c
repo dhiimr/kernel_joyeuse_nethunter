@@ -7,7 +7,10 @@
  * lifting
  *
  * Copyright IBM Corp. 2007-2010 Mel Gorman <mel@csn.ul.ie>
+<<<<<<< HEAD
  * Copyright (C) 2020 XiaoMi, Inc.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 #include <linux/cpu.h>
 #include <linux/swap.h>
@@ -23,7 +26,10 @@
 #include <linux/kthread.h>
 #include <linux/freezer.h>
 #include <linux/page_owner.h>
+<<<<<<< HEAD
 #include <linux/psi.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "internal.h"
 
 #ifdef CONFIG_COMPACTION
@@ -633,6 +639,7 @@ isolate_freepages_range(struct compact_control *cc,
 }
 
 /* Similar to reclaim, but different enough that they don't share logic */
+<<<<<<< HEAD
 static bool __too_many_isolated(struct zone *zone, int safe)
 {
 	unsigned long active, inactive, isolated;
@@ -658,10 +665,23 @@ static bool __too_many_isolated(struct zone *zone, int safe)
 		isolated = node_page_state(zone->zone_pgdat, NR_ISOLATED_FILE) +
 			node_page_state(zone->zone_pgdat, NR_ISOLATED_ANON);
 	}
+=======
+static bool too_many_isolated(struct zone *zone)
+{
+	unsigned long active, inactive, isolated;
+
+	inactive = node_page_state(zone->zone_pgdat, NR_INACTIVE_FILE) +
+			node_page_state(zone->zone_pgdat, NR_INACTIVE_ANON);
+	active = node_page_state(zone->zone_pgdat, NR_ACTIVE_FILE) +
+			node_page_state(zone->zone_pgdat, NR_ACTIVE_ANON);
+	isolated = node_page_state(zone->zone_pgdat, NR_ISOLATED_FILE) +
+			node_page_state(zone->zone_pgdat, NR_ISOLATED_ANON);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return isolated > (inactive + active) / 2;
 }
 
+<<<<<<< HEAD
 /* Similar to reclaim, but different enough that they don't share logic */
 static bool too_many_isolated(struct compact_control *cc)
 {
@@ -679,6 +699,8 @@ static bool too_many_isolated(struct compact_control *cc)
 	return false;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * isolate_migratepages_block() - isolate all migrate-able pages within
  *				  a single pageblock
@@ -716,7 +738,11 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
 	 * list by either parallel reclaimers or compaction. If there are,
 	 * delay for some time until fewer pages are isolated
 	 */
+<<<<<<< HEAD
 	while (unlikely(too_many_isolated(cc))) {
+=======
+	while (unlikely(too_many_isolated(zone))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* async migration should just abort */
 		if (cc->mode == MIGRATE_ASYNC)
 			return 0;
@@ -1383,7 +1409,11 @@ static enum compact_result __compact_finished(struct zone *zone,
 		 * other migratetype buddy lists.
 		 */
 		if (find_suitable_fallback(area, order, migratetype,
+<<<<<<< HEAD
 						true, &can_steal, cc->order) != -1) {
+=======
+						true, &can_steal) != -1) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			/* movable pages are OK in any pageblock */
 			if (migratetype == MIGRATE_MOVABLE)
@@ -1551,6 +1581,20 @@ static enum compact_result compact_zone(struct zone *zone, struct compact_contro
 	unsigned long end_pfn = zone_end_pfn(zone);
 	const bool sync = cc->mode != MIGRATE_ASYNC;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * These counters track activities during zone compaction.  Initialize
+	 * them before compacting a new zone.
+	 */
+	cc->total_migrate_scanned = 0;
+	cc->total_free_scanned = 0;
+	cc->nr_migratepages = 0;
+	cc->nr_freepages = 0;
+	INIT_LIST_HEAD(&cc->freepages);
+	INIT_LIST_HEAD(&cc->migratepages);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cc->migratetype = gfpflags_to_migratetype(cc->gfp_mask);
 	ret = compaction_suitable(zone, cc->order, cc->alloc_flags,
 							cc->classzone_idx);
@@ -1714,10 +1758,13 @@ static enum compact_result compact_zone_order(struct zone *zone, int order,
 {
 	enum compact_result ret;
 	struct compact_control cc = {
+<<<<<<< HEAD
 		.nr_freepages = 0,
 		.nr_migratepages = 0,
 		.total_migrate_scanned = 0,
 		.total_free_scanned = 0,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.order = order,
 		.gfp_mask = gfp_mask,
 		.zone = zone,
@@ -1730,8 +1777,11 @@ static enum compact_result compact_zone_order(struct zone *zone, int order,
 		.ignore_skip_hint = (prio == MIN_COMPACT_PRIORITY),
 		.ignore_block_suitable = (prio == MIN_COMPACT_PRIORITY)
 	};
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&cc.freepages);
 	INIT_LIST_HEAD(&cc.migratepages);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = compact_zone(zone, &cc);
 
@@ -1830,8 +1880,11 @@ static void compact_node(int nid)
 	struct zone *zone;
 	struct compact_control cc = {
 		.order = -1,
+<<<<<<< HEAD
 		.total_migrate_scanned = 0,
 		.total_free_scanned = 0,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.mode = MIGRATE_SYNC,
 		.ignore_skip_hint = true,
 		.whole_zone = true,
@@ -1845,11 +1898,15 @@ static void compact_node(int nid)
 		if (!populated_zone(zone))
 			continue;
 
+<<<<<<< HEAD
 		cc.nr_freepages = 0;
 		cc.nr_migratepages = 0;
 		cc.zone = zone;
 		INIT_LIST_HEAD(&cc.freepages);
 		INIT_LIST_HEAD(&cc.migratepages);
+=======
+		cc.zone = zone;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		compact_zone(zone, &cc);
 
@@ -1958,8 +2015,11 @@ static void kcompactd_do_work(pg_data_t *pgdat)
 	struct zone *zone;
 	struct compact_control cc = {
 		.order = pgdat->kcompactd_max_order,
+<<<<<<< HEAD
 		.total_migrate_scanned = 0,
 		.total_free_scanned = 0,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.classzone_idx = pgdat->kcompactd_classzone_idx,
 		.mode = MIGRATE_SYNC_LIGHT,
 		.ignore_skip_hint = true,
@@ -1984,6 +2044,7 @@ static void kcompactd_do_work(pg_data_t *pgdat)
 							COMPACT_CONTINUE)
 			continue;
 
+<<<<<<< HEAD
 		cc.nr_freepages = 0;
 		cc.nr_migratepages = 0;
 		cc.total_migrate_scanned = 0;
@@ -1994,6 +2055,12 @@ static void kcompactd_do_work(pg_data_t *pgdat)
 
 		if (kthread_should_stop())
 			return;
+=======
+		if (kthread_should_stop())
+			return;
+
+		cc.zone = zone;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		status = compact_zone(zone, &cc);
 
 		if (status == COMPACT_SUCCESS) {
@@ -2072,15 +2139,22 @@ static int kcompactd(void *p)
 	pgdat->kcompactd_classzone_idx = pgdat->nr_zones - 1;
 
 	while (!kthread_should_stop()) {
+<<<<<<< HEAD
 		unsigned long pflags;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		trace_mm_compaction_kcompactd_sleep(pgdat->node_id);
 		wait_event_freezable(pgdat->kcompactd_wait,
 				kcompactd_work_requested(pgdat));
 
+<<<<<<< HEAD
 		psi_memstall_enter(&pflags);
 		kcompactd_do_work(pgdat);
 		psi_memstall_leave(&pflags);
+=======
+		kcompactd_do_work(pgdat);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return 0;

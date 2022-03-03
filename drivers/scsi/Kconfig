@@ -966,7 +966,11 @@ config SCSI_SNI_53C710
 
 config 53C700_LE_ON_BE
 	bool
+<<<<<<< HEAD
 	depends on SCSI_LASI700
+=======
+	depends on SCSI_LASI700 || SCSI_SNI_53C710
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	default y
 
 config SCSI_STEX

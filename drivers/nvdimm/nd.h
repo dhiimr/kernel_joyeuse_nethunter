@@ -29,7 +29,10 @@ enum {
 	 * BTT instance
 	 */
 	ND_MAX_LANES = 256,
+<<<<<<< HEAD
 	SECTOR_SHIFT = 9,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	INT_LBASIZE_ALIGNMENT = 64,
 	NVDIMM_IO_ATOMIC = 1,
 };
@@ -120,8 +123,17 @@ struct nd_percpu_lane {
 	spinlock_t lock;
 };
 
+<<<<<<< HEAD
 struct nd_label_ent {
 	struct list_head list;
+=======
+enum nd_label_flags {
+	ND_LABEL_REAP,
+};
+struct nd_label_ent {
+	struct list_head list;
+	unsigned long flags;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct nd_namespace_label *label;
 };
 

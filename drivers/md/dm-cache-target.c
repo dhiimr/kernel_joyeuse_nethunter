@@ -410,7 +410,10 @@ struct cache {
 	spinlock_t lock;
 	struct list_head deferred_cells;
 	struct bio_list deferred_bios;
+<<<<<<< HEAD
 	struct bio_list deferred_writethrough_bios;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sector_t migration_threshold;
 	wait_queue_head_t migration_wait;
 	atomic_t nr_allocated_migrations;
@@ -446,10 +449,17 @@ struct cache {
 	struct dm_kcopyd_client *copier;
 	struct workqueue_struct *wq;
 	struct work_struct deferred_bio_worker;
+<<<<<<< HEAD
 	struct work_struct deferred_writethrough_worker;
 	struct work_struct migration_worker;
 	struct delayed_work waker;
 	struct dm_bio_prison_v2 *prison;
+=======
+	struct work_struct migration_worker;
+	struct delayed_work waker;
+	struct dm_bio_prison_v2 *prison;
+	struct bio_set *bs;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mempool_t *migration_pool;
 
@@ -490,6 +500,7 @@ struct per_bio_data {
 	struct dm_bio_prison_cell_v2 *cell;
 	struct dm_hook_info hook_info;
 	sector_t len;
+<<<<<<< HEAD
 
 	/*
 	 * writethrough fields.  These MUST remain at the end of this
@@ -499,6 +510,8 @@ struct per_bio_data {
 	struct cache *cache;
 	dm_cblock_t cblock;
 	struct dm_bio_details bio_details;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct dm_cache_migration {
@@ -515,6 +528,7 @@ struct dm_cache_migration {
 
 /*----------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static bool writethrough_mode(struct cache_features *f)
 {
 	return f->io_mode == CM_IO_WRITETHROUGH;
@@ -528,6 +542,21 @@ static bool writeback_mode(struct cache_features *f)
 static inline bool passthrough_mode(struct cache_features *f)
 {
 	return unlikely(f->io_mode == CM_IO_PASSTHROUGH);
+=======
+static bool writethrough_mode(struct cache *cache)
+{
+	return cache->features.io_mode == CM_IO_WRITETHROUGH;
+}
+
+static bool writeback_mode(struct cache *cache)
+{
+	return cache->features.io_mode == CM_IO_WRITEBACK;
+}
+
+static inline bool passthrough_mode(struct cache *cache)
+{
+	return unlikely(cache->features.io_mode == CM_IO_PASSTHROUGH);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*----------------------------------------------------------------*/
@@ -537,6 +566,7 @@ static void wake_deferred_bio_worker(struct cache *cache)
 	queue_work(cache->wq, &cache->deferred_bio_worker);
 }
 
+<<<<<<< HEAD
 static void wake_deferred_writethrough_worker(struct cache *cache)
 {
 	queue_work(cache->wq, &cache->deferred_writethrough_worker);
@@ -545,6 +575,11 @@ static void wake_deferred_writethrough_worker(struct cache *cache)
 static void wake_migration_worker(struct cache *cache)
 {
 	if (passthrough_mode(&cache->features))
+=======
+static void wake_migration_worker(struct cache *cache)
+{
+	if (passthrough_mode(cache))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 
 	queue_work(cache->wq, &cache->migration_worker);
@@ -618,6 +653,7 @@ static unsigned lock_level(struct bio *bio)
  * Per bio data
  *--------------------------------------------------------------*/
 
+<<<<<<< HEAD
 /*
  * If using writeback, leave out struct per_bio_data's writethrough fields.
  */
@@ -627,6 +663,11 @@ static unsigned lock_level(struct bio *bio)
 static size_t get_per_bio_data_size(struct cache *cache)
 {
 	return writethrough_mode(&cache->features) ? PB_DATA_SIZE_WT : PB_DATA_SIZE_WB;
+=======
+static size_t get_per_bio_data_size(struct cache *cache)
+{
+	return sizeof(struct per_bio_data);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct per_bio_data *get_per_bio_data(struct bio *bio, size_t data_size)
@@ -868,16 +909,34 @@ static void check_if_tick_bio_needed(struct cache *cache, struct bio *bio)
 	spin_unlock_irqrestore(&cache->lock, flags);
 }
 
+<<<<<<< HEAD
 static void remap_to_origin_clear_discard(struct cache *cache, struct bio *bio,
 					  dm_oblock_t oblock)
 {
 	// FIXME: this is called way too much.
 	check_if_tick_bio_needed(cache, bio);
+=======
+static void __remap_to_origin_clear_discard(struct cache *cache, struct bio *bio,
+					    dm_oblock_t oblock, bool bio_has_pbd)
+{
+	if (bio_has_pbd)
+		check_if_tick_bio_needed(cache, bio);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	remap_to_origin(cache, bio);
 	if (bio_data_dir(bio) == WRITE)
 		clear_discard(cache, oblock_to_dblock(cache, oblock));
 }
 
+<<<<<<< HEAD
+=======
+static void remap_to_origin_clear_discard(struct cache *cache, struct bio *bio,
+					  dm_oblock_t oblock)
+{
+	// FIXME: check_if_tick_bio_needed() is called way too much through this interface
+	__remap_to_origin_clear_discard(cache, bio, oblock, true);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void remap_to_cache_dirty(struct cache *cache, struct bio *bio,
 				 dm_oblock_t oblock, dm_cblock_t cblock)
 {
@@ -937,6 +996,7 @@ static void issue_op(struct bio *bio, void *context)
 	accounted_request(cache, bio);
 }
 
+<<<<<<< HEAD
 static void defer_writethrough_bio(struct cache *cache, struct bio *bio)
 {
 	unsigned long flags;
@@ -988,6 +1048,28 @@ static void remap_to_origin_then_cache(struct cache *cache, struct bio *bio,
 	dm_bio_record(&pb->bio_details, bio);
 
 	remap_to_origin_clear_discard(pb->cache, bio, oblock);
+=======
+/*
+ * When running in writethrough mode we need to send writes to clean blocks
+ * to both the cache and origin devices.  Clone the bio and send them in parallel.
+ */
+static void remap_to_origin_and_cache(struct cache *cache, struct bio *bio,
+				      dm_oblock_t oblock, dm_cblock_t cblock)
+{
+	struct bio *origin_bio = bio_clone_fast(bio, GFP_NOIO, cache->bs);
+
+	BUG_ON(!origin_bio);
+
+	bio_chain(origin_bio, bio);
+	/*
+	 * Passing false to __remap_to_origin_clear_discard() skips
+	 * all code that might use per_bio_data (since clone doesn't have it)
+	 */
+	__remap_to_origin_clear_discard(cache, origin_bio, oblock, false);
+	submit_bio(origin_bio);
+
+	remap_to_cache(cache, bio, cblock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*----------------------------------------------------------------
@@ -1209,7 +1291,11 @@ static bool bio_writes_complete_block(struct cache *cache, struct bio *bio)
 
 static bool optimisable_bio(struct cache *cache, struct bio *bio, dm_oblock_t block)
 {
+<<<<<<< HEAD
 	return writeback_mode(&cache->features) &&
+=======
+	return writeback_mode(cache) &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		(is_discarded_oblock(cache, block) || bio_writes_complete_block(cache, bio));
 }
 
@@ -1862,7 +1948,11 @@ static int map_bio(struct cache *cache, struct bio *bio, dm_oblock_t block,
 		 * Passthrough always maps to the origin, invalidating any
 		 * cache blocks that are written to.
 		 */
+<<<<<<< HEAD
 		if (passthrough_mode(&cache->features)) {
+=======
+		if (passthrough_mode(cache)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (bio_data_dir(bio) == WRITE) {
 				bio_drop_shared_lock(cache, bio);
 				atomic_inc(&cache->stats.demotion);
@@ -1871,9 +1961,15 @@ static int map_bio(struct cache *cache, struct bio *bio, dm_oblock_t block,
 				remap_to_origin_clear_discard(cache, bio, block);
 
 		} else {
+<<<<<<< HEAD
 			if (bio_data_dir(bio) == WRITE && writethrough_mode(&cache->features) &&
 			    !is_dirty(cache, cblock)) {
 				remap_to_origin_then_cache(cache, bio, block, cblock);
+=======
+			if (bio_data_dir(bio) == WRITE && writethrough_mode(cache) &&
+			    !is_dirty(cache, cblock)) {
+				remap_to_origin_and_cache(cache, bio, block, cblock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				accounted_begin(cache, bio);
 			} else
 				remap_to_cache_dirty(cache, bio, block, cblock);
@@ -2003,6 +2099,7 @@ static void process_deferred_bios(struct work_struct *ws)
 		schedule_commit(&cache->committer);
 }
 
+<<<<<<< HEAD
 static void process_deferred_writethrough_bios(struct work_struct *ws)
 {
 	struct cache *cache = container_of(ws, struct cache, deferred_writethrough_worker);
@@ -2025,6 +2122,8 @@ static void process_deferred_writethrough_bios(struct work_struct *ws)
 		generic_make_request(bio);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*----------------------------------------------------------------
  * Main worker loop
  *--------------------------------------------------------------*/
@@ -2132,6 +2231,12 @@ static void destroy(struct cache *cache)
 		kfree(cache->ctr_args[i]);
 	kfree(cache->ctr_args);
 
+<<<<<<< HEAD
+=======
+	if (cache->bs)
+		bioset_free(cache->bs);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(cache);
 }
 
@@ -2589,6 +2694,16 @@ static int cache_create(struct cache_args *ca, struct cache **result)
 	cache->features = ca->features;
 	ti->per_io_data_size = get_per_bio_data_size(cache);
 
+<<<<<<< HEAD
+=======
+	if (writethrough_mode(cache)) {
+		/* Create bioset for writethrough bios issued to origin */
+		cache->bs = bioset_create(BIO_POOL_SIZE, 0, 0);
+		if (!cache->bs)
+			goto bad;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cache->callbacks.congested_fn = cache_is_congested;
 	dm_table_add_target_callbacks(ti->table, &cache->callbacks);
 
@@ -2649,7 +2764,11 @@ static int cache_create(struct cache_args *ca, struct cache **result)
 		goto bad;
 	}
 
+<<<<<<< HEAD
 	if (passthrough_mode(&cache->features)) {
+=======
+	if (passthrough_mode(cache)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		bool all_clean;
 
 		r = dm_cache_metadata_all_clean(cache->cmd, &all_clean);
@@ -2670,7 +2789,10 @@ static int cache_create(struct cache_args *ca, struct cache **result)
 	spin_lock_init(&cache->lock);
 	INIT_LIST_HEAD(&cache->deferred_cells);
 	bio_list_init(&cache->deferred_bios);
+<<<<<<< HEAD
 	bio_list_init(&cache->deferred_writethrough_bios);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	atomic_set(&cache->nr_allocated_migrations, 0);
 	atomic_set(&cache->nr_io_migrations, 0);
 	init_waitqueue_head(&cache->migration_wait);
@@ -2709,8 +2831,11 @@ static int cache_create(struct cache_args *ca, struct cache **result)
 		goto bad;
 	}
 	INIT_WORK(&cache->deferred_bio_worker, process_deferred_bios);
+<<<<<<< HEAD
 	INIT_WORK(&cache->deferred_writethrough_worker,
 		  process_deferred_writethrough_bios);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	INIT_WORK(&cache->migration_worker, check_migrations);
 	INIT_DELAYED_WORK(&cache->waker, do_waker);
 
@@ -2971,8 +3096,13 @@ static void cache_postsuspend(struct dm_target *ti)
 	prevent_background_work(cache);
 	BUG_ON(atomic_read(&cache->nr_io_migrations));
 
+<<<<<<< HEAD
 	cancel_delayed_work(&cache->waker);
 	flush_workqueue(cache->wq);
+=======
+	cancel_delayed_work_sync(&cache->waker);
+	drain_workqueue(cache->wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	WARN_ON(cache->tracker.in_flight);
 
 	/*
@@ -3279,6 +3409,7 @@ static void cache_status(struct dm_target *ti, status_type_t type,
 		else
 			DMEMIT("1 ");
 
+<<<<<<< HEAD
 		if (writethrough_mode(&cache->features))
 			DMEMIT("writethrough ");
 
@@ -3286,6 +3417,15 @@ static void cache_status(struct dm_target *ti, status_type_t type,
 			DMEMIT("passthrough ");
 
 		else if (writeback_mode(&cache->features))
+=======
+		if (writethrough_mode(cache))
+			DMEMIT("writethrough ");
+
+		else if (passthrough_mode(cache))
+			DMEMIT("passthrough ");
+
+		else if (writeback_mode(cache))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			DMEMIT("writeback ");
 
 		else {
@@ -3451,7 +3591,11 @@ static int process_invalidate_cblocks_message(struct cache *cache, unsigned coun
 	unsigned i;
 	struct cblock_range range;
 
+<<<<<<< HEAD
 	if (!passthrough_mode(&cache->features)) {
+=======
+	if (!passthrough_mode(cache)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		DMERR("%s: cache has to be in passthrough mode for invalidation",
 		      cache_device_name(cache));
 		return -EPERM;

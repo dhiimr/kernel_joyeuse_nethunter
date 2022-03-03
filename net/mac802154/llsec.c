@@ -160,7 +160,11 @@ err_tfm0:
 	crypto_free_skcipher(key->tfm0);
 err_tfm:
 	for (i = 0; i < ARRAY_SIZE(key->tfm); i++)
+<<<<<<< HEAD
 		if (key->tfm[i])
+=======
+		if (!IS_ERR_OR_NULL(key->tfm[i]))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			crypto_free_aead(key->tfm[i]);
 
 	kzfree(key);

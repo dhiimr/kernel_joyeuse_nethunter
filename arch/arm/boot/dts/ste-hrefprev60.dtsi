@@ -57,7 +57,11 @@
 			};
 		};
 
+<<<<<<< HEAD
 		ssp@80002000 {
+=======
+		spi@80002000 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/*
 			 * On the first generation boards, this SSP/SPI port was connected
 			 * to the AB8500.

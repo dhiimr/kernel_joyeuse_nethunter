@@ -59,7 +59,10 @@ static inline int in_exception_text(unsigned long ptr)
 	return in ? : __in_irqentry_text(ptr);
 }
 
+<<<<<<< HEAD
 static inline void get_pct_hook_init(void) {}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline int in_entry_text(unsigned long ptr)
 {
 	return ptr >= (unsigned long)&__entry_text_start &&

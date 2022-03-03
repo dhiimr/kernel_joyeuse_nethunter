@@ -496,8 +496,12 @@ static int ovl_create_or_link(struct dentry *dentry, struct inode *inode,
 		override_cred->fsgid = inode->i_gid;
 		if (!hardlink) {
 			err = security_dentry_create_files_as(dentry,
+<<<<<<< HEAD
 					attr->mode, &dentry->d_name,
 					old_cred ? old_cred : current_cred(),
+=======
+					attr->mode, &dentry->d_name, old_cred,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					override_cred);
 			if (err) {
 				put_cred(override_cred);
@@ -515,7 +519,11 @@ static int ovl_create_or_link(struct dentry *dentry, struct inode *inode,
 							hardlink);
 	}
 out_revert_creds:
+<<<<<<< HEAD
 	ovl_revert_creds(old_cred);
+=======
+	revert_creds(old_cred);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!err) {
 		struct inode *realinode = d_inode(ovl_dentry_upper(dentry));
 
@@ -774,7 +782,11 @@ static int ovl_do_remove(struct dentry *dentry, bool is_dir)
 		err = ovl_remove_upper(dentry, is_dir);
 	else
 		err = ovl_remove_and_whiteout(dentry, is_dir);
+<<<<<<< HEAD
 	ovl_revert_creds(old_cred);
+=======
+	revert_creds(old_cred);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!err) {
 		if (is_dir)
 			clear_nlink(dentry->d_inode);
@@ -851,8 +863,13 @@ static char *ovl_get_redirect(struct dentry *dentry, bool samedir)
 
 		buflen -= thislen;
 		memcpy(&buf[buflen], name, thislen);
+<<<<<<< HEAD
 		tmp = dget_dlock(d->d_parent);
 		spin_unlock(&d->d_lock);
+=======
+		spin_unlock(&d->d_lock);
+		tmp = dget_parent(d);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		dput(d);
 		d = tmp;
@@ -1033,9 +1050,19 @@ static int ovl_rename(struct inode *olddir, struct dentry *old,
 				goto out_dput;
 		}
 	} else {
+<<<<<<< HEAD
 		if (!d_is_negative(newdentry) &&
 		    (!new_opaque || !ovl_is_whiteout(newdentry)))
 			goto out_dput;
+=======
+		if (!d_is_negative(newdentry)) {
+			if (!new_opaque || !ovl_is_whiteout(newdentry))
+				goto out_dput;
+		} else {
+			if (flags & RENAME_EXCHANGE)
+				goto out_dput;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (olddentry == trap)
@@ -1043,7 +1070,11 @@ static int ovl_rename(struct inode *olddir, struct dentry *old,
 	if (newdentry == trap)
 		goto out_dput;
 
+<<<<<<< HEAD
 	if (WARN_ON(olddentry->d_inode == newdentry->d_inode))
+=======
+	if (olddentry->d_inode == newdentry->d_inode)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out_dput;
 
 	err = 0;
@@ -1090,7 +1121,11 @@ out_dput_old:
 out_unlock:
 	unlock_rename(new_upperdir, old_upperdir);
 out_revert_creds:
+<<<<<<< HEAD
 	ovl_revert_creds(old_cred);
+=======
+	revert_creds(old_cred);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ovl_nlink_end(new, locked);
 out_drop_write:
 	ovl_drop_write(old);

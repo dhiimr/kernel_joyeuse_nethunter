@@ -180,9 +180,17 @@ static inline u32 rx_max(struct dw_spi *dws)
 
 static void dw_writer(struct dw_spi *dws)
 {
+<<<<<<< HEAD
 	u32 max = tx_max(dws);
 	u16 txw = 0;
 
+=======
+	u32 max;
+	u16 txw = 0;
+
+	spin_lock(&dws->buf_lock);
+	max = tx_max(dws);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	while (max--) {
 		/* Set the tx word if the transfer's original "tx" is not null */
 		if (dws->tx_end - dws->len) {
@@ -194,13 +202,25 @@ static void dw_writer(struct dw_spi *dws)
 		dw_write_io_reg(dws, DW_SPI_DR, txw);
 		dws->tx += dws->n_bytes;
 	}
+<<<<<<< HEAD
+=======
+	spin_unlock(&dws->buf_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void dw_reader(struct dw_spi *dws)
 {
+<<<<<<< HEAD
 	u32 max = rx_max(dws);
 	u16 rxw;
 
+=======
+	u32 max;
+	u16 rxw;
+
+	spin_lock(&dws->buf_lock);
+	max = rx_max(dws);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	while (max--) {
 		rxw = dw_read_io_reg(dws, DW_SPI_DR);
 		/* Care rx only if the transfer's original "rx" is not null */
@@ -212,6 +232,10 @@ static void dw_reader(struct dw_spi *dws)
 		}
 		dws->rx += dws->n_bytes;
 	}
+<<<<<<< HEAD
+=======
+	spin_unlock(&dws->buf_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void int_error_stop(struct dw_spi *dws, const char *msg)
@@ -284,18 +308,33 @@ static int dw_spi_transfer_one(struct spi_master *master,
 {
 	struct dw_spi *dws = spi_master_get_devdata(master);
 	struct chip_data *chip = spi_get_ctldata(spi);
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8 imask = 0;
 	u16 txlevel = 0;
 	u32 cr0;
 	int ret;
 
 	dws->dma_mapped = 0;
+<<<<<<< HEAD
 
+=======
+	spin_lock_irqsave(&dws->buf_lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dws->tx = (void *)transfer->tx_buf;
 	dws->tx_end = dws->tx + transfer->len;
 	dws->rx = transfer->rx_buf;
 	dws->rx_end = dws->rx + transfer->len;
 	dws->len = transfer->len;
+<<<<<<< HEAD
+=======
+	spin_unlock_irqrestore(&dws->buf_lock, flags);
+
+	/* Ensure dw->rx and dw->rx_end are visible */
+	smp_mb();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	spi_enable_chip(dws, 0);
 
@@ -373,11 +412,16 @@ static int dw_spi_transfer_one(struct spi_master *master,
 
 	spi_enable_chip(dws, 1);
 
+<<<<<<< HEAD
 	if (dws->dma_mapped) {
 		ret = dws->dma_ops->dma_transfer(dws, transfer);
 		if (ret < 0)
 			return ret;
 	}
+=======
+	if (dws->dma_mapped)
+		return dws->dma_ops->dma_transfer(dws, transfer);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (chip->poll_mode)
 		return poll_transfer(dws);
@@ -486,6 +530,12 @@ int dw_spi_add_host(struct device *dev, struct dw_spi *dws)
 	dws->type = SSI_MOTO_SPI;
 	dws->dma_inited = 0;
 	dws->dma_addr = (dma_addr_t)(dws->paddr + DW_SPI_DR);
+<<<<<<< HEAD
+=======
+	spin_lock_init(&dws->buf_lock);
+
+	spi_master_set_devdata(master, dws);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = request_irq(dws->irq, dw_spi_irq, IRQF_SHARED, dev_name(dev),
 			  master);
@@ -517,11 +567,19 @@ int dw_spi_add_host(struct device *dev, struct dw_spi *dws)
 			dws->dma_inited = 0;
 		} else {
 			master->can_dma = dws->dma_ops->can_dma;
+<<<<<<< HEAD
 		}
 	}
 
 	spi_master_set_devdata(master, dws);
 	ret = devm_spi_register_master(dev, master);
+=======
+			master->flags |= SPI_CONTROLLER_MUST_TX;
+		}
+	}
+
+	ret = spi_register_master(master);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret) {
 		dev_err(&master->dev, "problem registering spi master\n");
 		goto err_dma_exit;
@@ -545,6 +603,11 @@ void dw_spi_remove_host(struct dw_spi *dws)
 {
 	dw_spi_debugfs_remove(dws);
 
+<<<<<<< HEAD
+=======
+	spi_unregister_master(dws->master);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (dws->dma_ops && dws->dma_ops->dma_exit)
 		dws->dma_ops->dma_exit(dws);
 

@@ -6,4 +6,11 @@
 extern void cacheinfo_cpu_online(unsigned int cpu_id);
 extern void cacheinfo_cpu_offline(unsigned int cpu_id);
 
+<<<<<<< HEAD
+=======
+/* Allow migration/suspend to tear down and rebuild the hierarchy. */
+extern void cacheinfo_teardown(void);
+extern void cacheinfo_rebuild(void);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _PPC_CACHEINFO_H */

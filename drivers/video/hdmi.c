@@ -704,7 +704,11 @@ static void hdmi_avi_infoframe_log(const char *level,
 
 static const char *hdmi_spd_sdi_get_name(enum hdmi_spd_sdi sdi)
 {
+<<<<<<< HEAD
 	if (sdi < 0 || sdi > HDMI_SPD_SDI_MAX)
+=======
+	if (sdi < 0 || sdi > 0xff)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return "Invalid";
 	switch (sdi) {
 	case HDMI_SPD_SDI_UNKNOWN:
@@ -735,9 +739,14 @@ static const char *hdmi_spd_sdi_get_name(enum hdmi_spd_sdi sdi)
 		return "HD DVD";
 	case HDMI_SPD_SDI_PMP:
 		return "PMP";
+<<<<<<< HEAD
 	default:
 		return "Reserved";
 	}
+=======
+	}
+	return "Reserved";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -848,7 +857,11 @@ hdmi_audio_sample_frequency_get_name(enum hdmi_audio_sample_frequency freq)
 static const char *
 hdmi_audio_coding_type_ext_get_name(enum hdmi_audio_coding_type_ext ctx)
 {
+<<<<<<< HEAD
 	if (ctx < 0 || ctx > HDMI_AUDIO_CODING_TYPE_EXT_MAX)
+=======
+	if (ctx < 0 || ctx > 0x1f)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return "Invalid";
 
 	switch (ctx) {
@@ -872,9 +885,14 @@ hdmi_audio_coding_type_ext_get_name(enum hdmi_audio_coding_type_ext ctx)
 		return "MPEG-4 HE AAC + MPEG Surround";
 	case HDMI_AUDIO_CODING_TYPE_EXT_MPEG4_AAC_LC_SURROUND:
 		return "MPEG-4 AAC LC + MPEG Surround";
+<<<<<<< HEAD
 	default:
 		return "Reserved";
 	}
+=======
+	}
+	return "Reserved";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -1038,12 +1056,21 @@ static int hdmi_avi_infoframe_unpack(struct hdmi_avi_infoframe *frame,
 	if (ptr[0] & 0x10)
 		frame->active_aspect = ptr[1] & 0xf;
 	if (ptr[0] & 0x8) {
+<<<<<<< HEAD
 		frame->top_bar = (ptr[5] << 8) + ptr[6];
 		frame->bottom_bar = (ptr[7] << 8) + ptr[8];
 	}
 	if (ptr[0] & 0x4) {
 		frame->left_bar = (ptr[9] << 8) + ptr[10];
 		frame->right_bar = (ptr[11] << 8) + ptr[12];
+=======
+		frame->top_bar = (ptr[6] << 8) | ptr[5];
+		frame->bottom_bar = (ptr[8] << 8) | ptr[7];
+	}
+	if (ptr[0] & 0x4) {
+		frame->left_bar = (ptr[10] << 8) | ptr[9];
+		frame->right_bar = (ptr[12] << 8) | ptr[11];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	frame->scan_mode = ptr[0] & 0x3;
 

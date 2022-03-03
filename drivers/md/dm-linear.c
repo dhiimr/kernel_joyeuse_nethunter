@@ -26,7 +26,11 @@ struct linear_c {
 /*
  * Construct a linear mapping: <dev_path> <offset>
  */
+<<<<<<< HEAD
 int dm_linear_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+=======
+static int linear_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct linear_c *lc;
 	unsigned long long tmp;
@@ -68,16 +72,24 @@ int dm_linear_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	kfree(lc);
 	return ret;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(dm_linear_ctr);
 
 void dm_linear_dtr(struct dm_target *ti)
+=======
+
+static void linear_dtr(struct dm_target *ti)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct linear_c *lc = (struct linear_c *) ti->private;
 
 	dm_put_device(ti, lc->dev);
 	kfree(lc);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(dm_linear_dtr);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static sector_t linear_map_sector(struct dm_target *ti, sector_t bi_sector)
 {
@@ -96,15 +108,25 @@ static void linear_map_bio(struct dm_target *ti, struct bio *bio)
 			linear_map_sector(ti, bio->bi_iter.bi_sector);
 }
 
+<<<<<<< HEAD
 int dm_linear_map(struct dm_target *ti, struct bio *bio)
+=======
+static int linear_map(struct dm_target *ti, struct bio *bio)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	linear_map_bio(ti, bio);
 
 	return DM_MAPIO_REMAPPED;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(dm_linear_map);
 
 int dm_linear_end_io(struct dm_target *ti, struct bio *bio,
+=======
+
+#ifdef CONFIG_BLK_DEV_ZONED
+static int linear_end_io(struct dm_target *ti, struct bio *bio,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			 blk_status_t *error)
 {
 	struct linear_c *lc = ti->private;
@@ -114,9 +136,15 @@ int dm_linear_end_io(struct dm_target *ti, struct bio *bio,
 
 	return DM_ENDIO_DONE;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(dm_linear_end_io);
 
 void dm_linear_status(struct dm_target *ti, status_type_t type,
+=======
+#endif
+
+static void linear_status(struct dm_target *ti, status_type_t type,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			  unsigned status_flags, char *result, unsigned maxlen)
 {
 	struct linear_c *lc = (struct linear_c *) ti->private;
@@ -132,9 +160,14 @@ void dm_linear_status(struct dm_target *ti, status_type_t type,
 		break;
 	}
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(dm_linear_status);
 
 int dm_linear_prepare_ioctl(struct dm_target *ti,
+=======
+
+static int linear_prepare_ioctl(struct dm_target *ti,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct block_device **bdev, fmode_t *mode)
 {
 	struct linear_c *lc = (struct linear_c *) ti->private;
@@ -150,18 +183,28 @@ int dm_linear_prepare_ioctl(struct dm_target *ti,
 		return 1;
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(dm_linear_prepare_ioctl);
 
 int dm_linear_iterate_devices(struct dm_target *ti,
+=======
+
+static int linear_iterate_devices(struct dm_target *ti,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				  iterate_devices_callout_fn fn, void *data)
 {
 	struct linear_c *lc = ti->private;
 
 	return fn(ti, lc->dev, lc->start, ti->len, data);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(dm_linear_iterate_devices);
 
 long dm_linear_dax_direct_access(struct dm_target *ti, pgoff_t pgoff,
+=======
+
+static long linear_dax_direct_access(struct dm_target *ti, pgoff_t pgoff,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		long nr_pages, void **kaddr, pfn_t *pfn)
 {
 	long ret;
@@ -176,9 +219,14 @@ long dm_linear_dax_direct_access(struct dm_target *ti, pgoff_t pgoff,
 		return ret;
 	return dax_direct_access(dax_dev, pgoff, nr_pages, kaddr, pfn);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(dm_linear_dax_direct_access);
 
 size_t dm_linear_dax_copy_from_iter(struct dm_target *ti, pgoff_t pgoff,
+=======
+
+static size_t linear_dax_copy_from_iter(struct dm_target *ti, pgoff_t pgoff,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		void *addr, size_t bytes, struct iov_iter *i)
 {
 	struct linear_c *lc = ti->private;
@@ -191,11 +239,15 @@ size_t dm_linear_dax_copy_from_iter(struct dm_target *ti, pgoff_t pgoff,
 		return 0;
 	return dax_copy_from_iter(dax_dev, pgoff, addr, bytes, i);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(dm_linear_dax_copy_from_iter);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct target_type linear_target = {
 	.name   = "linear",
 	.version = {1, 4, 0},
+<<<<<<< HEAD
 	.features = DM_TARGET_PASSES_INTEGRITY | DM_TARGET_ZONED_HM,
 	.module = THIS_MODULE,
 	.ctr    = dm_linear_ctr,
@@ -207,6 +259,23 @@ static struct target_type linear_target = {
 	.iterate_devices = dm_linear_iterate_devices,
 	.direct_access = dm_linear_dax_direct_access,
 	.dax_copy_from_iter = dm_linear_dax_copy_from_iter,
+=======
+#ifdef CONFIG_BLK_DEV_ZONED
+	.end_io = linear_end_io,
+	.features = DM_TARGET_PASSES_INTEGRITY | DM_TARGET_ZONED_HM,
+#else
+	.features = DM_TARGET_PASSES_INTEGRITY,
+#endif
+	.module = THIS_MODULE,
+	.ctr    = linear_ctr,
+	.dtr    = linear_dtr,
+	.map    = linear_map,
+	.status = linear_status,
+	.prepare_ioctl = linear_prepare_ioctl,
+	.iterate_devices = linear_iterate_devices,
+	.direct_access = linear_dax_direct_access,
+	.dax_copy_from_iter = linear_dax_copy_from_iter,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 int __init dm_linear_init(void)

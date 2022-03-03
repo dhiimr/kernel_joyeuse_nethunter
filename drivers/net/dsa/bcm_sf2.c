@@ -106,22 +106,28 @@ static void bcm_sf2_imp_setup(struct dsa_switch *ds, int port)
 	unsigned int i;
 	u32 reg, offset;
 
+<<<<<<< HEAD
 	if (priv->type == BCM7445_DEVICE_ID)
 		offset = CORE_STS_OVERRIDE_IMP;
 	else
 		offset = CORE_STS_OVERRIDE_IMP2;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Enable the port memories */
 	reg = core_readl(priv, CORE_MEM_PSM_VDD_CTRL);
 	reg &= ~P_TXQ_PSM_VDD(port);
 	core_writel(priv, reg, CORE_MEM_PSM_VDD_CTRL);
 
+<<<<<<< HEAD
 	/* Enable Broadcast, Multicast, Unicast forwarding to IMP port */
 	reg = core_readl(priv, CORE_IMP_CTL);
 	reg |= (RX_BCST_EN | RX_MCST_EN | RX_UCST_EN);
 	reg &= ~(RX_DIS | TX_DIS);
 	core_writel(priv, reg, CORE_IMP_CTL);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Enable forwarding */
 	core_writel(priv, SW_FWDG_EN, CORE_SWMODE);
 
@@ -140,10 +146,35 @@ static void bcm_sf2_imp_setup(struct dsa_switch *ds, int port)
 
 	bcm_sf2_brcm_hdr_setup(priv, port);
 
+<<<<<<< HEAD
 	/* Force link status for IMP port */
 	reg = core_readl(priv, offset);
 	reg |= (MII_SW_OR | LINK_STS);
 	core_writel(priv, reg, offset);
+=======
+	if (port == 8) {
+		if (priv->type == BCM7445_DEVICE_ID)
+			offset = CORE_STS_OVERRIDE_IMP;
+		else
+			offset = CORE_STS_OVERRIDE_IMP2;
+
+		/* Force link status for IMP port */
+		reg = core_readl(priv, offset);
+		reg |= (MII_SW_OR | LINK_STS);
+		reg &= ~GMII_SPEED_UP_2G;
+		core_writel(priv, reg, offset);
+
+		/* Enable Broadcast, Multicast, Unicast forwarding to IMP port */
+		reg = core_readl(priv, CORE_IMP_CTL);
+		reg |= (RX_BCST_EN | RX_MCST_EN | RX_UCST_EN);
+		reg &= ~(RX_DIS | TX_DIS);
+		core_writel(priv, reg, CORE_IMP_CTL);
+	} else {
+		reg = core_readl(priv, CORE_G_PCTL_PORT(port));
+		reg &= ~(RX_DIS | TX_DIS);
+		core_writel(priv, reg, CORE_G_PCTL_PORT(port));
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void bcm_sf2_eee_enable_set(struct dsa_switch *ds, int port, bool enable)
@@ -245,6 +276,14 @@ static int bcm_sf2_port_setup(struct dsa_switch *ds, int port,
 	reg &= ~P_TXQ_PSM_VDD(port);
 	core_writel(priv, reg, CORE_MEM_PSM_VDD_CTRL);
 
+<<<<<<< HEAD
+=======
+	/* Disable learning */
+	reg = core_readl(priv, CORE_DIS_LEARN);
+	reg |= BIT(port);
+	core_writel(priv, reg, CORE_DIS_LEARN);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Enable Broadcom tags for that port if requested */
 	if (priv->brcm_tag_mask & BIT(port))
 		bcm_sf2_brcm_hdr_setup(priv, port);
@@ -426,11 +465,18 @@ static int bcm_sf2_sw_mdio_write(struct mii_bus *bus, int addr, int regnum,
 	 * send them to our master MDIO bus controller
 	 */
 	if (addr == BRCM_PSEUDO_PHY_ADDR && priv->indir_phy_mask & BIT(addr))
+<<<<<<< HEAD
 		bcm_sf2_sw_indir_rw(priv, 0, addr, regnum, val);
 	else
 		mdiobus_write_nested(priv->master_mii_bus, addr, regnum, val);
 
 	return 0;
+=======
+		return bcm_sf2_sw_indir_rw(priv, 0, addr, regnum, val);
+	else
+		return mdiobus_write_nested(priv->master_mii_bus, addr,
+				regnum, val);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static irqreturn_t bcm_sf2_switch_0_isr(int irq, void *dev_id)
@@ -534,15 +580,29 @@ static int bcm_sf2_mdio_register(struct dsa_switch *ds)
 	/* Find our integrated MDIO bus node */
 	dn = of_find_compatible_node(NULL, NULL, "brcm,unimac-mdio");
 	priv->master_mii_bus = of_mdio_find_bus(dn);
+<<<<<<< HEAD
 	if (!priv->master_mii_bus)
 		return -EPROBE_DEFER;
+=======
+	if (!priv->master_mii_bus) {
+		of_node_put(dn);
+		return -EPROBE_DEFER;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	get_device(&priv->master_mii_bus->dev);
 	priv->master_mii_dn = dn;
 
 	priv->slave_mii_bus = devm_mdiobus_alloc(ds->dev);
+<<<<<<< HEAD
 	if (!priv->slave_mii_bus)
 		return -ENOMEM;
+=======
+	if (!priv->slave_mii_bus) {
+		of_node_put(dn);
+		return -ENOMEM;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	priv->slave_mii_bus->priv = priv;
 	priv->slave_mii_bus->name = "sf2 slave mii";
@@ -598,8 +658,15 @@ static u32 bcm_sf2_sw_get_phy_flags(struct dsa_switch *ds, int port)
 	 * in bits 15:8 and the patch level in bits 7:0 which is exactly what
 	 * the REG_PHY_REVISION register layout is.
 	 */
+<<<<<<< HEAD
 
 	return priv->hw_params.gphy_rev;
+=======
+	if (priv->int_phy_mask & BIT(port))
+		return priv->hw_params.gphy_rev;
+	else
+		return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void bcm_sf2_sw_adjust_link(struct dsa_switch *ds, int port,
@@ -1106,6 +1173,10 @@ static int bcm_sf2_sw_probe(struct platform_device *pdev)
 	const struct bcm_sf2_of_data *data;
 	struct b53_platform_data *pdata;
 	struct dsa_switch_ops *ops;
+<<<<<<< HEAD
+=======
+	struct device_node *ports;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct bcm_sf2_priv *priv;
 	struct b53_device *dev;
 	struct dsa_switch *ds;
@@ -1168,7 +1239,17 @@ static int bcm_sf2_sw_probe(struct platform_device *pdev)
 	 */
 	set_bit(0, priv->cfp.used);
 
+<<<<<<< HEAD
 	bcm_sf2_identify_ports(priv, dn->child);
+=======
+	/* Balance of_node_put() done by of_find_node_by_name() */
+	of_node_get(dn);
+	ports = of_find_node_by_name(dn, "ports");
+	if (ports) {
+		bcm_sf2_identify_ports(priv, ports);
+		of_node_put(ports);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	priv->irq0 = irq_of_parse_and_map(dn, 0);
 	priv->irq1 = irq_of_parse_and_map(dn, 1);
@@ -1190,12 +1271,22 @@ static int bcm_sf2_sw_probe(struct platform_device *pdev)
 		return ret;
 	}
 
+<<<<<<< HEAD
+=======
+	bcm_sf2_gphy_enable_set(priv->dev->ds, true);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = bcm_sf2_mdio_register(ds);
 	if (ret) {
 		pr_err("failed to register MDIO bus\n");
 		return ret;
 	}
 
+<<<<<<< HEAD
+=======
+	bcm_sf2_gphy_enable_set(priv->dev->ds, false);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = bcm_sf2_cfp_rst(priv);
 	if (ret) {
 		pr_err("failed to reset CFP\n");

@@ -11,7 +11,12 @@ struct device_node;
 
 #ifdef CONFIG_OF_PCI
 int of_irq_parse_pci(const struct pci_dev *pdev, struct of_phandle_args *out_irq);
+<<<<<<< HEAD
 struct device_node *of_pci_find_child_device(struct pci_dev *dev);
+=======
+struct device_node *of_pci_find_child_device(struct device_node *parent,
+					     unsigned int devfn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int of_pci_get_devfn(struct device_node *np);
 int of_irq_parse_and_map_pci(const struct pci_dev *dev, u8 slot, u8 pin);
 int of_pci_parse_bus_range(struct device_node *node, struct resource *res);
@@ -27,7 +32,12 @@ static inline int of_irq_parse_pci(const struct pci_dev *pdev, struct of_phandle
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline struct device_node *of_pci_find_child_device(struct pci_dev *dev)
+=======
+static inline struct device_node *of_pci_find_child_device(struct device_node *parent,
+					     unsigned int devfn)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return NULL;
 }

@@ -96,6 +96,7 @@ struct detailed_mode_closure {
 #define LEVEL_GTF2	2
 #define LEVEL_CVT	3
 
+<<<<<<< HEAD
 /*Enum storing luminance types for HDR blocks in EDID*/
 enum luminance_value {
 	NO_LUMINANCE_DATA = 3,
@@ -104,6 +105,8 @@ enum luminance_value {
 	MINIMUM_LUMINANCE = 6
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const struct edid_quirk {
 	char vendor[4];
 	int product_id;
@@ -172,6 +175,12 @@ static const struct edid_quirk {
 	/* Medion MD 30217 PG */
 	{ "MED", 0x7b8, EDID_QUIRK_PREFER_LARGE_75 },
 
+<<<<<<< HEAD
+=======
+	/* Lenovo G50 */
+	{ "SDC", 18514, EDID_QUIRK_FORCE_6BPC },
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Panel in Samsung NP700G7A-S01PL notebook reports 6bpc */
 	{ "SEC", 0xd033, EDID_QUIRK_FORCE_8BPC },
 
@@ -203,8 +212,12 @@ static const struct drm_display_mode drm_dmt_modes[] = {
 	/* 0x05 - 640x480@72Hz */
 	{ DRM_MODE("640x480", DRM_MODE_TYPE_DRIVER, 31500, 640, 664,
 		   704, 832, 0, 480, 489, 492, 520, 0,
+<<<<<<< HEAD
 		   DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC),
 		   .vrefresh = 72, },
+=======
+		   DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC) },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* 0x06 - 640x480@75Hz */
 	{ DRM_MODE("640x480", DRM_MODE_TYPE_DRIVER, 31500, 640, 656,
 		   720, 840, 0, 480, 481, 484, 500, 0,
@@ -561,8 +574,12 @@ static const struct drm_display_mode edid_est_modes[] = {
 		   DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC) }, /* 640x480@75Hz */
 	{ DRM_MODE("640x480", DRM_MODE_TYPE_DRIVER, 31500, 640, 664,
 		   704,  832, 0, 480, 489, 492, 520, 0,
+<<<<<<< HEAD
 		   DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC),
 		   .vrefresh = 72, }, /* 640x480@72Hz */
+=======
+		   DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC) }, /* 640x480@72Hz */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ DRM_MODE("640x480", DRM_MODE_TYPE_DRIVER, 30240, 640, 704,
 		   768,  864, 0, 480, 483, 486, 525, 0,
 		   DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC) }, /* 640x480@67Hz */
@@ -2798,14 +2815,22 @@ add_detailed_modes(struct drm_connector *connector, struct edid *edid,
 
 	return closure.modes;
 }
+<<<<<<< HEAD
 #define VIDEO_CAPABILITY_EXTENDED_DATA_BLOCK 0x0
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define AUDIO_BLOCK	0x01
 #define VIDEO_BLOCK     0x02
 #define VENDOR_BLOCK    0x03
 #define SPEAKER_BLOCK	0x04
+<<<<<<< HEAD
 #define HDR_STATIC_METADATA_EXTENDED_DATA_BLOCK 0x06
 #define USE_EXTENDED_TAG 0x07
 #define VIDEO_CAPABILITY_BLOCK	0x07
+=======
+#define USE_EXTENDED_TAG 0x07
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define EXT_VIDEO_CAPABILITY_BLOCK 0x00
 #define EXT_VIDEO_DATA_BLOCK_420	0x0E
 #define EXT_VIDEO_CAP_BLOCK_Y420CMDB 0x0F
@@ -3791,6 +3816,7 @@ drm_parse_hdmi_vsdb_audio(struct drm_connector *connector, const u8 *db)
 		      connector->audio_latency[1]);
 }
 
+<<<<<<< HEAD
 static u8 *
 drm_edid_find_extended_tag_block(struct edid *edid, int blk_id)
 {
@@ -4012,6 +4038,8 @@ parse_hdmi_hf_vsdb(struct drm_connector *connector, const u8 *db)
 				"supported" : "not supported");
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void
 monitor_name(struct detailed_timing *t, void *data)
 {
@@ -4049,7 +4077,11 @@ void drm_edid_get_monitor_name(struct edid *edid, char *name, int bufsize)
 {
 	int name_length;
 	char buf[13];
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (bufsize <= 0)
 		return;
 
@@ -4138,9 +4170,12 @@ void drm_edid_to_eld(struct drm_connector *connector, struct edid *edid)
 				/* HDMI Vendor-Specific Data Block */
 				if (cea_db_is_hdmi_vsdb(db))
 					drm_parse_hdmi_vsdb_audio(connector, db);
+<<<<<<< HEAD
 				/* HDMI Forum Vendor-Specific Data Block */
 				else if (cea_db_is_hdmi_forum_vsdb(db))
 					parse_hdmi_hf_vsdb(connector, db);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				break;
 			default:
 				break;
@@ -4630,6 +4665,7 @@ static void drm_parse_cea_ext(struct drm_connector *connector,
 	}
 }
 
+<<<<<<< HEAD
 static void
 drm_hdmi_extract_vsdbs_info(struct drm_connector *connector, struct edid *edid)
 {
@@ -4661,6 +4697,8 @@ drm_hdmi_extract_vsdbs_info(struct drm_connector *connector, struct edid *edid)
 	}
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void drm_add_display_info(struct drm_connector *connector,
 				 struct edid *edid)
 {
@@ -4682,6 +4720,10 @@ static void drm_add_display_info(struct drm_connector *connector,
 	if (!(edid->input & DRM_EDID_INPUT_DIGITAL))
 		return;
 
+<<<<<<< HEAD
+=======
+	info->color_formats |= DRM_COLOR_FORMAT_RGB444;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	drm_parse_cea_ext(connector, edid);
 
 	/*
@@ -4698,11 +4740,14 @@ static void drm_add_display_info(struct drm_connector *connector,
 			  connector->name, info->bpc);
 	}
 
+<<<<<<< HEAD
 	/* Extract audio and video latency fields for the sink */
 	drm_hdmi_extract_vsdbs_info(connector, edid);
 	/* Extract info from extended tag blocks */
 	drm_hdmi_extract_extended_blk_info(connector, edid);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Only defined for 1.4 with digital displays */
 	if (edid->revision < 4)
 		return;
@@ -4735,7 +4780,10 @@ static void drm_add_display_info(struct drm_connector *connector,
 	DRM_DEBUG("%s: Assigning EDID-1.4 digital sink color depth as %d bpc.\n",
 			  connector->name, info->bpc);
 
+<<<<<<< HEAD
 	info->color_formats |= DRM_COLOR_FORMAT_RGB444;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (edid->features & DRM_EDID_FEATURE_RGB_YCRCB444)
 		info->color_formats |= DRM_COLOR_FORMAT_YCRCB444;
 	if (edid->features & DRM_EDID_FEATURE_RGB_YCRCB422)
@@ -4771,7 +4819,11 @@ static struct drm_display_mode *drm_mode_displayid_detailed(struct drm_device *d
 	struct drm_display_mode *mode;
 	unsigned pixel_clock = (timings->pixel_clock[0] |
 				(timings->pixel_clock[1] << 8) |
+<<<<<<< HEAD
 				(timings->pixel_clock[2] << 16));
+=======
+				(timings->pixel_clock[2] << 16)) + 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned hactive = (timings->hactive[0] | timings->hactive[1] << 8) + 1;
 	unsigned hblank = (timings->hblank[0] | timings->hblank[1] << 8) + 1;
 	unsigned hsync = (timings->hsync[0] | (timings->hsync[1] & 0x7f) << 8) + 1;
@@ -4924,7 +4976,10 @@ int drm_add_edid_modes(struct drm_connector *connector, struct edid *edid)
 	num_modes += add_cea_modes(connector, edid);
 	num_modes += add_alternate_cea_modes(connector, edid);
 	num_modes += add_displayid_detailed_modes(connector, edid);
+<<<<<<< HEAD
 	num_modes += add_YCbCr420VDB_modes(connector, edid);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (edid->features & DRM_EDID_FEATURE_DEFAULT_GTF)
 		num_modes += add_inferred_modes(connector, edid);
 

@@ -174,6 +174,17 @@ int qcom_mdt_load(struct device *dev, const struct firmware *fw,
 			break;
 		}
 
+<<<<<<< HEAD
+=======
+		if (phdr->p_filesz > phdr->p_memsz) {
+			dev_err(dev,
+				"refusing to load segment %d with p_filesz > p_memsz\n",
+				i);
+			ret = -EINVAL;
+			break;
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ptr = mem_region + offset;
 
 		if (phdr->p_filesz) {
@@ -185,6 +196,18 @@ int qcom_mdt_load(struct device *dev, const struct firmware *fw,
 				break;
 			}
 
+<<<<<<< HEAD
+=======
+			if (seg_fw->size != phdr->p_filesz) {
+				dev_err(dev,
+					"failed to load segment %d from truncated file %s\n",
+					i, fw_name);
+				release_firmware(seg_fw);
+				ret = -EINVAL;
+				break;
+			}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			release_firmware(seg_fw);
 		}
 

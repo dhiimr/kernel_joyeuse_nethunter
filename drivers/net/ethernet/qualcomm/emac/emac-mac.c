@@ -1458,6 +1458,10 @@ int emac_mac_tx_buf_send(struct emac_adapter *adpt, struct emac_tx_queue *tx_q,
 {
 	struct emac_tpd tpd;
 	u32 prod_idx;
+<<<<<<< HEAD
+=======
+	int len;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	memset(&tpd, 0, sizeof(tpd));
 
@@ -1477,9 +1481,16 @@ int emac_mac_tx_buf_send(struct emac_adapter *adpt, struct emac_tx_queue *tx_q,
 	if (skb_network_offset(skb) != ETH_HLEN)
 		TPD_TYP_SET(&tpd, 1);
 
+<<<<<<< HEAD
 	emac_tx_fill_tpd(adpt, tx_q, skb, &tpd);
 
 	netdev_sent_queue(adpt->netdev, skb->len);
+=======
+	len = skb->len;
+	emac_tx_fill_tpd(adpt, tx_q, skb, &tpd);
+
+	netdev_sent_queue(adpt->netdev, len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Make sure the are enough free descriptors to hold one
 	 * maximum-sized SKB.  We need one desc for each fragment,

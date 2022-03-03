@@ -62,11 +62,16 @@ void usbip_setup_port_number(char *arg)
 	info("using port %d (\"%s\")", usbip_port, usbip_port_string);
 }
 
+<<<<<<< HEAD
 void usbip_net_pack_uint32_t(int pack, uint32_t *num)
+=======
+uint32_t usbip_net_pack_uint32_t(int pack, uint32_t num)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	uint32_t i;
 
 	if (pack)
+<<<<<<< HEAD
 		i = htonl(*num);
 	else
 		i = ntohl(*num);
@@ -75,19 +80,38 @@ void usbip_net_pack_uint32_t(int pack, uint32_t *num)
 }
 
 void usbip_net_pack_uint16_t(int pack, uint16_t *num)
+=======
+		i = htonl(num);
+	else
+		i = ntohl(num);
+
+	return i;
+}
+
+uint16_t usbip_net_pack_uint16_t(int pack, uint16_t num)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	uint16_t i;
 
 	if (pack)
+<<<<<<< HEAD
 		i = htons(*num);
 	else
 		i = ntohs(*num);
 
 	*num = i;
+=======
+		i = htons(num);
+	else
+		i = ntohs(num);
+
+	return i;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void usbip_net_pack_usb_device(int pack, struct usbip_usb_device *udev)
 {
+<<<<<<< HEAD
 	usbip_net_pack_uint32_t(pack, &udev->busnum);
 	usbip_net_pack_uint32_t(pack, &udev->devnum);
 	usbip_net_pack_uint32_t(pack, &udev->speed);
@@ -95,6 +119,15 @@ void usbip_net_pack_usb_device(int pack, struct usbip_usb_device *udev)
 	usbip_net_pack_uint16_t(pack, &udev->idVendor);
 	usbip_net_pack_uint16_t(pack, &udev->idProduct);
 	usbip_net_pack_uint16_t(pack, &udev->bcdDevice);
+=======
+	udev->busnum = usbip_net_pack_uint32_t(pack, udev->busnum);
+	udev->devnum = usbip_net_pack_uint32_t(pack, udev->devnum);
+	udev->speed = usbip_net_pack_uint32_t(pack, udev->speed);
+
+	udev->idVendor = usbip_net_pack_uint16_t(pack, udev->idVendor);
+	udev->idProduct = usbip_net_pack_uint16_t(pack, udev->idProduct);
+	udev->bcdDevice = usbip_net_pack_uint16_t(pack, udev->bcdDevice);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void usbip_net_pack_usb_interface(int pack __attribute__((unused)),
@@ -141,6 +174,17 @@ ssize_t usbip_net_send(int sockfd, void *buff, size_t bufflen)
 	return usbip_net_xmit(sockfd, buff, bufflen, 1);
 }
 
+<<<<<<< HEAD
+=======
+static inline void usbip_net_pack_op_common(int pack,
+					    struct op_common *op_common)
+{
+	op_common->version = usbip_net_pack_uint16_t(pack, op_common->version);
+	op_common->code = usbip_net_pack_uint16_t(pack, op_common->code);
+	op_common->status = usbip_net_pack_uint32_t(pack, op_common->status);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int usbip_net_send_op_common(int sockfd, uint32_t code, uint32_t status)
 {
 	struct op_common op_common;
@@ -152,7 +196,11 @@ int usbip_net_send_op_common(int sockfd, uint32_t code, uint32_t status)
 	op_common.code    = code;
 	op_common.status  = status;
 
+<<<<<<< HEAD
 	PACK_OP_COMMON(1, &op_common);
+=======
+	usbip_net_pack_op_common(1, &op_common);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rc = usbip_net_send(sockfd, &op_common, sizeof(op_common));
 	if (rc < 0) {
@@ -176,7 +224,11 @@ int usbip_net_recv_op_common(int sockfd, uint16_t *code)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	PACK_OP_COMMON(0, &op_common);
+=======
+	usbip_net_pack_op_common(0, &op_common);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (op_common.version != USBIP_VERSION) {
 		dbg("version mismatch: %d %d", op_common.version,

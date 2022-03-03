@@ -431,11 +431,15 @@ static ssize_t ocfs2_filecheck_show(struct kobject *kobj,
 		ret = snprintf(buf + total, remain, "%lu\t\t%u\t%s\n",
 			       p->fe_ino, p->fe_done,
 			       ocfs2_filecheck_error(p->fe_status));
+<<<<<<< HEAD
 		if (ret < 0) {
 			total = ret;
 			break;
 		}
 		if (ret == remain) {
+=======
+		if (ret >= remain) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/* snprintf() didn't fit */
 			total = -E2BIG;
 			break;

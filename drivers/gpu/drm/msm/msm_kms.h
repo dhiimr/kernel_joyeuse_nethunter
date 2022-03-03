@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2016-2019, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Copyright (C) 2013 Red Hat
  * Author: Rob Clark <robdclark@gmail.com>
  *
@@ -26,6 +29,7 @@
 
 #define MAX_PLANE	4
 
+<<<<<<< HEAD
 /**
  * Device Private DRM Mode Flags
  * drm_mode->private_flags
@@ -41,6 +45,8 @@
 /* Request to switch the bit clk */
 #define MSM_MODE_FLAG_SEAMLESS_DYN_CLK			(1<<4)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* As there are different display controller blocks depending on the
  * snapdragon version, the kms support is split out and the appropriate
  * implementation is loaded at runtime.  The kms module is responsible
@@ -49,7 +55,10 @@
 struct msm_kms_funcs {
 	/* hw initialization: */
 	int (*hw_init)(struct msm_kms *kms);
+<<<<<<< HEAD
 	int (*postinit)(struct msm_kms *kms);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* irq handling: */
 	void (*irq_preinstall)(struct msm_kms *kms);
 	int (*irq_postinstall)(struct msm_kms *kms);
@@ -60,6 +69,7 @@ struct msm_kms_funcs {
 	/* swap global atomic state: */
 	void (*swap_state)(struct msm_kms *kms, struct drm_atomic_state *state);
 	/* modeset, bracketing atomic_commit(): */
+<<<<<<< HEAD
 	void (*prepare_fence)(struct msm_kms *kms,
 			struct drm_atomic_state *state);
 	void (*prepare_commit)(struct msm_kms *kms,
@@ -86,12 +96,22 @@ struct msm_kms_funcs {
 	int (*atomic_check)(struct msm_kms *kms,
 			struct drm_atomic_state *state);
 	/* misc: */
+=======
+	void (*prepare_commit)(struct msm_kms *kms, struct drm_atomic_state *state);
+	void (*complete_commit)(struct msm_kms *kms, struct drm_atomic_state *state);
+	/* functions to wait for atomic commit completed on each CRTC */
+	void (*wait_for_crtc_commit_done)(struct msm_kms *kms,
+					struct drm_crtc *crtc);
+	/* misc: */
+	const struct msm_format *(*get_format)(struct msm_kms *kms, uint32_t format);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	long (*round_pixclk)(struct msm_kms *kms, unsigned long rate,
 			struct drm_encoder *encoder);
 	int (*set_split_display)(struct msm_kms *kms,
 			struct drm_encoder *encoder,
 			struct drm_encoder *slave_encoder,
 			bool is_cmd_mode);
+<<<<<<< HEAD
 	void (*postopen)(struct msm_kms *kms, struct drm_file *file);
 	void (*preclose)(struct msm_kms *kms, struct drm_file *file);
 	void (*postclose)(struct msm_kms *kms, struct drm_file *file);
@@ -111,14 +131,24 @@ struct msm_kms_funcs {
 	struct msm_gem_address_space *(*get_address_space)(
 			struct msm_kms *kms,
 			unsigned int domain);
+=======
+	void (*set_encoder_mode)(struct msm_kms *kms,
+				 struct drm_encoder *encoder,
+				 bool cmd_mode);
+	/* cleanup: */
+	void (*destroy)(struct msm_kms *kms);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_DEBUG_FS
 	/* debugfs: */
 	int (*debugfs_init)(struct msm_kms *kms, struct drm_minor *minor);
 #endif
+<<<<<<< HEAD
 	/* handle continuous splash  */
 	int (*cont_splash_config)(struct msm_kms *kms);
 	/* check for continuous splash status */
 	bool (*check_for_splash)(struct msm_kms *kms);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct msm_kms {
@@ -149,6 +179,7 @@ static inline void msm_kms_init(struct msm_kms *kms,
 	kms->funcs = funcs;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_DRM_MSM_MDP4
 struct msm_kms *mdp4_kms_init(struct drm_device *dev);
 #else
@@ -225,4 +256,13 @@ static inline bool msm_needs_vblank_pre_modeset(
 {
 	return (mode->private_flags & MSM_MODE_FLAG_VBLANK_PRE_MODESET);
 }
+=======
+struct msm_kms *mdp4_kms_init(struct drm_device *dev);
+struct msm_kms *mdp5_kms_init(struct drm_device *dev);
+int msm_mdss_init(struct drm_device *dev);
+void msm_mdss_destroy(struct drm_device *dev);
+int msm_mdss_enable(struct msm_mdss *mdss);
+int msm_mdss_disable(struct msm_mdss *mdss);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* __MSM_KMS_H__ */

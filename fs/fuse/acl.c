@@ -19,6 +19,12 @@ struct posix_acl *fuse_get_acl(struct inode *inode, int type)
 	void *value = NULL;
 	struct posix_acl *acl;
 
+<<<<<<< HEAD
+=======
+	if (fuse_is_bad(inode))
+		return ERR_PTR(-EIO);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!fc->posix_acl || fc->no_getxattr)
 		return NULL;
 
@@ -53,6 +59,12 @@ int fuse_set_acl(struct inode *inode, struct posix_acl *acl, int type)
 	const char *name;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (fuse_is_bad(inode))
+		return -EIO;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!fc->posix_acl || fc->no_setxattr)
 		return -EOPNOTSUPP;
 

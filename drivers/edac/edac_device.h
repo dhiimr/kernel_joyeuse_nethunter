@@ -159,11 +159,17 @@ struct edac_device_ctl_info {
 	/* Per instance controls for this edac_device */
 	int log_ue;		/* boolean for logging UEs */
 	int log_ce;		/* boolean for logging CEs */
+<<<<<<< HEAD
 	int panic_on_ce;	/* boolean for panic'ing on an CE */
 	int panic_on_ue;	/* boolean for panic'ing on an UE */
 	unsigned poll_msec;	/* number of milliseconds to poll interval */
 	unsigned long delay;	/* number of jiffies for poll_msec */
 	bool defer_work;	/* Create a deferrable work for polling */
+=======
+	int panic_on_ue;	/* boolean for panic'ing on an UE */
+	unsigned poll_msec;	/* number of milliseconds to poll interval */
+	unsigned long delay;	/* number of jiffies for poll_msec */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Additional top controller level attributes, but specified
 	 * by the low level driver.

@@ -68,7 +68,10 @@ struct vfsmount {
 	struct dentry *mnt_root;	/* root of the mounted tree */
 	struct super_block *mnt_sb;	/* pointer to superblock */
 	int mnt_flags;
+<<<<<<< HEAD
 	void *data;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 } __randomize_layout;
 
 struct file; /* forward dec */

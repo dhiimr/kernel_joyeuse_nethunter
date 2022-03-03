@@ -163,41 +163,78 @@ static struct apq8016_sbc_data *apq8016_sbc_parse_of(struct snd_soc_card *card)
 
 		if (!cpu || !codec) {
 			dev_err(dev, "Can't find cpu/codec DT node\n");
+<<<<<<< HEAD
 			return ERR_PTR(-EINVAL);
+=======
+			ret = -EINVAL;
+			goto error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		link->cpu_of_node = of_parse_phandle(cpu, "sound-dai", 0);
 		if (!link->cpu_of_node) {
 			dev_err(card->dev, "error getting cpu phandle\n");
+<<<<<<< HEAD
 			return ERR_PTR(-EINVAL);
+=======
+			ret = -EINVAL;
+			goto error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		ret = snd_soc_of_get_dai_name(cpu, &link->cpu_dai_name);
 		if (ret) {
 			dev_err(card->dev, "error getting cpu dai name\n");
+<<<<<<< HEAD
 			return ERR_PTR(ret);
+=======
+			goto error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
 
 		if (ret < 0) {
 			dev_err(card->dev, "error getting codec dai name\n");
+<<<<<<< HEAD
 			return ERR_PTR(ret);
+=======
+			goto error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		link->platform_of_node = link->cpu_of_node;
 		ret = of_property_read_string(np, "link-name", &link->name);
 		if (ret) {
 			dev_err(card->dev, "error getting codec dai_link name\n");
+<<<<<<< HEAD
 			return ERR_PTR(ret);
+=======
+			goto error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		link->stream_name = link->name;
 		link->init = apq8016_sbc_dai_init;
 		link++;
+<<<<<<< HEAD
 	}
 
 	return data;
+=======
+
+		of_node_put(cpu);
+		of_node_put(codec);
+	}
+
+	return data;
+
+ error:
+	of_node_put(np);
+	of_node_put(cpu);
+	of_node_put(codec);
+	return ERR_PTR(ret);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct snd_soc_dapm_widget apq8016_sbc_dapm_widgets[] = {

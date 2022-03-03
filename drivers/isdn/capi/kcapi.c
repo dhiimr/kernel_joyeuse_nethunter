@@ -564,6 +564,14 @@ int detach_capi_ctr(struct capi_ctr *ctr)
 
 	ctr_down(ctr, CAPI_CTR_DETACHED);
 
+<<<<<<< HEAD
+=======
+	if (ctr->cnr < 1 || ctr->cnr - 1 >= CAPI_MAXCONTR) {
+		err = -EINVAL;
+		goto unlock_out;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (capi_controller[ctr->cnr - 1] != ctr) {
 		err = -EINVAL;
 		goto unlock_out;
@@ -845,7 +853,11 @@ EXPORT_SYMBOL(capi20_put_message);
  * Return value: CAPI result code
  */
 
+<<<<<<< HEAD
 u16 capi20_get_manufacturer(u32 contr, u8 *buf)
+=======
+u16 capi20_get_manufacturer(u32 contr, u8 buf[CAPI_MANUFACTURER_LEN])
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct capi_ctr *ctr;
 	u16 ret;
@@ -915,7 +927,11 @@ EXPORT_SYMBOL(capi20_get_version);
  * Return value: CAPI result code
  */
 
+<<<<<<< HEAD
 u16 capi20_get_serial(u32 contr, u8 *serial)
+=======
+u16 capi20_get_serial(u32 contr, u8 serial[CAPI_SERIAL_LEN])
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct capi_ctr *ctr;
 	u16 ret;

@@ -377,7 +377,10 @@ static inline int multicast_outbound(struct qdio_q *q)
 extern u64 last_ai_time;
 
 /* prototypes for thin interrupt */
+<<<<<<< HEAD
 void qdio_setup_thinint(struct qdio_irq *irq_ptr);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int qdio_establish_thinint(struct qdio_irq *irq_ptr);
 void qdio_shutdown_thinint(struct qdio_irq *irq_ptr);
 void tiqdio_add_input_queues(struct qdio_irq *irq_ptr);

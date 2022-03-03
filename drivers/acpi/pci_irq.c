@@ -462,8 +462,15 @@ int acpi_pci_irq_enable(struct pci_dev *dev)
 		 * No IRQ known to the ACPI subsystem - maybe the BIOS /
 		 * driver reported one, then use it. Exit in any case.
 		 */
+<<<<<<< HEAD
 		if (!acpi_pci_irq_valid(dev, pin))
 			return 0;
+=======
+		if (!acpi_pci_irq_valid(dev, pin)) {
+			kfree(entry);
+			return 0;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (acpi_isa_register_gsi(dev))
 			dev_warn(&dev->dev, "PCI INT %c: no GSI\n",

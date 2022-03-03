@@ -63,6 +63,12 @@ static int kernfs_get_target_path(struct kernfs_node *parent,
 		if (base == kn)
 			break;
 
+<<<<<<< HEAD
+=======
+		if ((s - path) + 3 >= PATH_MAX)
+			return -ENAMETOOLONG;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		strcpy(s, "../");
 		s += 3;
 		base = base->parent;
@@ -79,7 +85,11 @@ static int kernfs_get_target_path(struct kernfs_node *parent,
 	if (len < 2)
 		return -EINVAL;
 	len--;
+<<<<<<< HEAD
 	if ((s - path) + len > PATH_MAX)
+=======
+	if ((s - path) + len >= PATH_MAX)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -ENAMETOOLONG;
 
 	/* reverse fillup of target string from target to base */

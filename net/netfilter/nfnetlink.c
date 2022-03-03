@@ -530,7 +530,11 @@ static int nfnetlink_bind(struct net *net, int group)
 	ss = nfnetlink_get_subsys(type << 8);
 	rcu_read_unlock();
 	if (!ss)
+<<<<<<< HEAD
 		request_module("nfnetlink-subsys-%d", type);
+=======
+		request_module_nowait("nfnetlink-subsys-%d", type);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 #endif

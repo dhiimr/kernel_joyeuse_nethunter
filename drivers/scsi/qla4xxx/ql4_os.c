@@ -1223,7 +1223,11 @@ static int qla4xxx_get_host_stats(struct Scsi_Host *shost, char *buf, int len)
 			le64_to_cpu(ql_iscsi_stats->iscsi_sequence_error);
 exit_host_stats:
 	if (ql_iscsi_stats)
+<<<<<<< HEAD
 		dma_free_coherent(&ha->pdev->dev, host_stats_size,
+=======
+		dma_free_coherent(&ha->pdev->dev, stats_size,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				  ql_iscsi_stats, iscsi_stats_dma);
 
 	ql4_printk(KERN_INFO, ha, "%s: Get host stats done\n",
@@ -4150,7 +4154,11 @@ static void qla4xxx_mem_free(struct scsi_qla_host *ha)
 		dma_free_coherent(&ha->pdev->dev, ha->queues_len, ha->queues,
 				  ha->queues_dma);
 
+<<<<<<< HEAD
 	 if (ha->fw_dump)
+=======
+	if (ha->fw_dump)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		vfree(ha->fw_dump);
 
 	ha->queues_len = 0;
@@ -4285,7 +4293,10 @@ static int qla4xxx_mem_alloc(struct scsi_qla_host *ha)
 	return QLA_SUCCESS;
 
 mem_alloc_error_exit:
+<<<<<<< HEAD
 	qla4xxx_mem_free(ha);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return QLA_ERROR;
 }
 
@@ -5939,7 +5950,11 @@ static int get_fw_boot_info(struct scsi_qla_host *ha, uint16_t ddb_index[])
 		val = rd_nvram_byte(ha, sec_addr);
 		if (val & BIT_7)
 			ddb_index[1] = (val & 0x7f);
+<<<<<<< HEAD
 
+=======
+		goto exit_boot_info;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else if (is_qla80XX(ha)) {
 		buf = dma_alloc_coherent(&ha->pdev->dev, size,
 					 &buf_dma, GFP_KERNEL);

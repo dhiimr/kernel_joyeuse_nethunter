@@ -12,10 +12,15 @@
 #define _TRACE_IOMMU_H
 
 #include <linux/tracepoint.h>
+<<<<<<< HEAD
 #include <linux/iommu.h>
 
 struct device;
 struct iommu_domain;
+=======
+
+struct device;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 DECLARE_EVENT_CLASS(iommu_group_event,
 
@@ -87,6 +92,7 @@ DEFINE_EVENT(iommu_device_event, detach_device_from_domain,
 
 TRACE_EVENT(map,
 
+<<<<<<< HEAD
 	TP_PROTO(struct iommu_domain *domain, unsigned long iova,
 		 phys_addr_t paddr, size_t size, int prot),
 
@@ -111,11 +117,32 @@ TRACE_EVENT(map,
 	TP_printk("IOMMU:%s iova=0x%016llx paddr=0x%016llx size=0x%zx prot=0x%x",
 			__get_str(name), __entry->iova, __entry->paddr,
 			__entry->size, __entry->prot
+=======
+	TP_PROTO(unsigned long iova, phys_addr_t paddr, size_t size),
+
+	TP_ARGS(iova, paddr, size),
+
+	TP_STRUCT__entry(
+		__field(u64, iova)
+		__field(u64, paddr)
+		__field(size_t, size)
+	),
+
+	TP_fast_assign(
+		__entry->iova = iova;
+		__entry->paddr = paddr;
+		__entry->size = size;
+	),
+
+	TP_printk("IOMMU: iova=0x%016llx paddr=0x%016llx size=%zu",
+			__entry->iova, __entry->paddr, __entry->size
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	)
 );
 
 TRACE_EVENT(unmap,
 
+<<<<<<< HEAD
 	TP_PROTO(struct iommu_domain *domain, unsigned long iova, size_t size,
 			size_t unmapped_size),
 
@@ -123,18 +150,29 @@ TRACE_EVENT(unmap,
 
 	TP_STRUCT__entry(
 		__string(name, domain->name)
+=======
+	TP_PROTO(unsigned long iova, size_t size, size_t unmapped_size),
+
+	TP_ARGS(iova, size, unmapped_size),
+
+	TP_STRUCT__entry(
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__field(u64, iova)
 		__field(size_t, size)
 		__field(size_t, unmapped_size)
 	),
 
 	TP_fast_assign(
+<<<<<<< HEAD
 		__assign_str(name, domain->name);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__entry->iova = iova;
 		__entry->size = size;
 		__entry->unmapped_size = unmapped_size;
 	),
 
+<<<<<<< HEAD
 	TP_printk("IOMMU:%s iova=0x%016llx size=0x%zx unmapped_size=0x%zx",
 			__get_str(name), __entry->iova, __entry->size,
 			__entry->unmapped_size
@@ -165,6 +203,10 @@ TRACE_EVENT(map_sg,
 	TP_printk("IOMMU:%s iova=0x%016llx size=0x%zx prot=0x%x",
 			__get_str(name), __entry->iova, __entry->size,
 			__entry->prot
+=======
+	TP_printk("IOMMU: iova=0x%016llx size=%zu unmapped_size=%zu",
+			__entry->iova, __entry->size, __entry->unmapped_size
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	)
 );
 
@@ -200,6 +242,7 @@ DEFINE_EVENT(iommu_error, io_page_fault,
 
 	TP_ARGS(dev, iova, flags)
 );
+<<<<<<< HEAD
 
 DECLARE_EVENT_CLASS(iommu_tlbi,
 
@@ -260,6 +303,8 @@ TRACE_EVENT(smmu_init,
 	TP_printk("ARM SMMU init latency: %lld us", __entry->time)
 );
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _TRACE_IOMMU_H */
 
 /* This part must be outside protection */

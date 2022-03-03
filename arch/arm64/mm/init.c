@@ -40,9 +40,12 @@
 #include <linux/mm.h>
 #include <linux/kexec.h>
 #include <linux/crash_dump.h>
+<<<<<<< HEAD
 #include <linux/memory.h>
 #include <linux/libfdt.h>
 #include <linux/memblock.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <asm/boot.h>
 #include <asm/fixmap.h>
@@ -318,6 +321,7 @@ static void __init arm64_memory_present(void)
 #endif
 
 static phys_addr_t memory_limit = (phys_addr_t)ULLONG_MAX;
+<<<<<<< HEAD
 phys_addr_t bootloader_memory_limit;
 
 #ifdef CONFIG_OVERRIDE_MEMORY_LIMIT
@@ -400,6 +404,8 @@ static void __init update_memory_limit(void)
 
 }
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Limit the memory size that was specified via FDT.
@@ -482,6 +488,7 @@ void __init arm64_memblock_init(void)
 		memblock_remove(0, memstart_addr);
 	}
 
+<<<<<<< HEAD
 	update_memory_limit();
 	/*
 	 * Save bootloader imposed memory limit before we overwirte
@@ -489,6 +496,8 @@ void __init arm64_memblock_init(void)
 	 */
 	bootloader_memory_limit = memblock_end_of_DRAM();
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Apply the memory limit if it was set. Since the kernel may be loaded
 	 * high up in memory, add back the kernel region that must be accessible
@@ -531,7 +540,11 @@ void __init arm64_memblock_init(void)
 	if (IS_ENABLED(CONFIG_RANDOMIZE_BASE)) {
 		extern u16 memstart_offset_seed;
 		u64 range = linear_region_size -
+<<<<<<< HEAD
 			   (bootloader_memory_limit - memblock_start_of_DRAM());
+=======
+			    (memblock_end_of_DRAM() - memblock_start_of_DRAM());
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/*
 		 * If the size of the linear region exceeds, by a sufficient
@@ -696,7 +709,10 @@ void __init mem_init(void)
 
 	mem_init_print_info(NULL);
 
+<<<<<<< HEAD
 #ifdef CONFIG_PRINT_VMEMLAYOUT
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define MLK(b, t) b, t, ((t) - (b)) >> 10
 #define MLM(b, t) b, t, ((t) - (b)) >> 20
 #define MLG(b, t) b, t, ((t) - (b)) >> 30
@@ -739,7 +755,11 @@ void __init mem_init(void)
 #undef MLK
 #undef MLM
 #undef MLK_ROUNDUP
+<<<<<<< HEAD
 #endif
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Check boundaries twice: Some fundamental inconsistencies can be
 	 * detected at build time already.
@@ -822,6 +842,7 @@ static int __init register_mem_limit_dumper(void)
 	return 0;
 }
 __initcall(register_mem_limit_dumper);
+<<<<<<< HEAD
 
 #ifdef CONFIG_MEMORY_HOTPLUG
 int arch_add_memory(int nid, u64 start, u64 size, bool want_memblock)
@@ -952,3 +973,5 @@ static int __init arm64_memory_hotplug_init(void)
 }
 core_initcall(arm64_memory_hotplug_init);
 #endif /* CONFIG_MEMORY_HOTPLUG */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

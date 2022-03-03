@@ -433,7 +433,11 @@ static int qlcnic_sriov_set_guest_vlan_mode(struct qlcnic_adapter *adapter,
 					    struct qlcnic_cmd_args *cmd)
 {
 	struct qlcnic_sriov *sriov = adapter->ahw->sriov;
+<<<<<<< HEAD
 	int i, num_vlans;
+=======
+	int i, num_vlans, ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u16 *vlans;
 
 	if (sriov->allowed_vlans)
@@ -444,7 +448,13 @@ static int qlcnic_sriov_set_guest_vlan_mode(struct qlcnic_adapter *adapter,
 	dev_info(&adapter->pdev->dev, "Number of allowed Guest VLANs = %d\n",
 		 sriov->num_allowed_vlans);
 
+<<<<<<< HEAD
 	qlcnic_sriov_alloc_vlans(adapter);
+=======
+	ret = qlcnic_sriov_alloc_vlans(adapter);
+	if (ret)
+		return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!sriov->any_vlan)
 		return 0;
@@ -2164,7 +2174,11 @@ static int qlcnic_sriov_vf_resume(struct qlcnic_adapter *adapter)
 	return err;
 }
 
+<<<<<<< HEAD
 void qlcnic_sriov_alloc_vlans(struct qlcnic_adapter *adapter)
+=======
+int qlcnic_sriov_alloc_vlans(struct qlcnic_adapter *adapter)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct qlcnic_sriov *sriov = adapter->ahw->sriov;
 	struct qlcnic_vf_info *vf;
@@ -2174,7 +2188,15 @@ void qlcnic_sriov_alloc_vlans(struct qlcnic_adapter *adapter)
 		vf = &sriov->vf_info[i];
 		vf->sriov_vlans = kcalloc(sriov->num_allowed_vlans,
 					  sizeof(*vf->sriov_vlans), GFP_KERNEL);
+<<<<<<< HEAD
 	}
+=======
+		if (!vf->sriov_vlans)
+			return -ENOMEM;
+	}
+
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void qlcnic_sriov_free_vlans(struct qlcnic_adapter *adapter)

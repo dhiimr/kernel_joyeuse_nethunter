@@ -40,7 +40,10 @@ static inline int in_exception_text(unsigned long ptr)
 	return in ? : __in_irqentry_text(ptr);
 }
 
+<<<<<<< HEAD
 extern void get_pct_hook_init(void);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void __init early_trap_init(void *);
 extern void dump_backtrace_entry(unsigned long where, unsigned long from, unsigned long frame);
 extern void ptrace_break(struct task_struct *tsk, struct pt_regs *regs);

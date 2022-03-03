@@ -4,5 +4,8 @@ obj-$(CONFIG_QCOM_HIDMA_MGMT) += hdma_mgmt.o
 hdma_mgmt-objs	 := hidma_mgmt.o hidma_mgmt_sys.o
 obj-$(CONFIG_QCOM_HIDMA) +=  hdma.o
 hdma-objs        := hidma_ll.o hidma.o hidma_dbg.o
+<<<<<<< HEAD
 obj-$(CONFIG_QCOM_GPI_DMA) += gpi.o
 obj-$(CONFIG_QCOM_PCI_EDMA) += pci-edma.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

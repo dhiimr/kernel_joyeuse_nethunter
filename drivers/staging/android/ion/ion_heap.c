@@ -105,12 +105,20 @@ int ion_heap_map_user(struct ion_heap *heap, struct ion_buffer *buffer,
 
 static int ion_heap_clear_pages(struct page **pages, int num, pgprot_t pgprot)
 {
+<<<<<<< HEAD
 	void *addr = vm_map_ram(pages, num, -1, pgprot);
+=======
+	void *addr = vmap(pages, num, VM_MAP, pgprot);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!addr)
 		return -ENOMEM;
 	memset(addr, 0, PAGE_SIZE * num);
+<<<<<<< HEAD
 	vm_unmap_ram(addr, num);
+=======
+	vunmap(addr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -250,9 +258,14 @@ static int ion_heap_deferred_free(void *data)
 
 int ion_heap_init_deferred_free(struct ion_heap *heap)
 {
+<<<<<<< HEAD
 #ifndef CONFIG_ION_DEFER_FREE_NO_SCHED_IDLE
 	struct sched_param param = { .sched_priority = 0 };
 #endif
+=======
+	struct sched_param param = { .sched_priority = 0 };
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	INIT_LIST_HEAD(&heap->free_list);
 	init_waitqueue_head(&heap->waitqueue);
 	heap->task = kthread_run(ion_heap_deferred_free, heap,
@@ -262,9 +275,13 @@ int ion_heap_init_deferred_free(struct ion_heap *heap)
 		       __func__);
 		return PTR_ERR_OR_ZERO(heap->task);
 	}
+<<<<<<< HEAD
 #ifndef CONFIG_ION_DEFER_FREE_NO_SCHED_IDLE
 	sched_setscheduler(heap->task, SCHED_IDLE, &param);
 #endif
+=======
+	sched_setscheduler(heap->task, SCHED_IDLE, &param);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -317,6 +334,7 @@ void ion_heap_init_shrinker(struct ion_heap *heap)
 	heap->shrinker.batch = 0;
 	register_shrinker(&heap->shrinker);
 }
+<<<<<<< HEAD
 
 struct ion_heap *ion_heap_create(struct ion_platform_heap *heap_data)
 {
@@ -373,3 +391,5 @@ struct ion_heap *ion_heap_create(struct ion_platform_heap *heap_data)
 	return heap;
 }
 EXPORT_SYMBOL(ion_heap_create);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

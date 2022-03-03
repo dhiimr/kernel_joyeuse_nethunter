@@ -49,6 +49,13 @@ ath10k_usb_alloc_urb_from_pipe(struct ath10k_usb_pipe *pipe)
 	struct ath10k_urb_context *urb_context = NULL;
 	unsigned long flags;
 
+<<<<<<< HEAD
+=======
+	/* bail if this pipe is not initialized */
+	if (!pipe->ar_usb)
+		return NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&pipe->ar_usb->cs_lock, flags);
 	if (!list_empty(&pipe->urb_list_head)) {
 		urb_context = list_first_entry(&pipe->urb_list_head,
@@ -66,6 +73,13 @@ static void ath10k_usb_free_urb_to_pipe(struct ath10k_usb_pipe *pipe,
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
+=======
+	/* bail if this pipe is not initialized */
+	if (!pipe->ar_usb)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&pipe->ar_usb->cs_lock, flags);
 
 	pipe->urb_cnt++;
@@ -446,6 +460,10 @@ static int ath10k_usb_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
 			ath10k_dbg(ar, ATH10K_DBG_USB_BULK,
 				   "usb bulk transmit failed: %d\n", ret);
 			usb_unanchor_urb(urb);
+<<<<<<< HEAD
+=======
+			usb_free_urb(urb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ret = -EINVAL;
 			goto err_free_urb_to_pipe;
 		}
@@ -527,7 +545,11 @@ static int ath10k_usb_submit_ctrl_in(struct ath10k *ar,
 			      req,
 			      USB_DIR_IN | USB_TYPE_VENDOR |
 			      USB_RECIP_DEVICE, value, index, buf,
+<<<<<<< HEAD
 			      size, 2 * HZ);
+=======
+			      size, 2000);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (ret < 0) {
 		ath10k_warn(ar, "Failed to read usb control message: %d\n",
@@ -866,6 +888,14 @@ static int ath10k_usb_setup_pipe_resources(struct ath10k *ar,
 				   le16_to_cpu(endpoint->wMaxPacketSize),
 				   endpoint->bInterval);
 		}
+<<<<<<< HEAD
+=======
+
+		/* Ignore broken descriptors. */
+		if (usb_endpoint_maxp(endpoint) == 0)
+			continue;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		urbcount = 0;
 
 		pipe_num =
@@ -1010,6 +1040,11 @@ static int ath10k_usb_probe(struct usb_interface *interface,
 
 	ar_usb = ath10k_usb_priv(ar);
 	ret = ath10k_usb_create(ar, interface);
+<<<<<<< HEAD
+=======
+	if (ret)
+		goto err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ar_usb->ar = ar;
 
 	ar->dev_id = product_id;
@@ -1021,6 +1056,7 @@ static int ath10k_usb_probe(struct usb_interface *interface,
 	ret = ath10k_core_register(ar, chip_id);
 	if (ret) {
 		ath10k_warn(ar, "failed to register driver core: %d\n", ret);
+<<<<<<< HEAD
 		goto err;
 	}
 
@@ -1029,6 +1065,19 @@ static int ath10k_usb_probe(struct usb_interface *interface,
 
 	return 0;
 
+=======
+		goto err_usb_destroy;
+	}
+
+	/* TODO: remove this once USB support is fully implemented */
+	ath10k_warn(ar, "Warning: ath10k USB support is incomplete, don't expect anything to work!\n");
+
+	return 0;
+
+err_usb_destroy:
+	ath10k_usb_destroy(ar);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 err:
 	ath10k_core_destroy(ar);
 

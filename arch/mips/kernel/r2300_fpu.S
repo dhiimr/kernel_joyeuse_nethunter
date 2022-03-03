@@ -29,8 +29,13 @@
 #define EX2(a,b)						\
 9:	a,##b;							\
 	.section __ex_table,"a";				\
+<<<<<<< HEAD
 	PTR	9b,bad_stack;					\
 	PTR	9b+4,bad_stack;					\
+=======
+	PTR	9b,fault;					\
+	PTR	9b+4,fault;					\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.previous
 
 	.set	mips1

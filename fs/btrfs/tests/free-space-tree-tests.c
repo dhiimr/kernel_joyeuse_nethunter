@@ -475,9 +475,15 @@ static int run_test(test_func_t test_func, int bitmaps, u32 sectorsize,
 	root->fs_info->tree_root = root;
 
 	root->node = alloc_test_extent_buffer(root->fs_info, nodesize);
+<<<<<<< HEAD
 	if (!root->node) {
 		test_msg("Couldn't allocate dummy buffer\n");
 		ret = -ENOMEM;
+=======
+	if (IS_ERR(root->node)) {
+		test_msg("couldn't allocate dummy buffer\n");
+		ret = PTR_ERR(root->node);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out;
 	}
 	btrfs_set_header_level(root->node, 0);

@@ -173,7 +173,11 @@ static int _rtl92d_fw_init(struct ieee80211_hw *hw)
 			 rtl_read_byte(rtlpriv, FW_MAC1_READY));
 	}
 	RT_TRACE(rtlpriv, COMP_FW, DBG_DMESG,
+<<<<<<< HEAD
 		 "Polling FW ready fail!! REG_MCUFWDL:0x%08ul\n",
+=======
+		 "Polling FW ready fail!! REG_MCUFWDL:0x%08x\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		 rtl_read_dword(rtlpriv, REG_MCUFWDL));
 	return -1;
 }

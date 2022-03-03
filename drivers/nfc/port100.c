@@ -574,7 +574,11 @@ static void port100_tx_update_payload_len(void *_frame, int len)
 {
 	struct port100_frame *frame = _frame;
 
+<<<<<<< HEAD
 	frame->datalen = cpu_to_le16(le16_to_cpu(frame->datalen) + len);
+=======
+	le16_add_cpu(&frame->datalen, len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static bool port100_rx_frame_is_valid(void *_frame)
@@ -792,7 +796,11 @@ static int port100_send_frame_async(struct port100 *dev, struct sk_buff *out,
 
 	rc = port100_submit_urb_for_ack(dev, GFP_KERNEL);
 	if (rc)
+<<<<<<< HEAD
 		usb_unlink_urb(dev->out_urb);
+=======
+		usb_kill_urb(dev->out_urb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 exit:
 	mutex_unlock(&dev->out_urb_lock);
@@ -1012,11 +1020,19 @@ static u64 port100_get_command_type_mask(struct port100 *dev)
 
 	skb = port100_alloc_skb(dev, 0);
 	if (!skb)
+<<<<<<< HEAD
 		return -ENOMEM;
 
 	resp = port100_send_cmd_sync(dev, PORT100_CMD_GET_COMMAND_TYPE, skb);
 	if (IS_ERR(resp))
 		return PTR_ERR(resp);
+=======
+		return 0;
+
+	resp = port100_send_cmd_sync(dev, PORT100_CMD_GET_COMMAND_TYPE, skb);
+	if (IS_ERR(resp))
+		return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (resp->len < 8)
 		mask = 0;

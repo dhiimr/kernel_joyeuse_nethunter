@@ -617,7 +617,14 @@ static ssize_t symbol_map_read(struct file *fp, struct kobject *kobj,
 				       bin_attr->size);
 }
 
+<<<<<<< HEAD
 static BIN_ATTR_RO(symbol_map, 0);
+=======
+static struct bin_attribute symbol_map_attr = {
+	.attr = {.name = "symbol_map", .mode = 0400},
+	.read = symbol_map_read
+};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static void opal_export_symmap(void)
 {
@@ -634,10 +641,17 @@ static void opal_export_symmap(void)
 		return;
 
 	/* Setup attributes */
+<<<<<<< HEAD
 	bin_attr_symbol_map.private = __va(be64_to_cpu(syms[0]));
 	bin_attr_symbol_map.size = be64_to_cpu(syms[1]);
 
 	rc = sysfs_create_bin_file(opal_kobj, &bin_attr_symbol_map);
+=======
+	symbol_map_attr.private = __va(be64_to_cpu(syms[0]));
+	symbol_map_attr.size = be64_to_cpu(syms[1]);
+
+	rc = sysfs_create_bin_file(opal_kobj, &symbol_map_attr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (rc)
 		pr_warn("Error %d creating OPAL symbols file\n", rc);
 }

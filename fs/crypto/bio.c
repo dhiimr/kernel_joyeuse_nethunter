@@ -26,13 +26,26 @@
 #include <linux/namei.h>
 #include "fscrypt_private.h"
 
+<<<<<<< HEAD
 static void __fscrypt_decrypt_bio(struct bio *bio, bool done)
 {
+=======
+/*
+ * Call fscrypt_decrypt_page on every single page, reusing the encryption
+ * context.
+ */
+static void completion_pages(struct work_struct *work)
+{
+	struct fscrypt_ctx *ctx =
+		container_of(work, struct fscrypt_ctx, r.work);
+	struct bio *bio = ctx->r.bio;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct bio_vec *bv;
 	int i;
 
 	bio_for_each_segment_all(bv, bio, i) {
 		struct page *page = bv->bv_page;
+<<<<<<< HEAD
 		if (fscrypt_using_hardware_encryption(page->mapping->host)) {
 			SetPageUptodate(page);
 		} else {
@@ -63,10 +76,24 @@ static void completion_pages(struct work_struct *work)
 	struct bio *bio = ctx->r.bio;
 
 	__fscrypt_decrypt_bio(bio, true);
+=======
+		int ret = fscrypt_decrypt_page(page->mapping->host, page,
+				PAGE_SIZE, 0, page->index);
+
+		if (ret) {
+			WARN_ON_ONCE(1);
+			SetPageError(page);
+		} else {
+			SetPageUptodate(page);
+		}
+		unlock_page(page);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	fscrypt_release_ctx(ctx);
 	bio_put(bio);
 }
 
+<<<<<<< HEAD
 void fscrypt_enqueue_decrypt_bio(struct fscrypt_ctx *ctx, struct bio *bio)
 {
 	INIT_WORK(&ctx->r.work, completion_pages);
@@ -74,6 +101,15 @@ void fscrypt_enqueue_decrypt_bio(struct fscrypt_ctx *ctx, struct bio *bio)
 	fscrypt_enqueue_decrypt_work(&ctx->r.work);
 }
 EXPORT_SYMBOL(fscrypt_enqueue_decrypt_bio);
+=======
+void fscrypt_decrypt_bio_pages(struct fscrypt_ctx *ctx, struct bio *bio)
+{
+	INIT_WORK(&ctx->r.work, completion_pages);
+	ctx->r.bio = bio;
+	queue_work(fscrypt_read_workqueue, &ctx->r.work);
+}
+EXPORT_SYMBOL(fscrypt_decrypt_bio_pages);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 void fscrypt_pullback_bio_page(struct page **page, bool restore)
 {
@@ -131,7 +167,11 @@ int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
 		bio_set_dev(bio, inode->i_sb->s_bdev);
 		bio->bi_iter.bi_sector =
 			pblk << (inode->i_sb->s_blocksize_bits - 9);
+<<<<<<< HEAD
 		bio_set_op_attrs(bio, REQ_OP_WRITE, REQ_NOENCRYPT);
+=======
+		bio_set_op_attrs(bio, REQ_OP_WRITE, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = bio_add_page(bio, ciphertext_page,
 					inode->i_sb->s_blocksize, 0);
 		if (ret != inode->i_sb->s_blocksize) {

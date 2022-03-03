@@ -322,6 +322,7 @@ static void mousevsc_on_receive(struct hv_device *device,
 
 static void mousevsc_on_channel_callback(void *context)
 {
+<<<<<<< HEAD
 	const int packet_size = 0x100;
 	int ret;
 	struct hv_device *device = context;
@@ -376,6 +377,26 @@ static void mousevsc_on_channel_callback(void *context)
 		}
 	} while (1);
 
+=======
+	struct hv_device *device = context;
+	struct vmpacket_descriptor *desc;
+
+	foreach_vmbus_pkt(desc, device->channel) {
+		switch (desc->type) {
+		case VM_PKT_COMP:
+			break;
+
+		case VM_PKT_DATA_INBAND:
+			mousevsc_on_receive(device, desc);
+			break;
+
+		default:
+			pr_err("Unhandled packet type %d, tid %llx len %d\n",
+			       desc->type, desc->trans_id, desc->len8 * 8);
+			break;
+		}
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int mousevsc_connect_to_vsp(struct hv_device *device)

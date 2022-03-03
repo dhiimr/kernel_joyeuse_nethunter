@@ -25,6 +25,10 @@
 #include <linux/bug.h>
 #include <linux/genhd.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/sched/mm.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "ctree.h"
 #include "disk-io.h"
@@ -749,7 +753,13 @@ int btrfs_sysfs_add_device_link(struct btrfs_fs_devices *fs_devices,
 {
 	int error = 0;
 	struct btrfs_device *dev;
+<<<<<<< HEAD
 
+=======
+	unsigned int nofs_flag;
+
+	nofs_flag = memalloc_nofs_save();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	list_for_each_entry(dev, &fs_devices->devices, dev_list) {
 		struct hd_struct *disk;
 		struct kobject *disk_kobj;
@@ -768,6 +778,10 @@ int btrfs_sysfs_add_device_link(struct btrfs_fs_devices *fs_devices,
 		if (error)
 			break;
 	}
+<<<<<<< HEAD
+=======
+	memalloc_nofs_restore(nofs_flag);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return error;
 }
@@ -794,7 +808,16 @@ int btrfs_sysfs_add_fsid(struct btrfs_fs_devices *fs_devs,
 	fs_devs->fsid_kobj.kset = btrfs_kset;
 	error = kobject_init_and_add(&fs_devs->fsid_kobj,
 				&btrfs_ktype, parent, "%pU", fs_devs->fsid);
+<<<<<<< HEAD
 	return error;
+=======
+	if (error) {
+		kobject_put(&fs_devs->fsid_kobj);
+		return error;
+	}
+
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 int btrfs_sysfs_add_mounted(struct btrfs_fs_info *fs_info)

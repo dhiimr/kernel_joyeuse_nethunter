@@ -220,9 +220,26 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
 
 	dbg_gen("'%pd' in dir ino %lu", dentry, dir->i_ino);
 
+<<<<<<< HEAD
 	err = fscrypt_prepare_lookup(dir, dentry, flags);
 	if (err)
 		return ERR_PTR(err);
+=======
+	if (ubifs_crypt_is_encrypted(dir)) {
+		err = fscrypt_get_encryption_info(dir);
+
+		/*
+		 * DCACHE_ENCRYPTED_WITH_KEY is set if the dentry is
+		 * created while the directory was encrypted and we
+		 * have access to the key.
+		 */
+		if (fscrypt_has_encryption_key(dir))
+			fscrypt_set_encrypted_dentry(dentry);
+		fscrypt_set_d_op(dentry);
+		if (err && err != -ENOKEY)
+			return ERR_PTR(err);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = fscrypt_setup_filename(dir, &dentry->d_name, 1, &nm);
 	if (err)
@@ -242,6 +259,11 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
 	if (nm.hash) {
 		ubifs_assert(fname_len(&nm) == 0);
 		ubifs_assert(fname_name(&nm) == NULL);
+<<<<<<< HEAD
+=======
+		if (nm.hash & ~UBIFS_S_KEY_HASH_MASK)
+			goto done; /* ENOENT */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dent_key_init_hash(c, &key, dir->i_ino, nm.hash);
 		err = ubifs_tnc_lookup_dh(c, &key, dent, nm.minor_hash);
 	} else {
@@ -734,7 +756,11 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
 
 	if (ubifs_crypt_is_encrypted(dir) &&
 	    !fscrypt_has_permitted_context(dir, inode))
+<<<<<<< HEAD
 		return -EPERM;
+=======
+		return -EXDEV;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
 	if (err)
@@ -1137,12 +1163,18 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
 	struct ubifs_inode *dir_ui = ubifs_inode(dir);
 	struct ubifs_info *c = dir->i_sb->s_fs_info;
 	int err, sz_change, len = strlen(symname);
+<<<<<<< HEAD
 	struct fscrypt_str disk_link;
+=======
+	struct fscrypt_str disk_link = FSTR_INIT((char *)symname, len + 1);
+	struct fscrypt_symlink_data *sd = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
 					.new_ino_d = ALIGN(len, 8),
 					.dirtied_ino = 1 };
 	struct fscrypt_name nm;
 
+<<<<<<< HEAD
 	dbg_gen("dent '%pd', target '%s' in dir ino %lu", dentry,
 		symname, dir->i_ino);
 
@@ -1150,11 +1182,36 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
 				      &disk_link);
 	if (err)
 		return err;
+=======
+	if (ubifs_crypt_is_encrypted(dir)) {
+		err = fscrypt_get_encryption_info(dir);
+		if (err)
+			goto out_budg;
+
+		if (!fscrypt_has_encryption_key(dir)) {
+			err = -EPERM;
+			goto out_budg;
+		}
+
+		disk_link.len = (fscrypt_fname_encrypted_size(dir, len) +
+				sizeof(struct fscrypt_symlink_data));
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Budget request settings: new inode, new direntry and changing parent
 	 * directory inode.
 	 */
+<<<<<<< HEAD
+=======
+
+	dbg_gen("dent '%pd', target '%s' in dir ino %lu", dentry,
+		symname, dir->i_ino);
+
+	if (disk_link.len > UBIFS_MAX_INO_DATA)
+		return -ENAMETOOLONG;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = ubifs_budget_space(c, &req);
 	if (err)
 		return err;
@@ -1178,6 +1235,7 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
 		goto out_inode;
 	}
 
+<<<<<<< HEAD
 	if (IS_ENCRYPTED(inode)) {
 		disk_link.name = ui->data; /* encrypt directly into ui->data */
 		err = fscrypt_encrypt_symlink(inode, symname, len, &disk_link);
@@ -1192,6 +1250,38 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
 	 * The terminating zero byte is not written to the flash media and it
 	 * is put just to make later in-memory string processing simpler. Thus,
 	 * data length is @disk_link.len - 1, not @disk_link.len.
+=======
+	if (ubifs_crypt_is_encrypted(dir)) {
+		struct qstr istr = QSTR_INIT(symname, len);
+		struct fscrypt_str ostr;
+
+		sd = kzalloc(disk_link.len, GFP_NOFS);
+		if (!sd) {
+			err = -ENOMEM;
+			goto out_inode;
+		}
+
+		ostr.name = sd->encrypted_path;
+		ostr.len = disk_link.len;
+
+		err = fscrypt_fname_usr_to_disk(inode, &istr, &ostr);
+		if (err)
+			goto out_inode;
+
+		sd->len = cpu_to_le16(ostr.len);
+		disk_link.name = (char *)sd;
+	} else {
+		inode->i_link = ui->data;
+	}
+
+	memcpy(ui->data, disk_link.name, disk_link.len);
+	((char *)ui->data)[disk_link.len - 1] = '\0';
+
+	/*
+	 * The terminating zero byte is not written to the flash media and it
+	 * is put just to make later in-memory string processing simpler. Thus,
+	 * data length is @len, not @len + %1.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 */
 	ui->data_len = disk_link.len - 1;
 	inode->i_size = ubifs_inode(inode)->ui_size = disk_link.len - 1;
@@ -1225,6 +1315,10 @@ out_fname:
 	fscrypt_free_filename(&nm);
 out_budg:
 	ubifs_release_budget(c, &req);
+<<<<<<< HEAD
+=======
+	kfree(sd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return err;
 }
 
@@ -1313,7 +1407,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
 	if (old_dir != new_dir) {
 		if (ubifs_crypt_is_encrypted(new_dir) &&
 		    !fscrypt_has_permitted_context(new_dir, old_inode))
+<<<<<<< HEAD
 			return -EPERM;
+=======
+			return -EXDEV;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (unlink && is_dir) {
@@ -1364,7 +1462,14 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
 			goto out_release;
 		}
 
+<<<<<<< HEAD
 		whiteout->i_state |= I_LINKABLE;
+=======
+		spin_lock(&whiteout->i_lock);
+		whiteout->i_state |= I_LINKABLE;
+		spin_unlock(&whiteout->i_lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		whiteout_ui = ubifs_inode(whiteout);
 		whiteout_ui->data = dev;
 		whiteout_ui->data_len = ubifs_encode_dev(dev, MKDEV(0, 0));
@@ -1457,7 +1562,15 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
 
 		inc_nlink(whiteout);
 		mark_inode_dirty(whiteout);
+<<<<<<< HEAD
 		whiteout->i_state &= ~I_LINKABLE;
+=======
+
+		spin_lock(&whiteout->i_lock);
+		whiteout->i_state &= ~I_LINKABLE;
+		spin_unlock(&whiteout->i_lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		iput(whiteout);
 	}
 
@@ -1535,7 +1648,11 @@ static int ubifs_xrename(struct inode *old_dir, struct dentry *old_dentry,
 	    (old_dir != new_dir) &&
 	    (!fscrypt_has_permitted_context(new_dir, fst_inode) ||
 	     !fscrypt_has_permitted_context(old_dir, snd_inode)))
+<<<<<<< HEAD
 		return -EPERM;
+=======
+		return -EXDEV;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = fscrypt_setup_filename(old_dir, &old_dentry->d_name, 0, &fst_nm);
 	if (err)

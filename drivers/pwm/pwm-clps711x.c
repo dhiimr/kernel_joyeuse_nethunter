@@ -48,7 +48,11 @@ static void clps711x_pwm_update_val(struct clps711x_chip *priv, u32 n, u32 v)
 static unsigned int clps711x_get_duty(struct pwm_device *pwm, unsigned int v)
 {
 	/* Duty cycle 0..15 max */
+<<<<<<< HEAD
 	return DIV_ROUND_CLOSEST(v * 0xf, pwm_get_period(pwm));
+=======
+	return DIV_ROUND_CLOSEST(v * 0xf, pwm->args.period);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int clps711x_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
@@ -71,7 +75,11 @@ static int clps711x_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
 	struct clps711x_chip *priv = to_clps711x_chip(chip);
 	unsigned int duty;
 
+<<<<<<< HEAD
 	if (period_ns != pwm_get_period(pwm))
+=======
+	if (period_ns != pwm->args.period)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	duty = clps711x_get_duty(pwm, duty_ns);

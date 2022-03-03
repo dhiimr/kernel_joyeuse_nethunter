@@ -24,8 +24,12 @@ static int sysfs_do_create_link_sd(struct kernfs_node *parent,
 {
 	struct kernfs_node *kn, *target = NULL;
 
+<<<<<<< HEAD
 	if (WARN_ON(!name || !parent))
 		return -EINVAL;
+=======
+	BUG_ON(!name || !parent);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * We don't own @target_kobj and it may be removed at any time.

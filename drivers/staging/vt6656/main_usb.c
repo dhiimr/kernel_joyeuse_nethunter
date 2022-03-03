@@ -594,8 +594,11 @@ static int vnt_add_interface(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
 
 	priv->op_mode = vif->type;
 
+<<<<<<< HEAD
 	vnt_set_bss_mode(priv);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* LED blink on TX */
 	vnt_mac_set_led(priv, LEDSTS_STS, LEDSTS_INTER);
 
@@ -682,7 +685,10 @@ static void vnt_bss_info_changed(struct ieee80211_hw *hw,
 		priv->basic_rates = conf->basic_rates;
 
 		vnt_update_top_rates(priv);
+<<<<<<< HEAD
 		vnt_set_bss_mode(priv);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		dev_dbg(&priv->usb->dev, "basic rates %x\n", conf->basic_rates);
 	}
@@ -711,11 +717,21 @@ static void vnt_bss_info_changed(struct ieee80211_hw *hw,
 			priv->short_slot_time = false;
 
 		vnt_set_short_slot_time(priv);
+<<<<<<< HEAD
 		vnt_update_ifs(priv);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		vnt_set_vga_gain_offset(priv, priv->bb_vga[0]);
 		vnt_update_pre_ed_threshold(priv, false);
 	}
 
+<<<<<<< HEAD
+=======
+	if (changed & (BSS_CHANGED_BASIC_RATES | BSS_CHANGED_ERP_PREAMBLE |
+		       BSS_CHANGED_ERP_SLOT))
+		vnt_set_bss_mode(priv);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (changed & BSS_CHANGED_TXPOWER)
 		vnt_rf_setpower(priv, priv->current_rate,
 				conf->chandef.chan->hw_value);
@@ -739,12 +755,24 @@ static void vnt_bss_info_changed(struct ieee80211_hw *hw,
 			vnt_mac_reg_bits_on(priv, MAC_REG_TFTCTL,
 					    TFTCTL_TSFCNTREN);
 
+<<<<<<< HEAD
 			vnt_adjust_tsf(priv, conf->beacon_rate->hw_value,
 				       conf->sync_tsf, priv->current_tsf);
 
 			vnt_mac_set_beacon_interval(priv, conf->beacon_int);
 
 			vnt_reset_next_tbtt(priv, conf->beacon_int);
+=======
+			vnt_mac_set_beacon_interval(priv, conf->beacon_int);
+
+			vnt_reset_next_tbtt(priv, conf->beacon_int);
+
+			vnt_adjust_tsf(priv, conf->beacon_rate->hw_value,
+				       conf->sync_tsf, priv->current_tsf);
+
+			vnt_update_next_tbtt(priv,
+					     conf->sync_tsf, conf->beacon_int);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else {
 			vnt_clear_current_tsf(priv);
 
@@ -779,6 +807,7 @@ static void vnt_configure(struct ieee80211_hw *hw,
 {
 	struct vnt_private *priv = hw->priv;
 	u8 rx_mode = 0;
+<<<<<<< HEAD
 	int rc;
 
 	*total_flags &= FIF_ALLMULTI | FIF_OTHER_BSS | FIF_BCN_PRBRESP_PROMISC;
@@ -788,6 +817,13 @@ static void vnt_configure(struct ieee80211_hw *hw,
 
 	if (!rc)
 		rx_mode = RCR_MULTICAST | RCR_BROADCAST;
+=======
+
+	*total_flags &= FIF_ALLMULTI | FIF_OTHER_BSS | FIF_BCN_PRBRESP_PROMISC;
+
+	vnt_control_in(priv, MESSAGE_TYPE_READ, MAC_REG_RCR,
+		       MESSAGE_REQUEST_MACREG, sizeof(u8), &rx_mode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dev_dbg(&priv->usb->dev, "rx mode in = %x\n", rx_mode);
 
@@ -828,8 +864,17 @@ static int vnt_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 			return -EOPNOTSUPP;
 		break;
 	case DISABLE_KEY:
+<<<<<<< HEAD
 		if (test_bit(key->hw_key_idx, &priv->key_entry_inuse))
 			clear_bit(key->hw_key_idx, &priv->key_entry_inuse);
+=======
+		if (test_bit(key->hw_key_idx, &priv->key_entry_inuse)) {
+			clear_bit(key->hw_key_idx, &priv->key_entry_inuse);
+
+			vnt_mac_disable_keyentry(priv, key->hw_key_idx);
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	default:
 		break;
 	}
@@ -954,6 +999,10 @@ vt6656_probe(struct usb_interface *intf, const struct usb_device_id *id)
 	priv = hw->priv;
 	priv->hw = hw;
 	priv->usb = udev;
+<<<<<<< HEAD
+=======
+	priv->intf = intf;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	vnt_set_options(priv);
 
@@ -976,6 +1025,10 @@ vt6656_probe(struct usb_interface *intf, const struct usb_device_id *id)
 	ieee80211_hw_set(priv->hw, RX_INCLUDES_FCS);
 	ieee80211_hw_set(priv->hw, REPORTS_TX_ACK_STATUS);
 	ieee80211_hw_set(priv->hw, SUPPORTS_PS);
+<<<<<<< HEAD
+=======
+	ieee80211_hw_set(priv->hw, PS_NULLFUNC_STACK);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	priv->hw->max_signal = 100;
 

@@ -398,7 +398,14 @@ static struct reset_control *__reset_control_get_internal(
 	if (!rstc)
 		return ERR_PTR(-ENOMEM);
 
+<<<<<<< HEAD
 	try_module_get(rcdev->owner);
+=======
+	if (!try_module_get(rcdev->owner)) {
+		kfree(rstc);
+		return ERR_PTR(-ENODEV);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rstc->rcdev = rcdev;
 	list_add(&rstc->list, &rcdev->reset_control_head);
@@ -466,6 +473,7 @@ struct reset_control *__of_reset_control_get(struct device_node *node,
 			break;
 		}
 	}
+<<<<<<< HEAD
 	of_node_put(args.np);
 
 	if (!rcdev) {
@@ -476,18 +484,40 @@ struct reset_control *__of_reset_control_get(struct device_node *node,
 	if (WARN_ON(args.args_count != rcdev->of_reset_n_cells)) {
 		mutex_unlock(&reset_list_mutex);
 		return ERR_PTR(-EINVAL);
+=======
+
+	if (!rcdev) {
+		rstc = ERR_PTR(-EPROBE_DEFER);
+		goto out;
+	}
+
+	if (WARN_ON(args.args_count != rcdev->of_reset_n_cells)) {
+		rstc = ERR_PTR(-EINVAL);
+		goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	rstc_id = rcdev->of_xlate(rcdev, &args);
 	if (rstc_id < 0) {
+<<<<<<< HEAD
 		mutex_unlock(&reset_list_mutex);
 		return ERR_PTR(rstc_id);
+=======
+		rstc = ERR_PTR(rstc_id);
+		goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* reset_list_mutex also protects the rcdev's reset_control list */
 	rstc = __reset_control_get_internal(rcdev, rstc_id, shared);
 
+<<<<<<< HEAD
 	mutex_unlock(&reset_list_mutex);
+=======
+out:
+	mutex_unlock(&reset_list_mutex);
+	of_node_put(args.np);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return rstc;
 }
@@ -512,6 +542,10 @@ static void reset_control_array_put(struct reset_control_array *resets)
 	for (i = 0; i < resets->num_rstcs; i++)
 		__reset_control_put_internal(resets->rstc[i]);
 	mutex_unlock(&reset_list_mutex);
+<<<<<<< HEAD
+=======
+	kfree(resets);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**

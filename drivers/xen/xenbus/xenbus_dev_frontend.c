@@ -55,6 +55,10 @@
 #include <linux/string.h>
 #include <linux/slab.h>
 #include <linux/miscdevice.h>
+<<<<<<< HEAD
+=======
+#include <linux/workqueue.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <xen/xenbus.h>
 #include <xen/xen.h>
@@ -113,6 +117,11 @@ struct xenbus_file_priv {
 	wait_queue_head_t read_waitq;
 
 	struct kref kref;
+<<<<<<< HEAD
+=======
+
+	struct work_struct wq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* Read out any raw xenbus messages queued up. */
@@ -297,14 +306,22 @@ static void watch_fired(struct xenbus_watch *watch,
 	mutex_unlock(&adap->dev_data->reply_mutex);
 }
 
+<<<<<<< HEAD
 static void xenbus_file_free(struct kref *kref)
+=======
+static void xenbus_worker(struct work_struct *wq)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct xenbus_file_priv *u;
 	struct xenbus_transaction_holder *trans, *tmp;
 	struct watch_adapter *watch, *tmp_watch;
 	struct read_buffer *rb, *tmp_rb;
 
+<<<<<<< HEAD
 	u = container_of(kref, struct xenbus_file_priv, kref);
+=======
+	u = container_of(wq, struct xenbus_file_priv, wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * No need for locking here because there are no other users,
@@ -330,6 +347,21 @@ static void xenbus_file_free(struct kref *kref)
 	kfree(u);
 }
 
+<<<<<<< HEAD
+=======
+static void xenbus_file_free(struct kref *kref)
+{
+	struct xenbus_file_priv *u;
+
+	/*
+	 * We might be called in xenbus_thread().
+	 * Use workqueue to avoid deadlock.
+	 */
+	u = container_of(kref, struct xenbus_file_priv, kref);
+	schedule_work(&u->wq);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct xenbus_transaction_holder *xenbus_get_transaction(
 	struct xenbus_file_priv *u, uint32_t tx_id)
 {
@@ -614,9 +646,13 @@ static int xenbus_file_open(struct inode *inode, struct file *filp)
 	if (xen_store_evtchn == 0)
 		return -ENOENT;
 
+<<<<<<< HEAD
 	nonseekable_open(inode, filp);
 
 	filp->f_mode &= ~FMODE_ATOMIC_POS; /* cdev-style semantics */
+=======
+	stream_open(inode, filp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	u = kzalloc(sizeof(*u), GFP_KERNEL);
 	if (u == NULL)
@@ -628,6 +664,10 @@ static int xenbus_file_open(struct inode *inode, struct file *filp)
 	INIT_LIST_HEAD(&u->watches);
 	INIT_LIST_HEAD(&u->read_buffers);
 	init_waitqueue_head(&u->read_waitq);
+<<<<<<< HEAD
+=======
+	INIT_WORK(&u->wq, xenbus_worker);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_init(&u->reply_mutex);
 	mutex_init(&u->msgbuffer_mutex);

@@ -199,7 +199,16 @@ static void tcp_reinit_congestion_control(struct sock *sk,
 	icsk->icsk_ca_setsockopt = 1;
 	memset(icsk->icsk_ca_priv, 0, sizeof(icsk->icsk_ca_priv));
 
+<<<<<<< HEAD
 	if (sk->sk_state != TCP_CLOSE)
+=======
+	if (ca->flags & TCP_CONG_NEEDS_ECN)
+		INET_ECN_xmit(sk);
+	else
+		INET_ECN_dontxmit(sk);
+
+	if (!((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_LISTEN)))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		tcp_init_congestion_control(sk);
 }
 
@@ -338,7 +347,12 @@ out:
  * tcp_reinit_congestion_control (if the current congestion control was
  * already initialized.
  */
+<<<<<<< HEAD
 int tcp_set_congestion_control(struct sock *sk, const char *name, bool load, bool reinit)
+=======
+int tcp_set_congestion_control(struct sock *sk, const char *name, bool load,
+			       bool reinit, bool cap_net_admin)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct inet_connection_sock *icsk = inet_csk(sk);
 	const struct tcp_congestion_ops *ca;
@@ -372,8 +386,12 @@ int tcp_set_congestion_control(struct sock *sk, const char *name, bool load, boo
 		} else {
 			err = -EBUSY;
 		}
+<<<<<<< HEAD
 	} else if (!((ca->flags & TCP_CONG_NON_RESTRICTED) ||
 		     ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))) {
+=======
+	} else if (!((ca->flags & TCP_CONG_NON_RESTRICTED) || cap_net_admin)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		err = -EPERM;
 	} else if (!try_module_get(ca->owner)) {
 		err = -EBUSY;

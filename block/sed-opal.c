@@ -2078,6 +2078,7 @@ static int opal_erase_locking_range(struct opal_dev *dev,
 static int opal_enable_disable_shadow_mbr(struct opal_dev *dev,
 					  struct opal_mbr_data *opal_mbr)
 {
+<<<<<<< HEAD
 	const struct opal_step mbr_steps[] = {
 		{ opal_discovery0, },
 		{ start_admin1LSP_opal_session, &opal_mbr->key },
@@ -2085,6 +2086,18 @@ static int opal_enable_disable_shadow_mbr(struct opal_dev *dev,
 		{ end_opal_session, },
 		{ start_admin1LSP_opal_session, &opal_mbr->key },
 		{ set_mbr_enable_disable, &opal_mbr->enable_disable },
+=======
+	u8 enable_disable = opal_mbr->enable_disable == OPAL_MBR_ENABLE ?
+		OPAL_TRUE : OPAL_FALSE;
+
+	const struct opal_step mbr_steps[] = {
+		{ opal_discovery0, },
+		{ start_admin1LSP_opal_session, &opal_mbr->key },
+		{ set_mbr_done, &enable_disable },
+		{ end_opal_session, },
+		{ start_admin1LSP_opal_session, &opal_mbr->key },
+		{ set_mbr_enable_disable, &enable_disable },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		{ end_opal_session, },
 		{ NULL, }
 	};
@@ -2204,7 +2217,11 @@ static int __opal_lock_unlock(struct opal_dev *dev,
 
 static int __opal_set_mbr_done(struct opal_dev *dev, struct opal_key *key)
 {
+<<<<<<< HEAD
 	u8 mbr_done_tf = 1;
+=======
+	u8 mbr_done_tf = OPAL_TRUE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	const struct opal_step mbrdone_step [] = {
 		{ opal_discovery0, },
 		{ start_admin1LSP_opal_session, key },

@@ -142,6 +142,7 @@ static struct hdac_hdmi_pcm *
 hdac_hdmi_get_pcm_from_cvt(struct hdac_hdmi_priv *hdmi,
 			   struct hdac_hdmi_cvt *cvt)
 {
+<<<<<<< HEAD
 	struct hdac_hdmi_pcm *pcm = NULL;
 
 	list_for_each_entry(pcm, &hdmi->pcm_list, head) {
@@ -150,6 +151,16 @@ hdac_hdmi_get_pcm_from_cvt(struct hdac_hdmi_priv *hdmi,
 	}
 
 	return pcm;
+=======
+	struct hdac_hdmi_pcm *pcm;
+
+	list_for_each_entry(pcm, &hdmi->pcm_list, head) {
+		if (pcm->cvt == cvt)
+			return pcm;
+	}
+
+	return NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
@@ -1408,6 +1419,15 @@ static int hdac_hdmi_create_dais(struct hdac_device *hdac,
 		if (ret)
 			return ret;
 
+<<<<<<< HEAD
+=======
+		/* Filter out 44.1, 88.2 and 176.4Khz */
+		rates &= ~(SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_88200 |
+			   SNDRV_PCM_RATE_176400);
+		if (!rates)
+			return -EINVAL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		sprintf(dai_name, "intel-hdmi-hifi%d", i+1);
 		hdmi_dais[i].name = devm_kstrdup(&hdac->dev,
 					dai_name, GFP_KERNEL);

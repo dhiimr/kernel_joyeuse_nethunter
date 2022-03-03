@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #!/usr/bin/python
+=======
+#!/usr/bin/env python
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 """
 Copyright 2008 (c) Frederic Weisbecker <fweisbec@gmail.com>
@@ -17,7 +21,11 @@ Usage:
 	$ cat /sys/kernel/debug/tracing/trace_pipe > ~/raw_trace_func
 	Wait some times but not too much, the script is a bit slow.
 	Break the pipe (Ctrl + Z)
+<<<<<<< HEAD
 	$ scripts/draw_functrace.py < raw_trace_func > draw_functrace
+=======
+	$ scripts/tracing/draw_functrace.py < ~/raw_trace_func > draw_functrace
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	Then you have your drawn trace in draw_functrace
 """
 
@@ -103,10 +111,17 @@ def parseLine(line):
 	line = line.strip()
 	if line.startswith("#"):
 		raise CommentLineException
+<<<<<<< HEAD
 	m = re.match("[^]]+?\\] +([0-9.]+): (\\w+) <-(\\w+)", line)
 	if m is None:
 		raise BrokenLineException
 	return (m.group(1), m.group(2), m.group(3))
+=======
+	m = re.match("[^]]+?\\] +([a-z.]+) +([0-9.]+): (\\w+) <-(\\w+)", line)
+	if m is None:
+		raise BrokenLineException
+	return (m.group(2), m.group(3), m.group(4))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 
 def main():

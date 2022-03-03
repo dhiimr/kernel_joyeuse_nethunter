@@ -138,6 +138,14 @@ static int __nf_queue(struct sk_buff *skb, const struct nf_hook_state *state,
 		goto err;
 	}
 
+<<<<<<< HEAD
+=======
+	if (skb_dst(skb) && !skb_dst_force(skb)) {
+		status = -ENETDOWN;
+		goto err;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	*entry = (struct nf_queue_entry) {
 		.skb	= skb,
 		.state	= *state,
@@ -146,7 +154,10 @@ static int __nf_queue(struct sk_buff *skb, const struct nf_hook_state *state,
 	};
 
 	nf_queue_entry_get_refs(entry);
+<<<<<<< HEAD
 	skb_dst_force(skb);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	afinfo->saveroute(skb, entry);
 	status = qh->outfn(entry, queuenum);
 
@@ -193,6 +204,10 @@ static unsigned int nf_iterate(struct sk_buff *skb,
 repeat:
 		verdict = nf_hook_entry_hookfn(hook, skb, state);
 		if (verdict != NF_ACCEPT) {
+<<<<<<< HEAD
+=======
+			*index = i;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (verdict != NF_REPEAT)
 				return verdict;
 			goto repeat;

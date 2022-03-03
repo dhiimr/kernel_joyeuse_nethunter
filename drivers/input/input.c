@@ -858,6 +858,7 @@ static int input_default_setkeycode(struct input_dev *dev,
 		}
 	}
 
+<<<<<<< HEAD
 	__clear_bit(*old_keycode, dev->keybit);
 	__set_bit(ke->keycode, dev->keybit);
 
@@ -868,6 +869,20 @@ static int input_default_setkeycode(struct input_dev *dev,
 		}
 	}
 
+=======
+	if (*old_keycode <= KEY_MAX) {
+		__clear_bit(*old_keycode, dev->keybit);
+		for (i = 0; i < dev->keycodemax; i++) {
+			if (input_fetch_keycode(dev, i) == *old_keycode) {
+				__set_bit(*old_keycode, dev->keybit);
+				/* Setting the bit twice is useless, so break */
+				break;
+			}
+		}
+	}
+
+	__set_bit(ke->keycode, dev->keybit);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -923,9 +938,19 @@ int input_set_keycode(struct input_dev *dev,
 	 * Simulate keyup event if keycode is not present
 	 * in the keymap anymore
 	 */
+<<<<<<< HEAD
 	if (test_bit(EV_KEY, dev->evbit) &&
 	    !is_event_supported(old_keycode, dev->keybit, KEY_MAX) &&
 	    __test_and_clear_bit(old_keycode, dev->key)) {
+=======
+	if (old_keycode > KEY_MAX) {
+		dev_warn(dev->dev.parent ?: &dev->dev,
+			 "%s: got too big old keycode %#x\n",
+			 __func__, old_keycode);
+	} else if (test_bit(EV_KEY, dev->evbit) &&
+		   !is_event_supported(old_keycode, dev->keybit, KEY_MAX) &&
+		   __test_and_clear_bit(old_keycode, dev->key)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct input_value vals[] =  {
 			{ EV_KEY, old_keycode, 0 },
 			input_value_sync

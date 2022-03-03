@@ -911,6 +911,7 @@ static struct trace_event trace_fn_event = {
 	.funcs		= &trace_fn_funcs,
 };
 
+<<<<<<< HEAD
 /* TRACE_GRAPH_ENT */
 static enum print_line_t trace_graph_ent_trace(struct trace_iterator *iter, int flags,
 					struct trace_event *event)
@@ -1079,6 +1080,8 @@ static struct trace_event trace_graph_ret_event = {
 	.funcs		= &trace_graph_ret_funcs,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* TRACE_CTX an TRACE_WAKE */
 static enum print_line_t trace_ctxwake_print(struct trace_iterator *iter,
 					     char *delim)
@@ -1550,8 +1553,11 @@ static struct trace_event trace_raw_data_event = {
 
 static struct trace_event *events[] __initdata = {
 	&trace_fn_event,
+<<<<<<< HEAD
 	&trace_graph_ent_event,
 	&trace_graph_ret_event,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	&trace_ctx_event,
 	&trace_wake_event,
 	&trace_stack_event,

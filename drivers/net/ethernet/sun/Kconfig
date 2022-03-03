@@ -72,6 +72,10 @@ config CASSINI
 config SUNVNET_COMMON
 	tristate "Common routines to support Sun Virtual Networking"
 	depends on SUN_LDOMS
+<<<<<<< HEAD
+=======
+	depends on INET
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	default m
 
 config SUNVNET

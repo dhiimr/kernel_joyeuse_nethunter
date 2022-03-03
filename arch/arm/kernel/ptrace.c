@@ -228,8 +228,13 @@ static struct undef_hook arm_break_hook = {
 };
 
 static struct undef_hook thumb_break_hook = {
+<<<<<<< HEAD
 	.instr_mask	= 0xffff,
 	.instr_val	= 0xde01,
+=======
+	.instr_mask	= 0xffffffff,
+	.instr_val	= 0x0000de01,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.cpsr_mask	= PSR_T_BIT,
 	.cpsr_val	= PSR_T_BIT,
 	.fn		= break_trap,

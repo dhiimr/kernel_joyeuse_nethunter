@@ -312,6 +312,10 @@ static int set_hw_ioctxt(struct hinic_hwdev *hwdev, unsigned int rq_depth,
 	}
 
 	hw_ioctxt.func_idx = HINIC_HWIF_FUNC_IDX(hwif);
+<<<<<<< HEAD
+=======
+	hw_ioctxt.ppf_idx = HINIC_HWIF_PPF_IDX(hwif);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	hw_ioctxt.set_cmdq_depth = HW_IOCTXT_SET_CMDQ_DEPTH_DEFAULT;
 	hw_ioctxt.cmdq_depth = 0;
@@ -372,6 +376,7 @@ static int wait_for_db_state(struct hinic_hwdev *hwdev)
 	return -EFAULT;
 }
 
+<<<<<<< HEAD
 static int wait_for_io_stopped(struct hinic_hwdev *hwdev)
 {
 	struct hinic_cmd_io_status cmd_io_status;
@@ -416,6 +421,8 @@ static int wait_for_io_stopped(struct hinic_hwdev *hwdev)
 	return -ETIMEDOUT;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * clear_io_resource - set the IO resources as not active in the NIC
  * @hwdev: the NIC HW device
@@ -435,11 +442,16 @@ static int clear_io_resources(struct hinic_hwdev *hwdev)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	err = wait_for_io_stopped(hwdev);
 	if (err) {
 		dev_err(&pdev->dev, "IO has not stopped yet\n");
 		return err;
 	}
+=======
+	/* sleep 100ms to wait for firmware stopping I/O */
+	msleep(100);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cmd_clear_io_res.func_idx = HINIC_HWIF_FUNC_IDX(hwif);
 

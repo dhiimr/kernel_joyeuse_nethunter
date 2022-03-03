@@ -18,6 +18,21 @@
 	const char *name##__mount(void);	\
 	bool name##__configured(void);		\
 
+<<<<<<< HEAD
+=======
+/*
+ * The xxxx__mountpoint() entry points find the first match mount point for each
+ * filesystems listed below, where xxxx is the filesystem type.
+ *
+ * The interface is as follows:
+ *
+ * - If a mount point is found on first call, it is cached and used for all
+ *   subsequent calls.
+ *
+ * - If a mount point is not found, NULL is returned on first call and all
+ *   subsequent calls.
+ */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 FS(sysfs)
 FS(procfs)
 FS(debugfs)

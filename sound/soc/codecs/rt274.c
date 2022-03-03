@@ -398,6 +398,11 @@ static int rt274_mic_detect(struct snd_soc_codec *codec,
 {
 	struct rt274_priv *rt274 = snd_soc_codec_get_drvdata(codec);
 
+<<<<<<< HEAD
+=======
+	rt274->jack = jack;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (jack == NULL) {
 		/* Disable jack detection */
 		regmap_update_bits(rt274->regmap, RT274_EAPD_GPIO_IRQ_CTRL,
@@ -405,7 +410,10 @@ static int rt274_mic_detect(struct snd_soc_codec *codec,
 
 		return 0;
 	}
+<<<<<<< HEAD
 	rt274->jack = jack;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	regmap_update_bits(rt274->regmap, RT274_EAPD_GPIO_IRQ_CTRL,
 				RT274_IRQ_EN, RT274_IRQ_EN);

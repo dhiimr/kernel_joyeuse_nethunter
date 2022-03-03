@@ -136,7 +136,11 @@ static int dbgp_enable_ep_req(struct usb_ep *ep)
 		goto fail_1;
 	}
 
+<<<<<<< HEAD
 	req->buf = kmalloc(DBGP_REQ_LEN, GFP_KERNEL);
+=======
+	req->buf = kzalloc(DBGP_REQ_LEN, GFP_KERNEL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!req->buf) {
 		err = -ENOMEM;
 		stp = 2;
@@ -344,6 +348,22 @@ static int dbgp_setup(struct usb_gadget *gadget,
 	void *data = NULL;
 	u16 len = 0;
 
+<<<<<<< HEAD
+=======
+	if (length > DBGP_REQ_LEN) {
+		if (ctrl->bRequestType & USB_DIR_IN) {
+			/* Cast away the const, we are going to overwrite on purpose. */
+			__le16 *temp = (__le16 *)&ctrl->wLength;
+
+			*temp = cpu_to_le16(DBGP_REQ_LEN);
+			length = DBGP_REQ_LEN;
+		} else {
+			return err;
+		}
+	}
+
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (request == USB_REQ_GET_DESCRIPTOR) {
 		switch (value>>8) {
 		case USB_DT_DEVICE:

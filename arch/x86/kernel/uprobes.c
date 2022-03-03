@@ -268,10 +268,18 @@ static volatile u32 good_2byte_insns[256 / 32] = {
 
 static bool is_prefix_bad(struct insn *insn)
 {
+<<<<<<< HEAD
 	int i;
 
 	for (i = 0; i < insn->prefixes.nbytes; i++) {
 		switch (insn->prefixes.bytes[i]) {
+=======
+	insn_byte_t p;
+	int i;
+
+	for_each_insn_prefix(insn, i, p) {
+		switch (p) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		case 0x26:	/* INAT_PFX_ES   */
 		case 0x2E:	/* INAT_PFX_CS   */
 		case 0x36:	/* INAT_PFX_DS   */
@@ -518,9 +526,18 @@ struct uprobe_xol_ops {
 	void	(*abort)(struct arch_uprobe *, struct pt_regs *);
 };
 
+<<<<<<< HEAD
 static inline int sizeof_long(void)
 {
 	return in_ia32_syscall() ? 4 : 8;
+=======
+static inline int sizeof_long(struct pt_regs *regs)
+{
+	/*
+	 * Check registers for mode as in_xxx_syscall() does not apply here.
+	 */
+	return user_64bit_mode(regs) ? 8 : 4;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int default_pre_xol_op(struct arch_uprobe *auprobe, struct pt_regs *regs)
@@ -531,9 +548,15 @@ static int default_pre_xol_op(struct arch_uprobe *auprobe, struct pt_regs *regs)
 
 static int push_ret_address(struct pt_regs *regs, unsigned long ip)
 {
+<<<<<<< HEAD
 	unsigned long new_sp = regs->sp - sizeof_long();
 
 	if (copy_to_user((void __user *)new_sp, &ip, sizeof_long()))
+=======
+	unsigned long new_sp = regs->sp - sizeof_long(regs);
+
+	if (copy_to_user((void __user *)new_sp, &ip, sizeof_long(regs)))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EFAULT;
 
 	regs->sp = new_sp;
@@ -566,7 +589,11 @@ static int default_post_xol_op(struct arch_uprobe *auprobe, struct pt_regs *regs
 		long correction = utask->vaddr - utask->xol_vaddr;
 		regs->ip += correction;
 	} else if (auprobe->defparam.fixups & UPROBE_FIX_CALL) {
+<<<<<<< HEAD
 		regs->sp += sizeof_long(); /* Pop incorrect return address */
+=======
+		regs->sp += sizeof_long(regs); /* Pop incorrect return address */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (push_ret_address(regs, utask->vaddr + auprobe->defparam.ilen))
 			return -ERESTART;
 	}
@@ -675,7 +702,11 @@ static int branch_post_xol_op(struct arch_uprobe *auprobe, struct pt_regs *regs)
 	 * "call" insn was executed out-of-line. Just restore ->sp and restart.
 	 * We could also restore ->ip and try to call branch_emulate_op() again.
 	 */
+<<<<<<< HEAD
 	regs->sp += sizeof_long();
+=======
+	regs->sp += sizeof_long(regs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return -ERESTART;
 }
 
@@ -708,6 +739,10 @@ static const struct uprobe_xol_ops branch_xol_ops = {
 static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
 {
 	u8 opc1 = OPCODE1(insn);
+<<<<<<< HEAD
+=======
+	insn_byte_t p;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int i;
 
 	switch (opc1) {
@@ -738,8 +773,13 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
 	 * Intel and AMD behavior differ in 64-bit mode: Intel ignores 66 prefix.
 	 * No one uses these insns, reject any branch insns with such prefix.
 	 */
+<<<<<<< HEAD
 	for (i = 0; i < insn->prefixes.nbytes; i++) {
 		if (insn->prefixes.bytes[i] == 0x66)
+=======
+	for_each_insn_prefix(insn, i, p) {
+		if (p == 0x66)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return -ENOTSUPP;
 	}
 
@@ -966,7 +1006,11 @@ bool arch_uprobe_skip_sstep(struct arch_uprobe *auprobe, struct pt_regs *regs)
 unsigned long
 arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr, struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	int rasize = sizeof_long(), nleft;
+=======
+	int rasize = sizeof_long(regs), nleft;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long orig_ret_vaddr = 0; /* clear high bits for 32-bit apps */
 
 	if (copy_from_user(&orig_ret_vaddr, (void __user *)regs->sp, rasize))
@@ -984,7 +1028,11 @@ arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr, struct pt_regs
 		pr_err("uprobe: return address clobbered: pid=%d, %%sp=%#lx, "
 			"%%ip=%#lx\n", current->pid, regs->sp, regs->ip);
 
+<<<<<<< HEAD
 		force_sig_info(SIGSEGV, SEND_SIG_FORCED, current);
+=======
+		force_sig(SIGSEGV, current);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return -1;

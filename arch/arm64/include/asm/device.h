@@ -24,18 +24,24 @@ struct dev_archdata {
 	const struct dma_map_ops *dev_dma_ops;
 #endif
 	bool dma_coherent;
+<<<<<<< HEAD
 #ifdef CONFIG_ARM64_DMA_USE_IOMMU
 	struct dma_iommu_mapping       *mapping;
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct pdev_archdata {
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARM64_DMA_USE_IOMMU
 #define to_dma_iommu_mapping(dev) ((dev)->archdata.mapping)
 #else
 #define to_dma_iommu_mapping(dev) NULL
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif

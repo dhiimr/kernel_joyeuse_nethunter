@@ -415,6 +415,11 @@ static bool cdv_intel_find_dp_pll(const struct gma_limit_t *limit,
 	struct gma_crtc *gma_crtc = to_gma_crtc(crtc);
 	struct gma_clock_t clock;
 
+<<<<<<< HEAD
+=======
+	memset(&clock, 0, sizeof(clock));
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	switch (refclk) {
 	case 27000:
 		if (target < 200000) {

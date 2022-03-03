@@ -303,7 +303,11 @@ static void dev_flowctrl(struct net_device *dev, int on)
 	caifd_put(caifd);
 }
 
+<<<<<<< HEAD
 void caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
+=======
+int caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		     struct cflayer *link_support, int head_room,
 		     struct cflayer **layer,
 		     int (**rcv_func)(struct sk_buff *, struct net_device *,
@@ -314,11 +318,19 @@ void caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
 	enum cfcnfg_phy_preference pref;
 	struct cfcnfg *cfg = get_cfcnfg(dev_net(dev));
 	struct caif_device_entry_list *caifdevs;
+<<<<<<< HEAD
+=======
+	int res;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	caifdevs = caif_device_list(dev_net(dev));
 	caifd = caif_device_alloc(dev);
 	if (!caifd)
+<<<<<<< HEAD
 		return;
+=======
+		return -ENOMEM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	*layer = &caifd->layer;
 	spin_lock_init(&caifd->flow_lock);
 
@@ -340,7 +352,11 @@ void caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
 		sizeof(caifd->layer.name) - 1);
 	caifd->layer.name[sizeof(caifd->layer.name) - 1] = 0;
 	caifd->layer.transmit = transmit;
+<<<<<<< HEAD
 	cfcnfg_add_phy_layer(cfg,
+=======
+	res = cfcnfg_add_phy_layer(cfg,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				dev,
 				&caifd->layer,
 				pref,
@@ -350,6 +366,10 @@ void caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
 	mutex_unlock(&caifdevs->lock);
 	if (rcv_func)
 		*rcv_func = receive;
+<<<<<<< HEAD
+=======
+	return res;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL(caif_enroll_dev);
 
@@ -364,6 +384,10 @@ static int caif_device_notify(struct notifier_block *me, unsigned long what,
 	struct cflayer *layer, *link_support;
 	int head_room = 0;
 	struct caif_device_entry_list *caifdevs;
+<<<<<<< HEAD
+=======
+	int res;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cfg = get_cfcnfg(dev_net(dev));
 	caifdevs = caif_device_list(dev_net(dev));
@@ -389,8 +413,15 @@ static int caif_device_notify(struct notifier_block *me, unsigned long what,
 				break;
 			}
 		}
+<<<<<<< HEAD
 		caif_enroll_dev(dev, caifdev, link_support, head_room,
 				&layer, NULL);
+=======
+		res = caif_enroll_dev(dev, caifdev, link_support, head_room,
+				&layer, NULL);
+		if (res)
+			cfserl_release(link_support);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		caifdev->flowctrl = dev_flowctrl;
 		break;
 

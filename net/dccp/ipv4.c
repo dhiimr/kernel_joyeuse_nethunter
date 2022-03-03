@@ -121,7 +121,11 @@ int dccp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 						    inet->inet_daddr,
 						    inet->inet_sport,
 						    inet->inet_dport);
+<<<<<<< HEAD
 	inet->inet_id = dp->dccps_iss ^ jiffies;
+=======
+	inet->inet_id = prandom_u32();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = dccp_connect(sk);
 	rt = NULL;
@@ -417,7 +421,11 @@ struct sock *dccp_v4_request_recv_sock(const struct sock *sk,
 	RCU_INIT_POINTER(newinet->inet_opt, rcu_dereference(ireq->ireq_opt));
 	newinet->mc_index  = inet_iif(skb);
 	newinet->mc_ttl	   = ip_hdr(skb)->ttl;
+<<<<<<< HEAD
 	newinet->inet_id   = jiffies;
+=======
+	newinet->inet_id   = prandom_u32();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (dst == NULL && (dst = inet_csk_route_child_sock(sk, newsk, req)) == NULL)
 		goto put_and_exit;

@@ -120,9 +120,19 @@ static inline void tdma_port_write_desc_addr(struct bcm_sysport_priv *priv,
 					     struct dma_desc *desc,
 					     unsigned int port)
 {
+<<<<<<< HEAD
 	/* Ports are latched, so write upper address first */
 	tdma_writel(priv, desc->addr_status_len, TDMA_WRITE_PORT_HI(port));
 	tdma_writel(priv, desc->addr_lo, TDMA_WRITE_PORT_LO(port));
+=======
+	unsigned long desc_flags;
+
+	/* Ports are latched, so write upper address first */
+	spin_lock_irqsave(&priv->desc_lock, desc_flags);
+	tdma_writel(priv, desc->addr_status_len, TDMA_WRITE_PORT_HI(port));
+	tdma_writel(priv, desc->addr_lo, TDMA_WRITE_PORT_LO(port));
+	spin_unlock_irqrestore(&priv->desc_lock, desc_flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Ethtool operations */
@@ -645,7 +655,12 @@ static struct sk_buff *bcm_sysport_rx_refill(struct bcm_sysport_priv *priv,
 	dma_addr_t mapping;
 
 	/* Allocate a new SKB for a new packet */
+<<<<<<< HEAD
 	skb = netdev_alloc_skb(priv->netdev, RX_BUF_LENGTH);
+=======
+	skb = __netdev_alloc_skb(priv->netdev, RX_BUF_LENGTH,
+				 GFP_ATOMIC | __GFP_NOWARN);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!skb) {
 		priv->mib.alloc_rx_buff_failed++;
 		netif_err(priv, rx_err, ndev, "SKB alloc failed\n");
@@ -1879,6 +1894,10 @@ static int bcm_sysport_open(struct net_device *dev)
 	}
 
 	/* Initialize both hardware and software ring */
+<<<<<<< HEAD
+=======
+	spin_lock_init(&priv->desc_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (i = 0; i < dev->num_tx_queues; i++) {
 		ret = bcm_sysport_init_tx_ring(priv, i);
 		if (ret) {
@@ -2086,8 +2105,15 @@ static int bcm_sysport_probe(struct platform_device *pdev)
 	priv->tx_rings = devm_kcalloc(&pdev->dev, txq,
 				      sizeof(struct bcm_sysport_tx_ring),
 				      GFP_KERNEL);
+<<<<<<< HEAD
 	if (!priv->tx_rings)
 		return -ENOMEM;
+=======
+	if (!priv->tx_rings) {
+		ret = -ENOMEM;
+		goto err_free_netdev;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	priv->is_lite = params->is_lite;
 	priv->num_rx_desc_words = params->num_rx_desc_words;
@@ -2116,7 +2142,11 @@ static int bcm_sysport_probe(struct platform_device *pdev)
 
 	priv->phy_interface = of_get_phy_mode(dn);
 	/* Default to GMII interface mode */
+<<<<<<< HEAD
 	if (priv->phy_interface < 0)
+=======
+	if ((int)priv->phy_interface < 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		priv->phy_interface = PHY_INTERFACE_MODE_GMII;
 
 	/* In the case of a fixed PHY, the DT node associated
@@ -2150,6 +2180,10 @@ static int bcm_sysport_probe(struct platform_device *pdev)
 	/* HW supported features, none enabled by default */
 	dev->hw_features |= NETIF_F_RXCSUM | NETIF_F_HIGHDMA |
 				NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM;
+<<<<<<< HEAD
+=======
+	dev->max_mtu = UMAC_MAX_MTU_SIZE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Request the WOL interrupt and advertise suspend if available */
 	priv->wol_irq_disabled = 1;
@@ -2329,6 +2363,12 @@ static int bcm_sysport_resume(struct device *d)
 
 	umac_reset(priv);
 
+<<<<<<< HEAD
+=======
+	/* Disable the UniMAC RX/TX */
+	umac_enable_set(priv, CMD_RX_EN | CMD_TX_EN, 0);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* We may have been suspended and never received a WOL event that
 	 * would turn off MPD detection, take care of that now
 	 */

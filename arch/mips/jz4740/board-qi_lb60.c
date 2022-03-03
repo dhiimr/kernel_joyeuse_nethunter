@@ -456,6 +456,7 @@ static unsigned long pin_cfg_bias_disable[] = {
 static struct pinctrl_map pin_map[] __initdata = {
 	/* NAND pin configuration */
 	PIN_MAP_MUX_GROUP_DEFAULT("jz4740-nand",
+<<<<<<< HEAD
 			"10010000.jz4740-pinctrl", "nand", "nand-cs1"),
 
 	/* fbdev pin configuration */
@@ -477,6 +478,29 @@ static struct pinctrl_map pin_map[] __initdata = {
 	/* PWM pin configuration */
 	PIN_MAP_MUX_GROUP_DEFAULT("jz4740-pwm",
 			"10010000.jz4740-pinctrl", "pwm4", "pwm4"),
+=======
+			"10010000.pin-controller", "nand-cs1", "nand"),
+
+	/* fbdev pin configuration */
+	PIN_MAP_MUX_GROUP("jz4740-fb", PINCTRL_STATE_DEFAULT,
+			"10010000.pin-controller", "lcd-8bit", "lcd"),
+	PIN_MAP_MUX_GROUP("jz4740-fb", PINCTRL_STATE_SLEEP,
+			"10010000.pin-controller", "lcd-no-pins", "lcd"),
+
+	/* MMC pin configuration */
+	PIN_MAP_MUX_GROUP_DEFAULT("jz4740-mmc.0",
+			"10010000.pin-controller", "mmc-1bit", "mmc"),
+	PIN_MAP_MUX_GROUP_DEFAULT("jz4740-mmc.0",
+			"10010000.pin-controller", "mmc-4bit", "mmc"),
+	PIN_MAP_CONFIGS_PIN_DEFAULT("jz4740-mmc.0",
+			"10010000.pin-controller", "PD0", pin_cfg_bias_disable),
+	PIN_MAP_CONFIGS_PIN_DEFAULT("jz4740-mmc.0",
+			"10010000.pin-controller", "PD2", pin_cfg_bias_disable),
+
+	/* PWM pin configuration */
+	PIN_MAP_MUX_GROUP_DEFAULT("jz4740-pwm",
+			"10010000.pin-controller", "pwm4", "pwm4"),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 

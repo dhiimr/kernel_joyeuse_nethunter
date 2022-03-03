@@ -585,6 +585,10 @@ static void cryptd_skcipher_free(struct skcipher_instance *inst)
 	struct skcipherd_instance_ctx *ctx = skcipher_instance_ctx(inst);
 
 	crypto_drop_skcipher(&ctx->spawn);
+<<<<<<< HEAD
+=======
+	kfree(inst);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int cryptd_create_skcipher(struct crypto_template *tmpl,

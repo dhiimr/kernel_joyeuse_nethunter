@@ -6,6 +6,10 @@
  * Fault status register encodings.  We steal bit 31 for our own purposes.
  */
 #define FSR_LNX_PF		(1 << 31)
+<<<<<<< HEAD
+=======
+#define FSR_CM			(1 << 13)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define FSR_WRITE		(1 << 11)
 #define FSR_FS4			(1 << 10)
 #define FSR_FS3_0		(15)

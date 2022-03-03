@@ -587,6 +587,7 @@ This governor exposes the following tunables:
 	It effectively causes the frequency to go down ``sampling_down_factor``
 	times slower than it ramps up.
 
+<<<<<<< HEAD
 ``interactive``
 ----------------
 
@@ -645,6 +646,8 @@ The tunable values for this governor are:
 
 ``min_sample_time``
         The minimum amount of time to spend at the current
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 Frequency Boost Support
 =======================

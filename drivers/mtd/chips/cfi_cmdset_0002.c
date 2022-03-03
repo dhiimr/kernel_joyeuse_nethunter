@@ -726,7 +726,10 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
 	kfree(mtd->eraseregions);
 	kfree(mtd);
 	kfree(cfi->cmdset_priv);
+<<<<<<< HEAD
 	kfree(cfi->cfiq);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return NULL;
 }
 
@@ -1628,6 +1631,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
 			continue;
 		}
 
+<<<<<<< HEAD
 		if (time_after(jiffies, timeo) && !chip_ready(map, adr)){
 			xip_enable(map, chip, adr);
 			printk(KERN_WARNING "MTD %s(): software timeout\n", __func__);
@@ -1636,21 +1640,49 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
 		}
 
 		if (chip_ready(map, adr))
+=======
+		/*
+		 * We check "time_after" and "!chip_good" before checking
+		 * "chip_good" to avoid the failure due to scheduling.
+		 */
+		if (time_after(jiffies, timeo) && !chip_good(map, adr, datum)) {
+			xip_enable(map, chip, adr);
+			printk(KERN_WARNING "MTD %s(): software timeout\n", __func__);
+			xip_disable(map, chip, adr);
+			ret = -EIO;
+			break;
+		}
+
+		if (chip_good(map, adr, datum))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 
 		/* Latency issues. Drop the lock, wait a while and retry */
 		UDELAY(map, chip, adr, 1);
 	}
+<<<<<<< HEAD
 	/* Did we succeed? */
 	if (!chip_good(map, adr, datum)) {
+=======
+
+	/* Did we succeed? */
+	if (ret) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* reset on all failures. */
 		map_write( map, CMD(0xF0), chip->start );
 		/* FIXME - should have reset delay before continuing */
 
+<<<<<<< HEAD
 		if (++retry_cnt <= MAX_RETRIES)
 			goto retry;
 
 		ret = -EIO;
+=======
+		if (++retry_cnt <= MAX_RETRIES) {
+			ret = 0;
+			goto retry;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	xip_enable(map, chip, adr);
  op_done:
@@ -1877,7 +1909,15 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
 			continue;
 		}
 
+<<<<<<< HEAD
 		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+=======
+		/*
+		 * We check "time_after" and "!chip_good" before checking "chip_good" to avoid
+		 * the failure due to scheduling.
+		 */
+		if (time_after(jiffies, timeo) && !chip_good(map, adr, datum))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 
 		if (chip_good(map, adr, datum)) {

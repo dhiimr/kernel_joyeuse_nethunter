@@ -1280,11 +1280,22 @@ static int s5p_mfc_probe(struct platform_device *pdev)
 	spin_lock_init(&dev->condlock);
 	dev->plat_dev = pdev;
 	if (!dev->plat_dev) {
+<<<<<<< HEAD
 		dev_err(&pdev->dev, "No platform data specified\n");
+=======
+		mfc_err("No platform data specified\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -ENODEV;
 	}
 
 	dev->variant = of_device_get_match_data(&pdev->dev);
+<<<<<<< HEAD
+=======
+	if (!dev->variant) {
+		dev_err(&pdev->dev, "Failed to get device MFC hardware variant information\n");
+		return -ENOENT;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	dev->regs_base = devm_ioremap_resource(&pdev->dev, res);

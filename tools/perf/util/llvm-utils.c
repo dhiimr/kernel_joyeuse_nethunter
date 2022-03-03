@@ -225,14 +225,23 @@ static int detect_kbuild_dir(char **kbuild_dir)
 	const char *prefix_dir = "";
 	const char *suffix_dir = "";
 
+<<<<<<< HEAD
+=======
+	/* _UTSNAME_LENGTH is 65 */
+	char release[128];
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	char *autoconf_path;
 
 	int err;
 
 	if (!test_dir) {
+<<<<<<< HEAD
 		/* _UTSNAME_LENGTH is 65 */
 		char release[128];
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		err = fetch_kernel_version(NULL, release,
 					   sizeof(release));
 		if (err)

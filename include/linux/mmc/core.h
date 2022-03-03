@@ -8,10 +8,15 @@
 #ifndef LINUX_MMC_CORE_H
 #define LINUX_MMC_CORE_H
 
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include <linux/completion.h>
 #include <linux/types.h>
 #include <linux/ktime.h>
+=======
+#include <linux/completion.h>
+#include <linux/types.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct mmc_data;
 struct mmc_request;
@@ -114,8 +119,11 @@ struct mmc_command {
 	unsigned int		busy_timeout;	/* busy detect timeout in ms */
 	/* Set this flag only for blocking sanitize request */
 	bool			sanitize_busy;
+<<<<<<< HEAD
 	/* Set this flag only for blocking bkops request */
 	bool			bkops_busy;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	struct mmc_data		*data;		/* data segment associated with cmd */
 	struct mmc_request	*mrq;		/* associated request */
@@ -148,7 +156,10 @@ struct mmc_data {
 	int			sg_count;	/* mapped sg entries */
 	struct scatterlist	*sg;		/* I/O scatter list */
 	s32			host_cookie;	/* host private data */
+<<<<<<< HEAD
 	bool			fault_injected; /* fault injected */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct mmc_host;
@@ -168,6 +179,7 @@ struct mmc_request {
 	 */
 	void			(*recovery_notifier)(struct mmc_request *);
 	struct mmc_host		*host;
+<<<<<<< HEAD
 	struct mmc_cmdq_req	*cmdq_req;
 	struct request *req;
 
@@ -177,11 +189,17 @@ struct mmc_request {
 #ifdef CONFIG_BLOCK
 	int			lat_hist_enabled;
 #endif
+=======
+
+	/* Allow other commands during this ongoing data transfer or busy wait */
+	bool			cap_cmd_during_tfr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	int			tag;
 };
 
 struct mmc_card;
+<<<<<<< HEAD
 struct mmc_cmdq_req;
 
 extern int mmc_cmdq_discard_queue(struct mmc_host *host, u32 tasks);
@@ -218,6 +236,8 @@ extern int mmc_cmdq_down_rwsem(struct mmc_host *host, struct request *rq);
 extern int __mmc_switch_cmdq_mode(struct mmc_command *cmd, u8 set, u8 index,
 				  u8 value, unsigned int timeout_ms,
 				  bool use_busy_signal, bool ignore_timeout);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 void mmc_wait_for_req(struct mmc_host *host, struct mmc_request *mrq);
 int mmc_wait_for_cmd(struct mmc_host *host, struct mmc_command *cmd,

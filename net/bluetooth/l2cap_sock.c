@@ -179,9 +179,23 @@ static int l2cap_sock_connect(struct socket *sock, struct sockaddr *addr,
 	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
 	struct sockaddr_l2 la;
 	int len, err = 0;
+<<<<<<< HEAD
 
 	BT_DBG("sk %p", sk);
 
+=======
+	bool zapped;
+
+	BT_DBG("sk %p", sk);
+
+	lock_sock(sk);
+	zapped = sock_flag(sk, SOCK_ZAPPED);
+	release_sock(sk);
+
+	if (zapped)
+		return -EINVAL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!addr || alen < offsetofend(struct sockaddr, sa_family) ||
 	    addr->sa_family != AF_BLUETOOTH)
 		return -EINVAL;
@@ -1040,7 +1054,11 @@ done:
 }
 
 /* Kill socket (only if zapped and orphan)
+<<<<<<< HEAD
  * Must be called on unlocked socket.
+=======
+ * Must be called on unlocked socket, with l2cap channel lock.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 static void l2cap_sock_kill(struct sock *sk)
 {
@@ -1191,6 +1209,10 @@ static int l2cap_sock_release(struct socket *sock)
 {
 	struct sock *sk = sock->sk;
 	int err;
+<<<<<<< HEAD
+=======
+	struct l2cap_chan *chan;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	BT_DBG("sock %p, sk %p", sock, sk);
 
@@ -1200,9 +1222,23 @@ static int l2cap_sock_release(struct socket *sock)
 	bt_sock_unlink(&l2cap_sk_list, sk);
 
 	err = l2cap_sock_shutdown(sock, 2);
+<<<<<<< HEAD
 
 	sock_orphan(sk);
 	l2cap_sock_kill(sk);
+=======
+	chan = l2cap_pi(sk)->chan;
+
+	l2cap_chan_hold(chan);
+	l2cap_chan_lock(chan);
+
+	sock_orphan(sk);
+	l2cap_sock_kill(sk);
+
+	l2cap_chan_unlock(chan);
+	l2cap_chan_put(chan);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return err;
 }
 
@@ -1220,12 +1256,24 @@ static void l2cap_sock_cleanup_listen(struct sock *parent)
 		BT_DBG("child chan %p state %s", chan,
 		       state_to_string(chan->state));
 
+<<<<<<< HEAD
 		l2cap_chan_lock(chan);
 		__clear_chan_timer(chan);
 		l2cap_chan_close(chan, ECONNRESET);
 		l2cap_chan_unlock(chan);
 
 		l2cap_sock_kill(sk);
+=======
+		l2cap_chan_hold(chan);
+		l2cap_chan_lock(chan);
+
+		__clear_chan_timer(chan);
+		l2cap_chan_close(chan, ECONNRESET);
+		l2cap_sock_kill(sk);
+
+		l2cap_chan_unlock(chan);
+		l2cap_chan_put(chan);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 
@@ -1309,6 +1357,12 @@ static void l2cap_sock_close_cb(struct l2cap_chan *chan)
 {
 	struct sock *sk = chan->data;
 
+<<<<<<< HEAD
+=======
+	if (!sk)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	l2cap_sock_kill(sk);
 }
 
@@ -1317,6 +1371,12 @@ static void l2cap_sock_teardown_cb(struct l2cap_chan *chan, int err)
 	struct sock *sk = chan->data;
 	struct sock *parent;
 
+<<<<<<< HEAD
+=======
+	if (!sk)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	BT_DBG("chan %p state %s", chan, state_to_string(chan->state));
 
 	/* This callback can be called both for server (BT_LISTEN)
@@ -1330,8 +1390,11 @@ static void l2cap_sock_teardown_cb(struct l2cap_chan *chan, int err)
 
 	parent = bt_sk(sk)->parent;
 
+<<<<<<< HEAD
 	sock_set_flag(sk, SOCK_ZAPPED);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	switch (chan->state) {
 	case BT_OPEN:
 	case BT_BOUND:
@@ -1358,8 +1421,16 @@ static void l2cap_sock_teardown_cb(struct l2cap_chan *chan, int err)
 
 		break;
 	}
+<<<<<<< HEAD
 
 	release_sock(sk);
+=======
+	release_sock(sk);
+
+	/* Only zap after cleanup to avoid use after free race */
+	sock_set_flag(sk, SOCK_ZAPPED);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void l2cap_sock_state_change_cb(struct l2cap_chan *chan, int state,
@@ -1465,6 +1536,22 @@ static void l2cap_sock_suspend_cb(struct l2cap_chan *chan)
 	sk->sk_state_change(sk);
 }
 
+<<<<<<< HEAD
+=======
+static int l2cap_sock_filter(struct l2cap_chan *chan, struct sk_buff *skb)
+{
+	struct sock *sk = chan->data;
+
+	switch (chan->mode) {
+	case L2CAP_MODE_ERTM:
+	case L2CAP_MODE_STREAMING:
+		return sk_filter(sk, skb);
+	}
+
+	return 0;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const struct l2cap_ops l2cap_chan_ops = {
 	.name			= "L2CAP Socket Interface",
 	.new_connection		= l2cap_sock_new_connection_cb,
@@ -1479,14 +1566,25 @@ static const struct l2cap_ops l2cap_chan_ops = {
 	.set_shutdown		= l2cap_sock_set_shutdown_cb,
 	.get_sndtimeo		= l2cap_sock_get_sndtimeo_cb,
 	.alloc_skb		= l2cap_sock_alloc_skb_cb,
+<<<<<<< HEAD
+=======
+	.filter			= l2cap_sock_filter,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static void l2cap_sock_destruct(struct sock *sk)
 {
 	BT_DBG("sk %p", sk);
 
+<<<<<<< HEAD
 	if (l2cap_pi(sk)->chan)
 		l2cap_chan_put(l2cap_pi(sk)->chan);
+=======
+	if (l2cap_pi(sk)->chan) {
+		l2cap_pi(sk)->chan->data = NULL;
+		l2cap_chan_put(l2cap_pi(sk)->chan);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (l2cap_pi(sk)->rx_busy_skb) {
 		kfree_skb(l2cap_pi(sk)->rx_busy_skb);

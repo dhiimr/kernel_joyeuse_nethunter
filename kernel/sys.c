@@ -42,8 +42,11 @@
 #include <linux/syscore_ops.h>
 #include <linux/version.h>
 #include <linux/ctype.h>
+<<<<<<< HEAD
 #include <linux/mm.h>
 #include <linux/mempolicy.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <linux/compat.h>
 #include <linux/syscalls.h>
@@ -1219,11 +1222,20 @@ SYSCALL_DEFINE1(uname, struct old_utsname __user *, name)
 
 SYSCALL_DEFINE1(olduname, struct oldold_utsname __user *, name)
 {
+<<<<<<< HEAD
 	struct oldold_utsname tmp = {};
+=======
+	struct oldold_utsname tmp;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!name)
 		return -EFAULT;
 
+<<<<<<< HEAD
+=======
+	memset(&tmp, 0, sizeof(tmp));
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	down_read(&uts_sem);
 	memcpy(&tmp.sysname, &utsname()->sysname, __OLD_UTS_LEN);
 	memcpy(&tmp.nodename, &utsname()->nodename, __OLD_UTS_LEN);
@@ -1863,7 +1875,11 @@ static int validate_prctl_map(struct prctl_mm_map *prctl_map)
 	((unsigned long)prctl_map->__m1 __op				\
 	 (unsigned long)prctl_map->__m2) ? 0 : -EINVAL
 	error  = __prctl_check_order(start_code, <, end_code);
+<<<<<<< HEAD
 	error |= __prctl_check_order(start_data, <, end_data);
+=======
+	error |= __prctl_check_order(start_data,<=, end_data);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	error |= __prctl_check_order(start_brk, <=, brk);
 	error |= __prctl_check_order(arg_start, <=, arg_end);
 	error |= __prctl_check_order(env_start, <=, env_end);
@@ -1874,6 +1890,7 @@ static int validate_prctl_map(struct prctl_mm_map *prctl_map)
 	error = -EINVAL;
 
 	/*
+<<<<<<< HEAD
 	 * @brk should be after @end_data in traditional maps.
 	 */
 	if (prctl_map->start_brk <= prctl_map->end_data ||
@@ -1881,6 +1898,8 @@ static int validate_prctl_map(struct prctl_mm_map *prctl_map)
 		goto out;
 
 	/*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * Neither we should allow to override limits if they set.
 	 */
 	if (check_data_rlimit(rlimit(RLIMIT_DATA), prctl_map->brk,
@@ -1954,11 +1973,15 @@ static int prctl_set_mm_map(int opt, const void __user *addr, unsigned long data
 			return error;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * arg_lock protects concurent updates but we still need mmap_sem for
 	 * read to exclude races with sys_brk.
 	 */
 	down_read(&mm->mmap_sem);
+=======
+	down_write(&mm->mmap_sem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * We don't validate if these members are pointing to
@@ -1972,7 +1995,10 @@ static int prctl_set_mm_map(int opt, const void __user *addr, unsigned long data
 	 *    to any problem in kernel itself
 	 */
 
+<<<<<<< HEAD
 	spin_lock(&mm->arg_lock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mm->start_code	= prctl_map.start_code;
 	mm->end_code	= prctl_map.end_code;
 	mm->start_data	= prctl_map.start_data;
@@ -1984,7 +2010,10 @@ static int prctl_set_mm_map(int opt, const void __user *addr, unsigned long data
 	mm->arg_end	= prctl_map.arg_end;
 	mm->env_start	= prctl_map.env_start;
 	mm->env_end	= prctl_map.env_end;
+<<<<<<< HEAD
 	spin_unlock(&mm->arg_lock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Note this update of @saved_auxv is lockless thus
@@ -1997,7 +2026,11 @@ static int prctl_set_mm_map(int opt, const void __user *addr, unsigned long data
 	if (prctl_map.auxv_size)
 		memcpy(mm->saved_auxv, user_auxv, sizeof(user_auxv));
 
+<<<<<<< HEAD
 	up_read(&mm->mmap_sem);
+=======
+	up_write(&mm->mmap_sem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 #endif /* CONFIG_CHECKPOINT_RESTORE */
@@ -2191,6 +2224,7 @@ static int propagate_has_child_subreaper(struct task_struct *p, void *data)
 	return 1;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_MMU
 static int prctl_update_vma_anon_name(struct vm_area_struct *vma,
 		struct vm_area_struct **prev,
@@ -2338,6 +2372,8 @@ static int prctl_set_vma(unsigned long opt, unsigned long start,
 }
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int __weak arch_prctl_spec_ctrl_get(struct task_struct *t, unsigned long which)
 {
 	return -EINVAL;
@@ -2561,9 +2597,12 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
 			return -EINVAL;
 		error = arch_prctl_spec_ctrl_set(me, arg2, arg3);
 		break;
+<<<<<<< HEAD
 	case PR_SET_VMA:
 		error = prctl_set_vma(arg2, arg3, arg4, arg5);
 		break;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	default:
 		error = -EINVAL;
 		break;

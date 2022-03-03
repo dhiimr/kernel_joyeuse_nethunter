@@ -81,7 +81,11 @@ static unsigned int __init gen_fdt_mem_array(
 __init int yamon_dt_append_memory(void *fdt,
 				  const struct yamon_mem_region *regions)
 {
+<<<<<<< HEAD
 	unsigned long phys_memsize, memsize;
+=======
+	unsigned long phys_memsize = 0, memsize;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__be32 mem_array[2 * MAX_MEM_ARRAY_ENTRIES];
 	unsigned int mem_entries;
 	int i, err, mem_off;

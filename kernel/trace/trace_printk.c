@@ -304,7 +304,11 @@ static int t_show(struct seq_file *m, void *v)
 	if (!*fmt)
 		return 0;
 
+<<<<<<< HEAD
 	seq_printf(m, "0x%lx : \"", 0L);
+=======
+	seq_printf(m, "0x%lx : \"", *(unsigned long *)fmt);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Tabs and new lines need to be converted.

@@ -23,7 +23,10 @@
 #include <linux/ndctl.h>
 #include <linux/fs.h>
 #include <linux/nd.h>
+<<<<<<< HEAD
 #include <linux/backing-dev.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "btt.h"
 #include "nd.h"
 
@@ -400,9 +403,15 @@ static int btt_flog_write(struct arena_info *arena, u32 lane, u32 sub,
 	arena->freelist[lane].sub = 1 - arena->freelist[lane].sub;
 	if (++(arena->freelist[lane].seq) == 4)
 		arena->freelist[lane].seq = 1;
+<<<<<<< HEAD
 	if (ent_e_flag(ent->old_map))
 		arena->freelist[lane].has_err = 1;
 	arena->freelist[lane].block = le32_to_cpu(ent_lba(ent->old_map));
+=======
+	if (ent_e_flag(le32_to_cpu(ent->old_map)))
+		arena->freelist[lane].has_err = 1;
+	arena->freelist[lane].block = ent_lba(le32_to_cpu(ent->old_map));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }
@@ -541,9 +550,15 @@ static int arena_clear_freelist_error(struct arena_info *arena, u32 lane)
 
 static int btt_freelist_init(struct arena_info *arena)
 {
+<<<<<<< HEAD
 	int old, new, ret;
 	u32 i, map_entry;
 	struct log_entry log_new, log_old;
+=======
+	int new, ret;
+	struct log_entry log_new;
+	u32 i, map_entry, log_oldmap, log_newmap;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	arena->freelist = kcalloc(arena->nfree, sizeof(struct free_entry),
 					GFP_KERNEL);
@@ -551,24 +566,44 @@ static int btt_freelist_init(struct arena_info *arena)
 		return -ENOMEM;
 
 	for (i = 0; i < arena->nfree; i++) {
+<<<<<<< HEAD
 		old = btt_log_read(arena, i, &log_old, LOG_OLD_ENT);
 		if (old < 0)
 			return old;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		new = btt_log_read(arena, i, &log_new, LOG_NEW_ENT);
 		if (new < 0)
 			return new;
 
+<<<<<<< HEAD
 		/* sub points to the next one to be overwritten */
 		arena->freelist[i].sub = 1 - new;
 		arena->freelist[i].seq = nd_inc_seq(le32_to_cpu(log_new.seq));
 		arena->freelist[i].block = le32_to_cpu(log_new.old_map);
+=======
+		/* old and new map entries with any flags stripped out */
+		log_oldmap = ent_lba(le32_to_cpu(log_new.old_map));
+		log_newmap = ent_lba(le32_to_cpu(log_new.new_map));
+
+		/* sub points to the next one to be overwritten */
+		arena->freelist[i].sub = 1 - new;
+		arena->freelist[i].seq = nd_inc_seq(le32_to_cpu(log_new.seq));
+		arena->freelist[i].block = log_oldmap;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/*
 		 * FIXME: if error clearing fails during init, we want to make
 		 * the BTT read-only
 		 */
+<<<<<<< HEAD
 		if (ent_e_flag(log_new.old_map)) {
+=======
+		if (ent_e_flag(le32_to_cpu(log_new.old_map)) &&
+		    !ent_normal(le32_to_cpu(log_new.old_map))) {
+			arena->freelist[i].has_err = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ret = arena_clear_freelist_error(arena, i);
 			if (ret)
 				dev_err_ratelimited(to_dev(arena),
@@ -576,7 +611,11 @@ static int btt_freelist_init(struct arena_info *arena)
 		}
 
 		/* This implies a newly created or untouched flog entry */
+<<<<<<< HEAD
 		if (log_new.old_map == log_new.new_map)
+=======
+		if (log_oldmap == log_newmap)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			continue;
 
 		/* Check if map recovery is needed */
@@ -584,8 +623,20 @@ static int btt_freelist_init(struct arena_info *arena)
 				NULL, NULL, 0);
 		if (ret)
 			return ret;
+<<<<<<< HEAD
 		if ((le32_to_cpu(log_new.new_map) != map_entry) &&
 				(le32_to_cpu(log_new.old_map) == map_entry)) {
+=======
+
+		/*
+		 * The map_entry from btt_read_map is stripped of any flag bits,
+		 * so use the stripped out versions from the log as well for
+		 * testing whether recovery is needed. For restoration, use the
+		 * 'raw' version of the log entries as that captured what we
+		 * were going to write originally.
+		 */
+		if ((log_newmap != map_entry) && (log_oldmap == map_entry)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/*
 			 * Last transaction wrote the flog, but wasn't able
 			 * to complete the map write. So fix up the map.
@@ -1260,11 +1311,19 @@ static int btt_read_pg(struct btt *btt, struct bio_integrity_payload *bip,
 
 		ret = btt_data_read(arena, page, off, postmap, cur_len);
 		if (ret) {
+<<<<<<< HEAD
 			int rc;
 
 			/* Media error - set the e_flag */
 			rc = btt_map_write(arena, premap, postmap, 0, 1,
 				NVDIMM_IO_ATOMIC);
+=======
+			/* Media error - set the e_flag */
+			if (btt_map_write(arena, premap, postmap, 0, 1, NVDIMM_IO_ATOMIC))
+				dev_warn_ratelimited(to_dev(arena),
+					"Error persistently tracking bad blocks at %#x\n",
+					premap);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto out_rtt;
 		}
 
@@ -1536,8 +1595,11 @@ static int btt_blk_init(struct btt *btt)
 	btt->btt_disk->private_data = btt;
 	btt->btt_disk->queue = btt->btt_queue;
 	btt->btt_disk->flags = GENHD_FL_EXT_DEVT;
+<<<<<<< HEAD
 	btt->btt_disk->queue->backing_dev_info->capabilities |=
 			BDI_CAP_SYNCHRONOUS_IO;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	blk_queue_make_request(btt->btt_queue, btt_make_request);
 	blk_queue_logical_block_size(btt->btt_queue, btt->sector_size);

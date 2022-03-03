@@ -225,15 +225,23 @@ void free_rmid(u32 rmid)
 		list_add_tail(&entry->list, &rmid_free_lru);
 }
 
+<<<<<<< HEAD
 static int __mon_event_count(u32 rmid, struct rmid_read *rr)
+=======
+static u64 __mon_event_count(u32 rmid, struct rmid_read *rr)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u64 chunks, shift, tval;
 	struct mbm_state *m;
 
 	tval = __rmid_read(rmid, rr->evtid);
 	if (tval & (RMID_VAL_ERROR | RMID_VAL_UNAVAIL)) {
+<<<<<<< HEAD
 		rr->val = tval;
 		return -EINVAL;
+=======
+		return tval;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	switch (rr->evtid) {
 	case QOS_L3_OCCUP_EVENT_ID:
@@ -247,10 +255,17 @@ static int __mon_event_count(u32 rmid, struct rmid_read *rr)
 		break;
 	default:
 		/*
+<<<<<<< HEAD
 		 * Code would never reach here because
 		 * an invalid event id would fail the __rmid_read.
 		 */
 		return -EINVAL;
+=======
+		 * Code would never reach here because an invalid
+		 * event id would fail the __rmid_read.
+		 */
+		return RMID_VAL_ERROR;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (rr->first) {
@@ -278,6 +293,7 @@ void mon_event_count(void *info)
 	struct rdtgroup *rdtgrp, *entry;
 	struct rmid_read *rr = info;
 	struct list_head *head;
+<<<<<<< HEAD
 
 	rdtgrp = rr->rgrp;
 
@@ -286,15 +302,38 @@ void mon_event_count(void *info)
 
 	/*
 	 * For Ctrl groups read data from child monitor groups.
+=======
+	u64 ret_val;
+
+	rdtgrp = rr->rgrp;
+
+	ret_val = __mon_event_count(rdtgrp->mon.rmid, rr);
+
+	/*
+	 * For Ctrl groups read data from child monitor groups and
+	 * add them together. Count events which are read successfully.
+	 * Discard the rmid_read's reporting errors.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 */
 	head = &rdtgrp->mon.crdtgrp_list;
 
 	if (rdtgrp->type == RDTCTRL_GROUP) {
 		list_for_each_entry(entry, head, mon.crdtgrp_list) {
+<<<<<<< HEAD
 			if (__mon_event_count(entry->mon.rmid, rr))
 				return;
 		}
 	}
+=======
+			if (__mon_event_count(entry->mon.rmid, rr) == 0)
+				ret_val = 0;
+		}
+	}
+
+	/* Report error if none of rmid_reads are successful */
+	if (ret_val)
+		rr->val = ret_val;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void mbm_update(struct rdt_domain *d, int rmid)

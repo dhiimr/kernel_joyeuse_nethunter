@@ -282,16 +282,27 @@ __sys_trace:
 	cmp	scno, #-1			@ skip the syscall?
 	bne	2b
 	add	sp, sp, #S_OFF			@ restore stack
+<<<<<<< HEAD
 	b	ret_slow_syscall
 
 __sys_trace_return:
 	str	r0, [sp, #S_R0 + S_OFF]!	@ save returned r0
+=======
+
+__sys_trace_return_nosave:
+	enable_irq_notrace
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mov	r0, sp
 	bl	syscall_trace_exit
 	b	ret_slow_syscall
 
+<<<<<<< HEAD
 __sys_trace_return_nosave:
 	enable_irq_notrace
+=======
+__sys_trace_return:
+	str	r0, [sp, #S_R0 + S_OFF]!	@ save returned r0
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mov	r0, sp
 	bl	syscall_trace_exit
 	b	ret_slow_syscall

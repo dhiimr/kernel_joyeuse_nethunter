@@ -19,8 +19,13 @@
 
 #include "vpd_decode.h"
 
+<<<<<<< HEAD
 static int vpd_decode_len(const s32 max_len, const u8 *in,
 			  s32 *length, s32 *decoded_len)
+=======
+static int vpd_decode_len(const u32 max_len, const u8 *in,
+			  u32 *length, u32 *decoded_len)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u8 more;
 	int i = 0;
@@ -40,6 +45,7 @@ static int vpd_decode_len(const s32 max_len, const u8 *in,
 	} while (more);
 
 	*decoded_len = i;
+<<<<<<< HEAD
 
 	return VPD_OK;
 }
@@ -52,6 +58,41 @@ int vpd_decode_string(const s32 max_len, const u8 *input_buf, s32 *consumed,
 	s32 key_len;
 	s32 value_len;
 	s32 decoded_len;
+=======
+	return VPD_OK;
+}
+
+static int vpd_decode_entry(const u32 max_len, const u8 *input_buf,
+			    u32 *_consumed, const u8 **entry, u32 *entry_len)
+{
+	u32 decoded_len;
+	u32 consumed = *_consumed;
+
+	if (vpd_decode_len(max_len - consumed, &input_buf[consumed],
+			   entry_len, &decoded_len) != VPD_OK)
+		return VPD_FAIL;
+	if (max_len - consumed < decoded_len)
+		return VPD_FAIL;
+
+	consumed += decoded_len;
+	*entry = input_buf + consumed;
+
+	/* entry_len is untrusted data and must be checked again. */
+	if (max_len - consumed < *entry_len)
+		return VPD_FAIL;
+
+	consumed += *entry_len;
+	*_consumed = consumed;
+	return VPD_OK;
+}
+
+int vpd_decode_string(const u32 max_len, const u8 *input_buf, u32 *consumed,
+		      vpd_decode_callback callback, void *callback_arg)
+{
+	int type;
+	u32 key_len;
+	u32 value_len;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	const u8 *key;
 	const u8 *value;
 
@@ -66,6 +107,7 @@ int vpd_decode_string(const s32 max_len, const u8 *input_buf, s32 *consumed,
 	case VPD_TYPE_STRING:
 		(*consumed)++;
 
+<<<<<<< HEAD
 		/* key */
 		res = vpd_decode_len(max_len - *consumed, &input_buf[*consumed],
 				     &key_len, &decoded_len);
@@ -86,6 +128,16 @@ int vpd_decode_string(const s32 max_len, const u8 *input_buf, s32 *consumed,
 		value = &input_buf[*consumed];
 		*consumed += value_len;
 
+=======
+		if (vpd_decode_entry(max_len, input_buf, consumed, &key,
+				     &key_len) != VPD_OK)
+			return VPD_FAIL;
+
+		if (vpd_decode_entry(max_len, input_buf, consumed, &value,
+				     &value_len) != VPD_OK)
+			return VPD_FAIL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (type == VPD_TYPE_STRING)
 			return callback(key, key_len, value, value_len,
 					callback_arg);

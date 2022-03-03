@@ -56,7 +56,11 @@ char *evm_config_xattrnames[] = {
 	NULL
 };
 
+<<<<<<< HEAD
 static int evm_fixmode;
+=======
+static int evm_fixmode __ro_after_init;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int __init evm_set_fixmode(char *str)
 {
 	if (strncmp(str, "fix", 3) == 0)

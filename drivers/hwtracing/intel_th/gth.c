@@ -485,7 +485,11 @@ static void intel_th_gth_disable(struct intel_th_device *thdev,
 	output->active = false;
 
 	for_each_set_bit(master, gth->output[output->port].master,
+<<<<<<< HEAD
 			 TH_CONFIGURABLE_MASTERS) {
+=======
+			 TH_CONFIGURABLE_MASTERS + 1) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		gth_master_set(gth, master, -1);
 	}
 	spin_unlock(&gth->gth_lock);
@@ -521,6 +525,24 @@ static void gth_tscu_resync(struct gth_device *gth)
 	iowrite32(reg, gth->base + REG_TSCU_TSUCTRL);
 }
 
+<<<<<<< HEAD
+=======
+static void intel_th_gth_prepare(struct intel_th_device *thdev,
+				 struct intel_th_output *output)
+{
+	struct gth_device *gth = dev_get_drvdata(&thdev->dev);
+	int count;
+
+	/*
+	 * Wait until the output port is in reset before we start
+	 * programming it.
+	 */
+	for (count = GTH_PLE_WAITLOOP_DEPTH;
+	     count && !(gth_output_get(gth, output->port) & BIT(5)); count--)
+		cpu_relax();
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * intel_th_gth_enable() - enable tracing to an output device
  * @thdev:	GTH device
@@ -624,7 +646,11 @@ static void intel_th_gth_unassign(struct intel_th_device *thdev,
 	othdev->output.port = -1;
 	othdev->output.active = false;
 	gth->output[port].output = NULL;
+<<<<<<< HEAD
 	for (master = 0; master <= TH_CONFIGURABLE_MASTERS; master++)
+=======
+	for (master = 0; master < TH_CONFIGURABLE_MASTERS + 1; master++)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (gth->master[master] == port)
 			gth->master[master] = -1;
 	spin_unlock(&gth->gth_lock);
@@ -742,6 +768,10 @@ static struct intel_th_driver intel_th_gth_driver = {
 	.assign		= intel_th_gth_assign,
 	.unassign	= intel_th_gth_unassign,
 	.set_output	= intel_th_gth_set_output,
+<<<<<<< HEAD
+=======
+	.prepare	= intel_th_gth_prepare,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.enable		= intel_th_gth_enable,
 	.disable	= intel_th_gth_disable,
 	.driver	= {

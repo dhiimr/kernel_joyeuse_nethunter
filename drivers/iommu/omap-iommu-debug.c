@@ -101,8 +101,16 @@ static ssize_t debug_read_regs(struct file *file, char __user *userbuf,
 	mutex_lock(&iommu_debug_lock);
 
 	bytes = omap_iommu_dump_ctx(obj, p, count);
+<<<<<<< HEAD
 	bytes = simple_read_from_buffer(userbuf, count, ppos, buf, bytes);
 
+=======
+	if (bytes < 0)
+		goto err;
+	bytes = simple_read_from_buffer(userbuf, count, ppos, buf, bytes);
+
+err:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(&iommu_debug_lock);
 	kfree(buf);
 

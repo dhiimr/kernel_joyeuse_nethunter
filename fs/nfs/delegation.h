@@ -34,6 +34,10 @@ enum {
 	NFS_DELEGATION_RETURNING,
 	NFS_DELEGATION_REVOKED,
 	NFS_DELEGATION_TEST_EXPIRED,
+<<<<<<< HEAD
+=======
+	NFS_DELEGATION_INODE_FREEING,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 int nfs_inode_set_delegation(struct inode *inode, struct rpc_cred *cred, struct nfs_openres *res);
@@ -63,6 +67,10 @@ int nfs4_open_delegation_recall(struct nfs_open_context *ctx, struct nfs4_state 
 int nfs4_lock_delegation_recall(struct file_lock *fl, struct nfs4_state *state, const nfs4_stateid *stateid);
 bool nfs4_copy_delegation_stateid(struct inode *inode, fmode_t flags, nfs4_stateid *dst, struct rpc_cred **cred);
 
+<<<<<<< HEAD
+=======
+struct nfs_delegation *nfs4_get_valid_delegation(const struct inode *inode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void nfs_mark_delegation_referenced(struct nfs_delegation *delegation);
 int nfs4_have_delegation(struct inode *inode, fmode_t flags);
 int nfs4_check_delegation(struct inode *inode, fmode_t flags);

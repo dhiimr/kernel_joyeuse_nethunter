@@ -235,6 +235,10 @@ static int vf610_dac_probe(struct platform_device *pdev)
 	return 0;
 
 error_iio_device_register:
+<<<<<<< HEAD
+=======
+	vf610_dac_exit(info);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	clk_disable_unprepare(info->clk);
 
 	return ret;

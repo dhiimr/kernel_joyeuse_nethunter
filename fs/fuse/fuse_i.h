@@ -117,6 +117,11 @@ enum {
 	FUSE_I_INIT_RDPLUS,
 	/** An operation changing file size is in progress  */
 	FUSE_I_SIZE_UNSTABLE,
+<<<<<<< HEAD
+=======
+	/* Bad inode */
+	FUSE_I_BAD,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct fuse_conn;
@@ -370,9 +375,12 @@ struct fuse_req {
 	/** Inode used in the request or NULL */
 	struct inode *inode;
 
+<<<<<<< HEAD
 	/** Path used for completing d_canonical_path */
 	struct path *canonical_path;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/** AIO control block */
 	struct fuse_io_priv *io;
 
@@ -690,6 +698,20 @@ static inline u64 get_node_id(struct inode *inode)
 	return get_fuse_inode(inode)->nodeid;
 }
 
+<<<<<<< HEAD
+=======
+static inline void fuse_make_bad(struct inode *inode)
+{
+	remove_inode_hash(inode);
+	set_bit(FUSE_I_BAD, &get_fuse_inode(inode)->state);
+}
+
+static inline bool fuse_is_bad(struct inode *inode)
+{
+	return unlikely(test_bit(FUSE_I_BAD, &get_fuse_inode(inode)->state));
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /** Device operations */
 extern const struct file_operations fuse_dev_operations;
 
@@ -899,6 +921,11 @@ void fuse_ctl_remove_conn(struct fuse_conn *fc);
  */
 int fuse_valid_type(int m);
 
+<<<<<<< HEAD
+=======
+bool fuse_invalid_attr(struct fuse_attr *attr);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * Is current process allowed to perform filesystem operation?
  */

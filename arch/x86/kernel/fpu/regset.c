@@ -128,7 +128,11 @@ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
 	/*
 	 * A whole standard-format XSAVE buffer is needed:
 	 */
+<<<<<<< HEAD
 	if ((pos != 0) || (count < fpu_user_xstate_size))
+=======
+	if (pos != 0 || count != fpu_user_xstate_size)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EFAULT;
 
 	xsave = &fpu->state.xsave;

@@ -102,12 +102,15 @@ static inline bool has_vhe(void)
 	return false;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARM64_VHE
 extern void verify_cpu_run_el(void);
 #else
 static inline void verify_cpu_run_el(void) {}
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* __ASSEMBLY__ */
 
 #endif /* ! __ASM__VIRT_H */

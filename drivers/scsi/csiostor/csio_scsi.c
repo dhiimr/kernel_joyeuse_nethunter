@@ -1383,7 +1383,11 @@ csio_device_reset(struct device *dev,
 		return -EINVAL;
 
 	/* Delete NPIV lnodes */
+<<<<<<< HEAD
 	 csio_lnodes_exit(hw, 1);
+=======
+	csio_lnodes_exit(hw, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Block upper IOs */
 	csio_lnodes_block_request(hw);
@@ -1713,8 +1717,16 @@ csio_scsi_err_handler(struct csio_hw *hw, struct csio_ioreq *req)
 	}
 
 out:
+<<<<<<< HEAD
 	if (req->nsge > 0)
 		scsi_dma_unmap(cmnd);
+=======
+	if (req->nsge > 0) {
+		scsi_dma_unmap(cmnd);
+		if (req->dcopy && (host_status == DID_OK))
+			host_status = csio_scsi_copy_to_sgl(hw, req);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cmnd->result = (((host_status) << 16) | scsi_status);
 	cmnd->scsi_done(cmnd);

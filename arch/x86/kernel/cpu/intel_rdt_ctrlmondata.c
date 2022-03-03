@@ -313,6 +313,13 @@ int rdtgroup_mondata_show(struct seq_file *m, void *arg)
 	int ret = 0;
 
 	rdtgrp = rdtgroup_kn_lock_live(of->kn);
+<<<<<<< HEAD
+=======
+	if (!rdtgrp) {
+		ret = -ENOENT;
+		goto out;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	md.priv = of->kn->priv;
 	resid = md.u.rid;

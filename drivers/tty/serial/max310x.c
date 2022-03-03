@@ -494,6 +494,7 @@ static bool max310x_reg_precious(struct device *dev, unsigned int reg)
 
 static int max310x_set_baud(struct uart_port *port, int baud)
 {
+<<<<<<< HEAD
 	unsigned int mode = 0, clk = port->uartclk, div = clk / baud;
 
 	/* Check for minimal value for divider */
@@ -519,12 +520,54 @@ static int max310x_set_baud(struct uart_port *port, int baud)
 	max310x_port_write(port, MAX310X_BRGCFG_REG, (div % 16) | mode);
 
 	return DIV_ROUND_CLOSEST(clk, div);
+=======
+	unsigned int mode = 0, div = 0, frac = 0, c = 0, F = 0;
+
+	/*
+	 * Calculate the integer divisor first. Select a proper mode
+	 * in case if the requested baud is too high for the pre-defined
+	 * clocks frequency.
+	 */
+	div = port->uartclk / baud;
+	if (div < 8) {
+		/* Mode x4 */
+		c = 4;
+		mode = MAX310X_BRGCFG_4XMODE_BIT;
+	} else if (div < 16) {
+		/* Mode x2 */
+		c = 8;
+		mode = MAX310X_BRGCFG_2XMODE_BIT;
+	} else {
+		c = 16;
+	}
+
+	/* Calculate the divisor in accordance with the fraction coefficient */
+	div /= c;
+	F = c*baud;
+
+	/* Calculate the baud rate fraction */
+	if (div > 0)
+		frac = (16*(port->uartclk % F)) / F;
+	else
+		div = 1;
+
+	max310x_port_write(port, MAX310X_BRGDIVMSB_REG, div >> 8);
+	max310x_port_write(port, MAX310X_BRGDIVLSB_REG, div);
+	max310x_port_write(port, MAX310X_BRGCFG_REG, frac | mode);
+
+	/* Return the actual baud rate we just programmed */
+	return (16*port->uartclk) / (c*(16*div + frac));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int max310x_update_best_err(unsigned long f, long *besterr)
 {
 	/* Use baudrate 115200 for calculate error */
+<<<<<<< HEAD
 	long err = f % (115200 * 16);
+=======
+	long err = f % (460800 * 16);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if ((*besterr < 0) || (*besterr > err)) {
 		*besterr = err;
@@ -579,7 +622,11 @@ static int max310x_set_ref_clk(struct max310x_port *s, unsigned long freq,
 	}
 
 	/* Configure clock source */
+<<<<<<< HEAD
 	clksrc = xtal ? MAX310X_CLKSRC_CRYST_BIT : MAX310X_CLKSRC_EXTCLK_BIT;
+=======
+	clksrc = MAX310X_CLKSRC_EXTCLK_BIT | (xtal ? MAX310X_CLKSRC_CRYST_BIT : 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Configure PLL */
 	if (pllcfg) {
@@ -758,12 +805,18 @@ static void max310x_start_tx(struct uart_port *port)
 
 static unsigned int max310x_tx_empty(struct uart_port *port)
 {
+<<<<<<< HEAD
 	unsigned int lvl, sts;
 
 	lvl = max310x_port_read(port, MAX310X_TXFIFOLVL_REG);
 	sts = max310x_port_read(port, MAX310X_IRQSTS_REG);
 
 	return ((sts & MAX310X_IRQ_TXEMPTY_BIT) && !lvl) ? TIOCSER_TEMT : 0;
+=======
+	u8 lvl = max310x_port_read(port, MAX310X_TXFIFOLVL_REG);
+
+	return lvl ? 0 : TIOCSER_TEMT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static unsigned int max310x_get_mctrl(struct uart_port *port)
@@ -1377,10 +1430,19 @@ static int __init max310x_uart_init(void)
 		return ret;
 
 #ifdef CONFIG_SPI_MASTER
+<<<<<<< HEAD
 	spi_register_driver(&max310x_spi_driver);
 #endif
 
 	return 0;
+=======
+	ret = spi_register_driver(&max310x_spi_driver);
+	if (ret)
+		uart_unregister_driver(&max310x_uart);
+#endif
+
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 module_init(max310x_uart_init);
 

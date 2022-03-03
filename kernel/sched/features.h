@@ -27,12 +27,15 @@ SCHED_FEAT(NEXT_BUDDY, false)
 SCHED_FEAT(LAST_BUDDY, true)
 
 /*
+<<<<<<< HEAD
  * skip buddy i.e task called yield() is always skipped and the
  * next entity is selected to run irrespective of the vruntime
  */
 SCHED_FEAT(STRICT_SKIP_BUDDY, true)
 
 /*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Consider buddies to be cache hot, decreases the likelyness of a
  * cache buddy being migrated away, increases cache locality.
  */
@@ -56,7 +59,11 @@ SCHED_FEAT(NONTASK_CAPACITY, true)
  * Queue remote wakeups on the target CPU and process them
  * using the scheduler IPI. Reduces rq->lock contention/bounces.
  */
+<<<<<<< HEAD
 SCHED_FEAT(TTWU_QUEUE, false)
+=======
+SCHED_FEAT(TTWU_QUEUE, true)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * When doing wakeups, attempt to limit superfluous scans of the LLC domain.
@@ -91,6 +98,7 @@ SCHED_FEAT(ATTACH_AGE_LOAD, true)
 SCHED_FEAT(WA_IDLE, true)
 SCHED_FEAT(WA_WEIGHT, true)
 SCHED_FEAT(WA_BIAS, true)
+<<<<<<< HEAD
 
 /*
  * UtilEstimation. Use estimated CPU utilization.
@@ -135,3 +143,5 @@ SCHED_FEAT(FBT_STRICT_ORDER, false)
  * RT class.
  */
 SCHED_FEAT(SCHEDTUNE_BOOST_HOLD_ALL, false)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

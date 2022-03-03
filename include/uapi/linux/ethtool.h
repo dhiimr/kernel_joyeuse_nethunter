@@ -14,7 +14,11 @@
 #ifndef _UAPI_LINUX_ETHTOOL_H
 #define _UAPI_LINUX_ETHTOOL_H
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
+=======
+#include <linux/const.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/types.h>
 #include <linux/if_ether.h>
 

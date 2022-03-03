@@ -5,6 +5,10 @@
 #include <linux/user.h>
 #include <linux/regset.h>
 #include <linux/syscalls.h>
+<<<<<<< HEAD
+=======
+#include <linux/nospec.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <linux/uaccess.h>
 #include <asm/desc.h>
@@ -220,6 +224,10 @@ int do_get_thread_area(struct task_struct *p, int idx,
 		       struct user_desc __user *u_info)
 {
 	struct user_desc info;
+<<<<<<< HEAD
+=======
+	int index;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (idx == -1 && get_user(idx, &u_info->entry_number))
 		return -EFAULT;
@@ -227,8 +235,16 @@ int do_get_thread_area(struct task_struct *p, int idx,
 	if (idx < GDT_ENTRY_TLS_MIN || idx > GDT_ENTRY_TLS_MAX)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	fill_user_desc(&info, idx,
 		       &p->thread.tls_array[idx - GDT_ENTRY_TLS_MIN]);
+=======
+	index = idx - GDT_ENTRY_TLS_MIN;
+	index = array_index_nospec(index,
+			GDT_ENTRY_TLS_MAX - GDT_ENTRY_TLS_MIN + 1);
+
+	fill_user_desc(&info, idx, &p->thread.tls_array[index]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (copy_to_user(u_info, &info, sizeof(info)))
 		return -EFAULT;

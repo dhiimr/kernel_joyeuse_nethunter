@@ -125,8 +125,12 @@ struct iv_tcw_private {
  * and encrypts / decrypts at the same time.
  */
 enum flags { DM_CRYPT_SUSPENDED, DM_CRYPT_KEY_VALID,
+<<<<<<< HEAD
 	     DM_CRYPT_SAME_CPU, DM_CRYPT_NO_OFFLOAD,
 	     DM_CRYPT_ENCRYPT_OVERRIDE };
+=======
+	     DM_CRYPT_SAME_CPU, DM_CRYPT_NO_OFFLOAD };
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 enum cipher_flags {
 	CRYPT_MODE_INTEGRITY_AEAD,	/* Use authenticated mode for cihper */
@@ -486,8 +490,19 @@ static int crypt_iv_essiv_gen(struct crypt_config *cc, u8 *iv,
 static int crypt_iv_benbi_ctr(struct crypt_config *cc, struct dm_target *ti,
 			      const char *opts)
 {
+<<<<<<< HEAD
 	unsigned bs = crypto_skcipher_blocksize(any_tfm(cc));
 	int log = ilog2(bs);
+=======
+	unsigned bs;
+	int log;
+
+	if (test_bit(CRYPT_MODE_INTEGRITY_AEAD, &cc->cipher_flags))
+		bs = crypto_aead_blocksize(any_tfm_aead(cc));
+	else
+		bs = crypto_skcipher_blocksize(any_tfm(cc));
+	log = ilog2(bs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* we need to calculate how far we must shift the sector count
 	 * to get the cipher block count, we use this shift in _gen */
@@ -1894,6 +1909,7 @@ static int crypt_alloc_tfms_skcipher(struct crypt_config *cc, char *ciphermode)
 		}
 	}
 
+<<<<<<< HEAD
 	/*
 	 * dm-crypt performance can vary greatly depending on which crypto
 	 * algorithm implementation is used.  Help people debug performance
@@ -1901,6 +1917,8 @@ static int crypt_alloc_tfms_skcipher(struct crypt_config *cc, char *ciphermode)
 	 */
 	DMINFO("%s using implementation \"%s\"", ciphermode,
 	       crypto_skcipher_alg(any_tfm(cc))->base.cra_driver_name);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -1919,8 +1937,11 @@ static int crypt_alloc_tfms_aead(struct crypt_config *cc, char *ciphermode)
 		return err;
 	}
 
+<<<<<<< HEAD
 	DMINFO("%s using implementation \"%s\"", ciphermode,
 	       crypto_aead_alg(any_tfm_aead(cc))->base.cra_driver_name);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -2192,7 +2213,16 @@ static void *crypt_page_alloc(gfp_t gfp_mask, void *pool_data)
 	struct crypt_config *cc = pool_data;
 	struct page *page;
 
+<<<<<<< HEAD
 	if (unlikely(percpu_counter_compare(&cc->n_allocated_pages, dm_crypt_pages_per_client) >= 0) &&
+=======
+	/*
+	 * Note, percpu_counter_read_positive() may over (and under) estimate
+	 * the current usage by at most (batch - 1) * num_online_cpus() pages,
+	 * but avoids potential spinlock contention of an exact result.
+	 */
+	if (unlikely(percpu_counter_read_positive(&cc->n_allocated_pages) >= dm_crypt_pages_per_client) &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    likely(gfp_mask & __GFP_NORETRY))
 		return NULL;
 
@@ -2672,8 +2702,11 @@ static int crypt_ctr_optional(struct dm_target *ti, unsigned int argc, char **ar
 			cc->sector_shift = __ffs(cc->sector_size) - SECTOR_SHIFT;
 		} else if (!strcasecmp(opt_string, "iv_large_sectors"))
 			set_bit(CRYPT_IV_LARGE_SECTORS, &cc->cipher_flags);
+<<<<<<< HEAD
 		else if (!strcasecmp(opt_string, "allow_encrypt_override"))
 			set_bit(DM_CRYPT_ENCRYPT_OVERRIDE, &cc->flags);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		else {
 			ti->error = "Invalid feature arguments";
 			return -EINVAL;
@@ -2883,6 +2916,7 @@ static int crypt_map(struct dm_target *ti, struct bio *bio)
 	struct crypt_config *cc = ti->private;
 
 	/*
+<<<<<<< HEAD
 	 * If bio is REQ_PREFLUSH, REQ_NOENCRYPT, or REQ_OP_DISCARD,
 	 * just bypass crypt queues.
 	 * - for REQ_PREFLUSH device-mapper core ensures that no IO is in-flight
@@ -2892,6 +2926,14 @@ static int crypt_map(struct dm_target *ti, struct bio *bio)
 	    (unlikely(bio->bi_opf & REQ_NOENCRYPT) &&
 	     test_bit(DM_CRYPT_ENCRYPT_OVERRIDE, &cc->flags)) ||
 	    bio_op(bio) == REQ_OP_DISCARD) {
+=======
+	 * If bio is REQ_PREFLUSH or REQ_OP_DISCARD, just bypass crypt queues.
+	 * - for REQ_PREFLUSH device-mapper core ensures that no IO is in-flight
+	 * - for REQ_OP_DISCARD caller must use flush if IO ordering matters
+	 */
+	if (unlikely(bio->bi_opf & REQ_PREFLUSH ||
+	    bio_op(bio) == REQ_OP_DISCARD)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		bio_set_dev(bio, cc->dev->bdev);
 		if (bio_sectors(bio))
 			bio->bi_iter.bi_sector = cc->start +
@@ -2978,8 +3020,11 @@ static void crypt_status(struct dm_target *ti, status_type_t type,
 		num_feature_args += test_bit(DM_CRYPT_NO_OFFLOAD, &cc->flags);
 		num_feature_args += cc->sector_size != (1 << SECTOR_SHIFT);
 		num_feature_args += test_bit(CRYPT_IV_LARGE_SECTORS, &cc->cipher_flags);
+<<<<<<< HEAD
 		num_feature_args += test_bit(DM_CRYPT_ENCRYPT_OVERRIDE,
 							&cc->flags);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (cc->on_disk_tag_size)
 			num_feature_args++;
 		if (num_feature_args) {
@@ -2996,8 +3041,11 @@ static void crypt_status(struct dm_target *ti, status_type_t type,
 				DMEMIT(" sector_size:%d", cc->sector_size);
 			if (test_bit(CRYPT_IV_LARGE_SECTORS, &cc->cipher_flags))
 				DMEMIT(" iv_large_sectors");
+<<<<<<< HEAD
 			if (test_bit(DM_CRYPT_ENCRYPT_OVERRIDE, &cc->flags))
 				DMEMIT(" allow_encrypt_override");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		break;
@@ -3101,7 +3149,11 @@ static void crypt_io_hints(struct dm_target *ti, struct queue_limits *limits)
 	limits->max_segment_size = PAGE_SIZE;
 
 	limits->logical_block_size =
+<<<<<<< HEAD
 		max_t(unsigned short, limits->logical_block_size, cc->sector_size);
+=======
+		max_t(unsigned, limits->logical_block_size, cc->sector_size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	limits->physical_block_size =
 		max_t(unsigned, limits->physical_block_size, cc->sector_size);
 	limits->io_min = max_t(unsigned, limits->io_min, cc->sector_size);

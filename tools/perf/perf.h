@@ -25,7 +25,11 @@ static inline unsigned long long rdclock(void)
 }
 
 #ifndef MAX_NR_CPUS
+<<<<<<< HEAD
 #define MAX_NR_CPUS			1024
+=======
+#define MAX_NR_CPUS			2048
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 extern const char *input_name;

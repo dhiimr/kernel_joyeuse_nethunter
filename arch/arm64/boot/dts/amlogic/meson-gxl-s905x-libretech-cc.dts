@@ -14,7 +14,11 @@
 
 / {
 	compatible = "libretech,cc", "amlogic,s905x", "amlogic,meson-gxl";
+<<<<<<< HEAD
 	model = "Libre Technology CC";
+=======
+	model = "Libre Computer Board AML-S905X-CC";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	aliases {
 		serial0 = &uart_AO;
@@ -139,7 +143,11 @@
 	};
 };
 
+<<<<<<< HEAD
 &pinctrl_aobus {
+=======
+&gpio_ao {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	gpio-line-names = "UART TX",
 			  "UART RX",
 			  "Blue LED",
@@ -152,7 +160,11 @@
 			  "7J1 Header Pin13";
 };
 
+<<<<<<< HEAD
 &pinctrl_periphs {
+=======
+&gpio {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	gpio-line-names = /* Bank GPIOZ */
 			  "", "", "", "", "", "", "",
 			  "", "", "", "", "", "", "",
@@ -226,7 +238,10 @@
 	cap-mmc-highspeed;
 	mmc-ddr-3_3v;
 	max-frequency = <50000000>;
+<<<<<<< HEAD
 	non-removable;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	disable-wp;
 
 	mmc-pwrseq = <&emmc_pwrseq>;

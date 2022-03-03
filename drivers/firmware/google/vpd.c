@@ -100,8 +100,13 @@ static int vpd_section_check_key_name(const u8 *key, s32 key_len)
 	return VPD_OK;
 }
 
+<<<<<<< HEAD
 static int vpd_section_attrib_add(const u8 *key, s32 key_len,
 				  const u8 *value, s32 value_len,
+=======
+static int vpd_section_attrib_add(const u8 *key, u32 key_len,
+				  const u8 *value, u32 value_len,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				  void *arg)
 {
 	int ret;

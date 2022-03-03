@@ -87,7 +87,11 @@
 		reg = <0x66>;
 
 		interrupt-parent = <&gpx3>;
+<<<<<<< HEAD
 		interrupts = <2 IRQ_TYPE_EDGE_FALLING>;
+=======
+		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pinctrl-names = "default";
 		pinctrl-0 = <&s2mps11_irq>;
 
@@ -109,6 +113,10 @@
 				regulator-name = "PVDD_APIO_1V8";
 				regulator-min-microvolt = <1800000>;
 				regulator-max-microvolt = <1800000>;
+<<<<<<< HEAD
+=======
+				regulator-always-on;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			};
 
 			ldo3_reg: LDO3 {
@@ -147,6 +155,10 @@
 				regulator-name = "PVDD_ABB_1V8";
 				regulator-min-microvolt = <1800000>;
 				regulator-max-microvolt = <1800000>;
+<<<<<<< HEAD
+=======
+				regulator-always-on;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			};
 
 			ldo9_reg: LDO9 {

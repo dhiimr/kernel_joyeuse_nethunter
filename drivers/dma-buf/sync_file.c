@@ -220,8 +220,13 @@ static struct sync_file *sync_file_merge(const char *name, struct sync_file *a,
 					 struct sync_file *b)
 {
 	struct sync_file *sync_file;
+<<<<<<< HEAD
 	struct dma_fence **fences, **nfences, **a_fences, **b_fences;
 	int i, i_a, i_b, num_fences, a_num_fences, b_num_fences;
+=======
+	struct dma_fence **fences = NULL, **nfences, **a_fences, **b_fences;
+	int i = 0, i_a, i_b, num_fences, a_num_fences, b_num_fences;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	sync_file = sync_file_alloc();
 	if (!sync_file)
@@ -230,7 +235,11 @@ static struct sync_file *sync_file_merge(const char *name, struct sync_file *a,
 	a_fences = get_fences(a, &a_num_fences);
 	b_fences = get_fences(b, &b_num_fences);
 	if (a_num_fences > INT_MAX - b_num_fences)
+<<<<<<< HEAD
 		return NULL;
+=======
+		goto err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	num_fences = a_num_fences + b_num_fences;
 
@@ -245,7 +254,11 @@ static struct sync_file *sync_file_merge(const char *name, struct sync_file *a,
 	 * If a sync_file can only be created with sync_file_merge
 	 * and sync_file_create, this is a reasonable assumption.
 	 */
+<<<<<<< HEAD
 	for (i = i_a = i_b = 0; i_a < a_num_fences && i_b < b_num_fences; ) {
+=======
+	for (i_a = i_b = 0; i_a < a_num_fences && i_b < b_num_fences; ) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct dma_fence *pt_a = a_fences[i_a];
 		struct dma_fence *pt_b = b_fences[i_b];
 
@@ -286,15 +299,26 @@ static struct sync_file *sync_file_merge(const char *name, struct sync_file *a,
 		fences = nfences;
 	}
 
+<<<<<<< HEAD
 	if (sync_file_set_fence(sync_file, fences, i) < 0) {
 		kfree(fences);
 		goto err;
 	}
+=======
+	if (sync_file_set_fence(sync_file, fences, i) < 0)
+		goto err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	strlcpy(sync_file->user_name, name, sizeof(sync_file->user_name));
 	return sync_file;
 
 err:
+<<<<<<< HEAD
+=======
+	while (i)
+		dma_fence_put(fences[--i]);
+	kfree(fences);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	fput(sync_file->file);
 	return NULL;
 

@@ -92,8 +92,22 @@ static struct sk_buff *virtio_transport_build_skb(void *opaque)
 	struct virtio_vsock_pkt *pkt = opaque;
 	struct af_vsockmon_hdr *hdr;
 	struct sk_buff *skb;
+<<<<<<< HEAD
 
 	skb = alloc_skb(sizeof(*hdr) + sizeof(pkt->hdr) + pkt->len,
+=======
+	size_t payload_len;
+	void *payload_buf;
+
+	/* A packet could be split to fit the RX buffer, so we can retrieve
+	 * the payload length from the header and the buffer pointer taking
+	 * care of the offset in the original packet.
+	 */
+	payload_len = le32_to_cpu(pkt->hdr.len);
+	payload_buf = pkt->buf + pkt->off;
+
+	skb = alloc_skb(sizeof(*hdr) + sizeof(pkt->hdr) + payload_len,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			GFP_ATOMIC);
 	if (!skb)
 		return NULL;
@@ -133,8 +147,13 @@ static struct sk_buff *virtio_transport_build_skb(void *opaque)
 
 	skb_put_data(skb, &pkt->hdr, sizeof(pkt->hdr));
 
+<<<<<<< HEAD
 	if (pkt->len) {
 		skb_put_data(skb, pkt->buf, pkt->len);
+=======
+	if (payload_len) {
+		skb_put_data(skb, payload_buf, payload_len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return skb;
@@ -660,9 +679,15 @@ static int virtio_transport_reset(struct vsock_sock *vsk,
 /* Normally packets are associated with a socket.  There may be no socket if an
  * attempt was made to connect to a socket that does not exist.
  */
+<<<<<<< HEAD
 static int virtio_transport_reset_no_sock(struct virtio_vsock_pkt *pkt)
 {
 	const struct virtio_transport *t;
+=======
+static int virtio_transport_reset_no_sock(const struct virtio_transport *t,
+					  struct virtio_vsock_pkt *pkt)
+{
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct virtio_vsock_pkt *reply;
 	struct virtio_vsock_pkt_info info = {
 		.op = VIRTIO_VSOCK_OP_RST,
@@ -682,7 +707,10 @@ static int virtio_transport_reset_no_sock(struct virtio_vsock_pkt *pkt)
 	if (!reply)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	t = virtio_transport_get_ops();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!t) {
 		virtio_transport_free_pkt(reply);
 		return -ENOTCONN;
@@ -716,7 +744,11 @@ static void virtio_transport_do_close(struct vsock_sock *vsk,
 	sock_set_flag(sk, SOCK_DONE);
 	vsk->peer_shutdown = SHUTDOWN_MASK;
 	if (vsock_stream_has_data(vsk) <= 0)
+<<<<<<< HEAD
 		sk->sk_state = SS_DISCONNECTING;
+=======
+		sk->sk_state = TCP_CLOSING;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sk->sk_state_change(sk);
 
 	if (vsk->close_work_scheduled &&
@@ -756,8 +788,13 @@ static bool virtio_transport_close(struct vsock_sock *vsk)
 {
 	struct sock *sk = &vsk->sk;
 
+<<<<<<< HEAD
 	if (!(sk->sk_state == SS_CONNECTED ||
 	      sk->sk_state == SS_DISCONNECTING))
+=======
+	if (!(sk->sk_state == TCP_ESTABLISHED ||
+	      sk->sk_state == TCP_CLOSING))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return true;
 
 	/* Already received SHUTDOWN from peer, reply with RST */
@@ -786,12 +823,28 @@ static bool virtio_transport_close(struct vsock_sock *vsk)
 
 void virtio_transport_release(struct vsock_sock *vsk)
 {
+<<<<<<< HEAD
 	struct sock *sk = &vsk->sk;
 	bool remove_sock = true;
 
 	lock_sock(sk);
 	if (sk->sk_type == SOCK_STREAM)
 		remove_sock = virtio_transport_close(vsk);
+=======
+	struct virtio_vsock_sock *vvs = vsk->trans;
+	struct virtio_vsock_pkt *pkt, *tmp;
+	struct sock *sk = &vsk->sk;
+	bool remove_sock = true;
+
+	lock_sock_nested(sk, SINGLE_DEPTH_NESTING);
+	if (sk->sk_type == SOCK_STREAM)
+		remove_sock = virtio_transport_close(vsk);
+
+	list_for_each_entry_safe(pkt, tmp, &vvs->rx_queue, list) {
+		list_del(&pkt->list);
+		virtio_transport_free_pkt(pkt);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	release_sock(sk);
 
 	if (remove_sock)
@@ -809,7 +862,11 @@ virtio_transport_recv_connecting(struct sock *sk,
 
 	switch (le16_to_cpu(pkt->hdr.op)) {
 	case VIRTIO_VSOCK_OP_RESPONSE:
+<<<<<<< HEAD
 		sk->sk_state = SS_CONNECTED;
+=======
+		sk->sk_state = TCP_ESTABLISHED;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		sk->sk_socket->state = SS_CONNECTED;
 		vsock_insert_connected(vsk);
 		sk->sk_state_change(sk);
@@ -829,7 +886,11 @@ virtio_transport_recv_connecting(struct sock *sk,
 
 destroy:
 	virtio_transport_reset(vsk, pkt);
+<<<<<<< HEAD
 	sk->sk_state = SS_UNCONNECTED;
+=======
+	sk->sk_state = TCP_CLOSE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sk->sk_err = skerr;
 	sk->sk_error_report(sk);
 	return err;
@@ -865,7 +926,11 @@ virtio_transport_recv_connected(struct sock *sk,
 			vsk->peer_shutdown |= SEND_SHUTDOWN;
 		if (vsk->peer_shutdown == SHUTDOWN_MASK &&
 		    vsock_stream_has_data(vsk) <= 0)
+<<<<<<< HEAD
 			sk->sk_state = SS_DISCONNECTING;
+=======
+			sk->sk_state = TCP_CLOSING;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (le32_to_cpu(pkt->hdr.flags))
 			sk->sk_state_change(sk);
 		break;
@@ -936,7 +1001,11 @@ virtio_transport_recv_listen(struct sock *sk, struct virtio_vsock_pkt *pkt)
 
 	lock_sock_nested(child, SINGLE_DEPTH_NESTING);
 
+<<<<<<< HEAD
 	child->sk_state = SS_CONNECTED;
+=======
+	child->sk_state = TCP_ESTABLISHED;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	vchild = vsock_sk(child);
 	vsock_addr_init(&vchild->local_addr, le64_to_cpu(pkt->hdr.dst_cid),
@@ -973,7 +1042,12 @@ static bool virtio_transport_space_update(struct sock *sk,
 /* We are under the virtio-vsock's vsock->rx_lock or vhost-vsock's vq->mutex
  * lock.
  */
+<<<<<<< HEAD
 void virtio_transport_recv_pkt(struct virtio_vsock_pkt *pkt)
+=======
+void virtio_transport_recv_pkt(struct virtio_transport *t,
+			       struct virtio_vsock_pkt *pkt)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct sockaddr_vm src, dst;
 	struct vsock_sock *vsk;
@@ -995,7 +1069,11 @@ void virtio_transport_recv_pkt(struct virtio_vsock_pkt *pkt)
 					le32_to_cpu(pkt->hdr.fwd_cnt));
 
 	if (le16_to_cpu(pkt->hdr.type) != VIRTIO_VSOCK_TYPE_STREAM) {
+<<<<<<< HEAD
 		(void)virtio_transport_reset_no_sock(pkt);
+=======
+		(void)virtio_transport_reset_no_sock(t, pkt);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto free_pkt;
 	}
 
@@ -1006,17 +1084,28 @@ void virtio_transport_recv_pkt(struct virtio_vsock_pkt *pkt)
 	if (!sk) {
 		sk = vsock_find_bound_socket(&dst);
 		if (!sk) {
+<<<<<<< HEAD
 			(void)virtio_transport_reset_no_sock(pkt);
+=======
+			(void)virtio_transport_reset_no_sock(t, pkt);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto free_pkt;
 		}
 	}
 
 	vsk = vsock_sk(sk);
 
+<<<<<<< HEAD
 	space_available = virtio_transport_space_update(sk, pkt);
 
 	lock_sock(sk);
 
+=======
+	lock_sock(sk);
+
+	space_available = virtio_transport_space_update(sk, pkt);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Update CID in case it has changed after a transport reset event */
 	vsk->local_addr.svm_cid = dst.svm_cid;
 
@@ -1024,6 +1113,7 @@ void virtio_transport_recv_pkt(struct virtio_vsock_pkt *pkt)
 		sk->sk_write_space(sk);
 
 	switch (sk->sk_state) {
+<<<<<<< HEAD
 	case VSOCK_SS_LISTEN:
 		virtio_transport_recv_listen(sk, pkt);
 		virtio_transport_free_pkt(pkt);
@@ -1036,10 +1126,28 @@ void virtio_transport_recv_pkt(struct virtio_vsock_pkt *pkt)
 		virtio_transport_recv_connected(sk, pkt);
 		break;
 	case SS_DISCONNECTING:
+=======
+	case TCP_LISTEN:
+		virtio_transport_recv_listen(sk, pkt);
+		virtio_transport_free_pkt(pkt);
+		break;
+	case TCP_SYN_SENT:
+		virtio_transport_recv_connecting(sk, pkt);
+		virtio_transport_free_pkt(pkt);
+		break;
+	case TCP_ESTABLISHED:
+		virtio_transport_recv_connected(sk, pkt);
+		break;
+	case TCP_CLOSING:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		virtio_transport_recv_disconnecting(sk, pkt);
 		virtio_transport_free_pkt(pkt);
 		break;
 	default:
+<<<<<<< HEAD
+=======
+		(void)virtio_transport_reset_no_sock(t, pkt);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		virtio_transport_free_pkt(pkt);
 		break;
 	}

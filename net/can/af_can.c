@@ -105,6 +105,10 @@ EXPORT_SYMBOL(can_ioctl);
 static void can_sock_destruct(struct sock *sk)
 {
 	skb_queue_purge(&sk->sk_receive_queue);
+<<<<<<< HEAD
+=======
+	skb_queue_purge(&sk->sk_error_queue);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct can_proto *can_get_proto(int protocol)
@@ -721,16 +725,37 @@ static int can_rcv(struct sk_buff *skb, struct net_device *dev,
 {
 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
 
+<<<<<<< HEAD
 	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CAN_MTU ||
 		     cfd->len > CAN_MAX_DLEN)) {
 		pr_warn_once("PF_CAN: dropped non conform CAN skbuf: dev type %d, len %d, datalen %d\n",
 			     dev->type, skb->len, cfd->len);
 		kfree_skb(skb);
 		return NET_RX_DROP;
+=======
+	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CAN_MTU)) {
+		pr_warn_once("PF_CAN: dropped non conform CAN skbuff: dev type %d, len %d\n",
+			     dev->type, skb->len);
+		goto free_skb;
+	}
+
+	/* This check is made separately since cfd->len would be uninitialized if skb->len = 0. */
+	if (unlikely(cfd->len > CAN_MAX_DLEN)) {
+		pr_warn_once("PF_CAN: dropped non conform CAN skbuff: dev type %d, len %d, datalen %d\n",
+			     dev->type, skb->len, cfd->len);
+		goto free_skb;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	can_receive(skb, dev);
 	return NET_RX_SUCCESS;
+<<<<<<< HEAD
+=======
+
+free_skb:
+	kfree_skb(skb);
+	return NET_RX_DROP;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
@@ -738,16 +763,37 @@ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
 {
 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
 
+<<<<<<< HEAD
 	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU ||
 		     cfd->len > CANFD_MAX_DLEN)) {
 		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuf: dev type %d, len %d, datalen %d\n",
 			     dev->type, skb->len, cfd->len);
 		kfree_skb(skb);
 		return NET_RX_DROP;
+=======
+	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU)) {
+		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d\n",
+			     dev->type, skb->len);
+		goto free_skb;
+	}
+
+	/* This check is made separately since cfd->len would be uninitialized if skb->len = 0. */
+	if (unlikely(cfd->len > CANFD_MAX_DLEN)) {
+		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d, datalen %d\n",
+			     dev->type, skb->len, cfd->len);
+		goto free_skb;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	can_receive(skb, dev);
 	return NET_RX_SUCCESS;
+<<<<<<< HEAD
+=======
+
+free_skb:
+	kfree_skb(skb);
+	return NET_RX_DROP;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -958,6 +1004,11 @@ static struct pernet_operations can_pernet_ops __read_mostly = {
 
 static __init int can_init(void)
 {
+<<<<<<< HEAD
+=======
+	int err;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* check for correct padding to be able to use the structs similarly */
 	BUILD_BUG_ON(offsetof(struct can_frame, can_dlc) !=
 		     offsetof(struct canfd_frame, len) ||
@@ -971,15 +1022,42 @@ static __init int can_init(void)
 	if (!rcv_cache)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	register_pernet_subsys(&can_pernet_ops);
 
 	/* protocol register */
 	sock_register(&can_family_ops);
 	register_netdevice_notifier(&can_netdev_notifier);
+=======
+	err = register_pernet_subsys(&can_pernet_ops);
+	if (err)
+		goto out_pernet;
+
+	/* protocol register */
+	err = sock_register(&can_family_ops);
+	if (err)
+		goto out_sock;
+	err = register_netdevice_notifier(&can_netdev_notifier);
+	if (err)
+		goto out_notifier;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev_add_pack(&can_packet);
 	dev_add_pack(&canfd_packet);
 
 	return 0;
+<<<<<<< HEAD
+=======
+
+out_notifier:
+	sock_unregister(PF_CAN);
+out_sock:
+	unregister_pernet_subsys(&can_pernet_ops);
+out_pernet:
+	kmem_cache_destroy(rcv_cache);
+
+	return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static __exit void can_exit(void)

@@ -543,7 +543,11 @@ void ath9k_htc_tx_drain(struct ath9k_htc_priv *priv)
 	 * Ensure that all pending TX frames are flushed,
 	 * and that the TX completion/failed tasklets is killed.
 	 */
+<<<<<<< HEAD
 	htc_stop_hst(priv->htc);
+=======
+	htc_stop(priv->htc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tasklet_kill(&priv->wmi->wmi_event_tasklet);
 	tasklet_kill(&priv->tx_failed_tasklet);
 
@@ -973,6 +977,11 @@ static bool ath9k_rx_prepare(struct ath9k_htc_priv *priv,
 	struct ath_htc_rx_status *rxstatus;
 	struct ath_rx_status rx_stats;
 	bool decrypt_error = false;
+<<<<<<< HEAD
+=======
+	u16 rs_datalen;
+	bool is_phyerr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (skb->len < HTC_RX_FRAME_HEADER_SIZE) {
 		ath_err(common, "Corrupted RX frame, dropping (len: %d)\n",
@@ -982,11 +991,32 @@ static bool ath9k_rx_prepare(struct ath9k_htc_priv *priv,
 
 	rxstatus = (struct ath_htc_rx_status *)skb->data;
 
+<<<<<<< HEAD
 	if (be16_to_cpu(rxstatus->rs_datalen) -
 	    (skb->len - HTC_RX_FRAME_HEADER_SIZE) != 0) {
 		ath_err(common,
 			"Corrupted RX data len, dropping (dlen: %d, skblen: %d)\n",
 			rxstatus->rs_datalen, skb->len);
+=======
+	rs_datalen = be16_to_cpu(rxstatus->rs_datalen);
+	if (unlikely(rs_datalen -
+	    (skb->len - HTC_RX_FRAME_HEADER_SIZE) != 0)) {
+		ath_err(common,
+			"Corrupted RX data len, dropping (dlen: %d, skblen: %d)\n",
+			rs_datalen, skb->len);
+		goto rx_next;
+	}
+
+	is_phyerr = rxstatus->rs_status & ATH9K_RXERR_PHY;
+	/*
+	 * Discard zero-length packets and packets smaller than an ACK
+	 * which are not PHY_ERROR (short radar pulses have a length of 3)
+	 */
+	if (unlikely(!rs_datalen || (rs_datalen < 10 && !is_phyerr))) {
+		ath_dbg(common, ANY,
+			"Short RX data len, dropping (dlen: %d)\n",
+			rs_datalen);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto rx_next;
 	}
 
@@ -1011,7 +1041,11 @@ static bool ath9k_rx_prepare(struct ath9k_htc_priv *priv,
 	 * Process PHY errors and return so that the packet
 	 * can be dropped.
 	 */
+<<<<<<< HEAD
 	if (rx_stats.rs_status & ATH9K_RXERR_PHY) {
+=======
+	if (unlikely(is_phyerr)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* TODO: Not using DFS processing now. */
 		if (ath_cmn_process_fft(&priv->spec_priv, hdr,
 				    &rx_stats, rx_status->mactime)) {

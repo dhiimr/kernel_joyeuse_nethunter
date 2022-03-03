@@ -587,6 +587,12 @@ const char *perf_evsel__name(struct perf_evsel *evsel)
 {
 	char bf[128];
 
+<<<<<<< HEAD
+=======
+	if (!evsel)
+		goto out_unknown;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (evsel->name)
 		return evsel->name;
 
@@ -623,7 +629,14 @@ const char *perf_evsel__name(struct perf_evsel *evsel)
 
 	evsel->name = strdup(bf);
 
+<<<<<<< HEAD
 	return evsel->name ?: "unknown";
+=======
+	if (evsel->name)
+		return evsel->name;
+out_unknown:
+	return "unknown";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 const char *perf_evsel__group_name(struct perf_evsel *evsel)

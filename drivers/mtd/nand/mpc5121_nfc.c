@@ -829,7 +829,11 @@ static int mpc5121_nfc_remove(struct platform_device *op)
 	struct device *dev = &op->dev;
 	struct mtd_info *mtd = dev_get_drvdata(dev);
 
+<<<<<<< HEAD
 	nand_release(mtd);
+=======
+	nand_release(mtd_to_nand(mtd));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mpc5121_nfc_free(dev, mtd);
 
 	return 0;

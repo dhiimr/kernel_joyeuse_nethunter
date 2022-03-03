@@ -5,9 +5,12 @@
 
 CFLAGS_ptrace.o		+= -DUTS_MACHINE='"$(UTS_MACHINE)"'
 
+<<<<<<< HEAD
 # Disable clang warning for using setjmp without setjmp.h header
 CFLAGS_crash.o		+= $(call cc-disable-warning, builtin-requires-header)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 subdir-ccflags-$(CONFIG_PPC_WERROR) := -Werror
 
 ifeq ($(CONFIG_PPC64),y)
@@ -18,6 +21,10 @@ CFLAGS_prom_init.o      += -fPIC
 CFLAGS_btext.o		+= -fPIC
 endif
 
+<<<<<<< HEAD
+=======
+CFLAGS_setup_32.o += $(DISABLE_LATENT_ENTROPY_PLUGIN)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 CFLAGS_cputable.o += $(DISABLE_LATENT_ENTROPY_PLUGIN)
 CFLAGS_prom_init.o += $(DISABLE_LATENT_ENTROPY_PLUGIN)
 CFLAGS_btext.o += $(DISABLE_LATENT_ENTROPY_PLUGIN)

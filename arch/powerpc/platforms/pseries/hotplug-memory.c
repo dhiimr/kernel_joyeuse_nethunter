@@ -30,7 +30,11 @@ static bool rtas_hp_event;
 unsigned long pseries_memory_block_size(void)
 {
 	struct device_node *np;
+<<<<<<< HEAD
 	unsigned int memblock_size = MIN_MEMORY_BLOCK_SIZE;
+=======
+	u64 memblock_size = MIN_MEMORY_BLOCK_SIZE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct resource r;
 
 	np = of_find_node_by_path("/ibm,dynamic-reconfiguration-memory");
@@ -295,6 +299,10 @@ static u32 lookup_lmb_associativity_index(struct of_drconf_cell *lmb)
 
 	aa_index = find_aa_index(dr_node, ala_prop, lmb_assoc);
 
+<<<<<<< HEAD
+=======
+	of_node_put(dr_node);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dlpar_free_cc_nodes(lmb_node);
 	return aa_index;
 }
@@ -451,8 +459,15 @@ static bool lmb_is_removable(struct of_drconf_cell *lmb)
 
 	for (i = 0; i < scns_per_block; i++) {
 		pfn = PFN_DOWN(phys_addr);
+<<<<<<< HEAD
 		if (!pfn_present(pfn))
 			continue;
+=======
+		if (!pfn_present(pfn)) {
+			phys_addr += MIN_MEMORY_BLOCK_SIZE;
+			continue;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		rc &= is_mem_section_removable(pfn, PAGES_PER_SECTION);
 		phys_addr += MIN_MEMORY_BLOCK_SIZE;
@@ -787,7 +802,11 @@ static int dlpar_add_lmb(struct of_drconf_cell *lmb)
 	nid = memory_add_physaddr_to_nid(lmb->base_addr);
 
 	/* Add the memory */
+<<<<<<< HEAD
 	rc = add_memory(nid, lmb->base_addr, block_sz);
+=======
+	rc = __add_memory(nid, lmb->base_addr, block_sz);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (rc) {
 		dlpar_remove_device_tree_lmb(lmb);
 		return rc;

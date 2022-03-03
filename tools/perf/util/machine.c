@@ -156,6 +156,12 @@ void machine__delete_threads(struct machine *machine)
 
 void machine__exit(struct machine *machine)
 {
+<<<<<<< HEAD
+=======
+	if (machine == NULL)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	machine__destroy_kernel_maps(machine);
 	map_groups__exit(&machine->kmaps);
 	dsos__exit(&machine->dsos);
@@ -1230,6 +1236,10 @@ static int machine__set_modules_path(struct machine *machine)
 	return map_groups__set_modules_path_dir(&machine->kmaps, modules_path, 0);
 }
 int __weak arch__fix_module_text_start(u64 *start __maybe_unused,
+<<<<<<< HEAD
+=======
+				u64 *size __maybe_unused,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				const char *name __maybe_unused)
 {
 	return 0;
@@ -1241,7 +1251,11 @@ static int machine__create_module(void *arg, const char *name, u64 start,
 	struct machine *machine = arg;
 	struct map *map;
 
+<<<<<<< HEAD
 	if (arch__fix_module_text_start(&start, name) < 0)
+=======
+	if (arch__fix_module_text_start(&start, &size, name) < 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -1;
 
 	map = machine__findnew_module_map(machine, start, name);

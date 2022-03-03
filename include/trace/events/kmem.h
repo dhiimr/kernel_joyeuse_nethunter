@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -10,6 +11,8 @@
  * GNU General Public License for more details.
  */
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* SPDX-License-Identifier: GPL-2.0 */
 #undef TRACE_SYSTEM
 #define TRACE_SYSTEM kmem
@@ -330,6 +333,7 @@ TRACE_EVENT(mm_page_alloc_extfrag,
 		__entry->change_ownership)
 );
 
+<<<<<<< HEAD
 
 DECLARE_EVENT_CLASS(ion_alloc,
 
@@ -862,6 +866,8 @@ DEFINE_EVENT(iommu_sec_ptbl_map_range, iommu_sec_ptbl_map_range_end,
 
 	TP_ARGS(sec_id, num, va, pa, len)
 	);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _TRACE_KMEM_H */
 
 /* This part must be outside protection */

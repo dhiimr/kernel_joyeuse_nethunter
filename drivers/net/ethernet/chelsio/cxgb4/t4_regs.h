@@ -1810,6 +1810,12 @@
 
 #define MAC_PORT_CFG2_A 0x818
 
+<<<<<<< HEAD
+=======
+#define MAC_PORT_PTP_SUM_LO_A 0x990
+#define MAC_PORT_PTP_SUM_HI_A 0x994
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define MPS_CMN_CTL_A	0x9000
 
 #define COUNTPAUSEMCRX_S    5

@@ -295,7 +295,16 @@ struct i915_address_space {
 	struct list_head unbound_list;
 
 	struct pagevec free_pages;
+<<<<<<< HEAD
 	bool pt_kmap_wc;
+=======
+
+	/* Some systems require uncached updates of the page directories */
+	bool pt_kmap_wc:1;
+
+	/* Some systems support read-only mappings for GGTT and/or PPGTT */
+	bool has_read_only:1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* FIXME: Need a more generic return type */
 	gen6_pte_t (*pte_encode)(dma_addr_t addr,

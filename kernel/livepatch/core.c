@@ -30,6 +30,10 @@
 #include <linux/elf.h>
 #include <linux/moduleloader.h>
 #include <linux/completion.h>
+<<<<<<< HEAD
+=======
+#include <linux/memory.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/cacheflush.h>
 #include "core.h"
 #include "patch.h"
@@ -635,16 +639,30 @@ static int klp_init_object_loaded(struct klp_patch *patch,
 	struct klp_func *func;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&text_mutex);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	module_disable_ro(patch->mod);
 	ret = klp_write_object_relocations(patch->mod, obj);
 	if (ret) {
 		module_enable_ro(patch->mod, true);
+<<<<<<< HEAD
+=======
+		mutex_unlock(&text_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ret;
 	}
 
 	arch_klp_init_object_loaded(patch, obj);
 	module_enable_ro(patch->mod, true);
 
+<<<<<<< HEAD
+=======
+	mutex_unlock(&text_mutex);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	klp_for_each_func(obj, func) {
 		ret = klp_find_object_symbol(obj->name, func->old_name,
 					     func->old_sympos,
@@ -935,6 +953,10 @@ err:
 	pr_warn("patch '%s' failed for module '%s', refusing to load module '%s'\n",
 		patch->mod->name, obj->mod->name, obj->mod->name);
 	mod->klp_alive = false;
+<<<<<<< HEAD
+=======
+	obj->mod = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	klp_cleanup_module_patches_limited(mod, patch);
 	mutex_unlock(&klp_mutex);
 

@@ -277,6 +277,12 @@ struct usbip_device {
 	/* lock for status */
 	spinlock_t lock;
 
+<<<<<<< HEAD
+=======
+	/* mutex for synchronizing sysfs store paths */
+	struct mutex sysfs_lock;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int sockfd;
 	struct socket *tcp_socket;
 

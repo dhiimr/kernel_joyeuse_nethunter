@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 /*
  * AMD Cryptographic Coprocessor (CCP) AES crypto API support
  *
  * Copyright (C) 2013,2016 Advanced Micro Devices, Inc.
+=======
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * AMD Cryptographic Coprocessor (CCP) AES crypto API support
+ *
+ * Copyright (C) 2013-2019 Advanced Micro Devices, Inc.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Author: Tom Lendacky <thomas.lendacky@amd.com>
  *
@@ -79,8 +87,12 @@ static int ccp_aes_crypt(struct ablkcipher_request *req, bool encrypt)
 		return -EINVAL;
 
 	if (((ctx->u.aes.mode == CCP_AES_MODE_ECB) ||
+<<<<<<< HEAD
 	     (ctx->u.aes.mode == CCP_AES_MODE_CBC) ||
 	     (ctx->u.aes.mode == CCP_AES_MODE_CFB)) &&
+=======
+	     (ctx->u.aes.mode == CCP_AES_MODE_CBC)) &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    (req->nbytes & (AES_BLOCK_SIZE - 1)))
 		return -EINVAL;
 
@@ -291,7 +303,11 @@ static struct ccp_aes_def aes_algs[] = {
 		.version	= CCP_VERSION(3, 0),
 		.name		= "cfb(aes)",
 		.driver_name	= "cfb-aes-ccp",
+<<<<<<< HEAD
 		.blocksize	= AES_BLOCK_SIZE,
+=======
+		.blocksize	= 1,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.ivsize		= AES_BLOCK_SIZE,
 		.alg_defaults	= &ccp_aes_defaults,
 	},

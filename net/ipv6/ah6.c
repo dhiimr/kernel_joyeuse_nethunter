@@ -599,7 +599,12 @@ static int ah6_input(struct xfrm_state *x, struct sk_buff *skb)
 	memcpy(auth_data, ah->auth_data, ahp->icv_trunc_len);
 	memset(ah->auth_data, 0, ahp->icv_trunc_len);
 
+<<<<<<< HEAD
 	if (ipv6_clear_mutable_options(ip6h, hdr_len, XFRM_POLICY_IN))
+=======
+	err = ipv6_clear_mutable_options(ip6h, hdr_len, XFRM_POLICY_IN);
+	if (err)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out_free;
 
 	ip6h->priority    = 0;

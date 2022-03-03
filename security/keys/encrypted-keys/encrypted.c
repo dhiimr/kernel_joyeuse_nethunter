@@ -895,14 +895,22 @@ out:
 }
 
 /*
+<<<<<<< HEAD
  * encrypted_read - format and copy the encrypted data to userspace
+=======
+ * encrypted_read - format and copy out the encrypted data
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * The resulting datablob format is:
  * <master-key name> <decrypted data length> <encrypted iv> <encrypted data>
  *
  * On success, return to userspace the encrypted key datablob size.
  */
+<<<<<<< HEAD
 static long encrypted_read(const struct key *key, char __user *buffer,
+=======
+static long encrypted_read(const struct key *key, char *buffer,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			   size_t buflen)
 {
 	struct encrypted_key_payload *epayload;
@@ -950,8 +958,12 @@ static long encrypted_read(const struct key *key, char __user *buffer,
 	key_put(mkey);
 	memzero_explicit(derived_key, sizeof(derived_key));
 
+<<<<<<< HEAD
 	if (copy_to_user(buffer, ascii_buf, asciiblob_len) != 0)
 		ret = -EFAULT;
+=======
+	memcpy(buffer, ascii_buf, asciiblob_len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kzfree(ascii_buf);
 
 	return asciiblob_len;

@@ -8,6 +8,10 @@ Required properties:
 Example:
 	serial@12000 {
 		compatible = "marvell,armada-3700-uart";
+<<<<<<< HEAD
 		reg = <0x12000 0x400>;
+=======
+		reg = <0x12000 0x200>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		interrupts = <43>;
 	};

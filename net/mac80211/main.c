@@ -913,8 +913,24 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
 			continue;
 
 		if (!dflt_chandef.chan) {
+<<<<<<< HEAD
 			cfg80211_chandef_create(&dflt_chandef,
 						&sband->channels[0],
+=======
+			/*
+			 * Assign the first enabled channel to dflt_chandef
+			 * from the list of channels
+			 */
+			for (i = 0; i < sband->n_channels; i++)
+				if (!(sband->channels[i].flags &
+						IEEE80211_CHAN_DISABLED))
+					break;
+			/* if none found then use the first anyway */
+			if (i == sband->n_channels)
+				i = 0;
+			cfg80211_chandef_create(&dflt_chandef,
+						&sband->channels[i],
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						NL80211_CHAN_NO_HT);
 			/* init channel we're on */
 			if (!local->use_chanctx && !local->_oper_chandef.chan) {
@@ -1032,8 +1048,16 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
 	if (local->hw.wiphy->max_scan_ie_len)
 		local->hw.wiphy->max_scan_ie_len -= local->scan_ies_len;
 
+<<<<<<< HEAD
 	WARN_ON(!ieee80211_cs_list_valid(local->hw.cipher_schemes,
 					 local->hw.n_cipher_schemes));
+=======
+	if (WARN_ON(!ieee80211_cs_list_valid(local->hw.cipher_schemes,
+					     local->hw.n_cipher_schemes))) {
+		result = -EINVAL;
+		goto fail_workqueue;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	result = ieee80211_init_cipher_suites(local);
 	if (result < 0)

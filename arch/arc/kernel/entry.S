@@ -169,7 +169,11 @@ tracesys:
 
 	; Do the Sys Call as we normally would.
 	; Validate the Sys Call number
+<<<<<<< HEAD
 	cmp     r8,  NR_syscalls
+=======
+	cmp     r8,  NR_syscalls - 1
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mov.hi  r0, -ENOSYS
 	bhi     tracesys_exit
 
@@ -252,7 +256,11 @@ ENTRY(EV_Trap)
 	;============ Normal syscall case
 
 	; syscall num shd not exceed the total system calls avail
+<<<<<<< HEAD
 	cmp     r8,  NR_syscalls
+=======
+	cmp     r8,  NR_syscalls - 1
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mov.hi  r0, -ENOSYS
 	bhi     .Lret_from_system_call
 

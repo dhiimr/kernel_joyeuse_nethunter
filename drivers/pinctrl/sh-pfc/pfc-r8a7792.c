@@ -1916,6 +1916,10 @@ static const char * const vin1_groups[] = {
 	"vin1_data8",
 	"vin1_data24_b",
 	"vin1_data20_b",
+<<<<<<< HEAD
+=======
+	"vin1_data18_b",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	"vin1_data16_b",
 	"vin1_sync",
 	"vin1_field",

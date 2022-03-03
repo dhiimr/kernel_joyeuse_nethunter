@@ -236,8 +236,15 @@ static int venus_probe(struct platform_device *pdev)
 		goto err_dev_unregister;
 
 	ret = pm_runtime_put_sync(dev);
+<<<<<<< HEAD
 	if (ret)
 		goto err_dev_unregister;
+=======
+	if (ret) {
+		pm_runtime_get_noresume(dev);
+		goto err_dev_unregister;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 
@@ -248,6 +255,10 @@ err_core_deinit:
 err_venus_shutdown:
 	venus_shutdown(dev);
 err_runtime_disable:
+<<<<<<< HEAD
+=======
+	pm_runtime_put_noidle(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pm_runtime_set_suspended(dev);
 	pm_runtime_disable(dev);
 	hfi_destroy(core);
@@ -345,10 +356,18 @@ static const struct venus_resources msm8916_res = {
 };
 
 static const struct freq_tbl msm8996_freq_table[] = {
+<<<<<<< HEAD
 	{ 1944000, 490000000 },	/* 4k UHD @ 60 */
 	{  972000, 320000000 },	/* 4k UHD @ 30 */
 	{  489600, 150000000 },	/* 1080p @ 60 */
 	{  244800,  75000000 },	/* 1080p @ 30 */
+=======
+	{ 1944000, 520000000 },	/* 4k UHD @ 60 (decode only) */
+	{  972000, 520000000 },	/* 4k UHD @ 30 */
+	{  489600, 346666667 },	/* 1080p @ 60 */
+	{  244800, 150000000 },	/* 1080p @ 30 */
+	{  108000,  75000000 },	/* 720p @ 30 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const struct reg_val msm8996_reg_preset[] = {

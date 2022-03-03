@@ -26,7 +26,10 @@
 #define __MSM_DRM_H__
 
 #include "drm.h"
+<<<<<<< HEAD
 #include "sde_drm.h"
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #if defined(__cplusplus)
 extern "C" {
@@ -68,6 +71,7 @@ struct drm_msm_timespec {
 	__s64 tv_nsec;         /* nanoseconds */
 };
 
+<<<<<<< HEAD
 /*
  * HDR Metadata
  * These are defined as per EDID spec and shall be used by the sink
@@ -112,6 +116,8 @@ struct drm_msm_ext_hdr_properties {
 	__u32 hdr_min_luminance;      /* Min Luminance */
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define MSM_PARAM_GPU_ID     0x01
 #define MSM_PARAM_GMEM_SIZE  0x02
 #define MSM_PARAM_CHIP_ID    0x03
@@ -192,12 +198,17 @@ struct drm_msm_gem_cpu_fini {
  */
 struct drm_msm_gem_submit_reloc {
 	__u32 submit_offset;  /* in, offset from submit_bo */
+<<<<<<< HEAD
 #ifdef __cplusplus
 	__u32 or_val;
 #else
 	__u32 or; /* in, value OR'd with result */
 #endif
 	__s32  shift;          /* in, amount of left shift (can be negative) */
+=======
+	__u32 or;             /* in, value OR'd with result */
+	__s32 shift;          /* in, amount of left shift (can be negative) */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__u32 reloc_idx;      /* in, index of reloc_bo buffer */
 	__u64 reloc_offset;   /* in, offset from start of reloc_bo */
 };
@@ -303,6 +314,7 @@ struct drm_msm_gem_madvise {
 	__u32 retained;       /* out, whether backing store still exists */
 };
 
+<<<<<<< HEAD
 /* HDR WRGB x and y index */
 #define DISPLAY_PRIMARIES_WX 0
 #define DISPLAY_PRIMARIES_WY 1
@@ -370,6 +382,8 @@ struct drm_msm_power_ctrl {
 	__u32 flags;
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define DRM_MSM_GET_PARAM              0x00
 /* placeholder:
 #define DRM_MSM_SET_PARAM              0x01
@@ -382,6 +396,7 @@ struct drm_msm_power_ctrl {
 #define DRM_MSM_WAIT_FENCE             0x07
 #define DRM_MSM_GEM_MADVISE            0x08
 
+<<<<<<< HEAD
 #define DRM_SDE_WB_CONFIG              0x40
 #define DRM_MSM_REGISTER_EVENT         0x41
 #define DRM_MSM_DEREGISTER_EVENT       0x42
@@ -398,6 +413,8 @@ struct drm_msm_power_ctrl {
 #define DRM_EVENT_PANEL_DEAD 0x80000006 /* ESD event */
 #define DRM_EVENT_SDE_HW_RECOVERY 0X80000007
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define DRM_IOCTL_MSM_GET_PARAM        DRM_IOWR(DRM_COMMAND_BASE + DRM_MSM_GET_PARAM, struct drm_msm_param)
 #define DRM_IOCTL_MSM_GEM_NEW          DRM_IOWR(DRM_COMMAND_BASE + DRM_MSM_GEM_NEW, struct drm_msm_gem_new)
 #define DRM_IOCTL_MSM_GEM_INFO         DRM_IOWR(DRM_COMMAND_BASE + DRM_MSM_GEM_INFO, struct drm_msm_gem_info)
@@ -406,6 +423,7 @@ struct drm_msm_power_ctrl {
 #define DRM_IOCTL_MSM_GEM_SUBMIT       DRM_IOWR(DRM_COMMAND_BASE + DRM_MSM_GEM_SUBMIT, struct drm_msm_gem_submit)
 #define DRM_IOCTL_MSM_WAIT_FENCE       DRM_IOW (DRM_COMMAND_BASE + DRM_MSM_WAIT_FENCE, struct drm_msm_wait_fence)
 #define DRM_IOCTL_MSM_GEM_MADVISE      DRM_IOWR(DRM_COMMAND_BASE + DRM_MSM_GEM_MADVISE, struct drm_msm_gem_madvise)
+<<<<<<< HEAD
 #define DRM_IOCTL_SDE_WB_CONFIG \
 	DRM_IOW((DRM_COMMAND_BASE + DRM_SDE_WB_CONFIG), struct sde_drm_wb_cfg)
 #define DRM_IOCTL_MSM_REGISTER_EVENT   DRM_IOW((DRM_COMMAND_BASE + \
@@ -416,6 +434,8 @@ struct drm_msm_power_ctrl {
 			DRM_MSM_RMFB2), unsigned int)
 #define DRM_IOCTL_MSM_POWER_CTRL DRM_IOW((DRM_COMMAND_BASE + \
 			DRM_MSM_POWER_CTRL), struct drm_msm_power_ctrl)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #if defined(__cplusplus)
 }

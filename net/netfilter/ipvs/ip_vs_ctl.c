@@ -98,7 +98,10 @@ static bool __ip_vs_addr_is_local_v6(struct net *net,
 static void update_defense_level(struct netns_ipvs *ipvs)
 {
 	struct sysinfo i;
+<<<<<<< HEAD
 	static int old_secure_tcp = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int availmem;
 	int nomem;
 	int to_change = -1;
@@ -179,35 +182,62 @@ static void update_defense_level(struct netns_ipvs *ipvs)
 	spin_lock(&ipvs->securetcp_lock);
 	switch (ipvs->sysctl_secure_tcp) {
 	case 0:
+<<<<<<< HEAD
 		if (old_secure_tcp >= 2)
+=======
+		if (ipvs->old_secure_tcp >= 2)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			to_change = 0;
 		break;
 	case 1:
 		if (nomem) {
+<<<<<<< HEAD
 			if (old_secure_tcp < 2)
 				to_change = 1;
 			ipvs->sysctl_secure_tcp = 2;
 		} else {
 			if (old_secure_tcp >= 2)
+=======
+			if (ipvs->old_secure_tcp < 2)
+				to_change = 1;
+			ipvs->sysctl_secure_tcp = 2;
+		} else {
+			if (ipvs->old_secure_tcp >= 2)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				to_change = 0;
 		}
 		break;
 	case 2:
 		if (nomem) {
+<<<<<<< HEAD
 			if (old_secure_tcp < 2)
 				to_change = 1;
 		} else {
 			if (old_secure_tcp >= 2)
+=======
+			if (ipvs->old_secure_tcp < 2)
+				to_change = 1;
+		} else {
+			if (ipvs->old_secure_tcp >= 2)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				to_change = 0;
 			ipvs->sysctl_secure_tcp = 1;
 		}
 		break;
 	case 3:
+<<<<<<< HEAD
 		if (old_secure_tcp < 2)
 			to_change = 1;
 		break;
 	}
 	old_secure_tcp = ipvs->sysctl_secure_tcp;
+=======
+		if (ipvs->old_secure_tcp < 2)
+			to_change = 1;
+		break;
+	}
+	ipvs->old_secure_tcp = ipvs->sysctl_secure_tcp;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (to_change >= 0)
 		ip_vs_protocol_timeout_change(ipvs,
 					      ipvs->sysctl_secure_tcp > 1);
@@ -1197,7 +1227,12 @@ ip_vs_add_service(struct netns_ipvs *ipvs, struct ip_vs_service_user_kern *u,
 	struct ip_vs_service *svc = NULL;
 
 	/* increase the module use count */
+<<<<<<< HEAD
 	ip_vs_use_count_inc();
+=======
+	if (!ip_vs_use_count_inc())
+		return -ENOPROTOOPT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Lookup the scheduler by 'u->sched_name' */
 	if (strcmp(u->sched_name, "none")) {
@@ -1262,7 +1297,11 @@ ip_vs_add_service(struct netns_ipvs *ipvs, struct ip_vs_service_user_kern *u,
 	ip_vs_addr_copy(svc->af, &svc->addr, &u->addr);
 	svc->port = u->port;
 	svc->fwmark = u->fwmark;
+<<<<<<< HEAD
 	svc->flags = u->flags;
+=======
+	svc->flags = u->flags & ~IP_VS_SVC_F_HASHED;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	svc->timeout = u->timeout * HZ;
 	svc->netmask = u->netmask;
 	svc->ipvs = ipvs;
@@ -2395,9 +2434,12 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
 	if (copy_from_user(arg, user, len) != 0)
 		return -EFAULT;
 
+<<<<<<< HEAD
 	/* increase the module use count */
 	ip_vs_use_count_inc();
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Handle daemons since they have another lock */
 	if (cmd == IP_VS_SO_SET_STARTDAEMON ||
 	    cmd == IP_VS_SO_SET_STOPDAEMON) {
@@ -2410,6 +2452,7 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
 			ret = -EINVAL;
 			if (strscpy(cfg.mcast_ifn, dm->mcast_ifn,
 				    sizeof(cfg.mcast_ifn)) <= 0)
+<<<<<<< HEAD
 				goto out_dec;
 			cfg.syncid = dm->syncid;
 			ret = start_sync_thread(ipvs, &cfg, dm->state);
@@ -2419,6 +2462,15 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
 			mutex_unlock(&ipvs->sync_mutex);
 		}
 		goto out_dec;
+=======
+				return ret;
+			cfg.syncid = dm->syncid;
+			ret = start_sync_thread(ipvs, &cfg, dm->state);
+		} else {
+			ret = stop_sync_thread(ipvs, dm->state);
+		}
+		return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	mutex_lock(&__ip_vs_mutex);
@@ -2430,6 +2482,13 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
 		/* Set timeout values for (tcp tcpfin udp) */
 		ret = ip_vs_set_timeout(ipvs, (struct ip_vs_timeout_user *)arg);
 		goto out_unlock;
+<<<<<<< HEAD
+=======
+	} else if (!len) {
+		/* No more commands with len == 0 below */
+		ret = -EINVAL;
+		goto out_unlock;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	usvc_compat = (struct ip_vs_service_user *)arg;
@@ -2506,17 +2565,23 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
 		break;
 	case IP_VS_SO_SET_DELDEST:
 		ret = ip_vs_del_dest(svc, &udest);
+<<<<<<< HEAD
 		break;
 	default:
 		ret = -EINVAL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
   out_unlock:
 	mutex_unlock(&__ip_vs_mutex);
+<<<<<<< HEAD
   out_dec:
 	/* decrease the module use count */
 	ip_vs_use_count_dec();
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -3524,10 +3589,15 @@ static int ip_vs_genl_del_daemon(struct netns_ipvs *ipvs, struct nlattr **attrs)
 	if (!attrs[IPVS_DAEMON_ATTR_STATE])
 		return -EINVAL;
 
+<<<<<<< HEAD
 	mutex_lock(&ipvs->sync_mutex);
 	ret = stop_sync_thread(ipvs,
 			       nla_get_u32(attrs[IPVS_DAEMON_ATTR_STATE]));
 	mutex_unlock(&ipvs->sync_mutex);
+=======
+	ret = stop_sync_thread(ipvs,
+			       nla_get_u32(attrs[IPVS_DAEMON_ATTR_STATE]));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -3997,6 +4067,14 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
 	tbl[idx++].data = &ipvs->sysctl_conn_reuse_mode;
 	tbl[idx++].data = &ipvs->sysctl_schedule_icmp;
 	tbl[idx++].data = &ipvs->sysctl_ignore_tunneled;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_IP_VS_DEBUG
+	/* Global sysctls must be ro in non-init netns */
+	if (!net_eq(net, &init_net))
+		tbl[idx++].mode = 0444;
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ipvs->sysctl_hdr = register_net_sysctl(net, "net/ipv4/vs", tbl);
 	if (ipvs->sysctl_hdr == NULL) {

@@ -922,6 +922,11 @@ static int lmc_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
         break;
     default:
 	printk(KERN_WARNING "%s: LMC UNKNOWN CARD!\n", dev->name);
+<<<<<<< HEAD
+=======
+	unregister_hdlc_device(dev);
+	return -EIO;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
         break;
     }
 

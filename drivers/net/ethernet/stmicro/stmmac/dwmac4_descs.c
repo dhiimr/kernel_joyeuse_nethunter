@@ -293,7 +293,11 @@ exit:
 }
 
 static void dwmac4_rd_init_rx_desc(struct dma_desc *p, int disable_rx_ic,
+<<<<<<< HEAD
 				   int mode, int end)
+=======
+				   int mode, int end, int bfsize)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	p->des3 = cpu_to_le32(RDES3_OWN | RDES3_BUFFER1_VALID_ADDR);
 

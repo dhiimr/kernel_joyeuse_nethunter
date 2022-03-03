@@ -28,7 +28,10 @@
 #include <linux/uaccess.h>
 #include <linux/slab.h>
 #include <linux/goldfish.h>
+<<<<<<< HEAD
 #include <linux/acpi.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 MODULE_AUTHOR("Google, Inc.");
 MODULE_DESCRIPTION("Android QEMU Audio Driver");
@@ -117,7 +120,10 @@ static ssize_t goldfish_audio_read(struct file *fp, char __user *buf,
 				   size_t count, loff_t *pos)
 {
 	struct goldfish_audio *data = fp->private_data;
+<<<<<<< HEAD
 	unsigned long irq_flags;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int length;
 	int result = 0;
 
@@ -131,10 +137,13 @@ static ssize_t goldfish_audio_read(struct file *fp, char __user *buf,
 		wait_event_interruptible(data->wait, data->buffer_status &
 					 AUDIO_INT_READ_BUFFER_FULL);
 
+<<<<<<< HEAD
 		spin_lock_irqsave(&data->lock, irq_flags);
 		data->buffer_status &= ~AUDIO_INT_READ_BUFFER_FULL;
 		spin_unlock_irqrestore(&data->lock, irq_flags);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		length = AUDIO_READ(data, AUDIO_READ_BUFFER_AVAILABLE);
 
 		/* copy data to user space */
@@ -357,19 +366,25 @@ static const struct of_device_id goldfish_audio_of_match[] = {
 };
 MODULE_DEVICE_TABLE(of, goldfish_audio_of_match);
 
+<<<<<<< HEAD
 static const struct acpi_device_id goldfish_audio_acpi_match[] = {
 	{ "GFSH0005", 0 },
 	{ },
 };
 MODULE_DEVICE_TABLE(acpi, goldfish_audio_acpi_match);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct platform_driver goldfish_audio_driver = {
 	.probe		= goldfish_audio_probe,
 	.remove		= goldfish_audio_remove,
 	.driver = {
 		.name = "goldfish_audio",
 		.of_match_table = goldfish_audio_of_match,
+<<<<<<< HEAD
 		.acpi_match_table = ACPI_PTR(goldfish_audio_acpi_match),
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 };
 

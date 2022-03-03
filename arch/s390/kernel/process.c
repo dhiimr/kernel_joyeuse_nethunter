@@ -185,6 +185,7 @@ unsigned long get_wchan(struct task_struct *p)
 
 	if (!p || p == current || p->state == TASK_RUNNING || !task_stack_page(p))
 		return 0;
+<<<<<<< HEAD
 	low = task_stack_page(p);
 	high = (struct stack_frame *) task_pt_regs(p);
 	sf = (struct stack_frame *) p->thread.ksp;
@@ -199,6 +200,32 @@ unsigned long get_wchan(struct task_struct *p)
 			return return_address;
 	}
 	return 0;
+=======
+
+	if (!try_get_task_stack(p))
+		return 0;
+
+	low = task_stack_page(p);
+	high = (struct stack_frame *) task_pt_regs(p);
+	sf = (struct stack_frame *) p->thread.ksp;
+	if (sf <= low || sf > high) {
+		return_address = 0;
+		goto out;
+	}
+	for (count = 0; count < 16; count++) {
+		sf = (struct stack_frame *) sf->back_chain;
+		if (sf <= low || sf > high) {
+			return_address = 0;
+			goto out;
+		}
+		return_address = sf->gprs[8];
+		if (!in_sched_functions(return_address))
+			goto out;
+	}
+out:
+	put_task_stack(p);
+	return return_address;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 unsigned long arch_align_stack(unsigned long sp)

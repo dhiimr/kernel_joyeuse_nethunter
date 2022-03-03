@@ -10,6 +10,7 @@
  */
 
 typedef struct qrwlock {
+<<<<<<< HEAD
 	union {
 		atomic_t cnts;
 		struct {
@@ -22,11 +23,18 @@ typedef struct qrwlock {
 #endif
 		};
 	};
+=======
+	atomic_t		cnts;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	arch_spinlock_t		wait_lock;
 } arch_rwlock_t;
 
 #define	__ARCH_RW_LOCK_UNLOCKED {		\
+<<<<<<< HEAD
 	{ .cnts = ATOMIC_INIT(0), },		\
+=======
+	.cnts = ATOMIC_INIT(0),			\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.wait_lock = __ARCH_SPIN_LOCK_UNLOCKED,	\
 }
 

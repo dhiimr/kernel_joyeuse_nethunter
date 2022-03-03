@@ -117,6 +117,7 @@
 			status = "disabled";
 		};
 
+<<<<<<< HEAD
 		usb0: ohci@4c000000 {
 			compatible = "marvell,pxa-ohci";
 			reg = <0x4c000000 0x10000>;
@@ -124,6 +125,8 @@
 			status = "disabled";
 		};
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mmc0: mmc@41100000 {
 			compatible = "marvell,pxa-mmc";
 			reg = <0x41100000 0x1000>;

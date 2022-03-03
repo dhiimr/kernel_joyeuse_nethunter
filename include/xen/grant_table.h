@@ -157,6 +157,10 @@ gnttab_set_map_op(struct gnttab_map_grant_ref *map, phys_addr_t addr,
 	map->flags = flags;
 	map->ref = ref;
 	map->dom = domid;
+<<<<<<< HEAD
+=======
+	map->status = 1; /* arbitrary positive value */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void

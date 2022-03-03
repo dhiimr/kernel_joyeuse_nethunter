@@ -99,7 +99,11 @@ static inline bool has_acpi_companion(struct device *dev)
 static inline void acpi_preset_companion(struct device *dev,
 					 struct acpi_device *parent, u64 addr)
 {
+<<<<<<< HEAD
 	ACPI_COMPANION_SET(dev, acpi_find_child_device(parent, addr, NULL));
+=======
+	ACPI_COMPANION_SET(dev, acpi_find_child_device(parent, addr, false));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline const char *acpi_dev_name(struct acpi_device *adev)
@@ -228,10 +232,20 @@ void __iomem *__acpi_map_table(unsigned long phys, unsigned long size);
 void __acpi_unmap_table(void __iomem *map, unsigned long size);
 int early_acpi_boot_init(void);
 int acpi_boot_init (void);
+<<<<<<< HEAD
+=======
+void acpi_boot_table_prepare (void);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void acpi_boot_table_init (void);
 int acpi_mps_check (void);
 int acpi_numa_init (void);
 
+<<<<<<< HEAD
+=======
+int acpi_locate_initial_tables (void);
+void acpi_reserve_initial_tables (void);
+void acpi_table_init_complete (void);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int acpi_table_init (void);
 int acpi_table_parse(char *id, acpi_tbl_table_handler handler);
 int __init acpi_table_parse_entries(char *id, unsigned long table_size,
@@ -324,7 +338,14 @@ void acpi_set_irq_model(enum acpi_irq_model_id model,
 #ifdef CONFIG_X86_IO_APIC
 extern int acpi_get_override_irq(u32 gsi, int *trigger, int *polarity);
 #else
+<<<<<<< HEAD
 #define acpi_get_override_irq(gsi, trigger, polarity) (-1)
+=======
+static inline int acpi_get_override_irq(u32 gsi, int *trigger, int *polarity)
+{
+	return -1;
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 /*
  * This function undoes the effect of one call to acpi_register_gsi().
@@ -711,9 +732,18 @@ static inline int acpi_boot_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline void acpi_boot_table_init(void)
 {
 	return;
+=======
+static inline void acpi_boot_table_prepare(void)
+{
+}
+
+static inline void acpi_boot_table_init(void)
+{
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline int acpi_mps_check(void)
@@ -784,6 +814,16 @@ static inline int acpi_device_modalias(struct device *dev,
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
+=======
+static inline struct platform_device *
+acpi_create_platform_device(struct acpi_device *adev,
+			    struct property_entry *properties)
+{
+	return NULL;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline bool acpi_dma_supported(struct acpi_device *adev)
 {
 	return false;

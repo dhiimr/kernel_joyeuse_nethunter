@@ -268,9 +268,14 @@ static int __init psci_features(u32 psci_func_id)
 }
 
 #ifdef CONFIG_CPU_IDLE
+<<<<<<< HEAD
 static __maybe_unused DEFINE_PER_CPU_READ_MOSTLY(u32 *, psci_power_state);
 
 #ifdef CONFIG_DT_IDLE_STATES
+=======
+static DEFINE_PER_CPU_READ_MOSTLY(u32 *, psci_power_state);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int psci_dt_cpu_init_idle(struct device_node *cpu_node, int cpu)
 {
 	int i, ret, count = 0;
@@ -323,10 +328,13 @@ free_mem:
 	kfree(psci_states);
 	return ret;
 }
+<<<<<<< HEAD
 #else
 static int psci_dt_cpu_init_idle(struct device_node *cpu_node, int cpu)
 { return 0; }
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_ACPI
 #include <acpi/processor.h>
@@ -402,6 +410,7 @@ int psci_cpu_init_idle(unsigned int cpu)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int psci_suspend_finisher(unsigned long state_id)
 {
 	return psci_ops.cpu_suspend(state_id,
@@ -411,10 +420,25 @@ int psci_cpu_suspend_enter(unsigned long state_id)
 {
 	int ret;
 
+=======
+static int psci_suspend_finisher(unsigned long index)
+{
+	u32 *state = __this_cpu_read(psci_power_state);
+
+	return psci_ops.cpu_suspend(state[index - 1],
+				    __pa_symbol(cpu_resume));
+}
+
+int psci_cpu_suspend_enter(unsigned long index)
+{
+	int ret;
+	u32 *state = __this_cpu_read(psci_power_state);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * idle state index 0 corresponds to wfi, should never be called
 	 * from the cpu_suspend operations
 	 */
+<<<<<<< HEAD
 	if (WARN_ON_ONCE(!state_id))
 		return -EINVAL;
 
@@ -422,6 +446,15 @@ int psci_cpu_suspend_enter(unsigned long state_id)
 		ret = psci_ops.cpu_suspend(state_id, 0);
 	else
 		ret = cpu_suspend(state_id, psci_suspend_finisher);
+=======
+	if (WARN_ON_ONCE(!index))
+		return -EINVAL;
+
+	if (!psci_power_state_loses_context(state[index - 1]))
+		ret = psci_ops.cpu_suspend(state[index - 1], 0);
+	else
+		ret = cpu_suspend(index, psci_suspend_finisher);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }

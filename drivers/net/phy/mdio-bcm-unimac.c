@@ -16,6 +16,10 @@
 #include <linux/module.h>
 #include <linux/io.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/clk.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <linux/of.h>
 #include <linux/of_platform.h>
@@ -45,6 +49,11 @@ struct unimac_mdio_priv {
 	void __iomem		*base;
 	int (*wait_func)	(void *wait_func_data);
 	void			*wait_func_data;
+<<<<<<< HEAD
+=======
+	struct clk		*clk;
+	u32			clk_freq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static inline u32 unimac_mdio_readl(struct unimac_mdio_priv *priv, u32 offset)
@@ -189,6 +198,38 @@ static int unimac_mdio_reset(struct mii_bus *bus)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void unimac_mdio_clk_set(struct unimac_mdio_priv *priv)
+{
+	unsigned long rate;
+	u32 reg, div;
+
+	/* Keep the hardware default values */
+	if (!priv->clk_freq)
+		return;
+
+	if (!priv->clk)
+		rate = 250000000;
+	else
+		rate = clk_get_rate(priv->clk);
+
+	div = (rate / (2 * priv->clk_freq)) - 1;
+	if (div & ~MDIO_CLK_DIV_MASK) {
+		pr_warn("Incorrect MDIO clock frequency, ignoring\n");
+		return;
+	}
+
+	/* The MDIO clock is the reference clock (typicaly 250Mhz) divided by
+	 * 2 x (MDIO_CLK_DIV + 1)
+	 */
+	reg = unimac_mdio_readl(priv, MDIO_CFG);
+	reg &= ~(MDIO_CLK_DIV_MASK << MDIO_CLK_DIV_SHIFT);
+	reg |= div << MDIO_CLK_DIV_SHIFT;
+	unimac_mdio_writel(priv, reg, MDIO_CFG);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int unimac_mdio_probe(struct platform_device *pdev)
 {
 	struct unimac_mdio_pdata *pdata = pdev->dev.platform_data;
@@ -205,6 +246,11 @@ static int unimac_mdio_probe(struct platform_device *pdev)
 		return -ENOMEM;
 
 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
+=======
+	if (!r)
+		return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Just ioremap, as this MDIO block is usually integrated into an
 	 * Ethernet MAC controller register range
@@ -215,9 +261,32 @@ static int unimac_mdio_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	priv->mii_bus = mdiobus_alloc();
 	if (!priv->mii_bus)
 		return -ENOMEM;
+=======
+	priv->clk = devm_clk_get(&pdev->dev, NULL);
+	if (PTR_ERR(priv->clk) == -EPROBE_DEFER)
+		return PTR_ERR(priv->clk);
+	else
+		priv->clk = NULL;
+
+	ret = clk_prepare_enable(priv->clk);
+	if (ret)
+		return ret;
+
+	if (of_property_read_u32(np, "clock-frequency", &priv->clk_freq))
+		priv->clk_freq = 0;
+
+	unimac_mdio_clk_set(priv);
+
+	priv->mii_bus = mdiobus_alloc();
+	if (!priv->mii_bus) {
+		ret = -ENOMEM;
+		goto out_clk_disable;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	bus = priv->mii_bus;
 	bus->priv = priv;
@@ -251,6 +320,11 @@ static int unimac_mdio_probe(struct platform_device *pdev)
 
 out_mdio_free:
 	mdiobus_free(bus);
+<<<<<<< HEAD
+=======
+out_clk_disable:
+	clk_disable_unprepare(priv->clk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -260,10 +334,43 @@ static int unimac_mdio_remove(struct platform_device *pdev)
 
 	mdiobus_unregister(priv->mii_bus);
 	mdiobus_free(priv->mii_bus);
+<<<<<<< HEAD
+=======
+	clk_disable_unprepare(priv->clk);
 
 	return 0;
 }
 
+static int __maybe_unused unimac_mdio_suspend(struct device *d)
+{
+	struct unimac_mdio_priv *priv = dev_get_drvdata(d);
+
+	clk_disable_unprepare(priv->clk);
+
+	return 0;
+}
+
+static int __maybe_unused unimac_mdio_resume(struct device *d)
+{
+	struct unimac_mdio_priv *priv = dev_get_drvdata(d);
+	int ret;
+
+	ret = clk_prepare_enable(priv->clk);
+	if (ret)
+		return ret;
+
+	unimac_mdio_clk_set(priv);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
+
+	return 0;
+}
+
+<<<<<<< HEAD
+=======
+static SIMPLE_DEV_PM_OPS(unimac_mdio_pm_ops,
+			 unimac_mdio_suspend, unimac_mdio_resume);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const struct of_device_id unimac_mdio_ids[] = {
 	{ .compatible = "brcm,genet-mdio-v5", },
 	{ .compatible = "brcm,genet-mdio-v4", },
@@ -279,6 +386,10 @@ static struct platform_driver unimac_mdio_driver = {
 	.driver = {
 		.name = UNIMAC_MDIO_DRV_NAME,
 		.of_match_table = unimac_mdio_ids,
+<<<<<<< HEAD
+=======
+		.pm = &unimac_mdio_pm_ops,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	.probe	= unimac_mdio_probe,
 	.remove	= unimac_mdio_remove,

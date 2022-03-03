@@ -43,7 +43,10 @@ struct sysrq_key_op {
  * are available -- else NULL's).
  */
 
+<<<<<<< HEAD
 bool sysrq_on(void);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void handle_sysrq(int key);
 void __handle_sysrq(int key, bool check_mask);
 int register_sysrq_key(int key, struct sysrq_key_op *op);

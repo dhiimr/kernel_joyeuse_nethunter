@@ -384,6 +384,7 @@ int rtc_set_alarm(struct rtc_device *rtc, struct rtc_wkalrm *alarm)
 }
 EXPORT_SYMBOL_GPL(rtc_set_alarm);
 
+<<<<<<< HEAD
 static void rtc_alarm_disable(struct rtc_device *rtc)
 {
 	if (!rtc->ops || !rtc->ops->alarm_irq_enable)
@@ -392,6 +393,8 @@ static void rtc_alarm_disable(struct rtc_device *rtc)
 	rtc->ops->alarm_irq_enable(rtc->dev.parent, false);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Called once per device from rtc_device_register */
 int rtc_initialize_alarm(struct rtc_device *rtc, struct rtc_wkalrm *alarm)
 {
@@ -419,11 +422,15 @@ int rtc_initialize_alarm(struct rtc_device *rtc, struct rtc_wkalrm *alarm)
 
 		rtc->aie_timer.enabled = 1;
 		timerqueue_add(&rtc->timerqueue, &rtc->aie_timer.node);
+<<<<<<< HEAD
 	} else if (alarm->enabled && (rtc_tm_to_ktime(now) >=
 			rtc->aie_timer.node.expires)){
 		rtc_alarm_disable(rtc);
 	}
 
+=======
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(&rtc->ops_lock);
 	return err;
 }
@@ -814,6 +821,17 @@ static int rtc_timer_enqueue(struct rtc_device *rtc, struct rtc_timer *timer)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void rtc_alarm_disable(struct rtc_device *rtc)
+{
+	if (!rtc->ops || !rtc->ops->alarm_irq_enable)
+		return;
+
+	rtc->ops->alarm_irq_enable(rtc->dev.parent, false);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * rtc_timer_remove - Removes a rtc_timer from the rtc_device timerqueue
  * @rtc rtc device

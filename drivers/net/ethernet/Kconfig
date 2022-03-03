@@ -99,6 +99,10 @@ config JME
 config KORINA
 	tristate "Korina (IDT RC32434) Ethernet support"
 	depends on MIKROTIK_RB532
+<<<<<<< HEAD
+=======
+	select CRC32
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	---help---
 	  If you have a Mikrotik RouterBoard 500 or IDT RC32434
 	  based system say Y. Otherwise say N.

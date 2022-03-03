@@ -69,7 +69,11 @@ smb2_open_file(const unsigned int xid, struct cifs_open_parms *oparms,
 		goto out;
 
 
+<<<<<<< HEAD
 	 if (oparms->tcon->use_resilient) {
+=======
+	if (oparms->tcon->use_resilient) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		nr_ioctl_req.Timeout = 0; /* use server default (120 seconds) */
 		nr_ioctl_req.Reserved = 0;
 		rc = SMB2_ioctl(xid, oparms->tcon, fid->persistent_fid,
@@ -139,7 +143,11 @@ smb2_unlock_range(struct cifsFileInfo *cfile, struct file_lock *flock,
 
 	cur = buf;
 
+<<<<<<< HEAD
 	down_write(&cinode->lock_sem);
+=======
+	cifs_down_write(&cinode->lock_sem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	list_for_each_entry_safe(li, tmp, &cfile->llist->locks, llist) {
 		if (flock->fl_start > li->offset ||
 		    (flock->fl_start + length) <

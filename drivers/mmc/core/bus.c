@@ -134,6 +134,7 @@ static void mmc_bus_shutdown(struct device *dev)
 	struct mmc_host *host = card->host;
 	int ret;
 
+<<<<<<< HEAD
 	if (!drv) {
 		pr_debug("%s: %s: drv is NULL\n", dev_name(dev), __func__);
 		return;
@@ -144,6 +145,8 @@ static void mmc_bus_shutdown(struct device *dev)
 		return;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (dev->driver && drv->shutdown)
 		drv->shutdown(card);
 
@@ -166,8 +169,11 @@ static int mmc_bus_suspend(struct device *dev)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	if (mmc_bus_needs_resume(host))
 		return 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = host->bus_ops->suspend(host);
 	if (ret)
 		pm_generic_resume(dev);
@@ -181,17 +187,23 @@ static int mmc_bus_resume(struct device *dev)
 	struct mmc_host *host = card->host;
 	int ret;
 
+<<<<<<< HEAD
 	if (mmc_bus_manual_resume(host)) {
 		host->bus_resume_flags |= MMC_BUSRESUME_NEEDS_RESUME;
 		goto skip_full_resume;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = host->bus_ops->resume(host);
 	if (ret)
 		pr_warn("%s: error %d during resume (card was removed?)\n",
 			mmc_hostname(host), ret);
 
+<<<<<<< HEAD
 skip_full_resume:
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = pm_generic_resume(dev);
 	return ret;
 }
@@ -203,9 +215,12 @@ static int mmc_runtime_suspend(struct device *dev)
 	struct mmc_card *card = mmc_dev_to_card(dev);
 	struct mmc_host *host = card->host;
 
+<<<<<<< HEAD
 	if (mmc_bus_needs_resume(host))
 		return 0;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return host->bus_ops->runtime_suspend(host);
 }
 
@@ -214,12 +229,17 @@ static int mmc_runtime_resume(struct device *dev)
 	struct mmc_card *card = mmc_dev_to_card(dev);
 	struct mmc_host *host = card->host;
 
+<<<<<<< HEAD
 	if (mmc_bus_needs_resume(host))
 		host->bus_resume_flags &= ~MMC_BUSRESUME_NEEDS_RESUME;
 
 	return host->bus_ops->runtime_resume(host);
 }
 
+=======
+	return host->bus_ops->runtime_resume(host);
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* !CONFIG_PM */
 
 static const struct dev_pm_ops mmc_bus_pm_ops = {
@@ -275,15 +295,21 @@ EXPORT_SYMBOL(mmc_unregister_driver);
 static void mmc_release_card(struct device *dev)
 {
 	struct mmc_card *card = mmc_dev_to_card(dev);
+<<<<<<< HEAD
 	struct mmc_host *host = card->host;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	sdio_free_common_cis(card);
 
 	kfree(card->info);
 
 	kfree(card);
+<<<<<<< HEAD
 	if (host && card == host->card)
 		host->card = NULL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -306,8 +332,11 @@ struct mmc_card *mmc_alloc_card(struct mmc_host *host, struct device_type *type)
 	card->dev.release = mmc_release_card;
 	card->dev.type = type;
 
+<<<<<<< HEAD
 	spin_lock_init(&card->bkops.stats.lock);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return card;
 }
 
@@ -385,19 +414,26 @@ int mmc_add_card(struct mmc_card *card)
 
 	card->dev.of_node = mmc_of_find_child_device(card->host, 0);
 
+<<<<<<< HEAD
 	if (mmc_card_sdio(card)) {
 		ret = device_init_wakeup(&card->dev, true);
 		if (ret)
 			pr_err("%s: %s: failed to init wakeup: %d\n",
 			       mmc_hostname(card->host), __func__, ret);
 	}
+=======
+	device_enable_async_suspend(&card->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = device_add(&card->dev);
 	if (ret)
 		return ret;
 
 	mmc_card_set_present(card);
+<<<<<<< HEAD
 	device_enable_async_suspend(&card->dev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }

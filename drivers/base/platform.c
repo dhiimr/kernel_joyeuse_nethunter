@@ -27,6 +27,11 @@
 #include <linux/clk/clk-conf.h>
 #include <linux/limits.h>
 #include <linux/property.h>
+<<<<<<< HEAD
+=======
+#include <linux/kmemleak.h>
+#include <linux/types.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "base.h"
 #include "power/power.h"
@@ -67,7 +72,11 @@ void __weak arch_setup_pdev_archdata(struct platform_device *pdev)
 struct resource *platform_get_resource(struct platform_device *dev,
 				       unsigned int type, unsigned int num)
 {
+<<<<<<< HEAD
 	int i;
+=======
+	u32 i;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (i = 0; i < dev->num_resources; i++) {
 		struct resource *r = &dev->resource[i];
@@ -162,7 +171,11 @@ struct resource *platform_get_resource_byname(struct platform_device *dev,
 					      unsigned int type,
 					      const char *name)
 {
+<<<<<<< HEAD
 	int i;
+=======
+	u32 i;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (i = 0; i < dev->num_resources; i++) {
 		struct resource *r = &dev->resource[i];
@@ -359,7 +372,12 @@ EXPORT_SYMBOL_GPL(platform_device_add_properties);
  */
 int platform_device_add(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	int i, ret;
+=======
+	u32 i;
+	int ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!pdev)
 		return -EINVAL;
@@ -425,7 +443,11 @@ int platform_device_add(struct platform_device *pdev)
 		pdev->id = PLATFORM_DEVID_AUTO;
 	}
 
+<<<<<<< HEAD
 	while (--i >= 0) {
+=======
+	while (i--) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct resource *r = &pdev->resource[i];
 		if (r->parent)
 			release_resource(r);
@@ -446,7 +468,11 @@ EXPORT_SYMBOL_GPL(platform_device_add);
  */
 void platform_device_del(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	int i;
+=======
+	u32 i;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (pdev) {
 		device_remove_properties(&pdev->dev);
@@ -526,6 +552,11 @@ struct platform_device *platform_device_register_full(
 		if (!pdev->dev.dma_mask)
 			goto err;
 
+<<<<<<< HEAD
+=======
+		kmemleak_ignore(pdev->dev.dma_mask);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		*pdev->dev.dma_mask = pdevinfo->dma_mask;
 		pdev->dev.coherent_dma_mask = pdevinfo->dma_mask;
 	}
@@ -697,6 +728,11 @@ int __init_or_module __platform_driver_probe(struct platform_driver *drv,
 	/* temporary section violation during probe() */
 	drv->probe = probe;
 	retval = code = __platform_driver_register(drv, module);
+<<<<<<< HEAD
+=======
+	if (retval)
+		return retval;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Fixup that section violation, being paranoid about code scanning

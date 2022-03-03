@@ -42,6 +42,10 @@ enum nci_flag {
 	NCI_UP,
 	NCI_DATA_EXCHANGE,
 	NCI_DATA_EXCHANGE_TO,
+<<<<<<< HEAD
+=======
+	NCI_UNREG,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* NCI device states */
@@ -166,7 +170,11 @@ struct nci_conn_info {
  * According to specification 102 622 chapter 4.4 Pipes,
  * the pipe identifier is 7 bits long.
  */
+<<<<<<< HEAD
 #define NCI_HCI_MAX_PIPES          127
+=======
+#define NCI_HCI_MAX_PIPES          128
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct nci_hci_gate {
 	u8 gate;
@@ -310,6 +318,10 @@ int nci_nfcc_loopback(struct nci_dev *ndev, void *data, size_t data_len,
 		      struct sk_buff **resp);
 
 struct nci_hci_dev *nci_hci_allocate(struct nci_dev *ndev);
+<<<<<<< HEAD
+=======
+void nci_hci_deallocate(struct nci_dev *ndev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int nci_hci_send_event(struct nci_dev *ndev, u8 gate, u8 event,
 		       const u8 *param, size_t param_len);
 int nci_hci_send_cmd(struct nci_dev *ndev, u8 gate,

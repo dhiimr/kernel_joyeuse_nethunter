@@ -1770,6 +1770,10 @@ static int ca8210_async_xmit_complete(
 			status
 		);
 		if (status != MAC_TRANSACTION_OVERFLOW) {
+<<<<<<< HEAD
+=======
+			dev_kfree_skb_any(priv->tx_skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ieee802154_wake_queue(priv->hw);
 			return 0;
 		}
@@ -2924,6 +2928,10 @@ static int ca8210_dev_com_init(struct ca8210_priv *priv)
 	);
 	if (!priv->irq_workqueue) {
 		dev_crit(&priv->spi->dev, "alloc of irq_workqueue failed!\n");
+<<<<<<< HEAD
+=======
+		destroy_workqueue(priv->mlme_workqueue);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -ENOMEM;
 	}
 
@@ -2974,8 +2982,13 @@ static void ca8210_hw_setup(struct ieee802154_hw *ca8210_hw)
 	ca8210_hw->phy->cca.opt = NL802154_CCA_OPT_ENERGY_CARRIER_AND;
 	ca8210_hw->phy->cca_ed_level = -9800;
 	ca8210_hw->phy->symbol_duration = 16;
+<<<<<<< HEAD
 	ca8210_hw->phy->lifs_period = 40;
 	ca8210_hw->phy->sifs_period = 12;
+=======
+	ca8210_hw->phy->lifs_period = 40 * ca8210_hw->phy->symbol_duration;
+	ca8210_hw->phy->sifs_period = 12 * ca8210_hw->phy->symbol_duration;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ca8210_hw->flags =
 		IEEE802154_HW_AFILT |
 		IEEE802154_HW_OMIT_CKSUM |
@@ -3153,12 +3166,19 @@ static int ca8210_probe(struct spi_device *spi_device)
 		goto error;
 	}
 
+<<<<<<< HEAD
+=======
+	priv->spi->dev.platform_data = pdata;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = ca8210_get_platform_data(priv->spi, pdata);
 	if (ret) {
 		dev_crit(&spi_device->dev, "ca8210_get_platform_data failed\n");
 		goto error;
 	}
+<<<<<<< HEAD
 	priv->spi->dev.platform_data = pdata;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = ca8210_dev_com_init(priv);
 	if (ret) {

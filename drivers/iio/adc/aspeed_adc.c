@@ -187,6 +187,10 @@ static int aspeed_adc_probe(struct platform_device *pdev)
 
 	data = iio_priv(indio_dev);
 	data->dev = &pdev->dev;
+<<<<<<< HEAD
+=======
+	platform_set_drvdata(pdev, indio_dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	data->base = devm_ioremap_resource(&pdev->dev, res);

@@ -131,7 +131,11 @@ extern enum drbd_state_rv _drbd_set_state(struct drbd_device *, union drbd_state
 					  enum chg_state_flags,
 					  struct completion *done);
 extern void print_st_err(struct drbd_device *, union drbd_state,
+<<<<<<< HEAD
 			union drbd_state, int);
+=======
+			union drbd_state, enum drbd_state_rv);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 enum drbd_state_rv
 _conn_request_state(struct drbd_connection *connection, union drbd_state mask, union drbd_state val,
@@ -162,8 +166,12 @@ static inline int drbd_request_state(struct drbd_device *device,
 }
 
 /* for use in adm_detach() (drbd_adm_detach(), drbd_adm_down()) */
+<<<<<<< HEAD
 enum drbd_state_rv
 drbd_request_detach_interruptible(struct drbd_device *device);
+=======
+int drbd_request_detach_interruptible(struct drbd_device *device);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 enum drbd_role conn_highest_role(struct drbd_connection *connection);
 enum drbd_role conn_highest_peer(struct drbd_connection *connection);

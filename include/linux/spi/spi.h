@@ -314,7 +314,10 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
  * @max_speed_hz: Highest supported transfer speed
  * @flags: other constraints relevant to this driver
  * @slave: indicates that this is an SPI slave controller
+<<<<<<< HEAD
  * @slave_state: indicates state of SPI slave controller
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @max_transfer_size: function that returns the max transfer size for
  *	a &spi_device; may be %NULL, so the default %SIZE_MAX will be used.
  * @max_message_size: function that returns the max message size for
@@ -453,12 +456,21 @@ struct spi_controller {
 
 #define SPI_MASTER_GPIO_SS		BIT(5)	/* GPIO CS must select slave */
 
+<<<<<<< HEAD
 	/* flag indicating this is an SPI slave controller */
 	bool			slave;
 
 	/* flag indicating SPI slave controller state */
 	bool                    slave_state;
 
+=======
+	/* flag indicating this is a non-devres managed controller */
+	bool			devm_allocated;
+
+	/* flag indicating this is an SPI slave controller */
+	bool			slave;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * on some hardware transfer / message size may be constrained
 	 * the limit may depend on device transfer settings
@@ -642,6 +654,28 @@ static inline struct spi_controller *spi_alloc_slave(struct device *host,
 	return __spi_alloc_controller(host, size, true);
 }
 
+<<<<<<< HEAD
+=======
+struct spi_controller *__devm_spi_alloc_controller(struct device *dev,
+						   unsigned int size,
+						   bool slave);
+
+static inline struct spi_controller *devm_spi_alloc_master(struct device *dev,
+							   unsigned int size)
+{
+	return __devm_spi_alloc_controller(dev, size, false);
+}
+
+static inline struct spi_controller *devm_spi_alloc_slave(struct device *dev,
+							  unsigned int size)
+{
+	if (!IS_ENABLED(CONFIG_SPI_SLAVE))
+		return NULL;
+
+	return __devm_spi_alloc_controller(dev, size, true);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern int spi_register_controller(struct spi_controller *ctlr);
 extern int devm_spi_register_controller(struct device *dev,
 					struct spi_controller *ctlr);

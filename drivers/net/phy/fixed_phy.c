@@ -67,11 +67,19 @@ static int fixed_mdio_read(struct mii_bus *bus, int phy_addr, int reg_num)
 			do {
 				s = read_seqcount_begin(&fp->seqcount);
 				/* Issue callback if user registered it. */
+<<<<<<< HEAD
 				if (fp->link_update) {
 					fp->link_update(fp->phydev->attached_dev,
 							&fp->status);
 					fixed_phy_update(fp);
 				}
+=======
+				if (fp->link_update)
+					fp->link_update(fp->phydev->attached_dev,
+							&fp->status);
+				/* Check the GPIO for change in status */
+				fixed_phy_update(fp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				state = fp->status;
 			} while (read_seqcount_retry(&fp->seqcount, s));
 

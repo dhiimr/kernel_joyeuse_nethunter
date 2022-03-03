@@ -244,6 +244,11 @@ static int rdc321x_wdt_probe(struct platform_device *pdev)
 
 	rdc321x_wdt_device.sb_pdev = pdata->sb_pdev;
 	rdc321x_wdt_device.base_reg = r->start;
+<<<<<<< HEAD
+=======
+	rdc321x_wdt_device.queue = 0;
+	rdc321x_wdt_device.default_ticks = ticks;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = misc_register(&rdc321x_wdt_misc);
 	if (err < 0) {
@@ -258,14 +263,20 @@ static int rdc321x_wdt_probe(struct platform_device *pdev)
 				rdc321x_wdt_device.base_reg, RDC_WDT_RST);
 
 	init_completion(&rdc321x_wdt_device.stop);
+<<<<<<< HEAD
 	rdc321x_wdt_device.queue = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	clear_bit(0, &rdc321x_wdt_device.inuse);
 
 	setup_timer(&rdc321x_wdt_device.timer, rdc321x_wdt_trigger, 0);
 
+<<<<<<< HEAD
 	rdc321x_wdt_device.default_ticks = ticks;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev_info(&pdev->dev, "watchdog init success\n");
 
 	return 0;

@@ -1401,11 +1401,17 @@ static bool drm_wait_vblank_is_query(union drm_wait_vblank *vblwait)
 int drm_wait_vblank_ioctl(struct drm_device *dev, void *data,
 			  struct drm_file *file_priv)
 {
+<<<<<<< HEAD
 	struct drm_crtc *crtc;
 	struct drm_vblank_crtc *vblank;
 	union drm_wait_vblank *vblwait = data;
 	int ret;
 	unsigned int pipe_index;
+=======
+	struct drm_vblank_crtc *vblank;
+	union drm_wait_vblank *vblwait = data;
+	int ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int flags, seq, pipe, high_pipe;
 
 	if (!dev->irq_enabled)
@@ -1427,6 +1433,7 @@ int drm_wait_vblank_ioctl(struct drm_device *dev, void *data,
 	flags = vblwait->request.type & _DRM_VBLANK_FLAGS_MASK;
 	high_pipe = (vblwait->request.type & _DRM_VBLANK_HIGH_CRTC_MASK);
 	if (high_pipe)
+<<<<<<< HEAD
 		pipe_index = high_pipe >> _DRM_VBLANK_HIGH_CRTC_SHIFT;
 	else
 		pipe_index = flags & _DRM_VBLANK_SECONDARY ? 1 : 0;
@@ -1446,6 +1453,11 @@ int drm_wait_vblank_ioctl(struct drm_device *dev, void *data,
 		pipe = pipe_index;
 	}
 
+=======
+		pipe = high_pipe >> _DRM_VBLANK_HIGH_CRTC_SHIFT;
+	else
+		pipe = flags & _DRM_VBLANK_SECONDARY ? 1 : 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (pipe >= dev->num_crtcs)
 		return -EINVAL;
 

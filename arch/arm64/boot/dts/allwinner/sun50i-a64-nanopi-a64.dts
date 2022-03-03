@@ -126,9 +126,15 @@
 
 &reg_dcdc1 {
 	regulator-always-on;
+<<<<<<< HEAD
 	regulator-min-microvolt = <3000000>;
 	regulator-max-microvolt = <3000000>;
 	regulator-name = "vcc-3v";
+=======
+	regulator-min-microvolt = <3300000>;
+	regulator-max-microvolt = <3300000>;
+	regulator-name = "vcc-3v3";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 &reg_dcdc2 {

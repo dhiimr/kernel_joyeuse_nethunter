@@ -8,6 +8,7 @@ config CAN_HI311X
 	  Driver for the Holt HI311x SPI CAN controllers.
 
 config CAN_MCP251X
+<<<<<<< HEAD
 	tristate "Microchip MCP251x SPI CAN controllers"
 	depends on HAS_DMA
 	---help---
@@ -19,4 +20,12 @@ config QTI_CAN
 	depends on SPI
 	---help---
 	  Unified driver for QTI CAN controllers.
+=======
+	tristate "Microchip MCP251x and MCP25625 SPI CAN controllers"
+	depends on HAS_DMA
+	---help---
+	  Driver for the Microchip MCP251x and MCP25625 SPI CAN
+	  controllers.
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endmenu

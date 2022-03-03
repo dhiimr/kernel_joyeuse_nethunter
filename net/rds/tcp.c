@@ -392,7 +392,11 @@ void rds_tcp_tune(struct socket *sock)
 		sk->sk_userlocks |= SOCK_SNDBUF_LOCK;
 	}
 	if (rtn->rcvbuf_size > 0) {
+<<<<<<< HEAD
 		sk->sk_sndbuf = rtn->rcvbuf_size;
+=======
+		sk->sk_rcvbuf = rtn->rcvbuf_size;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		sk->sk_userlocks |= SOCK_RCVBUF_LOCK;
 	}
 	release_sock(sk);

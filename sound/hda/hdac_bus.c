@@ -155,6 +155,10 @@ static void process_unsol_events(struct work_struct *work)
 	struct hdac_driver *drv;
 	unsigned int rp, caddr, res;
 
+<<<<<<< HEAD
+=======
+	spin_lock_irq(&bus->reg_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	while (bus->unsol_rp != bus->unsol_wp) {
 		rp = (bus->unsol_rp + 1) % HDA_UNSOL_QUEUE_SIZE;
 		bus->unsol_rp = rp;
@@ -166,10 +170,20 @@ static void process_unsol_events(struct work_struct *work)
 		codec = bus->caddr_tbl[caddr & 0x0f];
 		if (!codec || !codec->dev.driver)
 			continue;
+<<<<<<< HEAD
 		drv = drv_to_hdac_driver(codec->dev.driver);
 		if (drv->unsol_event)
 			drv->unsol_event(codec, res);
 	}
+=======
+		spin_unlock_irq(&bus->reg_lock);
+		drv = drv_to_hdac_driver(codec->dev.driver);
+		if (drv->unsol_event)
+			drv->unsol_event(codec, res);
+		spin_lock_irq(&bus->reg_lock);
+	}
+	spin_unlock_irq(&bus->reg_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**

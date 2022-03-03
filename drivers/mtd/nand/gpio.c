@@ -199,7 +199,11 @@ static int gpio_nand_remove(struct platform_device *pdev)
 {
 	struct gpiomtd *gpiomtd = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	nand_release(nand_to_mtd(&gpiomtd->nand_chip));
+=======
+	nand_release(&gpiomtd->nand_chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
 		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);

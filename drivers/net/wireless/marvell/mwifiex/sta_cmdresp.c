@@ -585,6 +585,14 @@ static int mwifiex_ret_802_11_key_material_v1(struct mwifiex_private *priv,
 {
 	struct host_cmd_ds_802_11_key_material *key =
 						&resp->params.key_material;
+<<<<<<< HEAD
+=======
+	int len;
+
+	len = le16_to_cpu(key->key_param_set.key_len);
+	if (len > sizeof(key->key_param_set.key))
+		return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (le16_to_cpu(key->action) == HostCmd_ACT_GEN_SET) {
 		if ((le16_to_cpu(key->key_param_set.key_info) & KEY_MCAST)) {
@@ -598,9 +606,14 @@ static int mwifiex_ret_802_11_key_material_v1(struct mwifiex_private *priv,
 
 	memset(priv->aes_key.key_param_set.key, 0,
 	       sizeof(key->key_param_set.key));
+<<<<<<< HEAD
 	priv->aes_key.key_param_set.key_len = key->key_param_set.key_len;
 	memcpy(priv->aes_key.key_param_set.key, key->key_param_set.key,
 	       le16_to_cpu(priv->aes_key.key_param_set.key_len));
+=======
+	priv->aes_key.key_param_set.key_len = cpu_to_le16(len);
+	memcpy(priv->aes_key.key_param_set.key, key->key_param_set.key, len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -615,9 +628,20 @@ static int mwifiex_ret_802_11_key_material_v2(struct mwifiex_private *priv,
 					      struct host_cmd_ds_command *resp)
 {
 	struct host_cmd_ds_802_11_key_material_v2 *key_v2;
+<<<<<<< HEAD
 	__le16 len;
 
 	key_v2 = &resp->params.key_material_v2;
+=======
+	int len;
+
+	key_v2 = &resp->params.key_material_v2;
+
+	len = le16_to_cpu(key_v2->key_param_set.key_params.aes.key_len);
+	if (len > sizeof(key_v2->key_param_set.key_params.aes.key))
+		return -EINVAL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (le16_to_cpu(key_v2->action) == HostCmd_ACT_GEN_SET) {
 		if ((le16_to_cpu(key_v2->key_param_set.key_info) & KEY_MCAST)) {
 			mwifiex_dbg(priv->adapter, INFO, "info: key: GTK is set\n");
@@ -631,12 +655,20 @@ static int mwifiex_ret_802_11_key_material_v2(struct mwifiex_private *priv,
 		return 0;
 
 	memset(priv->aes_key_v2.key_param_set.key_params.aes.key, 0,
+<<<<<<< HEAD
 	       WLAN_KEY_LEN_CCMP);
 	priv->aes_key_v2.key_param_set.key_params.aes.key_len =
 				key_v2->key_param_set.key_params.aes.key_len;
 	len = priv->aes_key_v2.key_param_set.key_params.aes.key_len;
 	memcpy(priv->aes_key_v2.key_param_set.key_params.aes.key,
 	       key_v2->key_param_set.key_params.aes.key, le16_to_cpu(len));
+=======
+	       sizeof(key_v2->key_param_set.key_params.aes.key));
+	priv->aes_key_v2.key_param_set.key_params.aes.key_len =
+				cpu_to_le16(len);
+	memcpy(priv->aes_key_v2.key_param_set.key_params.aes.key,
+	       key_v2->key_param_set.key_params.aes.key, len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }

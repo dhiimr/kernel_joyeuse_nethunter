@@ -105,7 +105,11 @@ static int srf04_read(struct srf04_data *data)
 	udelay(10);
 	gpiod_set_value(data->gpiod_trig, 0);
 
+<<<<<<< HEAD
 	/* it cannot take more than 20 ms */
+=======
+	/* it should not take more than 20 ms until echo is rising */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = wait_for_completion_killable_timeout(&data->rising, HZ/50);
 	if (ret < 0) {
 		mutex_unlock(&data->lock);
@@ -115,7 +119,12 @@ static int srf04_read(struct srf04_data *data)
 		return -ETIMEDOUT;
 	}
 
+<<<<<<< HEAD
 	ret = wait_for_completion_killable_timeout(&data->falling, HZ/50);
+=======
+	/* it cannot take more than 50 ms until echo is falling */
+	ret = wait_for_completion_killable_timeout(&data->falling, HZ/20);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret < 0) {
 		mutex_unlock(&data->lock);
 		return ret;
@@ -130,12 +139,18 @@ static int srf04_read(struct srf04_data *data)
 
 	dt_ns = ktime_to_ns(ktime_dt);
 	/*
+<<<<<<< HEAD
 	 * measuring more than 3 meters is beyond the capabilities of
 	 * the sensor
+=======
+	 * measuring more than 6,45 meters is beyond the capabilities of
+	 * the supported sensors
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * ==> filter out invalid results for not measuring echos of
 	 *     another us sensor
 	 *
 	 * formula:
+<<<<<<< HEAD
 	 *         distance       3 m
 	 * time = ---------- = --------- = 9404389 ns
 	 *          speed       319 m/s
@@ -143,6 +158,15 @@ static int srf04_read(struct srf04_data *data)
 	 * using a minimum speed at -20 °C of 319 m/s
 	 */
 	if (dt_ns > 9404389)
+=======
+	 *         distance     6,45 * 2 m
+	 * time = ---------- = ------------ = 40438871 ns
+	 *          speed         319 m/s
+	 *
+	 * using a minimum speed at -20 °C of 319 m/s
+	 */
+	if (dt_ns > 40438871)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EIO;
 
 	time_ns = dt_ns;
@@ -154,6 +178,7 @@ static int srf04_read(struct srf04_data *data)
 	 *   with Temp in °C
 	 *   and speed in m/s
 	 *
+<<<<<<< HEAD
 	 * use 343 m/s as ultrasonic speed at 20 °C here in absence of the
 	 * temperature
 	 *
@@ -168,6 +193,22 @@ static int srf04_read(struct srf04_data *data)
 	 * fits into 32 bit
 	 */
 	distance_mm = time_ns * 343 / 2000000;
+=======
+	 * use 343,5 m/s as ultrasonic speed at 20 °C here in absence of the
+	 * temperature
+	 *
+	 * therefore:
+	 *             time     343,5     time * 106
+	 * distance = ------ * ------- = ------------
+	 *             10^6         2         617176
+	 *   with time in ns
+	 *   and distance in mm (one way)
+	 *
+	 * because we limit to 6,45 meters the multiplication with 106 just
+	 * fits into 32 bit
+	 */
+	distance_mm = time_ns * 106 / 617176;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return distance_mm;
 }

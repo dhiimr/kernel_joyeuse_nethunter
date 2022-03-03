@@ -494,7 +494,11 @@ static int efx_ptp_get_attributes(struct efx_nic *efx)
 	} else if (rc == -EINVAL) {
 		fmt = MC_CMD_PTP_OUT_GET_ATTRIBUTES_SECONDS_NANOSECONDS;
 	} else if (rc == -EPERM) {
+<<<<<<< HEAD
 		netif_info(efx, probe, efx->net_dev, "no PTP support\n");
+=======
+		pci_info(efx->pci_dev, "no PTP support\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return rc;
 	} else {
 		efx_mcdi_display_error(efx, MC_CMD_PTP, sizeof(inbuf),
@@ -613,7 +617,11 @@ static int efx_ptp_disable(struct efx_nic *efx)
 	 * should only have been called during probe.
 	 */
 	if (rc == -ENOSYS || rc == -EPERM)
+<<<<<<< HEAD
 		netif_info(efx, probe, efx->net_dev, "no PTP support\n");
+=======
+		pci_info(efx->pci_dev, "no PTP support\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	else if (rc)
 		efx_mcdi_display_error(efx, MC_CMD_PTP,
 				       MC_CMD_PTP_IN_DISABLE_LEN,
@@ -1320,7 +1328,12 @@ void efx_ptp_remove(struct efx_nic *efx)
 	(void)efx_ptp_disable(efx);
 
 	cancel_work_sync(&efx->ptp_data->work);
+<<<<<<< HEAD
 	cancel_work_sync(&efx->ptp_data->pps_work);
+=======
+	if (efx->ptp_data->pps_workwq)
+		cancel_work_sync(&efx->ptp_data->pps_work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	skb_queue_purge(&efx->ptp_data->rxq);
 	skb_queue_purge(&efx->ptp_data->txq);

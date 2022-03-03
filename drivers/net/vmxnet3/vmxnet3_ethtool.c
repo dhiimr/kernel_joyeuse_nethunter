@@ -692,6 +692,11 @@ vmxnet3_get_rss(struct net_device *netdev, u32 *p, u8 *key, u8 *hfunc)
 		*hfunc = ETH_RSS_HASH_TOP;
 	if (!p)
 		return 0;
+<<<<<<< HEAD
+=======
+	if (n > UPT1_RSS_MAX_IND_TABLE_SIZE)
+		return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	while (n--)
 		p[n] = rssConf->indTable[n];
 	return 0;

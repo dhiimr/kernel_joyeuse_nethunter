@@ -63,8 +63,12 @@ static int raid_match(struct attribute_container *cont, struct device *dev)
 	 * emulated RAID devices, so start with SCSI */
 	struct raid_internal *i = ac_to_raid_internal(cont);
 
+<<<<<<< HEAD
 #if defined(CONFIG_SCSI) || defined(CONFIG_SCSI_MODULE)
 	if (scsi_is_sdev_device(dev)) {
+=======
+	if (IS_ENABLED(CONFIG_SCSI) && scsi_is_sdev_device(dev)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct scsi_device *sdev = to_scsi_device(dev);
 
 		if (i->f->cookie != sdev->host->hostt)
@@ -72,7 +76,10 @@ static int raid_match(struct attribute_container *cont, struct device *dev)
 
 		return i->f->is_raid(dev);
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* FIXME: look at other subsystems too */
 	return 0;
 }

@@ -160,8 +160,12 @@ mt7601u_rx_process_entry(struct mt7601u_dev *dev, struct mt7601u_dma_buf_rx *e)
 
 	if (new_p) {
 		/* we have one extra ref from the allocator */
+<<<<<<< HEAD
 		__free_pages(e->p, MT_RX_ORDER);
 
+=======
+		put_page(e->p);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		e->p = new_p;
 	}
 }
@@ -193,10 +197,30 @@ static void mt7601u_complete_rx(struct urb *urb)
 	struct mt7601u_rx_queue *q = &dev->rx_q;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&dev->rx_lock, flags);
 
 	if (mt7601u_urb_has_error(urb))
 		dev_err(dev->dev, "Error: RX urb failed:%d\n", urb->status);
+=======
+	/* do no schedule rx tasklet if urb has been unlinked
+	 * or the device has been removed
+	 */
+	switch (urb->status) {
+	case -ECONNRESET:
+	case -ESHUTDOWN:
+	case -ENOENT:
+		return;
+	default:
+		dev_err_ratelimited(dev->dev, "rx urb failed: %d\n",
+				    urb->status);
+		/* fall through */
+	case 0:
+		break;
+	}
+
+	spin_lock_irqsave(&dev->rx_lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (WARN_ONCE(q->e[q->end].urb != urb, "RX urb mismatch"))
 		goto out;
 
@@ -228,14 +252,35 @@ static void mt7601u_complete_tx(struct urb *urb)
 	struct sk_buff *skb;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&dev->tx_lock, flags);
 
 	if (mt7601u_urb_has_error(urb))
 		dev_err(dev->dev, "Error: TX urb failed:%d\n", urb->status);
+=======
+	switch (urb->status) {
+	case -ECONNRESET:
+	case -ESHUTDOWN:
+	case -ENOENT:
+		return;
+	default:
+		dev_err_ratelimited(dev->dev, "tx urb failed: %d\n",
+				    urb->status);
+		/* fall through */
+	case 0:
+		break;
+	}
+
+	spin_lock_irqsave(&dev->tx_lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (WARN_ONCE(q->e[q->start].urb != urb, "TX urb mismatch"))
 		goto out;
 
 	skb = q->e[q->start].skb;
+<<<<<<< HEAD
+=======
+	q->e[q->start].skb = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	trace_mt_tx_dma_done(dev, skb);
 
 	__skb_queue_tail(&dev->tx_skb_done, skb);
@@ -294,7 +339,10 @@ static int mt7601u_dma_submit_tx(struct mt7601u_dev *dev,
 	}
 
 	e = &q->e[q->end];
+<<<<<<< HEAD
 	e->skb = skb;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	usb_fill_bulk_urb(e->urb, usb_dev, snd_pipe, skb->data, skb->len,
 			  mt7601u_complete_tx, q);
 	ret = usb_submit_urb(e->urb, GFP_ATOMIC);
@@ -312,6 +360,10 @@ static int mt7601u_dma_submit_tx(struct mt7601u_dev *dev,
 
 	q->end = (q->end + 1) % q->entries;
 	q->used++;
+<<<<<<< HEAD
+=======
+	e->skb = skb;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (q->used >= q->entries)
 		ieee80211_stop_queue(dev->hw, skb_get_queue_mapping(skb));
@@ -363,6 +415,7 @@ int mt7601u_dma_enqueue_tx(struct mt7601u_dev *dev, struct sk_buff *skb,
 static void mt7601u_kill_rx(struct mt7601u_dev *dev)
 {
 	int i;
+<<<<<<< HEAD
 	unsigned long flags;
 
 	spin_lock_irqsave(&dev->rx_lock, flags);
@@ -376,6 +429,11 @@ static void mt7601u_kill_rx(struct mt7601u_dev *dev)
 	}
 
 	spin_unlock_irqrestore(&dev->rx_lock, flags);
+=======
+
+	for (i = 0; i < dev->rx_q.entries; i++)
+		usb_poison_urb(dev->rx_q.e[i].urb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int mt7601u_submit_rx_buf(struct mt7601u_dev *dev,
@@ -445,10 +503,17 @@ static void mt7601u_free_tx_queue(struct mt7601u_tx_queue *q)
 {
 	int i;
 
+<<<<<<< HEAD
 	WARN_ON(q->used);
 
 	for (i = 0; i < q->entries; i++)  {
 		usb_poison_urb(q->e[i].urb);
+=======
+	for (i = 0; i < q->entries; i++)  {
+		usb_poison_urb(q->e[i].urb);
+		if (q->e[i].skb)
+			mt7601u_tx_status(q->dev, q->e[i].skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		usb_free_urb(q->e[i].urb);
 	}
 }

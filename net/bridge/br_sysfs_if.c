@@ -50,9 +50,14 @@ static BRPORT_ATTR(_name, S_IRUGO | S_IWUSR,			\
 static int store_flag(struct net_bridge_port *p, unsigned long v,
 		      unsigned long mask)
 {
+<<<<<<< HEAD
 	unsigned long flags;
 
 	flags = p->flags;
+=======
+	unsigned long flags = p->flags;
+	int err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (v)
 		flags |= mask;
@@ -60,6 +65,13 @@ static int store_flag(struct net_bridge_port *p, unsigned long v,
 		flags &= ~mask;
 
 	if (flags != p->flags) {
+<<<<<<< HEAD
+=======
+		err = br_switchdev_set_port_flag(p, flags, mask);
+		if (err)
+			return err;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		p->flags = flags;
 		br_port_flags_change(p, mask);
 	}

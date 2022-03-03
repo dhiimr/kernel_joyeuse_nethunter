@@ -174,6 +174,10 @@ struct tpm_space {
 	u8 *context_buf;
 	u32 session_tbl[3];
 	u8 *session_buf;
+<<<<<<< HEAD
+=======
+	u32 buf_size;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 enum tpm_chip_flags {
@@ -261,6 +265,12 @@ struct tpm_output_header {
 
 #define TPM_TAG_RQU_COMMAND 193
 
+<<<<<<< HEAD
+=======
+/* TPM2 specific constants. */
+#define TPM2_SPACE_BUFFER_SIZE		16384 /* 16 kB */
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct	stclear_flags_t {
 	__be16	tag;
 	u8	deactivated;
@@ -351,6 +361,7 @@ enum tpm_sub_capabilities {
 	TPM_CAP_PROP_TIS_DURATION = 0x120,
 };
 
+<<<<<<< HEAD
 struct	tpm_readpubek_params_out {
 	u8	algorithm[4];
 	u8	encscheme[2];
@@ -362,6 +373,8 @@ struct	tpm_readpubek_params_out {
 	u8	checksum[20];
 } __packed;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 typedef union {
 	struct	tpm_input_header in;
 	struct	tpm_output_header out;
@@ -391,8 +404,11 @@ struct tpm_getrandom_in {
 } __packed;
 
 typedef union {
+<<<<<<< HEAD
 	struct	tpm_readpubek_params_out readpubek_out;
 	u8	readpubek_out_buffer[sizeof(struct tpm_readpubek_params_out)];
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct	tpm_pcrread_in	pcrread_in;
 	struct	tpm_pcrread_out	pcrread_out;
 	struct	tpm_getrandom_in getrandom_in;
@@ -596,7 +612,11 @@ void tpm2_shutdown(struct tpm_chip *chip, u16 shutdown_type);
 unsigned long tpm2_calc_ordinal_duration(struct tpm_chip *chip, u32 ordinal);
 int tpm2_probe(struct tpm_chip *chip);
 int tpm2_find_cc(struct tpm_chip *chip, u32 cc);
+<<<<<<< HEAD
 int tpm2_init_space(struct tpm_space *space);
+=======
+int tpm2_init_space(struct tpm_space *space, unsigned int buf_size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void tpm2_del_space(struct tpm_chip *chip, struct tpm_space *space);
 int tpm2_prepare_space(struct tpm_chip *chip, struct tpm_space *space, u32 cc,
 		       u8 *cmd);

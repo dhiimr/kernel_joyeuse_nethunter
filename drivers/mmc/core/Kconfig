@@ -61,6 +61,7 @@ config MMC_BLOCK_MINORS
 
 	  If unsure, say 8 here.
 
+<<<<<<< HEAD
 config MMC_BLOCK_DEFERRED_RESUME
 	bool "Defer MMC layer resume until I/O is requested"
 	depends on MMC_BLOCK
@@ -72,6 +73,8 @@ config MMC_BLOCK_DEFERRED_RESUME
 	  This will reduce overall resume latency and
 	  save power when there is an SD card inserted but not being used.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config SDIO_UART
 	tristate "SDIO UART/GPS class support"
 	depends on TTY
@@ -91,6 +94,7 @@ config MMC_TEST
 	  This driver is only of interest to those developing or
 	  testing a host driver. Most people should say N here.
 
+<<<<<<< HEAD
 config MMC_RING_BUFFER
 	bool "MMC_RING_BUFFER"
 	depends on MMC
@@ -138,3 +142,5 @@ config MMC_SIMULATE_MAX_SPEED
 	  control the write or read maximum KB/second speed behaviors.
 
 	  If unsure, say N here.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

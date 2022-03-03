@@ -935,7 +935,11 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
 	if (!res)
 		return res;
 
+<<<<<<< HEAD
 	nand_release(mtd);
+=======
+	nand_release(chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 err_exit3:
 	dma_release_channel(host->dma_chan);
@@ -954,9 +958,14 @@ static int lpc32xx_nand_remove(struct platform_device *pdev)
 {
 	uint32_t tmp;
 	struct lpc32xx_nand_host *host = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
 
 	nand_release(mtd);
+=======
+
+	nand_release(&host->nand_chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dma_release_channel(host->dma_chan);
 
 	/* Force CE high */

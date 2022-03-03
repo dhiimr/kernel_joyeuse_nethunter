@@ -33,7 +33,10 @@ int tick_program_event(ktime_t expires, int force)
 		 * We don't need the clock event device any more, stop it.
 		 */
 		clockevents_switch_state(dev, CLOCK_EVT_STATE_ONESHOT_STOPPED);
+<<<<<<< HEAD
 		dev->next_event = KTIME_MAX;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 	}
 

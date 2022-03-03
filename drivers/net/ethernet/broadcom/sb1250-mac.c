@@ -299,7 +299,11 @@ static enum sbmac_state sbmac_set_channel_state(struct sbmac_softc *,
 static void sbmac_promiscuous_mode(struct sbmac_softc *sc, int onoff);
 static uint64_t sbmac_addr2reg(unsigned char *ptr);
 static irqreturn_t sbmac_intr(int irq, void *dev_instance);
+<<<<<<< HEAD
 static int sbmac_start_tx(struct sk_buff *skb, struct net_device *dev);
+=======
+static netdev_tx_t sbmac_start_tx(struct sk_buff *skb, struct net_device *dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void sbmac_setmulti(struct sbmac_softc *sc);
 static int sbmac_init(struct platform_device *pldev, long long base);
 static int sbmac_set_speed(struct sbmac_softc *s, enum sbmac_speed speed);
@@ -2028,7 +2032,11 @@ static irqreturn_t sbmac_intr(int irq,void *dev_instance)
  *  Return value:
  *  	   nothing
  ********************************************************************* */
+<<<<<<< HEAD
 static int sbmac_start_tx(struct sk_buff *skb, struct net_device *dev)
+=======
+static netdev_tx_t sbmac_start_tx(struct sk_buff *skb, struct net_device *dev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct sbmac_softc *sc = netdev_priv(dev);
 	unsigned long flags;

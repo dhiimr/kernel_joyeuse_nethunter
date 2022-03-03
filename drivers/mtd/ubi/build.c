@@ -1092,10 +1092,17 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
 	ubi_wl_close(ubi);
 	ubi_free_internal_volumes(ubi);
 	vfree(ubi->vtbl);
+<<<<<<< HEAD
 	put_mtd_device(ubi->mtd);
 	vfree(ubi->peb_buf);
 	vfree(ubi->fm_buf);
 	ubi_msg(ubi, "mtd%d is detached", ubi->mtd->index);
+=======
+	vfree(ubi->peb_buf);
+	vfree(ubi->fm_buf);
+	ubi_msg(ubi, "mtd%d is detached", ubi->mtd->index);
+	put_mtd_device(ubi->mtd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	put_device(&ubi->dev);
 	return 0;
 }
@@ -1349,7 +1356,11 @@ static int bytes_str_to_int(const char *str)
  * This function returns zero in case of success and a negative error code in
  * case of error.
  */
+<<<<<<< HEAD
 static int ubi_mtd_param_parse(const char *val, const struct kernel_param *kp)
+=======
+static int ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int i, len;
 	struct mtd_dev_param *p;

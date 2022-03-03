@@ -688,7 +688,11 @@ static int bf5xx_nand_remove(struct platform_device *pdev)
 	 * and their partitions, then go through freeing the
 	 * resources used
 	 */
+<<<<<<< HEAD
 	nand_release(nand_to_mtd(&info->chip));
+=======
+	nand_release(&info->chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	peripheral_free_list(bfin_nfc_pin_req);
 	bf5xx_nand_dma_remove(info);

@@ -875,6 +875,7 @@ static struct atmel_pmecc *atmel_pmecc_get_by_node(struct device *userdev,
 {
 	struct platform_device *pdev;
 	struct atmel_pmecc *pmecc, **ptr;
+<<<<<<< HEAD
 
 	pdev = of_find_device_by_node(np);
 	if (!pdev || !platform_get_drvdata(pdev))
@@ -886,12 +887,37 @@ static struct atmel_pmecc *atmel_pmecc_get_by_node(struct device *userdev,
 
 	get_device(&pdev->dev);
 	pmecc = platform_get_drvdata(pdev);
+=======
+	int ret;
+
+	pdev = of_find_device_by_node(np);
+	if (!pdev)
+		return ERR_PTR(-EPROBE_DEFER);
+	pmecc = platform_get_drvdata(pdev);
+	if (!pmecc) {
+		ret = -EPROBE_DEFER;
+		goto err_put_device;
+	}
+
+	ptr = devres_alloc(devm_atmel_pmecc_put, sizeof(*ptr), GFP_KERNEL);
+	if (!ptr) {
+		ret = -ENOMEM;
+		goto err_put_device;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	*ptr = pmecc;
 
 	devres_add(userdev, ptr);
 
 	return pmecc;
+<<<<<<< HEAD
+=======
+
+err_put_device:
+	put_device(&pdev->dev);
+	return ERR_PTR(ret);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const int atmel_pmecc_strengths[] = { 2, 4, 8, 12, 24, 32 };

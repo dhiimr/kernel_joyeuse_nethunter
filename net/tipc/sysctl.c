@@ -37,6 +37,11 @@
 
 #include <linux/sysctl.h>
 
+<<<<<<< HEAD
+=======
+static int zero;
+static int one = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct ctl_table_header *tipc_ctl_hdr;
 
 static struct ctl_table tipc_table[] = {
@@ -45,14 +50,24 @@ static struct ctl_table tipc_table[] = {
 		.data		= &sysctl_tipc_rmem,
 		.maxlen		= sizeof(sysctl_tipc_rmem),
 		.mode		= 0644,
+<<<<<<< HEAD
 		.proc_handler	= proc_dointvec,
+=======
+		.proc_handler	= proc_dointvec_minmax,
+		.extra1         = &one,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	{
 		.procname	= "named_timeout",
 		.data		= &sysctl_tipc_named_timeout,
 		.maxlen		= sizeof(sysctl_tipc_named_timeout),
 		.mode		= 0644,
+<<<<<<< HEAD
 		.proc_handler	= proc_dointvec,
+=======
+		.proc_handler	= proc_dointvec_minmax,
+		.extra1         = &zero,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	{}
 };

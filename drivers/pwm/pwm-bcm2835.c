@@ -166,6 +166,10 @@ static int bcm2835_pwm_probe(struct platform_device *pdev)
 
 	pc->chip.dev = &pdev->dev;
 	pc->chip.ops = &bcm2835_pwm_ops;
+<<<<<<< HEAD
+=======
+	pc->chip.base = -1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pc->chip.npwm = 2;
 	pc->chip.of_xlate = of_pwm_xlate_with_flags;
 	pc->chip.of_pwm_n_cells = 3;

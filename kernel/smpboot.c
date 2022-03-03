@@ -187,6 +187,10 @@ __smpboot_create_thread(struct smp_hotplug_thread *ht, unsigned int cpu)
 		kfree(td);
 		return PTR_ERR(tsk);
 	}
+<<<<<<< HEAD
+=======
+	kthread_set_per_cpu(tsk, cpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Park the thread so that it could start right on the CPU
 	 * when it is available.

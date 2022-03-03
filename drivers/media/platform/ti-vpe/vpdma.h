@@ -60,6 +60,10 @@ struct vpdma_data_format {
 						 * line stride of source and dest
 						 * buffers should be 16 byte aligned
 						 */
+<<<<<<< HEAD
+=======
+#define VPDMA_MAX_STRIDE		65520	/* Max line stride 16 byte aligned */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define VPDMA_DTD_DESC_SIZE		32	/* 8 words */
 #define VPDMA_CFD_CTD_DESC_SIZE		16	/* 4 words */
 

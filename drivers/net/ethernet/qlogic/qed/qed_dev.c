@@ -2947,6 +2947,10 @@ static int qed_get_dev_info(struct qed_hwfn *p_hwfn, struct qed_ptt *p_ptt)
 static int qed_hw_prepare_single(struct qed_hwfn *p_hwfn,
 				 void __iomem *p_regview,
 				 void __iomem *p_doorbells,
+<<<<<<< HEAD
+=======
+				 u64 db_phys_addr,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				 enum qed_pci_personality personality)
 {
 	int rc = 0;
@@ -2954,6 +2958,10 @@ static int qed_hw_prepare_single(struct qed_hwfn *p_hwfn,
 	/* Split PCI bars evenly between hwfns */
 	p_hwfn->regview = p_regview;
 	p_hwfn->doorbells = p_doorbells;
+<<<<<<< HEAD
+=======
+	p_hwfn->db_phys_addr = db_phys_addr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (IS_VF(p_hwfn->cdev))
 		return qed_vf_hw_prepare(p_hwfn);
@@ -3036,7 +3044,13 @@ int qed_hw_prepare(struct qed_dev *cdev,
 	/* Initialize the first hwfn - will learn number of hwfns */
 	rc = qed_hw_prepare_single(p_hwfn,
 				   cdev->regview,
+<<<<<<< HEAD
 				   cdev->doorbells, personality);
+=======
+				   cdev->doorbells,
+				   cdev->db_phys_addr,
+				   personality);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (rc)
 		return rc;
 
@@ -3045,6 +3059,7 @@ int qed_hw_prepare(struct qed_dev *cdev,
 	/* Initialize the rest of the hwfns */
 	if (cdev->num_hwfns > 1) {
 		void __iomem *p_regview, *p_doorbell;
+<<<<<<< HEAD
 		u8 __iomem *addr;
 
 		/* adjust bar offset for second engine */
@@ -3061,6 +3076,27 @@ int qed_hw_prepare(struct qed_dev *cdev,
 		/* prepare second hw function */
 		rc = qed_hw_prepare_single(&cdev->hwfns[1], p_regview,
 					   p_doorbell, personality);
+=======
+		u64 db_phys_addr;
+		u32 offset;
+
+		/* adjust bar offset for second engine */
+		offset = qed_hw_bar_size(p_hwfn, p_hwfn->p_main_ptt,
+					 BAR_ID_0) / 2;
+		p_regview = cdev->regview + offset;
+
+		offset = qed_hw_bar_size(p_hwfn, p_hwfn->p_main_ptt,
+					 BAR_ID_1) / 2;
+
+		p_doorbell = cdev->doorbells + offset;
+
+		db_phys_addr = cdev->db_phys_addr + offset;
+
+		/* prepare second hw function */
+		rc = qed_hw_prepare_single(&cdev->hwfns[1], p_regview,
+					   p_doorbell, db_phys_addr,
+					   personality);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* in case of error, need to free the previously
 		 * initiliazed hwfn 0.
@@ -3144,6 +3180,7 @@ static void qed_chain_free_single(struct qed_dev *cdev,
 
 static void qed_chain_free_pbl(struct qed_dev *cdev, struct qed_chain *p_chain)
 {
+<<<<<<< HEAD
 	void **pp_virt_addr_tbl = p_chain->pbl.pp_virt_addr_tbl;
 	u32 page_cnt = p_chain->page_cnt, i, pbl_size;
 	u8 *p_pbl_virt = p_chain->pbl_sp.p_virt_table;
@@ -3156,14 +3193,29 @@ static void qed_chain_free_pbl(struct qed_dev *cdev, struct qed_chain *p_chain)
 
 	for (i = 0; i < page_cnt; i++) {
 		if (!pp_virt_addr_tbl[i])
+=======
+	struct addr_tbl_entry *pp_addr_tbl = p_chain->pbl.pp_addr_tbl;
+	u32 page_cnt = p_chain->page_cnt, i, pbl_size;
+
+	if (!pp_addr_tbl)
+		return;
+
+	for (i = 0; i < page_cnt; i++) {
+		if (!pp_addr_tbl[i].virt_addr || !pp_addr_tbl[i].dma_map)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 
 		dma_free_coherent(&cdev->pdev->dev,
 				  QED_CHAIN_PAGE_SIZE,
+<<<<<<< HEAD
 				  pp_virt_addr_tbl[i],
 				  *(dma_addr_t *)p_pbl_virt);
 
 		p_pbl_virt += QED_CHAIN_PBL_ENTRY_SIZE;
+=======
+				  pp_addr_tbl[i].virt_addr,
+				  pp_addr_tbl[i].dma_map);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	pbl_size = page_cnt * QED_CHAIN_PBL_ENTRY_SIZE;
@@ -3173,9 +3225,15 @@ static void qed_chain_free_pbl(struct qed_dev *cdev, struct qed_chain *p_chain)
 				  pbl_size,
 				  p_chain->pbl_sp.p_virt_table,
 				  p_chain->pbl_sp.p_phys_table);
+<<<<<<< HEAD
 out:
 	vfree(p_chain->pbl.pp_virt_addr_tbl);
 	p_chain->pbl.pp_virt_addr_tbl = NULL;
+=======
+
+	vfree(p_chain->pbl.pp_addr_tbl);
+	p_chain->pbl.pp_addr_tbl = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void qed_chain_free(struct qed_dev *cdev, struct qed_chain *p_chain)
@@ -3276,6 +3334,7 @@ qed_chain_alloc_pbl(struct qed_dev *cdev,
 {
 	u32 page_cnt = p_chain->page_cnt, size, i;
 	dma_addr_t p_phys = 0, p_pbl_phys = 0;
+<<<<<<< HEAD
 	void **pp_virt_addr_tbl = NULL;
 	u8 *p_pbl_virt = NULL;
 	void *p_virt = NULL;
@@ -3283,12 +3342,25 @@ qed_chain_alloc_pbl(struct qed_dev *cdev,
 	size = page_cnt * sizeof(*pp_virt_addr_tbl);
 	pp_virt_addr_tbl = vzalloc(size);
 	if (!pp_virt_addr_tbl)
+=======
+	struct addr_tbl_entry *pp_addr_tbl;
+	u8 *p_pbl_virt = NULL;
+	void *p_virt = NULL;
+
+	size = page_cnt * sizeof(*pp_addr_tbl);
+	pp_addr_tbl =  vzalloc(size);
+	if (!pp_addr_tbl)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -ENOMEM;
 
 	/* The allocation of the PBL table is done with its full size, since it
 	 * is expected to be successive.
 	 * qed_chain_init_pbl_mem() is called even in a case of an allocation
+<<<<<<< HEAD
 	 * failure, since pp_virt_addr_tbl was previously allocated, and it
+=======
+	 * failure, since tbl was previously allocated, and it
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * should be saved to allow its freeing during the error flow.
 	 */
 	size = page_cnt * QED_CHAIN_PBL_ENTRY_SIZE;
@@ -3302,8 +3374,12 @@ qed_chain_alloc_pbl(struct qed_dev *cdev,
 		p_chain->b_external_pbl = true;
 	}
 
+<<<<<<< HEAD
 	qed_chain_init_pbl_mem(p_chain, p_pbl_virt, p_pbl_phys,
 			       pp_virt_addr_tbl);
+=======
+	qed_chain_init_pbl_mem(p_chain, p_pbl_virt, p_pbl_phys, pp_addr_tbl);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!p_pbl_virt)
 		return -ENOMEM;
 
@@ -3322,7 +3398,12 @@ qed_chain_alloc_pbl(struct qed_dev *cdev,
 		/* Fill the PBL table with the physical address of the page */
 		*(dma_addr_t *)p_pbl_virt = p_phys;
 		/* Keep the virtual address of the page */
+<<<<<<< HEAD
 		p_chain->pbl.pp_virt_addr_tbl[i] = p_virt;
+=======
+		p_chain->pbl.pp_addr_tbl[i].virt_addr = p_virt;
+		p_chain->pbl.pp_addr_tbl[i].dma_map = p_phys;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		p_pbl_virt += QED_CHAIN_PBL_ENTRY_SIZE;
 	}

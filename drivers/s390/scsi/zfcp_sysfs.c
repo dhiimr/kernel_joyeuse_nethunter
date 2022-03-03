@@ -238,6 +238,56 @@ static ZFCP_DEV_ATTR(adapter, port_rescan, S_IWUSR, NULL,
 
 DEFINE_MUTEX(zfcp_sysfs_port_units_mutex);
 
+<<<<<<< HEAD
+=======
+static void zfcp_sysfs_port_set_removing(struct zfcp_port *const port)
+{
+	lockdep_assert_held(&zfcp_sysfs_port_units_mutex);
+	atomic_set(&port->units, -1);
+}
+
+bool zfcp_sysfs_port_is_removing(const struct zfcp_port *const port)
+{
+	lockdep_assert_held(&zfcp_sysfs_port_units_mutex);
+	return atomic_read(&port->units) == -1;
+}
+
+static bool zfcp_sysfs_port_in_use(struct zfcp_port *const port)
+{
+	struct zfcp_adapter *const adapter = port->adapter;
+	unsigned long flags;
+	struct scsi_device *sdev;
+	bool in_use = true;
+
+	mutex_lock(&zfcp_sysfs_port_units_mutex);
+	if (atomic_read(&port->units) > 0)
+		goto unlock_port_units_mutex; /* zfcp_unit(s) under port */
+
+	spin_lock_irqsave(adapter->scsi_host->host_lock, flags);
+	__shost_for_each_device(sdev, adapter->scsi_host) {
+		const struct zfcp_scsi_dev *zsdev = sdev_to_zfcp(sdev);
+
+		if (sdev->sdev_state == SDEV_DEL ||
+		    sdev->sdev_state == SDEV_CANCEL)
+			continue;
+		if (zsdev->port != port)
+			continue;
+		/* alive scsi_device under port of interest */
+		goto unlock_host_lock;
+	}
+
+	/* port is about to be removed, so no more unit_add or slave_alloc */
+	zfcp_sysfs_port_set_removing(port);
+	in_use = false;
+
+unlock_host_lock:
+	spin_unlock_irqrestore(adapter->scsi_host->host_lock, flags);
+unlock_port_units_mutex:
+	mutex_unlock(&zfcp_sysfs_port_units_mutex);
+	return in_use;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static ssize_t zfcp_sysfs_port_remove_store(struct device *dev,
 					    struct device_attribute *attr,
 					    const char *buf, size_t count)
@@ -260,6 +310,7 @@ static ssize_t zfcp_sysfs_port_remove_store(struct device *dev,
 	else
 		retval = 0;
 
+<<<<<<< HEAD
 	mutex_lock(&zfcp_sysfs_port_units_mutex);
 	if (atomic_read(&port->units) > 0) {
 		retval = -EBUSY;
@@ -269,6 +320,13 @@ static ssize_t zfcp_sysfs_port_remove_store(struct device *dev,
 	/* port is about to be removed, so no more unit_add */
 	atomic_set(&port->units, -1);
 	mutex_unlock(&zfcp_sysfs_port_units_mutex);
+=======
+	if (zfcp_sysfs_port_in_use(port)) {
+		retval = -EBUSY;
+		put_device(&port->dev); /* undo zfcp_get_port_by_wwpn() */
+		goto out;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	write_lock_irq(&adapter->port_list_lock);
 	list_del(&port->list);

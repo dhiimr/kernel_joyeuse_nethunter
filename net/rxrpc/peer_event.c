@@ -150,6 +150,12 @@ void rxrpc_error_report(struct sock *sk)
 	struct rxrpc_peer *peer;
 	struct sk_buff *skb;
 
+<<<<<<< HEAD
+=======
+	if (unlikely(!local))
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	_enter("%p{%d}", sk, local->debug_id);
 
 	skb = sock_dequeue_err_skb(sk);

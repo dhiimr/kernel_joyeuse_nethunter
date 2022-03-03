@@ -75,7 +75,11 @@ config NF_CONNTRACK_MARK
 config NF_CONNTRACK_SECMARK
 	bool  'Connection tracking security mark support'
 	depends on NETWORK_SECMARK
+<<<<<<< HEAD
 	default m if NETFILTER_ADVANCED=n
+=======
+	default y if NETFILTER_ADVANCED=n
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  This option enables security markings to be applied to
 	  connections.  Typically they are copied to connections from
@@ -831,6 +835,7 @@ config NETFILTER_XT_TARGET_IDLETIMER
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+<<<<<<< HEAD
 config NETFILTER_XT_TARGET_HARDIDLETIMER
 	tristate  "HARDIDLETIMER target support"
 	depends on NETFILTER_ADVANCED
@@ -845,6 +850,8 @@ config NETFILTER_XT_TARGET_HARDIDLETIMER
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config NETFILTER_XT_TARGET_LED
 	tristate '"LED" target support'
 	depends on LEDS_CLASS && LEDS_TRIGGERS
@@ -1374,8 +1381,11 @@ config NETFILTER_XT_MATCH_OWNER
 	based on who created the socket: the user or group. It is also
 	possible to check whether a socket actually exists.
 
+<<<<<<< HEAD
 	Conflicts with '"quota, tag, uid" match'
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config NETFILTER_XT_MATCH_POLICY
 	tristate 'IPsec "policy" match support'
 	depends on XFRM
@@ -1419,6 +1429,7 @@ config NETFILTER_XT_MATCH_QUOTA
 	  If you want to compile it as a module, say M here and read
 	  <file:Documentation/kbuild/modules.txt>.  If unsure, say `N'.
 
+<<<<<<< HEAD
 config NETFILTER_XT_MATCH_QUOTA2
 	tristate '"quota2" match support'
 	depends on NETFILTER_ADVANCED
@@ -1442,6 +1453,8 @@ config NETFILTER_XT_MATCH_QUOTA2_LOG
 
 	  If unsure, say `N'.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config NETFILTER_XT_MATCH_RATEEST
 	tristate '"rateest" match support'
 	depends on NETFILTER_ADVANCED

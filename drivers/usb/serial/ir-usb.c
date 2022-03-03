@@ -49,9 +49,16 @@ static int buffer_size;
 static int xbof = -1;
 
 static int  ir_startup (struct usb_serial *serial);
+<<<<<<< HEAD
 static int  ir_open(struct tty_struct *tty, struct usb_serial_port *port);
 static int ir_prepare_write_buffer(struct usb_serial_port *port,
 						void *dest, size_t size);
+=======
+static int ir_write(struct tty_struct *tty, struct usb_serial_port *port,
+		const unsigned char *buf, int count);
+static int ir_write_room(struct tty_struct *tty);
+static void ir_write_bulk_callback(struct urb *urb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void ir_process_read_urb(struct urb *urb);
 static void ir_set_termios(struct tty_struct *tty,
 		struct usb_serial_port *port, struct ktermios *old_termios);
@@ -81,8 +88,14 @@ static struct usb_serial_driver ir_device = {
 	.num_ports		= 1,
 	.set_termios		= ir_set_termios,
 	.attach			= ir_startup,
+<<<<<<< HEAD
 	.open			= ir_open,
 	.prepare_write_buffer	= ir_prepare_write_buffer,
+=======
+	.write			= ir_write,
+	.write_room		= ir_write_room,
+	.write_bulk_callback	= ir_write_bulk_callback,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.process_read_urb	= ir_process_read_urb,
 };
 
@@ -199,6 +212,12 @@ static int ir_startup(struct usb_serial *serial)
 	struct usb_irda_cs_descriptor *irda_desc;
 	int rates;
 
+<<<<<<< HEAD
+=======
+	if (serial->num_bulk_in < 1 || serial->num_bulk_out < 1)
+		return -ENODEV;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	irda_desc = irda_usb_find_class_desc(serial, 0);
 	if (!irda_desc) {
 		dev_err(&serial->dev->dev,
@@ -255,6 +274,7 @@ static int ir_startup(struct usb_serial *serial)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ir_open(struct tty_struct *tty, struct usb_serial_port *port)
 {
 	int i;
@@ -275,15 +295,112 @@ static int ir_prepare_write_buffer(struct usb_serial_port *port,
 	/*
 	 * The first byte of the packet we send to the device contains an
 	 * inbound header which indicates an additional number of BOFs and
+=======
+static int ir_write(struct tty_struct *tty, struct usb_serial_port *port,
+		const unsigned char *buf, int count)
+{
+	struct urb *urb = NULL;
+	unsigned long flags;
+	int ret;
+
+	if (port->bulk_out_size == 0)
+		return -EINVAL;
+
+	if (count == 0)
+		return 0;
+
+	count = min(count, port->bulk_out_size - 1);
+
+	spin_lock_irqsave(&port->lock, flags);
+	if (__test_and_clear_bit(0, &port->write_urbs_free)) {
+		urb = port->write_urbs[0];
+		port->tx_bytes += count;
+	}
+	spin_unlock_irqrestore(&port->lock, flags);
+
+	if (!urb)
+		return 0;
+
+	/*
+	 * The first byte of the packet we send to the device contains an
+	 * outbound header which indicates an additional number of BOFs and
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * a baud rate change.
 	 *
 	 * See section 5.4.2.2 of the USB IrDA spec.
 	 */
+<<<<<<< HEAD
 	*buf = ir_xbof | ir_baud;
 
 	count = kfifo_out_locked(&port->write_fifo, buf + 1, size - 1,
 								&port->lock);
 	return count + 1;
+=======
+	*(u8 *)urb->transfer_buffer = ir_xbof | ir_baud;
+
+	memcpy(urb->transfer_buffer + 1, buf, count);
+
+	urb->transfer_buffer_length = count + 1;
+	urb->transfer_flags = URB_ZERO_PACKET;
+
+	ret = usb_submit_urb(urb, GFP_ATOMIC);
+	if (ret) {
+		dev_err(&port->dev, "failed to submit write urb: %d\n", ret);
+
+		spin_lock_irqsave(&port->lock, flags);
+		__set_bit(0, &port->write_urbs_free);
+		port->tx_bytes -= count;
+		spin_unlock_irqrestore(&port->lock, flags);
+
+		return ret;
+	}
+
+	return count;
+}
+
+static void ir_write_bulk_callback(struct urb *urb)
+{
+	struct usb_serial_port *port = urb->context;
+	int status = urb->status;
+	unsigned long flags;
+
+	spin_lock_irqsave(&port->lock, flags);
+	__set_bit(0, &port->write_urbs_free);
+	port->tx_bytes -= urb->transfer_buffer_length - 1;
+	spin_unlock_irqrestore(&port->lock, flags);
+
+	switch (status) {
+	case 0:
+		break;
+	case -ENOENT:
+	case -ECONNRESET:
+	case -ESHUTDOWN:
+		dev_dbg(&port->dev, "write urb stopped: %d\n", status);
+		return;
+	case -EPIPE:
+		dev_err(&port->dev, "write urb stopped: %d\n", status);
+		return;
+	default:
+		dev_err(&port->dev, "nonzero write-urb status: %d\n", status);
+		break;
+	}
+
+	usb_serial_port_softint(port);
+}
+
+static int ir_write_room(struct tty_struct *tty)
+{
+	struct usb_serial_port *port = tty->driver_data;
+	int count = 0;
+
+	if (port->bulk_out_size == 0)
+		return 0;
+
+	if (test_bit(0, &port->write_urbs_free))
+		count = port->bulk_out_size - 1;
+
+	return count;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void ir_process_read_urb(struct urb *urb)
@@ -336,6 +453,7 @@ static void ir_set_termios(struct tty_struct *tty,
 
 	switch (baud) {
 	case 2400:
+<<<<<<< HEAD
 		ir_baud = USB_IRDA_BR_2400;
 		break;
 	case 9600:
@@ -364,6 +482,36 @@ static void ir_set_termios(struct tty_struct *tty,
 		break;
 	default:
 		ir_baud = USB_IRDA_BR_9600;
+=======
+		ir_baud = USB_IRDA_LS_2400;
+		break;
+	case 9600:
+		ir_baud = USB_IRDA_LS_9600;
+		break;
+	case 19200:
+		ir_baud = USB_IRDA_LS_19200;
+		break;
+	case 38400:
+		ir_baud = USB_IRDA_LS_38400;
+		break;
+	case 57600:
+		ir_baud = USB_IRDA_LS_57600;
+		break;
+	case 115200:
+		ir_baud = USB_IRDA_LS_115200;
+		break;
+	case 576000:
+		ir_baud = USB_IRDA_LS_576000;
+		break;
+	case 1152000:
+		ir_baud = USB_IRDA_LS_1152000;
+		break;
+	case 4000000:
+		ir_baud = USB_IRDA_LS_4000000;
+		break;
+	default:
+		ir_baud = USB_IRDA_LS_9600;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		baud = 9600;
 	}
 

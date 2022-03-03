@@ -54,6 +54,10 @@
 #include <linux/mm.h>
 #include <linux/vmalloc.h>
 #include <rdma/opa_addr.h>
+<<<<<<< HEAD
+=======
+#include <linux/nospec.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "hfi.h"
 #include "common.h"
@@ -592,10 +596,18 @@ static inline void hfi1_handle_packet(struct hfi1_packet *packet,
 				       opa_get_lid(packet->dlid, 9B));
 		if (!mcast)
 			goto drop;
+<<<<<<< HEAD
 		list_for_each_entry_rcu(p, &mcast->qp_list, list) {
 			packet->qp = p->qp;
 			if (hfi1_do_pkey_check(packet))
 				goto drop;
+=======
+		rcu_read_lock();
+		list_for_each_entry_rcu(p, &mcast->qp_list, list) {
+			packet->qp = p->qp;
+			if (hfi1_do_pkey_check(packet))
+				goto unlock_drop;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			spin_lock_irqsave(&packet->qp->r_lock, flags);
 			packet_handler = qp_ok(packet);
 			if (likely(packet_handler))
@@ -604,6 +616,10 @@ static inline void hfi1_handle_packet(struct hfi1_packet *packet,
 				ibp->rvp.n_pkt_drops++;
 			spin_unlock_irqrestore(&packet->qp->r_lock, flags);
 		}
+<<<<<<< HEAD
+=======
+		rcu_read_unlock();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/*
 		 * Notify rvt_multicast_detach() if it is waiting for us
 		 * to finish.
@@ -1400,8 +1416,11 @@ static void hfi1_fill_device_attr(struct hfi1_devdata *dd)
 	rdi->dparms.props.max_cq = hfi1_max_cqs;
 	rdi->dparms.props.max_ah = hfi1_max_ahs;
 	rdi->dparms.props.max_cqe = hfi1_max_cqes;
+<<<<<<< HEAD
 	rdi->dparms.props.max_mr = rdi->lkey_table.max;
 	rdi->dparms.props.max_fmr = rdi->lkey_table.max;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rdi->dparms.props.max_map_per_fmr = 32767;
 	rdi->dparms.props.max_pd = hfi1_max_pds;
 	rdi->dparms.props.max_qp_rd_atom = HFI1_MAX_RDMA_ATOMIC;
@@ -1589,6 +1608,10 @@ static int hfi1_check_ah(struct ib_device *ibdev, struct rdma_ah_attr *ah_attr)
 	sl = rdma_ah_get_sl(ah_attr);
 	if (sl >= ARRAY_SIZE(ibp->sl_to_sc))
 		return -EINVAL;
+<<<<<<< HEAD
+=======
+	sl = array_index_nospec(sl, ARRAY_SIZE(ibp->sl_to_sc));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	sc5 = ibp->sl_to_sc[sl];
 	if (sc_to_vlt(dd, sc5) > num_vls && sc_to_vlt(dd, sc5) != 0xf)

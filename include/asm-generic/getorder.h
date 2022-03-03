@@ -7,6 +7,7 @@
 #include <linux/compiler.h>
 #include <linux/log2.h>
 
+<<<<<<< HEAD
 /*
  * Runtime evaluation of get_order()
  */
@@ -25,6 +26,8 @@ int __get_order(unsigned long size)
 	return order;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * get_order - Determine the allocation order of a memory size
  * @size: The size for which to get the order
@@ -43,6 +46,7 @@ int __get_order(unsigned long size)
  * to hold an object of the specified size.
  *
  * The result is undefined if the size is 0.
+<<<<<<< HEAD
  *
  * This function may be used to initialise variables with compile time
  * evaluations of constants.
@@ -56,6 +60,29 @@ int __get_order(unsigned long size)
 	) :							\
 	__get_order(n)						\
 )
+=======
+ */
+static inline __attribute_const__ int get_order(unsigned long size)
+{
+	if (__builtin_constant_p(size)) {
+		if (!size)
+			return BITS_PER_LONG - PAGE_SHIFT;
+
+		if (size < (1UL << PAGE_SHIFT))
+			return 0;
+
+		return ilog2((size) - 1) - PAGE_SHIFT + 1;
+	}
+
+	size--;
+	size >>= PAGE_SHIFT;
+#if BITS_PER_LONG == 32
+	return fls(size);
+#else
+	return fls64(size);
+#endif
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif	/* __ASSEMBLY__ */
 

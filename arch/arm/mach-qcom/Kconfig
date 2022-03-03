@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 if ARCH_QCOM
 menu "QCOM SoC Type"
 
@@ -121,10 +122,29 @@ config ARCH_MSM8X60
 	select CLKSRC_QCOM
 	select CLKSRC_OF
 	select COMMON_CLK
+=======
+menuconfig ARCH_QCOM
+	bool "Qualcomm Support"
+	depends on ARCH_MULTI_V7
+	select ARCH_SUPPORTS_BIG_ENDIAN
+	select ARM_GIC
+	select ARM_AMBA
+	select PINCTRL
+	select QCOM_SCM if SMP
+	help
+	  Support for Qualcomm's devicetree based systems.
+
+if ARCH_QCOM
+
+config ARCH_MSM8X60
+	bool "Enable support for MSM8X60"
+	select CLKSRC_QCOM
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config ARCH_MSM8960
 	bool "Enable support for MSM8960"
 	select CLKSRC_QCOM
+<<<<<<< HEAD
 	select ARCH_SUPPORTS_BIG_ENDIAN
 	select ARM_GIC
 	select ARM_AMBA
@@ -132,20 +152,26 @@ config ARCH_MSM8960
 	select CLKSRC_OF
 	select COMMON_CLK
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config ARCH_MSM8974
 	bool "Enable support for MSM8974"
 	select HAVE_ARM_ARCH_TIMER
+<<<<<<< HEAD
 	select ARCH_SUPPORTS_BIG_ENDIAN
 	select ARM_GIC
 	select ARM_AMBA
 	select QCOM_SCM if SMP
 	select CLKSRC_OF
 	select COMMON_CLK
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config ARCH_MDM9615
 	bool "Enable support for MDM9615"
 	select CLKSRC_QCOM
+<<<<<<< HEAD
 	select ARCH_SUPPORTS_BIG_ENDIAN
 	select ARM_GIC
 	select ARM_AMBA
@@ -168,4 +194,7 @@ config ARCH_SDXPRAIRIE
 	select QCOM_GDSC
 	select GENERIC_CLOCKEVENTS_BROADCAST
 endmenu
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif

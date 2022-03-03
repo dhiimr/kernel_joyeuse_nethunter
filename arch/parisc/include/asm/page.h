@@ -179,7 +179,11 @@ extern int npmem_ranges;
 #include <asm-generic/getorder.h>
 #include <asm/pdc.h>
 
+<<<<<<< HEAD
 #define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
+=======
+#define PAGE0   ((struct zeropage *)absolute_pointer(__PAGE_OFFSET))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* DEFINITION OF THE ZERO-PAGE (PAG0) */
 /* based on work by Jason Eckhardt (jason@equator.com) */

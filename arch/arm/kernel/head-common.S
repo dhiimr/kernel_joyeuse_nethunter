@@ -101,6 +101,10 @@ __mmap_switched:
 	str	r2, [r6]			@ Save atags pointer
 	cmp	r7, #0
 	strne	r0, [r7]			@ Save control register values
+<<<<<<< HEAD
+=======
+	mov	lr, #0
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	b	start_kernel
 ENDPROC(__mmap_switched)
 

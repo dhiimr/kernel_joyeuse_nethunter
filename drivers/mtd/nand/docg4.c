@@ -1376,7 +1376,11 @@ static int __init probe_docg4(struct platform_device *pdev)
 	return 0;
 
 fail:
+<<<<<<< HEAD
 	nand_release(mtd); /* deletes partitions and mtd devices */
+=======
+	nand_release(nand); /* deletes partitions and mtd devices */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	free_bch(doc->bch);
 	kfree(nand);
 
@@ -1389,7 +1393,11 @@ fail_unmap:
 static int __exit cleanup_docg4(struct platform_device *pdev)
 {
 	struct docg4_priv *doc = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 	nand_release(doc->mtd);
+=======
+	nand_release(mtd_to_nand(doc->mtd));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	free_bch(doc->bch);
 	kfree(mtd_to_nand(doc->mtd));
 	iounmap(doc->virtadr);

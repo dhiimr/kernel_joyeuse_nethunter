@@ -406,6 +406,7 @@ config LEDS_PCA963X
 	  LED driver chip accessed via the I2C bus. Supported
 	  devices include PCA9633 and PCA9634
 
+<<<<<<< HEAD
 config LEDS_PCA9956B
 	tristate "LED support for PCA9956B I2C chip"
 	depends on LEDS_CLASS
@@ -436,6 +437,8 @@ config LEDS_QPNP_HAPTICS
 	  module provides haptic feedback for user actions such as a long press
 	  on the touch screen.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config LEDS_WM831X_STATUS
 	tristate "LED support for status LEDs on WM831x PMICs"
 	depends on LEDS_CLASS
@@ -681,6 +684,7 @@ config LEDS_POWERNV
 	  To compile this driver as a module, choose 'm' here: the module
 	  will be called leds-powernv.
 
+<<<<<<< HEAD
 config LEDS_QTI_TRI_LED
 	tristate "LED support for Qualcomm Technologies, Inc. TRI_LED"
 	depends on LEDS_CLASS && MFD_SPMI_PMIC && PWM && OF
@@ -690,6 +694,8 @@ config LEDS_QTI_TRI_LED
 	  at max and each is controlled by a PWM channel used for dimming
 	  or blinking.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config LEDS_SYSCON
 	bool "LED support for LEDs on system controllers"
 	depends on LEDS_CLASS=y
@@ -735,6 +741,7 @@ config LEDS_NIC78BX
 	  To compile this driver as a module, choose M here: the module
 	  will be called leds-nic78bx.
 
+<<<<<<< HEAD
 config LEDS_QPNP_VIBRATOR_LDO
 	tristate "Vibrator-LDO support for QPNP PMIC"
 	depends on LEDS_CLASS && MFD_SPMI_PMIC
@@ -743,6 +750,8 @@ config LEDS_QPNP_VIBRATOR_LDO
 	  peripheral found on Qualcomm Technologies, Inc. QPNP PMICs.
 	  The vibrator-ldo peripheral is capable of driving ERM vibrators.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 comment "LED Triggers"
 source "drivers/leds/trigger/Kconfig"
 

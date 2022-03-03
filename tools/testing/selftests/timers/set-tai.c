@@ -55,6 +55,10 @@ int main(int argc, char **argv)
 	printf("tai offset started at %i\n", ret);
 
 	printf("Checking tai offsets can be properly set: ");
+<<<<<<< HEAD
+=======
+	fflush(stdout);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (i = 1; i <= 60; i++) {
 		ret = set_tai(i);
 		ret = get_tai();

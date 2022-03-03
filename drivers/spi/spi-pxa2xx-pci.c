@@ -21,7 +21,12 @@ enum {
 	PORT_BSW1,
 	PORT_BSW2,
 	PORT_CE4100,
+<<<<<<< HEAD
 	PORT_LPT,
+=======
+	PORT_LPT0,
+	PORT_LPT1,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct pxa_spi_info {
@@ -55,8 +60,15 @@ static struct dw_dma_slave bsw1_rx_param = { .src_id = 7 };
 static struct dw_dma_slave bsw2_tx_param = { .dst_id = 8 };
 static struct dw_dma_slave bsw2_rx_param = { .src_id = 9 };
 
+<<<<<<< HEAD
 static struct dw_dma_slave lpt_tx_param = { .dst_id = 0 };
 static struct dw_dma_slave lpt_rx_param = { .src_id = 1 };
+=======
+static struct dw_dma_slave lpt1_tx_param = { .dst_id = 0 };
+static struct dw_dma_slave lpt1_rx_param = { .src_id = 1 };
+static struct dw_dma_slave lpt0_tx_param = { .dst_id = 2 };
+static struct dw_dma_slave lpt0_rx_param = { .src_id = 3 };
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static bool lpss_dma_filter(struct dma_chan *chan, void *param)
 {
@@ -182,12 +194,28 @@ static struct pxa_spi_info spi_info_configs[] = {
 		.num_chipselect = 1,
 		.max_clk_rate = 50000000,
 	},
+<<<<<<< HEAD
 	[PORT_LPT] = {
 		.type = LPSS_LPT_SSP,
 		.port_id = 0,
 		.setup = lpss_spi_setup,
 		.tx_param = &lpt_tx_param,
 		.rx_param = &lpt_rx_param,
+=======
+	[PORT_LPT0] = {
+		.type = LPSS_LPT_SSP,
+		.port_id = 0,
+		.setup = lpss_spi_setup,
+		.tx_param = &lpt0_tx_param,
+		.rx_param = &lpt0_rx_param,
+	},
+	[PORT_LPT1] = {
+		.type = LPSS_LPT_SSP,
+		.port_id = 1,
+		.setup = lpss_spi_setup,
+		.tx_param = &lpt1_tx_param,
+		.rx_param = &lpt1_rx_param,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 };
 
@@ -281,8 +309,14 @@ static const struct pci_device_id pxa2xx_spi_pci_devices[] = {
 	{ PCI_VDEVICE(INTEL, 0x2290), PORT_BSW1 },
 	{ PCI_VDEVICE(INTEL, 0x22ac), PORT_BSW2 },
 	{ PCI_VDEVICE(INTEL, 0x2e6a), PORT_CE4100 },
+<<<<<<< HEAD
 	{ PCI_VDEVICE(INTEL, 0x9ce6), PORT_LPT },
 	{ },
+=======
+	{ PCI_VDEVICE(INTEL, 0x9ce5), PORT_LPT0 },
+	{ PCI_VDEVICE(INTEL, 0x9ce6), PORT_LPT1 },
+	{ }
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 MODULE_DEVICE_TABLE(pci, pxa2xx_spi_pci_devices);
 

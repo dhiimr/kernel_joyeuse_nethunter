@@ -623,7 +623,10 @@ static struct kernfs_node *__kernfs_new_node(struct kernfs_root *root,
 {
 	struct kernfs_node *kn;
 	u32 gen;
+<<<<<<< HEAD
 	int cursor;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 
 	name = kstrdup_const(name, GFP_KERNEL);
@@ -636,11 +639,19 @@ static struct kernfs_node *__kernfs_new_node(struct kernfs_root *root,
 
 	idr_preload(GFP_KERNEL);
 	spin_lock(&kernfs_idr_lock);
+<<<<<<< HEAD
 	cursor = idr_get_cursor(&root->ino_idr);
 	ret = idr_alloc_cyclic(&root->ino_idr, kn, 1, 0, GFP_ATOMIC);
 	if (ret >= 0 && ret < cursor)
 		root->next_generation++;
 	gen = root->next_generation;
+=======
+	ret = idr_alloc_cyclic(&root->ino_idr, kn, 1, 0, GFP_ATOMIC);
+	if (ret >= 0 && ret < root->last_ino)
+		root->next_generation++;
+	gen = root->next_generation;
+	root->last_ino = ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_unlock(&kernfs_idr_lock);
 	idr_preload_end();
 	if (ret < 0)
@@ -649,11 +660,18 @@ static struct kernfs_node *__kernfs_new_node(struct kernfs_root *root,
 	kn->id.generation = gen;
 
 	/*
+<<<<<<< HEAD
 	 * set ino first. This barrier is paired with atomic_inc_not_zero in
 	 * kernfs_find_and_get_node_by_ino
 	 */
 	smp_mb__before_atomic();
 	atomic_set(&kn->count, 1);
+=======
+	 * set ino first. This RELEASE is paired with atomic_inc_not_zero in
+	 * kernfs_find_and_get_node_by_ino
+	 */
+	atomic_set_release(&kn->count, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	atomic_set(&kn->active, KN_DEACTIVATED_BIAS);
 	RB_CLEAR_NODE(&kn->rb);
 

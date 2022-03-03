@@ -115,6 +115,7 @@ static const char *const rapl_domain_names[NR_RAPL_DOMAINS] __initconst = {
  * any other bit is reserved
  */
 #define RAPL_EVENT_MASK	0xFFULL
+<<<<<<< HEAD
 
 #define DEFINE_RAPL_FORMAT_ATTR(_var, _name, _format)		\
 static ssize_t __rapl_##_var##_show(struct kobject *kobj,	\
@@ -127,6 +128,8 @@ static ssize_t __rapl_##_var##_show(struct kobject *kobj,	\
 static struct kobj_attribute format_attr_##_var =		\
 	__ATTR(_name, 0444, __rapl_##_var##_show, NULL)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define RAPL_CNTR_WIDTH 32
 
 #define RAPL_EVENT_ATTR_STR(_name, v, str)					\
@@ -548,7 +551,11 @@ static struct attribute_group rapl_pmu_events_group = {
 	.attrs = NULL, /* patched at runtime */
 };
 
+<<<<<<< HEAD
 DEFINE_RAPL_FORMAT_ATTR(event, event, "config:0-7");
+=======
+PMU_FORMAT_ATTR(event, "config:0-7");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct attribute *rapl_formats_attr[] = {
 	&format_attr_event.attr,
 	NULL,
@@ -775,9 +782,15 @@ static const struct x86_cpu_id rapl_cpu_match[] __initconst = {
 	X86_RAPL_MODEL_MATCH(INTEL_FAM6_KABYLAKE_DESKTOP, skl_rapl_init),
 
 	X86_RAPL_MODEL_MATCH(INTEL_FAM6_ATOM_GOLDMONT, hsw_rapl_init),
+<<<<<<< HEAD
 	X86_RAPL_MODEL_MATCH(INTEL_FAM6_ATOM_DENVERTON, hsw_rapl_init),
 
 	X86_RAPL_MODEL_MATCH(INTEL_FAM6_ATOM_GEMINI_LAKE, hsw_rapl_init),
+=======
+	X86_RAPL_MODEL_MATCH(INTEL_FAM6_ATOM_GOLDMONT_X, hsw_rapl_init),
+
+	X86_RAPL_MODEL_MATCH(INTEL_FAM6_ATOM_GOLDMONT_PLUS, hsw_rapl_init),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{},
 };
 

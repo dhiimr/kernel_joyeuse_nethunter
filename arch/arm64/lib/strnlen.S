@@ -59,7 +59,11 @@ limit_wd	.req	x14
 #define REP8_7f 0x7f7f7f7f7f7f7f7f
 #define REP8_80 0x8080808080808080
 
+<<<<<<< HEAD
 ENTRY(strnlen)
+=======
+WEAK(strnlen)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cbz	limit, .Lhit_limit
 	mov	zeroones, #REP8_01
 	bic	src, srcin, #15

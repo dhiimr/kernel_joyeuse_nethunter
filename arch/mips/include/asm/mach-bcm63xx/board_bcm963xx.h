@@ -7,7 +7,10 @@
 #include <linux/leds.h>
 #include <bcm63xx_dev_enet.h>
 #include <bcm63xx_dev_usb_usbd.h>
+<<<<<<< HEAD
 #include <bcm63xx_dev_dsp.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * flash mapping
@@ -31,7 +34,10 @@ struct board_info {
 	unsigned int	has_ohci0:1;
 	unsigned int	has_ehci0:1;
 	unsigned int	has_usbd:1;
+<<<<<<< HEAD
 	unsigned int	has_dsp:1;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int	has_uart0:1;
 	unsigned int	has_uart1:1;
 
@@ -43,9 +49,12 @@ struct board_info {
 	/* USB config */
 	struct bcm63xx_usbd_platform_data usbd;
 
+<<<<<<< HEAD
 	/* DSP config */
 	struct bcm63xx_dsp_platform_data dsp;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* GPIO LEDs */
 	struct gpio_led leds[5];
 

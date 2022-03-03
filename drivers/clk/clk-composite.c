@@ -219,7 +219,11 @@ struct clk_hw *clk_hw_register_composite(struct device *dev, const char *name,
 			unsigned long flags)
 {
 	struct clk_hw *hw;
+<<<<<<< HEAD
 	struct clk_init_data init = {};
+=======
+	struct clk_init_data init;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct clk_composite *composite;
 	struct clk_ops *clk_composite_ops;
 	int ret;

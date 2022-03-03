@@ -27,21 +27,33 @@ void __memcpy_fromio(void *to, const volatile void __iomem *from, size_t count)
 {
 	while (count && (!IS_ALIGNED((unsigned long)from, 8) ||
 			 !IS_ALIGNED((unsigned long)to, 8))) {
+<<<<<<< HEAD
 		*(u8 *)to = __raw_readb_no_log(from);
+=======
+		*(u8 *)to = __raw_readb(from);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		from++;
 		to++;
 		count--;
 	}
 
 	while (count >= 8) {
+<<<<<<< HEAD
 		*(u64 *)to = __raw_readq_no_log(from);
+=======
+		*(u64 *)to = __raw_readq(from);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		from += 8;
 		to += 8;
 		count -= 8;
 	}
 
 	while (count) {
+<<<<<<< HEAD
 		*(u8 *)to = __raw_readb_no_log(from);
+=======
+		*(u8 *)to = __raw_readb(from);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		from++;
 		to++;
 		count--;
@@ -56,21 +68,33 @@ void __memcpy_toio(volatile void __iomem *to, const void *from, size_t count)
 {
 	while (count && (!IS_ALIGNED((unsigned long)to, 8) ||
 			 !IS_ALIGNED((unsigned long)from, 8))) {
+<<<<<<< HEAD
 		__raw_writeb_no_log(*(volatile u8 *)from, to);
+=======
+		__raw_writeb(*(volatile u8 *)from, to);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		from++;
 		to++;
 		count--;
 	}
 
 	while (count >= 8) {
+<<<<<<< HEAD
 		__raw_writeq_no_log(*(volatile u64 *)from, to);
+=======
+		__raw_writeq(*(volatile u64 *)from, to);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		from += 8;
 		to += 8;
 		count -= 8;
 	}
 
 	while (count) {
+<<<<<<< HEAD
 		__raw_writeb_no_log(*(volatile u8 *)from, to);
+=======
+		__raw_writeb(*(volatile u8 *)from, to);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		from++;
 		to++;
 		count--;
@@ -90,19 +114,31 @@ void __memset_io(volatile void __iomem *dst, int c, size_t count)
 	qc |= qc << 32;
 
 	while (count && !IS_ALIGNED((unsigned long)dst, 8)) {
+<<<<<<< HEAD
 		__raw_writeb_no_log(c, dst);
+=======
+		__raw_writeb(c, dst);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dst++;
 		count--;
 	}
 
 	while (count >= 8) {
+<<<<<<< HEAD
 		__raw_writeq_no_log(qc, dst);
+=======
+		__raw_writeq(qc, dst);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dst += 8;
 		count -= 8;
 	}
 
 	while (count) {
+<<<<<<< HEAD
 		__raw_writeb_no_log(c, dst);
+=======
+		__raw_writeb(c, dst);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dst++;
 		count--;
 	}

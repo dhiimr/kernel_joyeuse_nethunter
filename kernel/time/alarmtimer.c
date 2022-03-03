@@ -65,6 +65,7 @@ static struct rtc_timer		rtctimer;
 static struct rtc_device	*rtcdev;
 static DEFINE_SPINLOCK(rtcdev_lock);
 
+<<<<<<< HEAD
 static void alarmtimer_triggered_func(void *p)
 {
 	struct rtc_device *rtc = rtcdev;
@@ -78,6 +79,8 @@ static struct rtc_task alarmtimer_rtc_task = {
 	.func = alarmtimer_triggered_func
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * alarmtimer_get_rtcdev - Return selected rtcdevice
  *
@@ -88,7 +91,11 @@ static struct rtc_task alarmtimer_rtc_task = {
 struct rtc_device *alarmtimer_get_rtcdev(void)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	struct rtc_device *ret = NULL;
+=======
+	struct rtc_device *ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	spin_lock_irqsave(&rtcdev_lock, flags);
 	ret = rtcdev;
@@ -102,21 +109,33 @@ static int alarmtimer_rtc_add_device(struct device *dev,
 				struct class_interface *class_intf)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	int err = 0;
 	struct rtc_device *rtc = to_rtc_device(dev);
 	struct wakeup_source *__ws;
+=======
+	struct rtc_device *rtc = to_rtc_device(dev);
+	struct wakeup_source *__ws;
+	int ret = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (rtcdev)
 		return -EBUSY;
 
 	if (!rtc->ops->set_alarm)
 		return -1;
+<<<<<<< HEAD
+=======
+	if (!device_may_wakeup(rtc->dev.parent))
+		return -1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	__ws = wakeup_source_register("alarmtimer");
 
 	spin_lock_irqsave(&rtcdev_lock, flags);
 	if (!rtcdev) {
 		if (!try_module_get(rtc->owner)) {
+<<<<<<< HEAD
 			spin_unlock_irqrestore(&rtcdev_lock, flags);
 			return -1;
 		}
@@ -125,12 +144,19 @@ static int alarmtimer_rtc_add_device(struct device *dev,
 		if (err)
 			goto rtc_irq_reg_err;
 
+=======
+			ret = -1;
+			goto unlock;
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rtcdev = rtc;
 		/* hold a reference so it doesn't go away */
 		get_device(dev);
 		ws = __ws;
 		__ws = NULL;
 	}
+<<<<<<< HEAD
 
 rtc_irq_reg_err:
 	spin_unlock_irqrestore(&rtcdev_lock, flags);
@@ -146,6 +172,14 @@ static void alarmtimer_rtc_remove_device(struct device *dev,
 		rtc_irq_unregister(rtcdev, &alarmtimer_rtc_task);
 		rtcdev = NULL;
 	}
+=======
+unlock:
+	spin_unlock_irqrestore(&rtcdev_lock, flags);
+
+	wakeup_source_unregister(__ws);
+
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void alarmtimer_rtc_timer_init(void)
@@ -155,7 +189,10 @@ static inline void alarmtimer_rtc_timer_init(void)
 
 static struct class_interface alarmtimer_rtc_interface = {
 	.add_dev = &alarmtimer_rtc_add_device,
+<<<<<<< HEAD
 	.remove_dev = &alarmtimer_rtc_remove_device,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static int alarmtimer_rtc_interface_setup(void)
@@ -703,7 +740,11 @@ static int alarm_timer_create(struct k_itimer *new_timer)
 	enum  alarmtimer_type type;
 
 	if (!alarmtimer_get_rtcdev())
+<<<<<<< HEAD
 		return -ENOTSUPP;
+=======
+		return -EOPNOTSUPP;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!capable(CAP_WAKE_ALARM))
 		return -EPERM;
@@ -821,7 +862,11 @@ static int alarm_timer_nsleep(const clockid_t which_clock, int flags,
 	int ret = 0;
 
 	if (!alarmtimer_get_rtcdev())
+<<<<<<< HEAD
 		return -ENOTSUPP;
+=======
+		return -EOPNOTSUPP;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (flags & ~TIMER_ABSTIME)
 		return -EINVAL;
@@ -847,9 +892,15 @@ static int alarm_timer_nsleep(const clockid_t which_clock, int flags,
 	if (flags == TIMER_ABSTIME)
 		return -ERESTARTNOHAND;
 
+<<<<<<< HEAD
 	restart->fn = alarm_timer_nsleep_restart;
 	restart->nanosleep.clockid = type;
 	restart->nanosleep.expires = exp;
+=======
+	restart->nanosleep.clockid = type;
+	restart->nanosleep.expires = exp;
+	set_restart_fn(restart, alarm_timer_nsleep_restart);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 

@@ -30,7 +30,11 @@
  * Returns:
  *	x0 - address of first occurrence of 'c' or 0
  */
+<<<<<<< HEAD
 ENTRY(memchr)
+=======
+WEAK(memchr)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	and	w1, w1, #0xff
 1:	subs	x2, x2, #1
 	b.mi	2f

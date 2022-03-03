@@ -14,6 +14,10 @@
 #include <linux/tty.h>
 #include <linux/sched.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
+=======
+#include <linux/mutex.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/slab.h>
 #include <linux/types.h>
 
@@ -27,6 +31,11 @@
 #include <linux/console.h>
 #include <linux/tty_flip.h>
 
+<<<<<<< HEAD
+=======
+#include <linux/sched/signal.h>
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Don't take this from <ctype.h>: 011-015 on the screen aren't spaces */
 #define isspace(c)	((c) == ' ')
 
@@ -41,6 +50,10 @@ static volatile int sel_start = -1; 	/* cleared by clear_selection */
 static int sel_end;
 static int sel_buffer_lth;
 static char *sel_buffer;
+<<<<<<< HEAD
+=======
+static DEFINE_MUTEX(sel_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* clear_selection, highlight and highlight_pointer can be called
    from interrupt (via scrollback/front) */
@@ -79,6 +92,14 @@ void clear_selection(void)
 	}
 }
 
+<<<<<<< HEAD
+=======
+bool vc_is_sel(struct vc_data *vc)
+{
+	return vc == sel_cons;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * User settable table: what characters are to be considered alphabetic?
  * 128 bits. Locked by the console lock.
@@ -153,14 +174,22 @@ static int store_utf8(u16 c, char *p)
  *	The entire selection process is managed under the console_lock. It's
  *	 a lot under the lock but its hardly a performance path
  */
+<<<<<<< HEAD
 int set_selection(const struct tiocl_selection __user *sel, struct tty_struct *tty)
+=======
+static int __set_selection(const struct tiocl_selection __user *sel, struct tty_struct *tty)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct vc_data *vc = vc_cons[fg_console].d;
 	int sel_mode, new_sel_start, new_sel_end, spc;
 	char *bp, *obp;
 	int i, ps, pe, multiplier;
 	u16 c;
+<<<<<<< HEAD
 	int mode;
+=======
+	int mode, ret = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	poke_blanked_console();
 
@@ -321,7 +350,25 @@ int set_selection(const struct tiocl_selection __user *sel, struct tty_struct *t
 		}
 	}
 	sel_buffer_lth = bp - sel_buffer;
+<<<<<<< HEAD
 	return 0;
+=======
+
+	return ret;
+}
+
+int set_selection(const struct tiocl_selection __user *v, struct tty_struct *tty)
+{
+	int ret;
+
+	mutex_lock(&sel_lock);
+	console_lock();
+	ret = __set_selection(v, tty);
+	console_unlock();
+	mutex_unlock(&sel_lock);
+
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Insert the contents of the selection buffer into the
@@ -338,6 +385,10 @@ int paste_selection(struct tty_struct *tty)
 	unsigned int count;
 	struct  tty_ldisc *ld;
 	DECLARE_WAITQUEUE(wait, current);
+<<<<<<< HEAD
+=======
+	int ret = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	console_lock();
 	poke_blanked_console();
@@ -349,10 +400,24 @@ int paste_selection(struct tty_struct *tty)
 	tty_buffer_lock_exclusive(&vc->port);
 
 	add_wait_queue(&vc->paste_wait, &wait);
+<<<<<<< HEAD
 	while (sel_buffer && sel_buffer_lth > pasted) {
 		set_current_state(TASK_INTERRUPTIBLE);
 		if (tty_throttled(tty)) {
 			schedule();
+=======
+	mutex_lock(&sel_lock);
+	while (sel_buffer && sel_buffer_lth > pasted) {
+		set_current_state(TASK_INTERRUPTIBLE);
+		if (signal_pending(current)) {
+			ret = -EINTR;
+			break;
+		}
+		if (tty_throttled(tty)) {
+			mutex_unlock(&sel_lock);
+			schedule();
+			mutex_lock(&sel_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			continue;
 		}
 		__set_current_state(TASK_RUNNING);
@@ -361,10 +426,18 @@ int paste_selection(struct tty_struct *tty)
 					      count);
 		pasted += count;
 	}
+<<<<<<< HEAD
+=======
+	mutex_unlock(&sel_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	remove_wait_queue(&vc->paste_wait, &wait);
 	__set_current_state(TASK_RUNNING);
 
 	tty_buffer_unlock_exclusive(&vc->port);
 	tty_ldisc_deref(ld);
+<<<<<<< HEAD
 	return 0;
+=======
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }

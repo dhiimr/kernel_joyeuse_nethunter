@@ -34,7 +34,10 @@
 #include <linux/mutex.h>
 #include <linux/anon_inodes.h>
 #include <linux/device.h>
+<<<<<<< HEAD
 #include <linux/freezer.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/uaccess.h>
 #include <asm/io.h>
 #include <asm/mman.h>
@@ -224,8 +227,12 @@ struct eventpoll {
 	struct file *file;
 
 	/* used to optimize loop detection check */
+<<<<<<< HEAD
 	int visited;
 	struct list_head visited_list_link;
+=======
+	u64 gen;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_NET_RX_BUSY_POLL
 	/* used to track busy poll napi_id */
@@ -274,6 +281,11 @@ static long max_user_watches __read_mostly;
  */
 static DEFINE_MUTEX(epmutex);
 
+<<<<<<< HEAD
+=======
+static u64 loop_check_gen = 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Used to check for epoll file descriptor inclusion loops */
 static struct nested_calls poll_loop_ncalls;
 
@@ -289,9 +301,12 @@ static struct kmem_cache *epi_cache __read_mostly;
 /* Slab cache used to allocate "struct eppoll_entry" */
 static struct kmem_cache *pwq_cache __read_mostly;
 
+<<<<<<< HEAD
 /* Visited nodes during ep_loop_check(), so we can unset them when we finish */
 static LIST_HEAD(visited_list);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * List of files with newly added links, where we may need to limit the number
  * of emanating paths. Protected by the epmutex.
@@ -1392,7 +1407,11 @@ static int reverse_path_check(void)
 
 static int ep_create_wakeup_source(struct epitem *epi)
 {
+<<<<<<< HEAD
 	const char *name;
+=======
+	struct name_snapshot n;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct wakeup_source *ws;
 
 	if (!epi->ep->ws) {
@@ -1401,8 +1420,14 @@ static int ep_create_wakeup_source(struct epitem *epi)
 			return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	name = epi->ffd.file->f_path.dentry->d_name.name;
 	ws = wakeup_source_register(name);
+=======
+	take_dentry_name_snapshot(&n, epi->ffd.file->f_path.dentry);
+	ws = wakeup_source_register(n.name);
+	release_dentry_name_snapshot(&n);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!ws)
 		return -ENOMEM;
@@ -1462,6 +1487,25 @@ static int ep_insert(struct eventpoll *ep, struct epoll_event *event,
 		RCU_INIT_POINTER(epi->ws, NULL);
 	}
 
+<<<<<<< HEAD
+=======
+	/* Add the current item to the list of active epoll hook for this file */
+	spin_lock(&tfile->f_lock);
+	list_add_tail_rcu(&epi->fllink, &tfile->f_ep_links);
+	spin_unlock(&tfile->f_lock);
+
+	/*
+	 * Add the current item to the RB tree. All RB tree operations are
+	 * protected by "mtx", and ep_insert() is called with "mtx" held.
+	 */
+	ep_rbtree_insert(ep, epi);
+
+	/* now check if we've created too many backpaths */
+	error = -EINVAL;
+	if (full_check && reverse_path_check())
+		goto error_remove_epi;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Initialize the poll table using the queue callback */
 	epq.epi = epi;
 	init_poll_funcptr(&epq.pt, ep_ptable_queue_proc);
@@ -1484,6 +1528,7 @@ static int ep_insert(struct eventpoll *ep, struct epoll_event *event,
 	if (epi->nwait < 0)
 		goto error_unregister;
 
+<<<<<<< HEAD
 	/* Add the current item to the list of active epoll hook for this file */
 	spin_lock(&tfile->f_lock);
 	list_add_tail_rcu(&epi->fllink, &tfile->f_ep_links);
@@ -1500,6 +1545,8 @@ static int ep_insert(struct eventpoll *ep, struct epoll_event *event,
 	if (full_check && reverse_path_check())
 		goto error_remove_epi;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* We have to drop the new item inside our item list to keep track of it */
 	spin_lock_irqsave(&ep->lock, flags);
 
@@ -1528,6 +1575,11 @@ static int ep_insert(struct eventpoll *ep, struct epoll_event *event,
 
 	return 0;
 
+<<<<<<< HEAD
+=======
+error_unregister:
+	ep_unregister_pollwait(ep, epi);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 error_remove_epi:
 	spin_lock(&tfile->f_lock);
 	list_del_rcu(&epi->fllink);
@@ -1535,9 +1587,12 @@ error_remove_epi:
 
 	rb_erase_cached(&epi->rbn, &ep->rbr);
 
+<<<<<<< HEAD
 error_unregister:
 	ep_unregister_pollwait(ep, epi);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * We need to do this because an event could have been arrived on some
 	 * allocated wait queue. Note that we don't care about the ep->ovflist
@@ -1827,8 +1882,12 @@ fetch_events:
 			}
 
 			spin_unlock_irqrestore(&ep->lock, flags);
+<<<<<<< HEAD
 			if (!freezable_schedule_hrtimeout_range(to, slack,
 								HRTIMER_MODE_ABS))
+=======
+			if (!schedule_hrtimeout_range(to, slack, HRTIMER_MODE_ABS))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				timed_out = 1;
 
 			spin_lock_irqsave(&ep->lock, flags);
@@ -1880,13 +1939,21 @@ static int ep_loop_check_proc(void *priv, void *cookie, int call_nests)
 	struct epitem *epi;
 
 	mutex_lock_nested(&ep->mtx, call_nests + 1);
+<<<<<<< HEAD
 	ep->visited = 1;
 	list_add(&ep->visited_list_link, &visited_list);
+=======
+	ep->gen = loop_check_gen;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (rbp = rb_first_cached(&ep->rbr); rbp; rbp = rb_next(rbp)) {
 		epi = rb_entry(rbp, struct epitem, rbn);
 		if (unlikely(is_file_epoll(epi->ffd.file))) {
 			ep_tovisit = epi->ffd.file->private_data;
+<<<<<<< HEAD
 			if (ep_tovisit->visited)
+=======
+			if (ep_tovisit->gen == loop_check_gen)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				continue;
 			error = ep_call_nested(&poll_loop_ncalls, EP_MAX_NESTS,
 					ep_loop_check_proc, epi->ffd.file,
@@ -1902,9 +1969,17 @@ static int ep_loop_check_proc(void *priv, void *cookie, int call_nests)
 			 * not already there, and calling reverse_path_check()
 			 * during ep_insert().
 			 */
+<<<<<<< HEAD
 			if (list_empty(&epi->ffd.file->f_tfile_llink))
 				list_add(&epi->ffd.file->f_tfile_llink,
 					 &tfile_check_list);
+=======
+			if (list_empty(&epi->ffd.file->f_tfile_llink)) {
+				if (get_file_rcu(epi->ffd.file))
+					list_add(&epi->ffd.file->f_tfile_llink,
+						 &tfile_check_list);
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 	mutex_unlock(&ep->mtx);
@@ -1925,6 +2000,7 @@ static int ep_loop_check_proc(void *priv, void *cookie, int call_nests)
  */
 static int ep_loop_check(struct eventpoll *ep, struct file *file)
 {
+<<<<<<< HEAD
 	int ret;
 	struct eventpoll *ep_cur, *ep_next;
 
@@ -1937,6 +2013,10 @@ static int ep_loop_check(struct eventpoll *ep, struct file *file)
 		list_del(&ep_cur->visited_list_link);
 	}
 	return ret;
+=======
+	return ep_call_nested(&poll_loop_ncalls, EP_MAX_NESTS,
+			      ep_loop_check_proc, file, ep, current);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void clear_tfile_check_list(void)
@@ -1948,6 +2028,10 @@ static void clear_tfile_check_list(void)
 		file = list_first_entry(&tfile_check_list, struct file,
 					f_tfile_llink);
 		list_del_init(&file->f_tfile_llink);
+<<<<<<< HEAD
+=======
+		fput(file);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	INIT_LIST_HEAD(&tfile_check_list);
 }
@@ -2092,12 +2176,17 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, int, op, int, fd,
 	mutex_lock_nested(&ep->mtx, 0);
 	if (op == EPOLL_CTL_ADD) {
 		if (!list_empty(&f.file->f_ep_links) ||
+<<<<<<< HEAD
+=======
+				ep->gen == loop_check_gen ||
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						is_file_epoll(tf.file)) {
 			full_check = 1;
 			mutex_unlock(&ep->mtx);
 			mutex_lock(&epmutex);
 			if (is_file_epoll(tf.file)) {
 				error = -ELOOP;
+<<<<<<< HEAD
 				if (ep_loop_check(ep, tf.file) != 0) {
 					clear_tfile_check_list();
 					goto error_tgt_fput;
@@ -2105,6 +2194,15 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, int, op, int, fd,
 			} else
 				list_add(&tf.file->f_tfile_llink,
 							&tfile_check_list);
+=======
+				if (ep_loop_check(ep, tf.file) != 0)
+					goto error_tgt_fput;
+			} else {
+				get_file(tf.file);
+				list_add(&tf.file->f_tfile_llink,
+							&tfile_check_list);
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			mutex_lock_nested(&ep->mtx, 0);
 			if (is_file_epoll(tf.file)) {
 				tep = tf.file->private_data;
@@ -2128,8 +2226,11 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, int, op, int, fd,
 			error = ep_insert(ep, &epds, tf.file, fd, full_check);
 		} else
 			error = -EEXIST;
+<<<<<<< HEAD
 		if (full_check)
 			clear_tfile_check_list();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	case EPOLL_CTL_DEL:
 		if (epi)
@@ -2152,8 +2253,16 @@ SYSCALL_DEFINE4(epoll_ctl, int, epfd, int, op, int, fd,
 	mutex_unlock(&ep->mtx);
 
 error_tgt_fput:
+<<<<<<< HEAD
 	if (full_check)
 		mutex_unlock(&epmutex);
+=======
+	if (full_check) {
+		clear_tfile_check_list();
+		loop_check_gen++;
+		mutex_unlock(&epmutex);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	fdput(tf);
 error_fput:

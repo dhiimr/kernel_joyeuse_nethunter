@@ -65,6 +65,11 @@ struct cpt_request_info {
 	union ctrl_info ctrl; /* User control information */
 	struct cptvf_request req; /* Request Information (Core specific) */
 
+<<<<<<< HEAD
+=======
+	bool may_sleep;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct buf_ptr in[MAX_BUF_CNT];
 	struct buf_ptr out[MAX_BUF_CNT];
 

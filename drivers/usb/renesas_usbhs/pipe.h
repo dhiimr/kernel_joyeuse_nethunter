@@ -90,6 +90,10 @@ void usbhs_pipe_init(struct usbhs_priv *priv,
 int usbhs_pipe_get_maxpacket(struct usbhs_pipe *pipe);
 void usbhs_pipe_clear(struct usbhs_pipe *pipe);
 int usbhs_pipe_is_accessible(struct usbhs_pipe *pipe);
+<<<<<<< HEAD
+=======
+bool usbhs_pipe_contains_transmittable_data(struct usbhs_pipe *pipe);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void usbhs_pipe_enable(struct usbhs_pipe *pipe);
 void usbhs_pipe_disable(struct usbhs_pipe *pipe);
 void usbhs_pipe_stall(struct usbhs_pipe *pipe);

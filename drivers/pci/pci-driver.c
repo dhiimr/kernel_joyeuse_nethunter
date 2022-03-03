@@ -400,7 +400,12 @@ void __weak pcibios_free_irq(struct pci_dev *dev)
 #ifdef CONFIG_PCI_IOV
 static inline bool pci_device_can_probe(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	return (!pdev->is_virtfn || pdev->physfn->sriov->drivers_autoprobe);
+=======
+	return (!pdev->is_virtfn || pdev->physfn->sriov->drivers_autoprobe ||
+		pdev->driver_override);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #else
 static inline bool pci_device_can_probe(struct pci_dev *pdev)
@@ -415,6 +420,12 @@ static int pci_device_probe(struct device *dev)
 	struct pci_dev *pci_dev = to_pci_dev(dev);
 	struct pci_driver *drv = to_pci_driver(dev->driver);
 
+<<<<<<< HEAD
+=======
+	if (!pci_device_can_probe(pci_dev))
+		return -ENODEV;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pci_assign_irq(pci_dev);
 
 	error = pcibios_alloc_irq(pci_dev);
@@ -422,12 +433,19 @@ static int pci_device_probe(struct device *dev)
 		return error;
 
 	pci_dev_get(pci_dev);
+<<<<<<< HEAD
 	if (pci_device_can_probe(pci_dev)) {
 		error = __pci_device_probe(drv, pci_dev);
 		if (error) {
 			pcibios_free_irq(pci_dev);
 			pci_dev_put(pci_dev);
 		}
+=======
+	error = __pci_device_probe(drv, pci_dev);
+	if (error) {
+		pcibios_free_irq(pci_dev);
+		pci_dev_put(pci_dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return error;
@@ -799,10 +817,13 @@ static int pci_pm_suspend_noirq(struct device *dev)
 		}
 	}
 
+<<<<<<< HEAD
 	/* if d3hot is not supported bail out */
 	if (pci_dev->no_d3hot)
 		return 0;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!pci_dev->state_saved) {
 		pci_save_state(pci_dev);
 		if (pci_power_manageable(pci_dev))
@@ -835,8 +856,12 @@ static int pci_pm_resume_noirq(struct device *dev)
 	struct device_driver *drv = dev->driver;
 	int error = 0;
 
+<<<<<<< HEAD
 	if (!pci_dev->no_d3hot)
 		pci_pm_default_resume_early(pci_dev);
+=======
+	pci_pm_default_resume_early(pci_dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (pci_has_legacy_pm_support(pci_dev))
 		return pci_legacy_resume_early(dev);
@@ -970,6 +995,7 @@ static int pci_pm_thaw_noirq(struct device *dev)
 			return error;
 	}
 
+<<<<<<< HEAD
 	if (pci_has_legacy_pm_support(pci_dev))
 		return pci_legacy_resume_early(dev);
 
@@ -977,10 +1003,27 @@ static int pci_pm_thaw_noirq(struct device *dev)
 	 * pci_restore_state() requires the device to be in D0 (because of MSI
 	 * restoration among other things), so force it into D0 in case the
 	 * driver's "freeze" callbacks put it into a low-power state directly.
+=======
+	/*
+	 * Both the legacy ->resume_early() and the new pm->thaw_noirq()
+	 * callbacks assume the device has been returned to D0 and its
+	 * config state has been restored.
+	 *
+	 * In addition, pci_restore_state() restores MSI-X state in MMIO
+	 * space, which requires the device to be in D0, so return it to D0
+	 * in case the driver's "freeze" callbacks put it into a low-power
+	 * state.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 */
 	pci_set_power_state(pci_dev, PCI_D0);
 	pci_restore_state(pci_dev);
 
+<<<<<<< HEAD
+=======
+	if (pci_has_legacy_pm_support(pci_dev))
+		return pci_legacy_resume_early(dev);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (drv && drv->pm && drv->pm->thaw_noirq)
 		error = drv->pm->thaw_noirq(dev);
 
@@ -1209,10 +1252,13 @@ static int pci_pm_runtime_suspend(struct device *dev)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	/* if d3hot is not supported bail out */
 	if (pci_dev->no_d3hot)
 		return 0;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!pci_dev->state_saved) {
 		pci_save_state(pci_dev);
 		pci_finish_runtime_suspend(pci_dev);
@@ -1227,10 +1273,13 @@ static int pci_pm_runtime_resume(struct device *dev)
 	struct pci_dev *pci_dev = to_pci_dev(dev);
 	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
 
+<<<<<<< HEAD
 	/* we skipped d3hot processing so skip re-init */
 	if (pci_dev->no_d3hot)
 		goto skip_restore;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Restoring config space is necessary even if the device is not bound
 	 * to a driver because although we left it in D0, it may have gone to
@@ -1248,7 +1297,10 @@ static int pci_pm_runtime_resume(struct device *dev)
 	pci_enable_wake(pci_dev, PCI_D0, false);
 	pci_fixup_device(pci_fixup_resume, pci_dev);
 
+<<<<<<< HEAD
 skip_restore:
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rc = pm->runtime_resume(dev);
 
 	pci_dev->runtime_d3cold = false;

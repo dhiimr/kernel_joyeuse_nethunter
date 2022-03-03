@@ -107,6 +107,10 @@ static int men_z188_probe(struct mcb_device *dev,
 	struct z188_adc *adc;
 	struct iio_dev *indio_dev;
 	struct resource *mem;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	indio_dev = devm_iio_device_alloc(&dev->dev, sizeof(struct z188_adc));
 	if (!indio_dev)
@@ -133,8 +137,19 @@ static int men_z188_probe(struct mcb_device *dev,
 	adc->mem = mem;
 	mcb_set_drvdata(dev, indio_dev);
 
+<<<<<<< HEAD
 	return iio_device_register(indio_dev);
 
+=======
+	ret = iio_device_register(indio_dev);
+	if (ret)
+		goto err_unmap;
+
+	return 0;
+
+err_unmap:
+	iounmap(adc->base);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 err:
 	mcb_release_mem(mem);
 	return -ENXIO;

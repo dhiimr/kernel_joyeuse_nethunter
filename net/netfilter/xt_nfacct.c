@@ -55,6 +55,7 @@ nfacct_mt_destroy(const struct xt_mtdtor_param *par)
 	nfnl_acct_put(info->nfacct);
 }
 
+<<<<<<< HEAD
 static struct xt_match nfacct_mt_reg __read_mostly = {
 	.name       = "nfacct",
 	.family     = NFPROTO_UNSPEC,
@@ -64,16 +65,49 @@ static struct xt_match nfacct_mt_reg __read_mostly = {
 	.matchsize  = sizeof(struct xt_nfacct_match_info),
 	.usersize   = offsetof(struct xt_nfacct_match_info, nfacct),
 	.me         = THIS_MODULE,
+=======
+static struct xt_match nfacct_mt_reg[] __read_mostly = {
+	{
+		.name       = "nfacct",
+		.revision   = 0,
+		.family     = NFPROTO_UNSPEC,
+		.checkentry = nfacct_mt_checkentry,
+		.match      = nfacct_mt,
+		.destroy    = nfacct_mt_destroy,
+		.matchsize  = sizeof(struct xt_nfacct_match_info),
+		.usersize   = offsetof(struct xt_nfacct_match_info, nfacct),
+		.me         = THIS_MODULE,
+	},
+	{
+		.name       = "nfacct",
+		.revision   = 1,
+		.family     = NFPROTO_UNSPEC,
+		.checkentry = nfacct_mt_checkentry,
+		.match      = nfacct_mt,
+		.destroy    = nfacct_mt_destroy,
+		.matchsize  = sizeof(struct xt_nfacct_match_info_v1),
+		.usersize   = offsetof(struct xt_nfacct_match_info_v1, nfacct),
+		.me         = THIS_MODULE,
+	},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static int __init nfacct_mt_init(void)
 {
+<<<<<<< HEAD
 	return xt_register_match(&nfacct_mt_reg);
+=======
+	return xt_register_matches(nfacct_mt_reg, ARRAY_SIZE(nfacct_mt_reg));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void __exit nfacct_mt_exit(void)
 {
+<<<<<<< HEAD
 	xt_unregister_match(&nfacct_mt_reg);
+=======
+	xt_unregister_matches(nfacct_mt_reg, ARRAY_SIZE(nfacct_mt_reg));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 module_init(nfacct_mt_init);

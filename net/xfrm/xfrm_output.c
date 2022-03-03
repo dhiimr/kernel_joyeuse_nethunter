@@ -66,7 +66,12 @@ static int xfrm_output_one(struct sk_buff *skb, int err)
 			goto error_nolock;
 		}
 
+<<<<<<< HEAD
 		skb->mark = xfrm_smark_get(skb->mark, x);
+=======
+		if (x->props.output_mark)
+			skb->mark = x->props.output_mark;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		err = x->outer_mode->output(x, skb);
 		if (err) {
@@ -235,18 +240,34 @@ int xfrm_output(struct sock *sk, struct sk_buff *skb)
 		xfrm_state_hold(x);
 
 		if (skb_is_gso(skb)) {
+<<<<<<< HEAD
 			skb_shinfo(skb)->gso_type |= SKB_GSO_ESP;
 
 			return xfrm_output2(net, sk, skb);
+=======
+			if (skb->inner_protocol)
+				return xfrm_output_gso(net, sk, skb);
+
+			skb_shinfo(skb)->gso_type |= SKB_GSO_ESP;
+			goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		if (x->xso.dev && x->xso.dev->features & NETIF_F_HW_ESP_TX_CSUM)
 			goto out;
+<<<<<<< HEAD
 	}
 
 	if (skb_is_gso(skb))
 		return xfrm_output_gso(net, sk, skb);
 
+=======
+	} else {
+		if (skb_is_gso(skb))
+			return xfrm_output_gso(net, sk, skb);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (skb->ip_summed == CHECKSUM_PARTIAL) {
 		err = skb_checksum_help(skb);
 		if (err) {
@@ -283,7 +304,12 @@ void xfrm_local_error(struct sk_buff *skb, int mtu)
 
 	if (skb->protocol == htons(ETH_P_IP))
 		proto = AF_INET;
+<<<<<<< HEAD
 	else if (skb->protocol == htons(ETH_P_IPV6))
+=======
+	else if (skb->protocol == htons(ETH_P_IPV6) &&
+		 skb->sk->sk_family == AF_INET6)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		proto = AF_INET6;
 	else
 		return;

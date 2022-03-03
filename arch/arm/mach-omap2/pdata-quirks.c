@@ -307,14 +307,18 @@ static void __init omap3_logicpd_torpedo_init(void)
 }
 
 /* omap3pandora legacy devices */
+<<<<<<< HEAD
 #define PANDORA_WIFI_IRQ_GPIO		21
 #define PANDORA_WIFI_NRESET_GPIO	23
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct platform_device pandora_backlight = {
 	.name	= "pandora-backlight",
 	.id	= -1,
 };
 
+<<<<<<< HEAD
 static struct regulator_consumer_supply pandora_vmmc3_supply[] = {
 	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.2"),
 };
@@ -409,6 +413,11 @@ static void __init omap3_pandora_legacy_init(void)
 	omap_hsmmc_init(pandora_mmc3);
 	omap_hsmmc_late_init(pandora_mmc3);
 	pandora_wl1251_init();
+=======
+static void __init omap3_pandora_legacy_init(void)
+{
+	platform_device_register(&pandora_backlight);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #endif /* CONFIG_ARCH_OMAP3 */
 

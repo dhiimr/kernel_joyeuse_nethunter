@@ -15,7 +15,10 @@
 #include <linux/slab.h>
 #include <linux/stat.h>
 #include <linux/fault-inject.h>
+<<<<<<< HEAD
 #include <linux/uaccess.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <linux/mmc/card.h>
 #include <linux/mmc/host.h>
@@ -34,6 +37,7 @@ module_param(fail_request, charp, 0);
 #endif /* CONFIG_FAIL_MMC_REQUEST */
 
 /* The debugfs functions are optimized away when CONFIG_DEBUG_FS isn't set. */
+<<<<<<< HEAD
 static int mmc_ring_buffer_show(struct seq_file *s, void *data)
 {
 	struct mmc_host *mmc = s->private;
@@ -54,6 +58,8 @@ static const struct file_operations mmc_ring_buffer_fops = {
 	.release	= single_release,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int mmc_ios_show(struct seq_file *s, void *data)
 {
 	static const char *vdd_str[] = {
@@ -257,6 +263,7 @@ static int mmc_clock_opt_set(void *data, u64 val)
 DEFINE_SIMPLE_ATTRIBUTE(mmc_clock_fops, mmc_clock_opt_get, mmc_clock_opt_set,
 	"%llu\n");
 
+<<<<<<< HEAD
 #include <linux/delay.h>
 
 static int mmc_scale_get(void *data, u64 *val)
@@ -456,6 +463,8 @@ static const struct file_operations mmc_err_stats_fops = {
 	.write	= mmc_err_stats_write,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void mmc_add_host_debugfs(struct mmc_host *host)
 {
 	struct dentry *root;
@@ -471,6 +480,7 @@ void mmc_add_host_debugfs(struct mmc_host *host)
 
 	host->debugfs_root = root;
 
+<<<<<<< HEAD
 	if (!debugfs_create_file("ios", 0400, root, host, &mmc_ios_fops))
 		goto err_node;
 
@@ -519,6 +529,15 @@ void mmc_add_host_debugfs(struct mmc_host *host)
 				root, &host->clk_delay))
 		goto err_node;
 #endif
+=======
+	if (!debugfs_create_file("ios", S_IRUSR, root, host, &mmc_ios_fops))
+		goto err_node;
+
+	if (!debugfs_create_file("clock", S_IRUSR | S_IWUSR, root, host,
+			&mmc_clock_fops))
+		goto err_node;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_FAIL_MMC_REQUEST
 	if (fail_request)
 		setup_fault_attr(&fail_default_attr, fail_request);
@@ -528,10 +547,13 @@ void mmc_add_host_debugfs(struct mmc_host *host)
 					     &host->fail_mmc_request)))
 		goto err_node;
 #endif
+<<<<<<< HEAD
 	if (!debugfs_create_file("force_error", 0200, root, host,
 		&mmc_force_err_fops))
 		goto err_node;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return;
 
 err_node:
@@ -546,6 +568,7 @@ void mmc_remove_host_debugfs(struct mmc_host *host)
 	debugfs_remove_recursive(host->debugfs_root);
 }
 
+<<<<<<< HEAD
 static int mmc_bkops_stats_read(struct seq_file *file, void *data)
 {
 	struct mmc_card *card = file->private;
@@ -629,6 +652,8 @@ static const struct file_operations mmc_dbg_bkops_stats_fops = {
 	.write		= mmc_bkops_stats_write,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void mmc_add_card_debugfs(struct mmc_card *card)
 {
 	struct mmc_host	*host = card->host;
@@ -648,6 +673,7 @@ void mmc_add_card_debugfs(struct mmc_card *card)
 
 	card->debugfs_root = root;
 
+<<<<<<< HEAD
 	if (!debugfs_create_x32("state", 0400, root, &card->state))
 		goto err;
 
@@ -658,6 +684,11 @@ void mmc_add_card_debugfs(struct mmc_card *card)
 					 &mmc_dbg_bkops_stats_fops))
 			goto err;
 
+=======
+	if (!debugfs_create_x32("state", S_IRUSR, root, &card->state))
+		goto err;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return;
 
 err:

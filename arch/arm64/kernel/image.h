@@ -73,7 +73,15 @@
 
 #ifdef CONFIG_EFI
 
+<<<<<<< HEAD
 __efistub_stext_offset = stext - _text;
+=======
+/*
+ * Use ABSOLUTE() to avoid ld.lld treating this as a relative symbol:
+ * https://github.com/ClangBuiltLinux/linux/issues/561
+ */
+__efistub_stext_offset = ABSOLUTE(stext - _text);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * The EFI stub has its own symbol namespace prefixed by __efistub_, to

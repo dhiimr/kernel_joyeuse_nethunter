@@ -15,8 +15,13 @@ struct encx24j600_context {
 	int bank;
 };
 
+<<<<<<< HEAD
 void devm_regmap_init_encx24j600(struct device *dev,
 				 struct encx24j600_context *ctx);
+=======
+int devm_regmap_init_encx24j600(struct device *dev,
+				struct encx24j600_context *ctx);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Single-byte instructions */
 #define BANK_SELECT(bank) (0xC0 | ((bank & (BANK_MASK >> BANK_SHIFT)) << 1))

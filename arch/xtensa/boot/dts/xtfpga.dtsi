@@ -103,7 +103,11 @@
 			};
 		};
 
+<<<<<<< HEAD
 		spi0: spi-master@0d0a0000 {
+=======
+		spi0: spi@0d0a0000 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			compatible = "cdns,xtfpga-spi";
 			#address-cells = <1>;
 			#size-cells = <0>;

@@ -300,15 +300,33 @@ static int __init dsa_init_module(void)
 
 	rc = dsa_slave_register_notifier();
 	if (rc)
+<<<<<<< HEAD
 		return rc;
 
 	rc = dsa_legacy_register();
 	if (rc)
 		return rc;
+=======
+		goto register_notifier_fail;
+
+	rc = dsa_legacy_register();
+	if (rc)
+		goto legacy_register_fail;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dev_add_pack(&dsa_pack_type);
 
 	return 0;
+<<<<<<< HEAD
+=======
+
+legacy_register_fail:
+	dsa_slave_unregister_notifier();
+register_notifier_fail:
+	destroy_workqueue(dsa_owq);
+
+	return rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 module_init(dsa_init_module);
 

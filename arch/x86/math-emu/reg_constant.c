@@ -18,7 +18,11 @@
 #include "control_w.h"
 
 #define MAKE_REG(s, e, l, h) { l, h, \
+<<<<<<< HEAD
 		((EXTENDED_Ebias+(e)) | ((SIGN_##s != 0)*0x8000)) }
+=======
+		(u16)((EXTENDED_Ebias+(e)) | ((SIGN_##s != 0)*0x8000)) }
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 FPU_REG const CONST_1 = MAKE_REG(POS, 0, 0x00000000, 0x80000000);
 #if 0

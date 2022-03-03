@@ -54,6 +54,10 @@ static const struct mt7530_mib_desc mt7530_mib[] = {
 	MIB_DESC(2, 0x48, "TxBytes"),
 	MIB_DESC(1, 0x60, "RxDrop"),
 	MIB_DESC(1, 0x64, "RxFiltering"),
+<<<<<<< HEAD
+=======
+	MIB_DESC(1, 0x68, "RxUnicast"),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	MIB_DESC(1, 0x6c, "RxMulticast"),
 	MIB_DESC(1, 0x70, "RxBroadcast"),
 	MIB_DESC(1, 0x74, "RxAlignErr"),
@@ -549,7 +553,11 @@ mt7530_mib_reset(struct dsa_switch *ds)
 static void
 mt7530_port_set_status(struct mt7530_priv *priv, int port, int enable)
 {
+<<<<<<< HEAD
 	u32 mask = PMCR_TX_EN | PMCR_RX_EN;
+=======
+	u32 mask = PMCR_TX_EN | PMCR_RX_EN | PMCR_FORCE_LNK;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (enable)
 		mt7530_set(priv, MT7530_PMCR_P(port), mask);

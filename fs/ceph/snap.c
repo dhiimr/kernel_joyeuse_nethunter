@@ -460,6 +460,10 @@ void ceph_queue_cap_snap(struct ceph_inode_info *ci)
 	struct inode *inode = &ci->vfs_inode;
 	struct ceph_cap_snap *capsnap;
 	struct ceph_snap_context *old_snapc, *new_snapc;
+<<<<<<< HEAD
+=======
+	struct ceph_buffer *old_blob = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int used, dirty;
 
 	capsnap = kzalloc(sizeof(*capsnap), GFP_NOFS);
@@ -536,7 +540,11 @@ void ceph_queue_cap_snap(struct ceph_inode_info *ci)
 	capsnap->gid = inode->i_gid;
 
 	if (dirty & CEPH_CAP_XATTR_EXCL) {
+<<<<<<< HEAD
 		__ceph_build_xattrs_blob(ci);
+=======
+		old_blob = __ceph_build_xattrs_blob(ci);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		capsnap->xattr_blob =
 			ceph_buffer_get(ci->i_xattrs.blob);
 		capsnap->xattr_version = ci->i_xattrs.version;
@@ -579,6 +587,10 @@ update_snapc:
 	}
 	spin_unlock(&ci->i_ceph_lock);
 
+<<<<<<< HEAD
+=======
+	ceph_buffer_put(old_blob);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(capsnap);
 	ceph_put_snap_context(old_snapc);
 }

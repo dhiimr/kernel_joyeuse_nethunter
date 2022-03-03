@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2014-2017 Qualcomm Atheros, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2019, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -28,6 +31,7 @@ enum wil_platform_event {
 	WIL_PLATFORM_EVT_POST_SUSPEND = 4,
 };
 
+<<<<<<< HEAD
 enum wil_platform_notif {
 	WIL_PLATFORM_NOTIF_PCI_LINKDOWN = 0,
 };
@@ -45,6 +49,8 @@ enum wil_platform_capa {
 	WIL_PLATFORM_CAPA_MAX,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * struct wil_platform_ops - wil platform module calls from this
  * driver to platform driver
@@ -55,9 +61,13 @@ struct wil_platform_ops {
 	int (*resume)(void *handle, bool device_powered_on);
 	void (*uninit)(void *handle);
 	int (*notify)(void *handle, enum wil_platform_event evt);
+<<<<<<< HEAD
 	int (*get_capa)(void *handle);
 	void (*set_features)(void *handle, int features);
 	int (*pci_linkdown_recovery)(void *handle);
+=======
+	bool (*keep_radio_on_during_sleep)(void *handle);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -69,13 +79,19 @@ struct wil_platform_ops {
  * @fw_recovery: start a firmware recovery process. Called as
  *      part of a crash recovery process which may include other
  *      related platform subsystems.
+<<<<<<< HEAD
  * @notify: get notifications from the Platform driver, such as
  *      pci linkdown
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 struct wil_platform_rops {
 	int (*ramdump)(void *wil_handle, void *buf, uint32_t size);
 	int (*fw_recovery)(void *wil_handle);
+<<<<<<< HEAD
 	int (*notify)(void *wil_handle, enum wil_platform_notif notif);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**

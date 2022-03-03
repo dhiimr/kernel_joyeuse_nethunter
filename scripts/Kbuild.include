@@ -82,13 +82,18 @@ cc-cross-prefix =  \
 		fi)))
 
 # output directory for tests below
+<<<<<<< HEAD
 TMPOUT := $(if $(KBUILD_EXTMOD),$(firstword $(KBUILD_EXTMOD))/)
+=======
+TMPOUT = $(if $(KBUILD_EXTMOD),$(firstword $(KBUILD_EXTMOD))/).tmp_$$$$
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 # try-run
 # Usage: option = $(call try-run, $(CC)...-o "$$TMP",option-ok,otherwise)
 # Exit code chooses option. "$$TMP" serves as a temporary file and is
 # automatically cleaned up.
 try-run = $(shell set -e;		\
+<<<<<<< HEAD
 	TMP="$(TMPOUT).$$$$.tmp";	\
 	TMPO="$(TMPOUT).$$$$.o";	\
 	if ($(1)) >/dev/null 2>&1;	\
@@ -96,6 +101,16 @@ try-run = $(shell set -e;		\
 	else echo "$(3)";		\
 	fi;				\
 	rm -f "$$TMP" "$$TMPO")
+=======
+	TMP=$(TMPOUT)/tmp;		\
+	TMPO=$(TMPOUT)/tmp.o;		\
+	mkdir -p $(TMPOUT);		\
+	trap "rm -rf $(TMPOUT)" EXIT;	\
+	if ($(1)) >/dev/null 2>&1;	\
+	then echo "$(2)";		\
+	else echo "$(3)";		\
+	fi)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 # as-option
 # Usage: cflags-y += $(call as-option,-Wa$(comma)-isa=foo,)
@@ -143,6 +158,7 @@ cc-disable-warning = $(call try-run,\
 # Expands to either gcc or clang
 cc-name = $(shell $(CC) -v 2>&1 | grep -q "clang version" && echo clang || echo gcc)
 
+<<<<<<< HEAD
 # __cc-version
 # Returns compiler version
 __cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/$(cc-name)-version.sh $(CC))
@@ -174,6 +190,8 @@ clang-ifversion =  $(call __cc-ifversion, clang, $(1), $(2), $(3), $(4))
 # clang-if-fullversion
 clang-if-fullversion = (call __cc-if-fullversion, clang, $(1), $(2), $(3), $(4))
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # cc-version
 cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
 
@@ -181,9 +199,15 @@ cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
 cc-fullversion = $(shell $(CONFIG_SHELL) \
 	$(srctree)/scripts/gcc-version.sh -p $(CC))
 
+<<<<<<< HEAD
 # backward compatibility
 cc-ifversion = $(gcc-ifversion)
 cc-if-fullversion = $(gcc-if-fullversion)
+=======
+# cc-ifversion
+# Usage:  EXTRA_CFLAGS += $(call cc-ifversion, -lt, 0402, -O1)
+cc-ifversion = $(shell [ $(cc-version) $(1) $(2) ] && echo $(3) || echo $(4))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 # cc-if-fullversion
 # Usage:  EXTRA_CFLAGS += $(call cc-if-fullversion, -lt, 040502, -O1)
@@ -203,10 +227,13 @@ ld-option = $(call try-run, $(LD) $(LDFLAGS) $(1) -v,$(1),$(2))
 # Important: no spaces around options
 ar-option = $(call try-run, $(AR) rc$(1) "$$TMP",$(1),$(2))
 
+<<<<<<< HEAD
 # ld-name
 # Expands to either bfd or gold
 ld-name = $(shell $(LD) -v 2>&1 | grep -q "GNU gold" && echo gold || echo bfd)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # ld-version
 # Note this is mainly for HJ Lu's 3 number binutil versions
 ld-version = $(shell $(LD) --version | $(srctree)/scripts/ld-version.sh)
@@ -215,6 +242,7 @@ ld-version = $(shell $(LD) --version | $(srctree)/scripts/ld-version.sh)
 # Usage:  $(call ld-ifversion, -ge, 22252, y)
 ld-ifversion = $(shell [ $(ld-version) $(1) $(2) ] && echo $(3) || echo $(4))
 
+<<<<<<< HEAD
 # __ld-ifversion
 # Usage:  $(call __ld-ifversion, gold, -ge, 112000000, y)
 __ld-ifversion = $(shell [ $(ld-name) = $(1) ] && [ $(ld-version) $(2) $(3) ] && echo $(4) || echo $(5))
@@ -227,6 +255,8 @@ bfd-ifversion = $(call __ld-ifversion, bfd, $(1), $(2), $(3), $(4))
 # Usage:  $(call gold-ifversion, -ge, 112000000, y)
 gold-ifversion = $(call __ld-ifversion, gold, $(1), $(2), $(3), $(4))
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 ######
 
 ###

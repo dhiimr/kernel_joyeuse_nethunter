@@ -276,7 +276,11 @@ static int v9fs_xattr_set_acl(const struct xattr_handler *handler,
 	switch (handler->flags) {
 	case ACL_TYPE_ACCESS:
 		if (acl) {
+<<<<<<< HEAD
 			struct iattr iattr;
+=======
+			struct iattr iattr = { 0 };
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			struct posix_acl *old_acl = acl;
 
 			retval = posix_acl_update_mode(inode, &iattr.ia_mode, &acl);

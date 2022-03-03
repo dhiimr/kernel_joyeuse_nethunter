@@ -8,7 +8,11 @@ PROPERTIES
 - compatible:
     Usage: required
     Value type: <string>
+<<<<<<< HEAD
     Definition: Should contain "qcom,pm8941-misc" or "qcom,pmd-vbus-det";
+=======
+    Definition: Should contain "qcom,pm8941-misc";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 - reg:
     Usage: required

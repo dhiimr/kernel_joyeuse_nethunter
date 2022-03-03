@@ -7,6 +7,10 @@
 #include <asm/processor.h>
 #include <asm/page.h>
 #include <asm/extable.h>
+<<<<<<< HEAD
+=======
+#include <asm/kup.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * The fs value determines whether argument validity checking should be
@@ -82,9 +86,20 @@
 	__put_user_check((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
 
 #define __get_user(x, ptr) \
+<<<<<<< HEAD
 	__get_user_nocheck((x), (ptr), sizeof(*(ptr)))
 #define __put_user(x, ptr) \
 	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
+=======
+	__get_user_nocheck((x), (ptr), sizeof(*(ptr)), true)
+#define __put_user(x, ptr) \
+	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)), true)
+
+#define __get_user_allowed(x, ptr) \
+	__get_user_nocheck((x), (ptr), sizeof(*(ptr)), false)
+#define __put_user_allowed(x, ptr) \
+	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)), false)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define __get_user_inatomic(x, ptr) \
 	__get_user_nosleep((x), (ptr), sizeof(*(ptr)))
@@ -129,7 +144,11 @@ extern long __put_user_bad(void);
 		: "r" (x), "b" (addr), "i" (-EFAULT), "0" (err))
 #endif /* __powerpc64__ */
 
+<<<<<<< HEAD
 #define __put_user_size(x, ptr, size, retval)			\
+=======
+#define __put_user_size_allowed(x, ptr, size, retval)		\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 do {								\
 	retval = 0;						\
 	switch (size) {						\
@@ -141,6 +160,7 @@ do {								\
 	}							\
 } while (0)
 
+<<<<<<< HEAD
 #define __put_user_nocheck(x, ptr, size)			\
 ({								\
 	long __pu_err;						\
@@ -149,6 +169,30 @@ do {								\
 		might_fault();					\
 	__chk_user_ptr(ptr);					\
 	__put_user_size((x), __pu_addr, (size), __pu_err);	\
+=======
+#define __put_user_size(x, ptr, size, retval)			\
+do {								\
+	allow_write_to_user(ptr, size);				\
+	__put_user_size_allowed(x, ptr, size, retval);		\
+	prevent_write_to_user(ptr, size);			\
+} while (0)
+
+#define __put_user_nocheck(x, ptr, size, do_allow)			\
+({								\
+	long __pu_err;						\
+	__typeof__(*(ptr)) __user *__pu_addr = (ptr);		\
+	__typeof__(*(ptr)) __pu_val = (x);			\
+	__typeof__(size) __pu_size = (size);			\
+								\
+	if (!is_kernel_addr((unsigned long)__pu_addr))		\
+		might_fault();					\
+	__chk_user_ptr(__pu_addr);				\
+	if (do_allow)								\
+		__put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err);	\
+	else									\
+		__put_user_size_allowed(__pu_val, __pu_addr, __pu_size, __pu_err); \
+								\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__pu_err;						\
 })
 
@@ -156,9 +200,19 @@ do {								\
 ({									\
 	long __pu_err = -EFAULT;					\
 	__typeof__(*(ptr)) __user *__pu_addr = (ptr);			\
+<<<<<<< HEAD
 	might_fault();							\
 	if (access_ok(VERIFY_WRITE, __pu_addr, size))			\
 		__put_user_size((x), __pu_addr, (size), __pu_err);	\
+=======
+	__typeof__(*(ptr)) __pu_val = (x);				\
+	__typeof__(size) __pu_size = (size);				\
+									\
+	might_fault();							\
+	if (access_ok(VERIFY_WRITE, __pu_addr, __pu_size))			\
+		__put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err); \
+									\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__pu_err;							\
 })
 
@@ -166,8 +220,17 @@ do {								\
 ({								\
 	long __pu_err;						\
 	__typeof__(*(ptr)) __user *__pu_addr = (ptr);		\
+<<<<<<< HEAD
 	__chk_user_ptr(ptr);					\
 	__put_user_size((x), __pu_addr, (size), __pu_err);	\
+=======
+	__typeof__(*(ptr)) __pu_val = (x);			\
+	__typeof__(size) __pu_size = (size);			\
+								\
+	__chk_user_ptr(__pu_addr);				\
+	__put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err); \
+								\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__pu_err;						\
 })
 
@@ -208,7 +271,11 @@ extern long __get_user_bad(void);
 		: "b" (addr), "i" (-EFAULT), "0" (err))
 #endif /* __powerpc64__ */
 
+<<<<<<< HEAD
 #define __get_user_size(x, ptr, size, retval)			\
+=======
+#define __get_user_size_allowed(x, ptr, size, retval)		\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 do {								\
 	retval = 0;						\
 	__chk_user_ptr(ptr);					\
@@ -223,6 +290,16 @@ do {								\
 	}							\
 } while (0)
 
+<<<<<<< HEAD
+=======
+#define __get_user_size(x, ptr, size, retval)			\
+do {								\
+	allow_read_from_user(ptr, size);			\
+	__get_user_size_allowed(x, ptr, size, retval);		\
+	prevent_read_from_user(ptr, size);			\
+} while (0)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * This is a type: either unsigned long, if the argument fits into
  * that type, or otherwise unsigned long long.
@@ -230,6 +307,7 @@ do {								\
 #define __long_type(x) \
 	__typeof__(__builtin_choose_expr(sizeof(x) > sizeof(0UL), 0ULL, 0UL))
 
+<<<<<<< HEAD
 #define __get_user_nocheck(x, ptr, size)			\
 ({								\
 	long __gu_err;						\
@@ -241,6 +319,25 @@ do {								\
 	barrier_nospec();					\
 	__get_user_size(__gu_val, __gu_addr, (size), __gu_err);	\
 	(x) = (__typeof__(*(ptr)))__gu_val;			\
+=======
+#define __get_user_nocheck(x, ptr, size, do_allow)			\
+({								\
+	long __gu_err;						\
+	__long_type(*(ptr)) __gu_val;				\
+	__typeof__(*(ptr)) __user *__gu_addr = (ptr);	\
+	__typeof__(size) __gu_size = (size);			\
+								\
+	__chk_user_ptr(__gu_addr);				\
+	if (!is_kernel_addr((unsigned long)__gu_addr))		\
+		might_fault();					\
+	barrier_nospec();					\
+	if (do_allow)								\
+		__get_user_size(__gu_val, __gu_addr, __gu_size, __gu_err);	\
+	else									\
+		__get_user_size_allowed(__gu_val, __gu_addr, __gu_size, __gu_err); \
+	(x) = (__typeof__(*(ptr)))__gu_val;			\
+								\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__gu_err;						\
 })
 
@@ -248,6 +345,7 @@ do {								\
 ({									\
 	long __gu_err = -EFAULT;					\
 	__long_type(*(ptr)) __gu_val = 0;				\
+<<<<<<< HEAD
 	const __typeof__(*(ptr)) __user *__gu_addr = (ptr);		\
 	might_fault();							\
 	if (access_ok(VERIFY_READ, __gu_addr, (size))) {		\
@@ -255,6 +353,18 @@ do {								\
 		__get_user_size(__gu_val, __gu_addr, (size), __gu_err);	\
 	}								\
 	(x) = (__force __typeof__(*(ptr)))__gu_val;				\
+=======
+	__typeof__(*(ptr)) __user *__gu_addr = (ptr);		\
+	__typeof__(size) __gu_size = (size);				\
+									\
+	might_fault();							\
+	if (access_ok(VERIFY_READ, __gu_addr, __gu_size)) {		\
+		barrier_nospec();					\
+		__get_user_size(__gu_val, __gu_addr, __gu_size, __gu_err); \
+	}								\
+	(x) = (__force __typeof__(*(ptr)))__gu_val;				\
+									\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__gu_err;							\
 })
 
@@ -262,11 +372,22 @@ do {								\
 ({								\
 	long __gu_err;						\
 	__long_type(*(ptr)) __gu_val;				\
+<<<<<<< HEAD
 	const __typeof__(*(ptr)) __user *__gu_addr = (ptr);	\
 	__chk_user_ptr(ptr);					\
 	barrier_nospec();					\
 	__get_user_size(__gu_val, __gu_addr, (size), __gu_err);	\
 	(x) = (__force __typeof__(*(ptr)))__gu_val;			\
+=======
+	__typeof__(*(ptr)) __user *__gu_addr = (ptr);	\
+	__typeof__(size) __gu_size = (size);			\
+								\
+	__chk_user_ptr(__gu_addr);				\
+	barrier_nospec();					\
+	__get_user_size(__gu_val, __gu_addr, __gu_size, __gu_err); \
+	(x) = (__force __typeof__(*(ptr)))__gu_val;			\
+								\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__gu_err;						\
 })
 
@@ -280,15 +401,31 @@ extern unsigned long __copy_tofrom_user(void __user *to,
 static inline unsigned long
 raw_copy_in_user(void __user *to, const void __user *from, unsigned long n)
 {
+<<<<<<< HEAD
 	return __copy_tofrom_user(to, from, n);
+=======
+	unsigned long ret;
+
+	barrier_nospec();
+	allow_user_access(to, from, n);
+	ret = __copy_tofrom_user(to, from, n);
+	prevent_user_access(to, from, n);
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #endif /* __powerpc64__ */
 
 static inline unsigned long raw_copy_from_user(void *to,
 		const void __user *from, unsigned long n)
 {
+<<<<<<< HEAD
 	if (__builtin_constant_p(n) && (n <= 8)) {
 		unsigned long ret = 1;
+=======
+	unsigned long ret;
+	if (__builtin_constant_p(n) && (n <= 8)) {
+		ret = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		switch (n) {
 		case 1:
@@ -313,17 +450,29 @@ static inline unsigned long raw_copy_from_user(void *to,
 	}
 
 	barrier_nospec();
+<<<<<<< HEAD
 	return __copy_tofrom_user((__force void __user *)to, from, n);
 }
 
 static inline unsigned long raw_copy_to_user(void __user *to,
 		const void *from, unsigned long n)
+=======
+	allow_read_from_user(from, n);
+	ret = __copy_tofrom_user((__force void __user *)to, from, n);
+	prevent_read_from_user(from, n);
+	return ret;
+}
+
+static inline unsigned long
+raw_copy_to_user_allowed(void __user *to, const void *from, unsigned long n)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (__builtin_constant_p(n) && (n <= 8)) {
 		unsigned long ret = 1;
 
 		switch (n) {
 		case 1:
+<<<<<<< HEAD
 			__put_user_size(*(u8 *)from, (u8 __user *)to, 1, ret);
 			break;
 		case 2:
@@ -334,6 +483,18 @@ static inline unsigned long raw_copy_to_user(void __user *to,
 			break;
 		case 8:
 			__put_user_size(*(u64 *)from, (u64 __user *)to, 8, ret);
+=======
+			__put_user_size_allowed(*(u8 *)from, (u8 __user *)to, 1, ret);
+			break;
+		case 2:
+			__put_user_size_allowed(*(u16 *)from, (u16 __user *)to, 2, ret);
+			break;
+		case 4:
+			__put_user_size_allowed(*(u32 *)from, (u32 __user *)to, 4, ret);
+			break;
+		case 8:
+			__put_user_size_allowed(*(u64 *)from, (u64 __user *)to, 8, ret);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		}
 		if (ret == 0)
@@ -343,6 +504,7 @@ static inline unsigned long raw_copy_to_user(void __user *to,
 	return __copy_tofrom_user(to, (__force const void __user *)from, n);
 }
 
+<<<<<<< HEAD
 extern unsigned long __clear_user(void __user *addr, unsigned long size);
 
 static inline unsigned long clear_user(void __user *addr, unsigned long size)
@@ -351,9 +513,52 @@ static inline unsigned long clear_user(void __user *addr, unsigned long size)
 	if (likely(access_ok(VERIFY_WRITE, addr, size)))
 		return __clear_user(addr, size);
 	return size;
+=======
+static inline unsigned long
+raw_copy_to_user(void __user *to, const void *from, unsigned long n)
+{
+	unsigned long ret;
+
+	allow_write_to_user(to, n);
+	ret = raw_copy_to_user_allowed(to, from, n);
+	prevent_write_to_user(to, n);
+	return ret;
+}
+
+unsigned long __arch_clear_user(void __user *addr, unsigned long size);
+
+static inline unsigned long clear_user(void __user *addr, unsigned long size)
+{
+	unsigned long ret = size;
+	might_fault();
+	if (likely(access_ok(VERIFY_WRITE, addr, size))) {
+		allow_write_to_user(addr, size);
+		ret = __arch_clear_user(addr, size);
+		prevent_write_to_user(addr, size);
+	}
+	return ret;
+}
+
+static inline unsigned long __clear_user(void __user *addr, unsigned long size)
+{
+	return clear_user(addr, size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 extern long strncpy_from_user(char *dst, const char __user *src, long count);
 extern __must_check long strnlen_user(const char __user *str, long n);
 
+<<<<<<< HEAD
+=======
+
+#define user_access_begin(type, ptr, len) access_ok(type, ptr, len)
+#define user_access_end()		  prevent_user_access(NULL, NULL, ~0ul)
+
+#define unsafe_op_wrap(op, err) do { if (unlikely(op)) goto err; } while (0)
+#define unsafe_get_user(x, p, e) unsafe_op_wrap(__get_user_allowed(x, p), e)
+#define unsafe_put_user(x, p, e) unsafe_op_wrap(__put_user_allowed(x, p), e)
+#define unsafe_copy_to_user(d, s, l, e) \
+	unsafe_op_wrap(raw_copy_to_user_allowed(d, s, l), e)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif	/* _ARCH_POWERPC_UACCESS_H */

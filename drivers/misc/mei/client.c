@@ -276,6 +276,10 @@ void mei_me_cl_rm_by_uuid(struct mei_device *dev, const uuid_le *uuid)
 	down_write(&dev->me_clients_rwsem);
 	me_cl = __mei_me_cl_by_uuid(dev, uuid);
 	__mei_me_cl_del(dev, me_cl);
+<<<<<<< HEAD
+=======
+	mei_me_cl_put(me_cl);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	up_write(&dev->me_clients_rwsem);
 }
 
@@ -297,6 +301,10 @@ void mei_me_cl_rm_by_uuid_id(struct mei_device *dev, const uuid_le *uuid, u8 id)
 	down_write(&dev->me_clients_rwsem);
 	me_cl = __mei_me_cl_by_uuid_id(dev, uuid, id);
 	__mei_me_cl_del(dev, me_cl);
+<<<<<<< HEAD
+=======
+	mei_me_cl_put(me_cl);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	up_write(&dev->me_clients_rwsem);
 }
 

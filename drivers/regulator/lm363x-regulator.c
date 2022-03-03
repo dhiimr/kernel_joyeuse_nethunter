@@ -33,7 +33,11 @@
 
 /* LM3632 */
 #define LM3632_BOOST_VSEL_MAX		0x26
+<<<<<<< HEAD
 #define LM3632_LDO_VSEL_MAX		0x29
+=======
+#define LM3632_LDO_VSEL_MAX		0x28
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define LM3632_VBOOST_MIN		4500000
 #define LM3632_VLDO_MIN			4000000
 

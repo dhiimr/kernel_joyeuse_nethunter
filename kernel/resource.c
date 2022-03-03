@@ -172,7 +172,11 @@ static const struct file_operations proc_iomem_operations = {
 static int __init ioresources_init(void)
 {
 	proc_create("ioports", 0, NULL, &proc_ioports_operations);
+<<<<<<< HEAD
 	proc_create("iomem", 0400, NULL, &proc_iomem_operations);
+=======
+	proc_create("iomem", 0, NULL, &proc_iomem_operations);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 __initcall(ioresources_init);

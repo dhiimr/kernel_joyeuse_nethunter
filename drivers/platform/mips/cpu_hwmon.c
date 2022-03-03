@@ -158,7 +158,11 @@ static int __init loongson_hwmon_init(void)
 
 	cpu_hwmon_dev = hwmon_device_register(NULL);
 	if (IS_ERR(cpu_hwmon_dev)) {
+<<<<<<< HEAD
 		ret = -ENOMEM;
+=======
+		ret = PTR_ERR(cpu_hwmon_dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pr_err("hwmon_device_register fail!\n");
 		goto fail_hwmon_device_register;
 	}

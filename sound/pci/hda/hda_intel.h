@@ -40,9 +40,12 @@ struct hda_intel {
 	unsigned int vga_switcheroo_registered:1;
 	unsigned int init_failed:1; /* delayed init failed */
 
+<<<<<<< HEAD
 	/* secondary power domain for hdmi audio under vga device */
 	struct dev_pm_domain hdmi_pm_domain;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool need_i915_power:1; /* the hda controller needs i915 power */
 };
 

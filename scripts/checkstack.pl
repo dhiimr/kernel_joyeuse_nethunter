@@ -45,7 +45,11 @@ my (@stack, $re, $dre, $x, $xs, $funcre);
 	$x	= "[0-9a-f]";	# hex character
 	$xs	= "[0-9a-f ]";	# hex character or space
 	$funcre = qr/^$x* <(.*)>:$/;
+<<<<<<< HEAD
 	if ($arch eq 'aarch64') {
+=======
+	if ($arch =~ '^(aarch|arm)64$') {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		#ffffffc0006325cc:       a9bb7bfd        stp     x29, x30, [sp, #-80]!
 		$re = qr/^.*stp.*sp, \#-([0-9]{1,8})\]\!/o;
 	} elsif ($arch eq 'arm') {

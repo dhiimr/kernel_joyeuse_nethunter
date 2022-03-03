@@ -185,7 +185,11 @@ out_rel_fw:
 
 static int gp8psk_power_ctrl(struct dvb_usb_device *d, int onoff)
 {
+<<<<<<< HEAD
 	u8 status, buf;
+=======
+	u8 status = 0, buf;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int gp_product_id = le16_to_cpu(d->udev->descriptor.idProduct);
 
 	if (onoff) {

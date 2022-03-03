@@ -274,6 +274,11 @@ struct edid *drm_load_edid_firmware(struct drm_connector *connector)
 	 * the last one found one as a fallback.
 	 */
 	fwstr = kstrdup(edid_firmware, GFP_KERNEL);
+<<<<<<< HEAD
+=======
+	if (!fwstr)
+		return ERR_PTR(-ENOMEM);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	edidstr = fwstr;
 
 	while ((edidname = strsep(&edidstr, ","))) {

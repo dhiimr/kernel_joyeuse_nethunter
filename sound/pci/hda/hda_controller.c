@@ -609,11 +609,17 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
 	}
 	runtime->private_data = azx_dev;
 
+<<<<<<< HEAD
 	if (chip->gts_present)
 		azx_pcm_hw.info = azx_pcm_hw.info |
 			SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME;
 
 	runtime->hw = azx_pcm_hw;
+=======
+	runtime->hw = azx_pcm_hw;
+	if (chip->gts_present)
+		runtime->hw.info |= SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	runtime->hw.channels_min = hinfo->channels_min;
 	runtime->hw.channels_max = hinfo->channels_max;
 	runtime->hw.formats = hinfo->formats;
@@ -872,6 +878,12 @@ static int azx_rirb_get_response(struct hdac_bus *bus, unsigned int addr,
 	 */
 	if (hbus->allow_bus_reset && !hbus->response_reset && !hbus->in_reset) {
 		hbus->response_reset = 1;
+<<<<<<< HEAD
+=======
+		dev_err(chip->card->dev,
+			"No response from codec, resetting bus: last cmd=0x%08x\n",
+			bus->last_cmd[addr]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EAGAIN; /* give a chance to retry */
 	}
 
@@ -1161,16 +1173,33 @@ irqreturn_t azx_interrupt(int irq, void *dev_id)
 		if (snd_hdac_bus_handle_stream_irq(bus, status, stream_update))
 			active = true;
 
+<<<<<<< HEAD
 		/* clear rirb int */
 		status = azx_readb(chip, RIRBSTS);
 		if (status & RIRB_INT_MASK) {
+=======
+		status = azx_readb(chip, RIRBSTS);
+		if (status & RIRB_INT_MASK) {
+			/*
+			 * Clearing the interrupt status here ensures that no
+			 * interrupt gets masked after the RIRB wp is read in
+			 * snd_hdac_bus_update_rirb. This avoids a possible
+			 * race condition where codec response in RIRB may
+			 * remain unserviced by IRQ, eventually falling back
+			 * to polling mode in azx_rirb_get_response.
+			 */
+			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			active = true;
 			if (status & RIRB_INT_RESPONSE) {
 				if (chip->driver_caps & AZX_DCAPS_CTX_WORKAROUND)
 					udelay(80);
 				snd_hdac_bus_update_rirb(bus);
 			}
+<<<<<<< HEAD
 			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	} while (active && ++repeat < 10);
 

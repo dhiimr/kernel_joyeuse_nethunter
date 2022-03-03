@@ -172,6 +172,10 @@ int test__pmu(struct test *test __maybe_unused, int subtest __maybe_unused)
 		ret = 0;
 	} while (0);
 
+<<<<<<< HEAD
+=======
+	perf_pmu__del_formats(&formats);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	test_format_dir_put(format);
 	return ret;
 }

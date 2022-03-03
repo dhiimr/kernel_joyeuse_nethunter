@@ -251,6 +251,11 @@ int hclge_cmd_send(struct hclge_hw *hw, struct hclge_desc *desc, int num)
 			if ((enum hclge_cmd_return_status)desc_ret ==
 			    HCLGE_CMD_EXEC_SUCCESS)
 				retval = 0;
+<<<<<<< HEAD
+=======
+			else if (desc_ret == HCLGE_CMD_NOT_SUPPORTED)
+				retval = -EOPNOTSUPP;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			else
 				retval = -EIO;
 			hw->cmq.last_status = (enum hclge_cmd_status)desc_ret;

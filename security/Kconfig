@@ -6,10 +6,13 @@ menu "Security options"
 
 source security/keys/Kconfig
 
+<<<<<<< HEAD
 if ARCH_QCOM
 source security/pfe/Kconfig
 endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config SECURITY_DMESG_RESTRICT
 	bool "Restrict unprivileged access to the kernel syslog"
 	default n
@@ -22,6 +25,7 @@ config SECURITY_DMESG_RESTRICT
 
 	  If you are unsure how to answer this question, answer N.
 
+<<<<<<< HEAD
 config SECURITY_PERF_EVENTS_RESTRICT
 	bool "Restrict unprivileged use of performance events"
 	depends on PERF_EVENTS
@@ -31,6 +35,8 @@ config SECURITY_PERF_EVENTS_RESTRICT
 	  perf_event_open syscall will be permitted unless it is
 	  changed.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config SECURITY
 	bool "Enable different security models"
 	depends on SYSFS

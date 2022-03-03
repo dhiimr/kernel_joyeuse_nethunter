@@ -217,6 +217,7 @@ static int iproc_msi_irq_set_affinity(struct irq_data *data,
 	struct iproc_msi *msi = irq_data_get_irq_chip_data(data);
 	int target_cpu = cpumask_first(mask);
 	int curr_cpu;
+<<<<<<< HEAD
 
 	curr_cpu = hwirq_to_cpu(msi, data->hwirq);
 	if (curr_cpu == target_cpu)
@@ -226,6 +227,22 @@ static int iproc_msi_irq_set_affinity(struct irq_data *data,
 	data->hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq) + target_cpu;
 
 	return IRQ_SET_MASK_OK;
+=======
+	int ret;
+
+	curr_cpu = hwirq_to_cpu(msi, data->hwirq);
+	if (curr_cpu == target_cpu)
+		ret = IRQ_SET_MASK_OK_DONE;
+	else {
+		/* steer MSI to the target CPU */
+		data->hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq) + target_cpu;
+		ret = IRQ_SET_MASK_OK;
+	}
+
+	irq_data_update_effective_affinity(data, cpumask_of(target_cpu));
+
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void iproc_msi_irq_compose_msi_msg(struct irq_data *data,

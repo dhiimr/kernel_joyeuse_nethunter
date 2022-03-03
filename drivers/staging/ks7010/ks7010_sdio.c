@@ -904,9 +904,15 @@ static int ks7010_sdio_probe(struct sdio_func *func,
 	memset(&priv->wstats, 0, sizeof(priv->wstats));
 
 	/* sleep mode */
+<<<<<<< HEAD
 	atomic_set(&priv->sleepstatus.doze_request, 0);
 	atomic_set(&priv->sleepstatus.wakeup_request, 0);
 	atomic_set(&priv->sleepstatus.wakeup_request, 0);
+=======
+	atomic_set(&priv->sleepstatus.status, 0);
+	atomic_set(&priv->sleepstatus.doze_request, 0);
+	atomic_set(&priv->sleepstatus.wakeup_request, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	trx_device_init(priv);
 	hostif_init(priv);

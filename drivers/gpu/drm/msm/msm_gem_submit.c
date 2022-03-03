@@ -401,7 +401,11 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
 	struct msm_drm_private *priv = dev->dev_private;
 	struct drm_msm_gem_submit *args = data;
 	struct msm_file_private *ctx = file->driver_priv;
+<<<<<<< HEAD
 	struct msm_gem_submit *submit = NULL;
+=======
+	struct msm_gem_submit *submit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct msm_gpu *gpu = priv->gpu;
 	struct dma_fence *in_fence = NULL;
 	struct sync_file *sync_file = NULL;

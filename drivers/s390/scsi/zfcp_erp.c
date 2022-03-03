@@ -11,6 +11,10 @@
 #define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
 
 #include <linux/kthread.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "zfcp_ext.h"
 #include "zfcp_reqlist.h"
 
@@ -178,9 +182,12 @@ static int zfcp_erp_handle_failed(int want, struct zfcp_adapter *adapter,
 				adapter, ZFCP_STATUS_COMMON_ERP_FAILED);
 		}
 		break;
+<<<<<<< HEAD
 	default:
 		need = 0;
 		break;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return need;
@@ -245,6 +252,15 @@ static struct zfcp_erp_action *zfcp_erp_setup_act(int need, u32 act_status,
 	struct zfcp_erp_action *erp_action;
 	struct zfcp_scsi_dev *zfcp_sdev;
 
+<<<<<<< HEAD
+=======
+	if (WARN_ON_ONCE(need != ZFCP_ERP_ACTION_REOPEN_LUN &&
+			 need != ZFCP_ERP_ACTION_REOPEN_PORT &&
+			 need != ZFCP_ERP_ACTION_REOPEN_PORT_FORCED &&
+			 need != ZFCP_ERP_ACTION_REOPEN_ADAPTER))
+		return NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	switch (need) {
 	case ZFCP_ERP_ACTION_REOPEN_LUN:
 		zfcp_sdev = sdev_to_zfcp(sdev);
@@ -743,7 +759,11 @@ static void zfcp_erp_enqueue_ptp_port(struct zfcp_adapter *adapter)
 				 adapter->peer_d_id);
 	if (IS_ERR(port)) /* error or port already attached */
 		return;
+<<<<<<< HEAD
 	_zfcp_erp_port_reopen(port, 0, "ereptp1");
+=======
+	zfcp_erp_port_reopen(port, 0, "ereptp1");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int zfcp_erp_adapter_strat_fsf_xconf(struct zfcp_erp_action *erp_action)

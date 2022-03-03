@@ -67,12 +67,18 @@
  */
 #ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
 #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
+<<<<<<< HEAD
 #define TEXT_CFI_MAIN .text.cfi .text.[0-9a-zA-Z_]*.cfi
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define DATA_MAIN .data .data.[0-9a-zA-Z_]*
 #define BSS_MAIN .bss .bss.[0-9a-zA-Z_]*
 #else
 #define TEXT_MAIN .text
+<<<<<<< HEAD
 #define TEXT_CFI_MAIN .text.cfi
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define DATA_MAIN .data
 #define BSS_MAIN .bss
 #endif
@@ -107,7 +113,11 @@
 #ifdef CONFIG_FTRACE_MCOUNT_RECORD
 #define MCOUNT_REC()	. = ALIGN(8);				\
 			VMLINUX_SYMBOL(__start_mcount_loc) = .; \
+<<<<<<< HEAD
 			KEEP(*(__mcount_loc))			\
+=======
+			*(__mcount_loc)				\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			VMLINUX_SYMBOL(__stop_mcount_loc) = .;
 #else
 #define MCOUNT_REC()
@@ -253,7 +263,12 @@
 
 #define PAGE_ALIGNED_DATA(page_align)					\
 	. = ALIGN(page_align);						\
+<<<<<<< HEAD
 	*(.data..page_aligned)
+=======
+	*(.data..page_aligned)						\
+	. = ALIGN(page_align);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define READ_MOSTLY_DATA(align)						\
 	. = ALIGN(align);						\
@@ -460,11 +475,21 @@
  */
 #define TEXT_TEXT							\
 		ALIGN_FUNCTION();					\
+<<<<<<< HEAD
 		*(.text.hot TEXT_MAIN .text.fixup .text.unlikely)	\
 		*(.text..refcount)					\
 		*(.text..ftrace)					\
 		*(TEXT_CFI_MAIN) 					\
 		*(.ref.text)						\
+=======
+		*(.text.hot .text.hot.*)				\
+		*(TEXT_MAIN .text.fixup)				\
+		*(.text.unlikely .text.unlikely.*)			\
+		*(.text.unknown .text.unknown.*)			\
+		*(.text..refcount)					\
+		*(.ref.text)						\
+		*(.text.asan.* .text.tsan.*)				\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	MEM_KEEP(init.text)						\
 	MEM_KEEP(exit.text)						\
 
@@ -516,7 +541,11 @@
 		VMLINUX_SYMBOL(__softirqentry_text_end) = .;
 
 /* Section used for early init (in .S files) */
+<<<<<<< HEAD
 #define HEAD_TEXT  KEEP(*(.head.text))
+=======
+#define HEAD_TEXT  *(.head.text)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define HEAD_TEXT_SECTION							\
 	.head.text : AT(ADDR(.head.text) - LOAD_OFFSET) {		\
@@ -561,7 +590,11 @@
 	MEM_DISCARD(init.data)						\
 	KERNEL_CTORS()							\
 	MCOUNT_REC()							\
+<<<<<<< HEAD
 	*(.init.rodata .init.rodata.*)					\
+=======
+	*(.init.rodata)							\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	FTRACE_EVENTS()							\
 	TRACE_SYSCALLS()						\
 	KPROBE_BLACKLIST()						\
@@ -580,7 +613,11 @@
 	EARLYCON_TABLE()
 
 #define INIT_TEXT							\
+<<<<<<< HEAD
 	*(.init.text .init.text.*)					\
+=======
+	*(.init.text)							\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	*(.text.startup)						\
 	MEM_DISCARD(init.text)
 
@@ -597,7 +634,11 @@
 	MEM_DISCARD(exit.text)
 
 #define EXIT_CALL							\
+<<<<<<< HEAD
 	KEEP(*(.exitcall.exit))
+=======
+	*(.exitcall.exit)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * bss (Block Started by Symbol) - uninitialized data
@@ -623,7 +664,13 @@
 	. = ALIGN(bss_align);						\
 	.bss : AT(ADDR(.bss) - LOAD_OFFSET) {				\
 		BSS_FIRST_SECTIONS					\
+<<<<<<< HEAD
 		*(.bss..page_aligned)					\
+=======
+		. = ALIGN(PAGE_SIZE);					\
+		*(.bss..page_aligned)					\
+		. = ALIGN(PAGE_SIZE);					\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		*(.dynbss)						\
 		*(BSS_MAIN)						\
 		*(COMMON)						\
@@ -667,8 +714,18 @@
 		/* DWARF 4 */						\
 		.debug_types	0 : { *(.debug_types) }			\
 		/* DWARF 5 */						\
+<<<<<<< HEAD
 		.debug_macro	0 : { *(.debug_macro) }			\
 		.debug_addr	0 : { *(.debug_addr) }
+=======
+		.debug_addr	0 : { *(.debug_addr) }			\
+		.debug_line_str	0 : { *(.debug_line_str) }		\
+		.debug_loclists	0 : { *(.debug_loclists) }		\
+		.debug_macro	0 : { *(.debug_macro) }			\
+		.debug_names	0 : { *(.debug_names) }			\
+		.debug_rnglists	0 : { *(.debug_rnglists) }		\
+		.debug_str_offsets	0 : { *(.debug_str_offsets) }
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* Stabs debugging sections.  */
 #define STABS_DEBUG							\

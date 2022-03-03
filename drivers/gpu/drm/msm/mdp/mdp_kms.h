@@ -98,8 +98,12 @@ struct mdp_format {
 #define MDP_FORMAT_IS_YUV(mdp_format) ((mdp_format)->is_yuv)
 
 uint32_t mdp_get_formats(uint32_t *formats, uint32_t max_formats, bool rgb_only);
+<<<<<<< HEAD
 const struct msm_format *mdp_get_format(struct msm_kms *kms,
 		uint32_t format, const uint64_t *modifier);
+=======
+const struct msm_format *mdp_get_format(struct msm_kms *kms, uint32_t format);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* MDP capabilities */
 #define MDP_CAP_SMP		BIT(0)	/* Shared Memory Pool                 */

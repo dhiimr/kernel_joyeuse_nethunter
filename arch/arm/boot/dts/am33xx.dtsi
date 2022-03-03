@@ -38,6 +38,12 @@
 		ethernet1 = &cpsw_emac1;
 		spi0 = &spi0;
 		spi1 = &spi1;
+<<<<<<< HEAD
+=======
+		mmc0 = &mmc1;
+		mmc1 = &mmc2;
+		mmc2 = &mmc3;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	cpus {

@@ -65,7 +65,11 @@ int zynq_cpun_start(u32 address, int cpu)
 			* 0x4: Jump by mov instruction
 			* 0x8: Jumping address
 			*/
+<<<<<<< HEAD
 			memcpy((__force void *)zero, &zynq_secondary_trampoline,
+=======
+			memcpy_toio(zero, &zynq_secondary_trampoline,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 							trampoline_size);
 			writel(address, zero + trampoline_size);
 

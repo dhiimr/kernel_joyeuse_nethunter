@@ -60,14 +60,22 @@ static int socfpga_setup_ocram_self_refresh(void)
 	if (!ocram_pool) {
 		pr_warn("%s: ocram pool unavailable!\n", __func__);
 		ret = -ENODEV;
+<<<<<<< HEAD
 		goto put_node;
+=======
+		goto put_device;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ocram_base = gen_pool_alloc(ocram_pool, socfpga_sdram_self_refresh_sz);
 	if (!ocram_base) {
 		pr_warn("%s: unable to alloc ocram!\n", __func__);
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto put_node;
+=======
+		goto put_device;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ocram_pbase = gen_pool_virt_to_phys(ocram_pool, ocram_base);
@@ -78,7 +86,11 @@ static int socfpga_setup_ocram_self_refresh(void)
 	if (!suspend_ocram_base) {
 		pr_warn("%s: __arm_ioremap_exec failed!\n", __func__);
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto put_node;
+=======
+		goto put_device;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Copy the code that puts DDR in self refresh to ocram */
@@ -92,6 +104,11 @@ static int socfpga_setup_ocram_self_refresh(void)
 	if (!socfpga_sdram_self_refresh_in_ocram)
 		ret = -EFAULT;
 
+<<<<<<< HEAD
+=======
+put_device:
+	put_device(&pdev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 put_node:
 	of_node_put(np);
 

@@ -30,7 +30,11 @@ ftrace_filter_check '*schedule*' '^.*schedule.*$'
 ftrace_filter_check 'schedule*' '^schedule.*$'
 
 # filter by *mid*end
+<<<<<<< HEAD
 ftrace_filter_check '*aw*lock' '.*aw.*lock$'
+=======
+ftrace_filter_check '*pin*lock' '.*pin.*lock$'
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 # filter by start*mid*
 ftrace_filter_check 'mutex*try*' '^mutex.*try.*'

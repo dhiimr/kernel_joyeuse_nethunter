@@ -78,6 +78,7 @@ u32 sun3x_gettimeoffset(void)
 }
 
 #if 0
+<<<<<<< HEAD
 static void sun3x_timer_tick(int irq, void *dev_id, struct pt_regs *regs)
 {
     void (*vector)(int, void *, struct pt_regs *) = dev_id;
@@ -87,6 +88,21 @@ static void sun3x_timer_tick(int irq, void *dev_id, struct pt_regs *regs)
     enable_irq(5);
 
     vector(irq, NULL, regs);
+=======
+static irqreturn_t sun3x_timer_tick(int irq, void *dev_id)
+{
+	irq_handler_t timer_routine = dev_id;
+	unsigned long flags;
+
+	local_irq_save(flags);
+	/* Clear the pending interrupt - pulse the enable line low */
+	disable_irq(5);
+	enable_irq(5);
+	timer_routine(0, NULL);
+	local_irq_restore(flags);
+
+	return IRQ_HANDLED;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #endif
 

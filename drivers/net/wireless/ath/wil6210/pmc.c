@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2012-2015,2017 Qualcomm Atheros, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -54,7 +57,10 @@ void wil_pmc_alloc(struct wil6210_priv *wil,
 	u32 i;
 	struct pmc_ctx *pmc = &wil->pmc;
 	struct device *dev = wil_to_dev(wil);
+<<<<<<< HEAD
 	struct wil6210_vif *vif = ndev_to_vif(wil->main_ndev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct wmi_pmc_cmd pmc_cmd = {0};
 	int last_cmd_err = -ENOMEM;
 
@@ -113,14 +119,23 @@ void wil_pmc_alloc(struct wil6210_priv *wil,
 	 *
 	 * HW has limitation that all vrings addresses must share the same
 	 * upper 16 msb bits part of 48 bits address. To workaround that,
+<<<<<<< HEAD
 	 * if we are using more than 32 bit addresses switch to 32 bit
 	 * allocation before allocating vring memory.
+=======
+	 * if we are using 48 bit addresses switch to 32 bit allocation
+	 * before allocating vring memory.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 *
 	 * There's no check for the return value of dma_set_mask_and_coherent,
 	 * since we assume if we were able to set the mask during
 	 * initialization in this system it will not fail if we set it again
 	 */
+<<<<<<< HEAD
 	if (wil->dma_addr_size > 32)
+=======
+	if (wil->use_extended_dma_addr)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
 
 	pmc->pring_va = dma_alloc_coherent(dev,
@@ -128,9 +143,14 @@ void wil_pmc_alloc(struct wil6210_priv *wil,
 			&pmc->pring_pa,
 			GFP_KERNEL);
 
+<<<<<<< HEAD
 	if (wil->dma_addr_size > 32)
 		dma_set_mask_and_coherent(dev,
 					  DMA_BIT_MASK(wil->dma_addr_size));
+=======
+	if (wil->use_extended_dma_addr)
+		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(48));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	wil_dbg_misc(wil,
 		     "pmc_alloc: allocated pring %p => %pad. %zd x %d = total %zd bytes\n",
@@ -188,7 +208,10 @@ void wil_pmc_alloc(struct wil6210_priv *wil,
 	wil_dbg_misc(wil, "pmc_alloc: send WMI_PMC_CMD with ALLOCATE op\n");
 	pmc->last_cmd_status = wmi_send(wil,
 					WMI_PMC_CMDID,
+<<<<<<< HEAD
 					vif->mid,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					&pmc_cmd,
 					sizeof(pmc_cmd));
 	if (pmc->last_cmd_status) {
@@ -239,7 +262,10 @@ void wil_pmc_free(struct wil6210_priv *wil, int send_pmc_cmd)
 {
 	struct pmc_ctx *pmc = &wil->pmc;
 	struct device *dev = wil_to_dev(wil);
+<<<<<<< HEAD
 	struct wil6210_vif *vif = ndev_to_vif(wil->main_ndev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct wmi_pmc_cmd pmc_cmd = {0};
 
 	mutex_lock(&pmc->lock);
@@ -258,8 +284,13 @@ void wil_pmc_free(struct wil6210_priv *wil, int send_pmc_cmd)
 		wil_dbg_misc(wil, "send WMI_PMC_CMD with RELEASE op\n");
 		pmc_cmd.op = WMI_PMC_RELEASE;
 		pmc->last_cmd_status =
+<<<<<<< HEAD
 				wmi_send(wil, WMI_PMC_CMDID, vif->mid,
 					 &pmc_cmd, sizeof(pmc_cmd));
+=======
+				wmi_send(wil, WMI_PMC_CMDID, &pmc_cmd,
+					 sizeof(pmc_cmd));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (pmc->last_cmd_status) {
 			wil_err(wil,
 				"WMI_PMC_CMD with RELEASE op failed, status %d",

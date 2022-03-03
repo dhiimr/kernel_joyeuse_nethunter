@@ -31,7 +31,10 @@
 #include <linux/irq.h>
 
 #include <linux/atomic.h>
+<<<<<<< HEAD
 #include <asm/arch_timer.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/cacheflush.h>
 #include <asm/exception.h>
 #include <asm/unistd.h>
@@ -731,6 +734,7 @@ late_initcall(arm_mrc_hook_init);
 
 #endif
 
+<<<<<<< HEAD
 static int get_pct_trap(struct pt_regs *regs, unsigned int instr)
 {
 	u64 cntpct;
@@ -767,6 +771,8 @@ void get_pct_hook_init(void)
 }
 EXPORT_SYMBOL(get_pct_hook_init);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * A data abort trap was taken, but we did not handle the instruction.
  * Try to abort the user program, or panic if it was the kernel.

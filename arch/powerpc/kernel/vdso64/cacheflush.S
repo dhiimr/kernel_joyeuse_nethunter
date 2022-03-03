@@ -39,7 +39,11 @@ V_FUNCTION_BEGIN(__kernel_sync_dicache)
 	subf	r8,r6,r4		/* compute length */
 	add	r8,r8,r5		/* ensure we get enough */
 	lwz	r9,CFG_DCACHE_LOGBLOCKSZ(r10)
+<<<<<<< HEAD
 	srw.	r8,r8,r9		/* compute line count */
+=======
+	srd.	r8,r8,r9		/* compute line count */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	crclr	cr0*4+so
 	beqlr				/* nothing to do? */
 	mtctr	r8
@@ -56,7 +60,11 @@ V_FUNCTION_BEGIN(__kernel_sync_dicache)
 	subf	r8,r6,r4		/* compute length */
 	add	r8,r8,r5
 	lwz	r9,CFG_ICACHE_LOGBLOCKSZ(r10)
+<<<<<<< HEAD
 	srw.	r8,r8,r9		/* compute line count */
+=======
+	srd.	r8,r8,r9		/* compute line count */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	crclr	cr0*4+so
 	beqlr				/* nothing to do? */
 	mtctr	r8

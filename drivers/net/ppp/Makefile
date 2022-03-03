@@ -12,5 +12,8 @@ obj-$(CONFIG_PPP_SYNC_TTY) += ppp_synctty.o
 obj-$(CONFIG_PPPOE) += pppox.o pppoe.o
 obj-$(CONFIG_PPPOL2TP) += pppox.o
 obj-$(CONFIG_PPTP) += pppox.o pptp.o
+<<<<<<< HEAD
 obj-$(CONFIG_PPPOLAC) += pppox.o pppolac.o
 obj-$(CONFIG_PPPOPNS) += pppox.o pppopns.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

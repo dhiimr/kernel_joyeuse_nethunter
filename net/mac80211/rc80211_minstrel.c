@@ -276,7 +276,11 @@ minstrel_tx_status(void *priv, struct ieee80211_supported_band *sband,
 	success = !!(info->flags & IEEE80211_TX_STAT_ACK);
 
 	for (i = 0; i < IEEE80211_TX_MAX_RATES; i++) {
+<<<<<<< HEAD
 		if (ar[i].idx < 0)
+=======
+		if (ar[i].idx < 0 || !ar[i].count)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 
 		ndx = rix_to_ndx(mi, ar[i].idx);
@@ -289,12 +293,15 @@ minstrel_tx_status(void *priv, struct ieee80211_supported_band *sband,
 			mi->r[ndx].stats.success += success;
 	}
 
+<<<<<<< HEAD
 	if ((info->flags & IEEE80211_TX_CTL_RATE_CTRL_PROBE) && (i >= 0))
 		mi->sample_packets++;
 
 	if (mi->sample_deferred > 0)
 		mi->sample_deferred--;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (time_after(jiffies, mi->last_stats_update +
 				(mp->update_interval * HZ) / 1000))
 		minstrel_update_stats(mp, mi);
@@ -373,7 +380,11 @@ minstrel_get_rate(void *priv, struct ieee80211_sta *sta,
 		return;
 
 	delta = (mi->total_packets * sampling_ratio / 100) -
+<<<<<<< HEAD
 			(mi->sample_packets + mi->sample_deferred / 2);
+=======
+			mi->sample_packets;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* delta < 0: no sampling required */
 	prev_sample = mi->prev_sample;
@@ -382,7 +393,10 @@ minstrel_get_rate(void *priv, struct ieee80211_sta *sta,
 		return;
 
 	if (mi->total_packets >= 10000) {
+<<<<<<< HEAD
 		mi->sample_deferred = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mi->sample_packets = 0;
 		mi->total_packets = 0;
 	} else if (delta > mi->n_rates * 2) {
@@ -407,6 +421,7 @@ minstrel_get_rate(void *priv, struct ieee80211_sta *sta,
 	 * rate sampling method should be used.
 	 * Respect such rates that are not sampled for 20 interations.
 	 */
+<<<<<<< HEAD
 	if (mrr_capable &&
 	    msr->perfect_tx_time > mr->perfect_tx_time &&
 	    msr->stats.sample_skipped < 20) {
@@ -420,6 +435,10 @@ minstrel_get_rate(void *priv, struct ieee80211_sta *sta,
 		rate++;
 		mi->sample_deferred++;
 	} else {
+=======
+	if (msr->perfect_tx_time < mr->perfect_tx_time ||
+	    msr->stats.sample_skipped >= 20) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!msr->sample_limit)
 			return;
 
@@ -439,6 +458,10 @@ minstrel_get_rate(void *priv, struct ieee80211_sta *sta,
 
 	rate->idx = mi->r[ndx].rix;
 	rate->count = minstrel_get_retry_count(&mi->r[ndx], info);
+<<<<<<< HEAD
+=======
+	info->flags |= IEEE80211_TX_CTL_RATE_CTRL_PROBE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 

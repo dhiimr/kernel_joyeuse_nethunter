@@ -11,6 +11,10 @@
 
 #include <asm/cpu.h>
 #include <asm/cpu-info.h>
+<<<<<<< HEAD
+=======
+#include <asm/isa-rev.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <cpu-feature-overrides.h>
 
 /*
@@ -493,7 +497,11 @@
 # define cpu_has_perf		(cpu_data[0].options & MIPS_CPU_PERF)
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_SMP) && defined(__mips_isa_rev) && (__mips_isa_rev >= 6)
+=======
+#if defined(CONFIG_SMP) && (MIPS_ISA_REV >= 6)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Some systems share FTLB RAMs between threads within a core (siblings in
  * kernel parlance). This means that FTLB entries may become invalid at almost
@@ -525,7 +533,11 @@
 #  define cpu_has_shared_ftlb_entries \
 	(current_cpu_data.options & MIPS_CPU_SHARED_FTLB_ENTRIES)
 # endif
+<<<<<<< HEAD
 #endif /* SMP && __mips_isa_rev >= 6 */
+=======
+#endif /* SMP && MIPS_ISA_REV >= 6 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifndef cpu_has_shared_ftlb_ram
 # define cpu_has_shared_ftlb_ram 0

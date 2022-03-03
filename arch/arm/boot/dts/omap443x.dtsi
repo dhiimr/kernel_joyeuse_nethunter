@@ -35,10 +35,18 @@
 	};
 
 	ocp {
+<<<<<<< HEAD
+=======
+		/* 4430 has only gpio_86 tshut and no talert interrupt */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		bandgap: bandgap@4a002260 {
 			reg = <0x4a002260 0x4
 			       0x4a00232C 0x4>;
 			compatible = "ti,omap4430-bandgap";
+<<<<<<< HEAD
+=======
+			gpios = <&gpio3 22 GPIO_ACTIVE_HIGH>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			#thermal-sensor-cells = <0>;
 		};

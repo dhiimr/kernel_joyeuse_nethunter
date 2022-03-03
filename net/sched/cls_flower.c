@@ -160,6 +160,10 @@ static int fl_classify(struct sk_buff *skb, const struct tcf_proto *tp,
 	if (!atomic_read(&head->ht.nelems))
 		return -1;
 
+<<<<<<< HEAD
+=======
+	flow_dissector_init_keys(&skb_key.control, &skb_key.basic);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	fl_clear_masked_range(&skb_key, &head->mask);
 
 	info = skb_tunnel_info(skb);
@@ -445,6 +449,10 @@ static const struct nla_policy fl_policy[TCA_FLOWER_MAX + 1] = {
 	[TCA_FLOWER_KEY_IP_TOS_MASK]	= { .type = NLA_U8 },
 	[TCA_FLOWER_KEY_IP_TTL]		= { .type = NLA_U8 },
 	[TCA_FLOWER_KEY_IP_TTL_MASK]	= { .type = NLA_U8 },
+<<<<<<< HEAD
+=======
+	[TCA_FLOWER_FLAGS]		= { .type = NLA_U32 },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static void fl_set_key_val(struct nlattr **tb,

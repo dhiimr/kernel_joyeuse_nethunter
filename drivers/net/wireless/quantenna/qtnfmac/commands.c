@@ -485,6 +485,12 @@ qtnf_sta_info_parse_rate(struct rate_info *rate_dst,
 		rate_dst->flags |= RATE_INFO_FLAGS_MCS;
 	else if (rate_src->flags & QLINK_STA_INFO_RATE_FLAG_VHT_MCS)
 		rate_dst->flags |= RATE_INFO_FLAGS_VHT_MCS;
+<<<<<<< HEAD
+=======
+
+	if (rate_src->flags & QLINK_STA_INFO_RATE_FLAG_SHORT_GI)
+		rate_dst->flags |= RATE_INFO_FLAGS_SHORT_GI;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void
@@ -793,6 +799,10 @@ int qtnf_cmd_send_del_intf(struct qtnf_vif *vif)
 	default:
 		pr_warn("VIF%u.%u: unsupported iftype %d\n", vif->mac->macid,
 			vif->vifid, vif->wdev.iftype);
+<<<<<<< HEAD
+=======
+		dev_kfree_skb(cmd_skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = -EINVAL;
 		goto out;
 	}
@@ -1879,6 +1889,10 @@ int qtnf_cmd_send_change_sta(struct qtnf_vif *vif, const u8 *mac,
 		break;
 	default:
 		pr_err("unsupported iftype %d\n", vif->wdev.iftype);
+<<<<<<< HEAD
+=======
+		dev_kfree_skb(cmd_skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = -EINVAL;
 		goto out;
 	}

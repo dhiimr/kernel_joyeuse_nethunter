@@ -687,7 +687,11 @@ acm_bind(struct usb_configuration *c, struct usb_function *f)
 	acm_ss_out_desc.bEndpointAddress = acm_fs_out_desc.bEndpointAddress;
 
 	status = usb_assign_descriptors(f, acm_fs_function, acm_hs_function,
+<<<<<<< HEAD
 			acm_ss_function, NULL);
+=======
+			acm_ss_function, acm_ss_function);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (status)
 		goto fail;
 
@@ -704,7 +708,11 @@ fail:
 	if (acm->notify_req)
 		gs_free_req(acm->notify, acm->notify_req);
 
+<<<<<<< HEAD
 	ERROR(cdev, "%s/%pK: can't bind, err %d\n", f->name, f, status);
+=======
+	ERROR(cdev, "%s/%p: can't bind, err %d\n", f->name, f, status);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return status;
 }

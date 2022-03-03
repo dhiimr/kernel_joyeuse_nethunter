@@ -2,6 +2,10 @@ config FB_OLPC_DCON
 	tristate "One Laptop Per Child Display CONtroller support"
 	depends on OLPC && FB
 	depends on I2C
+<<<<<<< HEAD
+=======
+	depends on BACKLIGHT_LCD_SUPPORT
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	depends on (GPIO_CS5535 || GPIO_CS5535=n)
 	select BACKLIGHT_CLASS_DEVICE
 	---help---

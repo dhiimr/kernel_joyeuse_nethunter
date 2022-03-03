@@ -449,8 +449,13 @@ static const struct dw_pcie_host_ops kirin_pcie_host_ops = {
 	.host_init = kirin_pcie_host_init,
 };
 
+<<<<<<< HEAD
 static int __init kirin_add_pcie_port(struct dw_pcie *pci,
 				      struct platform_device *pdev)
+=======
+static int kirin_add_pcie_port(struct dw_pcie *pci,
+			       struct platform_device *pdev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	pci->pp.ops = &kirin_pcie_host_ops;
 

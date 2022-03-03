@@ -24,6 +24,7 @@
 
 int sysctl_tcp_thin_linear_timeouts __read_mostly;
 
+<<<<<<< HEAD
 static void set_tcp_default(void)
 {
 	sysctl_tcp_delack_seg = TCP_DELACK_SEG;
@@ -57,12 +58,18 @@ int tcp_use_userconfig_sysctl_handler(struct ctl_table *table, int write,
 	return ret;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  *  tcp_write_err() - close socket and save error info
  *  @sk:  The socket the error has appeared on.
  *
  *  Returns: Nothing (void)
  */
+<<<<<<< HEAD
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void tcp_write_err(struct sock *sk)
 {
 	sk->sk_err = sk->sk_err_soft ? : ETIMEDOUT;
@@ -173,6 +180,10 @@ static void tcp_mtu_probing(struct inet_connection_sock *icsk, struct sock *sk)
 			mss = tcp_mtu_to_mss(sk, icsk->icsk_mtup.search_low) >> 1;
 			mss = min(net->ipv4.sysctl_tcp_base_mss, mss);
 			mss = max(mss, 68 - tp->tcp_header_len);
+<<<<<<< HEAD
+=======
+			mss = max(mss, net->ipv4.sysctl_tcp_min_snd_mss);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			icsk->icsk_mtup.search_low = tcp_mss_to_mtu(sk, mss);
 			tcp_sync_mss(sk, icsk->icsk_pmtu_cookie);
 		}
@@ -389,7 +400,11 @@ static void tcp_probe_timer(struct sock *sk)
 			return;
 	}
 
+<<<<<<< HEAD
 	if (icsk->icsk_probes_out > max_probes) {
+=======
+	if (icsk->icsk_probes_out >= max_probes) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 abort:		tcp_write_err(sk);
 	} else {
 		/* Only send another probe if we didn't close things up. */
@@ -444,6 +459,10 @@ void tcp_retransmit_timer(struct sock *sk)
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct net *net = sock_net(sk);
 	struct inet_connection_sock *icsk = inet_csk(sk);
+<<<<<<< HEAD
+=======
+	struct sk_buff *skb;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (tp->fastopen_rsk) {
 		WARN_ON_ONCE(sk->sk_state != TCP_SYN_RECV &&
@@ -454,10 +473,20 @@ void tcp_retransmit_timer(struct sock *sk)
 		 */
 		return;
 	}
+<<<<<<< HEAD
 	if (!tp->packets_out)
 		goto out;
 
 	WARN_ON(tcp_write_queue_empty(sk));
+=======
+
+	if (!tp->packets_out)
+		return;
+
+	skb = tcp_rtx_queue_head(sk);
+	if (WARN_ON_ONCE(!skb))
+		return;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	tp->tlp_high_seq = 0;
 
@@ -490,16 +519,28 @@ void tcp_retransmit_timer(struct sock *sk)
 			goto out;
 		}
 		tcp_enter_loss(sk);
+<<<<<<< HEAD
 		tcp_retransmit_skb(sk, tcp_write_queue_head(sk), 1);
+=======
+		tcp_retransmit_skb(sk, skb, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__sk_dst_reset(sk);
 		goto out_reset_timer;
 	}
 
+<<<<<<< HEAD
+=======
+	__NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPTIMEOUTS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (tcp_write_timeout(sk))
 		goto out;
 
 	if (icsk->icsk_retransmits == 0) {
+<<<<<<< HEAD
 		int mib_idx;
+=======
+		int mib_idx = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (icsk->icsk_ca_state == TCP_CA_Recovery) {
 			if (tcp_is_sack(tp))
@@ -514,10 +555,16 @@ void tcp_retransmit_timer(struct sock *sk)
 				mib_idx = LINUX_MIB_TCPSACKFAILURES;
 			else
 				mib_idx = LINUX_MIB_TCPRENOFAILURES;
+<<<<<<< HEAD
 		} else {
 			mib_idx = LINUX_MIB_TCPTIMEOUTS;
 		}
 		__NET_INC_STATS(sock_net(sk), mib_idx);
+=======
+		}
+		if (mib_idx)
+			__NET_INC_STATS(sock_net(sk), mib_idx);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	tcp_enter_loss(sk);

@@ -178,7 +178,11 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
 	if (parent_rate == 0 || rate == 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	old_rate = rate;
+=======
+	old_rate = clk_hw_get_rate(hw);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rate_set = meson_clk_get_pll_settings(pll, rate);
 	if (!rate_set)

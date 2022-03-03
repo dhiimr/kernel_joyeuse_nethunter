@@ -249,7 +249,11 @@ void snd_hdac_print_channel_allocation(int spk_alloc, char *buf, int buflen)
 
 	for (i = 0, j = 0; i < ARRAY_SIZE(cea_speaker_allocation_names); i++) {
 		if (spk_alloc & (1 << i))
+<<<<<<< HEAD
 			j += snprintf(buf + j, buflen - j,  " %s",
+=======
+			j += scnprintf(buf + j, buflen - j,  " %s",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					cea_speaker_allocation_names[i]);
 	}
 	buf[j] = '\0';	/* necessary when j == 0 */

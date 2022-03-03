@@ -714,6 +714,10 @@ static int adapter_up(struct adapter *adapter)
 
 		if (adapter->flags & USING_MSIX)
 			name_msix_vecs(adapter);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		adapter->flags |= FULL_INIT_DONE;
 	}
 
@@ -739,8 +743,11 @@ static int adapter_up(struct adapter *adapter)
 	enable_rx(adapter);
 	t4vf_sge_start(adapter);
 
+<<<<<<< HEAD
 	/* Initialize hash mac addr list*/
 	INIT_LIST_HEAD(&adapter->mac_hlist);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -2934,6 +2941,12 @@ static int cxgb4vf_pci_probe(struct pci_dev *pdev,
 	if (err)
 		goto err_unmap_bar;
 
+<<<<<<< HEAD
+=======
+	/* Initialize hash mac addr list */
+	INIT_LIST_HEAD(&adapter->mac_hlist);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Allocate our "adapter ports" and stitch everything together.
 	 */

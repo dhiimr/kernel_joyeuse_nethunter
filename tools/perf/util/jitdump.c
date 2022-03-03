@@ -394,7 +394,11 @@ static int jit_repipe_code_load(struct jit_buf_desc *jd, union jr_entry *jr)
 	size_t size;
 	u16 idr_size;
 	const char *sym;
+<<<<<<< HEAD
 	uint32_t count;
+=======
+	uint64_t count;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret, csize, usize;
 	pid_t pid, tid;
 	struct {
@@ -417,7 +421,11 @@ static int jit_repipe_code_load(struct jit_buf_desc *jd, union jr_entry *jr)
 		return -1;
 
 	filename = event->mmap2.filename;
+<<<<<<< HEAD
 	size = snprintf(filename, PATH_MAX, "%s/jitted-%d-%u.so",
+=======
+	size = snprintf(filename, PATH_MAX, "%s/jitted-%d-%" PRIu64 ".so",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			jd->dir,
 			pid,
 			count);
@@ -530,7 +538,11 @@ static int jit_repipe_code_move(struct jit_buf_desc *jd, union jr_entry *jr)
 		return -1;
 
 	filename = event->mmap2.filename;
+<<<<<<< HEAD
 	size = snprintf(filename, PATH_MAX, "%s/jitted-%d-%"PRIu64,
+=======
+	size = snprintf(filename, PATH_MAX, "%s/jitted-%d-%" PRIu64 ".so",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	         jd->dir,
 	         pid,
 		 jr->move.code_index);

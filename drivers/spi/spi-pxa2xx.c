@@ -76,6 +76,13 @@ MODULE_ALIAS("platform:pxa2xx-spi");
 #define LPSS_CAPS_CS_EN_SHIFT			9
 #define LPSS_CAPS_CS_EN_MASK			(0xf << LPSS_CAPS_CS_EN_SHIFT)
 
+<<<<<<< HEAD
+=======
+#define LPSS_PRIV_CLOCK_GATE 0x38
+#define LPSS_PRIV_CLOCK_GATE_CLK_CTL_MASK 0x3
+#define LPSS_PRIV_CLOCK_GATE_CLK_CTL_FORCE_ON 0x3
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct lpss_config {
 	/* LPSS offset from drv_data->ioaddr */
 	unsigned offset;
@@ -92,6 +99,11 @@ struct lpss_config {
 	unsigned cs_sel_shift;
 	unsigned cs_sel_mask;
 	unsigned cs_num;
+<<<<<<< HEAD
+=======
+	/* Quirks */
+	unsigned cs_clk_stays_gated : 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* Keep these sorted with enum pxa_ssp_type */
@@ -150,6 +162,10 @@ static const struct lpss_config lpss_platforms[] = {
 		.tx_threshold_hi = 48,
 		.cs_sel_shift = 8,
 		.cs_sel_mask = 3 << 8,
+<<<<<<< HEAD
+=======
+		.cs_clk_stays_gated = true,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	{	/* LPSS_CNL_SSP */
 		.offset = 0x200,
@@ -162,6 +178,10 @@ static const struct lpss_config lpss_platforms[] = {
 		.tx_threshold_hi = 56,
 		.cs_sel_shift = 8,
 		.cs_sel_mask = 3 << 8,
+<<<<<<< HEAD
+=======
+		.cs_clk_stays_gated = true,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 };
 
@@ -385,6 +405,25 @@ static void lpss_ssp_cs_control(struct driver_data *drv_data, bool enable)
 	else
 		value |= LPSS_CS_CONTROL_CS_HIGH;
 	__lpss_ssp_write_priv(drv_data, config->reg_cs_ctrl, value);
+<<<<<<< HEAD
+=======
+	if (config->cs_clk_stays_gated) {
+		u32 clkgate;
+
+		/*
+		 * Changing CS alone when dynamic clock gating is on won't
+		 * actually flip CS at that time. This ruins SPI transfers
+		 * that specify delays, or have no data. Toggle the clock mode
+		 * to force on briefly to poke the CS pin to move.
+		 */
+		clkgate = __lpss_ssp_read_priv(drv_data, LPSS_PRIV_CLOCK_GATE);
+		value = (clkgate & ~LPSS_PRIV_CLOCK_GATE_CLK_CTL_MASK) |
+			LPSS_PRIV_CLOCK_GATE_CLK_CTL_FORCE_ON;
+
+		__lpss_ssp_write_priv(drv_data, LPSS_PRIV_CLOCK_GATE, value);
+		__lpss_ssp_write_priv(drv_data, LPSS_PRIV_CLOCK_GATE, clkgate);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void cs_assert(struct driver_data *drv_data)
@@ -938,10 +977,21 @@ static unsigned int ssp_get_clk_div(struct driver_data *drv_data, int rate)
 
 	rate = min_t(int, ssp_clk, rate);
 
+<<<<<<< HEAD
 	if (ssp->type == PXA25x_SSP || ssp->type == CE4100_SSP)
 		return (ssp_clk / (2 * rate) - 1) & 0xff;
 	else
 		return (ssp_clk / rate - 1) & 0xfff;
+=======
+	/*
+	 * Calculate the divisor for the SCR (Serial Clock Rate), avoiding
+	 * that the SSP transmission rate can be greater than the device rate
+	 */
+	if (ssp->type == PXA25x_SSP || ssp->type == CE4100_SSP)
+		return (DIV_ROUND_UP(ssp_clk, 2 * rate) - 1) & 0xff;
+	else
+		return (DIV_ROUND_UP(ssp_clk, rate) - 1)  & 0xfff;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static unsigned int pxa2xx_ssp_get_clk_div(struct driver_data *drv_data,
@@ -1501,12 +1551,16 @@ static const struct pci_device_id pxa2xx_spi_pci_compound_match[] = {
 
 static bool pxa2xx_spi_idma_filter(struct dma_chan *chan, void *param)
 {
+<<<<<<< HEAD
 	struct device *dev = param;
 
 	if (dev != chan->device->dev->parent)
 		return false;
 
 	return true;
+=======
+	return param == chan->device->dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct pxa2xx_spi_master *
@@ -1560,7 +1614,17 @@ pxa2xx_spi_init_pdata(struct platform_device *pdev)
 	}
 
 	ssp->clk = devm_clk_get(&pdev->dev, NULL);
+<<<<<<< HEAD
 	ssp->irq = platform_get_irq(pdev, 0);
+=======
+	if (IS_ERR(ssp->clk))
+		return NULL;
+
+	ssp->irq = platform_get_irq(pdev, 0);
+	if (ssp->irq < 0)
+		return NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ssp->type = type;
 	ssp->pdev = pdev;
 	ssp->port_id = pxa2xx_spi_get_port_id(adev);
@@ -1631,7 +1695,11 @@ static int pxa2xx_spi_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	master = spi_alloc_master(dev, sizeof(struct driver_data));
+=======
+	master = devm_spi_alloc_master(dev, sizeof(*drv_data));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!master) {
 		dev_err(&pdev->dev, "cannot alloc spi_master\n");
 		pxa_ssp_free(ssp);
@@ -1798,7 +1866,11 @@ static int pxa2xx_spi_probe(struct platform_device *pdev)
 
 	/* Register with the SPI framework */
 	platform_set_drvdata(pdev, drv_data);
+<<<<<<< HEAD
 	status = devm_spi_register_master(&pdev->dev, master);
+=======
+	status = spi_register_master(master);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (status != 0) {
 		dev_err(&pdev->dev, "problem registering spi master\n");
 		goto out_error_clock_enabled;
@@ -1812,7 +1884,10 @@ out_error_clock_enabled:
 	free_irq(ssp->irq, drv_data);
 
 out_error_master_alloc:
+<<<<<<< HEAD
 	spi_master_put(master);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pxa_ssp_free(ssp);
 	return status;
 }
@@ -1828,6 +1903,11 @@ static int pxa2xx_spi_remove(struct platform_device *pdev)
 
 	pm_runtime_get_sync(&pdev->dev);
 
+<<<<<<< HEAD
+=======
+	spi_unregister_master(drv_data->master);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Disable the SSP at the peripheral and SOC level */
 	pxa2xx_spi_write(drv_data, SSCR0, 0);
 	clk_disable_unprepare(ssp->clk);

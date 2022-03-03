@@ -987,9 +987,15 @@ static void spu_calc_load(void)
 	unsigned long active_tasks; /* fixed-point */
 
 	active_tasks = count_active_contexts() * FIXED_1;
+<<<<<<< HEAD
 	spu_avenrun[0] = calc_load(spu_avenrun[0], EXP_1, active_tasks);
 	spu_avenrun[1] = calc_load(spu_avenrun[1], EXP_5, active_tasks);
 	spu_avenrun[2] = calc_load(spu_avenrun[2], EXP_15, active_tasks);
+=======
+	CALC_LOAD(spu_avenrun[0], EXP_1, active_tasks);
+	CALC_LOAD(spu_avenrun[1], EXP_5, active_tasks);
+	CALC_LOAD(spu_avenrun[2], EXP_15, active_tasks);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void spusched_wake(unsigned long data)
@@ -1071,6 +1077,12 @@ void spuctx_switch_state(struct spu_context *ctx,
 	}
 }
 
+<<<<<<< HEAD
+=======
+#define LOAD_INT(x) ((x) >> FSHIFT)
+#define LOAD_FRAC(x) LOAD_INT(((x) & (FIXED_1-1)) * 100)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int show_spu_loadavg(struct seq_file *s, void *private)
 {
 	int a, b, c;

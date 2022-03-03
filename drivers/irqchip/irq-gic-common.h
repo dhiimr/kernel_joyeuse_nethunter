@@ -27,6 +27,7 @@ struct gic_quirk {
 	u32 iidr;
 	u32 mask;
 };
+<<<<<<< HEAD
 extern bool from_suspend;
 extern struct irq_chip gic_arch_extn;
 
@@ -35,6 +36,8 @@ extern int msm_show_resume_irq_mask;
 #else
 #define msm_show_resume_irq_mask 0
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 int gic_configure_irq(unsigned int irq, unsigned int type,
                        void __iomem *base, void (*sync_access)(void));

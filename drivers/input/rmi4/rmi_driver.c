@@ -232,7 +232,11 @@ static irqreturn_t rmi_irq_fn(int irq, void *dev_id)
 
 	if (count) {
 		kfree(attn_data.data);
+<<<<<<< HEAD
 		attn_data.data = NULL;
+=======
+		drvdata->attn_data.data = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (!kfifo_is_empty(&drvdata->attn_fifo))
@@ -883,7 +887,11 @@ static int rmi_create_function(struct rmi_device *rmi_dev,
 
 	error = rmi_register_function(fn);
 	if (error)
+<<<<<<< HEAD
 		goto err_put_fn;
+=======
+		return error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (pdt->function_number == 0x01)
 		data->f01_container = fn;
@@ -893,10 +901,13 @@ static int rmi_create_function(struct rmi_device *rmi_dev,
 	list_add_tail(&fn->node, &data->function_list);
 
 	return RMI_SCAN_CONTINUE;
+<<<<<<< HEAD
 
 err_put_fn:
 	put_device(&fn->dev);
 	return error;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void rmi_enable_irq(struct rmi_device *rmi_dev, bool clear_wake)
@@ -1224,7 +1235,12 @@ static int rmi_driver_probe(struct device *dev)
 	if (data->input) {
 		rmi_driver_set_input_name(rmi_dev, data->input);
 		if (!rmi_dev->xport->input) {
+<<<<<<< HEAD
 			if (input_register_device(data->input)) {
+=======
+			retval = input_register_device(data->input);
+			if (retval) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				dev_err(dev, "%s: Failed to register input device.\n",
 					__func__);
 				goto err_destroy_functions;

@@ -14,6 +14,11 @@ config XFRM_ALGO
 	tristate
 	select XFRM
 	select CRYPTO
+<<<<<<< HEAD
+=======
+	select CRYPTO_HASH
+	select CRYPTO_BLKCIPHER
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config XFRM_USER
 	tristate "Transformation user configuration interface"
@@ -25,6 +30,7 @@ config XFRM_USER
 
 	  If unsure, say Y.
 
+<<<<<<< HEAD
 config XFRM_INTERFACE
 	tristate "Transformation virtual interface"
 	depends on XFRM && IPV6
@@ -33,6 +39,8 @@ config XFRM_INTERFACE
 
 	  If unsure, say N.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config XFRM_SUB_POLICY
 	bool "Transformation sub policy support"
 	depends on XFRM

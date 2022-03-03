@@ -300,7 +300,12 @@ int arch_update_cpu_topology(void)
 	rc = __arch_update_cpu_topology();
 	for_each_online_cpu(cpu) {
 		dev = get_cpu_device(cpu);
+<<<<<<< HEAD
 		kobject_uevent(&dev->kobj, KOBJ_CHANGE);
+=======
+		if (dev)
+			kobject_uevent(&dev->kobj, KOBJ_CHANGE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return rc;
 }

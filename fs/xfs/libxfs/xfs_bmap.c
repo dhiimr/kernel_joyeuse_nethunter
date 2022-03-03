@@ -761,12 +761,22 @@ xfs_bmap_extents_to_btree(
 	*logflagsp = 0;
 	if ((error = xfs_alloc_vextent(&args))) {
 		xfs_iroot_realloc(ip, -1, whichfork);
+<<<<<<< HEAD
+=======
+		ASSERT(ifp->if_broot == NULL);
+		XFS_IFORK_FMT_SET(ip, whichfork, XFS_DINODE_FMT_EXTENTS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		xfs_btree_del_cursor(cur, XFS_BTREE_ERROR);
 		return error;
 	}
 
 	if (WARN_ON_ONCE(args.fsbno == NULLFSBLOCK)) {
 		xfs_iroot_realloc(ip, -1, whichfork);
+<<<<<<< HEAD
+=======
+		ASSERT(ifp->if_broot == NULL);
+		XFS_IFORK_FMT_SET(ip, whichfork, XFS_DINODE_FMT_EXTENTS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		xfs_btree_del_cursor(cur, XFS_BTREE_ERROR);
 		return -ENOSPC;
 	}
@@ -4006,6 +4016,7 @@ xfs_bmapi_read(
 	XFS_STATS_INC(mp, xs_blk_mapr);
 
 	ifp = XFS_IFORK_PTR(ip, whichfork);
+<<<<<<< HEAD
 
 	/* No CoW fork?  Return a hole. */
 	if (whichfork == XFS_COW_FORK && !ifp) {
@@ -4015,6 +4026,30 @@ xfs_bmapi_read(
 		mval->br_state = XFS_EXT_NORM;
 		*nmap = 1;
 		return 0;
+=======
+	if (!ifp) {
+		/* No CoW fork?  Return a hole. */
+		if (whichfork == XFS_COW_FORK) {
+			mval->br_startoff = bno;
+			mval->br_startblock = HOLESTARTBLOCK;
+			mval->br_blockcount = len;
+			mval->br_state = XFS_EXT_NORM;
+			*nmap = 1;
+			return 0;
+		}
+
+		/*
+		 * A missing attr ifork implies that the inode says we're in
+		 * extents or btree format but failed to pass the inode fork
+		 * verifier while trying to load it.  Treat that as a file
+		 * corruption too.
+		 */
+#ifdef DEBUG
+		xfs_alert(mp, "%s: inode %llu missing fork %d",
+				__func__, ip->i_ino, whichfork);
+#endif /* DEBUG */
+		return -EFSCORRUPTED;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (!(ifp->if_flags & XFS_IFEXTENTS)) {
@@ -5543,7 +5578,11 @@ __xfs_bunmapi(
 		 * Make sure we don't touch multiple AGF headers out of order
 		 * in a single transaction, as that could cause AB-BA deadlocks.
 		 */
+<<<<<<< HEAD
 		if (!wasdel) {
+=======
+		if (!wasdel && !isrt) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			agno = XFS_FSB_TO_AGNO(mp, del.br_startblock);
 			if (prev_agno != NULLAGNUMBER && prev_agno > agno)
 				break;

@@ -335,7 +335,14 @@ int phy_ethtool_ksettings_set(struct phy_device *phydev,
 
 	phydev->autoneg = autoneg;
 
+<<<<<<< HEAD
 	phydev->speed = speed;
+=======
+	if (autoneg == AUTONEG_DISABLE) {
+		phydev->speed = speed;
+		phydev->duplex = duplex;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	phydev->advertising = advertising;
 
@@ -344,8 +351,11 @@ int phy_ethtool_ksettings_set(struct phy_device *phydev,
 	else
 		phydev->advertising &= ~ADVERTISED_Autoneg;
 
+<<<<<<< HEAD
 	phydev->duplex = duplex;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	phydev->mdix_ctrl = cmd->base.eth_tp_mdix_ctrl;
 
 	/* Restart the PHY */
@@ -1257,9 +1267,17 @@ int phy_ethtool_set_eee(struct phy_device *phydev, struct ethtool_eee *data)
 		/* Restart autonegotiation so the new modes get sent to the
 		 * link partner.
 		 */
+<<<<<<< HEAD
 		ret = phy_restart_aneg(phydev);
 		if (ret < 0)
 			return ret;
+=======
+		if (phydev->autoneg == AUTONEG_ENABLE) {
+			ret = phy_restart_aneg(phydev);
+			if (ret < 0)
+				return ret;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return 0;

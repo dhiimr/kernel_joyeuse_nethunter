@@ -136,7 +136,11 @@
 	status = "okay";
 
 	clocks = <&mstp1_clks R8A7779_CLK_DU>, <&x3_clk>;
+<<<<<<< HEAD
 	clock-names = "du", "dclkin.0";
+=======
+	clock-names = "du.0", "dclkin.0";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ports {
 		port@0 {

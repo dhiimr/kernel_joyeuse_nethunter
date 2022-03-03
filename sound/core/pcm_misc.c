@@ -171,9 +171,13 @@ static struct pcm_format_data pcm_formats[(INT)SNDRV_PCM_FORMAT_LAST+1] = {
 		.le = -1, .signd = -1,
 	},
 	[SNDRV_PCM_FORMAT_SPECIAL] = {
+<<<<<<< HEAD
 		/* set the width and phys same as S16_LE */
 		.width = 16, .phys = 16, .le = -1, .signd = -1,
 		.silence = {},
+=======
+		.le = -1, .signd = -1,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	[SNDRV_PCM_FORMAT_S24_3LE] = {
 		.width = 24, .phys = 24, .le = 1, .signd = 1,

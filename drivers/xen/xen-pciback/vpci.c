@@ -69,7 +69,11 @@ static int __xen_pcibk_add_pci_dev(struct xen_pcibk_device *pdev,
 				   struct pci_dev *dev, int devid,
 				   publish_pci_dev_cb publish_cb)
 {
+<<<<<<< HEAD
 	int err = 0, slot, func = -1;
+=======
+	int err = 0, slot, func = PCI_FUNC(dev->devfn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct pci_dev_entry *t, *dev_entry;
 	struct vpci_dev_data *vpci_dev = pdev->pci_dev_data;
 
@@ -94,23 +98,42 @@ static int __xen_pcibk_add_pci_dev(struct xen_pcibk_device *pdev,
 
 	/*
 	 * Keep multi-function devices together on the virtual PCI bus, except
+<<<<<<< HEAD
 	 * virtual functions.
 	 */
 	if (!dev->is_virtfn) {
+=======
+	 * that we want to keep virtual functions at func 0 on their own. They
+	 * aren't multi-function devices and hence their presence at func 0
+	 * may cause guests to not scan the other functions.
+	 */
+	if (!dev->is_virtfn || func) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		for (slot = 0; slot < PCI_SLOT_MAX; slot++) {
 			if (list_empty(&vpci_dev->dev_list[slot]))
 				continue;
 
 			t = list_entry(list_first(&vpci_dev->dev_list[slot]),
 				       struct pci_dev_entry, list);
+<<<<<<< HEAD
+=======
+			if (t->dev->is_virtfn && !PCI_FUNC(t->dev->devfn))
+				continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			if (match_slot(dev, t->dev)) {
 				pr_info("vpci: %s: assign to virtual slot %d func %d\n",
 					pci_name(dev), slot,
+<<<<<<< HEAD
 					PCI_FUNC(dev->devfn));
 				list_add_tail(&dev_entry->list,
 					      &vpci_dev->dev_list[slot]);
 				func = PCI_FUNC(dev->devfn);
+=======
+					func);
+				list_add_tail(&dev_entry->list,
+					      &vpci_dev->dev_list[slot]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				goto unlock;
 			}
 		}
@@ -123,7 +146,10 @@ static int __xen_pcibk_add_pci_dev(struct xen_pcibk_device *pdev,
 				pci_name(dev), slot);
 			list_add_tail(&dev_entry->list,
 				      &vpci_dev->dev_list[slot]);
+<<<<<<< HEAD
 			func = dev->is_virtfn ? 0 : PCI_FUNC(dev->devfn);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto unlock;
 		}
 	}

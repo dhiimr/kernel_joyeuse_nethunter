@@ -20,9 +20,24 @@ struct shmid_kernel /* private to the kernel */
 	pid_t			shm_lprid;
 	struct user_struct	*mlock_user;
 
+<<<<<<< HEAD
 	/* The task created the shm object.  NULL if the task is dead. */
 	struct task_struct	*shm_creator;
 	struct list_head	shm_clist;	/* list by creator */
+=======
+	/*
+	 * The task created the shm object, for
+	 * task_lock(shp->shm_creator)
+	 */
+	struct task_struct	*shm_creator;
+
+	/*
+	 * List by creator. task_lock(->shm_creator) required for read/write.
+	 * If list_empty(), then the creator is dead already.
+	 */
+	struct list_head	shm_clist;
+	struct ipc_namespace	*ns;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 } __randomize_layout;
 
 /* shm_mode upper byte flags */

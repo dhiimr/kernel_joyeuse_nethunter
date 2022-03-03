@@ -45,11 +45,14 @@ extern int bvme6000_set_clock_mmss (unsigned long);
 extern void bvme6000_reset (void);
 void bvme6000_set_vectors (void);
 
+<<<<<<< HEAD
 /* Save tick handler routine pointer, will point to xtime_update() in
  * kernel/timer/timekeeping.c, called via bvme6000_process_int() */
 
 static irq_handler_t tick_handler;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 int __init bvme6000_parse_bootinfo(const struct bi_record *bi)
 {
@@ -159,12 +162,27 @@ irqreturn_t bvme6000_abort_int (int irq, void *dev_id)
 
 static irqreturn_t bvme6000_timer_int (int irq, void *dev_id)
 {
+<<<<<<< HEAD
     volatile RtcPtr_t rtc = (RtcPtr_t)BVME_RTC_BASE;
     unsigned char msr = rtc->msr & 0xc0;
 
     rtc->msr = msr | 0x20;		/* Ack the interrupt */
 
     return tick_handler(irq, dev_id);
+=======
+    irq_handler_t timer_routine = dev_id;
+    unsigned long flags;
+    volatile RtcPtr_t rtc = (RtcPtr_t)BVME_RTC_BASE;
+    unsigned char msr;
+
+    local_irq_save(flags);
+    msr = rtc->msr & 0xc0;
+    rtc->msr = msr | 0x20;		/* Ack the interrupt */
+    timer_routine(0, NULL);
+    local_irq_restore(flags);
+
+    return IRQ_HANDLED;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -183,9 +201,14 @@ void bvme6000_sched_init (irq_handler_t timer_routine)
 
     rtc->msr = 0;	/* Ensure timer registers accessible */
 
+<<<<<<< HEAD
     tick_handler = timer_routine;
     if (request_irq(BVME_IRQ_RTC, bvme6000_timer_int, 0,
 				"timer", bvme6000_timer_int))
+=======
+    if (request_irq(BVME_IRQ_RTC, bvme6000_timer_int, 0, "timer",
+                    timer_routine))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	panic ("Couldn't register timer int");
 
     rtc->t1cr_omr = 0x04;	/* Mode 2, ext clk */

@@ -935,7 +935,11 @@ static ssize_t store_no_turbo(struct kobject *a, struct kobj_attribute *b,
 
 	update_turbo_state();
 	if (global.turbo_disabled) {
+<<<<<<< HEAD
 		pr_warn("Turbo disabled by BIOS or unavailable on processor\n");
+=======
+		pr_notice_once("Turbo disabled by BIOS or unavailable on processor\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mutex_unlock(&intel_pstate_limits_lock);
 		mutex_unlock(&intel_pstate_driver_lock);
 		return -EPERM;
@@ -1378,6 +1382,10 @@ static void intel_pstate_get_cpu_pstates(struct cpudata *cpu)
 
 		intel_pstate_get_hwp_max(cpu->cpu, &phy_max, &current_max);
 		cpu->pstate.turbo_freq = phy_max * cpu->pstate.scaling;
+<<<<<<< HEAD
+=======
+		cpu->pstate.turbo_pstate = phy_max;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		cpu->pstate.turbo_freq = cpu->pstate.turbo_pstate * cpu->pstate.scaling;
 	}
@@ -1625,7 +1633,11 @@ static const struct pstate_funcs bxt_funcs = {
 static const struct x86_cpu_id intel_pstate_cpu_ids[] = {
 	ICPU(INTEL_FAM6_SANDYBRIDGE, 		core_funcs),
 	ICPU(INTEL_FAM6_SANDYBRIDGE_X,		core_funcs),
+<<<<<<< HEAD
 	ICPU(INTEL_FAM6_ATOM_SILVERMONT1,	silvermont_funcs),
+=======
+	ICPU(INTEL_FAM6_ATOM_SILVERMONT,	silvermont_funcs),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ICPU(INTEL_FAM6_IVYBRIDGE,		core_funcs),
 	ICPU(INTEL_FAM6_HASWELL_CORE,		core_funcs),
 	ICPU(INTEL_FAM6_BROADWELL_CORE,		core_funcs),
@@ -1642,7 +1654,11 @@ static const struct x86_cpu_id intel_pstate_cpu_ids[] = {
 	ICPU(INTEL_FAM6_XEON_PHI_KNL,		knl_funcs),
 	ICPU(INTEL_FAM6_XEON_PHI_KNM,		knl_funcs),
 	ICPU(INTEL_FAM6_ATOM_GOLDMONT,		bxt_funcs),
+<<<<<<< HEAD
 	ICPU(INTEL_FAM6_ATOM_GEMINI_LAKE,       bxt_funcs),
+=======
+	ICPU(INTEL_FAM6_ATOM_GOLDMONT_PLUS,     bxt_funcs),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{}
 };
 MODULE_DEVICE_TABLE(x86cpu, intel_pstate_cpu_ids);
@@ -2097,9 +2113,21 @@ static int intel_pstate_update_status(const char *buf, size_t size)
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (size == 3 && !strncmp(buf, "off", size))
 		return intel_pstate_driver ?
 			intel_pstate_unregister_driver() : -EINVAL;
+=======
+	if (size == 3 && !strncmp(buf, "off", size)) {
+		if (!intel_pstate_driver)
+			return -EINVAL;
+
+		if (hwp_active)
+			return -EBUSY;
+
+		return intel_pstate_unregister_driver();
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (size == 6 && !strncmp(buf, "active", size)) {
 		if (intel_pstate_driver) {

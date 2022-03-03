@@ -16,6 +16,11 @@ int nvkm_i2c_aux_ctor(const struct nvkm_i2c_aux_func *, struct nvkm_i2c_pad *,
 int nvkm_i2c_aux_new_(const struct nvkm_i2c_aux_func *, struct nvkm_i2c_pad *,
 		      int id, struct nvkm_i2c_aux **);
 void nvkm_i2c_aux_del(struct nvkm_i2c_aux **);
+<<<<<<< HEAD
+=======
+void nvkm_i2c_aux_init(struct nvkm_i2c_aux *);
+void nvkm_i2c_aux_fini(struct nvkm_i2c_aux *);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int nvkm_i2c_aux_xfer(struct nvkm_i2c_aux *, bool retry, u8 type,
 		      u32 addr, u8 *data, u8 *size);
 

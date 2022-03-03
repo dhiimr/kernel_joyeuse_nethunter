@@ -206,6 +206,14 @@ static void imx_ldb_encoder_enable(struct drm_encoder *encoder)
 	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
 	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
 
+<<<<<<< HEAD
+=======
+	if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
+		dev_warn(ldb->dev, "%s: invalid mux %d\n", __func__, mux);
+		return;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	drm_panel_prepare(imx_ldb_ch->panel);
 
 	if (dual) {
@@ -264,6 +272,14 @@ imx_ldb_encoder_atomic_mode_set(struct drm_encoder *encoder,
 	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
 	u32 bus_format = imx_ldb_ch->bus_format;
 
+<<<<<<< HEAD
+=======
+	if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
+		dev_warn(ldb->dev, "%s: invalid mux %d\n", __func__, mux);
+		return;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (mode->clock > 170000) {
 		dev_warn(ldb->dev,
 			 "%s: mode exceeds 170 MHz pixel clock\n", __func__);
@@ -311,18 +327,32 @@ static void imx_ldb_encoder_disable(struct drm_encoder *encoder)
 {
 	struct imx_ldb_channel *imx_ldb_ch = enc_to_imx_ldb_ch(encoder);
 	struct imx_ldb *ldb = imx_ldb_ch->ldb;
+<<<<<<< HEAD
+=======
+	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int mux, ret;
 
 	drm_panel_disable(imx_ldb_ch->panel);
 
+<<<<<<< HEAD
 	if (imx_ldb_ch == &ldb->channel[0])
 		ldb->ldb_ctrl &= ~LDB_CH0_MODE_EN_MASK;
 	else if (imx_ldb_ch == &ldb->channel[1])
+=======
+	if (imx_ldb_ch == &ldb->channel[0] || dual)
+		ldb->ldb_ctrl &= ~LDB_CH0_MODE_EN_MASK;
+	if (imx_ldb_ch == &ldb->channel[1] || dual)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ldb->ldb_ctrl &= ~LDB_CH1_MODE_EN_MASK;
 
 	regmap_write(ldb->regmap, IOMUXC_GPR2, ldb->ldb_ctrl);
 
+<<<<<<< HEAD
 	if (ldb->ldb_ctrl & LDB_SPLIT_MODE_EN) {
+=======
+	if (dual) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		clk_disable_unprepare(ldb->clk[0]);
 		clk_disable_unprepare(ldb->clk[1]);
 	}

@@ -48,7 +48,11 @@ int is_printable_array(char *p, unsigned int len)
 
 	len--;
 
+<<<<<<< HEAD
 	for (i = 0; i < len; i++) {
+=======
+	for (i = 0; i < len && p[i]; i++) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!isprint(p[i]) && !isspace(p[i]))
 			return 0;
 	}

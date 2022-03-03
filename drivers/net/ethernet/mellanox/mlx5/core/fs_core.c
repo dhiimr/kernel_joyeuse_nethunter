@@ -795,17 +795,31 @@ static int connect_fwd_rules(struct mlx5_core_dev *dev,
 static int connect_flow_table(struct mlx5_core_dev *dev, struct mlx5_flow_table *ft,
 			      struct fs_prio *prio)
 {
+<<<<<<< HEAD
 	struct mlx5_flow_table *next_ft;
+=======
+	struct mlx5_flow_table *next_ft, *first_ft;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err = 0;
 
 	/* Connect_prev_fts and update_root_ft_create are mutually exclusive */
 
+<<<<<<< HEAD
 	if (list_empty(&prio->node.children)) {
+=======
+	first_ft = list_first_entry_or_null(&prio->node.children,
+					    struct mlx5_flow_table, node.list);
+	if (!first_ft || first_ft->level > ft->level) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		err = connect_prev_fts(dev, ft, prio);
 		if (err)
 			return err;
 
+<<<<<<< HEAD
 		next_ft = find_next_chained_ft(prio);
+=======
+		next_ft = first_ft ? first_ft : find_next_chained_ft(prio);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		err = connect_fwd_rules(dev, ft, next_ft);
 		if (err)
 			return err;
@@ -1703,7 +1717,11 @@ static int disconnect_flow_table(struct mlx5_flow_table *ft)
 				node.list) == ft))
 		return 0;
 
+<<<<<<< HEAD
 	next_ft = find_next_chained_ft(prio);
+=======
+	next_ft = find_next_ft(ft);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = connect_fwd_rules(dev, next_ft, ft);
 	if (err)
 		return err;
@@ -1960,7 +1978,11 @@ static struct mlx5_flow_root_namespace *create_root_ns(struct mlx5_flow_steering
 	struct mlx5_flow_namespace *ns;
 
 	/* Create the root namespace */
+<<<<<<< HEAD
 	root_ns = kvzalloc(sizeof(*root_ns), GFP_KERNEL);
+=======
+	root_ns = kzalloc(sizeof(*root_ns), GFP_KERNEL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!root_ns)
 		return NULL;
 

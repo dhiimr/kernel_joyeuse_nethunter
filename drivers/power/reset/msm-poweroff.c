@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 /* Copyright (c) 2013-2019, The Linux Foundation. All rights reserved.
  * Copyright (C) 2020 XiaoMi, Inc.
+=======
+/* Copyright (c) 2013, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,13 +20,17 @@
 #include <linux/err.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/io.h>
 #include <linux/of.h>
 #include <linux/platform_device.h>
 #include <linux/module.h>
 #include <linux/reboot.h>
 #include <linux/pm.h>
+<<<<<<< HEAD
 #include <linux/delay.h>
 #include <linux/input/qpnp-power-on.h>
 #include <linux/of_address.h>
@@ -561,10 +569,35 @@ static struct attribute_group reset_attr_group = {
 };
 #endif
 
+=======
+
+static void __iomem *msm_ps_hold;
+static int do_msm_restart(struct notifier_block *nb, unsigned long action,
+			   void *data)
+{
+	writel(0, msm_ps_hold);
+	mdelay(10000);
+
+	return NOTIFY_DONE;
+}
+
+static struct notifier_block restart_nb = {
+	.notifier_call = do_msm_restart,
+	.priority = 128,
+};
+
+static void do_msm_poweroff(void)
+{
+	/* TODO: Add poweroff capability */
+	do_msm_restart(&restart_nb, 0, NULL);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int msm_restart_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct resource *mem;
+<<<<<<< HEAD
 	struct device_node *np;
 	int ret = 0;
 
@@ -654,10 +687,15 @@ skip_sysfs_create:
 	}
 
 	mem = platform_get_resource_byname(pdev, IORESOURCE_MEM, "pshold-base");
+=======
+
+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	msm_ps_hold = devm_ioremap_resource(dev, mem);
 	if (IS_ERR(msm_ps_hold))
 		return PTR_ERR(msm_ps_hold);
 
+<<<<<<< HEAD
 	mem = platform_get_resource_byname(pdev, IORESOURCE_MEM,
 					   "tcsr-boot-misc-detect");
 	if (mem)
@@ -687,6 +725,13 @@ err_restart_reason:
 	iounmap(dload_mode_addr);
 #endif
 	return ret;
+=======
+	register_restart_handler(&restart_nb);
+
+	pm_power_off = do_msm_poweroff;
+
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct of_device_id of_msm_restart_match[] = {
@@ -707,4 +752,8 @@ static int __init msm_restart_init(void)
 {
 	return platform_driver_register(&msm_restart_driver);
 }
+<<<<<<< HEAD
 pure_initcall(msm_restart_init);
+=======
+device_initcall(msm_restart_init);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

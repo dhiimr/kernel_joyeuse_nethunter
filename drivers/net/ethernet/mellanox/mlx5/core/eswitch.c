@@ -1783,7 +1783,11 @@ int mlx5_eswitch_set_vport_state(struct mlx5_eswitch *esw,
 
 unlock:
 	mutex_unlock(&esw->state_lock);
+<<<<<<< HEAD
 	return 0;
+=======
+	return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 int mlx5_eswitch_get_vport_config(struct mlx5_eswitch *esw,
@@ -1921,12 +1925,24 @@ static u32 calculate_vports_min_rate_divider(struct mlx5_eswitch *esw)
 		max_guarantee = evport->info.min_rate;
 	}
 
+<<<<<<< HEAD
 	return max_t(u32, max_guarantee / fw_max_bw_share, 1);
 }
 
 static int normalize_vports_min_rate(struct mlx5_eswitch *esw, u32 divider)
 {
 	u32 fw_max_bw_share = MLX5_CAP_QOS(esw->dev, max_tsar_bw_share);
+=======
+	if (max_guarantee)
+		return max_t(u32, max_guarantee / fw_max_bw_share, 1);
+	return 0;
+}
+
+static int normalize_vports_min_rate(struct mlx5_eswitch *esw)
+{
+	u32 fw_max_bw_share = MLX5_CAP_QOS(esw->dev, max_tsar_bw_share);
+	u32 divider = calculate_vports_min_rate_divider(esw);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct mlx5_vport *evport;
 	u32 vport_max_rate;
 	u32 vport_min_rate;
@@ -1940,9 +1956,15 @@ static int normalize_vports_min_rate(struct mlx5_eswitch *esw, u32 divider)
 			continue;
 		vport_min_rate = evport->info.min_rate;
 		vport_max_rate = evport->info.max_rate;
+<<<<<<< HEAD
 		bw_share = MLX5_MIN_BW_SHARE;
 
 		if (vport_min_rate)
+=======
+		bw_share = 0;
+
+		if (divider)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			bw_share = MLX5_RATE_TO_BW_SHARE(vport_min_rate,
 							 divider,
 							 fw_max_bw_share);
@@ -1967,7 +1989,10 @@ int mlx5_eswitch_set_vport_rate(struct mlx5_eswitch *esw, int vport,
 	struct mlx5_vport *evport;
 	u32 fw_max_bw_share;
 	u32 previous_min_rate;
+<<<<<<< HEAD
 	u32 divider;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool min_rate_supported;
 	bool max_rate_supported;
 	int err = 0;
@@ -1993,8 +2018,12 @@ int mlx5_eswitch_set_vport_rate(struct mlx5_eswitch *esw, int vport,
 
 	previous_min_rate = evport->info.min_rate;
 	evport->info.min_rate = min_rate;
+<<<<<<< HEAD
 	divider = calculate_vports_min_rate_divider(esw);
 	err = normalize_vports_min_rate(esw, divider);
+=======
+	err = normalize_vports_min_rate(esw);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (err) {
 		evport->info.min_rate = previous_min_rate;
 		goto unlock;

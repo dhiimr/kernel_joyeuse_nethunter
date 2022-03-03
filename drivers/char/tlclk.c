@@ -777,6 +777,7 @@ static int __init tlclk_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
 	ret = register_chrdev(tlclk_major, "telco_clock", &tlclk_fops);
 	if (ret < 0) {
 		printk(KERN_ERR "tlclk: can't get major %d.\n", tlclk_major);
@@ -788,6 +789,23 @@ static int __init tlclk_init(void)
 		ret = -ENOMEM;
 		goto out1;
 	}
+=======
+	telclk_interrupt = (inb(TLCLK_REG7) & 0x0f);
+
+	alarm_events = kzalloc( sizeof(struct tlclk_alarms), GFP_KERNEL);
+	if (!alarm_events) {
+		ret = -ENOMEM;
+		goto out1;
+	}
+
+	ret = register_chrdev(tlclk_major, "telco_clock", &tlclk_fops);
+	if (ret < 0) {
+		printk(KERN_ERR "tlclk: can't get major %d.\n", tlclk_major);
+		kfree(alarm_events);
+		return ret;
+	}
+	tlclk_major = ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Read telecom clock IRQ number (Set by BIOS) */
 	if (!request_region(TLCLK_BASE, 8, "telco_clock")) {
@@ -796,7 +814,10 @@ static int __init tlclk_init(void)
 		ret = -EBUSY;
 		goto out2;
 	}
+<<<<<<< HEAD
 	telclk_interrupt = (inb(TLCLK_REG7) & 0x0f);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (0x0F == telclk_interrupt ) { /* not MCPBL0010 ? */
 		printk(KERN_ERR "telclk_interrupt = 0x%x non-mcpbl0010 hw.\n",
@@ -837,8 +858,13 @@ out3:
 	release_region(TLCLK_BASE, 8);
 out2:
 	kfree(alarm_events);
+<<<<<<< HEAD
 out1:
 	unregister_chrdev(tlclk_major, "telco_clock");
+=======
+	unregister_chrdev(tlclk_major, "telco_clock");
+out1:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 

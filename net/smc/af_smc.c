@@ -1178,8 +1178,15 @@ static unsigned int smc_poll(struct file *file, struct socket *sock,
 static int smc_shutdown(struct socket *sock, int how)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 	struct smc_sock *smc;
 	int rc = -EINVAL;
+=======
+	bool do_shutdown = true;
+	struct smc_sock *smc;
+	int rc = -EINVAL;
+	int old_state;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int rc1 = 0;
 
 	smc = smc_sk(sk);
@@ -1206,7 +1213,15 @@ static int smc_shutdown(struct socket *sock, int how)
 	}
 	switch (how) {
 	case SHUT_RDWR:		/* shutdown in both directions */
+<<<<<<< HEAD
 		rc = smc_close_active(smc);
+=======
+		old_state = sk->sk_state;
+		rc = smc_close_active(smc);
+		if (old_state == SMC_ACTIVE &&
+		    sk->sk_state == SMC_PEERCLOSEWAIT1)
+			do_shutdown = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	case SHUT_WR:
 		rc = smc_close_shutdown_write(smc);
@@ -1216,7 +1231,11 @@ static int smc_shutdown(struct socket *sock, int how)
 		/* nothing more to do because peer is not involved */
 		break;
 	}
+<<<<<<< HEAD
 	if (smc->clcsock)
+=======
+	if (do_shutdown && smc->clcsock)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rc1 = kernel_sock_shutdown(smc->clcsock, how);
 	/* map sock_shutdown_cmd constants to sk_shutdown value range */
 	sk->sk_shutdown |= how + 1;

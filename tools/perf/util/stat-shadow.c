@@ -271,7 +271,11 @@ static struct perf_evsel *perf_stat__find_event(struct perf_evlist *evsel_list,
 	struct perf_evsel *c2;
 
 	evlist__for_each_entry (evsel_list, c2) {
+<<<<<<< HEAD
 		if (!strcasecmp(c2->name, name))
+=======
+		if (!strcasecmp(c2->name, name) && !c2->collect_stat)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return c2;
 	}
 	return NULL;
@@ -310,7 +314,12 @@ void perf_stat__collect_metric_expr(struct perf_evlist *evsel_list)
 			if (leader) {
 				/* Search in group */
 				for_each_group_member (oc, leader) {
+<<<<<<< HEAD
 					if (!strcasecmp(oc->name, metric_names[i])) {
+=======
+					if (!strcasecmp(oc->name, metric_names[i]) &&
+						!oc->collect_stat) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						found = true;
 						break;
 					}

@@ -61,7 +61,11 @@
 
 #ifdef CONFIG_CC_STACKPROTECTOR
 #include <linux/stackprotector.h>
+<<<<<<< HEAD
 unsigned long __stack_chk_guard __read_mostly;
+=======
+unsigned long __stack_chk_guard __ro_after_init;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 EXPORT_SYMBOL(__stack_chk_guard);
 #endif
 
@@ -88,6 +92,7 @@ void arch_cpu_idle(void)
 	trace_cpu_idle_rcuidle(PWR_EVENT_EXIT, smp_processor_id());
 }
 
+<<<<<<< HEAD
 void arch_cpu_idle_enter(void)
 {
 	idle_notifier_call_chain(IDLE_START);
@@ -98,6 +103,8 @@ void arch_cpu_idle_exit(void)
 	idle_notifier_call_chain(IDLE_END);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_HOTPLUG_CPU
 void arch_cpu_idle_dead(void)
 {
@@ -180,6 +187,7 @@ void machine_restart(char *cmd)
 	while (1);
 }
 
+<<<<<<< HEAD
 /*
  * dump a block of kernel memory from around the given address
  */
@@ -238,6 +246,8 @@ static void show_extra_register_data(struct pt_regs *regs, int nbytes)
 	set_fs(fs);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void __show_regs(struct pt_regs *regs)
 {
 	int i, top_reg;
@@ -271,9 +281,12 @@ void __show_regs(struct pt_regs *regs)
 
 		pr_cont("\n");
 	}
+<<<<<<< HEAD
 	if (!user_mode(regs))
 		show_extra_register_data(regs, 64);
 	printk("\n");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void show_regs(struct pt_regs * regs)
@@ -423,6 +436,16 @@ static void ssbs_thread_switch(struct task_struct *next)
 	if (unlikely(next->flags & PF_KTHREAD))
 		return;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * If all CPUs implement the SSBS extension, then we just need to
+	 * context-switch the PSTATE field.
+	 */
+	if (cpu_have_feature(cpu_feature(SSBS)))
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* If the mitigation is enabled, then we leave SSBS clear. */
 	if ((arm64_get_ssbd_state() == ARM64_SSBD_FORCE_ENABLE) ||
 	    test_tsk_thread_flag(next, TIF_SSBD))

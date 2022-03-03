@@ -63,6 +63,13 @@ static struct property *dlpar_parse_cc_property(struct cc_workarea *ccwa)
 
 	name = (char *)ccwa + be32_to_cpu(ccwa->name_offset);
 	prop->name = kstrdup(name, GFP_KERNEL);
+<<<<<<< HEAD
+=======
+	if (!prop->name) {
+		dlpar_free_cc_property(prop);
+		return NULL;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	prop->length = be32_to_cpu(ccwa->prop_length);
 	value = (char *)ccwa + be32_to_cpu(ccwa->prop_offset);
@@ -135,7 +142,10 @@ void dlpar_free_cc_nodes(struct device_node *dn)
 #define NEXT_PROPERTY   3
 #define PREV_PARENT     4
 #define MORE_MEMORY     5
+<<<<<<< HEAD
 #define CALL_AGAIN	-2
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define ERR_CFG_USE     -9003
 
 struct device_node *dlpar_configure_connector(__be32 drc_index,
@@ -177,6 +187,12 @@ struct device_node *dlpar_configure_connector(__be32 drc_index,
 
 		spin_unlock(&rtas_data_buf_lock);
 
+<<<<<<< HEAD
+=======
+		if (rtas_busy_delay(rc))
+			continue;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		switch (rc) {
 		case COMPLETE:
 			break;
@@ -229,9 +245,12 @@ struct device_node *dlpar_configure_connector(__be32 drc_index,
 			parent_path = last_dn->parent->full_name;
 			break;
 
+<<<<<<< HEAD
 		case CALL_AGAIN:
 			break;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		case MORE_MEMORY:
 		case ERR_CFG_USE:
 		default:

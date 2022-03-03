@@ -357,7 +357,11 @@ nfs3_proc_create(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
 				break;
 
 			case NFS3_CREATE_UNCHECKED:
+<<<<<<< HEAD
 				goto out;
+=======
+				goto out_release_acls;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		nfs_fattr_init(data->res.dir_attr);
 		nfs_fattr_init(data->res.fattr);
@@ -702,7 +706,11 @@ nfs3_proc_mknod(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
 		break;
 	default:
 		status = -EINVAL;
+<<<<<<< HEAD
 		goto out;
+=======
+		goto out_release_acls;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	status = nfs3_do_create(dir, dentry, data);

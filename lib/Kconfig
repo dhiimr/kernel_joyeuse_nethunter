@@ -413,6 +413,13 @@ config HAS_DMA
 	depends on !NO_DMA
 	default y
 
+<<<<<<< HEAD
+=======
+config SGL_ALLOC
+	bool
+	default n
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config DMA_NOOP_OPS
 	bool
 	depends on HAS_DMA && (!64BIT || ARCH_DMA_ADDR_T_64BIT)
@@ -574,6 +581,7 @@ config STACKDEPOT
 	bool
 	select STACKTRACE
 
+<<<<<<< HEAD
 config STACK_HASH_ORDER_SHIFT
 	int "stack depot hash size (12 => 4KB, 20 => 1024KB)"
 	range 12 20
@@ -583,6 +591,8 @@ config STACK_HASH_ORDER_SHIFT
 	 Select the hash size as a power of 2 for the stackdepot hash table.
 	 Choose a lower value to reduce the memory impact.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config SBITMAP
 	bool
 

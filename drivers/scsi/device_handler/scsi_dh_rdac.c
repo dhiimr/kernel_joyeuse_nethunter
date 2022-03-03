@@ -453,8 +453,13 @@ static int initialize_controller(struct scsi_device *sdev,
 		if (!h->ctlr)
 			err = SCSI_DH_RES_TEMP_UNAVAIL;
 		else {
+<<<<<<< HEAD
 			list_add_rcu(&h->node, &h->ctlr->dh_list);
 			h->sdev = sdev;
+=======
+			h->sdev = sdev;
+			list_add_rcu(&h->node, &h->ctlr->dh_list);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		spin_unlock(&list_lock);
 		err = SCSI_DH_OK;
@@ -546,6 +551,11 @@ static void send_mode_select(struct work_struct *work)
 	spin_unlock(&ctlr->ms_lock);
 
  retry:
+<<<<<<< HEAD
+=======
+	memset(cdb, 0, sizeof(cdb));
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	data_size = rdac_failover_get(ctlr, &list, cdb);
 
 	RDAC_LOG(RDAC_LOG_FAILOVER, sdev, "array %s, ctlr %d, "
@@ -777,11 +787,18 @@ static void rdac_bus_detach( struct scsi_device *sdev )
 	spin_lock(&list_lock);
 	if (h->ctlr) {
 		list_del_rcu(&h->node);
+<<<<<<< HEAD
 		h->sdev = NULL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kref_put(&h->ctlr->kref, release_controller);
 	}
 	spin_unlock(&list_lock);
 	sdev->handler_data = NULL;
+<<<<<<< HEAD
+=======
+	synchronize_rcu();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(h);
 }
 

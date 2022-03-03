@@ -1622,6 +1622,11 @@ static void panel_attach(struct parport *port)
 	return;
 
 err_lcd_unreg:
+<<<<<<< HEAD
+=======
+	if (scan_timer.function)
+		del_timer_sync(&scan_timer);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (lcd.enabled)
 		charlcd_unregister(lcd.charlcd);
 err_unreg_device:

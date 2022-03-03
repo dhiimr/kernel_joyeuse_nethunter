@@ -42,6 +42,7 @@
 
 #define UFSHCD_DEFAULT_LANES_PER_DIRECTION		2
 
+<<<<<<< HEAD
 static int ufshcd_parse_reset_info(struct ufs_hba *hba)
 {
 	int ret = 0;
@@ -58,6 +59,8 @@ static int ufshcd_parse_reset_info(struct ufs_hba *hba)
 	return ret;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int ufshcd_parse_clock_info(struct ufs_hba *hba)
 {
 	int ret = 0;
@@ -144,11 +147,18 @@ out:
 static int ufshcd_populate_vreg(struct device *dev, const char *name,
 		struct ufs_vreg **out_vreg)
 {
+<<<<<<< HEAD
 	int len, ret = 0;
 	char prop_name[MAX_PROP_SIZE];
 	struct ufs_vreg *vreg = NULL;
 	struct device_node *np = dev->of_node;
 	const __be32 *prop;
+=======
+	int ret = 0;
+	char prop_name[MAX_PROP_SIZE];
+	struct ufs_vreg *vreg = NULL;
+	struct device_node *np = dev->of_node;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!np) {
 		dev_err(dev, "%s: non DT initialization\n", __func__);
@@ -187,6 +197,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
 			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
 			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
 		} else {
+<<<<<<< HEAD
 			prop = of_get_property(np, "vcc-voltage-level", &len);
 			if (!prop || (len != (2 * sizeof(__be32)))) {
 				dev_warn(dev, "%s vcc-voltage-level property.\n",
@@ -200,11 +211,16 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
 
 			if (of_property_read_bool(np, "vcc-low-voltage-sup"))
 				vreg->low_voltage_sup = true;
+=======
+			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
+			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	} else if (!strcmp(name, "vccq")) {
 		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
 		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
 	} else if (!strcmp(name, "vccq2")) {
+<<<<<<< HEAD
 		prop = of_get_property(np, "vccq2-voltage-level", &len);
 		if (!prop || (len != (2 * sizeof(__be32)))) {
 			dev_warn(dev, "%s vccq2-voltage-level property.\n",
@@ -215,6 +231,10 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
 			vreg->min_uV = be32_to_cpup(&prop[0]);
 			vreg->max_uV = be32_to_cpup(&prop[1]);
 		}
+=======
+		vreg->min_uV = UFS_VREG_VCCQ2_MIN_UV;
+		vreg->max_uV = UFS_VREG_VCCQ2_MAX_UV;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	goto out;
@@ -257,6 +277,7 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static void ufshcd_parse_pm_levels(struct ufs_hba *hba)
 {
 	struct device *dev = hba->dev;
@@ -409,6 +430,9 @@ int ufshcd_pltfrm_thaw(struct device *dev)
 }
 EXPORT_SYMBOL(ufshcd_pltfrm_thaw);
 
+=======
+#ifdef CONFIG_PM
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * ufshcd_pltfrm_suspend - suspend power management function
  * @dev: pointer to device handle
@@ -479,12 +503,20 @@ static void ufshcd_init_lanes_per_dir(struct ufs_hba *hba)
 /**
  * ufshcd_pltfrm_init - probe routine of the driver
  * @pdev: pointer to Platform device handle
+<<<<<<< HEAD
  * @var: pointer to variant specific data
+=======
+ * @vops: pointer to variant ops
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Returns 0 on success, non-zero value on failure
  */
 int ufshcd_pltfrm_init(struct platform_device *pdev,
+<<<<<<< HEAD
 		       struct ufs_hba_variant *var)
+=======
+		       struct ufs_hba_variant_ops *vops)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct ufs_hba *hba;
 	void __iomem *mmio_base;
@@ -512,7 +544,11 @@ int ufshcd_pltfrm_init(struct platform_device *pdev,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	hba->var = var;
+=======
+	hba->vops = vops;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = ufshcd_parse_clock_info(hba);
 	if (err) {
@@ -527,6 +563,7 @@ int ufshcd_pltfrm_init(struct platform_device *pdev,
 		goto dealloc_host;
 	}
 
+<<<<<<< HEAD
 	err = ufshcd_parse_reset_info(hba);
 	if (err) {
 		dev_err(&pdev->dev, "%s: reset parse failed %d\n",
@@ -553,6 +590,8 @@ int ufshcd_pltfrm_init(struct platform_device *pdev,
 	if (!dev->dma_mask)
 		dev->dma_mask = &dev->coherent_dma_mask;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ufshcd_init_lanes_per_dir(hba);
 
 	err = ufshcd_init(hba, mmio_base, irq);
@@ -561,12 +600,19 @@ int ufshcd_pltfrm_init(struct platform_device *pdev,
 		goto dealloc_host;
 	}
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, hba);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pm_runtime_set_active(&pdev->dev);
 	pm_runtime_enable(&pdev->dev);
 
 	return 0;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 dealloc_host:
 	ufshcd_dealloc_host(hba);
 out:

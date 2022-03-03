@@ -102,6 +102,7 @@ struct msm_rd_state {
 
 static void rd_write(struct msm_rd_state *rd, const void *buf, int sz)
 {
+<<<<<<< HEAD
 	struct circ_buf *fifo;
 	const char *ptr = buf;
 
@@ -109,6 +110,11 @@ static void rd_write(struct msm_rd_state *rd, const void *buf, int sz)
 		return;
 
 	fifo = &rd->fifo;
+=======
+	struct circ_buf *fifo = &rd->fifo;
+	const char *ptr = buf;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	while (sz > 0) {
 		char *fptr = &fifo->buf[fifo->head];
 		int n;
@@ -143,6 +149,7 @@ static void rd_write_section(struct msm_rd_state *rd,
 static ssize_t rd_read(struct file *file, char __user *buf,
 		size_t sz, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct msm_rd_state *rd;
 	struct circ_buf *fifo;
 	const char *fptr;
@@ -155,6 +162,13 @@ static ssize_t rd_read(struct file *file, char __user *buf,
 	fifo = &rd->fifo;
 	fptr = &fifo->buf[fifo->tail];
 
+=======
+	struct msm_rd_state *rd = file->private_data;
+	struct circ_buf *fifo = &rd->fifo;
+	const char *fptr = &fifo->buf[fifo->tail];
+	int n = 0, ret = 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_lock(&rd->read_lock);
 
 	ret = wait_event_interruptible(rd->fifo_event,
@@ -186,14 +200,22 @@ out:
 
 static int rd_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	struct msm_rd_state *rd;
 	struct drm_device *dev;
 	struct msm_drm_private *priv;
 	struct msm_gpu *gpu;
+=======
+	struct msm_rd_state *rd = inode->i_private;
+	struct drm_device *dev = rd->dev;
+	struct msm_drm_private *priv = dev->dev_private;
+	struct msm_gpu *gpu = priv->gpu;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	uint64_t val;
 	uint32_t gpu_id;
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (!file || !inode || !inode->i_private)
 		return -EINVAL;
 
@@ -206,14 +228,19 @@ static int rd_open(struct inode *inode, struct file *file)
 	priv = dev->dev_private;
 	gpu = priv->gpu;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_lock(&dev->struct_mutex);
 
 	if (rd->open || !gpu) {
 		ret = -EBUSY;
 		goto out;
+<<<<<<< HEAD
 	} else if (!gpu->funcs || !gpu->funcs->get_param) {
 		ret = -EINVAL;
 		goto out;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	file->private_data = rd;
@@ -234,12 +261,16 @@ out:
 
 static int rd_release(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	struct msm_rd_state *rd;
 
 	if (!inode || !inode->i_private)
 		return -EINVAL;
 
 	rd = inode->i_private;
+=======
+	struct msm_rd_state *rd = inode->i_private;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rd->open = false;
 	wake_up_all(&rd->fifo_event);
@@ -258,6 +289,7 @@ static const struct file_operations rd_debugfs_fops = {
 
 int msm_rd_debugfs_init(struct drm_minor *minor)
 {
+<<<<<<< HEAD
 	struct msm_drm_private *priv;
 	struct msm_rd_state *rd;
 	struct dentry *ent;
@@ -267,6 +299,12 @@ int msm_rd_debugfs_init(struct drm_minor *minor)
 
 	priv = minor->dev->dev_private;
 
+=======
+	struct msm_drm_private *priv = minor->dev->dev_private;
+	struct msm_rd_state *rd;
+	struct dentry *ent;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* only create on first minor: */
 	if (priv->rd)
 		return 0;
@@ -300,12 +338,16 @@ fail:
 
 void msm_rd_debugfs_cleanup(struct msm_drm_private *priv)
 {
+<<<<<<< HEAD
 	struct msm_rd_state *rd;
 
 	if (!priv)
 		return;
 
 	rd = priv->rd;
+=======
+	struct msm_rd_state *rd = priv->rd;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!rd)
 		return;
@@ -343,6 +385,7 @@ static void snapshot_buf(struct msm_rd_state *rd,
 /* called under struct_mutex */
 void msm_rd_dump_submit(struct msm_gem_submit *submit)
 {
+<<<<<<< HEAD
 	struct drm_device *dev;
 	struct msm_drm_private *priv;
 	struct msm_rd_state *rd;
@@ -357,6 +400,15 @@ void msm_rd_dump_submit(struct msm_gem_submit *submit)
 	rd = priv->rd;
 
 	if (!rd || !rd->open)
+=======
+	struct drm_device *dev = submit->dev;
+	struct msm_drm_private *priv = dev->dev_private;
+	struct msm_rd_state *rd = priv->rd;
+	char msg[128];
+	int i, n;
+
+	if (!rd->open)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 
 	/* writing into fifo is serialized by caller, and

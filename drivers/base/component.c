@@ -162,7 +162,12 @@ static int try_to_bring_up_master(struct master *master,
 	ret = master->ops->bind(master->dev);
 	if (ret < 0) {
 		devres_release_group(master->dev, NULL);
+<<<<<<< HEAD
 		dev_info(master->dev, "master bind failed: %d\n", ret);
+=======
+		if (ret != -EPROBE_DEFER)
+			dev_info(master->dev, "master bind failed: %d\n", ret);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ret;
 	}
 
@@ -431,8 +436,14 @@ static int component_bind(struct component *component, struct master *master,
 		devres_release_group(component->dev, NULL);
 		devres_release_group(master->dev, NULL);
 
+<<<<<<< HEAD
 		dev_err(master->dev, "failed to bind %s (ops %ps): %d\n",
 			dev_name(component->dev), component->ops, ret);
+=======
+		if (ret != -EPROBE_DEFER)
+			dev_err(master->dev, "failed to bind %s (ops %ps): %d\n",
+				dev_name(component->dev), component->ops, ret);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return ret;
@@ -461,9 +472,15 @@ int component_bind_all(struct device *master_dev, void *data)
 		}
 
 	if (ret != 0) {
+<<<<<<< HEAD
 		for (; i--; )
 			if (!master->match->compare[i].duplicate) {
 				c = master->match->compare[i].component;
+=======
+		for (; i > 0; i--)
+			if (!master->match->compare[i - 1].duplicate) {
+				c = master->match->compare[i - 1].component;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				component_unbind(c, master, data);
 			}
 	}

@@ -398,7 +398,11 @@ void usbtv_audio_free(struct usbtv *usbtv)
 	cancel_work_sync(&usbtv->snd_trigger);
 
 	if (usbtv->snd && usbtv->udev) {
+<<<<<<< HEAD
 		snd_card_free(usbtv->snd);
+=======
+		snd_card_free_when_closed(usbtv->snd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		usbtv->snd = NULL;
 	}
 }

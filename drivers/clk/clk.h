@@ -10,7 +10,10 @@
  */
 
 struct clk_hw;
+<<<<<<< HEAD
 struct clk_core;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #if defined(CONFIG_OF) && defined(CONFIG_COMMON_CLK)
 struct clk *__of_clk_get_from_provider(struct of_phandle_args *clkspec,
@@ -21,6 +24,7 @@ struct clk *__of_clk_get_from_provider(struct of_phandle_args *clkspec,
 struct clk *__clk_create_clk(struct clk_hw *hw, const char *dev_id,
 			     const char *con_id);
 void __clk_free_clk(struct clk *clk);
+<<<<<<< HEAD
 
 /* Debugfs API to print the enabled clocks */
 void clock_debug_print_enabled(bool print_parent);
@@ -41,6 +45,8 @@ do {							\
 		pr_info(fmt, ##__VA_ARGS__);		\
 } while (0)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else
 /* All these casts to avoid ifdefs in clkdev... */
 static inline struct clk *
@@ -54,5 +60,8 @@ static struct clk_hw *__clk_get_hw(struct clk *clk)
 	return (struct clk_hw *)clk;
 }
 
+<<<<<<< HEAD
 void clock_debug_print_enabled(void) {}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif

@@ -625,8 +625,15 @@ static void fat_free_eofblocks(struct inode *inode)
 		 */
 		err = __fat_write_inode(inode, inode_needs_sync(inode));
 		if (err) {
+<<<<<<< HEAD
 			fat_msg_ratelimit(inode->i_sb, KERN_WARNING,
 				"Failed to update on disk inode for unused fallocated blocks, inode could be corrupted. Please run fsck");
+=======
+			fat_msg(inode->i_sb, KERN_WARNING, "Failed to "
+					"update on disk inode for unused "
+					"fallocated blocks, inode could be "
+					"corrupted. Please run fsck");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 	}
@@ -670,7 +677,11 @@ static void fat_set_state(struct super_block *sb,
 
 	bh = sb_bread(sb, 0);
 	if (bh == NULL) {
+<<<<<<< HEAD
 		fat_msg_ratelimit(sb, KERN_ERR, "unable to read boot sector "
+=======
+		fat_msg(sb, KERN_ERR, "unable to read boot sector "
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			"to mark fs as dirty");
 		return;
 	}
@@ -734,6 +745,16 @@ static struct inode *fat_alloc_inode(struct super_block *sb)
 		return NULL;
 
 	init_rwsem(&ei->truncate_lock);
+<<<<<<< HEAD
+=======
+	/* Zeroing to allow iput() even if partial initialized inode. */
+	ei->mmu_private = 0;
+	ei->i_start = 0;
+	ei->i_logstart = 0;
+	ei->i_attrs = 0;
+	ei->i_pos = 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return &ei->vfs_inode;
 }
 
@@ -849,7 +870,11 @@ retry:
 	fat_get_blknr_offset(sbi, i_pos, &blocknr, &offset);
 	bh = sb_bread(sb, blocknr);
 	if (!bh) {
+<<<<<<< HEAD
 		fat_msg_ratelimit(sb, KERN_ERR, "unable to read inode block "
+=======
+		fat_msg(sb, KERN_ERR, "unable to read inode block "
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		       "for updating (i_pos %lld)", i_pos);
 		return -EIO;
 	}
@@ -1364,6 +1389,7 @@ out:
 	return 0;
 }
 
+<<<<<<< HEAD
 static void fat_dummy_inode_init(struct inode *inode)
 {
 	/* Initialize this dummy inode to work as no-op. */
@@ -1374,6 +1400,8 @@ static void fat_dummy_inode_init(struct inode *inode)
 	MSDOS_I(inode)->i_pos = 0;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int fat_read_root(struct inode *inode)
 {
 	struct msdos_sb_info *sbi = MSDOS_SB(inode->i_sb);
@@ -1513,6 +1541,15 @@ static int fat_read_bpb(struct super_block *sb, struct fat_boot_sector *b,
 		goto out;
 	}
 
+<<<<<<< HEAD
+=======
+	if (bpb->fat_fat_length == 0 && bpb->fat32_length == 0) {
+		if (!silent)
+			fat_msg(sb, KERN_ERR, "bogus number of FAT sectors");
+		goto out;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	error = 0;
 
 out:
@@ -1818,13 +1855,19 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 	fat_inode = new_inode(sb);
 	if (!fat_inode)
 		goto out_fail;
+<<<<<<< HEAD
 	fat_dummy_inode_init(fat_inode);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sbi->fat_inode = fat_inode;
 
 	fsinfo_inode = new_inode(sb);
 	if (!fsinfo_inode)
 		goto out_fail;
+<<<<<<< HEAD
 	fat_dummy_inode_init(fsinfo_inode);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	fsinfo_inode->i_ino = MSDOS_FSINFO_INO;
 	sbi->fsinfo_inode = fsinfo_inode;
 	insert_inode_hash(fsinfo_inode);

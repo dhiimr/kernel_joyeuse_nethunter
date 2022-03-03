@@ -359,9 +359,14 @@ send:
 				goto dropped;
 			ret = batadv_send_skb_via_gw(bat_priv, skb, vid);
 		} else if (mcast_single_orig) {
+<<<<<<< HEAD
 			ret = batadv_send_skb_unicast(bat_priv, skb,
 						      BATADV_UNICAST, 0,
 						      mcast_single_orig, vid);
+=======
+			ret = batadv_mcast_forw_send_orig(bat_priv, skb, vid,
+							  mcast_single_orig);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else {
 			if (batadv_dat_snoop_outgoing_arp_request(bat_priv,
 								  skb))
@@ -418,10 +423,17 @@ void batadv_interface_rx(struct net_device *soft_iface,
 	struct vlan_ethhdr *vhdr;
 	struct ethhdr *ethhdr;
 	unsigned short vid;
+<<<<<<< HEAD
 	bool is_bcast;
 
 	batadv_bcast_packet = (struct batadv_bcast_packet *)skb->data;
 	is_bcast = (batadv_bcast_packet->packet_type == BATADV_BCAST);
+=======
+	int packet_type;
+
+	batadv_bcast_packet = (struct batadv_bcast_packet *)skb->data;
+	packet_type = batadv_bcast_packet->packet_type;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	skb_pull_rcsum(skb, hdr_size);
 	skb_reset_mac_header(skb);
@@ -464,7 +476,11 @@ void batadv_interface_rx(struct net_device *soft_iface,
 	/* Let the bridge loop avoidance check the packet. If will
 	 * not handle it, we can safely push it up.
 	 */
+<<<<<<< HEAD
 	if (batadv_bla_rx(bat_priv, skb, vid, is_bcast))
+=======
+	if (batadv_bla_rx(bat_priv, skb, vid, packet_type))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out;
 
 	if (orig_node)

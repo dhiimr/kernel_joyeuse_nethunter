@@ -38,8 +38,11 @@ static struct tau_temp
 
 struct timer_list tau_timer;
 
+<<<<<<< HEAD
 #undef DEBUG
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* TODO: put these in a /proc interface, with some sanity checks, and maybe
  * dynamic adjustment to minimize # of interrupts */
 /* configurable values for step size and how much to expand the window when
@@ -72,6 +75,7 @@ void set_thresholds(unsigned long cpu)
 
 void TAUupdate(int cpu)
 {
+<<<<<<< HEAD
 	unsigned thrm;
 
 #ifdef DEBUG
@@ -113,6 +117,35 @@ void TAUupdate(int cpu)
 	set_thresholds(cpu);
 #endif
 
+=======
+	u32 thrm;
+	u32 bits = THRM1_TIV | THRM1_TIN | THRM1_V;
+
+	/* if both thresholds are crossed, the step_sizes cancel out
+	 * and the window winds up getting expanded twice. */
+	thrm = mfspr(SPRN_THRM1);
+	if ((thrm & bits) == bits) {
+		mtspr(SPRN_THRM1, 0);
+
+		if (tau[cpu].low >= step_size) {
+			tau[cpu].low -= step_size;
+			tau[cpu].high -= (step_size - window_expand);
+		}
+		tau[cpu].grew = 1;
+		pr_debug("%s: low threshold crossed\n", __func__);
+	}
+	thrm = mfspr(SPRN_THRM2);
+	if ((thrm & bits) == bits) {
+		mtspr(SPRN_THRM2, 0);
+
+		if (tau[cpu].high <= 127 - step_size) {
+			tau[cpu].low += (step_size - window_expand);
+			tau[cpu].high += step_size;
+		}
+		tau[cpu].grew = 1;
+		pr_debug("%s: high threshold crossed\n", __func__);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #ifdef CONFIG_TAU_INT
@@ -137,18 +170,30 @@ void TAUException(struct pt_regs * regs)
 static void tau_timeout(void * info)
 {
 	int cpu;
+<<<<<<< HEAD
 	unsigned long flags;
 	int size;
 	int shrink;
 
 	/* disabling interrupts *should* be okay */
 	local_irq_save(flags);
+=======
+	int size;
+	int shrink;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cpu = smp_processor_id();
 
 #ifndef CONFIG_TAU_INT
 	TAUupdate(cpu);
 #endif
 
+<<<<<<< HEAD
+=======
+	/* Stop thermal sensor comparisons and interrupts */
+	mtspr(SPRN_THRM3, 0);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	size = tau[cpu].high - tau[cpu].low;
 	if (size > min_window && ! tau[cpu].grew) {
 		/* do an exponential shrink of half the amount currently over size */
@@ -170,6 +215,7 @@ static void tau_timeout(void * info)
 
 	set_thresholds(cpu);
 
+<<<<<<< HEAD
 	/*
 	 * Do the enable every time, since otherwise a bunch of (relatively)
 	 * complex sleep code needs to be added. One mtspr every time
@@ -186,6 +232,14 @@ static void tau_timeout(void * info)
 	mtspr(SPRN_THRM3, THRM3_SITV(500*60) | THRM3_E);
 
 	local_irq_restore(flags);
+=======
+	/* Restart thermal sensor comparisons and interrupts.
+	 * The "PowerPC 740 and PowerPC 750 Microprocessor Datasheet"
+	 * recommends that "the maximum value be set in THRM3 under all
+	 * conditions."
+	 */
+	mtspr(SPRN_THRM3, THRM3_SITV(0x1fff) | THRM3_E);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void tau_timeout_smp(unsigned long unused)

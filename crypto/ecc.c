@@ -898,6 +898,7 @@ static void ecc_point_mult(struct ecc_point *result,
 static inline void ecc_swap_digits(const u64 *in, u64 *out,
 				   unsigned int ndigits)
 {
+<<<<<<< HEAD
 	int i;
 
 	for (i = 0; i < ndigits; i++)
@@ -909,10 +910,25 @@ int ecc_is_key_valid(unsigned int curve_id, unsigned int ndigits,
 {
 	int nbytes;
 	const struct ecc_curve *curve = ecc_get_curve(curve_id);
+=======
+	const __be64 *src = (__force __be64 *)in;
+	int i;
+
+	for (i = 0; i < ndigits; i++)
+		out[i] = be64_to_cpu(src[ndigits - 1 - i]);
+}
+
+static int __ecc_is_key_valid(const struct ecc_curve *curve,
+			      const u64 *private_key, unsigned int ndigits)
+{
+	u64 one[ECC_MAX_DIGITS] = { 1, };
+	u64 res[ECC_MAX_DIGITS];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!private_key)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	nbytes = ndigits << ECC_DIGITS_TO_BYTES_SHIFT;
 
 	if (private_key_len != nbytes)
@@ -923,11 +939,39 @@ int ecc_is_key_valid(unsigned int curve_id, unsigned int ndigits,
 
 	/* Make sure the private key is in the range [1, n-1]. */
 	if (vli_cmp(curve->n, private_key, ndigits) != 1)
+=======
+	if (curve->g.ndigits != ndigits)
+		return -EINVAL;
+
+	/* Make sure the private key is in the range [2, n-3]. */
+	if (vli_cmp(one, private_key, ndigits) != -1)
+		return -EINVAL;
+	vli_sub(res, curve->n, one, ndigits);
+	vli_sub(res, res, one, ndigits);
+	if (vli_cmp(res, private_key, ndigits) != 1)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+int ecc_is_key_valid(unsigned int curve_id, unsigned int ndigits,
+		     const u64 *private_key, unsigned int private_key_len)
+{
+	int nbytes;
+	const struct ecc_curve *curve = ecc_get_curve(curve_id);
+
+	nbytes = ndigits << ECC_DIGITS_TO_BYTES_SHIFT;
+
+	if (private_key_len != nbytes)
+		return -EINVAL;
+
+	return __ecc_is_key_valid(curve, private_key, ndigits);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * ECC private keys are generated using the method of extra random bits,
  * equivalent to that described in FIPS 186-4, Appendix B.4.1.
@@ -971,11 +1015,16 @@ int ecc_gen_privkey(unsigned int curve_id, unsigned int ndigits, u64 *privkey)
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 	if (vli_is_zero(priv, ndigits))
 		return -EINVAL;
 
 	/* Make sure the private key is in the range [1, n-1]. */
 	if (vli_cmp(curve->n, priv, ndigits) != 1)
+=======
+	/* Make sure the private key is in the valid range. */
+	if (__ecc_is_key_valid(curve, priv, ndigits))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	ecc_swap_digits(priv, privkey, ndigits);

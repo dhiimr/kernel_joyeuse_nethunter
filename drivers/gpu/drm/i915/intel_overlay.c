@@ -965,6 +965,12 @@ static int check_overlay_dst(struct intel_overlay *overlay,
 	const struct intel_crtc_state *pipe_config =
 		overlay->crtc->config;
 
+<<<<<<< HEAD
+=======
+	if (rec->dst_height == 0 || rec->dst_width == 0)
+		return -EINVAL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (rec->dst_x < pipe_config->pipe_src_w &&
 	    rec->dst_x + rec->dst_width <= pipe_config->pipe_src_w &&
 	    rec->dst_y < pipe_config->pipe_src_h &&
@@ -1134,7 +1140,11 @@ int intel_overlay_put_image_ioctl(struct drm_device *dev, void *data,
 	if (!params)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	drmmode_crtc = drm_crtc_find(dev, file_priv, put_image_rec->crtc_id);
+=======
+	drmmode_crtc = drm_crtc_find(dev, put_image_rec->crtc_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!drmmode_crtc) {
 		ret = -ENOENT;
 		goto out_free;

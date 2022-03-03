@@ -9,6 +9,7 @@ OBJCOPYFLAGS := -R .note -R .comment -R .note.gnu.build-id -O binary
 
 $(obj)/linux.bin: vmlinux FORCE
 	$(call if_changed,objcopy)
+<<<<<<< HEAD
 	@echo 'Kernel: $@ is ready' ' (#'`cat .version`')'
 
 $(obj)/linux.bin.ub: $(obj)/linux.bin FORCE
@@ -18,6 +19,14 @@ $(obj)/linux.bin.ub: $(obj)/linux.bin FORCE
 $(obj)/linux.bin.gz: $(obj)/linux.bin FORCE
 	$(call if_changed,gzip)
 	@echo 'Kernel: $@ is ready' ' (#'`cat .version`')'
+=======
+
+$(obj)/linux.bin.ub: $(obj)/linux.bin FORCE
+	$(call if_changed,uimage)
+
+$(obj)/linux.bin.gz: $(obj)/linux.bin FORCE
+	$(call if_changed,gzip)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 quiet_cmd_cp = CP      $< $@$2
 	cmd_cp = cat $< >$@$2 || (rm -f $@ && echo false)
@@ -35,6 +44,9 @@ $(obj)/simpleImage.%: vmlinux FORCE
 	$(call if_changed,objcopy)
 	$(call if_changed,uimage)
 	$(call if_changed,strip,.strip)
+<<<<<<< HEAD
 	@echo 'Kernel: $(UIMAGE_OUT) is ready' ' (#'`cat .version`')'
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 clean-files += simpleImage.*.unstrip linux.bin.ub dts/*.dtb

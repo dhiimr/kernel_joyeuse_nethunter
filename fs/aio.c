@@ -558,12 +558,22 @@ void kiocb_set_cancel_fn(struct kiocb *iocb, kiocb_cancel_fn *cancel)
 	struct kioctx *ctx = req->ki_ctx;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if (WARN_ON_ONCE(!list_empty(&req->ki_list)))
 		return;
 
 	spin_lock_irqsave(&ctx->ctx_lock, flags);
 	list_add_tail(&req->ki_list, &ctx->active_reqs);
 	req->ki_cancel = cancel;
+=======
+	spin_lock_irqsave(&ctx->ctx_lock, flags);
+
+	if (!req->ki_list.next)
+		list_add(&req->ki_list, &ctx->active_reqs);
+
+	req->ki_cancel = cancel;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_unlock_irqrestore(&ctx->ctx_lock, flags);
 }
 EXPORT_SYMBOL(kiocb_set_cancel_fn);
@@ -1050,7 +1060,11 @@ static inline struct aio_kiocb *aio_get_req(struct kioctx *ctx)
 		goto out_put;
 
 	percpu_ref_get(&ctx->reqs);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&req->ki_list);
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	req->ki_ctx = ctx;
 	return req;
 out_put:
@@ -1119,7 +1133,20 @@ static void aio_complete(struct kiocb *kiocb, long res, long res2)
 		file_end_write(file);
 	}
 
+<<<<<<< HEAD
 	if (!list_empty_careful(&iocb->ki_list)) {
+=======
+	/*
+	 * Special case handling for sync iocbs:
+	 *  - events go directly into the iocb for fast handling
+	 *  - the sync task with the iocb in its stack holds the single iocb
+	 *    ref, no other paths have a way to get another ref
+	 *  - the sync task helpfully left a reference to itself in the iocb
+	 */
+	BUG_ON(is_sync_kiocb(kiocb));
+
+	if (iocb->ki_list.next) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		unsigned long flags;
 
 		spin_lock_irqsave(&ctx->ctx_lock, flags);

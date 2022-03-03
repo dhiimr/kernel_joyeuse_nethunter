@@ -85,6 +85,10 @@ static const char *__init cpu_read_enable_method(int cpu)
 				pr_err("%pOF: missing enable-method property\n",
 					dn);
 		}
+<<<<<<< HEAD
+=======
+		of_node_put(dn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		enable_method = acpi_get_enable_method(cpu);
 		if (!enable_method) {

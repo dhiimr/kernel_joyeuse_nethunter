@@ -71,9 +71,12 @@ static int __net_init tipc_init_net(struct net *net)
 		goto out_nametbl;
 
 	INIT_LIST_HEAD(&tn->dist_queue);
+<<<<<<< HEAD
 	err = tipc_topsrv_start(net);
 	if (err)
 		goto out_subscr;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = tipc_bcast_init(net);
 	if (err)
@@ -82,8 +85,11 @@ static int __net_init tipc_init_net(struct net *net)
 	return 0;
 
 out_bclink:
+<<<<<<< HEAD
 	tipc_bcast_stop(net);
 out_subscr:
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tipc_nametbl_stop(net);
 out_nametbl:
 	tipc_sk_rht_destroy(net);
@@ -93,8 +99,17 @@ out_sk_rht:
 
 static void __net_exit tipc_exit_net(struct net *net)
 {
+<<<<<<< HEAD
 	tipc_topsrv_stop(net);
 	tipc_net_stop(net);
+=======
+	tipc_net_stop(net);
+
+	/* Make sure the tipc_net_finalize_work stopped
+	 * before releasing the resources.
+	 */
+	flush_scheduled_work();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tipc_bcast_stop(net);
 	tipc_nametbl_stop(net);
 	tipc_sk_rht_destroy(net);
@@ -107,6 +122,14 @@ static struct pernet_operations tipc_net_ops = {
 	.size = sizeof(struct tipc_net),
 };
 
+<<<<<<< HEAD
+=======
+static struct pernet_operations tipc_topsrv_net_ops = {
+	.init = tipc_topsrv_init_net,
+	.exit = tipc_topsrv_exit_net,
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int __init tipc_init(void)
 {
 	int err;
@@ -117,6 +140,7 @@ static int __init tipc_init(void)
 	sysctl_tipc_rmem[1] = RCVBUF_DEF;
 	sysctl_tipc_rmem[2] = RCVBUF_MAX;
 
+<<<<<<< HEAD
 	err = tipc_netlink_start();
 	if (err)
 		goto out_netlink;
@@ -124,11 +148,21 @@ static int __init tipc_init(void)
 	err = tipc_netlink_compat_start();
 	if (err)
 		goto out_netlink_compat;
+=======
+	err = tipc_register_sysctl();
+	if (err)
+		goto out_sysctl;
+
+	err = register_pernet_device(&tipc_net_ops);
+	if (err)
+		goto out_pernet;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = tipc_socket_init();
 	if (err)
 		goto out_socket;
 
+<<<<<<< HEAD
 	err = tipc_register_sysctl();
 	if (err)
 		goto out_sysctl;
@@ -136,11 +170,17 @@ static int __init tipc_init(void)
 	err = register_pernet_subsys(&tipc_net_ops);
 	if (err)
 		goto out_pernet;
+=======
+	err = register_pernet_device(&tipc_topsrv_net_ops);
+	if (err)
+		goto out_pernet_topsrv;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = tipc_bearer_setup();
 	if (err)
 		goto out_bearer;
 
+<<<<<<< HEAD
 	pr_info("Started in single node mode\n");
 	return 0;
 out_bearer:
@@ -154,17 +194,52 @@ out_socket:
 out_netlink_compat:
 	tipc_netlink_stop();
 out_netlink:
+=======
+	err = tipc_netlink_start();
+	if (err)
+		goto out_netlink;
+
+	err = tipc_netlink_compat_start();
+	if (err)
+		goto out_netlink_compat;
+
+	pr_info("Started in single node mode\n");
+	return 0;
+
+out_netlink_compat:
+	tipc_netlink_stop();
+out_netlink:
+	tipc_bearer_cleanup();
+out_bearer:
+	unregister_pernet_device(&tipc_topsrv_net_ops);
+out_pernet_topsrv:
+	tipc_socket_stop();
+out_socket:
+	unregister_pernet_device(&tipc_net_ops);
+out_pernet:
+	tipc_unregister_sysctl();
+out_sysctl:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pr_err("Unable to start in single node mode\n");
 	return err;
 }
 
 static void __exit tipc_exit(void)
 {
+<<<<<<< HEAD
 	tipc_bearer_cleanup();
 	unregister_pernet_subsys(&tipc_net_ops);
 	tipc_netlink_stop();
 	tipc_netlink_compat_stop();
 	tipc_socket_stop();
+=======
+	tipc_netlink_compat_stop();
+	tipc_netlink_stop();
+	tipc_bearer_cleanup();
+	unregister_pernet_device(&tipc_topsrv_net_ops);
+	tipc_socket_stop();
+	unregister_pernet_device(&tipc_net_ops);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tipc_unregister_sysctl();
 
 	pr_info("Deactivated\n");

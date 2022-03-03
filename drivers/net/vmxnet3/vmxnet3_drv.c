@@ -3623,7 +3623,10 @@ vmxnet3_suspend(struct device *device)
 	vmxnet3_free_intr_resources(adapter);
 
 	netif_device_detach(netdev);
+<<<<<<< HEAD
 	netif_tx_stop_all_queues(netdev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Create wake-up filters. */
 	pmConf = adapter->pm_conf;

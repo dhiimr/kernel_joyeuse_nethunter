@@ -1242,8 +1242,15 @@ int bnx2x_iov_init_one(struct bnx2x *bp, int int_mode_param,
 		goto failed;
 
 	/* SR-IOV capability was enabled but there are no VFs*/
+<<<<<<< HEAD
 	if (iov->total == 0)
 		goto failed;
+=======
+	if (iov->total == 0) {
+		err = 0;
+		goto failed;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	iov->nr_virtfn = min_t(u16, iov->total, num_vfs_param);
 
@@ -2389,15 +2396,32 @@ static int bnx2x_set_pf_tx_switching(struct bnx2x *bp, bool enable)
 	/* send the ramrod on all the queues of the PF */
 	for_each_eth_queue(bp, i) {
 		struct bnx2x_fastpath *fp = &bp->fp[i];
+<<<<<<< HEAD
+=======
+		int tx_idx;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* Set the appropriate Queue object */
 		q_params.q_obj = &bnx2x_sp_obj(bp, fp).q_obj;
 
+<<<<<<< HEAD
 		/* Update the Queue state */
 		rc = bnx2x_queue_state_change(bp, &q_params);
 		if (rc) {
 			BNX2X_ERR("Failed to configure Tx switching\n");
 			return rc;
+=======
+		for (tx_idx = FIRST_TX_COS_INDEX;
+		     tx_idx < fp->max_cos; tx_idx++) {
+			q_params.params.update.cid_index = tx_idx;
+
+			/* Update the Queue state */
+			rc = bnx2x_queue_state_change(bp, &q_params);
+			if (rc) {
+				BNX2X_ERR("Failed to configure Tx switching\n");
+				return rc;
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 

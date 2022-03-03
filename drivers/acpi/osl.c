@@ -371,19 +371,36 @@ void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
 }
 EXPORT_SYMBOL_GPL(acpi_os_map_memory);
 
+<<<<<<< HEAD
 static void acpi_os_drop_map_ref(struct acpi_ioremap *map)
 {
 	if (!--map->refcount)
 		list_del_rcu(&map->list);
+=======
+/* Must be called with mutex_lock(&acpi_ioremap_lock) */
+static unsigned long acpi_os_drop_map_ref(struct acpi_ioremap *map)
+{
+	unsigned long refcount = --map->refcount;
+
+	if (!refcount)
+		list_del_rcu(&map->list);
+	return refcount;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void acpi_os_map_cleanup(struct acpi_ioremap *map)
 {
+<<<<<<< HEAD
 	if (!map->refcount) {
 		synchronize_rcu_expedited();
 		acpi_unmap(map->phys, map->virt);
 		kfree(map);
 	}
+=======
+	synchronize_rcu_expedited();
+	acpi_unmap(map->phys, map->virt);
+	kfree(map);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -403,6 +420,10 @@ static void acpi_os_map_cleanup(struct acpi_ioremap *map)
 void __ref acpi_os_unmap_iomem(void __iomem *virt, acpi_size size)
 {
 	struct acpi_ioremap *map;
+<<<<<<< HEAD
+=======
+	unsigned long refcount;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!acpi_permanent_mmap) {
 		__acpi_unmap_table(virt, size);
@@ -416,10 +437,18 @@ void __ref acpi_os_unmap_iomem(void __iomem *virt, acpi_size size)
 		WARN(true, PREFIX "%s: bad address %p\n", __func__, virt);
 		return;
 	}
+<<<<<<< HEAD
 	acpi_os_drop_map_ref(map);
 	mutex_unlock(&acpi_ioremap_lock);
 
 	acpi_os_map_cleanup(map);
+=======
+	refcount = acpi_os_drop_map_ref(map);
+	mutex_unlock(&acpi_ioremap_lock);
+
+	if (!refcount)
+		acpi_os_map_cleanup(map);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(acpi_os_unmap_iomem);
 
@@ -454,6 +483,10 @@ void acpi_os_unmap_generic_address(struct acpi_generic_address *gas)
 {
 	u64 addr;
 	struct acpi_ioremap *map;
+<<<<<<< HEAD
+=======
+	unsigned long refcount;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (gas->space_id != ACPI_ADR_SPACE_SYSTEM_MEMORY)
 		return;
@@ -469,10 +502,18 @@ void acpi_os_unmap_generic_address(struct acpi_generic_address *gas)
 		mutex_unlock(&acpi_ioremap_lock);
 		return;
 	}
+<<<<<<< HEAD
 	acpi_os_drop_map_ref(map);
 	mutex_unlock(&acpi_ioremap_lock);
 
 	acpi_os_map_cleanup(map);
+=======
+	refcount = acpi_os_drop_map_ref(map);
+	mutex_unlock(&acpi_ioremap_lock);
+
+	if (!refcount)
+		acpi_os_map_cleanup(map);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL(acpi_os_unmap_generic_address);
 
@@ -1116,6 +1157,10 @@ void acpi_os_wait_events_complete(void)
 	flush_workqueue(kacpid_wq);
 	flush_workqueue(kacpi_notify_wq);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(acpi_os_wait_events_complete);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct acpi_hp_work {
 	struct work_struct work;

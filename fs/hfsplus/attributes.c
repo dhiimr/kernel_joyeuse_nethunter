@@ -217,6 +217,14 @@ int hfsplus_create_attr(struct inode *inode,
 	if (err)
 		goto failed_init_create_attr;
 
+<<<<<<< HEAD
+=======
+	/* Fail early and avoid ENOSPC during the btree operation */
+	err = hfs_bmap_reserve(fd.tree, fd.tree->depth + 1);
+	if (err)
+		goto failed_create_attr;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (name) {
 		err = hfsplus_attr_build_key(sb, fd.search_key,
 						inode->i_ino, name);
@@ -287,6 +295,13 @@ static int __hfsplus_delete_attr(struct inode *inode, u32 cnid,
 		return -ENOENT;
 	}
 
+<<<<<<< HEAD
+=======
+	/* Avoid btree corruption */
+	hfs_bnode_read(fd->bnode, fd->search_key,
+			fd->keyoffset, fd->keylength);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = hfs_brec_remove(fd);
 	if (err)
 		return err;
@@ -313,6 +328,14 @@ int hfsplus_delete_attr(struct inode *inode, const char *name)
 	if (err)
 		return err;
 
+<<<<<<< HEAD
+=======
+	/* Fail early and avoid ENOSPC during the btree operation */
+	err = hfs_bmap_reserve(fd.tree, fd.tree->depth);
+	if (err)
+		goto out;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (name) {
 		err = hfsplus_attr_build_key(sb, fd.search_key,
 						inode->i_ino, name);

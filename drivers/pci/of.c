@@ -15,18 +15,26 @@
 #include <linux/of.h>
 #include <linux/of_irq.h>
 #include <linux/of_pci.h>
+<<<<<<< HEAD
 #include <linux/of_reserved_mem.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "pci.h"
 
 void pci_set_of_node(struct pci_dev *dev)
 {
 	if (!dev->bus->dev.of_node)
 		return;
+<<<<<<< HEAD
 	dev->dev.of_node = of_pci_find_child_device(dev);
 
 	if (dev->dev.of_node)
 		of_reserved_mem_device_init_by_idx(&dev->dev, dev->dev.of_node,
 						   0);
+=======
+	dev->dev.of_node = of_pci_find_child_device(dev->bus->dev.of_node,
+						    dev->devfn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void pci_release_of_node(struct pci_dev *dev)

@@ -32,11 +32,14 @@ struct cpufreq_policy;
 
 typedef int (*get_static_t)(cpumask_t *cpumask, int interval,
 			    unsigned long voltage, u32 *power);
+<<<<<<< HEAD
 typedef int (*plat_mitig_t)(int cpu, u32 clip_freq);
 
 struct cpu_cooling_ops {
 	plat_mitig_t ceil_limit, floor_limit;
 };
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_CPU_THERMAL
 /**
@@ -50,10 +53,13 @@ struct thermal_cooling_device *
 cpufreq_power_cooling_register(struct cpufreq_policy *policy,
 			       u32 capacitance, get_static_t plat_static_func);
 
+<<<<<<< HEAD
 struct thermal_cooling_device *
 cpufreq_platform_cooling_register(const struct cpumask *clip_cpus,
 					struct cpu_cooling_ops *ops);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * of_cpufreq_cooling_register - create cpufreq cooling device based on DT.
  * @np: a valid struct device_node to the cooling device device tree node.
@@ -93,9 +99,12 @@ of_cpufreq_power_cooling_register(struct device_node *np,
  */
 void cpufreq_cooling_unregister(struct thermal_cooling_device *cdev);
 
+<<<<<<< HEAD
 extern void cpu_cooling_max_level_notifier_register(struct notifier_block *n);
 extern void cpu_cooling_max_level_notifier_unregister(struct notifier_block *n);
 extern const struct cpumask *cpu_cooling_get_max_level_cpumask(void);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else /* !CONFIG_CPU_THERMAL */
 static inline struct thermal_cooling_device *
 cpufreq_cooling_register(struct cpufreq_policy *policy)
@@ -125,6 +134,7 @@ of_cpufreq_power_cooling_register(struct device_node *np,
 	return NULL;
 }
 
+<<<<<<< HEAD
 static inline struct thermal_cooling_device *
 cpufreq_platform_cooling_register(const struct cpumask *clip_cpus,
 					struct cpu_cooling_ops *ops)
@@ -132,11 +142,14 @@ cpufreq_platform_cooling_register(const struct cpumask *clip_cpus,
 	return NULL;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline
 void cpufreq_cooling_unregister(struct thermal_cooling_device *cdev)
 {
 	return;
 }
+<<<<<<< HEAD
 
 static inline
 void cpu_cooling_max_level_notifier_register(struct notifier_block *n)
@@ -152,6 +165,8 @@ static inline const struct cpumask *cpu_cooling_get_max_level_cpumask(void)
 {
 	return cpu_none_mask;
 }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif	/* CONFIG_CPU_THERMAL */
 
 #endif /* __CPU_COOLING_H__ */

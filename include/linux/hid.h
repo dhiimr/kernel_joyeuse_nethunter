@@ -263,6 +263,11 @@ struct hid_item {
 #define HID_CP_SELECTION	0x000c0080
 #define HID_CP_MEDIASELECTION	0x000c0087
 #define HID_CP_SELECTDISC	0x000c00ba
+<<<<<<< HEAD
+=======
+#define HID_CP_VOLUMEUP		0x000c00e9
+#define HID_CP_VOLUMEDOWN	0x000c00ea
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define HID_CP_PLAYBACKSPEED	0x000c00f1
 #define HID_CP_PROXIMITY	0x000c0109
 #define HID_CP_SPEAKERSYSTEM	0x000c0160
@@ -398,6 +403,10 @@ struct hid_global {
 
 struct hid_local {
 	unsigned usage[HID_MAX_USAGES]; /* usage array */
+<<<<<<< HEAD
+=======
+	u8 usage_size[HID_MAX_USAGES]; /* usage size array */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned collection_index[HID_MAX_USAGES]; /* collection index array */
 	unsigned usage_index;
 	unsigned usage_minimum;
@@ -476,7 +485,11 @@ struct hid_report_enum {
 };
 
 #define HID_MIN_BUFFER_SIZE	64		/* make sure there is at least a packet size of space */
+<<<<<<< HEAD
 #define HID_MAX_BUFFER_SIZE	4096		/* 4kb */
+=======
+#define HID_MAX_BUFFER_SIZE	8192		/* 8kb */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define HID_CONTROL_FIFO_SIZE	256		/* to init devices with >100 reports */
 #define HID_OUTPUT_FIFO_SIZE	64
 
@@ -804,6 +817,14 @@ static inline bool hid_is_using_ll_driver(struct hid_device *hdev,
 	return hdev->ll_driver == driver;
 }
 
+<<<<<<< HEAD
+=======
+static inline bool hid_is_usb(struct hid_device *hdev)
+{
+	return hid_is_using_ll_driver(hdev, &usb_hid_driver);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define	PM_HINT_FULLON	1<<5
 #define PM_HINT_NORMAL	1<<1
 
@@ -918,6 +939,7 @@ static inline void hid_device_io_stop(struct hid_device *hid) {
  * @max: maximal valid usage->code to consider later (out parameter)
  * @type: input event type (EV_KEY, EV_REL, ...)
  * @c: code which corresponds to this usage and type
+<<<<<<< HEAD
  */
 static inline void hid_map_usage(struct hid_input *hidinput,
 		struct hid_usage *usage, unsigned long **bit, int *max,
@@ -946,6 +968,51 @@ static inline void hid_map_usage(struct hid_input *hidinput,
 		*max = LED_MAX;
 		break;
 	}
+=======
+ *
+ * The value pointed to by @bit will be set to NULL if either @type is
+ * an unhandled event type, or if @c is out of range for @type. This
+ * can be used as an error condition.
+ */
+static inline void hid_map_usage(struct hid_input *hidinput,
+		struct hid_usage *usage, unsigned long **bit, int *max,
+		__u8 type, unsigned int c)
+{
+	struct input_dev *input = hidinput->input;
+	unsigned long *bmap = NULL;
+	unsigned int limit = 0;
+
+	switch (type) {
+	case EV_ABS:
+		bmap = input->absbit;
+		limit = ABS_MAX;
+		break;
+	case EV_REL:
+		bmap = input->relbit;
+		limit = REL_MAX;
+		break;
+	case EV_KEY:
+		bmap = input->keybit;
+		limit = KEY_MAX;
+		break;
+	case EV_LED:
+		bmap = input->ledbit;
+		limit = LED_MAX;
+		break;
+	}
+
+	if (unlikely(c > limit || !bmap)) {
+		pr_warn_ratelimited("%s: Invalid code %d type %d\n",
+				    input->name, c, type);
+		*bit = NULL;
+		return;
+	}
+
+	usage->type = type;
+	usage->code = c;
+	*max = limit;
+	*bit = bmap;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -959,7 +1026,12 @@ static inline void hid_map_usage_clear(struct hid_input *hidinput,
 		__u8 type, __u16 c)
 {
 	hid_map_usage(hidinput, usage, bit, max, type, c);
+<<<<<<< HEAD
 	clear_bit(c, *bit);
+=======
+	if (*bit)
+		clear_bit(usage->code, *bit);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -1095,8 +1167,12 @@ static inline void hid_hw_wait(struct hid_device *hdev)
  */
 static inline u32 hid_report_len(struct hid_report *report)
 {
+<<<<<<< HEAD
 	/* equivalent to DIV_ROUND_UP(report->size, 8) + !!(report->id > 0) */
 	return ((report->size - 1) >> 3) + 1 + (report->id > 0);
+=======
+	return DIV_ROUND_UP(report->size, 8) + (report->id > 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 int hid_report_raw_event(struct hid_device *hid, int type, u8 *data, u32 size,

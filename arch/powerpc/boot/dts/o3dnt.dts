@@ -16,7 +16,11 @@
 	model = "ifm,o3dnt";
 	compatible = "ifm,o2d";
 
+<<<<<<< HEAD
 	memory {
+=======
+	memory@0 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		reg = <0x00000000 0x04000000>;  // 64MB
 	};
 

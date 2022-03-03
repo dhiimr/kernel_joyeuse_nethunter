@@ -2492,8 +2492,16 @@ halmac_parse_psd_data_88xx(struct halmac_adapter *halmac_adapter, u8 *c2h_buf,
 	segment_size = (u8)PSD_DATA_GET_SEGMENT_SIZE(c2h_buf);
 	psd_set->data_size = total_size;
 
+<<<<<<< HEAD
 	if (!psd_set->data)
 		psd_set->data = kzalloc(psd_set->data_size, GFP_KERNEL);
+=======
+	if (!psd_set->data) {
+		psd_set->data = kzalloc(psd_set->data_size, GFP_KERNEL);
+		if (!psd_set->data)
+			return HALMAC_RET_MALLOC_FAIL;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (segment_id == 0)
 		psd_set->segment_size = segment_size;

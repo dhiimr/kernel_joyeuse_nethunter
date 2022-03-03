@@ -95,9 +95,12 @@ static void dm_old_stop_queue(struct request_queue *q)
 
 static void dm_mq_stop_queue(struct request_queue *q)
 {
+<<<<<<< HEAD
 	if (blk_mq_queue_stopped(q))
 		return;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	blk_mq_quiesce_queue(q);
 }
 
@@ -825,6 +828,10 @@ out_tag_set:
 	blk_mq_free_tag_set(md->tag_set);
 out_kfree_tag_set:
 	kfree(md->tag_set);
+<<<<<<< HEAD
+=======
+	md->tag_set = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return err;
 }
@@ -834,6 +841,10 @@ void dm_mq_cleanup_mapped_device(struct mapped_device *md)
 	if (md->tag_set) {
 		blk_mq_free_tag_set(md->tag_set);
 		kfree(md->tag_set);
+<<<<<<< HEAD
+=======
+		md->tag_set = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 

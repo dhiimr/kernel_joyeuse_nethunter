@@ -443,7 +443,11 @@ enum elv_merge elv_merge(struct request_queue *q, struct request **req,
 {
 	struct elevator_queue *e = q->elevator;
 	struct request *__rq;
+<<<<<<< HEAD
 	enum elv_merge ret;
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Levels of merges:
 	 * 	nomerges:  No merges at all attempted
@@ -456,11 +460,17 @@ enum elv_merge elv_merge(struct request_queue *q, struct request **req,
 	/*
 	 * First try one-hit cache.
 	 */
+<<<<<<< HEAD
 	if (q->last_merge) {
 		if (!elv_bio_merge_ok(q->last_merge, bio))
 			return ELEVATOR_NO_MERGE;
 
 		ret = blk_try_merge(q->last_merge, bio);
+=======
+	if (q->last_merge && elv_bio_merge_ok(q->last_merge, bio)) {
+		enum elv_merge ret = blk_try_merge(q->last_merge, bio);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (ret != ELEVATOR_NO_MERGE) {
 			*req = q->last_merge;
 			return ret;

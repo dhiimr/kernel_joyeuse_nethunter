@@ -562,7 +562,10 @@ cifs_atomic_open(struct inode *inode, struct dentry *direntry,
 		if (server->ops->close)
 			server->ops->close(xid, tcon, &fid);
 		cifs_del_pending_open(&open);
+<<<<<<< HEAD
 		fput(file);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rc = -ENOMEM;
 	}
 
@@ -841,12 +844,44 @@ lookup_out:
 static int
 cifs_d_revalidate(struct dentry *direntry, unsigned int flags)
 {
+<<<<<<< HEAD
+=======
+	struct inode *inode;
+	int rc;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (flags & LOOKUP_RCU)
 		return -ECHILD;
 
 	if (d_really_is_positive(direntry)) {
+<<<<<<< HEAD
 		if (cifs_revalidate_dentry(direntry))
 			return 0;
+=======
+		inode = d_inode(direntry);
+		if ((flags & LOOKUP_REVAL) && !CIFS_CACHE_READ(CIFS_I(inode)))
+			CIFS_I(inode)->time = 0; /* force reval */
+
+		rc = cifs_revalidate_dentry(direntry);
+		if (rc) {
+			cifs_dbg(FYI, "cifs_revalidate_dentry failed with rc=%d", rc);
+			switch (rc) {
+			case -ENOENT:
+			case -ESTALE:
+				/*
+				 * Those errors mean the dentry is invalid
+				 * (file was deleted or recreated)
+				 */
+				return 0;
+			default:
+				/*
+				 * Otherwise some unexpected error happened
+				 * report it as-is to VFS layer
+				 */
+				return rc;
+			}
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		else {
 			/*
 			 * If the inode wasn't known to be a dfs entry when
@@ -855,7 +890,11 @@ cifs_d_revalidate(struct dentry *direntry, unsigned int flags)
 			 * attributes will have been updated by
 			 * cifs_revalidate_dentry().
 			 */
+<<<<<<< HEAD
 			if (IS_AUTOMOUNT(d_inode(direntry)) &&
+=======
+			if (IS_AUTOMOUNT(inode) &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			   !(direntry->d_flags & DCACHE_NEED_AUTOMOUNT)) {
 				spin_lock(&direntry->d_lock);
 				direntry->d_flags |= DCACHE_NEED_AUTOMOUNT;

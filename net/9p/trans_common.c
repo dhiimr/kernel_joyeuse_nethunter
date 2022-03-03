@@ -14,6 +14,10 @@
 
 #include <linux/mm.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include "trans_common.h"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**
  *  p9_release_req_pages - Release pages after the transaction.

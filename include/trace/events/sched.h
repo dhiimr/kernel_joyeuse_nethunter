@@ -8,7 +8,10 @@
 #include <linux/sched/numa_balancing.h>
 #include <linux/tracepoint.h>
 #include <linux/binfmts.h>
+<<<<<<< HEAD
 #include <linux/sched/idle.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Tracepoint for calling kthread_stop, performed to end a kthread:
@@ -53,6 +56,7 @@ TRACE_EVENT(sched_kthread_stop_ret,
 );
 
 /*
+<<<<<<< HEAD
  * Tracepoint for task enqueue/dequeue:
  */
 TRACE_EVENT(sched_enq_deq_task,
@@ -100,6 +104,8 @@ TRACE_EVENT(sched_enq_deq_task,
 );
 
 /*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Tracepoint for waking up a task:
  */
 DECLARE_EVENT_CLASS(sched_wakeup_template,
@@ -169,7 +175,11 @@ static inline long __trace_sched_switch_state(bool preempt, struct task_struct *
 		return TASK_REPORT_MAX;
 
 	/*
+<<<<<<< HEAD
 	 * __get_task_state() uses fls(), which considers LSB as 0. So
+=======
+	 * task_state_index() uses fls() and returns a value from 0-8 range.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * Decrement it by 1 (except TASK_RUNNING state i.e 0) before using
 	 * it for left shift operation to get the correct task->state
 	 * mapping.
@@ -217,9 +227,20 @@ TRACE_EVENT(sched_switch,
 
 		(__entry->prev_state & (TASK_REPORT_MAX - 1)) ?
 		  __print_flags(__entry->prev_state & (TASK_REPORT_MAX - 1), "|",
+<<<<<<< HEAD
 				{ 0x01, "S" }, { 0x02, "D" }, { 0x04, "T" },
 				{ 0x08, "t" }, { 0x10, "X" }, { 0x20, "Z" },
 				{ 0x40, "P" }, { 0x80, "I" }) :
+=======
+				{ TASK_INTERRUPTIBLE, "S" },
+				{ TASK_UNINTERRUPTIBLE, "D" },
+				{ __TASK_STOPPED, "T" },
+				{ __TASK_TRACED, "t" },
+				{ EXIT_DEAD, "X" },
+				{ EXIT_ZOMBIE, "Z" },
+				{ TASK_PARKED, "P" },
+				{ TASK_DEAD, "I" }) :
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		  "R",
 
 		__entry->prev_state & TASK_REPORT_MAX ? "+" : "",
@@ -256,6 +277,7 @@ TRACE_EVENT(sched_migrate_task,
 		  __entry->orig_cpu, __entry->dest_cpu)
 );
 
+<<<<<<< HEAD
 /*
  * Tracepoint for load balancing:
  */
@@ -415,6 +437,8 @@ TRACE_EVENT(sched_load_balance_stats,
 );
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 DECLARE_EVENT_CLASS(sched_process_template,
 
 	TP_PROTO(struct task_struct *p),
@@ -443,7 +467,11 @@ DECLARE_EVENT_CLASS(sched_process_template,
 DEFINE_EVENT(sched_process_template, sched_process_free,
 	     TP_PROTO(struct task_struct *p),
 	     TP_ARGS(p));
+<<<<<<< HEAD
 
+=======
+	     
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Tracepoint for a task exiting:
@@ -598,6 +626,7 @@ DEFINE_EVENT(sched_stat_template, sched_stat_blocked,
 	     TP_ARGS(tsk, delay));
 
 /*
+<<<<<<< HEAD
  * Tracepoint for recording the cause of uninterruptible sleep.
  */
 TRACE_EVENT(sched_blocked_reason,
@@ -622,6 +651,8 @@ TRACE_EVENT(sched_blocked_reason,
 );
 
 /*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Tracepoint for accounting runtime (time the task is executing
  * on a CPU).
  */
@@ -813,6 +844,7 @@ TRACE_EVENT(sched_wake_idle_without_ipi,
 
 	TP_printk("cpu=%d", __entry->cpu)
 );
+<<<<<<< HEAD
 
 #ifdef CONFIG_SMP
 #ifdef CREATE_TRACE_POINTS
@@ -1597,6 +1629,8 @@ TRACE_EVENT(sched_preempt_disable,
 				__entry->caddr2, __entry->caddr3)
 );
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _TRACE_SCHED_H */
 
 /* This part must be outside protection */

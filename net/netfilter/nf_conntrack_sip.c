@@ -1,6 +1,9 @@
 /* SIP extension for IP connection tracking.
  *
+<<<<<<< HEAD
  * Copyright (c) 2015,2017-2019 The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * (C) 2005 by Christian Hentschel <chentschel@arnet.com.ar>
  * based on RR's ip_conntrack_ftp.c and other modules.
  * (C) 2007 United Security Providers
@@ -21,18 +24,25 @@
 #include <linux/udp.h>
 #include <linux/tcp.h>
 #include <linux/netfilter.h>
+<<<<<<< HEAD
 #include <net/tcp.h>
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <net/netfilter/nf_conntrack.h>
 #include <net/netfilter/nf_conntrack_core.h>
 #include <net/netfilter/nf_conntrack_expect.h>
 #include <net/netfilter/nf_conntrack_helper.h>
 #include <net/netfilter/nf_conntrack_zones.h>
 #include <linux/netfilter/nf_conntrack_sip.h>
+<<<<<<< HEAD
 #include <net/netfilter/nf_nat.h>
 #include <net/netfilter/nf_nat_l3proto.h>
 #include <net/netfilter/nf_nat_l4proto.h>
 #include <net/netfilter/nf_queue.h>
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Christian Hentschel <chentschel@arnet.com.ar>");
@@ -55,6 +65,7 @@ module_param(sip_direct_signalling, int, 0600);
 MODULE_PARM_DESC(sip_direct_signalling, "expect incoming calls from registrar "
 					"only (default 1)");
 
+<<<<<<< HEAD
 const struct nf_nat_sip_hooks *nf_nat_sip_hooks;
 EXPORT_SYMBOL_GPL(nf_nat_sip_hooks);
 static struct ctl_table_header *sip_sysctl_header;
@@ -363,6 +374,15 @@ static unsigned int (*nf_nat_sdp_media_hook)
 					union nf_inet_addr *rtp_addr)
 					__read_mostly;
 EXPORT_SYMBOL(nf_nat_sdp_media_hook);
+=======
+static int sip_direct_media __read_mostly = 1;
+module_param(sip_direct_media, int, 0600);
+MODULE_PARM_DESC(sip_direct_media, "Expect Media streams between signalling "
+				   "endpoints only (default 1)");
+
+const struct nf_nat_sip_hooks *nf_nat_sip_hooks;
+EXPORT_SYMBOL_GPL(nf_nat_sip_hooks);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int string_len(const struct nf_conn *ct, const char *dptr,
 		      const char *limit, int *shift)
@@ -376,6 +396,7 @@ static int string_len(const struct nf_conn *ct, const char *dptr,
 	return len;
 }
 
+<<<<<<< HEAD
 static int nf_sip_enqueue_packet(struct nf_queue_entry *entry,
 				 unsigned int queuenum)
 {
@@ -419,6 +440,8 @@ int proc_sip_segment(struct ctl_table *ctl, int write,
 	return ret;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int digits_len(const struct nf_conn *ct, const char *dptr,
 		      const char *limit, int *shift)
 {
@@ -1809,8 +1832,11 @@ static int process_sip_msg(struct sk_buff *skb, struct nf_conn *ct,
 	const struct nf_nat_sip_hooks *hooks;
 	int ret;
 
+<<<<<<< HEAD
 	if (nf_ct_disable_sip_alg)
 		return NF_ACCEPT;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (strncasecmp(*dptr, "SIP/2.0 ", strlen("SIP/2.0 ")) != 0)
 		ret = process_sip_request(skb, protoff, dataoff, dptr, datalen);
 	else
@@ -1832,12 +1858,19 @@ static int sip_help_tcp(struct sk_buff *skb, unsigned int protoff,
 			struct nf_conn *ct, enum ip_conntrack_info ctinfo)
 {
 	struct tcphdr *th, _tcph;
+<<<<<<< HEAD
 	unsigned int dataoff;
 	unsigned int matchoff, matchlen, clen;
+=======
+	unsigned int dataoff, datalen;
+	unsigned int matchoff, matchlen, clen;
+	unsigned int msglen, origlen;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	const char *dptr, *end;
 	s16 diff, tdiff = 0;
 	int ret = NF_ACCEPT;
 	bool term;
+<<<<<<< HEAD
 	unsigned int datalen = 0, msglen = 0, origlen = 0;
 	unsigned int dataoff_orig = 0;
 	unsigned int splitlen, oldlen, oldlen1;
@@ -1855,6 +1888,8 @@ static int sip_help_tcp(struct sk_buff *skb, unsigned int protoff,
 
 	if (nf_ct_disable_sip_alg)
 		return NF_ACCEPT;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (ctinfo != IP_CT_ESTABLISHED &&
 	    ctinfo != IP_CT_ESTABLISHED_REPLY)
@@ -1878,6 +1913,7 @@ static int sip_help_tcp(struct sk_buff *skb, unsigned int protoff,
 	if (datalen < strlen("SIP/2.0 200"))
 		return NF_ACCEPT;
 
+<<<<<<< HEAD
 	/* Check if the header contains SIP version */
 	if (!strnstr(dptr, "SIP/2.0", datalen))
 		return NF_ACCEPT;
@@ -1902,6 +1938,13 @@ static int sip_help_tcp(struct sk_buff *skb, unsigned int protoff,
 				break;
 			}
 		}
+=======
+	while (1) {
+		if (ct_sip_get_header(ct, dptr, 0, datalen,
+				      SIP_HDR_CONTENT_LENGTH,
+				      &matchoff, &matchlen) <= 0)
+			break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		clen = simple_strtoul(dptr + matchoff, (char **)&end, 10);
 		if (dptr + matchoff == end)
@@ -1917,6 +1960,7 @@ static int sip_help_tcp(struct sk_buff *skb, unsigned int protoff,
 		}
 		if (!term)
 			break;
+<<<<<<< HEAD
 
 		end += strlen("\r\n\r\n") + clen;
 destination:
@@ -2022,6 +2066,28 @@ destination:
 here:
 
 	if (ret == NF_ACCEPT && ct &&  ct->status & IPS_NAT_MASK) {
+=======
+		end += strlen("\r\n\r\n") + clen;
+
+		msglen = origlen = end - dptr;
+		if (msglen > datalen)
+			return NF_ACCEPT;
+
+		ret = process_sip_msg(skb, ct, protoff, dataoff,
+				      &dptr, &msglen);
+		/* process_sip_* functions report why this packet is dropped */
+		if (ret != NF_ACCEPT)
+			break;
+		diff     = msglen - origlen;
+		tdiff   += diff;
+
+		dataoff += msglen;
+		dptr    += msglen;
+		datalen  = datalen + diff - msglen;
+	}
+
+	if (ret == NF_ACCEPT && ct->status & IPS_NAT_MASK) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		const struct nf_nat_sip_hooks *hooks;
 
 		hooks = rcu_dereference(nf_nat_sip_hooks);
@@ -2053,10 +2119,13 @@ static int sip_help_udp(struct sk_buff *skb, unsigned int protoff,
 	if (datalen < strlen("SIP/2.0 200"))
 		return NF_ACCEPT;
 
+<<<<<<< HEAD
 	/* Check if the header contains SIP version */
 	if (!strnstr(dptr, "SIP/2.0", datalen))
 		return NF_ACCEPT;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return process_sip_msg(skb, ct, protoff, dataoff, &dptr, &datalen);
 }
 
@@ -2095,6 +2164,7 @@ static int __init nf_conntrack_sip_init(void)
 	int i, ret;
 
 	NF_CT_HELPER_BUILD_BUG_ON(sizeof(struct nf_ct_sip_master));
+<<<<<<< HEAD
 	sip_sysctl_header = register_net_sysctl(&init_net, "net/netfilter",
 						sip_sysctl_tbl);
 	if (!sip_sysctl_header)
@@ -2104,6 +2174,8 @@ static int __init nf_conntrack_sip_init(void)
 		pr_debug("nf_ct_sip: SIP ALG disabled\n");
 	else
 		pr_debug("nf_ct_sip: SIP ALG enabled\n");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (ports_c == 0)
 		ports[ports_c++] = SIP_PORT;

@@ -94,7 +94,11 @@ _set_debug(struct sfax_hw *card)
 }
 
 static int
+<<<<<<< HEAD
 set_debug(const char *val, const struct kernel_param *kp)
+=======
+set_debug(const char *val, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int ret;
 	struct sfax_hw *card;

@@ -58,6 +58,10 @@ enum intel_pt_pkt_state {
 	INTEL_PT_STATE_NO_IP,
 	INTEL_PT_STATE_ERR_RESYNC,
 	INTEL_PT_STATE_IN_SYNC,
+<<<<<<< HEAD
+=======
+	INTEL_PT_STATE_TNT_CONT,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	INTEL_PT_STATE_TNT,
 	INTEL_PT_STATE_TIP,
 	INTEL_PT_STATE_TIP_PGD,
@@ -72,8 +76,14 @@ static inline bool intel_pt_sample_time(enum intel_pt_pkt_state pkt_state)
 	case INTEL_PT_STATE_NO_IP:
 	case INTEL_PT_STATE_ERR_RESYNC:
 	case INTEL_PT_STATE_IN_SYNC:
+<<<<<<< HEAD
 	case INTEL_PT_STATE_TNT:
 		return true;
+=======
+	case INTEL_PT_STATE_TNT_CONT:
+		return true;
+	case INTEL_PT_STATE_TNT:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	case INTEL_PT_STATE_TIP:
 	case INTEL_PT_STATE_TIP_PGD:
 	case INTEL_PT_STATE_FUP:
@@ -888,16 +898,31 @@ static uint64_t intel_pt_next_period(struct intel_pt_decoder *decoder)
 	timestamp = decoder->timestamp + decoder->timestamp_insn_cnt;
 	masked_timestamp = timestamp & decoder->period_mask;
 	if (decoder->continuous_period) {
+<<<<<<< HEAD
 		if (masked_timestamp != decoder->last_masked_timestamp)
+=======
+		if (masked_timestamp > decoder->last_masked_timestamp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return 1;
 	} else {
 		timestamp += 1;
 		masked_timestamp = timestamp & decoder->period_mask;
+<<<<<<< HEAD
 		if (masked_timestamp != decoder->last_masked_timestamp) {
+=======
+		if (masked_timestamp > decoder->last_masked_timestamp) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			decoder->last_masked_timestamp = masked_timestamp;
 			decoder->continuous_period = true;
 		}
 	}
+<<<<<<< HEAD
+=======
+
+	if (masked_timestamp < decoder->last_masked_timestamp)
+		return decoder->period_ticks;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return decoder->period_ticks - (timestamp - masked_timestamp);
 }
 
@@ -926,7 +951,14 @@ static void intel_pt_sample_insn(struct intel_pt_decoder *decoder)
 	case INTEL_PT_PERIOD_TICKS:
 		timestamp = decoder->timestamp + decoder->timestamp_insn_cnt;
 		masked_timestamp = timestamp & decoder->period_mask;
+<<<<<<< HEAD
 		decoder->last_masked_timestamp = masked_timestamp;
+=======
+		if (masked_timestamp > decoder->last_masked_timestamp)
+			decoder->last_masked_timestamp = masked_timestamp;
+		else
+			decoder->last_masked_timestamp += decoder->period_ticks;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	case INTEL_PT_PERIOD_NONE:
 	case INTEL_PT_PERIOD_MTC:
@@ -1054,6 +1086,11 @@ static bool intel_pt_fup_event(struct intel_pt_decoder *decoder)
 		decoder->set_fup_tx_flags = false;
 		decoder->tx_flags = decoder->fup_tx_flags;
 		decoder->state.type = INTEL_PT_TRANSACTION;
+<<<<<<< HEAD
+=======
+		if (decoder->fup_tx_flags & INTEL_PT_ABORT_TX)
+			decoder->state.type |= INTEL_PT_BRANCH;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		decoder->state.from_ip = decoder->ip;
 		decoder->state.to_ip = 0;
 		decoder->state.flags = decoder->fup_tx_flags;
@@ -1120,7 +1157,14 @@ static int intel_pt_walk_fup(struct intel_pt_decoder *decoder)
 			return 0;
 		if (err == -EAGAIN ||
 		    intel_pt_fup_with_nlip(decoder, &intel_pt_insn, ip, err)) {
+<<<<<<< HEAD
 			if (intel_pt_fup_event(decoder))
+=======
+			bool no_tip = decoder->pkt_state != INTEL_PT_STATE_FUP;
+
+			decoder->pkt_state = INTEL_PT_STATE_IN_SYNC;
+			if (intel_pt_fup_event(decoder) && no_tip)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				return 0;
 			return -EAGAIN;
 		}
@@ -1249,7 +1293,13 @@ static int intel_pt_walk_tnt(struct intel_pt_decoder *decoder)
 				return -ENOENT;
 			}
 			decoder->tnt.count -= 1;
+<<<<<<< HEAD
 			if (!decoder->tnt.count)
+=======
+			if (decoder->tnt.count)
+				decoder->pkt_state = INTEL_PT_STATE_TNT_CONT;
+			else
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				decoder->pkt_state = INTEL_PT_STATE_IN_SYNC;
 			decoder->tnt.payload <<= 1;
 			decoder->state.from_ip = decoder->ip;
@@ -1280,7 +1330,13 @@ static int intel_pt_walk_tnt(struct intel_pt_decoder *decoder)
 
 		if (intel_pt_insn.branch == INTEL_PT_BR_CONDITIONAL) {
 			decoder->tnt.count -= 1;
+<<<<<<< HEAD
 			if (!decoder->tnt.count)
+=======
+			if (decoder->tnt.count)
+				decoder->pkt_state = INTEL_PT_STATE_TNT_CONT;
+			else
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				decoder->pkt_state = INTEL_PT_STATE_IN_SYNC;
 			if (decoder->tnt.payload & BIT63) {
 				decoder->tnt.payload <<= 1;
@@ -1300,8 +1356,16 @@ static int intel_pt_walk_tnt(struct intel_pt_decoder *decoder)
 				return 0;
 			}
 			decoder->ip += intel_pt_insn.length;
+<<<<<<< HEAD
 			if (!decoder->tnt.count)
 				return -EAGAIN;
+=======
+			if (!decoder->tnt.count) {
+				decoder->sample_timestamp = decoder->timestamp;
+				decoder->sample_insn_cnt = decoder->timestamp_insn_cnt;
+				return -EAGAIN;
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			decoder->tnt.payload <<= 1;
 			continue;
 		}
@@ -1579,6 +1643,12 @@ static int intel_pt_walk_psbend(struct intel_pt_decoder *decoder)
 			break;
 
 		case INTEL_PT_CYC:
+<<<<<<< HEAD
+=======
+			intel_pt_calc_cyc_timestamp(decoder);
+			break;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		case INTEL_PT_VMCS:
 		case INTEL_PT_MNT:
 		case INTEL_PT_PAD:
@@ -1764,6 +1834,7 @@ next:
 			}
 			if (decoder->set_fup_mwait)
 				no_tip = true;
+<<<<<<< HEAD
 			err = intel_pt_walk_fup(decoder);
 			if (err != -EAGAIN) {
 				if (err)
@@ -1775,6 +1846,15 @@ next:
 					decoder->pkt_state = INTEL_PT_STATE_FUP;
 				return 0;
 			}
+=======
+			if (no_tip)
+				decoder->pkt_state = INTEL_PT_STATE_FUP_NO_TIP;
+			else
+				decoder->pkt_state = INTEL_PT_STATE_FUP;
+			err = intel_pt_walk_fup(decoder);
+			if (err != -EAGAIN)
+				return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (no_tip) {
 				no_tip = false;
 				break;
@@ -2349,6 +2429,10 @@ const struct intel_pt_state *intel_pt_decode(struct intel_pt_decoder *decoder)
 			err = intel_pt_walk_trace(decoder);
 			break;
 		case INTEL_PT_STATE_TNT:
+<<<<<<< HEAD
+=======
+		case INTEL_PT_STATE_TNT_CONT:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			err = intel_pt_walk_tnt(decoder);
 			if (err == -EAGAIN)
 				err = intel_pt_walk_trace(decoder);
@@ -2358,6 +2442,7 @@ const struct intel_pt_state *intel_pt_decode(struct intel_pt_decoder *decoder)
 			err = intel_pt_walk_tip(decoder);
 			break;
 		case INTEL_PT_STATE_FUP:
+<<<<<<< HEAD
 			decoder->pkt_state = INTEL_PT_STATE_IN_SYNC;
 			err = intel_pt_walk_fup(decoder);
 			if (err == -EAGAIN)
@@ -2367,6 +2452,13 @@ const struct intel_pt_state *intel_pt_decode(struct intel_pt_decoder *decoder)
 			break;
 		case INTEL_PT_STATE_FUP_NO_TIP:
 			decoder->pkt_state = INTEL_PT_STATE_IN_SYNC;
+=======
+			err = intel_pt_walk_fup(decoder);
+			if (err == -EAGAIN)
+				err = intel_pt_walk_fup_tip(decoder);
+			break;
+		case INTEL_PT_STATE_FUP_NO_TIP:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			err = intel_pt_walk_fup(decoder);
 			if (err == -EAGAIN)
 				err = intel_pt_walk_trace(decoder);

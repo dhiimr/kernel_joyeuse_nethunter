@@ -155,6 +155,7 @@ static inline void nop_dma_unmap_area(const void *s, size_t l, int f) { }
 #define __cpuc_flush_dcache_area	__glue(_CACHE,_flush_kern_dcache_area)
 
 #define dmac_flush_range		__glue(_CACHE,_dma_flush_range)
+<<<<<<< HEAD
 #define dmac_inv_range			__glue(_CACHE, _dma_inv_range)
 #define dmac_clean_range		__glue(_CACHE, _dma_clean_range)
 #define dmac_map_area			__glue(_CACHE, _dma_map_area)
@@ -162,6 +163,8 @@ static inline void nop_dma_unmap_area(const void *s, size_t l, int f) { }
 
 #define __dma_map_area			dmac_map_area
 #define __dma_unmap_area		dmac_unmap_area
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 #endif

@@ -72,6 +72,10 @@ static inline int get_dumpable(struct mm_struct *mm)
 #define MMF_DISABLE_THP		24	/* disable THP for all VMAs */
 #define MMF_OOM_VICTIM		25	/* mm is the oom victim */
 #define MMF_OOM_REAP_QUEUED	26	/* mm was queued for oom_reaper */
+<<<<<<< HEAD
+=======
+#define MMF_MULTIPROCESS	27	/* mm is shared between processes */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define MMF_DISABLE_THP_MASK	(1 << MMF_DISABLE_THP)
 
 #define MMF_INIT_MASK		(MMF_DUMPABLE_MASK | MMF_DUMP_FILTER_MASK |\

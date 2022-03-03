@@ -54,10 +54,13 @@
 #define DRV_VERSION	__stringify(DRV_VERSION_MAJOR) "."		\
 	__stringify(DRV_VERSION_MINOR) "." __stringify(DRV_VERSION_BUILD)
 
+<<<<<<< HEAD
 static int push_mode;
 module_param(push_mode, int, 0644);
 MODULE_PARM_DESC(push_mode, "Low latency mode: 0=disabled (default), 1=enabled)");
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int debug;
 module_param(debug, int, 0644);
 MODULE_PARM_DESC(debug, "debug flags: 0=disabled (default), 0x7fffffff=all");
@@ -680,7 +683,10 @@ static enum i40iw_status_code i40iw_configure_ceq_vector(struct i40iw_device *iw
 							 struct i40iw_msix_vector *msix_vec)
 {
 	enum i40iw_status_code status;
+<<<<<<< HEAD
 	cpumask_t mask;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (iwdev->msix_shared && !ceq_id) {
 		tasklet_init(&iwdev->dpc_tasklet, i40iw_dpc, (unsigned long)iwdev);
@@ -690,9 +696,15 @@ static enum i40iw_status_code i40iw_configure_ceq_vector(struct i40iw_device *iw
 		status = request_irq(msix_vec->irq, i40iw_ceq_handler, 0, "CEQ", iwceq);
 	}
 
+<<<<<<< HEAD
 	cpumask_clear(&mask);
 	cpumask_set_cpu(msix_vec->cpu_affinity, &mask);
 	irq_set_affinity_hint(msix_vec->irq, &mask);
+=======
+	cpumask_clear(&msix_vec->mask);
+	cpumask_set_cpu(msix_vec->cpu_affinity, &msix_vec->mask);
+	irq_set_affinity_hint(msix_vec->irq, &msix_vec->mask);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (status) {
 		i40iw_pr_err("ceq irq config fail\n");
@@ -1564,7 +1576,10 @@ static enum i40iw_status_code i40iw_setup_init_state(struct i40iw_handler *hdl,
 	if (status)
 		goto exit;
 	iwdev->obj_next = iwdev->obj_mem;
+<<<<<<< HEAD
 	iwdev->push_mode = push_mode;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	init_waitqueue_head(&iwdev->vchnl_waitq);
 	init_waitqueue_head(&dev->vf_reqs);

@@ -776,6 +776,12 @@ static int tw5864_enum_frameintervals(struct file *file, void *priv,
 	fintv->type = V4L2_FRMIVAL_TYPE_STEPWISE;
 
 	ret = tw5864_frameinterval_get(input, &frameinterval);
+<<<<<<< HEAD
+=======
+	if (ret)
+		return ret;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	fintv->stepwise.step = frameinterval;
 	fintv->stepwise.min = frameinterval;
 	fintv->stepwise.max = frameinterval;
@@ -794,6 +800,12 @@ static int tw5864_g_parm(struct file *file, void *priv,
 	cp->capability = V4L2_CAP_TIMEPERFRAME;
 
 	ret = tw5864_frameinterval_get(input, &cp->timeperframe);
+<<<<<<< HEAD
+=======
+	if (ret)
+		return ret;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cp->timeperframe.numerator *= input->frame_interval;
 	cp->capturemode = 0;
 	cp->readbuffers = 2;
@@ -1395,13 +1407,21 @@ static void tw5864_handle_frame(struct tw5864_h264_frame *frame)
 	input->vb = NULL;
 	spin_unlock_irqrestore(&input->slock, flags);
 
+<<<<<<< HEAD
 	v4l2_buf = to_vb2_v4l2_buffer(&vb->vb.vb2_buf);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!vb) { /* Gone because of disabling */
 		dev_dbg(&dev->pci->dev, "vb is empty, dropping frame\n");
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	v4l2_buf = to_vb2_v4l2_buffer(&vb->vb.vb2_buf);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Check for space.
 	 * Mind the overhead of startcode emulation prevention.

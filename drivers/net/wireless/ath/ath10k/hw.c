@@ -168,7 +168,11 @@ const struct ath10k_hw_values qca6174_values = {
 };
 
 const struct ath10k_hw_values qca99x0_values = {
+<<<<<<< HEAD
 	.rtc_state_val_on		= 5,
+=======
+	.rtc_state_val_on		= 7,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.ce_count			= 12,
 	.msi_assign_ce_max		= 12,
 	.num_target_ce_config_wlan	= 10,

@@ -44,9 +44,15 @@ static inline void arch_read_lock(arch_rwlock_t *lock)
 	__asm__ __volatile__(
 		"1:	R6 = memw_locked(%0);\n"
 		"	{ P3 = cmp.ge(R6,#0); R6 = add(R6,#1);}\n"
+<<<<<<< HEAD
 		"	{ if !P3 jump 1b; }\n"
 		"	memw_locked(%0,P3) = R6;\n"
 		"	{ if !P3 jump 1b; }\n"
+=======
+		"	{ if (!P3) jump 1b; }\n"
+		"	memw_locked(%0,P3) = R6;\n"
+		"	{ if (!P3) jump 1b; }\n"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		:
 		: "r" (&lock->lock)
 		: "memory", "r6", "p3"
@@ -60,7 +66,11 @@ static inline void arch_read_unlock(arch_rwlock_t *lock)
 		"1:	R6 = memw_locked(%0);\n"
 		"	R6 = add(R6,#-1);\n"
 		"	memw_locked(%0,P3) = R6\n"
+<<<<<<< HEAD
 		"	if !P3 jump 1b;\n"
+=======
+		"	if (!P3) jump 1b;\n"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		:
 		: "r" (&lock->lock)
 		: "memory", "r6", "p3"
@@ -75,7 +85,11 @@ static inline int arch_read_trylock(arch_rwlock_t *lock)
 	__asm__ __volatile__(
 		"	R6 = memw_locked(%1);\n"
 		"	{ %0 = #0; P3 = cmp.ge(R6,#0); R6 = add(R6,#1);}\n"
+<<<<<<< HEAD
 		"	{ if !P3 jump 1f; }\n"
+=======
+		"	{ if (!P3) jump 1f; }\n"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		"	memw_locked(%1,P3) = R6;\n"
 		"	{ %0 = P3 }\n"
 		"1:\n"
@@ -102,9 +116,15 @@ static inline void arch_write_lock(arch_rwlock_t *lock)
 	__asm__ __volatile__(
 		"1:	R6 = memw_locked(%0)\n"
 		"	{ P3 = cmp.eq(R6,#0);  R6 = #-1;}\n"
+<<<<<<< HEAD
 		"	{ if !P3 jump 1b; }\n"
 		"	memw_locked(%0,P3) = R6;\n"
 		"	{ if !P3 jump 1b; }\n"
+=======
+		"	{ if (!P3) jump 1b; }\n"
+		"	memw_locked(%0,P3) = R6;\n"
+		"	{ if (!P3) jump 1b; }\n"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		:
 		: "r" (&lock->lock)
 		: "memory", "r6", "p3"
@@ -118,7 +138,11 @@ static inline int arch_write_trylock(arch_rwlock_t *lock)
 	__asm__ __volatile__(
 		"	R6 = memw_locked(%1)\n"
 		"	{ %0 = #0; P3 = cmp.eq(R6,#0);  R6 = #-1;}\n"
+<<<<<<< HEAD
 		"	{ if !P3 jump 1f; }\n"
+=======
+		"	{ if (!P3) jump 1f; }\n"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		"	memw_locked(%1,P3) = R6;\n"
 		"	%0 = P3;\n"
 		"1:\n"
@@ -141,9 +165,15 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
 	__asm__ __volatile__(
 		"1:	R6 = memw_locked(%0);\n"
 		"	P3 = cmp.eq(R6,#0);\n"
+<<<<<<< HEAD
 		"	{ if !P3 jump 1b; R6 = #1; }\n"
 		"	memw_locked(%0,P3) = R6;\n"
 		"	{ if !P3 jump 1b; }\n"
+=======
+		"	{ if (!P3) jump 1b; R6 = #1; }\n"
+		"	memw_locked(%0,P3) = R6;\n"
+		"	{ if (!P3) jump 1b; }\n"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		:
 		: "r" (&lock->lock)
 		: "memory", "r6", "p3"
@@ -163,7 +193,11 @@ static inline unsigned int arch_spin_trylock(arch_spinlock_t *lock)
 	__asm__ __volatile__(
 		"	R6 = memw_locked(%1);\n"
 		"	P3 = cmp.eq(R6,#0);\n"
+<<<<<<< HEAD
 		"	{ if !P3 jump 1f; R6 = #1; %0 = #0; }\n"
+=======
+		"	{ if (!P3) jump 1f; R6 = #1; %0 = #0; }\n"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		"	memw_locked(%1,P3) = R6;\n"
 		"	%0 = P3;\n"
 		"1:\n"

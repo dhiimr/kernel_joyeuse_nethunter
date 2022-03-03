@@ -2,7 +2,10 @@
  * Generic GPIO card-detect helper
  *
  * Copyright (C) 2011, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+<<<<<<< HEAD
  * Copyright (C) 2020 XiaoMi, Inc.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -18,7 +21,10 @@
 #include <linux/mmc/slot-gpio.h>
 #include <linux/module.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/extcon.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "slot-gpio.h"
 
@@ -36,10 +42,13 @@ static irqreturn_t mmc_gpio_cd_irqt(int irq, void *dev_id)
 {
 	/* Schedule a card detection after a debounce timeout */
 	struct mmc_host *host = dev_id;
+<<<<<<< HEAD
 	int present = host->ops->get_cd(host);
 
 	pr_info("%s: cd gpio irq, gpio state %d (CARD_%s)\n",
 		mmc_hostname(host), present, present?"INSERT":"REMOVAL");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	host->trigger_card_event = true;
 	mmc_detect_change(host, msecs_to_jiffies(200));
@@ -82,6 +91,7 @@ EXPORT_SYMBOL(mmc_gpio_get_ro);
 int mmc_gpio_get_cd(struct mmc_host *host)
 {
 	struct mmc_gpio *ctx = host->slot.handler_priv;
+<<<<<<< HEAD
 	int ret;
 
 	if (host->extcon) {
@@ -91,6 +101,8 @@ int mmc_gpio_get_cd(struct mmc_host *host)
 					__func__, ret);
 		return ret;
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!ctx || !ctx->cd_gpio)
 		return -ENOSYS;
@@ -171,6 +183,7 @@ void mmc_gpiod_request_cd_irq(struct mmc_host *host)
 }
 EXPORT_SYMBOL(mmc_gpiod_request_cd_irq);
 
+<<<<<<< HEAD
 static int mmc_card_detect_notifier(struct notifier_block *nb,
 				       unsigned long event, void *ptr)
 {
@@ -218,6 +231,8 @@ void mmc_unregister_extcon(struct mmc_host *host)
 }
 EXPORT_SYMBOL(mmc_unregister_extcon);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Register an alternate interrupt service routine for
  * the card-detect GPIO.
  */

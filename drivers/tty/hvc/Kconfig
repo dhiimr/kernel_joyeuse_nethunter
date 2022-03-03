@@ -88,6 +88,7 @@ config HVC_DCC
 	 driver. This console is used through a JTAG only on ARM. If you don't have
 	 a JTAG then you probably don't want this option.
 
+<<<<<<< HEAD
 config HVC_DCC_SERIALIZE_SMP
 	bool "Use DCC only on core 0"
 	depends on SMP && HVC_DCC
@@ -109,6 +110,8 @@ config HVC_DCC_SERIALIZE_SMP
 	  output FIFOs that all cores will use.  Reads and writes from/to DCC
 	  are handled by a workqueue that runs only core 0.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config HVC_BFIN_JTAG
 	bool "Blackfin JTAG console"
 	depends on BLACKFIN

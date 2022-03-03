@@ -140,7 +140,11 @@ int vnt_rx_data(struct vnt_private *priv, struct vnt_rcb *ptr_rcb,
 
 	vnt_rf_rssi_to_dbm(priv, *rssi, &rx_dbm);
 
+<<<<<<< HEAD
 	priv->bb_pre_ed_rssi = (u8)rx_dbm + 1;
+=======
+	priv->bb_pre_ed_rssi = (u8)-rx_dbm + 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	priv->current_rssi = priv->bb_pre_ed_rssi;
 
 	frame = skb_data + 8;

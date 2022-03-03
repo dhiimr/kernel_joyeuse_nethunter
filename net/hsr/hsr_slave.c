@@ -32,6 +32,11 @@ static rx_handler_result_t hsr_handle_frame(struct sk_buff **pskb)
 
 	rcu_read_lock(); /* hsr->node_db, hsr->ports */
 	port = hsr_port_get_rcu(skb->dev);
+<<<<<<< HEAD
+=======
+	if (!port)
+		goto finish_pass;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (hsr_addr_is_self(port->hsr, eth_hdr(skb)->h_source)) {
 		/* Directly kill frames sent by ourselves */
@@ -150,16 +155,26 @@ int hsr_add_port(struct hsr_priv *hsr, struct net_device *dev,
 	if (port == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	port->hsr = hsr;
+	port->dev = dev;
+	port->type = type;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (type != HSR_PT_MASTER) {
 		res = hsr_portdev_setup(dev, port);
 		if (res)
 			goto fail_dev_setup;
 	}
 
+<<<<<<< HEAD
 	port->hsr = hsr;
 	port->dev = dev;
 	port->type = type;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	list_add_tail_rcu(&port->port_list, &hsr->ports);
 	synchronize_rcu();
 

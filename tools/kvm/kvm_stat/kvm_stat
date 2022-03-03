@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #!/usr/bin/python
+=======
+#!/usr/bin/env python
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #
 # top-like utility for displaying kvm statistics
 #
@@ -261,6 +265,10 @@ class ArchX86(Arch):
     def __init__(self, exit_reasons):
         self.sc_perf_evt_open = 298
         self.ioctl_numbers = IOCTL_NUMBERS
+<<<<<<< HEAD
+=======
+        self.exit_reason_field = 'exit_reason'
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
         self.exit_reasons = exit_reasons
 
 
@@ -276,6 +284,10 @@ class ArchPPC(Arch):
         # numbers depend on the wordsize.
         char_ptr_size = ctypes.sizeof(ctypes.c_char_p)
         self.ioctl_numbers['SET_FILTER'] = 0x80002406 | char_ptr_size << 16
+<<<<<<< HEAD
+=======
+        self.exit_reason_field = 'exit_nr'
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
         self.exit_reasons = {}
 
 
@@ -283,6 +295,10 @@ class ArchA64(Arch):
     def __init__(self):
         self.sc_perf_evt_open = 241
         self.ioctl_numbers = IOCTL_NUMBERS
+<<<<<<< HEAD
+=======
+        self.exit_reason_field = 'esr_ec'
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
         self.exit_reasons = AARCH64_EXIT_REASONS
 
 
@@ -290,6 +306,10 @@ class ArchS390(Arch):
     def __init__(self):
         self.sc_perf_evt_open = 331
         self.ioctl_numbers = IOCTL_NUMBERS
+<<<<<<< HEAD
+=======
+        self.exit_reason_field = None
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
         self.exit_reasons = None
 
 ARCH = Arch.get_arch()
@@ -513,8 +533,13 @@ class TracepointProvider(Provider):
         """
         filters = {}
         filters['kvm_userspace_exit'] = ('reason', USERSPACE_EXIT_REASONS)
+<<<<<<< HEAD
         if ARCH.exit_reasons:
             filters['kvm_exit'] = ('exit_reason', ARCH.exit_reasons)
+=======
+        if ARCH.exit_reason_field and ARCH.exit_reasons:
+            filters['kvm_exit'] = (ARCH.exit_reason_field, ARCH.exit_reasons)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
         return filters
 
     def get_available_fields(self):

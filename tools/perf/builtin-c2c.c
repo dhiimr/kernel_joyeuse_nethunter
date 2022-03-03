@@ -528,8 +528,13 @@ tot_hitm_cmp(struct perf_hpp_fmt *fmt __maybe_unused,
 {
 	struct c2c_hist_entry *c2c_left;
 	struct c2c_hist_entry *c2c_right;
+<<<<<<< HEAD
 	unsigned int tot_hitm_left;
 	unsigned int tot_hitm_right;
+=======
+	uint64_t tot_hitm_left;
+	uint64_t tot_hitm_right;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	c2c_left  = container_of(left, struct c2c_hist_entry, he);
 	c2c_right = container_of(right, struct c2c_hist_entry, he);
@@ -562,7 +567,12 @@ __f ## _cmp(struct perf_hpp_fmt *fmt __maybe_unused,			\
 									\
 	c2c_left  = container_of(left, struct c2c_hist_entry, he);	\
 	c2c_right = container_of(right, struct c2c_hist_entry, he);	\
+<<<<<<< HEAD
 	return c2c_left->stats.__f - c2c_right->stats.__f;		\
+=======
+	return (uint64_t) c2c_left->stats.__f -				\
+	       (uint64_t) c2c_right->stats.__f;				\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #define STAT_FN(__f)		\
@@ -615,7 +625,12 @@ ld_llcmiss_cmp(struct perf_hpp_fmt *fmt __maybe_unused,
 	c2c_left  = container_of(left, struct c2c_hist_entry, he);
 	c2c_right = container_of(right, struct c2c_hist_entry, he);
 
+<<<<<<< HEAD
 	return llc_miss(&c2c_left->stats) - llc_miss(&c2c_right->stats);
+=======
+	return (uint64_t) llc_miss(&c2c_left->stats) -
+	       (uint64_t) llc_miss(&c2c_right->stats);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static uint64_t total_records(struct c2c_stats *stats)
@@ -2454,6 +2469,10 @@ static int build_cl_output(char *cl_sort, bool no_source)
 	bool add_sym   = false;
 	bool add_dso   = false;
 	bool add_src   = false;
+<<<<<<< HEAD
+=======
+	int ret = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!buf)
 		return -ENOMEM;
@@ -2472,7 +2491,12 @@ static int build_cl_output(char *cl_sort, bool no_source)
 			add_dso = true;
 		} else if (strcmp(tok, "offset")) {
 			pr_err("unrecognized sort token: %s\n", tok);
+<<<<<<< HEAD
 			return -EINVAL;
+=======
+			ret = -EINVAL;
+			goto err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 
@@ -2495,6 +2519,7 @@ static int build_cl_output(char *cl_sort, bool no_source)
 		add_sym ? "symbol," : "",
 		add_dso ? "dso," : "",
 		add_src ? "cl_srcline," : "",
+<<<<<<< HEAD
 		"node") < 0)
 		return -ENOMEM;
 
@@ -2502,6 +2527,17 @@ static int build_cl_output(char *cl_sort, bool no_source)
 
 	free(buf);
 	return 0;
+=======
+		"node") < 0) {
+		ret = -ENOMEM;
+		goto err;
+	}
+
+	c2c.show_src = add_src;
+err:
+	free(buf);
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int setup_coalesce(const char *coalesce, bool no_source)

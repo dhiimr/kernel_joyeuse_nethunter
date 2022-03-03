@@ -72,14 +72,28 @@ static inline void superio_select(int ld)
 	superio_outb(0x07, ld);
 }
 
+<<<<<<< HEAD
 static inline void superio_enter(void)
 {
 	outb(0x55, REG);
+=======
+static inline int superio_enter(void)
+{
+	if (!request_muxed_region(REG, 2, DRVNAME))
+		return -EBUSY;
+
+	outb(0x55, REG);
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void superio_exit(void)
 {
 	outb(0xAA, REG);
+<<<<<<< HEAD
+=======
+	release_region(REG, 2);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #define SUPERIO_REG_DEVID	0x20
@@ -300,8 +314,17 @@ static int __init smsc47b397_find(void)
 	u8 id, rev;
 	char *name;
 	unsigned short addr;
+<<<<<<< HEAD
 
 	superio_enter();
+=======
+	int err;
+
+	err = superio_enter();
+	if (err)
+		return err;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	id = force_id ? force_id : superio_inb(SUPERIO_REG_DEVID);
 
 	switch (id) {

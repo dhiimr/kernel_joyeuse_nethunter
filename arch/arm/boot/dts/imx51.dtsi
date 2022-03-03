@@ -476,7 +476,11 @@
 				reg = <0x83fb0000 0x4000>;
 				interrupts = <6>;
 				clocks = <&clks IMX5_CLK_SDMA_GATE>,
+<<<<<<< HEAD
 					 <&clks IMX5_CLK_SDMA_GATE>;
+=======
+					 <&clks IMX5_CLK_AHB>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				clock-names = "ipg", "ahb";
 				#dma-cells = <3>;
 				fsl,sdma-ram-script-name = "imx/sdma/sdma-imx51.bin";

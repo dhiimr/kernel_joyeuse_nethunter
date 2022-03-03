@@ -475,13 +475,21 @@ void giveup_all(struct task_struct *tsk)
 	if (!tsk->thread.regs)
 		return;
 
+<<<<<<< HEAD
+=======
+	check_if_tm_restore_required(tsk);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	usermsr = tsk->thread.regs->msr;
 
 	if ((usermsr & msr_all_available) == 0)
 		return;
 
 	msr_check_and_set(msr_all_available);
+<<<<<<< HEAD
 	check_if_tm_restore_required(tsk);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	WARN_ON((usermsr & MSR_VSX) && !((usermsr & MSR_FP) && (usermsr & MSR_VEC)));
 
@@ -566,12 +574,19 @@ void flush_all_to_thread(struct task_struct *tsk)
 	if (tsk->thread.regs) {
 		preempt_disable();
 		BUG_ON(tsk != current);
+<<<<<<< HEAD
 		save_all(tsk);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_SPE
 		if (tsk->thread.regs->msr & MSR_SPE)
 			tsk->thread.spefscr = mfspr(SPRN_SPEFSCR);
 #endif
+<<<<<<< HEAD
+=======
+		save_all(tsk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		preempt_enable();
 	}

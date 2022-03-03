@@ -340,15 +340,25 @@ static void fotg210_start_dma(struct fotg210_ep *ep,
 		} else {
 			buffer = req->req.buf + req->req.actual;
 			length = ioread32(ep->fotg210->reg +
+<<<<<<< HEAD
 					FOTG210_FIBCR(ep->epnum - 1));
 			length &= FIBCR_BCFX;
+=======
+					FOTG210_FIBCR(ep->epnum - 1)) & FIBCR_BCFX;
+			if (length > req->req.length - req->req.actual)
+				length = req->req.length - req->req.actual;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	} else {
 		buffer = req->req.buf + req->req.actual;
 		if (req->req.length - req->req.actual > ep->ep.maxpacket)
 			length = ep->ep.maxpacket;
 		else
+<<<<<<< HEAD
 			length = req->req.length;
+=======
+			length = req->req.length - req->req.actual;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	d = dma_map_single(NULL, buffer, length,
@@ -385,8 +395,12 @@ static void fotg210_ep0_queue(struct fotg210_ep *ep,
 	}
 	if (ep->dir_in) { /* if IN */
 		fotg210_start_dma(ep, req);
+<<<<<<< HEAD
 		if ((req->req.length == req->req.actual) ||
 		    (req->req.actual < ep->ep.maxpacket))
+=======
+		if (req->req.length == req->req.actual)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			fotg210_done(ep, req, 0);
 	} else { /* OUT */
 		u32 value = ioread32(ep->fotg210->reg + FOTG210_DMISGR0);
@@ -744,7 +758,11 @@ static void fotg210_get_status(struct fotg210_udc *fotg210,
 	fotg210->ep0_req->length = 2;
 
 	spin_unlock(&fotg210->lock);
+<<<<<<< HEAD
 	fotg210_ep_queue(fotg210->gadget.ep0, fotg210->ep0_req, GFP_KERNEL);
+=======
+	fotg210_ep_queue(fotg210->gadget.ep0, fotg210->ep0_req, GFP_ATOMIC);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock(&fotg210->lock);
 }
 
@@ -827,7 +845,11 @@ static void fotg210_ep0in(struct fotg210_udc *fotg210)
 		if (req->req.length)
 			fotg210_start_dma(ep, req);
 
+<<<<<<< HEAD
 		if ((req->req.length - req->req.actual) < ep->ep.maxpacket)
+=======
+		if (req->req.actual == req->req.length)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			fotg210_done(ep, req, 0);
 	} else {
 		fotg210_set_cxdone(fotg210);
@@ -856,12 +878,25 @@ static void fotg210_out_fifo_handler(struct fotg210_ep *ep)
 {
 	struct fotg210_request *req = list_entry(ep->queue.next,
 						 struct fotg210_request, queue);
+<<<<<<< HEAD
 
 	fotg210_start_dma(ep, req);
 
 	/* finish out transfer */
 	if (req->req.length == req->req.actual ||
 	    req->req.actual < ep->ep.maxpacket)
+=======
+	int disgr1 = ioread32(ep->fotg210->reg + FOTG210_DISGR1);
+
+	fotg210_start_dma(ep, req);
+
+	/* Complete the request when it's full or a short packet arrived.
+	 * Like other drivers, short_not_ok isn't handled.
+	 */
+
+	if (req->req.length == req->req.actual ||
+	    (disgr1 & DISGR1_SPK_INT(ep->epnum - 1)))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		fotg210_done(ep, req, 0);
 }
 
@@ -1034,6 +1069,15 @@ static void fotg210_init(struct fotg210_udc *fotg210)
 	value &= ~DMCR_GLINT_EN;
 	iowrite32(value, fotg210->reg + FOTG210_DMCR);
 
+<<<<<<< HEAD
+=======
+	/* enable only grp2 irqs we handle */
+	iowrite32(~(DISGR2_DMA_ERROR | DISGR2_RX0BYTE_INT | DISGR2_TX0BYTE_INT
+		    | DISGR2_ISO_SEQ_ABORT_INT | DISGR2_ISO_SEQ_ERR_INT
+		    | DISGR2_RESM_INT | DISGR2_SUSP_INT | DISGR2_USBRST_INT),
+		  fotg210->reg + FOTG210_DMISGR2);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* disable all fifo interrupt */
 	iowrite32(~(u32)0, fotg210->reg + FOTG210_DMISGR1);
 

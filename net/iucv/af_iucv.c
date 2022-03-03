@@ -1552,7 +1552,12 @@ static int iucv_sock_shutdown(struct socket *sock, int how)
 		break;
 	}
 
+<<<<<<< HEAD
 	if (how == SEND_SHUTDOWN || how == SHUTDOWN_MASK) {
+=======
+	if ((how == SEND_SHUTDOWN || how == SHUTDOWN_MASK) &&
+	    sk->sk_state == IUCV_CONNECTED) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (iucv->transport == AF_IUCV_TRANS_IUCV) {
 			txmsg.class = 0;
 			txmsg.tag = 0;
@@ -1762,7 +1767,11 @@ static int iucv_callback_connreq(struct iucv_path *path,
 	}
 
 	/* Create the new socket */
+<<<<<<< HEAD
 	nsk = iucv_sock_alloc(NULL, sk->sk_type, GFP_ATOMIC, 0);
+=======
+	nsk = iucv_sock_alloc(NULL, sk->sk_protocol, GFP_ATOMIC, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!nsk) {
 		err = pr_iucv->path_sever(path, user_data);
 		iucv_path_free(path);
@@ -1972,7 +1981,11 @@ static int afiucv_hs_callback_syn(struct sock *sk, struct sk_buff *skb)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	nsk = iucv_sock_alloc(NULL, sk->sk_type, GFP_ATOMIC, 0);
+=======
+	nsk = iucv_sock_alloc(NULL, sk->sk_protocol, GFP_ATOMIC, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bh_lock_sock(sk);
 	if ((sk->sk_state != IUCV_LISTEN) ||
 	    sk_acceptq_is_full(sk) ||
@@ -2446,6 +2459,16 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
+=======
+static void afiucv_iucv_exit(void)
+{
+	device_unregister(af_iucv_dev);
+	driver_unregister(&af_iucv_driver);
+	pr_iucv->iucv_unregister(&af_iucv_handler, 0);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int __init afiucv_init(void)
 {
 	int err;
@@ -2479,11 +2502,26 @@ static int __init afiucv_init(void)
 		err = afiucv_iucv_init();
 		if (err)
 			goto out_sock;
+<<<<<<< HEAD
 	} else
 		register_netdevice_notifier(&afiucv_netdev_notifier);
 	dev_add_pack(&iucv_packet_type);
 	return 0;
 
+=======
+	}
+
+	err = register_netdevice_notifier(&afiucv_netdev_notifier);
+	if (err)
+		goto out_notifier;
+
+	dev_add_pack(&iucv_packet_type);
+	return 0;
+
+out_notifier:
+	if (pr_iucv)
+		afiucv_iucv_exit();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out_sock:
 	sock_unregister(PF_IUCV);
 out_proto:
@@ -2497,12 +2535,20 @@ out:
 static void __exit afiucv_exit(void)
 {
 	if (pr_iucv) {
+<<<<<<< HEAD
 		device_unregister(af_iucv_dev);
 		driver_unregister(&af_iucv_driver);
 		pr_iucv->iucv_unregister(&af_iucv_handler, 0);
 		symbol_put(iucv_if);
 	} else
 		unregister_netdevice_notifier(&afiucv_netdev_notifier);
+=======
+		afiucv_iucv_exit();
+		symbol_put(iucv_if);
+	}
+
+	unregister_netdevice_notifier(&afiucv_netdev_notifier);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev_remove_pack(&iucv_packet_type);
 	sock_unregister(PF_IUCV);
 	proto_unregister(&iucv_proto);

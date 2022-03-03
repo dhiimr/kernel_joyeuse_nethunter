@@ -323,7 +323,11 @@ static void s5p_unset_indata(struct s5p_aes_dev *dev)
 }
 
 static int s5p_make_sg_cpy(struct s5p_aes_dev *dev, struct scatterlist *src,
+<<<<<<< HEAD
 			    struct scatterlist **dst)
+=======
+			   struct scatterlist **dst)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	void *pages;
 	int len;
@@ -569,7 +573,11 @@ static int s5p_set_indata_start(struct s5p_aes_dev *dev,
 }
 
 static int s5p_set_outdata_start(struct s5p_aes_dev *dev,
+<<<<<<< HEAD
 				struct ablkcipher_request *req)
+=======
+				 struct ablkcipher_request *req)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct scatterlist *sg;
 	int err;

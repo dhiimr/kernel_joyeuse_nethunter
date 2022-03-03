@@ -8,15 +8,22 @@
 #include <linux/scatterlist.h>
 #include <linux/dma-debug.h>
 #include <linux/kref.h>
+<<<<<<< HEAD
 #include <linux/dma-mapping-fast.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define ARM_MAPPING_ERROR		(~(dma_addr_t)0x0)
 
 struct dma_iommu_mapping {
 	/* iommu specific data */
 	struct iommu_domain	*domain;
+<<<<<<< HEAD
 	bool			init;
 	const struct dma_map_ops *ops;
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long		**bitmaps;	/* array of bitmaps */
 	unsigned int		nr_bitmaps;	/* nr of elements in array */
 	unsigned int		extensions;
@@ -26,8 +33,11 @@ struct dma_iommu_mapping {
 
 	spinlock_t		lock;
 	struct kref		kref;
+<<<<<<< HEAD
 
 	struct dma_fast_smmu_mapping *fast;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct dma_iommu_mapping *

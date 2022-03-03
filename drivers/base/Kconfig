@@ -164,11 +164,14 @@ config FW_LOADER_USER_HELPER_FALLBACK
 
 	  If you are unsure about this, say N here.
 
+<<<<<<< HEAD
 config FW_CACHE
        bool "Enable firmware caching during suspend"
        depends on PM_SLEEP
        default n
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config WANT_DEV_COREDUMP
 	bool
 	help

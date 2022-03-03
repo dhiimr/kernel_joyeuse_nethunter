@@ -147,6 +147,10 @@ struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, int size,
 		switch (fwid->type) {
 		case IRQCHIP_FWNODE_NAMED:
 		case IRQCHIP_FWNODE_NAMED_ID:
+<<<<<<< HEAD
+=======
+			domain->fwnode = fwnode;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			domain->name = kstrdup(fwid->name, GFP_KERNEL);
 			if (!domain->name) {
 				kfree(domain);
@@ -1363,14 +1367,34 @@ static void irq_domain_free_irqs_hierarchy(struct irq_domain *domain,
 					   unsigned int irq_base,
 					   unsigned int nr_irqs)
 {
+<<<<<<< HEAD
 	if (domain->ops->free)
 		domain->ops->free(domain, irq_base, nr_irqs);
+=======
+	unsigned int i;
+
+	if (!domain->ops->free)
+		return;
+
+	for (i = 0; i < nr_irqs; i++) {
+		if (irq_domain_get_irq_data(domain, irq_base + i))
+			domain->ops->free(domain, irq_base + i, 1);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 int irq_domain_alloc_irqs_hierarchy(struct irq_domain *domain,
 				    unsigned int irq_base,
 				    unsigned int nr_irqs, void *arg)
 {
+<<<<<<< HEAD
+=======
+	if (!domain->ops->alloc) {
+		pr_debug("domain->ops->alloc() is NULL\n");
+		return -ENOSYS;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return domain->ops->alloc(domain, irq_base, nr_irqs, arg);
 }
 
@@ -1408,11 +1432,14 @@ int __irq_domain_alloc_irqs(struct irq_domain *domain, int irq_base,
 			return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (!domain->ops->alloc) {
 		pr_debug("domain->ops->alloc() is NULL\n");
 		return -ENOSYS;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (realloc && irq_base >= 0) {
 		virq = irq_base;
 	} else {
@@ -1537,6 +1564,10 @@ int irq_domain_push_irq(struct irq_domain *domain, int virq, void *arg)
 	if (rv) {
 		/* Restore the original irq_data. */
 		*root_irq_data = *child_irq_data;
+<<<<<<< HEAD
+=======
+		kfree(child_irq_data);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto error;
 	}
 

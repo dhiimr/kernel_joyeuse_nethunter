@@ -23,7 +23,11 @@
 			"Headphone Jack", "HPL",
 			"Headphone Jack", "HPR",
 			"Headphone Jack", "MICBIAS",
+<<<<<<< HEAD
 			"IN1", "Headphone Jack",
+=======
+			"IN12", "Headphone Jack",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			"Speakers", "SPKL",
 			"Speakers", "SPKR";
 

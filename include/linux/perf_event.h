@@ -266,8 +266,11 @@ struct pmu {
 	atomic_t			exclusive_cnt; /* < 0: cpu; > 0: tsk */
 	int				task_ctx_nr;
 	int				hrtimer_interval_ms;
+<<<<<<< HEAD
 	u32				events_across_hotplug:1,
 					reserved:31;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* number of address filters this PMU can do */
 	unsigned int			nr_addr_filters;
@@ -468,7 +471,11 @@ struct pmu {
  */
 struct perf_addr_filter {
 	struct list_head	entry;
+<<<<<<< HEAD
 	struct inode		*inode;
+=======
+	struct path		path;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long		offset;
 	unsigned long		size;
 	unsigned int		range	: 1,
@@ -495,7 +502,10 @@ struct perf_addr_filters_head {
  * enum perf_event_active_state - the states of a event
  */
 enum perf_event_active_state {
+<<<<<<< HEAD
 	PERF_EVENT_STATE_DORMANT	= -5,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	PERF_EVENT_STATE_DEAD		= -4,
 	PERF_EVENT_STATE_EXIT		= -3,
 	PERF_EVENT_STATE_ERROR		= -2,
@@ -583,12 +593,15 @@ struct perf_event {
 	int				group_caps;
 
 	struct perf_event		*group_leader;
+<<<<<<< HEAD
 
 	/*
 	 * Protect the pmu, attributes and context of a group leader.
 	 * Note: does not protect the pointer to the group_leader.
 	 */
 	struct mutex			group_leader_mutex;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct pmu			*pmu;
 	void				*pmu_private;
 
@@ -658,7 +671,10 @@ struct perf_event {
 
 	int				oncpu;
 	int				cpu;
+<<<<<<< HEAD
 	cpumask_t			readable_on_cpus;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	struct list_head		owner_entry;
 	struct task_struct		*owner;
@@ -718,6 +734,7 @@ struct perf_event {
 #endif
 
 	struct list_head		sb_list;
+<<<<<<< HEAD
 
 	/*
 	 * Entry into the list that holds the events whose CPUs
@@ -728,6 +745,8 @@ struct perf_event {
 
 	/* Is this event shared with other events */
 	bool					shared;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* CONFIG_PERF_EVENTS */
 };
 
@@ -1190,11 +1209,14 @@ extern int perf_cpu_time_max_percent_handler(struct ctl_table *table, int write,
 int perf_event_max_stack_handler(struct ctl_table *table, int write,
 				 void __user *buffer, size_t *lenp, loff_t *ppos);
 
+<<<<<<< HEAD
 static inline bool perf_paranoid_any(void)
 {
 	return sysctl_perf_event_paranoid > 2;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline bool perf_paranoid_tracepoint_raw(void)
 {
 	return sysctl_perf_event_paranoid > -1;
@@ -1414,11 +1436,17 @@ static struct device_attribute format_attr_##_name = __ATTR_RO(_name)
 #ifdef CONFIG_PERF_EVENTS
 int perf_event_init_cpu(unsigned int cpu);
 int perf_event_exit_cpu(unsigned int cpu);
+<<<<<<< HEAD
 int perf_event_restart_events(unsigned int cpu);
 #else
 #define perf_event_init_cpu	NULL
 #define perf_event_exit_cpu	NULL
 #define perf_event_restart_events NULL
+=======
+#else
+#define perf_event_init_cpu	NULL
+#define perf_event_exit_cpu	NULL
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 #endif /* _LINUX_PERF_EVENT_H */

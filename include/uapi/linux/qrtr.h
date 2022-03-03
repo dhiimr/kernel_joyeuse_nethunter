@@ -5,15 +5,19 @@
 #include <linux/socket.h>
 #include <linux/types.h>
 
+<<<<<<< HEAD
 #define QRTR_NODE_BCAST	0xffffffffu
 #define QRTR_PORT_CTRL	0xfffffffeu
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct sockaddr_qrtr {
 	__kernel_sa_family_t sq_family;
 	__u32 sq_node;
 	__u32 sq_port;
 };
 
+<<<<<<< HEAD
 enum qrtr_pkt_type {
 	QRTR_TYPE_DATA		= 1,
 	QRTR_TYPE_HELLO		= 2,
@@ -53,4 +57,6 @@ struct qrtr_ctrl_pkt {
 	};
 } __packed;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _LINUX_QRTR_H */

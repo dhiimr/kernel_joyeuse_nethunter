@@ -342,6 +342,12 @@ MODULE_DEVICE_TABLE(of, rcar_gen3_thermal_dt_ids);
 static int rcar_gen3_thermal_remove(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
+<<<<<<< HEAD
+=======
+	struct rcar_gen3_thermal_priv *priv = dev_get_drvdata(dev);
+
+	rcar_thermal_irq_set(priv, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	pm_runtime_put(dev);
 	pm_runtime_disable(dev);

@@ -520,12 +520,15 @@ static void *eeh_rmv_device(void *data, void *userdata)
 
 		pci_iov_remove_virtfn(edev->physfn, pdn->vf_index, 0);
 		edev->pdev = NULL;
+<<<<<<< HEAD
 
 		/*
 		 * We have to set the VF PE number to invalid one, which is
 		 * required to plug the VF successfully.
 		 */
 		pdn->pe_number = IODA_INVALID_PE;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 		if (rmv_data)
 			list_add(&edev->rmv_list, &rmv_data->edev_list);

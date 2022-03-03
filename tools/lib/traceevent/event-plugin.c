@@ -30,7 +30,11 @@
 #include "event-parse.h"
 #include "event-utils.h"
 
+<<<<<<< HEAD
 #define LOCAL_PLUGIN_DIR ".traceevent/plugins"
+=======
+#define LOCAL_PLUGIN_DIR ".local/lib/traceevent/plugins/"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct registered_plugin_options {
 	struct registered_plugin_options	*next;

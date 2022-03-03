@@ -1216,7 +1216,11 @@ font_op_error:
 /* Interface routine */
 static int
 sisusbcon_font_set(struct vc_data *c, struct console_font *font,
+<<<<<<< HEAD
 		   unsigned int flags)
+=======
+							unsigned flags)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct sisusb_usb_data *sisusb;
 	unsigned charcount = font->charcount;
@@ -1337,6 +1341,7 @@ static void sisusbdummycon_init(struct vc_data *vc, int init)
 	vc_resize(vc, 80, 25);
 }
 
+<<<<<<< HEAD
 static void sisusbdummycon_deinit(struct vc_data *vc) { }
 static void sisusbdummycon_clear(struct vc_data *vc, int sy, int sx,
 				 int height, int width) { }
@@ -1380,11 +1385,20 @@ static int sisusbdummycon_font_copy(struct vc_data *vc, int con)
 {
 	return 0;
 }
+=======
+static int sisusbdummycon_dummy(void)
+{
+    return 0;
+}
+
+#define SISUSBCONDUMMY	(void *)sisusbdummycon_dummy
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static const struct consw sisusb_dummy_con = {
 	.owner =		THIS_MODULE,
 	.con_startup =		sisusbdummycon_startup,
 	.con_init =		sisusbdummycon_init,
+<<<<<<< HEAD
 	.con_deinit =		sisusbdummycon_deinit,
 	.con_clear =		sisusbdummycon_clear,
 	.con_putc =		sisusbdummycon_putc,
@@ -1396,6 +1410,20 @@ static const struct consw sisusb_dummy_con = {
 	.con_font_set =		sisusbdummycon_font_set,
 	.con_font_default =	sisusbdummycon_font_default,
 	.con_font_copy =	sisusbdummycon_font_copy,
+=======
+	.con_deinit =		SISUSBCONDUMMY,
+	.con_clear =		SISUSBCONDUMMY,
+	.con_putc =		SISUSBCONDUMMY,
+	.con_putcs =		SISUSBCONDUMMY,
+	.con_cursor =		SISUSBCONDUMMY,
+	.con_scroll =		SISUSBCONDUMMY,
+	.con_switch =		SISUSBCONDUMMY,
+	.con_blank =		SISUSBCONDUMMY,
+	.con_font_set =		SISUSBCONDUMMY,
+	.con_font_get =		SISUSBCONDUMMY,
+	.con_font_default =	SISUSBCONDUMMY,
+	.con_font_copy =	SISUSBCONDUMMY,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 int

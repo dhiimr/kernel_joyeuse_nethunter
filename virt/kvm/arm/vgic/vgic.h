@@ -168,6 +168,10 @@ int vgic_register_dist_iodev(struct kvm *kvm, gpa_t dist_base_address,
 void vgic_v2_init_lrs(void);
 void vgic_v2_load(struct kvm_vcpu *vcpu);
 void vgic_v2_put(struct kvm_vcpu *vcpu);
+<<<<<<< HEAD
+=======
+void vgic_v2_vmcr_sync(struct kvm_vcpu *vcpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static inline void vgic_get_irq_kref(struct vgic_irq *irq)
 {
@@ -195,6 +199,10 @@ bool vgic_v3_check_base(struct kvm *kvm);
 
 void vgic_v3_load(struct kvm_vcpu *vcpu);
 void vgic_v3_put(struct kvm_vcpu *vcpu);
+<<<<<<< HEAD
+=======
+void vgic_v3_vmcr_sync(struct kvm_vcpu *vcpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 bool vgic_has_its(struct kvm *kvm);
 int kvm_vgic_register_its_device(void);

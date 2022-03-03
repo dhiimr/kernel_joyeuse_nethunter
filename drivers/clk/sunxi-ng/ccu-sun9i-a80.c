@@ -1231,7 +1231,11 @@ static int sun9i_a80_ccu_probe(struct platform_device *pdev)
 
 	/* Enforce d1 = 0, d2 = 0 for Audio PLL */
 	val = readl(reg + SUN9I_A80_PLL_AUDIO_REG);
+<<<<<<< HEAD
 	val &= (BIT(16) & BIT(18));
+=======
+	val &= ~(BIT(16) | BIT(18));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	writel(val, reg + SUN9I_A80_PLL_AUDIO_REG);
 
 	/* Enforce P = 1 for both CPU cluster PLLs */

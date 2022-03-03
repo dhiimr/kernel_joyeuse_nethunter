@@ -61,6 +61,7 @@ archive_builtin()
 		${AR} rcsTP${KBUILD_ARFLAGS} built-in.o			\
 					${KBUILD_VMLINUX_INIT}		\
 					${KBUILD_VMLINUX_MAIN}
+<<<<<<< HEAD
 
 		if [ -n "${CONFIG_LTO_CLANG}" ]; then
 			mv -f built-in.o built-in.o.tmp
@@ -93,6 +94,9 @@ modversions()
 	done
 
 	echo "-T .tmp_symversions"
+=======
+	fi
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 # Link of vmlinux.o used for section mismatch analysis
@@ -115,6 +119,7 @@ modpost_link()
 			${KBUILD_VMLINUX_LIBS}				\
 			--end-group"
 	fi
+<<<<<<< HEAD
 
 	if [ -n "${CONFIG_LTO_CLANG}" ]; then
 		# This might take a while, so indicate that we're doing
@@ -138,6 +143,9 @@ recordmcount()
 	if [ -n "${CONFIG_FTRACE_MCOUNT_RECORD}" ]; then
 		scripts/recordmcount ${RECORDMCOUNT_FLAGS} $*
 	fi
+=======
+	${LD} ${LDFLAGS} -r -o ${1} ${objects}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 # Link of vmlinux
@@ -149,6 +157,7 @@ vmlinux_link()
 	local objects
 
 	if [ "${SRCARCH}" != "um" ]; then
+<<<<<<< HEAD
 		local ld=${LD}
 		local ldflags="${LDFLAGS} ${LDFLAGS_vmlinux}"
 
@@ -159,6 +168,10 @@ vmlinux_link()
 
 		if [[ -n "${CONFIG_THIN_ARCHIVES}" && -z "${CONFIG_LTO_CLANG}" ]]; then
 			objects="--whole-archive 			\
+=======
+		if [ -n "${CONFIG_THIN_ARCHIVES}" ]; then
+			objects="--whole-archive			\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				built-in.o				\
 				--no-whole-archive			\
 				--start-group				\
@@ -174,7 +187,12 @@ vmlinux_link()
 				${1}"
 		fi
 
+<<<<<<< HEAD
 		${ld} ${ldflags} -o ${2} -T ${lds} ${objects}
+=======
+		${LD} ${LDFLAGS} ${LDFLAGS_vmlinux} -o ${2}		\
+			-T ${lds} ${objects}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	else
 		if [ -n "${CONFIG_THIN_ARCHIVES}" ]; then
 			objects="-Wl,--whole-archive			\
@@ -201,6 +219,10 @@ vmlinux_link()
 	fi
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # Create ${2} .o file with all symbols from the ${1} object file
 kallsyms()
 {
@@ -232,6 +254,7 @@ kallsyms()
 	${CC} ${aflags} -c -o ${2} ${afile}
 }
 
+<<<<<<< HEAD
 # Generates ${2} .o file with RTIC MP's from the ${1} object file (vmlinux)
 # ${3} the file name where the sizes of the RTIC MP structure are stored
 # just in case, save copy of the RTIC mp to ${4}
@@ -257,6 +280,8 @@ rtic_mp()
 	# does not cause kernel compilation to fail.
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # Create map file with all symbols from ${1}
 # See mksymap for additional details
 mksysmap()
@@ -276,14 +301,20 @@ cleanup()
 	rm -f .tmp_System.map
 	rm -f .tmp_kallsyms*
 	rm -f .tmp_version
+<<<<<<< HEAD
 	rm -f .tmp_symversions
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rm -f .tmp_vmlinux*
 	rm -f built-in.o
 	rm -f System.map
 	rm -f vmlinux
 	rm -f vmlinux.o
+<<<<<<< HEAD
 	rm -f .tmp_rtic_mp_sz*
 	rm -f rtic_mp.*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 on_exit()
@@ -340,11 +371,16 @@ ${MAKE} -f "${srctree}/scripts/Makefile.build" obj=init GCC_PLUGINS_CFLAGS="${GC
 archive_builtin
 
 #link vmlinux.o
+<<<<<<< HEAD
+=======
+info LD vmlinux.o
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 modpost_link vmlinux.o
 
 # modpost vmlinux.o to check for section mismatches
 ${MAKE} -f "${srctree}/scripts/Makefile.modpost" vmlinux.o
 
+<<<<<<< HEAD
 if [ -n "${CONFIG_LTO_CLANG}" ]; then
 	# Re-use vmlinux.o, so we can avoid the slow LTO link step in
 	# vmlinux_link
@@ -365,6 +401,8 @@ if [ ! -z ${RTIC_MPGEN+x} ]; then
 	KBUILD_VMLINUX_LIBS+=$RTIC_MP_O
 fi
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 kallsymso=""
 kallsyms_vmlinux=""
 if [ -n "${CONFIG_KALLSYMS}" ]; then
@@ -417,6 +455,7 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
 	fi
 fi
 
+<<<<<<< HEAD
 # Update RTIC MP object by replacing the place holder
 # with actual MP data of the same size
 # Also double check that object size did not change
@@ -433,6 +472,8 @@ if [ ! -z ${RTIC_MP_O} ]; then
 	fi
 fi
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 info LD vmlinux
 vmlinux_link "${kallsymso}" vmlinux
 
@@ -455,6 +496,7 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
 	fi
 fi
 
+<<<<<<< HEAD
 # Starting Android Q, the DTB's are part of dtb.img and not part
 # of the kernel image. RTIC DTS relies on the kernel environment
 # and could not build outside of the kernel. Generate RTIC DTS after
@@ -470,5 +512,7 @@ if [ ! -z ${RTIC_MPGEN+x} ]; then
 	# failure does not cause kernel compilation to fail.
 fi
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # We made a new kernel - delete old version file
 rm -f .old_version

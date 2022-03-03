@@ -777,12 +777,20 @@ static int xen_register_credit_watch(struct xenbus_device *dev,
 		return -ENOMEM;
 	snprintf(node, maxlen, "%s/rate", dev->nodename);
 	vif->credit_watch.node = node;
+<<<<<<< HEAD
+=======
+	vif->credit_watch.will_handle = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	vif->credit_watch.callback = xen_net_rate_changed;
 	err = register_xenbus_watch(&vif->credit_watch);
 	if (err) {
 		pr_err("Failed to set watcher %s\n", vif->credit_watch.node);
 		kfree(node);
 		vif->credit_watch.node = NULL;
+<<<<<<< HEAD
+=======
+		vif->credit_watch.will_handle = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		vif->credit_watch.callback = NULL;
 	}
 	return err;
@@ -829,6 +837,10 @@ static int xen_register_mcast_ctrl_watch(struct xenbus_device *dev,
 	snprintf(node, maxlen, "%s/request-multicast-control",
 		 dev->otherend);
 	vif->mcast_ctrl_watch.node = node;
+<<<<<<< HEAD
+=======
+	vif->mcast_ctrl_watch.will_handle = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	vif->mcast_ctrl_watch.callback = xen_mcast_ctrl_changed;
 	err = register_xenbus_watch(&vif->mcast_ctrl_watch);
 	if (err) {
@@ -836,6 +848,10 @@ static int xen_register_mcast_ctrl_watch(struct xenbus_device *dev,
 		       vif->mcast_ctrl_watch.node);
 		kfree(node);
 		vif->mcast_ctrl_watch.node = NULL;
+<<<<<<< HEAD
+=======
+		vif->mcast_ctrl_watch.will_handle = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		vif->mcast_ctrl_watch.callback = NULL;
 	}
 	return err;
@@ -1039,11 +1055,23 @@ static void connect(struct backend_info *be)
 	xenvif_carrier_on(be->vif);
 
 	unregister_hotplug_status_watch(be);
+<<<<<<< HEAD
 	err = xenbus_watch_pathfmt(dev, &be->hotplug_status_watch,
 				   hotplug_status_changed,
 				   "%s/%s", dev->nodename, "hotplug-status");
 	if (!err)
 		be->have_hotplug_status_watch = 1;
+=======
+	if (xenbus_exists(XBT_NIL, dev->nodename, "hotplug-status")) {
+		err = xenbus_watch_pathfmt(dev, &be->hotplug_status_watch,
+					   NULL, hotplug_status_changed,
+					   "%s/%s", dev->nodename,
+					   "hotplug-status");
+		if (err)
+			goto err;
+		be->have_hotplug_status_watch = 1;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	netif_tx_wake_all_queues(be->vif->dev);
 

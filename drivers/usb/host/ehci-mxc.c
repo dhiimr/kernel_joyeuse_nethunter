@@ -63,6 +63,11 @@ static int ehci_mxc_drv_probe(struct platform_device *pdev)
 	}
 
 	irq = platform_get_irq(pdev, 0);
+<<<<<<< HEAD
+=======
+	if (irq < 0)
+		return irq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	hcd = usb_create_hcd(&ehci_mxc_hc_driver, dev, dev_name(dev));
 	if (!hcd)

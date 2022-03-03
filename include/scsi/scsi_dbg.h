@@ -6,8 +6,11 @@ struct scsi_cmnd;
 struct scsi_device;
 struct scsi_sense_hdr;
 
+<<<<<<< HEAD
 #define SCSI_LOG_BUFSIZE 128
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void scsi_print_command(struct scsi_cmnd *);
 extern size_t __scsi_format_command(char *, size_t,
 				   const unsigned char *, size_t);

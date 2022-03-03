@@ -432,6 +432,10 @@ struct rsnd_dai_stream {
 	char name[RSND_DAI_NAME_SIZE];
 	struct snd_pcm_substream *substream;
 	struct rsnd_mod *mod[RSND_MOD_MAX];
+<<<<<<< HEAD
+=======
+	struct rsnd_mod *dma;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct rsnd_dai *rdai;
 	u32 parent_ssi_status;
 };

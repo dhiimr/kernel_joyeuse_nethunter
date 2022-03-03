@@ -91,7 +91,11 @@ static bool mdio_bus_phy_may_suspend(struct phy_device *phydev)
 	 * MDIO bus driver and clock gated at this point.
 	 */
 	if (!netdev)
+<<<<<<< HEAD
 		return !phydev->suspended;
+=======
+		goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Don't suspend PHY if the attached netdev parent may wakeup.
 	 * The parent may point to a PCI device, as in tg3 driver.
@@ -106,7 +110,12 @@ static bool mdio_bus_phy_may_suspend(struct phy_device *phydev)
 	if (device_may_wakeup(&netdev->dev))
 		return false;
 
+<<<<<<< HEAD
 	return true;
+=======
+out:
+	return !phydev->suspended;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int mdio_bus_phy_suspend(struct device *dev)
@@ -124,6 +133,11 @@ static int mdio_bus_phy_suspend(struct device *dev)
 	if (!mdio_bus_phy_may_suspend(phydev))
 		return 0;
 
+<<<<<<< HEAD
+=======
+	phydev->suspended_by_mdio_bus = true;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return phy_suspend(phydev);
 }
 
@@ -132,9 +146,17 @@ static int mdio_bus_phy_resume(struct device *dev)
 	struct phy_device *phydev = to_phy_device(dev);
 	int ret;
 
+<<<<<<< HEAD
 	if (!mdio_bus_phy_may_suspend(phydev))
 		goto no_resume;
 
+=======
+	if (!phydev->suspended_by_mdio_bus)
+		goto no_resume;
+
+	phydev->suspended_by_mdio_bus = false;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = phy_resume(phydev);
 	if (ret < 0)
 		return ret;
@@ -367,8 +389,13 @@ struct phy_device *phy_device_create(struct mii_bus *bus, int addr, int phy_id,
 	mdiodev->device_free = phy_mdio_device_free;
 	mdiodev->device_remove = phy_mdio_device_remove;
 
+<<<<<<< HEAD
 	dev->speed = 0;
 	dev->duplex = -1;
+=======
+	dev->speed = SPEED_UNKNOWN;
+	dev->duplex = DUPLEX_UNKNOWN;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev->pause = 0;
 	dev->asym_pause = 0;
 	dev->link = 1;
@@ -729,6 +756,12 @@ int phy_connect_direct(struct net_device *dev, struct phy_device *phydev,
 {
 	int rc;
 
+<<<<<<< HEAD
+=======
+	if (!dev)
+		return -EINVAL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rc = phy_attach_direct(dev, phydev, phydev->dev_flags, interface);
 	if (rc)
 		return rc;
@@ -1067,6 +1100,12 @@ struct phy_device *phy_attach(struct net_device *dev, const char *bus_id,
 	struct device *d;
 	int rc;
 
+<<<<<<< HEAD
+=======
+	if (!dev)
+		return ERR_PTR(-EINVAL);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Search the list of PHY devices on the mdio bus for the
 	 * PHY with the requested name
 	 */
@@ -1110,7 +1149,12 @@ void phy_detach(struct phy_device *phydev)
 
 	phy_led_triggers_unregister(phydev);
 
+<<<<<<< HEAD
 	module_put(phydev->mdio.dev.driver->owner);
+=======
+	if (phydev->mdio.dev.driver)
+		module_put(phydev->mdio.dev.driver->owner);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* If the device had no specific driver before (i.e. - it
 	 * was using the generic driver), we unbind the device

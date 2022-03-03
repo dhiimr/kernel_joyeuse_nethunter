@@ -43,7 +43,11 @@ obj-$(CONFIG_NFT_REDIR_IPV4) += nft_redir_ipv4.o
 obj-$(CONFIG_NFT_DUP_IPV4) += nft_dup_ipv4.o
 obj-$(CONFIG_NF_TABLES_ARP) += nf_tables_arp.o
 
+<<<<<<< HEAD
 # generic IP tables
+=======
+# generic IP tables 
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-$(CONFIG_IP_NF_IPTABLES) += ip_tables.o
 
 # the three instances of ip_tables
@@ -61,7 +65,10 @@ obj-$(CONFIG_IP_NF_MATCH_RPFILTER) += ipt_rpfilter.o
 obj-$(CONFIG_IP_NF_TARGET_CLUSTERIP) += ipt_CLUSTERIP.o
 obj-$(CONFIG_IP_NF_TARGET_ECN) += ipt_ECN.o
 obj-$(CONFIG_IP_NF_TARGET_MASQUERADE) += ipt_MASQUERADE.o
+<<<<<<< HEAD
 obj-$(CONFIG_IP_NF_TARGET_NATTYPE_MODULE) += ipt_NATTYPE.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-$(CONFIG_IP_NF_TARGET_REJECT) += ipt_REJECT.o
 obj-$(CONFIG_IP_NF_TARGET_SYNPROXY) += ipt_SYNPROXY.o
 

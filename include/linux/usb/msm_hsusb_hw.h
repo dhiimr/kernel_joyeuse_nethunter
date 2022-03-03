@@ -64,7 +64,10 @@
 #define ULPI_STP_CTRL           (1 << 30) /* Block communication with PHY */
 #define PHY_RETEN               (1 << 1) /* PHY retention enable/disable */
 #define PHY_POR_ASSERT		(1 << 0) /* USB2 28nm PHY POR ASSERT */
+<<<<<<< HEAD
 #define PHY_CLAMP_DPDMSE_EN	(1 << 21) /* PHY mpm DP DM clamp enable */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* OTG definitions */
 #define OTGSC_INTSTS_MASK	(0x7f << 16)
@@ -75,6 +78,7 @@
 #define OTGSC_IDIE		(1 << 24)
 #define OTGSC_BSVIE		(1 << 27)
 
+<<<<<<< HEAD
 /* USB PHY CSR registers and bit definitions */
 
 #define USB_PHY_CSR_PHY_CTRL_COMMON0 (MSM_USB_PHY_CSR_BASE + 0x078)
@@ -108,4 +112,6 @@
 #define USB_PHY_IDDIG_FALL_MASK BIT(1)
 #define USB_PHY_ID_MASK (USB_PHY_IDDIG_RISE_MASK | USB_PHY_IDDIG_FALL_MASK)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* __LINUX_USB_GADGET_MSM72K_UDC_H__ */

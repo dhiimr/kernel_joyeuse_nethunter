@@ -246,8 +246,26 @@ struct soc_device * __init at91_soc_init(const struct at91_soc *socs)
 	return soc_dev;
 }
 
+<<<<<<< HEAD
 static int __init atmel_soc_device_init(void)
 {
+=======
+static const struct of_device_id at91_soc_allowed_list[] __initconst = {
+	{ .compatible = "atmel,at91rm9200", },
+	{ .compatible = "atmel,at91sam9", },
+	{ .compatible = "atmel,sama5", },
+	{ .compatible = "atmel,samv7", },
+	{ }
+};
+
+static int __init atmel_soc_device_init(void)
+{
+	struct device_node *np = of_find_node_by_path("/");
+
+	if (!of_match_node(at91_soc_allowed_list, np))
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	at91_soc_init(socs);
 
 	return 0;

@@ -375,7 +375,13 @@ static struct hist_field *create_hist_field(struct ftrace_event_field *field,
 	if (WARN_ON_ONCE(!field))
 		goto out;
 
+<<<<<<< HEAD
 	if (is_string_field(field)) {
+=======
+	/* Pointers to strings are just pointers and dangerous to dereference */
+	if (is_string_field(field) &&
+	    (field->filter_type != FILTER_PTR_STRING)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		flags |= HIST_FIELD_FL_STRING;
 
 		if (field->filter_type == FILTER_STATIC_STRING)
@@ -864,8 +870,11 @@ static inline void add_to_key(char *compound_key, void *key,
 		field = key_field->field;
 		if (field->filter_type == FILTER_DYN_STRING)
 			size = *(u32 *)(rec + field->offset) >> 16;
+<<<<<<< HEAD
 		else if (field->filter_type == FILTER_PTR_STRING)
 			size = strlen(key);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		else if (field->filter_type == FILTER_STATIC_STRING)
 			size = field->size;
 

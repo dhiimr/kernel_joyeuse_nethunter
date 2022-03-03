@@ -673,6 +673,11 @@ static int img_spfi_probe(struct platform_device *pdev)
 			dma_release_channel(spfi->tx_ch);
 		if (spfi->rx_ch)
 			dma_release_channel(spfi->rx_ch);
+<<<<<<< HEAD
+=======
+		spfi->tx_ch = NULL;
+		spfi->rx_ch = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_warn(spfi->dev, "Failed to get DMA channels, falling back to PIO mode\n");
 	} else {
 		master->dma_tx = spfi->tx_ch;
@@ -769,8 +774,15 @@ static int img_spfi_resume(struct device *dev)
 	int ret;
 
 	ret = pm_runtime_get_sync(dev);
+<<<<<<< HEAD
 	if (ret)
 		return ret;
+=======
+	if (ret) {
+		pm_runtime_put_noidle(dev);
+		return ret;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spfi_reset(spfi);
 	pm_runtime_put(dev);
 

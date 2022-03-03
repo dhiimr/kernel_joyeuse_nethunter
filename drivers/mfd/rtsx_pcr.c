@@ -1268,12 +1268,21 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
 	ret = mfd_add_devices(&pcidev->dev, pcr->id, rtsx_pcr_cells,
 			ARRAY_SIZE(rtsx_pcr_cells), NULL, 0, NULL);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto disable_irq;
+=======
+		goto free_slots;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	schedule_delayed_work(&pcr->idle_work, msecs_to_jiffies(200));
 
 	return 0;
 
+<<<<<<< HEAD
+=======
+free_slots:
+	kfree(pcr->slots);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 disable_irq:
 	free_irq(pcr->irq, (void *)pcr);
 disable_msi:

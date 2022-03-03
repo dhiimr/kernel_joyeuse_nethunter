@@ -407,7 +407,10 @@ static int fsl_spi_do_one_msg(struct spi_master *master,
 	}
 
 	m->status = status;
+<<<<<<< HEAD
 	spi_finalize_current_message(master);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (status || !cs_change) {
 		ndelay(nsecs);
@@ -415,6 +418,10 @@ static int fsl_spi_do_one_msg(struct spi_master *master,
 	}
 
 	fsl_spi_setup_transfer(spi, NULL);
+<<<<<<< HEAD
+=======
+	spi_finalize_current_message(master);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -832,9 +839,15 @@ static int of_fsl_spi_probe(struct platform_device *ofdev)
 	if (ret)
 		goto err;
 
+<<<<<<< HEAD
 	irq = irq_of_parse_and_map(np, 0);
 	if (!irq) {
 		ret = -EINVAL;
+=======
+	irq = platform_get_irq(ofdev, 0);
+	if (irq < 0) {
+		ret = irq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto err;
 	}
 
@@ -847,7 +860,10 @@ static int of_fsl_spi_probe(struct platform_device *ofdev)
 	return 0;
 
 err:
+<<<<<<< HEAD
 	irq_dispose_mapping(irq);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (type == TYPE_FSL)
 		of_fsl_spi_free_chipselects(dev);
 	return ret;

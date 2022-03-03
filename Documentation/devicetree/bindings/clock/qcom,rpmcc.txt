@@ -13,8 +13,11 @@ Required properties :
 			"qcom,rpmcc-msm8916", "qcom,rpmcc"
 			"qcom,rpmcc-msm8974", "qcom,rpmcc"
 			"qcom,rpmcc-apq8064", "qcom,rpmcc"
+<<<<<<< HEAD
 			"qcom,rpmcc-qcs405", "qcom,rpmcc"
 			"qcom,rpmcc-trinket", "qcom,rpmcc"
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 - #clock-cells : shall contain 1
 

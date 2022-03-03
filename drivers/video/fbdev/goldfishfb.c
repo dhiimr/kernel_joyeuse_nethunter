@@ -26,7 +26,10 @@
 #include <linux/interrupt.h>
 #include <linux/ioport.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <linux/acpi.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 enum {
 	FB_GET_WIDTH        = 0x00,
@@ -306,6 +309,7 @@ static int goldfish_fb_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct of_device_id goldfish_fb_of_match[] = {
 	{ .compatible = "google,goldfish-fb", },
 	{},
@@ -317,14 +321,20 @@ static const struct acpi_device_id goldfish_fb_acpi_match[] = {
 	{ },
 };
 MODULE_DEVICE_TABLE(acpi, goldfish_fb_acpi_match);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct platform_driver goldfish_fb_driver = {
 	.probe		= goldfish_fb_probe,
 	.remove		= goldfish_fb_remove,
 	.driver = {
+<<<<<<< HEAD
 		.name = "goldfish_fb",
 		.of_match_table = goldfish_fb_of_match,
 		.acpi_match_table = ACPI_PTR(goldfish_fb_acpi_match),
+=======
+		.name = "goldfish_fb"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 };
 

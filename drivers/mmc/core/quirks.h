@@ -10,10 +10,13 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/export.h>
 #include <linux/mmc/card.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/mmc/sdio_ids.h>
 
 #include "card.h"
@@ -55,6 +58,7 @@ static const struct mmc_fixup mmc_blk_fixups[] = {
 		  MMC_QUIRK_BLK_NO_CMD23),
 	MMC_FIXUP("MMC32G", CID_MANFID_TOSHIBA, CID_OEMID_ANY, add_quirk_mmc,
 		  MMC_QUIRK_BLK_NO_CMD23),
+<<<<<<< HEAD
 	MMC_FIXUP(CID_NAME_ANY, CID_MANFID_TOSHIBA, CID_OEMID_ANY,
 		  add_quirk_mmc, MMC_QUIRK_CMDQ_EMPTY_BEFORE_DCMD),
 
@@ -65,6 +69,8 @@ static const struct mmc_fixup mmc_blk_fixups[] = {
 		  MMC_QUIRK_BLK_NO_CMD23),
 	MMC_FIXUP("APUSD", CID_MANFID_APACER, 0x5048, add_quirk_sd,
 		  MMC_QUIRK_BLK_NO_CMD23),
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Some SD cards lockup while using CMD23 multiblock transfers.
@@ -83,6 +89,7 @@ static const struct mmc_fixup mmc_blk_fixups[] = {
 		  MMC_QUIRK_LONG_READ_TIME),
 
 	/*
+<<<<<<< HEAD
 	 * Some Samsung MMC cards need longer data read timeout than
 	 * indicated in CSD.
 	 */
@@ -97,6 +104,8 @@ static const struct mmc_fixup mmc_blk_fixups[] = {
 		  MMC_QUIRK_LONG_READ_TIME),
 
 	/*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * On these Samsung MoviNAND parts, performing secure erase or
 	 * secure trim can result in unrecoverable corruption due to a
 	 * firmware bug.
@@ -127,10 +136,13 @@ static const struct mmc_fixup mmc_blk_fixups[] = {
 	MMC_FIXUP("V10016", CID_MANFID_KINGSTON, CID_OEMID_ANY, add_quirk_mmc,
 		  MMC_QUIRK_TRIM_BROKEN),
 
+<<<<<<< HEAD
 	/* Some INAND MCP devices advertise incorrect timeout values */
 	MMC_FIXUP("SEM04G", 0x45, CID_OEMID_ANY, add_quirk_mmc,
 		MMC_QUIRK_INAND_DATA_TIMEOUT),
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	END_FIXUP
 };
 
@@ -151,6 +163,7 @@ static const struct mmc_fixup mmc_ext_csd_fixups[] = {
 	END_FIXUP
 };
 
+<<<<<<< HEAD
 static const struct mmc_fixup sdio_fixup_methods[] = {
 	SDIO_FIXUP(SDIO_VENDOR_ID_TI, SDIO_DEVICE_ID_TI_WL1271,
 		   add_quirk, MMC_QUIRK_NONSTD_FUNC_IF),
@@ -265,6 +278,16 @@ static const struct mmc_fixup mmc_fixup_methods[] = {
 	SDIO_FIXUP(SDIO_VENDOR_ID_MSM_QCA, SDIO_DEVICE_ID_MSM_QCA_AR6004_2,
 		   remove_quirk, MMC_QUIRK_BROKEN_CLK_GATING),
 
+=======
+
+static const struct mmc_fixup sdio_fixup_methods[] = {
+	SDIO_FIXUP(SDIO_VENDOR_ID_TI_WL1251, SDIO_DEVICE_ID_TI_WL1251,
+		   add_quirk, MMC_QUIRK_NONSTD_FUNC_IF),
+
+	SDIO_FIXUP(SDIO_VENDOR_ID_TI_WL1251, SDIO_DEVICE_ID_TI_WL1251,
+		   add_quirk, MMC_QUIRK_DISABLE_CD),
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	SDIO_FIXUP(SDIO_VENDOR_ID_TI, SDIO_DEVICE_ID_TI_WL1271,
 		   add_quirk, MMC_QUIRK_NONSTD_FUNC_IF),
 
@@ -277,11 +300,14 @@ static const struct mmc_fixup mmc_fixup_methods[] = {
 	SDIO_FIXUP(SDIO_VENDOR_ID_MARVELL, SDIO_DEVICE_ID_MARVELL_8797_F0,
 		   add_quirk, MMC_QUIRK_BROKEN_IRQ_POLLING),
 
+<<<<<<< HEAD
 	SDIO_FIXUP(SDIO_VENDOR_ID_QCA6574, SDIO_DEVICE_ID_QCA6574,
 		   add_quirk, MMC_QUIRK_QCA6574_SETTINGS),
 
 	SDIO_FIXUP(SDIO_VENDOR_ID_QCA9377, SDIO_DEVICE_ID_QCA9377,
 		add_quirk, MMC_QUIRK_QCA9377_SETTINGS),
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	END_FIXUP
 };
 
@@ -291,10 +317,13 @@ static inline void mmc_fixup_device(struct mmc_card *card,
 	const struct mmc_fixup *f;
 	u64 rev = cid_rev_card(card);
 
+<<<<<<< HEAD
 	/* Non-core specific workarounds. */
 	if (!table)
 		table = mmc_fixup_methods;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (f = table; f->vendor_fixup; f++) {
 		if ((f->manfid == CID_MANFID_ANY ||
 		     f->manfid == card->cid.manfid) &&
@@ -303,8 +332,11 @@ static inline void mmc_fixup_device(struct mmc_card *card,
 		    (f->name == CID_NAME_ANY ||
 		     !strncmp(f->name, card->cid.prod_name,
 			      sizeof(card->cid.prod_name))) &&
+<<<<<<< HEAD
 		    (f->ext_csd_rev == EXT_CSD_REV_ANY ||
 		     f->ext_csd_rev == card->ext_csd.rev) &&
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    (f->cis_vendor == card->cis.vendor ||
 		     f->cis_vendor == (u16) SDIO_ANY_ID) &&
 		    (f->cis_device == card->cis.device ||

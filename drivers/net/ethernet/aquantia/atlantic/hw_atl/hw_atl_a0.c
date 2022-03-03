@@ -182,8 +182,13 @@ static int hw_atl_a0_hw_rss_set(struct aq_hw_s *self,
 	u32 i = 0U;
 	u32 num_rss_queues = max(1U, self->aq_nic_cfg->num_rss_queues);
 	int err = 0;
+<<<<<<< HEAD
 	u16 bitary[(HW_ATL_A0_RSS_REDIRECTION_MAX *
 					HW_ATL_A0_RSS_REDIRECTION_BITS / 16U)];
+=======
+	u16 bitary[1 + (HW_ATL_A0_RSS_REDIRECTION_MAX *
+		   HW_ATL_A0_RSS_REDIRECTION_BITS / 16U)];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	memset(bitary, 0, sizeof(bitary));
 
@@ -746,7 +751,11 @@ static int hw_atl_a0_hw_multicast_list_set(struct aq_hw_s *self,
 	int err = 0;
 
 	if (count > (HW_ATL_A0_MAC_MAX - HW_ATL_A0_MAC_MIN)) {
+<<<<<<< HEAD
 		err = EBADRQC;
+=======
+		err = -EBADRQC;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto err_exit;
 	}
 	for (self->aq_nic_cfg->mc_list_count = 0U;

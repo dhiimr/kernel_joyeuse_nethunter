@@ -473,13 +473,20 @@ void mlx5e_tc_encap_flows_del(struct mlx5e_priv *priv,
 void mlx5e_tc_update_neigh_used_value(struct mlx5e_neigh_hash_entry *nhe)
 {
 	struct mlx5e_neigh *m_neigh = &nhe->m_neigh;
+<<<<<<< HEAD
 	u64 bytes, packets, lastuse = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct mlx5e_tc_flow *flow;
 	struct mlx5e_encap_entry *e;
 	struct mlx5_fc *counter;
 	struct neigh_table *tbl;
 	bool neigh_used = false;
 	struct neighbour *n;
+<<<<<<< HEAD
+=======
+	u64 lastuse;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (m_neigh->family == AF_INET)
 		tbl = &arp_tbl;
@@ -496,7 +503,11 @@ void mlx5e_tc_update_neigh_used_value(struct mlx5e_neigh_hash_entry *nhe)
 		list_for_each_entry(flow, &e->flows, encap) {
 			if (flow->flags & MLX5E_TC_FLOW_OFFLOADED) {
 				counter = mlx5_flow_rule_counter(flow->rule);
+<<<<<<< HEAD
 				mlx5_fc_query_cached(counter, &bytes, &packets, &lastuse);
+=======
+				lastuse = mlx5_fc_query_lastuse(counter);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				if (time_after((unsigned long)lastuse, nhe->reported_lastuse)) {
 					neigh_used = true;
 					break;
@@ -1550,12 +1561,20 @@ static int mlx5e_route_lookup_ipv6(struct mlx5e_priv *priv,
 
 #if IS_ENABLED(CONFIG_INET) && IS_ENABLED(CONFIG_IPV6)
 	struct mlx5_eswitch *esw = priv->mdev->priv.eswitch;
+<<<<<<< HEAD
 	int ret;
 
 	ret = ipv6_stub->ipv6_dst_lookup(dev_net(mirred_dev), NULL, &dst,
 					 fl6);
 	if (ret < 0)
 		return ret;
+=======
+
+	dst = ipv6_stub->ipv6_dst_lookup_flow(dev_net(mirred_dev), NULL, fl6,
+					      NULL);
+	if (IS_ERR(dst))
+		return PTR_ERR(dst);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	*out_ttl = ip6_dst_hoplimit(dst);
 
@@ -1754,7 +1773,11 @@ static int mlx5e_create_encap_header_ipv6(struct mlx5e_priv *priv,
 	int max_encap_size = MLX5_CAP_ESW(priv->mdev, max_encap_header_size);
 	int ipv6_encap_size = ETH_HLEN + sizeof(struct ipv6hdr) + VXLAN_HLEN;
 	struct ip_tunnel_key *tun_key = &e->tun_info.key;
+<<<<<<< HEAD
 	struct net_device *out_dev;
+=======
+	struct net_device *out_dev = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct neighbour *n = NULL;
 	struct flowi6 fl6 = {};
 	char *encap_header;

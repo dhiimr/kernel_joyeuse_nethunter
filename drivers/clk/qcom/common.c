@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2013-2014, 2017-2018, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -28,9 +32,13 @@
 struct qcom_cc {
 	struct qcom_reset_controller reset;
 	struct clk_regmap **rclks;
+<<<<<<< HEAD
 	struct clk_hw **hwclks;
 	size_t num_rclks;
 	size_t num_hwclks;
+=======
+	size_t num_rclks;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 const
@@ -39,6 +47,12 @@ struct freq_tbl *qcom_find_freq(const struct freq_tbl *f, unsigned long rate)
 	if (!f)
 		return NULL;
 
+<<<<<<< HEAD
+=======
+	if (!f->freq)
+		return f;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (; f->freq; f++)
 		if (rate <= f->freq)
 			return f;
@@ -113,6 +127,19 @@ qcom_pll_set_fsm_mode(struct regmap *map, u32 reg, u8 bias_count, u8 lock_count)
 }
 EXPORT_SYMBOL_GPL(qcom_pll_set_fsm_mode);
 
+<<<<<<< HEAD
+=======
+static void qcom_cc_del_clk_provider(void *data)
+{
+	of_clk_del_provider(data);
+}
+
+static void qcom_cc_reset_unregister(void *data)
+{
+	reset_controller_unregister(data);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void qcom_cc_gdsc_unregister(void *data)
 {
 	gdsc_unregister(data);
@@ -201,6 +228,7 @@ int qcom_cc_register_sleep_clk(struct device *dev)
 }
 EXPORT_SYMBOL_GPL(qcom_cc_register_sleep_clk);
 
+<<<<<<< HEAD
 /* Drop 'protected-clocks' from the list of clocks to register */
 static void qcom_cc_drop_protected(struct device *dev, struct qcom_cc *cc)
 {
@@ -217,12 +245,15 @@ static void qcom_cc_drop_protected(struct device *dev, struct qcom_cc *cc)
 	}
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct clk_hw *qcom_cc_clk_hw_get(struct of_phandle_args *clkspec,
 					 void *data)
 {
 	struct qcom_cc *cc = data;
 	unsigned int idx = clkspec->args[0];
 
+<<<<<<< HEAD
 	if (idx >= cc->num_rclks + cc->num_hwclks) {
 		pr_err("invalid index %u\n", idx);
 		return ERR_PTR(-EINVAL);
@@ -231,6 +262,13 @@ static struct clk_hw *qcom_cc_clk_hw_get(struct of_phandle_args *clkspec,
 	if (idx < cc->num_hwclks && cc->hwclks[idx])
 		return cc->hwclks[idx];
 
+=======
+	if (idx >= cc->num_rclks) {
+		pr_err("%s: invalid index %u\n", __func__, idx);
+		return ERR_PTR(-EINVAL);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return cc->rclks[idx] ? &cc->rclks[idx]->hw : ERR_PTR(-ENOENT);
 }
 
@@ -243,9 +281,13 @@ int qcom_cc_really_probe(struct platform_device *pdev,
 	struct qcom_cc *cc;
 	struct gdsc_desc *scd;
 	size_t num_clks = desc->num_clks;
+<<<<<<< HEAD
 	size_t num_hwclks = desc->num_hwclks;
 	struct clk_regmap **rclks = desc->clks;
 	struct clk_hw **hwclks = desc->hwclks;
+=======
+	struct clk_regmap **rclks = desc->clks;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
 	if (!cc)
@@ -253,6 +295,7 @@ int qcom_cc_really_probe(struct platform_device *pdev,
 
 	cc->rclks = rclks;
 	cc->num_rclks = num_clks;
+<<<<<<< HEAD
 	cc->hwclks = hwclks;
 	cc->num_hwclks = num_hwclks;
 
@@ -266,6 +309,8 @@ int qcom_cc_really_probe(struct platform_device *pdev,
 	}
 
 	qcom_cc_drop_protected(dev, cc);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (i = 0; i < num_clks; i++) {
 		if (!rclks[i])
@@ -276,7 +321,17 @@ int qcom_cc_really_probe(struct platform_device *pdev,
 			return ret;
 	}
 
+<<<<<<< HEAD
 	ret = devm_of_clk_add_hw_provider(dev, qcom_cc_clk_hw_get, cc);
+=======
+	ret = of_clk_add_hw_provider(dev->of_node, qcom_cc_clk_hw_get, cc);
+	if (ret)
+		return ret;
+
+	ret = devm_add_action_or_reset(dev, qcom_cc_del_clk_provider,
+				       pdev->dev.of_node);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		return ret;
 
@@ -288,7 +343,17 @@ int qcom_cc_really_probe(struct platform_device *pdev,
 	reset->regmap = regmap;
 	reset->reset_map = desc->resets;
 
+<<<<<<< HEAD
 	ret = devm_reset_controller_register(dev, &reset->rcdev);
+=======
+	ret = reset_controller_register(&reset->rcdev);
+	if (ret)
+		return ret;
+
+	ret = devm_add_action_or_reset(dev, qcom_cc_reset_unregister,
+				       &reset->rcdev);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		return ret;
 
@@ -324,6 +389,7 @@ int qcom_cc_probe(struct platform_device *pdev, const struct qcom_cc_desc *desc)
 }
 EXPORT_SYMBOL_GPL(qcom_cc_probe);
 
+<<<<<<< HEAD
 int qcom_cc_register_rcg_dfs(struct platform_device *pdev,
 			 const struct qcom_cc_dfs_desc *desc)
 {
@@ -346,4 +412,6 @@ int qcom_cc_register_rcg_dfs(struct platform_device *pdev,
 }
 EXPORT_SYMBOL(qcom_cc_register_rcg_dfs);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 MODULE_LICENSE("GPL v2");

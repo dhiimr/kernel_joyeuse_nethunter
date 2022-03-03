@@ -129,7 +129,11 @@ struct clk_hw *clk_hw_register_mux_table(struct device *dev, const char *name,
 {
 	struct clk_mux *mux;
 	struct clk_hw *hw;
+<<<<<<< HEAD
 	struct clk_init_data init = {};
+=======
+	struct clk_init_data init;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8 width = 0;
 	int ret;
 

@@ -222,7 +222,11 @@ static int rxrpc_send_data(struct rxrpc_sock *rx,
 	/* this should be in poll */
 	sk_clear_bit(SOCKWQ_ASYNC_NOSPACE, sk);
 
+<<<<<<< HEAD
 	if (sk->sk_err || (sk->sk_shutdown & SEND_SHUTDOWN))
+=======
+	if (sk->sk_shutdown & SEND_SHUTDOWN)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EPIPE;
 
 	more = msg->msg_flags & MSG_MORE;
@@ -579,6 +583,12 @@ int rxrpc_do_sendmsg(struct rxrpc_sock *rx, struct msghdr *msg, size_t len)
 		if (IS_ERR(call))
 			return PTR_ERR(call);
 		/* ... and we have the call lock. */
+<<<<<<< HEAD
+=======
+		ret = 0;
+		if (READ_ONCE(call->state) == RXRPC_CALL_COMPLETE)
+			goto out_put_unlock;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		switch (READ_ONCE(call->state)) {
 		case RXRPC_CALL_UNINITIALISED:
@@ -586,6 +596,10 @@ int rxrpc_do_sendmsg(struct rxrpc_sock *rx, struct msghdr *msg, size_t len)
 		case RXRPC_CALL_SERVER_PREALLOC:
 		case RXRPC_CALL_SERVER_SECURING:
 		case RXRPC_CALL_SERVER_ACCEPTING:
+<<<<<<< HEAD
+=======
+			rxrpc_put_call(call, rxrpc_call_put);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ret = -EBUSY;
 			goto error_release_sock;
 		default:

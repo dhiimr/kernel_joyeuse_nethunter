@@ -15,8 +15,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+<<<<<<< HEAD
 #include <linux/dma-mapping.h>
 #include <linux/dma-buf.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <drm/drm_crtc.h>
 #include <drm/drm_crtc_helper.h>
 
@@ -24,22 +27,35 @@
 #include "msm_kms.h"
 #include "msm_gem.h"
 
+<<<<<<< HEAD
 #define MSM_FRAMEBUFFER_FLAG_KMAP	BIT(0)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct msm_framebuffer {
 	struct drm_framebuffer base;
 	const struct msm_format *format;
 	struct drm_gem_object *planes[MAX_PLANE];
+<<<<<<< HEAD
 	void *vaddr[MAX_PLANE];
 	atomic_t kmap_count;
 	u32 flags;
 };
 #define to_msm_framebuffer(x) container_of(x, struct msm_framebuffer, base)
 
+=======
+};
+#define to_msm_framebuffer(x) container_of(x, struct msm_framebuffer, base)
+
+static struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
+		const struct drm_mode_fb_cmd2 *mode_cmd, struct drm_gem_object **bos);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int msm_framebuffer_create_handle(struct drm_framebuffer *fb,
 		struct drm_file *file_priv,
 		unsigned int *handle)
 {
+<<<<<<< HEAD
 	struct msm_framebuffer *msm_fb;
 
 	if (!fb) {
@@ -49,12 +65,16 @@ static int msm_framebuffer_create_handle(struct drm_framebuffer *fb,
 
 	msm_fb = to_msm_framebuffer(fb);
 
+=======
+	struct msm_framebuffer *msm_fb = to_msm_framebuffer(fb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return drm_gem_handle_create(file_priv,
 			msm_fb->planes[0], handle);
 }
 
 static void msm_framebuffer_destroy(struct drm_framebuffer *fb)
 {
+<<<<<<< HEAD
 	struct msm_framebuffer *msm_fb;
 	int i, n;
 
@@ -67,6 +87,12 @@ static void msm_framebuffer_destroy(struct drm_framebuffer *fb)
 	n = fb->format->num_planes;
 
 	DBG("destroy: FB ID: %d (%pK)", fb->base.id, fb);
+=======
+	struct msm_framebuffer *msm_fb = to_msm_framebuffer(fb);
+	int i, n = fb->format->num_planes;
+
+	DBG("destroy: FB ID: %d (%p)", fb->base.id, fb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	drm_framebuffer_cleanup(fb);
 
@@ -87,6 +113,7 @@ static const struct drm_framebuffer_funcs msm_framebuffer_funcs = {
 #ifdef CONFIG_DEBUG_FS
 void msm_framebuffer_describe(struct drm_framebuffer *fb, struct seq_file *m)
 {
+<<<<<<< HEAD
 	struct msm_framebuffer *msm_fb;
 	int i, n;
 
@@ -97,6 +124,11 @@ void msm_framebuffer_describe(struct drm_framebuffer *fb, struct seq_file *m)
 
 	msm_fb = to_msm_framebuffer(fb);
 	n = fb->format->num_planes;
+=======
+	struct msm_framebuffer *msm_fb = to_msm_framebuffer(fb);
+	int i, n = fb->format->num_planes;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	seq_printf(m, "fb: %dx%d@%4.4s (%2d, ID:%d)\n",
 			fb->width, fb->height, (char *)&fb->format->format,
 			drm_framebuffer_read_refcount(fb), fb->base.id);
@@ -109,6 +141,7 @@ void msm_framebuffer_describe(struct drm_framebuffer *fb, struct seq_file *m)
 }
 #endif
 
+<<<<<<< HEAD
 void msm_framebuffer_set_keepattrs(struct drm_framebuffer *fb, bool enable)
 {
 	struct msm_framebuffer *msm_fb;
@@ -216,6 +249,8 @@ static void msm_framebuffer_kunmap(struct drm_framebuffer *fb)
 	}
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* prepare/pin all the fb's bo's for scanout.  Note that it is not valid
  * to prepare an fb more multiple different initiator 'id's.  But that
  * should be fine, since only the scanout (mdpN) side of things needs
@@ -224,6 +259,7 @@ static void msm_framebuffer_kunmap(struct drm_framebuffer *fb)
 int msm_framebuffer_prepare(struct drm_framebuffer *fb,
 		struct msm_gem_address_space *aspace)
 {
+<<<<<<< HEAD
 	struct msm_framebuffer *msm_fb;
 	int ret, i, n;
 	uint64_t iova;
@@ -235,6 +271,12 @@ int msm_framebuffer_prepare(struct drm_framebuffer *fb,
 
 	msm_fb = to_msm_framebuffer(fb);
 	n = fb->format->num_planes;
+=======
+	struct msm_framebuffer *msm_fb = to_msm_framebuffer(fb);
+	int ret, i, n = fb->format->num_planes;
+	uint64_t iova;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (i = 0; i < n; i++) {
 		ret = msm_gem_get_iova(msm_fb->planes[i], aspace, &iova);
 		DBG("FB[%u]: iova[%d]: %08llx (%d)", fb->base.id, i, iova, ret);
@@ -242,15 +284,19 @@ int msm_framebuffer_prepare(struct drm_framebuffer *fb,
 			return ret;
 	}
 
+<<<<<<< HEAD
 	if (msm_fb->flags & MSM_FRAMEBUFFER_FLAG_KMAP)
 		msm_framebuffer_kmap(fb);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
 void msm_framebuffer_cleanup(struct drm_framebuffer *fb,
 		struct msm_gem_address_space *aspace)
 {
+<<<<<<< HEAD
 	struct msm_framebuffer *msm_fb;
 	int i, n;
 
@@ -264,6 +310,10 @@ void msm_framebuffer_cleanup(struct drm_framebuffer *fb,
 
 	if (msm_fb->flags & MSM_FRAMEBUFFER_FLAG_KMAP)
 		msm_framebuffer_kunmap(fb);
+=======
+	struct msm_framebuffer *msm_fb = to_msm_framebuffer(fb);
+	int i, n = fb->format->num_planes;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (i = 0; i < n; i++)
 		msm_gem_put_iova(msm_fb->planes[i], aspace);
@@ -272,6 +322,7 @@ void msm_framebuffer_cleanup(struct drm_framebuffer *fb,
 uint32_t msm_framebuffer_iova(struct drm_framebuffer *fb,
 		struct msm_gem_address_space *aspace, int plane)
 {
+<<<<<<< HEAD
 	struct msm_framebuffer *msm_fb;
 
 	if (!fb) {
@@ -280,11 +331,15 @@ uint32_t msm_framebuffer_iova(struct drm_framebuffer *fb,
 	}
 
 	msm_fb = to_msm_framebuffer(fb);
+=======
+	struct msm_framebuffer *msm_fb = to_msm_framebuffer(fb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!msm_fb->planes[plane])
 		return 0;
 	return msm_gem_iova(msm_fb->planes[plane], aspace) + fb->offsets[plane];
 }
 
+<<<<<<< HEAD
 uint32_t msm_framebuffer_phys(struct drm_framebuffer *fb,
 		int plane)
 {
@@ -317,12 +372,22 @@ struct drm_gem_object *msm_framebuffer_bo(struct drm_framebuffer *fb, int plane)
 	}
 
 	msm_fb = to_msm_framebuffer(fb);
+=======
+struct drm_gem_object *msm_framebuffer_bo(struct drm_framebuffer *fb, int plane)
+{
+	struct msm_framebuffer *msm_fb = to_msm_framebuffer(fb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return msm_fb->planes[plane];
 }
 
 const struct msm_format *msm_framebuffer_format(struct drm_framebuffer *fb)
 {
+<<<<<<< HEAD
 	return fb ? (to_msm_framebuffer(fb))->format : NULL;
+=======
+	struct msm_framebuffer *msm_fb = to_msm_framebuffer(fb);
+	return msm_fb->format;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 struct drm_framebuffer *msm_framebuffer_create(struct drm_device *dev,
@@ -354,7 +419,11 @@ out_unref:
 	return ERR_PTR(ret);
 }
 
+<<<<<<< HEAD
 struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
+=======
+static struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		const struct drm_mode_fb_cmd2 *mode_cmd, struct drm_gem_object **bos)
 {
 	struct msm_drm_private *priv = dev->dev_private;
@@ -362,6 +431,7 @@ struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
 	struct msm_framebuffer *msm_fb = NULL;
 	struct drm_framebuffer *fb;
 	const struct msm_format *format;
+<<<<<<< HEAD
 	int ret, i, num_planes;
 	unsigned int hsub, vsub;
 	bool is_modified = false;
@@ -376,6 +446,20 @@ struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
 
 	format = kms->funcs->get_format(kms, mode_cmd->pixel_format,
 			mode_cmd->modifier[0]);
+=======
+	int ret, i, n;
+	unsigned int hsub, vsub;
+
+	DBG("create framebuffer: dev=%p, mode_cmd=%p (%dx%d@%4.4s)",
+			dev, mode_cmd, mode_cmd->width, mode_cmd->height,
+			(char *)&mode_cmd->pixel_format);
+
+	n = drm_format_num_planes(mode_cmd->pixel_format);
+	hsub = drm_format_horz_chroma_subsampling(mode_cmd->pixel_format);
+	vsub = drm_format_vert_chroma_subsampling(mode_cmd->pixel_format);
+
+	format = kms->funcs->get_format(kms, mode_cmd->pixel_format);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!format) {
 		dev_err(dev->dev, "unsupported pixel format: %4.4s\n",
 				(char *)&mode_cmd->pixel_format);
@@ -392,6 +476,7 @@ struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
 	fb = &msm_fb->base;
 
 	msm_fb->format = format;
+<<<<<<< HEAD
 	atomic_set(&msm_fb->kmap_count, 0);
 
 	if (mode_cmd->flags & DRM_MODE_FB_MODIFIERS) {
@@ -404,10 +489,15 @@ struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
 	}
 
 	if (num_planes > ARRAY_SIZE(msm_fb->planes) - 1) {
+=======
+
+	if (n > ARRAY_SIZE(msm_fb->planes)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = -EINVAL;
 		goto fail;
 	}
 
+<<<<<<< HEAD
 	if (is_modified) {
 		if (!kms->funcs->check_modified_format) {
 			dev_err(dev->dev, "can't check modified fb format\n");
@@ -441,6 +531,24 @@ struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
 
 	for (i = 0; i < num_planes; i++)
 		msm_fb->planes[i] = bos[i];
+=======
+	for (i = 0; i < n; i++) {
+		unsigned int width = mode_cmd->width / (i ? hsub : 1);
+		unsigned int height = mode_cmd->height / (i ? vsub : 1);
+		unsigned int min_size;
+
+		min_size = (height - 1) * mode_cmd->pitches[i]
+			 + width * drm_format_plane_cpp(mode_cmd->pixel_format, i)
+			 + mode_cmd->offsets[i];
+
+		if (bos[i]->size < min_size) {
+			ret = -EINVAL;
+			goto fail;
+		}
+
+		msm_fb->planes[i] = bos[i];
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	drm_helper_mode_fill_fb_struct(dev, fb, mode_cmd);
 
@@ -450,7 +558,11 @@ struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
 		goto fail;
 	}
 
+<<<<<<< HEAD
 	DBG("create: FB ID: %d (%pK)", fb->base.id, fb);
+=======
+	DBG("create: FB ID: %d (%p)", fb->base.id, fb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return fb;
 

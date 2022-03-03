@@ -121,7 +121,10 @@ struct sdhci_host *sdhci_pltfm_init(struct platform_device *pdev,
 	struct resource *iomem;
 	void __iomem *ioaddr;
 	int irq, ret;
+<<<<<<< HEAD
 	struct extcon_dev *extcon;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	iomem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	ioaddr = devm_ioremap_resource(&pdev->dev, iomem);
@@ -157,6 +160,7 @@ struct sdhci_host *sdhci_pltfm_init(struct platform_device *pdev,
 		host->quirks2 = pdata->quirks2;
 	}
 
+<<<<<<< HEAD
 	extcon = extcon_get_edev_by_phandle(&pdev->dev, 0);
 	if (IS_ERR(extcon) && PTR_ERR(extcon) != -ENODEV) {
 		ret = PTR_ERR(extcon);
@@ -165,6 +169,8 @@ struct sdhci_host *sdhci_pltfm_init(struct platform_device *pdev,
 	if (!IS_ERR(extcon))
 		host->mmc->extcon = extcon;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	platform_set_drvdata(pdev, host);
 
 	return host;

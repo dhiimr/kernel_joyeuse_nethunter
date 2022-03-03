@@ -448,7 +448,11 @@ static inline void save_fpu_state(struct sigcontext *sc, struct pt_regs *regs)
 
 	if (CPU_IS_060 ? sc->sc_fpstate[2] : sc->sc_fpstate[0]) {
 		fpu_version = sc->sc_fpstate[0];
+<<<<<<< HEAD
 		if (CPU_IS_020_OR_030 &&
+=======
+		if (CPU_IS_020_OR_030 && !regs->stkadj &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    regs->vector >= (VEC_FPBRUC * 4) &&
 		    regs->vector <= (VEC_FPNAN * 4)) {
 			/* Clear pending exception in 68882 idle frame */
@@ -511,7 +515,11 @@ static inline int rt_save_fpu_state(struct ucontext __user *uc, struct pt_regs *
 		if (!(CPU_IS_060 || CPU_IS_COLDFIRE))
 			context_size = fpstate[1];
 		fpu_version = fpstate[0];
+<<<<<<< HEAD
 		if (CPU_IS_020_OR_030 &&
+=======
+		if (CPU_IS_020_OR_030 && !regs->stkadj &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    regs->vector >= (VEC_FPBRUC * 4) &&
 		    regs->vector <= (VEC_FPNAN * 4)) {
 			/* Clear pending exception in 68882 idle frame */
@@ -765,18 +773,36 @@ badframe:
 	return 0;
 }
 
+<<<<<<< HEAD
 static void setup_sigcontext(struct sigcontext *sc, struct pt_regs *regs,
 			     unsigned long mask)
 {
+=======
+static inline struct pt_regs *rte_regs(struct pt_regs *regs)
+{
+	return (void *)regs + regs->stkadj;
+}
+
+static void setup_sigcontext(struct sigcontext *sc, struct pt_regs *regs,
+			     unsigned long mask)
+{
+	struct pt_regs *tregs = rte_regs(regs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sc->sc_mask = mask;
 	sc->sc_usp = rdusp();
 	sc->sc_d0 = regs->d0;
 	sc->sc_d1 = regs->d1;
 	sc->sc_a0 = regs->a0;
 	sc->sc_a1 = regs->a1;
+<<<<<<< HEAD
 	sc->sc_sr = regs->sr;
 	sc->sc_pc = regs->pc;
 	sc->sc_formatvec = regs->format << 12 | regs->vector;
+=======
+	sc->sc_sr = tregs->sr;
+	sc->sc_pc = tregs->pc;
+	sc->sc_formatvec = tregs->format << 12 | tregs->vector;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	save_a5_state(sc, regs);
 	save_fpu_state(sc, regs);
 }
@@ -784,6 +810,10 @@ static void setup_sigcontext(struct sigcontext *sc, struct pt_regs *regs,
 static inline int rt_setup_ucontext(struct ucontext __user *uc, struct pt_regs *regs)
 {
 	struct switch_stack *sw = (struct switch_stack *)regs - 1;
+<<<<<<< HEAD
+=======
+	struct pt_regs *tregs = rte_regs(regs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	greg_t __user *gregs = uc->uc_mcontext.gregs;
 	int err = 0;
 
@@ -804,9 +834,15 @@ static inline int rt_setup_ucontext(struct ucontext __user *uc, struct pt_regs *
 	err |= __put_user(sw->a5, &gregs[13]);
 	err |= __put_user(sw->a6, &gregs[14]);
 	err |= __put_user(rdusp(), &gregs[15]);
+<<<<<<< HEAD
 	err |= __put_user(regs->pc, &gregs[16]);
 	err |= __put_user(regs->sr, &gregs[17]);
 	err |= __put_user((regs->format << 12) | regs->vector, &uc->uc_formatvec);
+=======
+	err |= __put_user(tregs->pc, &gregs[16]);
+	err |= __put_user(tregs->sr, &gregs[17]);
+	err |= __put_user((tregs->format << 12) | tregs->vector, &uc->uc_formatvec);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err |= rt_save_fpu_state(uc, regs);
 	return err;
 }
@@ -823,13 +859,22 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
 			struct pt_regs *regs)
 {
 	struct sigframe __user *frame;
+<<<<<<< HEAD
 	int fsize = frame_extra_sizes(regs->format);
+=======
+	struct pt_regs *tregs = rte_regs(regs);
+	int fsize = frame_extra_sizes(tregs->format);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct sigcontext context;
 	int err = 0, sig = ksig->sig;
 
 	if (fsize < 0) {
 		pr_debug("setup_frame: Unknown frame format %#x\n",
+<<<<<<< HEAD
 			 regs->format);
+=======
+			 tregs->format);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EFAULT;
 	}
 
@@ -840,7 +885,11 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
 
 	err |= __put_user(sig, &frame->sig);
 
+<<<<<<< HEAD
 	err |= __put_user(regs->vector, &frame->code);
+=======
+	err |= __put_user(tregs->vector, &frame->code);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err |= __put_user(&frame->sc, &frame->psc);
 
 	if (_NSIG_WORDS > 1)
@@ -866,6 +915,7 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
 	push_cache ((unsigned long) &frame->retcode);
 
 	/*
+<<<<<<< HEAD
 	 * Set up registers for signal handler.  All the state we are about
 	 * to destroy is successfully copied to sigframe.
 	 */
@@ -874,10 +924,13 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
 	adjustformat(regs);
 
 	/*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * This is subtle; if we build more than one sigframe, all but the
 	 * first one will see frame format 0 and have fsize == 0, so we won't
 	 * screw stkadj.
 	 */
+<<<<<<< HEAD
 	if (fsize)
 		regs->stkadj = fsize;
 
@@ -893,6 +946,25 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
 		tregs->pc = regs->pc;
 		tregs->sr = regs->sr;
 	}
+=======
+	if (fsize) {
+		regs->stkadj = fsize;
+		tregs = rte_regs(regs);
+		pr_debug("Performing stackadjust=%04lx\n", regs->stkadj);
+		tregs->vector = 0;
+		tregs->format = 0;
+		tregs->sr = regs->sr;
+	}
+
+	/*
+	 * Set up registers for signal handler.  All the state we are about
+	 * to destroy is successfully copied to sigframe.
+	 */
+	wrusp ((unsigned long) frame);
+	tregs->pc = (unsigned long) ksig->ka.sa.sa_handler;
+	adjustformat(regs);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -900,7 +972,12 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
 			   struct pt_regs *regs)
 {
 	struct rt_sigframe __user *frame;
+<<<<<<< HEAD
 	int fsize = frame_extra_sizes(regs->format);
+=======
+	struct pt_regs *tregs = rte_regs(regs);
+	int fsize = frame_extra_sizes(tregs->format);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err = 0, sig = ksig->sig;
 
 	if (fsize < 0) {
@@ -950,6 +1027,7 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
 	push_cache ((unsigned long) &frame->retcode);
 
 	/*
+<<<<<<< HEAD
 	 * Set up registers for signal handler.  All the state we are about
 	 * to destroy is successfully copied to sigframe.
 	 */
@@ -958,10 +1036,13 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
 	adjustformat(regs);
 
 	/*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * This is subtle; if we build more than one sigframe, all but the
 	 * first one will see frame format 0 and have fsize == 0, so we won't
 	 * screw stkadj.
 	 */
+<<<<<<< HEAD
 	if (fsize)
 		regs->stkadj = fsize;
 
@@ -977,6 +1058,24 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
 		tregs->pc = regs->pc;
 		tregs->sr = regs->sr;
 	}
+=======
+	if (fsize) {
+		regs->stkadj = fsize;
+		tregs = rte_regs(regs);
+		pr_debug("Performing stackadjust=%04lx\n", regs->stkadj);
+		tregs->vector = 0;
+		tregs->format = 0;
+		tregs->sr = regs->sr;
+	}
+
+	/*
+	 * Set up registers for signal handler.  All the state we are about
+	 * to destroy is successfully copied to sigframe.
+	 */
+	wrusp ((unsigned long) frame);
+	tregs->pc = (unsigned long) ksig->ka.sa.sa_handler;
+	adjustformat(regs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 

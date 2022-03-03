@@ -106,6 +106,7 @@ int nfc_dev_up(struct nfc_dev *dev)
 
 	device_lock(&dev->dev);
 
+<<<<<<< HEAD
 	if (dev->rfkill && rfkill_blocked(dev->rfkill)) {
 		rc = -ERFKILL;
 		goto error;
@@ -113,6 +114,15 @@ int nfc_dev_up(struct nfc_dev *dev)
 
 	if (!device_is_registered(&dev->dev)) {
 		rc = -ENODEV;
+=======
+	if (!device_is_registered(&dev->dev)) {
+		rc = -ENODEV;
+		goto error;
+	}
+
+	if (dev->rfkill && rfkill_blocked(dev->rfkill)) {
+		rc = -ERFKILL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto error;
 	}
 
@@ -1133,11 +1143,15 @@ int nfc_register_device(struct nfc_dev *dev)
 	if (rc)
 		pr_err("Could not register llcp device\n");
 
+<<<<<<< HEAD
 	rc = nfc_genl_device_added(dev);
 	if (rc)
 		pr_debug("The userspace won't be notified that the device %s was added\n",
 			 dev_name(&dev->dev));
 
+=======
+	device_lock(&dev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev->rfkill = rfkill_alloc(dev_name(&dev->dev), &dev->dev,
 				   RFKILL_TYPE_NFC, &nfc_rfkill_ops, dev);
 	if (dev->rfkill) {
@@ -1146,6 +1160,15 @@ int nfc_register_device(struct nfc_dev *dev)
 			dev->rfkill = NULL;
 		}
 	}
+<<<<<<< HEAD
+=======
+	device_unlock(&dev->dev);
+
+	rc = nfc_genl_device_added(dev);
+	if (rc)
+		pr_debug("The userspace won't be notified that the device %s was added\n",
+			 dev_name(&dev->dev));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -1162,10 +1185,23 @@ void nfc_unregister_device(struct nfc_dev *dev)
 
 	pr_debug("dev_name=%s\n", dev_name(&dev->dev));
 
+<<<<<<< HEAD
+=======
+	rc = nfc_genl_device_removed(dev);
+	if (rc)
+		pr_debug("The userspace won't be notified that the device %s "
+			 "was removed\n", dev_name(&dev->dev));
+
+	device_lock(&dev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (dev->rfkill) {
 		rfkill_unregister(dev->rfkill);
 		rfkill_destroy(dev->rfkill);
 	}
+<<<<<<< HEAD
+=======
+	device_unlock(&dev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (dev->ops->check_presence) {
 		device_lock(&dev->dev);
@@ -1175,11 +1211,14 @@ void nfc_unregister_device(struct nfc_dev *dev)
 		cancel_work_sync(&dev->check_pres_work);
 	}
 
+<<<<<<< HEAD
 	rc = nfc_genl_device_removed(dev);
 	if (rc)
 		pr_debug("The userspace won't be notified that the device %s "
 			 "was removed\n", dev_name(&dev->dev));
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	nfc_llcp_unregister_device(dev);
 
 	mutex_lock(&nfc_devlist_mutex);

@@ -181,6 +181,15 @@ struct i915_gem_context {
 	/** remap_slice: Bitmask of cache lines that need remapping */
 	u8 remap_slice;
 
+<<<<<<< HEAD
+=======
+	/** jump_whitelist: Bit array for tracking cmds during cmdparsing */
+	unsigned long *jump_whitelist;
+
+	/** jump_whitelist_cmds: No of cmd slots available */
+	u32 jump_whitelist_cmds;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/** handles_vma: rbtree to look up our context specific obj/vma for
 	 * the user handle. (user handles are per fd, but the binding is
 	 * per vm, which may be one per context or shared with the global GTT)

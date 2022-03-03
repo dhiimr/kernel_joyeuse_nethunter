@@ -178,7 +178,11 @@
 #define HCLK_TSP		309
 #define HCLK_GMAC		310
 #define HCLK_I2S0_8CH		311
+<<<<<<< HEAD
 #define HCLK_I2S1_8CH		313
+=======
+#define HCLK_I2S1_8CH		312
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define HCLK_I2S2_2CH		313
 #define HCLK_SPDIF_8CH		314
 #define HCLK_VOP		315

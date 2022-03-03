@@ -242,7 +242,11 @@ static void dns_resolver_describe(const struct key *key, struct seq_file *m)
  * - the key's semaphore is read-locked
  */
 static long dns_resolver_read(const struct key *key,
+<<<<<<< HEAD
 			      char __user *buffer, size_t buflen)
+=======
+			      char *buffer, size_t buflen)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int err = PTR_ERR(key->payload.data[dns_key_error]);
 

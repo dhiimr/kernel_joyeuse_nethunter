@@ -139,10 +139,13 @@ int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate);
 int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
 			     int direction);
 
+<<<<<<< HEAD
 int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
 	unsigned int *tx_num, unsigned int *tx_slot,
 	unsigned int *rx_num, unsigned int *rx_slot);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int snd_soc_dai_is_dummy(struct snd_soc_dai *dai);
 
 struct snd_soc_dai_ops {
@@ -171,9 +174,12 @@ struct snd_soc_dai_ops {
 		unsigned int tx_num, unsigned int *tx_slot,
 		unsigned int rx_num, unsigned int *rx_slot);
 	int (*set_tristate)(struct snd_soc_dai *dai, int tristate);
+<<<<<<< HEAD
 	int (*get_channel_map)(struct snd_soc_dai *dai,
 		unsigned int *tx_num, unsigned int *tx_slot,
 		unsigned int *rx_num, unsigned int *rx_slot);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * DAI digital mute - optional.
@@ -299,8 +305,13 @@ struct snd_soc_dai {
 	struct snd_soc_dai_driver *driver;
 
 	/* DAI runtime info */
+<<<<<<< HEAD
 	unsigned int capture_active;		/* stream is in use */
 	unsigned int playback_active;		/* stream is in use */
+=======
+	unsigned int capture_active:1;		/* stream is in use */
+	unsigned int playback_active:1;		/* stream is in use */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int symmetric_rates:1;
 	unsigned int symmetric_channels:1;
 	unsigned int symmetric_samplebits:1;

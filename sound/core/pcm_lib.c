@@ -45,9 +45,12 @@
 #define trace_applptr(substream, prev, curr)
 #endif
 
+<<<<<<< HEAD
 #define STRING_LENGTH_OF_INT 12
 #define MAX_USR_CTRL_CNT 128
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int fill_silence_frames(struct snd_pcm_substream *substream,
 			       snd_pcm_uframes_t off, snd_pcm_uframes_t frames);
 
@@ -361,8 +364,12 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
 		 * the elapsed time to detect xruns.
 		 */
 		jdelta = curr_jiffies - runtime->hw_ptr_jiffies;
+<<<<<<< HEAD
 		if ((jdelta < runtime->hw_ptr_buffer_jiffies / 2) ||
 		    (runtime->hw_ptr_buffer_jiffies <= 0))
+=======
+		if (jdelta < runtime->hw_ptr_buffer_jiffies / 2)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto no_delta_check;
 		hdelta = jdelta - delta * HZ / runtime->rate;
 		xrun_threshold = runtime->hw_ptr_buffer_jiffies / 2 + 1;
@@ -444,6 +451,10 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
 
  no_delta_check:
 	if (runtime->status->hw_ptr == new_hw_ptr) {
+<<<<<<< HEAD
+=======
+		runtime->hw_ptr_jiffies = curr_jiffies;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		update_audio_tstamp(substream, &curr_tstamp, &audio_tstamp);
 		return 0;
 	}
@@ -1728,11 +1739,14 @@ static int snd_pcm_lib_ioctl_channel_info(struct snd_pcm_substream *substream,
 	switch (runtime->access) {
 	case SNDRV_PCM_ACCESS_MMAP_INTERLEAVED:
 	case SNDRV_PCM_ACCESS_RW_INTERLEAVED:
+<<<<<<< HEAD
 		if ((UINT_MAX/width) < info->channel) {
 			snd_printd("%s: integer overflow while multiply\n",
 				   __func__);
 			return -EINVAL;
 		}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		info->first = info->channel * width;
 		info->step = runtime->channels * width;
 		break;
@@ -1740,12 +1754,15 @@ static int snd_pcm_lib_ioctl_channel_info(struct snd_pcm_substream *substream,
 	case SNDRV_PCM_ACCESS_RW_NONINTERLEAVED:
 	{
 		size_t size = runtime->dma_bytes / runtime->channels;
+<<<<<<< HEAD
 
 		if ((size > 0) && ((UINT_MAX/(size * 8)) < info->channel)) {
 			snd_printd("%s: integer overflow while multiply\n",
 				   __func__);
 			return -EINVAL;
 		}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		info->first = info->channel * size * 8;
 		info->step = width;
 		break;
@@ -1771,7 +1788,11 @@ static int snd_pcm_lib_ioctl_fifo_size(struct snd_pcm_substream *substream,
 		channels = params_channels(params);
 		frame_size = snd_pcm_format_size(format, channels);
 		if (frame_size > 0)
+<<<<<<< HEAD
 			params->fifo_size /= (unsigned)frame_size;
+=======
+			params->fifo_size /= frame_size;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return 0;
 }
@@ -1818,11 +1839,22 @@ void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
 	struct snd_pcm_runtime *runtime;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if (PCM_RUNTIME_CHECK(substream))
 		return;
 	runtime = substream->runtime;
 
 	snd_pcm_stream_lock_irqsave(substream, flags);
+=======
+	if (snd_BUG_ON(!substream))
+		return;
+
+	snd_pcm_stream_lock_irqsave(substream, flags);
+	if (PCM_RUNTIME_CHECK(substream))
+		goto _unlock;
+	runtime = substream->runtime;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!snd_pcm_running(substream) ||
 	    snd_pcm_update_hw_ptr0(substream, 1) < 0)
 		goto _end;
@@ -1833,6 +1865,10 @@ void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
 #endif
  _end:
 	kill_fasync(&runtime->fasync, SIGIO, POLL_IN);
+<<<<<<< HEAD
+=======
+ _unlock:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	snd_pcm_stream_unlock_irqrestore(substream, flags);
 }
 EXPORT_SYMBOL(snd_pcm_period_elapsed);
@@ -2078,9 +2114,12 @@ static int pcm_sanity_check(struct snd_pcm_substream *substream)
 	struct snd_pcm_runtime *runtime;
 	if (PCM_RUNTIME_CHECK(substream))
 		return -ENXIO;
+<<<<<<< HEAD
 	/* TODO: consider and -EINVAL here */
 	if (substream->hw_no_buffer)
 		snd_printd("%s: warning this PCM is host less\n", __func__);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	runtime = substream->runtime;
 	if (snd_BUG_ON(!substream->ops->copy_user && !runtime->dma_area))
 		return -EINVAL;
@@ -2429,6 +2468,7 @@ static void pcm_chmap_ctl_private_free(struct snd_kcontrol *kcontrol)
 	kfree(info);
 }
 
+<<<<<<< HEAD
 static int pcm_volume_ctl_info(struct snd_kcontrol *kcontrol,
 				struct snd_ctl_elem_info *uinfo)
 {
@@ -2447,6 +2487,8 @@ static void pcm_volume_ctl_private_free(struct snd_kcontrol *kcontrol)
 	kfree(info);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * snd_pcm_add_chmap_ctls - create channel-mapping control elements
  * @pcm: the assigned PCM instance
@@ -2508,6 +2550,7 @@ int snd_pcm_add_chmap_ctls(struct snd_pcm *pcm, int stream,
 	return 0;
 }
 EXPORT_SYMBOL_GPL(snd_pcm_add_chmap_ctls);
+<<<<<<< HEAD
 
 /**
  * snd_pcm_add_volume_ctls - create volume control elements
@@ -2671,3 +2714,5 @@ int snd_pcm_add_usr_ctls(struct snd_pcm *pcm, int stream,
 	return 0;
 }
 EXPORT_SYMBOL(snd_pcm_add_usr_ctls);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

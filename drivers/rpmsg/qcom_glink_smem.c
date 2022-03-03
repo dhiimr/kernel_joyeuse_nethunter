@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2016, Linaro Ltd
+<<<<<<< HEAD
  * Copyright (c) 2018-2019, The Linux Foundation, All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -30,6 +33,11 @@
 #include <linux/workqueue.h>
 #include <linux/list.h>
 
+<<<<<<< HEAD
+=======
+#include <linux/delay.h>
+#include <linux/rpmsg.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/rpmsg/qcom_glink.h>
 
 #include "qcom_glink_native.h"
@@ -80,6 +88,7 @@ static size_t glink_smem_rx_avail(struct qcom_glink_pipe *np)
 	tail = le32_to_cpu(*pipe->tail);
 
 	if (head < tail)
+<<<<<<< HEAD
 		len = pipe->native.length - tail + head;
 	else
 		len = head - tail;
@@ -88,6 +97,11 @@ static size_t glink_smem_rx_avail(struct qcom_glink_pipe *np)
 		len = 0;
 
 	return len;
+=======
+		return pipe->native.length - tail + head;
+	else
+		return head - tail;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void glink_smem_rx_peak(struct qcom_glink_pipe *np,
@@ -98,15 +112,19 @@ static void glink_smem_rx_peak(struct qcom_glink_pipe *np,
 	u32 tail;
 
 	tail = le32_to_cpu(*pipe->tail);
+<<<<<<< HEAD
 
 	if (WARN_ON_ONCE(tail > pipe->native.length))
 		return;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tail += offset;
 	if (tail >= pipe->native.length)
 		tail -= pipe->native.length;
 
 	len = min_t(size_t, count, pipe->native.length - tail);
+<<<<<<< HEAD
 	if (len) {
 		memcpy_fromio(data, pipe->fifo + tail, len);
 	}
@@ -114,6 +132,13 @@ static void glink_smem_rx_peak(struct qcom_glink_pipe *np,
 	if (len != count) {
 		memcpy_fromio(data + len, pipe->fifo, (count - len));
 	}
+=======
+	if (len)
+		memcpy_fromio(data, pipe->fifo + tail, len);
+
+	if (len != count)
+		memcpy_fromio(data + len, pipe->fifo, (count - len));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void glink_smem_rx_advance(struct qcom_glink_pipe *np,
@@ -126,7 +151,11 @@ static void glink_smem_rx_advance(struct qcom_glink_pipe *np,
 
 	tail += count;
 	if (tail >= pipe->native.length)
+<<<<<<< HEAD
 		tail %= pipe->native.length;
+=======
+		tail -= pipe->native.length;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	*pipe->tail = cpu_to_le32(tail);
 }
@@ -151,9 +180,12 @@ static size_t glink_smem_tx_avail(struct qcom_glink_pipe *np)
 	else
 		avail -= FIFO_FULL_RESERVE + TX_BLOCKED_CMD_RESERVE;
 
+<<<<<<< HEAD
 	if (WARN_ON_ONCE(avail > pipe->native.length))
 		avail = 0;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return avail;
 }
 
@@ -163,9 +195,12 @@ static unsigned int glink_smem_tx_write_one(struct glink_smem_pipe *pipe,
 {
 	size_t len;
 
+<<<<<<< HEAD
 	if (WARN_ON_ONCE(head > pipe->native.length))
 		return head;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	len = min_t(size_t, count, pipe->native.length - head);
 	if (len)
 		memcpy(pipe->fifo + head, data, len);
@@ -231,7 +266,11 @@ struct qcom_glink *qcom_glink_smem_register(struct device *parent,
 	ret = device_register(dev);
 	if (ret) {
 		pr_err("failed to register glink edge\n");
+<<<<<<< HEAD
 		kfree(dev);
+=======
+		put_device(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ERR_PTR(ret);
 	}
 
@@ -239,21 +278,33 @@ struct qcom_glink *qcom_glink_smem_register(struct device *parent,
 				   &remote_pid);
 	if (ret) {
 		dev_err(dev, "failed to parse qcom,remote-pid\n");
+<<<<<<< HEAD
 		goto unregister;
+=======
+		goto err_put_dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	rx_pipe = devm_kzalloc(dev, sizeof(*rx_pipe), GFP_KERNEL);
 	tx_pipe = devm_kzalloc(dev, sizeof(*tx_pipe), GFP_KERNEL);
 	if (!rx_pipe || !tx_pipe) {
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto unregister;
+=======
+		goto err_put_dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ret = qcom_smem_alloc(remote_pid,
 			      SMEM_GLINK_NATIVE_XPRT_DESCRIPTOR, 32);
 	if (ret && ret != -EEXIST) {
 		dev_err(dev, "failed to allocate glink descriptors\n");
+<<<<<<< HEAD
 		goto unregister;
+=======
+		goto err_put_dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	descs = qcom_smem_get(remote_pid,
@@ -261,13 +312,21 @@ struct qcom_glink *qcom_glink_smem_register(struct device *parent,
 	if (IS_ERR(descs)) {
 		dev_err(dev, "failed to acquire xprt descriptor\n");
 		ret = PTR_ERR(descs);
+<<<<<<< HEAD
 		goto unregister;
+=======
+		goto err_put_dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (size != 32) {
 		dev_err(dev, "glink descriptor of invalid size\n");
 		ret = -EINVAL;
+<<<<<<< HEAD
 		goto unregister;
+=======
+		goto err_put_dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	tx_pipe->tail = &descs[0];
@@ -279,7 +338,11 @@ struct qcom_glink *qcom_glink_smem_register(struct device *parent,
 			      SZ_16K);
 	if (ret && ret != -EEXIST) {
 		dev_err(dev, "failed to allocate TX fifo\n");
+<<<<<<< HEAD
 		goto unregister;
+=======
+		goto err_put_dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	tx_pipe->fifo = qcom_smem_get(remote_pid, SMEM_GLINK_NATIVE_XPRT_FIFO_0,
@@ -287,7 +350,11 @@ struct qcom_glink *qcom_glink_smem_register(struct device *parent,
 	if (IS_ERR(tx_pipe->fifo)) {
 		dev_err(dev, "failed to acquire TX fifo\n");
 		ret = PTR_ERR(tx_pipe->fifo);
+<<<<<<< HEAD
 		goto unregister;
+=======
+		goto err_put_dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	rx_pipe->native.avail = glink_smem_rx_avail;
@@ -308,12 +375,20 @@ struct qcom_glink *qcom_glink_smem_register(struct device *parent,
 					false);
 	if (IS_ERR(glink)) {
 		ret = PTR_ERR(glink);
+<<<<<<< HEAD
 		goto unregister;
+=======
+		goto err_put_dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return glink;
 
+<<<<<<< HEAD
 unregister:
+=======
+err_put_dev:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	device_unregister(dev);
 
 	return ERR_PTR(ret);

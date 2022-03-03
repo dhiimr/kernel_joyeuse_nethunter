@@ -8,8 +8,12 @@
 #include <linux/ratelimit.h>
 #include <linux/kasan.h>
 
+<<<<<<< HEAD
 static bool want_page_poisoning __read_mostly
 		= IS_ENABLED(CONFIG_PAGE_POISONING_ENABLE_DEFAULT);
+=======
+static bool want_page_poisoning __read_mostly;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int early_page_poison_param(char *buf)
 {
@@ -58,8 +62,12 @@ static bool single_bit_flip(unsigned char a, unsigned char b)
 	return error && !(error & (error - 1));
 }
 
+<<<<<<< HEAD
 static void check_poison_mem(struct page *page,
 			     unsigned char *mem, size_t bytes)
+=======
+static void check_poison_mem(unsigned char *mem, size_t bytes)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	static DEFINE_RATELIMIT_STATE(ratelimit, 5 * HZ, 10);
 	unsigned char *start;
@@ -80,6 +88,7 @@ static void check_poison_mem(struct page *page,
 	if (!__ratelimit(&ratelimit))
 		return;
 	else if (start == end && single_bit_flip(*start, PAGE_POISON))
+<<<<<<< HEAD
 		pr_err("pagealloc: single bit error on page with phys start 0x%lx\n",
 			(unsigned long)page_to_phys(page));
 	else
@@ -89,6 +98,14 @@ static void check_poison_mem(struct page *page,
 	print_hex_dump(KERN_ERR, "", DUMP_PREFIX_ADDRESS, 16, 1, start,
 			end - start + 1, 1);
 	BUG_ON(PANIC_CORRUPTION);
+=======
+		pr_err("pagealloc: single bit error\n");
+	else
+		pr_err("pagealloc: memory corruption\n");
+
+	print_hex_dump(KERN_ERR, "", DUMP_PREFIX_ADDRESS, 16, 1, start,
+			end - start + 1, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dump_stack();
 }
 
@@ -102,7 +119,11 @@ static void unpoison_page(struct page *page)
 	 * that is freed to buddy. Thus no extra check is done to
 	 * see if a page was posioned.
 	 */
+<<<<<<< HEAD
 	check_poison_mem(page, addr, PAGE_SIZE);
+=======
+	check_poison_mem(addr, PAGE_SIZE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kunmap_atomic(addr);
 }
 

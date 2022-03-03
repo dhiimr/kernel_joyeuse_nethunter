@@ -256,7 +256,12 @@ static int winch_tramp(int fd, struct tty_port *port, int *fd_out,
 		goto out_close;
 	}
 
+<<<<<<< HEAD
 	if (os_set_fd_block(*fd_out, 0)) {
+=======
+	err = os_set_fd_block(*fd_out, 0);
+	if (err) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		printk(UM_KERN_ERR "winch_tramp: failed to set thread_fd "
 		       "non-blocking.\n");
 		goto out_close;

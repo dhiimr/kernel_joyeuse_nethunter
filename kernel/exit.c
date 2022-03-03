@@ -193,6 +193,10 @@ repeat:
 	rcu_read_unlock();
 
 	proc_flush_task(p);
+<<<<<<< HEAD
+=======
+	cgroup_release(p);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	write_lock_irq(&tasklist_lock);
 	ptrace_release_task(p);
@@ -218,7 +222,10 @@ repeat:
 	}
 
 	write_unlock_irq(&tasklist_lock);
+<<<<<<< HEAD
 	cgroup_release(p);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	release_thread(p);
 	call_rcu(&p->rcu, delayed_put_task_struct);
 
@@ -496,9 +503,14 @@ static void exit_mm(void)
 {
 	struct mm_struct *mm = current->mm;
 	struct core_state *core_state;
+<<<<<<< HEAD
 	int mm_released;
 
 	mm_release(current, mm);
+=======
+
+	exit_mm_release(current, mm);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!mm)
 		return;
 	sync_mm_rss(mm);
@@ -517,7 +529,14 @@ static void exit_mm(void)
 		up_read(&mm->mmap_sem);
 
 		self.task = current;
+<<<<<<< HEAD
 		self.next = xchg(&core_state->dumper.next, &self);
+=======
+		if (self.task->flags & PF_SIGNALED)
+			self.next = xchg(&core_state->dumper.next, &self);
+		else
+			self.task = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/*
 		 * Implies mb(), the result of xchg() must be visible
 		 * to core_state->dumper.
@@ -543,12 +562,18 @@ static void exit_mm(void)
 	enter_lazy_tlb(mm, current);
 	task_unlock(current);
 	mm_update_next_owner(mm);
+<<<<<<< HEAD
 
 	mm_released = mmput(mm);
 	if (test_thread_flag(TIF_MEMDIE))
 		exit_oom_victim();
 	if (mm_released)
 		set_tsk_thread_flag(current, TIF_MM_RELEASED);
+=======
+	mmput(mm);
+	if (test_thread_flag(TIF_MEMDIE))
+		exit_oom_victim();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct task_struct *find_alive_thread(struct task_struct *p)
@@ -581,10 +606,13 @@ static struct task_struct *find_child_reaper(struct task_struct *father,
 	}
 
 	write_unlock_irq(&tasklist_lock);
+<<<<<<< HEAD
 	if (unlikely(pid_ns == &init_pid_ns)) {
 		panic("Attempted to kill init! exitcode=0x%08x\n",
 			father->signal->group_exit_code ?: father->exit_code);
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	list_for_each_entry_safe(p, n, dead, ptrace_entry) {
 		list_del_init(&p->ptrace_entry);
@@ -755,7 +783,10 @@ static void check_stack_usage(void)
 	static DEFINE_SPINLOCK(low_water_lock);
 	static int lowest_to_date = THREAD_SIZE;
 	unsigned long free;
+<<<<<<< HEAD
 	int islower = false;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	free = stack_not_used(current);
 
@@ -764,6 +795,7 @@ static void check_stack_usage(void)
 
 	spin_lock(&low_water_lock);
 	if (free < lowest_to_date) {
+<<<<<<< HEAD
 		lowest_to_date = free;
 		islower = true;
 	}
@@ -773,6 +805,13 @@ static void check_stack_usage(void)
 		pr_info("%s (%d) used greatest stack depth: %lu bytes left\n",
 				current->comm, task_pid_nr(current), free);
 	}
+=======
+		pr_info("%s (%d) used greatest stack depth: %lu bytes left\n",
+			current->comm, task_pid_nr(current), free);
+		lowest_to_date = free;
+	}
+	spin_unlock(&low_water_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #else
 static inline void check_stack_usage(void) {}
@@ -783,8 +822,17 @@ void __noreturn do_exit(long code)
 	struct task_struct *tsk = current;
 	int group_dead;
 
+<<<<<<< HEAD
 	profile_task_exit(tsk);
 	kcov_task_exit(tsk);
+=======
+	/*
+	 * We can get here from a kernel oops, sometimes with preemption off.
+	 * Start by checking for critical errors.
+	 * Then fix up important state like USER_DS and preemption.
+	 * Then do everything else.
+	 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	WARN_ON(blk_needs_flush_plug(tsk));
 
@@ -802,6 +850,19 @@ void __noreturn do_exit(long code)
 	 */
 	set_fs(USER_DS);
 
+<<<<<<< HEAD
+=======
+	if (unlikely(in_atomic())) {
+		pr_info("note: %s[%d] exited with preempt_count %d\n",
+			current->comm, task_pid_nr(current),
+			preempt_count());
+		preempt_count_set(PREEMPT_ENABLED);
+	}
+
+	profile_task_exit(tsk);
+	kcov_task_exit(tsk);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ptrace_event(PTRACE_EVENT_EXIT, code);
 
 	validate_creds_for_do_exit(tsk);
@@ -811,6 +872,7 @@ void __noreturn do_exit(long code)
 	 * leave this task alone and wait for reboot.
 	 */
 	if (unlikely(tsk->flags & PF_EXITING)) {
+<<<<<<< HEAD
 #ifdef CONFIG_PANIC_ON_RECURSIVE_FAULT
 		panic("Recursive fault!\n");
 #else
@@ -826,11 +888,16 @@ void __noreturn do_exit(long code)
 		 * task into the wait for ever nirwana as well.
 		 */
 		tsk->flags |= PF_EXITPIDONE;
+=======
+		pr_alert("Fixing recursive fault but reboot is needed!\n");
+		futex_exit_recursive(tsk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		set_current_state(TASK_UNINTERRUPTIBLE);
 		schedule();
 	}
 
 	exit_signals(tsk);  /* sets PF_EXITING */
+<<<<<<< HEAD
 	sched_exit(tsk);
 	/*
 	 * Ensure that all new tsk->pi_lock acquisitions must observe
@@ -850,6 +917,8 @@ void __noreturn do_exit(long code)
 			preempt_count());
 		preempt_count_set(PREEMPT_ENABLED);
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* sync mm's RSS info before statistics gathering */
 	if (tsk->mm)
@@ -857,6 +926,17 @@ void __noreturn do_exit(long code)
 	acct_update_integrals(tsk);
 	group_dead = atomic_dec_and_test(&tsk->signal->live);
 	if (group_dead) {
+<<<<<<< HEAD
+=======
+		/*
+		 * If the last thread of global init has exited, panic
+		 * immediately to get a useable coredump.
+		 */
+		if (unlikely(is_global_init(tsk)))
+			panic("Attempted to kill init! exitcode=0x%08x\n",
+				tsk->signal->group_exit_code ?: (int)code);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_POSIX_TIMERS
 		hrtimer_cancel(&tsk->signal->real_timer);
 		exit_itimers(tsk->signal);
@@ -916,12 +996,15 @@ void __noreturn do_exit(long code)
 	 * Make sure we are holding no locks:
 	 */
 	debug_check_no_locks_held();
+<<<<<<< HEAD
 	/*
 	 * We can do this unlocked here. The futex code uses this flag
 	 * just to verify whether the pi state cleanup has been done
 	 * or not. In the worst case it loops once more.
 	 */
 	tsk->flags |= PF_EXITPIDONE;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (tsk->io_context)
 		exit_io_context(tsk);
@@ -1633,10 +1716,16 @@ SYSCALL_DEFINE5(waitid, int, which, pid_t, upid, struct siginfo __user *,
 	if (!infop)
 		return err;
 
+<<<<<<< HEAD
 	if (!access_ok(VERIFY_WRITE, infop, sizeof(*infop)))
 		return -EFAULT;
 
 	user_access_begin();
+=======
+	if (!user_access_begin(VERIFY_WRITE, infop, sizeof(*infop)))
+		return -EFAULT;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsafe_put_user(signo, &infop->si_signo, Efault);
 	unsafe_put_user(0, &infop->si_errno, Efault);
 	unsafe_put_user(info.cause, &infop->si_code, Efault);
@@ -1761,10 +1850,16 @@ COMPAT_SYSCALL_DEFINE5(waitid,
 	if (!infop)
 		return err;
 
+<<<<<<< HEAD
 	if (!access_ok(VERIFY_WRITE, infop, sizeof(*infop)))
 		return -EFAULT;
 
 	user_access_begin();
+=======
+	if (!user_access_begin(VERIFY_WRITE, infop, sizeof(*infop)))
+		return -EFAULT;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsafe_put_user(signo, &infop->si_signo, Efault);
 	unsafe_put_user(0, &infop->si_errno, Efault);
 	unsafe_put_user(info.cause, &infop->si_code, Efault);

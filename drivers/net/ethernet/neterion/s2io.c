@@ -8574,7 +8574,11 @@ static void s2io_io_resume(struct pci_dev *pdev)
 			return;
 		}
 
+<<<<<<< HEAD
 		if (s2io_set_mac_addr(netdev, netdev->dev_addr) == FAILURE) {
+=======
+		if (do_s2io_prog_unicast(netdev, netdev->dev_addr) == FAILURE) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			s2io_card_down(sp);
 			pr_err("Can't restore mac addr after reset.\n");
 			return;

@@ -585,8 +585,15 @@ static void pch_spi_set_tx(struct pch_spi_data *data, int *bpw)
 	data->pkt_tx_buff = kzalloc(size, GFP_KERNEL);
 	if (data->pkt_tx_buff != NULL) {
 		data->pkt_rx_buff = kzalloc(size, GFP_KERNEL);
+<<<<<<< HEAD
 		if (!data->pkt_rx_buff)
 			kfree(data->pkt_tx_buff);
+=======
+		if (!data->pkt_rx_buff) {
+			kfree(data->pkt_tx_buff);
+			data->pkt_tx_buff = NULL;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (!data->pkt_rx_buff) {
@@ -1008,6 +1015,12 @@ static void pch_spi_handle_dma(struct pch_spi_data *data, int *bpw)
 
 	/* RX */
 	dma->sg_rx_p = kcalloc(num, sizeof(*dma->sg_rx_p), GFP_ATOMIC);
+<<<<<<< HEAD
+=======
+	if (!dma->sg_rx_p)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sg_init_table(dma->sg_rx_p, num); /* Initialize SG table */
 	/* offset, length setting */
 	sg = dma->sg_rx_p;
@@ -1068,6 +1081,12 @@ static void pch_spi_handle_dma(struct pch_spi_data *data, int *bpw)
 	}
 
 	dma->sg_tx_p = kcalloc(num, sizeof(*dma->sg_tx_p), GFP_ATOMIC);
+<<<<<<< HEAD
+=======
+	if (!dma->sg_tx_p)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sg_init_table(dma->sg_tx_p, num); /* Initialize SG table */
 	/* offset, length setting */
 	sg = dma->sg_tx_p;
@@ -1294,6 +1313,7 @@ static void pch_free_dma_buf(struct pch_spi_board_data *board_dat,
 				  dma->rx_buf_virt, dma->rx_buf_dma);
 }
 
+<<<<<<< HEAD
 static void pch_alloc_dma_buf(struct pch_spi_board_data *board_dat,
 			      struct pch_spi_data *data)
 {
@@ -1306,6 +1326,29 @@ static void pch_alloc_dma_buf(struct pch_spi_board_data *board_dat,
 	/* Get Consistent memory for Rx DMA */
 	dma->rx_buf_virt = dma_alloc_coherent(&board_dat->pdev->dev,
 				PCH_BUF_SIZE, &dma->rx_buf_dma, GFP_KERNEL);
+=======
+static int pch_alloc_dma_buf(struct pch_spi_board_data *board_dat,
+			      struct pch_spi_data *data)
+{
+	struct pch_spi_dma_ctrl *dma;
+	int ret;
+
+	dma = &data->dma;
+	ret = 0;
+	/* Get Consistent memory for Tx DMA */
+	dma->tx_buf_virt = dma_alloc_coherent(&board_dat->pdev->dev,
+				PCH_BUF_SIZE, &dma->tx_buf_dma, GFP_KERNEL);
+	if (!dma->tx_buf_virt)
+		ret = -ENOMEM;
+
+	/* Get Consistent memory for Rx DMA */
+	dma->rx_buf_virt = dma_alloc_coherent(&board_dat->pdev->dev,
+				PCH_BUF_SIZE, &dma->rx_buf_dma, GFP_KERNEL);
+	if (!dma->rx_buf_virt)
+		ret = -ENOMEM;
+
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int pch_spi_pd_probe(struct platform_device *plat_dev)
@@ -1382,7 +1425,13 @@ static int pch_spi_pd_probe(struct platform_device *plat_dev)
 
 	if (use_dma) {
 		dev_info(&plat_dev->dev, "Use DMA for data transfers\n");
+<<<<<<< HEAD
 		pch_alloc_dma_buf(board_dat, data);
+=======
+		ret = pch_alloc_dma_buf(board_dat, data);
+		if (ret)
+			goto err_spi_register_master;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ret = spi_register_master(master);

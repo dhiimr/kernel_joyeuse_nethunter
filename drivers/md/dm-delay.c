@@ -222,7 +222,12 @@ static void delay_dtr(struct dm_target *ti)
 {
 	struct delay_c *dc = ti->private;
 
+<<<<<<< HEAD
 	destroy_workqueue(dc->kdelayd_wq);
+=======
+	if (dc->kdelayd_wq)
+		destroy_workqueue(dc->kdelayd_wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dm_put_device(ti, dc->dev_read);
 

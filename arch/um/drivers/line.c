@@ -261,7 +261,11 @@ static irqreturn_t line_write_interrupt(int irq, void *data)
 	if (err == 0) {
 		spin_unlock(&line->lock);
 		return IRQ_NONE;
+<<<<<<< HEAD
 	} else if (err < 0) {
+=======
+	} else if ((err < 0) && (err != -EAGAIN)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		line->head = line->buffer;
 		line->tail = line->buffer;
 	}

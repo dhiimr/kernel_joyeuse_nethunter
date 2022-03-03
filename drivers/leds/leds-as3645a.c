@@ -564,6 +564,10 @@ static int as3645a_parse_node(struct as3645a *flash,
 	if (!flash->indicator_node) {
 		dev_warn(&flash->client->dev,
 			 "can't find indicator node\n");
+<<<<<<< HEAD
+=======
+		rval = -ENODEV;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out_err;
 	}
 

@@ -28,6 +28,10 @@ struct bpf_map_ops {
 	void (*map_free)(struct bpf_map *map);
 	int (*map_get_next_key)(struct bpf_map *map, void *key, void *next_key);
 	void (*map_release_uref)(struct bpf_map *map);
+<<<<<<< HEAD
+=======
+	void *(*map_lookup_elem_sys_only)(struct bpf_map *map, void *key);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* funcs callable from userspace and from eBPF programs */
 	void *(*map_lookup_elem)(struct bpf_map *map, void *key);
@@ -199,9 +203,12 @@ struct bpf_prog_aux {
 	struct bpf_map **used_maps;
 	struct bpf_prog *prog;
 	struct user_struct *user;
+<<<<<<< HEAD
 #ifdef CONFIG_SECURITY
 	void *security;
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	union {
 		struct work_struct work;
 		struct rcu_head	rcu;
@@ -257,9 +264,12 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
 #ifdef CONFIG_BPF_SYSCALL
 DECLARE_PER_CPU(int, bpf_prog_active);
 
+<<<<<<< HEAD
 extern const struct file_operations bpf_map_fops;
 extern const struct file_operations bpf_prog_fops;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define BPF_PROG_TYPE(_id, _ops) \
 	extern const struct bpf_verifier_ops _ops;
 #define BPF_MAP_TYPE(_id, _ops) \
@@ -289,11 +299,19 @@ void bpf_map_area_free(void *base);
 
 extern int sysctl_unprivileged_bpf_disabled;
 
+<<<<<<< HEAD
 int bpf_map_new_fd(struct bpf_map *map, int flags);
 int bpf_prog_new_fd(struct bpf_prog *prog);
 
 int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
 int bpf_obj_get_user(const char __user *pathname, int flags);
+=======
+int bpf_map_new_fd(struct bpf_map *map);
+int bpf_prog_new_fd(struct bpf_prog *prog);
+
+int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
+int bpf_obj_get_user(const char __user *pathname);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 int bpf_percpu_hash_copy(struct bpf_map *map, void *key, void *value);
 int bpf_percpu_array_copy(struct bpf_map *map, void *key, void *value);
@@ -311,8 +329,11 @@ int bpf_fd_htab_map_update_elem(struct bpf_map *map, struct file *map_file,
 				void *key, void *value, u64 map_flags);
 int bpf_fd_htab_map_lookup_elem(struct bpf_map *map, void *key, u32 *value);
 
+<<<<<<< HEAD
 int bpf_get_file_flag(int flags);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* memcpy that is used with 8-byte aligned pointers, power-of-8 size and
  * forced to use 'long' read/writes to try to atomically copy long counters.
  * Best-effort only.  No barriers here, since it _will_ race with concurrent
@@ -389,7 +410,11 @@ static inline void __bpf_prog_uncharge(struct user_struct *user, u32 pages)
 {
 }
 
+<<<<<<< HEAD
 static inline int bpf_obj_get_user(const char __user *pathname, int flags)
+=======
+static inline int bpf_obj_get_user(const char __user *pathname)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return -EOPNOTSUPP;
 }

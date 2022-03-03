@@ -706,7 +706,12 @@ static int zr364xx_vidioc_querycap(struct file *file, void *priv,
 	struct zr364xx_camera *cam = video_drvdata(file);
 
 	strlcpy(cap->driver, DRIVER_DESC, sizeof(cap->driver));
+<<<<<<< HEAD
 	strlcpy(cap->card, cam->udev->product, sizeof(cap->card));
+=======
+	if (cam->udev->product)
+		strlcpy(cap->card, cam->udev->product, sizeof(cap->card));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	strlcpy(cap->bus_info, dev_name(&cam->udev->dev),
 		sizeof(cap->bus_info));
 	cap->device_caps = V4L2_CAP_VIDEO_CAPTURE |
@@ -1060,6 +1065,10 @@ static int zr364xx_start_readpipe(struct zr364xx_camera *cam)
 	DBG("submitting URB %p\n", pipe_info->stream_urb);
 	retval = usb_submit_urb(pipe_info->stream_urb, GFP_KERNEL);
 	if (retval) {
+<<<<<<< HEAD
+=======
+		usb_free_urb(pipe_info->stream_urb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		printk(KERN_ERR KBUILD_MODNAME ": start read pipe failed\n");
 		return retval;
 	}

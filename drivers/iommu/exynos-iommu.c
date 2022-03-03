@@ -1296,6 +1296,7 @@ static int exynos_iommu_of_xlate(struct device *dev,
 		return -ENODEV;
 
 	data = platform_get_drvdata(sysmmu);
+<<<<<<< HEAD
 	if (!data)
 		return -ENODEV;
 
@@ -1303,6 +1304,19 @@ static int exynos_iommu_of_xlate(struct device *dev,
 		owner = kzalloc(sizeof(*owner), GFP_KERNEL);
 		if (!owner)
 			return -ENOMEM;
+=======
+	if (!data) {
+		put_device(&sysmmu->dev);
+		return -ENODEV;
+	}
+
+	if (!owner) {
+		owner = kzalloc(sizeof(*owner), GFP_KERNEL);
+		if (!owner) {
+			put_device(&sysmmu->dev);
+			return -ENOMEM;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		INIT_LIST_HEAD(&owner->controllers);
 		mutex_init(&owner->rpm_lock);

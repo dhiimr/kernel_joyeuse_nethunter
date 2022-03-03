@@ -1076,6 +1076,10 @@ xfs_reflink_remap_extent(
 	xfs_filblks_t		rlen;
 	xfs_filblks_t		unmap_len;
 	xfs_off_t		newlen;
+<<<<<<< HEAD
+=======
+	int64_t			qres;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int			error;
 
 	unmap_len = irec->br_startoff + irec->br_blockcount - destoff;
@@ -1098,6 +1102,7 @@ xfs_reflink_remap_extent(
 	xfs_ilock(ip, XFS_ILOCK_EXCL);
 	xfs_trans_ijoin(tp, ip, 0);
 
+<<<<<<< HEAD
 	/* If we're not just clearing space, then do we have enough quota? */
 	if (real_extent) {
 		error = xfs_trans_reserve_quota_nblks(tp, ip,
@@ -1105,6 +1110,21 @@ xfs_reflink_remap_extent(
 		if (error)
 			goto out_cancel;
 	}
+=======
+	/*
+	 * Reserve quota for this operation.  We don't know if the first unmap
+	 * in the dest file will cause a bmap btree split, so we always reserve
+	 * at least enough blocks for that split.  If the extent being mapped
+	 * in is written, we need to reserve quota for that too.
+	 */
+	qres = XFS_EXTENTADD_SPACE_RES(mp, XFS_DATA_FORK);
+	if (real_extent)
+		qres += irec->br_blockcount;
+	error = xfs_trans_reserve_quota_nblks(tp, ip, qres, 0,
+			XFS_QMOPT_RES_REGBLKS);
+	if (error)
+		goto out_cancel;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	trace_xfs_reflink_remap(ip, irec->br_startoff,
 				irec->br_blockcount, irec->br_startblock);
@@ -1125,6 +1145,10 @@ xfs_reflink_remap_extent(
 		uirec.br_startblock = irec->br_startblock + rlen;
 		uirec.br_startoff = irec->br_startoff + rlen;
 		uirec.br_blockcount = unmap_len - rlen;
+<<<<<<< HEAD
+=======
+		uirec.br_state = irec->br_state;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		unmap_len = rlen;
 
 		/* If this isn't a real mapping, we're done. */

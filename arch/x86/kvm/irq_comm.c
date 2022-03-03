@@ -427,7 +427,11 @@ void kvm_scan_ioapic_routes(struct kvm_vcpu *vcpu,
 
 			kvm_set_msi_irq(vcpu->kvm, entry, &irq);
 
+<<<<<<< HEAD
 			if (irq.level && kvm_apic_match_dest(vcpu, NULL, 0,
+=======
+			if (irq.trig_mode && kvm_apic_match_dest(vcpu, NULL, 0,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						irq.dest_id, irq.dest_mode))
 				__set_bit(irq.vector, ioapic_handled_vectors);
 		}

@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2013,2016 Qualcomm Atheros, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -26,7 +29,11 @@ void __wil_err(struct wil6210_priv *wil, const char *fmt, ...)
 	va_start(args, fmt);
 	vaf.fmt = fmt;
 	vaf.va = &args;
+<<<<<<< HEAD
 	netdev_err(wil->main_ndev, "%pV", &vaf);
+=======
+	netdev_err(wil_to_ndev(wil), "%pV", &vaf);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	trace_wil6210_log_err(&vaf);
 	va_end(args);
 }
@@ -42,7 +49,11 @@ void __wil_err_ratelimited(struct wil6210_priv *wil, const char *fmt, ...)
 	va_start(args, fmt);
 	vaf.fmt = fmt;
 	vaf.va = &args;
+<<<<<<< HEAD
 	netdev_err(wil->main_ndev, "%pV", &vaf);
+=======
+	netdev_err(wil_to_ndev(wil), "%pV", &vaf);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	trace_wil6210_log_err(&vaf);
 	va_end(args);
 }
@@ -58,7 +69,11 @@ void wil_dbg_ratelimited(const struct wil6210_priv *wil, const char *fmt, ...)
 	va_start(args, fmt);
 	vaf.fmt = fmt;
 	vaf.va = &args;
+<<<<<<< HEAD
 	netdev_dbg(wil->main_ndev, "%pV", &vaf);
+=======
+	netdev_dbg(wil_to_ndev(wil), "%pV", &vaf);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	trace_wil6210_log_dbg(&vaf);
 	va_end(args);
 }
@@ -71,7 +86,11 @@ void __wil_info(struct wil6210_priv *wil, const char *fmt, ...)
 	va_start(args, fmt);
 	vaf.fmt = fmt;
 	vaf.va = &args;
+<<<<<<< HEAD
 	netdev_info(wil->main_ndev, "%pV", &vaf);
+=======
+	netdev_info(wil_to_ndev(wil), "%pV", &vaf);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	trace_wil6210_log_info(&vaf);
 	va_end(args);
 }

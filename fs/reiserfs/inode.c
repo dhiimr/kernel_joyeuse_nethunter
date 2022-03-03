@@ -1552,11 +1552,15 @@ void reiserfs_read_locked_inode(struct inode *inode,
 	 * set version 1, version 2 could be used too, because stat data
 	 * key is the same in both versions
 	 */
+<<<<<<< HEAD
 	key.version = KEY_FORMAT_3_5;
 	key.on_disk_key.k_dir_id = dirino;
 	key.on_disk_key.k_objectid = inode->i_ino;
 	key.on_disk_key.k_offset = 0;
 	key.on_disk_key.k_type = 0;
+=======
+	_make_cpu_key(&key, KEY_FORMAT_3_5, dirino, inode->i_ino, 0, 0, 3);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* look for the object's stat data */
 	retval = search_item(inode->i_sb, &key, &path_to_sd);
@@ -2096,6 +2100,18 @@ int reiserfs_new_inode(struct reiserfs_transaction_handle *th,
 		goto out_inserted_sd;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Mark it private if we're creating the privroot
+	 * or something under it.
+	 */
+	if (IS_PRIVATE(dir) || dentry == REISERFS_SB(sb)->priv_root) {
+		inode->i_flags |= S_PRIVATE;
+		inode->i_opflags &= ~IOP_XATTR;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (reiserfs_posixacl(inode->i_sb)) {
 		reiserfs_write_unlock(inode->i_sb);
 		retval = reiserfs_inherit_default_acl(th, dir, dentry, inode);
@@ -2110,8 +2126,12 @@ int reiserfs_new_inode(struct reiserfs_transaction_handle *th,
 		reiserfs_warning(inode->i_sb, "jdm-13090",
 				 "ACLs aren't enabled in the fs, "
 				 "but vfs thinks they are!");
+<<<<<<< HEAD
 	} else if (IS_PRIVATE(dir))
 		inode->i_flags |= S_PRIVATE;
+=======
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (security->name) {
 		reiserfs_write_unlock(inode->i_sb);
@@ -2156,7 +2176,12 @@ out_end_trans:
 out_inserted_sd:
 	clear_nlink(inode);
 	th->t_trans_id = 0;	/* so the caller can't use this handle later */
+<<<<<<< HEAD
 	unlock_new_inode(inode); /* OK to do even if we hadn't locked it */
+=======
+	if (inode->i_state & I_NEW)
+		unlock_new_inode(inode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	iput(inode);
 	return err;
 }

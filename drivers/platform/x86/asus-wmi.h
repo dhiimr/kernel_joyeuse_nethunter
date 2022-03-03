@@ -44,6 +44,10 @@ struct quirk_entry {
 	bool store_backlight_power;
 	bool wmi_backlight_power;
 	bool wmi_backlight_native;
+<<<<<<< HEAD
+=======
+	bool wmi_backlight_set_devstate;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool wmi_force_als_set;
 	int wapf;
 	/*

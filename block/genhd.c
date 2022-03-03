@@ -208,6 +208,7 @@ struct hd_struct *disk_part_iter_next(struct disk_part_iter *piter)
 		part = rcu_dereference(ptbl->part[piter->idx]);
 		if (!part)
 			continue;
+<<<<<<< HEAD
 		if (!part_nr_sects_read(part) &&
 		    !(piter->flags & DISK_PITER_INCL_EMPTY) &&
 		    !(piter->flags & DISK_PITER_INCL_EMPTY_PART0 &&
@@ -216,6 +217,19 @@ struct hd_struct *disk_part_iter_next(struct disk_part_iter *piter)
 
 		get_device(part_to_dev(part));
 		piter->part = part;
+=======
+		get_device(part_to_dev(part));
+		piter->part = part;
+		if (!part_nr_sects_read(part) &&
+		    !(piter->flags & DISK_PITER_INCL_EMPTY) &&
+		    !(piter->flags & DISK_PITER_INCL_EMPTY_PART0 &&
+		      piter->idx == 0)) {
+			put_device(part_to_dev(part));
+			piter->part = NULL;
+			continue;
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		piter->idx += inc;
 		break;
 	}
@@ -672,8 +686,12 @@ void device_add_disk(struct device *parent, struct gendisk *disk)
 
 	/* Register BDI before referencing it from bdev */
 	bdi = disk->queue->backing_dev_info;
+<<<<<<< HEAD
 	retval = bdi_register_owner(bdi, disk_to_dev(disk));
 	WARN_ON(retval);
+=======
+	bdi_register_owner(bdi, disk_to_dev(disk));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	blk_register_region(disk_devt(disk), disk->minors, NULL,
 			    exact_match, exact_lock, disk);
@@ -686,11 +704,17 @@ void device_add_disk(struct device *parent, struct gendisk *disk)
 	 */
 	WARN_ON_ONCE(!blk_get_queue(disk->queue));
 
+<<<<<<< HEAD
 	if (!retval) {
 		retval = sysfs_create_link(&disk_to_dev(disk)->kobj,
 				&bdi->dev->kobj, "bdi");
 		WARN_ON(retval);
 	}
+=======
+	retval = sysfs_create_link(&disk_to_dev(disk)->kobj, &bdi->dev->kobj,
+				   "bdi");
+	WARN_ON(retval);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	disk_add_events(disk);
 	blk_integrity_add(disk);

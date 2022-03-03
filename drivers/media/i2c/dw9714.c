@@ -182,7 +182,12 @@ static int dw9714_probe(struct i2c_client *client)
 	return 0;
 
 err_cleanup:
+<<<<<<< HEAD
 	dw9714_subdev_cleanup(dw9714_dev);
+=======
+	v4l2_ctrl_handler_free(&dw9714_dev->ctrls_vcm);
+	media_entity_cleanup(&dw9714_dev->sd.entity);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev_err(&client->dev, "Probe failed: %d\n", rval);
 	return rval;
 }

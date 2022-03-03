@@ -54,6 +54,7 @@ config REGULATOR_USERSPACE_CONSUMER
 
 	  If unsure, say no.
 
+<<<<<<< HEAD
 config REGULATOR_PROXY_CONSUMER
 	bool "Boot time regulator proxy consumer support"
 	help
@@ -64,6 +65,8 @@ config REGULATOR_PROXY_CONSUMER
 	  stop working if performed before the driver managing the hardware has
 	  probed.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config REGULATOR_88PM800
 	tristate "Marvell 88PM800 Power regulators"
 	depends on MFD_88PM800
@@ -337,6 +340,7 @@ config REGULATOR_ISL6271A
 	help
 	  This driver supports ISL6271A voltage regulator chip.
 
+<<<<<<< HEAD
 config REGULATOR_PM8008
 	bool "Qualcomm Technologies Inc. PM8008 regulator driver"
 	depends on MFD_I2C_PMIC
@@ -346,6 +350,8 @@ config REGULATOR_PM8008
 	  regulators found in Qualcomm Technologies Inc. PM8008
 	  PMIC.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config REGULATOR_LM363X
 	tristate "TI LM363X voltage regulators"
 	depends on MFD_TI_LMU
@@ -704,6 +710,7 @@ config REGULATOR_QCOM_SPMI
 	  Qualcomm SPMI PMICs as a module. The module will be named
 	  "qcom_spmi-regulator".
 
+<<<<<<< HEAD
 config REGULATOR_QPNP_AMOLED
         tristate "Qualcomm Technologies, Inc. QPNP AMOLED support"
         depends on SPMI
@@ -742,6 +749,8 @@ config REGULATOR_QPNP_OLEDB
           configuration via the regulator framework. The configurable range of
           this bias is 5 V to 8.1 V.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config REGULATOR_RC5T583
 	tristate "RICOH RC5T583 Power regulators"
 	depends on MFD_RC5T583
@@ -1015,6 +1024,7 @@ config REGULATOR_WM8994
 	  This driver provides support for the voltage regulators on the
 	  WM8994 CODEC.
 
+<<<<<<< HEAD
 config REGULATOR_CPR
 	bool "RBCPR regulator driver for APC"
 	depends on OF
@@ -1090,5 +1100,7 @@ config VIRTIO_REGULATOR
 	---help---
 	  This is the virtual regulator driver for virtio.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif
 

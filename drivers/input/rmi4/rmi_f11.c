@@ -1295,8 +1295,13 @@ static int rmi_f11_attention(struct rmi_function *fn, unsigned long *irq_bits)
 			valid_bytes = f11->sensor.attn_size;
 		memcpy(f11->sensor.data_pkt, drvdata->attn_data.data,
 			valid_bytes);
+<<<<<<< HEAD
 		drvdata->attn_data.data += f11->sensor.attn_size;
 		drvdata->attn_data.size -= f11->sensor.attn_size;
+=======
+		drvdata->attn_data.data += valid_bytes;
+		drvdata->attn_data.size -= valid_bytes;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		error = rmi_read_block(rmi_dev,
 				data_base_addr, f11->sensor.data_pkt,

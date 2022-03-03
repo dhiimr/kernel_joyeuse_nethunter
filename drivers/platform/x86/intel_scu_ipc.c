@@ -69,26 +69,38 @@
 struct intel_scu_ipc_pdata_t {
 	u32 i2c_base;
 	u32 i2c_len;
+<<<<<<< HEAD
 	u8 irq_mode;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const struct intel_scu_ipc_pdata_t intel_scu_ipc_lincroft_pdata = {
 	.i2c_base = 0xff12b000,
 	.i2c_len = 0x10,
+<<<<<<< HEAD
 	.irq_mode = 0,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* Penwell and Cloverview */
 static const struct intel_scu_ipc_pdata_t intel_scu_ipc_penwell_pdata = {
 	.i2c_base = 0xff12b000,
 	.i2c_len = 0x10,
+<<<<<<< HEAD
 	.irq_mode = 1,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const struct intel_scu_ipc_pdata_t intel_scu_ipc_tangier_pdata = {
 	.i2c_base  = 0xff00d000,
 	.i2c_len = 0x10,
+<<<<<<< HEAD
 	.irq_mode = 0,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct intel_scu_ipc_dev {
@@ -101,6 +113,12 @@ struct intel_scu_ipc_dev {
 
 static struct intel_scu_ipc_dev  ipcdev; /* Only one for now */
 
+<<<<<<< HEAD
+=======
+#define IPC_STATUS		0x04
+#define IPC_STATUS_IRQ		BIT(2)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * IPC Read Buffer (Read Only):
  * 16 byte buffer for receiving data from SCU, if IPC command
@@ -122,11 +140,16 @@ static DEFINE_MUTEX(ipclock); /* lock used to prevent multiple call to SCU */
  */
 static inline void ipc_command(struct intel_scu_ipc_dev *scu, u32 cmd)
 {
+<<<<<<< HEAD
 	if (scu->irq_mode) {
 		reinit_completion(&scu->cmd_complete);
 		writel(cmd | IPC_IOC, scu->ipc_base);
 	}
 	writel(cmd, scu->ipc_base);
+=======
+	reinit_completion(&scu->cmd_complete);
+	writel(cmd | IPC_IOC, scu->ipc_base);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -187,7 +210,11 @@ static inline int busy_loop(struct intel_scu_ipc_dev *scu)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Wait till ipc ioc interrupt is received or timeout in 3 HZ */
+=======
+/* Wait till ipc ioc interrupt is received or timeout in 10 HZ */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline int ipc_wait_for_interrupt(struct intel_scu_ipc_dev *scu)
 {
 	int status;
@@ -612,9 +639,16 @@ EXPORT_SYMBOL(intel_scu_ipc_i2c_cntrl);
 static irqreturn_t ioc(int irq, void *dev_id)
 {
 	struct intel_scu_ipc_dev *scu = dev_id;
+<<<<<<< HEAD
 
 	if (scu->irq_mode)
 		complete(&scu->cmd_complete);
+=======
+	int status = ipc_read_status(scu);
+
+	writel(status | IPC_STATUS_IRQ, scu->ipc_base + IPC_STATUS);
+	complete(&scu->cmd_complete);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return IRQ_HANDLED;
 }
@@ -640,8 +674,11 @@ static int ipc_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	if (!pdata)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	scu->irq_mode = pdata->irq_mode;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = pcim_enable_device(pdev);
 	if (err)
 		return err;

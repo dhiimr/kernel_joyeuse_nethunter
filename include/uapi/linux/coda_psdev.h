@@ -7,6 +7,7 @@
 #define CODA_PSDEV_MAJOR 67
 #define MAX_CODADEVS  5	   /* how many do we allow */
 
+<<<<<<< HEAD
 
 /* messages between coda filesystem in kernel and Venus */
 struct upc_req {
@@ -20,6 +21,8 @@ struct upc_req {
 	wait_queue_head_t   uc_sleep;   /* process' wait queue */
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define CODA_REQ_ASYNC  0x1
 #define CODA_REQ_READ   0x2
 #define CODA_REQ_WRITE  0x4

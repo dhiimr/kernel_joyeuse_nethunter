@@ -391,6 +391,14 @@ int cmtp_add_connection(struct cmtp_connadd_req *req, struct socket *sock)
 	if (!(session->flags & BIT(CMTP_LOOPBACK))) {
 		err = cmtp_attach_device(session);
 		if (err < 0) {
+<<<<<<< HEAD
+=======
+			/* Caller will call fput in case of failure, and so
+			 * will cmtp_session kthread.
+			 */
+			get_file(session->sock->file);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			atomic_inc(&session->terminate);
 			wake_up_interruptible(sk_sleep(session->sock->sk));
 			up_write(&cmtp_session_sem);
@@ -494,9 +502,13 @@ static int __init cmtp_init(void)
 {
 	BT_INFO("CMTP (CAPI Emulation) ver %s", VERSION);
 
+<<<<<<< HEAD
 	cmtp_init_sockets();
 
 	return 0;
+=======
+	return cmtp_init_sockets();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void __exit cmtp_exit(void)

@@ -1464,6 +1464,11 @@ static __init void da850_evm_init(void)
 	if (ret)
 		pr_warn("%s: dsp/rproc registration failed: %d\n",
 			__func__, ret);
+<<<<<<< HEAD
+=======
+
+	regulator_has_full_constraints();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #ifdef CONFIG_SERIAL_8250_CONSOLE

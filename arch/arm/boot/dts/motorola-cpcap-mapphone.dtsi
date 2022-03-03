@@ -16,8 +16,15 @@
 		#interrupt-cells = <2>;
 		#address-cells = <1>;
 		#size-cells = <0>;
+<<<<<<< HEAD
 		spi-max-frequency = <3000000>;
 		spi-cs-high;
+=======
+		spi-max-frequency = <9600000>;
+		spi-cs-high;
+		spi-cpol;
+		spi-cpha;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		cpcap_adc: adc {
 			compatible = "motorola,mapphone-cpcap-adc";

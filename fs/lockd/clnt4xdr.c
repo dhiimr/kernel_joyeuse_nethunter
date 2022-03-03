@@ -128,6 +128,7 @@ static void encode_netobj(struct xdr_stream *xdr,
 static int decode_netobj(struct xdr_stream *xdr,
 			 struct xdr_netobj *obj)
 {
+<<<<<<< HEAD
 	u32 length;
 	__be32 *p;
 
@@ -146,6 +147,16 @@ out_size:
 out_overflow:
 	print_overflow_msg(__func__, xdr);
 	return -EIO;
+=======
+	ssize_t ret;
+
+	ret = xdr_stream_decode_opaque_inline(xdr, (void *)&obj->data,
+						XDR_MAX_NETOBJ);
+	if (unlikely(ret < 0))
+		return -EIO;
+	obj->len = ret;
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*

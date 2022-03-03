@@ -150,6 +150,7 @@ static const struct of_device_id usb_xhci_of_match[] = {
 MODULE_DEVICE_TABLE(of, usb_xhci_of_match);
 #endif
 
+<<<<<<< HEAD
 static ssize_t config_imod_store(struct device *pdev,
 		struct device_attribute *attr, const char *buff, size_t size)
 {
@@ -203,6 +204,8 @@ static ssize_t config_imod_show(struct device *pdev,
 
 static DEVICE_ATTR(config_imod, 0644, config_imod_show, config_imod_store);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int xhci_plat_probe(struct platform_device *pdev)
 {
 	const struct of_device_id *match;
@@ -214,8 +217,11 @@ static int xhci_plat_probe(struct platform_device *pdev)
 	struct clk              *clk;
 	int			ret;
 	int			irq;
+<<<<<<< HEAD
 	u32			temp, imod;
 	unsigned long		flags;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (usb_disabled())
 		return -ENODEV;
@@ -246,6 +252,7 @@ static int xhci_plat_probe(struct platform_device *pdev)
 	if (!sysdev)
 		sysdev = &pdev->dev;
 
+<<<<<<< HEAD
 	/*
 	 * If sysdev dev is having parent i.e. "linux,sysdev_is_parent" is true,
 	 * then use sysdev->parent device.
@@ -254,6 +261,8 @@ static int xhci_plat_probe(struct platform_device *pdev)
 		device_property_read_bool(sysdev, "linux,sysdev_is_parent"))
 		sysdev = sysdev->parent;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Try to set 64-bit DMA first */
 	if (WARN_ON(!sysdev->dma_mask))
 		/* Platform did not initialize dma_mask */
@@ -269,10 +278,23 @@ static int xhci_plat_probe(struct platform_device *pdev)
 			return ret;
 	}
 
+<<<<<<< HEAD
 	hcd = __usb_create_hcd(driver, sysdev, &pdev->dev,
 			       dev_name(&pdev->dev), NULL);
 	if (!hcd)
 		return -ENOMEM;
+=======
+	pm_runtime_set_active(&pdev->dev);
+	pm_runtime_enable(&pdev->dev);
+	pm_runtime_get_noresume(&pdev->dev);
+
+	hcd = __usb_create_hcd(driver, sysdev, &pdev->dev,
+			       dev_name(&pdev->dev), NULL);
+	if (!hcd) {
+		ret = -ENOMEM;
+		goto disable_runtime;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	hcd->regs = devm_ioremap_resource(&pdev->dev, res);
@@ -298,6 +320,7 @@ static int xhci_plat_probe(struct platform_device *pdev)
 		goto put_hcd;
 	}
 
+<<<<<<< HEAD
 	if (pdev->dev.parent)
 		pm_runtime_resume(pdev->dev.parent);
 
@@ -307,6 +330,8 @@ static int xhci_plat_probe(struct platform_device *pdev)
 	pm_runtime_enable(&pdev->dev);
 	pm_runtime_get_sync(&pdev->dev);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	xhci = hcd_to_xhci(hcd);
 	match = of_match_node(usb_xhci_of_match, pdev->dev.of_node);
 	if (match) {
@@ -329,12 +354,17 @@ static int xhci_plat_probe(struct platform_device *pdev)
 		goto disable_clk;
 	}
 
+<<<<<<< HEAD
 	if (device_property_read_bool(&pdev->dev, "usb3-lpm-capable"))
+=======
+	if (device_property_read_bool(sysdev, "usb3-lpm-capable"))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		xhci->quirks |= XHCI_LPM_SUPPORT;
 
 	if (device_property_read_bool(&pdev->dev, "quirk-broken-port-ped"))
 		xhci->quirks |= XHCI_BROKEN_PORT_PED;
 
+<<<<<<< HEAD
 	if (!device_property_read_bool(&pdev->dev,
 					"host-poweroff-in-pm-suspend")) {
 		hcd_to_bus(hcd)->skip_resume = true;
@@ -347,6 +377,8 @@ static int xhci_plat_probe(struct platform_device *pdev)
 	if (device_property_read_u32(&pdev->dev, "usb-core-id", &xhci->core_id))
 		xhci->core_id = -EINVAL;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hcd->usb_phy = devm_usb_get_phy_by_phandle(sysdev, "usb-phy", 0);
 	if (IS_ERR(hcd->usb_phy)) {
 		ret = PTR_ERR(hcd->usb_phy);
@@ -359,6 +391,7 @@ static int xhci_plat_probe(struct platform_device *pdev)
 			goto put_usb3_hcd;
 	}
 
+<<<<<<< HEAD
 	hcd->usb3_phy = devm_usb_get_phy_by_phandle(pdev->dev.parent, "usb-phy",
 			1);
 	if (IS_ERR(hcd->usb3_phy)) {
@@ -368,6 +401,8 @@ static int xhci_plat_probe(struct platform_device *pdev)
 		hcd->usb3_phy = NULL;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = usb_add_hcd(hcd, irq, IRQF_SHARED);
 	if (ret)
 		goto disable_usb_phy;
@@ -379,6 +414,7 @@ static int xhci_plat_probe(struct platform_device *pdev)
 	if (ret)
 		goto dealloc_usb2_hcd;
 
+<<<<<<< HEAD
 	/* override imod interval if specified */
 	if (imod) {
 		imod &= ER_IRQ_INTERVAL_MASK;
@@ -400,6 +436,16 @@ static int xhci_plat_probe(struct platform_device *pdev)
 
 	pm_runtime_mark_last_busy(&pdev->dev);
 	pm_runtime_put_autosuspend(&pdev->dev);
+=======
+	device_enable_async_suspend(&pdev->dev);
+	pm_runtime_put_noidle(&pdev->dev);
+
+	/*
+	 * Prevent runtime pm from being on as default, users should enable
+	 * runtime pm using power/control in sysfs.
+	 */
+	pm_runtime_forbid(&pdev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 
@@ -420,6 +466,13 @@ disable_clk:
 put_hcd:
 	usb_put_hcd(hcd);
 
+<<<<<<< HEAD
+=======
+disable_runtime:
+	pm_runtime_put_noidle(&pdev->dev);
+	pm_runtime_disable(&pdev->dev);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -430,6 +483,7 @@ static int xhci_plat_remove(struct platform_device *dev)
 	struct clk *clk = xhci->clk;
 	struct usb_hcd *shared_hcd = xhci->shared_hcd;
 
+<<<<<<< HEAD
 	xhci->xhc_state |= XHCI_STATE_REMOVING;
 
 	device_remove_file(&dev->dev, &dev_attr_config_imod);
@@ -438,18 +492,35 @@ static int xhci_plat_remove(struct platform_device *dev)
 
 	usb_remove_hcd(hcd);
 	xhci->shared_hcd = NULL;
+=======
+	pm_runtime_get_sync(&dev->dev);
+	xhci->xhc_state |= XHCI_STATE_REMOVING;
+
+	usb_remove_hcd(shared_hcd);
+	xhci->shared_hcd = NULL;
+	usb_phy_shutdown(hcd->usb_phy);
+
+	usb_remove_hcd(hcd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	usb_put_hcd(shared_hcd);
 
 	if (!IS_ERR(clk))
 		clk_disable_unprepare(clk);
 	usb_put_hcd(hcd);
 
+<<<<<<< HEAD
 	pm_runtime_set_suspended(&dev->dev);
 	pm_runtime_disable(&dev->dev);
+=======
+	pm_runtime_disable(&dev->dev);
+	pm_runtime_put_noidle(&dev->dev);
+	pm_runtime_set_suspended(&dev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM_SLEEP
 static int xhci_plat_suspend(struct device *dev)
 {
@@ -481,10 +552,35 @@ static int xhci_plat_resume(struct device *dev)
 
 	dev_dbg(dev, "xhci-plat PM resume\n");
 
+=======
+static int __maybe_unused xhci_plat_suspend(struct device *dev)
+{
+	struct usb_hcd	*hcd = dev_get_drvdata(dev);
+	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
+
+	/*
+	 * xhci_suspend() needs `do_wakeup` to know whether host is allowed
+	 * to do wakeup during suspend. Since xhci_plat_suspend is currently
+	 * only designed for system suspend, device_may_wakeup() is enough
+	 * to dertermine whether host is allowed to do wakeup. Need to
+	 * reconsider this when xhci_plat_suspend enlarges its scope, e.g.,
+	 * also applies to runtime suspend.
+	 */
+	return xhci_suspend(xhci, device_may_wakeup(dev));
+}
+
+static int __maybe_unused xhci_plat_resume(struct device *dev)
+{
+	struct usb_hcd	*hcd = dev_get_drvdata(dev);
+	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
+	int ret;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = xhci_priv_resume_quirk(hcd);
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	/* resume from hibernation/power-collapse */
 	ret = xhci_resume(xhci, true);
 	pm_runtime_disable(dev);
@@ -510,6 +606,9 @@ static int __maybe_unused xhci_plat_runtime_idle(struct device *dev)
 	pm_runtime_mark_last_busy(dev);
 	pm_runtime_autosuspend(dev);
 	return -EBUSY;
+=======
+	return xhci_resume(xhci, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int __maybe_unused xhci_plat_runtime_suspend(struct device *dev)
@@ -517,11 +616,14 @@ static int __maybe_unused xhci_plat_runtime_suspend(struct device *dev)
 	struct usb_hcd  *hcd = dev_get_drvdata(dev);
 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
 
+<<<<<<< HEAD
 	if (!xhci)
 		return 0;
 
 	dev_dbg(dev, "xhci-plat runtime suspend\n");
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return xhci_suspend(xhci, true);
 }
 
@@ -529,6 +631,7 @@ static int __maybe_unused xhci_plat_runtime_resume(struct device *dev)
 {
 	struct usb_hcd  *hcd = dev_get_drvdata(dev);
 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+<<<<<<< HEAD
 	int ret;
 
 	if (!xhci)
@@ -544,6 +647,10 @@ static int __maybe_unused xhci_plat_runtime_resume(struct device *dev)
 	pm_runtime_mark_last_busy(dev);
 
 	return ret;
+=======
+
+	return xhci_resume(xhci, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct dev_pm_ops xhci_plat_pm_ops = {
@@ -551,7 +658,11 @@ static const struct dev_pm_ops xhci_plat_pm_ops = {
 
 	SET_RUNTIME_PM_OPS(xhci_plat_runtime_suspend,
 			   xhci_plat_runtime_resume,
+<<<<<<< HEAD
 			   xhci_plat_runtime_idle)
+=======
+			   NULL)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const struct acpi_device_id usb_xhci_acpi_match[] = {
@@ -564,6 +675,10 @@ MODULE_DEVICE_TABLE(acpi, usb_xhci_acpi_match);
 static struct platform_driver usb_xhci_driver = {
 	.probe	= xhci_plat_probe,
 	.remove	= xhci_plat_remove,
+<<<<<<< HEAD
+=======
+	.shutdown = usb_hcd_platform_shutdown,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.driver	= {
 		.name = "xhci-hcd",
 		.pm = &xhci_plat_pm_ops,

@@ -36,7 +36,11 @@ static int hibmc_connector_mode_valid(struct drm_connector *connector,
 static struct drm_encoder *
 hibmc_connector_best_encoder(struct drm_connector *connector)
 {
+<<<<<<< HEAD
 	return drm_encoder_find(connector->dev, NULL, connector->encoder_ids[0]);
+=======
+	return drm_encoder_find(connector->dev, connector->encoder_ids[0]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct drm_connector_helper_funcs

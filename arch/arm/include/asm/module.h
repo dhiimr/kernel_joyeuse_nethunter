@@ -19,8 +19,23 @@ enum {
 };
 #endif
 
+<<<<<<< HEAD
 struct mod_plt_sec {
 	struct elf32_shdr	*plt;
+=======
+#define PLT_ENT_STRIDE		L1_CACHE_BYTES
+#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
+#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
+
+struct plt_entries {
+	u32	ldr[PLT_ENT_COUNT];
+	u32	lit[PLT_ENT_COUNT];
+};
+
+struct mod_plt_sec {
+	struct elf32_shdr	*plt;
+	struct plt_entries	*plt_ent;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int			plt_count;
 };
 

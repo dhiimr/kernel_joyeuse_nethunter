@@ -74,10 +74,13 @@ static int ceph_set_page_dirty(struct page *page)
 	struct inode *inode;
 	struct ceph_inode_info *ci;
 	struct ceph_snap_context *snapc;
+<<<<<<< HEAD
 	int ret;
 
 	if (unlikely(!mapping))
 		return !TestSetPageDirty(page);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (PageDirty(page)) {
 		dout("%p set_page_dirty %p idx %lu -- already dirty\n",
@@ -123,11 +126,15 @@ static int ceph_set_page_dirty(struct page *page)
 	page->private = (unsigned long)snapc;
 	SetPagePrivate(page);
 
+<<<<<<< HEAD
 	ret = __set_page_dirty_nobuffers(page);
 	WARN_ON(!PageLocked(page));
 	WARN_ON(!page->mapping);
 
 	return ret;
+=======
+	return __set_page_dirty_nobuffers(page);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -870,10 +877,22 @@ retry:
 		max_pages = wsize >> PAGE_SHIFT;
 
 get_more_pages:
+<<<<<<< HEAD
 		pvec_pages = pagevec_lookup_range_nr_tag(&pvec, mapping, &index,
 						end, PAGECACHE_TAG_DIRTY,
 						max_pages - locked_pages);
 		dout("pagevec_lookup_range_tag got %d\n", pvec_pages);
+=======
+		pvec_pages = min_t(unsigned, PAGEVEC_SIZE,
+				   max_pages - locked_pages);
+		if (end - index < (u64)(pvec_pages - 1))
+			pvec_pages = (unsigned)(end - index) + 1;
+
+		pvec_pages = pagevec_lookup_tag(&pvec, mapping, &index,
+						PAGECACHE_TAG_DIRTY,
+						pvec_pages);
+		dout("pagevec_lookup_tag got %d\n", pvec_pages);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!pvec_pages && !locked_pages)
 			break;
 		for (i = 0; i < pvec_pages && locked_pages < max_pages; i++) {
@@ -891,6 +910,19 @@ get_more_pages:
 				unlock_page(page);
 				continue;
 			}
+<<<<<<< HEAD
+=======
+			if (page->index > end) {
+				dout("end of range %p\n", page);
+				/* can't be range_cyclic (1st pass) because
+				 * end == -1 in that case. */
+				stop = true;
+				if (ceph_wbc.head_snapc)
+					done = true;
+				unlock_page(page);
+				break;
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (strip_unit_end && (page->index > strip_unit_end)) {
 				dout("end of strip unit %p\n", page);
 				unlock_page(page);
@@ -1162,7 +1194,12 @@ release_pvec_pages:
 			index = 0;
 			while ((index <= end) &&
 			       (nr = pagevec_lookup_tag(&pvec, mapping, &index,
+<<<<<<< HEAD
 						PAGECACHE_TAG_WRITEBACK))) {
+=======
+							PAGECACHE_TAG_WRITEBACK,
+							PAGEVEC_SIZE))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				for (i = 0; i < nr; i++) {
 					page = pvec.pages[i];
 					if (page_snap_context(page) != snapc)
@@ -1427,7 +1464,11 @@ static int ceph_filemap_fault(struct vm_fault *vmf)
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	struct ceph_file_info *fi = vma->vm_file->private_data;
 	struct page *pinned_page = NULL;
+<<<<<<< HEAD
 	loff_t off = vmf->pgoff << PAGE_SHIFT;
+=======
+	loff_t off = (loff_t)vmf->pgoff << PAGE_SHIFT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int want, got, ret;
 	sigset_t oldset;
 

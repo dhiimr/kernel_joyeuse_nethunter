@@ -1425,6 +1425,10 @@ static struct avc_cache_stats *sel_avc_get_stat_idx(loff_t *idx)
 		*idx = cpu + 1;
 		return &per_cpu(avc_cache_stats, cpu);
 	}
+<<<<<<< HEAD
+=======
+	(*idx)++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return NULL;
 }
 

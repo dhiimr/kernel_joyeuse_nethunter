@@ -130,7 +130,11 @@ static inline int intel_svm_unbind_mm(struct device *dev, int pasid)
 	BUG();
 }
 
+<<<<<<< HEAD
 static int intel_svm_is_pasid_valid(struct device *dev, int pasid)
+=======
+static inline int intel_svm_is_pasid_valid(struct device *dev, int pasid)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return -EINVAL;
 }

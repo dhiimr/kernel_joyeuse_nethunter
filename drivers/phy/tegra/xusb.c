@@ -912,6 +912,10 @@ remove_pads:
 reset:
 	reset_control_assert(padctl->rst);
 remove:
+<<<<<<< HEAD
+=======
+	platform_set_drvdata(pdev, NULL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	soc->ops->remove(padctl);
 	return err;
 }

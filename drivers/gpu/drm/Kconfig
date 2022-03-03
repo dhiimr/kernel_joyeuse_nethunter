@@ -8,7 +8,10 @@ menuconfig DRM
 	tristate "Direct Rendering Manager (XFree86 4.1.0 and higher DRI support)"
 	depends on (AGP || AGP=n) && !EMULATED_CMPXCHG && HAS_DMA
 	select HDMI
+<<<<<<< HEAD
 	select FB
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select FB_CMDLINE
 	select I2C
 	select I2C_ALGOBIT
@@ -92,7 +95,11 @@ config DRM_FBDEV_EMULATION
 	depends on DRM
 	select DRM_KMS_HELPER
 	select DRM_KMS_FB_HELPER
+<<<<<<< HEAD
 	default n
+=======
+	default y
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  Choose this option if you have a need for the legacy fbdev
 	  support. Note that this support also provides the linux console
@@ -157,6 +164,10 @@ source "drivers/gpu/drm/arm/Kconfig"
 config DRM_RADEON
 	tristate "ATI Radeon"
 	depends on DRM && PCI && MMU
+<<<<<<< HEAD
+=======
+	depends on AGP || !AGP
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select FW_LOADER
         select DRM_KMS_HELPER
         select DRM_TTM
@@ -243,10 +254,13 @@ source "drivers/gpu/drm/virtio/Kconfig"
 
 source "drivers/gpu/drm/msm/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/gpu/drm/msm-hyp/Kconfig"
 
 source "drivers/gpu/drm/msm-lease/Kconfig"
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 source "drivers/gpu/drm/fsl-dcu/Kconfig"
 
 source "drivers/gpu/drm/tegra/Kconfig"

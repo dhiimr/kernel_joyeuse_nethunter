@@ -43,8 +43,13 @@ struct rsc {
 };
 
 struct rsc_ops {
+<<<<<<< HEAD
 	int (*master)(struct rsc *rsc);	/* Move to master resource */
 	int (*next_conj)(struct rsc *rsc); /* Move to next conjugate resource */
+=======
+	void (*master)(struct rsc *rsc); /* Move to master resource */
+	void (*next_conj)(struct rsc *rsc); /* Move to next conjugate resource */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int (*index)(const struct rsc *rsc); /* Return the index of resource */
 	/* Return the output slot number */
 	int (*output_slot)(const struct rsc *rsc);

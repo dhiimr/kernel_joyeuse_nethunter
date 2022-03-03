@@ -845,9 +845,15 @@ static int gelic_card_kick_txdma(struct gelic_card *card,
  * @skb: packet to send out
  * @netdev: interface device structure
  *
+<<<<<<< HEAD
  * returns 0 on success, <0 on failure
  */
 int gelic_net_xmit(struct sk_buff *skb, struct net_device *netdev)
+=======
+ * returns NETDEV_TX_OK on success, NETDEV_TX_BUSY on failure
+ */
+netdev_tx_t gelic_net_xmit(struct sk_buff *skb, struct net_device *netdev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct gelic_card *card = netdev_card(netdev);
 	struct gelic_descr *descr;

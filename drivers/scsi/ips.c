@@ -3497,6 +3497,10 @@ ips_send_cmd(ips_ha_t * ha, ips_scb_t * scb)
 
 		case START_STOP:
 			scb->scsi_cmd->result = DID_OK << 16;
+<<<<<<< HEAD
+=======
+			break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		case TEST_UNIT_READY:
 		case INQUIRY:

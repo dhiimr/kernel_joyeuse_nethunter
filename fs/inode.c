@@ -135,6 +135,10 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
 	inode->i_sb = sb;
 	inode->i_blkbits = sb->s_blocksize_bits;
 	inode->i_flags = 0;
+<<<<<<< HEAD
+=======
+	atomic64_set(&inode->i_sequence, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	atomic_set(&inode->i_count, 1);
 	inode->i_op = &empty_iops;
 	inode->i_fop = &no_open_fops;
@@ -656,6 +660,10 @@ int invalidate_inodes(struct super_block *sb, bool kill_dirty)
 	struct inode *inode, *next;
 	LIST_HEAD(dispose);
 
+<<<<<<< HEAD
+=======
+again:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock(&sb->s_inode_list_lock);
 	list_for_each_entry_safe(inode, next, &sb->s_inodes, i_sb_list) {
 		spin_lock(&inode->i_lock);
@@ -678,6 +686,15 @@ int invalidate_inodes(struct super_block *sb, bool kill_dirty)
 		inode_lru_list_del(inode);
 		spin_unlock(&inode->i_lock);
 		list_add(&inode->i_lru, &dispose);
+<<<<<<< HEAD
+=======
+		if (need_resched()) {
+			spin_unlock(&sb->s_inode_list_lock);
+			cond_resched();
+			dispose_list(&dispose);
+			goto again;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	spin_unlock(&sb->s_inode_list_lock);
 
@@ -1794,7 +1811,11 @@ int dentry_needs_remove_privs(struct dentry *dentry)
 	return mask;
 }
 
+<<<<<<< HEAD
 static int __remove_privs(struct vfsmount *mnt, struct dentry *dentry, int kill)
+=======
+static int __remove_privs(struct dentry *dentry, int kill)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct iattr newattrs;
 
@@ -1803,7 +1824,11 @@ static int __remove_privs(struct vfsmount *mnt, struct dentry *dentry, int kill)
 	 * Note we call this on write, so notify_change will not
 	 * encounter any conflicting delegations:
 	 */
+<<<<<<< HEAD
 	return notify_change2(mnt, dentry, &newattrs, NULL);
+=======
+	return notify_change(dentry, &newattrs, NULL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -1817,15 +1842,29 @@ int file_remove_privs(struct file *file)
 	int kill;
 	int error = 0;
 
+<<<<<<< HEAD
 	/* Fast path for nothing security related */
 	if (IS_NOSEC(inode))
+=======
+	/*
+	 * Fast path for nothing security related.
+	 * As well for non-regular files, e.g. blkdev inodes.
+	 * For example, blkdev_write_iter() might get here
+	 * trying to remove privs which it is not allowed to.
+	 */
+	if (IS_NOSEC(inode) || !S_ISREG(inode->i_mode))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 
 	kill = dentry_needs_remove_privs(dentry);
 	if (kill < 0)
 		return kill;
 	if (kill)
+<<<<<<< HEAD
 		error = __remove_privs(file->f_path.mnt, dentry, kill);
+=======
+		error = __remove_privs(dentry, kill);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!error)
 		inode_has_no_xattr(inode);
 

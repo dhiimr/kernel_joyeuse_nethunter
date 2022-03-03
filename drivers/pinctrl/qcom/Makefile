@@ -12,13 +12,17 @@ obj-$(CONFIG_PINCTRL_MSM8X74)	+= pinctrl-msm8x74.o
 obj-$(CONFIG_PINCTRL_MSM8916)	+= pinctrl-msm8916.o
 obj-$(CONFIG_PINCTRL_MSM8994)   += pinctrl-msm8994.o
 obj-$(CONFIG_PINCTRL_MSM8996)   += pinctrl-msm8996.o
+<<<<<<< HEAD
 obj-$(CONFIG_PINCTRL_QCS405)	+= pinctrl-qcs405.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-$(CONFIG_PINCTRL_QDF2XXX)	+= pinctrl-qdf2xxx.o
 obj-$(CONFIG_PINCTRL_MDM9615)	+= pinctrl-mdm9615.o
 obj-$(CONFIG_PINCTRL_QCOM_SPMI_PMIC) += pinctrl-spmi-gpio.o
 obj-$(CONFIG_PINCTRL_QCOM_SPMI_PMIC) += pinctrl-spmi-mpp.o
 obj-$(CONFIG_PINCTRL_QCOM_SSBI_PMIC) += pinctrl-ssbi-gpio.o
 obj-$(CONFIG_PINCTRL_QCOM_SSBI_PMIC) += pinctrl-ssbi-mpp.o
+<<<<<<< HEAD
 obj-$(CONFIG_PINCTRL_SM8150) += pinctrl-sm8150.o
 obj-$(CONFIG_PINCTRL_SDMSHRIKE) += pinctrl-sdmshrike.o
 obj-$(CONFIG_PINCTRL_SM6150) += pinctrl-sm6150.o
@@ -27,3 +31,5 @@ obj-$(CONFIG_PINCTRL_TRINKET) += pinctrl-trinket.o
 obj-$(CONFIG_PINCTRL_SDXPRAIRIE) += pinctrl-sdxprairie.o
 obj-$(CONFIG_PINCTRL_SDMMAGPIE) += pinctrl-sdmmagpie.o
 obj-$(CONFIG_PINCTRL_SLPI) 	+= pinctrl-slpi.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

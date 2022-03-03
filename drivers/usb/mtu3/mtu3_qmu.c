@@ -372,7 +372,11 @@ static void qmu_tx_zlp_error_handler(struct mtu3 *mtu, u8 epnum)
 		return;
 	}
 
+<<<<<<< HEAD
 	dev_dbg(mtu->dev, "%s send ZLP for req=%p\n", __func__, mreq);
+=======
+	dev_dbg(mtu->dev, "%s send ZLP for req=%p\n", __func__, req);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mtu3_clrbits(mbase, MU3D_EP_TXCR0(mep->epnum), TX_DMAREQEN);
 

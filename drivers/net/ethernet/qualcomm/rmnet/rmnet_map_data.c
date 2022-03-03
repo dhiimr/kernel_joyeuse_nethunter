@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2013-2019, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2013-2017, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -14,6 +18,7 @@
  */
 
 #include <linux/netdevice.h>
+<<<<<<< HEAD
 #include <linux/ip.h>
 #include <linux/ipv6.h>
 #include <net/ip6_checksum.h>
@@ -287,27 +292,49 @@ rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
 }
 #endif
 
+=======
+#include "rmnet_config.h"
+#include "rmnet_map.h"
+#include "rmnet_private.h"
+
+#define RMNET_MAP_DEAGGR_SPACING  64
+#define RMNET_MAP_DEAGGR_HEADROOM (RMNET_MAP_DEAGGR_SPACING / 2)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Adds MAP header to front of skb->data
  * Padding is calculated and set appropriately in MAP header. Mux ID is
  * initialized to 0.
  */
 struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff *skb,
+<<<<<<< HEAD
 						  int hdrlen, int pad,
 						  struct rmnet_port *port)
+=======
+						  int hdrlen, int pad)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct rmnet_map_header *map_header;
 	u32 padding, map_datalen;
 	u8 *padbytes;
 
+<<<<<<< HEAD
+=======
+	if (skb_headroom(skb) < sizeof(struct rmnet_map_header))
+		return NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	map_datalen = skb->len - hdrlen;
 	map_header = (struct rmnet_map_header *)
 			skb_push(skb, sizeof(struct rmnet_map_header));
 	memset(map_header, 0, sizeof(struct rmnet_map_header));
 
+<<<<<<< HEAD
 	/* Set next_hdr bit for csum offload packets */
 	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5)
 		map_header->next_hdr = 1;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (pad == RMNET_MAP_NO_PAD_BYTES) {
 		map_header->pkt_len = htons(map_datalen);
 		return map_header;
@@ -337,17 +364,25 @@ done:
  * returned, indicating that there are no more packets to deaggregate. Caller
  * is responsible for freeing the original skb.
  */
+<<<<<<< HEAD
 struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb,
 				      struct rmnet_port *port)
 {
 	struct rmnet_map_header *maph;
 	struct sk_buff *skbn;
 	unsigned char *data = rmnet_map_data_ptr(skb), *next_hdr = NULL;
+=======
+struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb)
+{
+	struct rmnet_map_header *maph;
+	struct sk_buff *skbn;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 packet_len;
 
 	if (skb->len == 0)
 		return NULL;
 
+<<<<<<< HEAD
 	maph = (struct rmnet_map_header *)data;
 	packet_len = ntohs(maph->pkt_len) + sizeof(struct rmnet_map_header);
 
@@ -362,6 +397,11 @@ struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb,
 		}
 	}
 
+=======
+	maph = (struct rmnet_map_header *)skb->data;
+	packet_len = ntohs(maph->pkt_len) + sizeof(struct rmnet_map_header);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (((int)skb->len - (int)packet_len) < 0)
 		return NULL;
 
@@ -369,6 +409,7 @@ struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb,
 	if (ntohs(maph->pkt_len) == 0)
 		return NULL;
 
+<<<<<<< HEAD
 	if (next_hdr &&
 	    ((struct rmnet_map_v5_coal_header *)next_hdr)->header_type ==
 	     RMNET_MAP_HEADER_TYPE_COALESCING)
@@ -1586,3 +1627,17 @@ void rmnet_map_tx_qmap_cmd(struct sk_buff *qmap_skb)
 	dev_queue_xmit(qmap_skb);
 }
 EXPORT_SYMBOL(rmnet_map_tx_qmap_cmd);
+=======
+	skbn = alloc_skb(packet_len + RMNET_MAP_DEAGGR_SPACING, GFP_ATOMIC);
+	if (!skbn)
+		return NULL;
+
+	skbn->dev = skb->dev;
+	skb_reserve(skbn, RMNET_MAP_DEAGGR_HEADROOM);
+	skb_put(skbn, packet_len);
+	memcpy(skbn->data, skb->data, packet_len);
+	skb_pull(skb, packet_len);
+
+	return skbn;
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

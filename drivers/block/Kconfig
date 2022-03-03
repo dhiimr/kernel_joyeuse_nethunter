@@ -234,7 +234,11 @@ config BLK_DEV_LOOP_MIN_COUNT
 	  dynamically allocated with the /dev/loop-control interface.
 
 config BLK_DEV_CRYPTOLOOP
+<<<<<<< HEAD
 	tristate "Cryptoloop Support"
+=======
+	tristate "Cryptoloop Support (DEPRECATED)"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select CRYPTO
 	select CRYPTO_CBC
 	depends on BLK_DEV_LOOP
@@ -246,7 +250,11 @@ config BLK_DEV_CRYPTOLOOP
 	  WARNING: This device is not safe for journaled file systems like
 	  ext3 or Reiserfs. Please use the Device Mapper crypto module
 	  instead, which can be configured to be on-disk compatible with the
+<<<<<<< HEAD
 	  cryptoloop device.
+=======
+	  cryptoloop device.  cryptoloop support will be removed in Linux 5.16.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 source "drivers/block/drbd/Kconfig"
 
@@ -477,6 +485,10 @@ config BLK_DEV_RBD
 config BLK_DEV_RSXX
 	tristate "IBM Flash Adapter 900GB Full Height PCIe Device Driver"
 	depends on PCI
+<<<<<<< HEAD
+=======
+	select CRC32
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  Device driver for IBM's high speed PCIe SSD
 	  storage device: Flash Adapter 900GB Full Height.
@@ -485,6 +497,7 @@ config BLK_DEV_RSXX
 	  module will be called rsxx.
 
 endif # BLK_DEV
+<<<<<<< HEAD
 
 config VSERVICES_BLOCK_SERVER
 	tristate "Virtual Services block server"
@@ -505,3 +518,5 @@ config VSERVICES_BLOCK_CLIENT
 	  Select this option if you want support for client side Virtual
 	  Services block devices. The virtual block devices are typically
 	  named /dev/vblock0, /dev/vblock1, etc.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

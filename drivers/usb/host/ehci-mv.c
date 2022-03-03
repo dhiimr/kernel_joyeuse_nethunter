@@ -196,12 +196,19 @@ static int mv_ehci_probe(struct platform_device *pdev)
 	hcd->rsrc_len = resource_size(r);
 	hcd->regs = ehci_mv->op_regs;
 
+<<<<<<< HEAD
 	hcd->irq = platform_get_irq(pdev, 0);
 	if (!hcd->irq) {
 		dev_err(&pdev->dev, "Cannot get irq.");
 		retval = -ENODEV;
 		goto err_disable_clk;
 	}
+=======
+	retval = platform_get_irq(pdev, 0);
+	if (retval < 0)
+		goto err_disable_clk;
+	hcd->irq = retval;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ehci = hcd_to_ehci(hcd);
 	ehci->caps = (struct ehci_caps *) ehci_mv->cap_regs;

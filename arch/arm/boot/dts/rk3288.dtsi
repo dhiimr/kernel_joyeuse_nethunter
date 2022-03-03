@@ -213,14 +213,23 @@
 			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
 			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
 		clock-frequency = <24000000>;
+<<<<<<< HEAD
+=======
+		arm,no-tick-in-suspend;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	timer: timer@ff810000 {
 		compatible = "rockchip,rk3288-timer";
 		reg = <0x0 0xff810000 0x0 0x20>;
 		interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
+<<<<<<< HEAD
 		clocks = <&xin24m>, <&cru PCLK_TIMER>;
 		clock-names = "timer", "pclk";
+=======
+		clocks = <&cru PCLK_TIMER>, <&xin24m>;
+		clock-names = "pclk", "timer";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	display-subsystem {
@@ -744,7 +753,11 @@
 			 *	*_HDMI		HDMI
 			 *	*_MIPI_*	MIPI
 			 */
+<<<<<<< HEAD
 			pd_vio@RK3288_PD_VIO {
+=======
+			power-domain@RK3288_PD_VIO {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				reg = <RK3288_PD_VIO>;
 				clocks = <&cru ACLK_IEP>,
 					 <&cru ACLK_ISP>,
@@ -786,7 +799,11 @@
 			 * Note: The following 3 are HEVC(H.265) clocks,
 			 * and on the ACLK_HEVC_NIU (NOC).
 			 */
+<<<<<<< HEAD
 			pd_hevc@RK3288_PD_HEVC {
+=======
+			power-domain@RK3288_PD_HEVC {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				reg = <RK3288_PD_HEVC>;
 				clocks = <&cru ACLK_HEVC>,
 					 <&cru SCLK_HEVC_CABAC>,
@@ -800,7 +817,11 @@
 			 * (video endecoder & decoder) clocks that on the
 			 * ACLK_VCODEC_NIU and HCLK_VCODEC_NIU (NOC).
 			 */
+<<<<<<< HEAD
 			pd_video@RK3288_PD_VIDEO {
+=======
+			power-domain@RK3288_PD_VIDEO {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				reg = <RK3288_PD_VIDEO>;
 				clocks = <&cru ACLK_VCODEC>,
 					 <&cru HCLK_VCODEC>;
@@ -811,7 +832,11 @@
 			 * Note: ACLK_GPU is the GPU clock,
 			 * and on the ACLK_GPU_NIU (NOC).
 			 */
+<<<<<<< HEAD
 			pd_gpu@RK3288_PD_GPU {
+=======
+			power-domain@RK3288_PD_GPU {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				reg = <RK3288_PD_GPU>;
 				clocks = <&cru ACLK_GPU>;
 				pm_qos = <&qos_gpu_r>,
@@ -1452,7 +1477,11 @@
 			drive-strength = <12>;
 		};
 
+<<<<<<< HEAD
 		sleep {
+=======
+		suspend {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			global_pwroff: global-pwroff {
 				rockchip,pins = <0 0 RK_FUNC_1 &pcfg_pull_none>;
 			};

@@ -22,11 +22,21 @@
 
 #include <kvm/arm_psci.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/extable.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/kvm_asm.h>
 #include <asm/kvm_emulate.h>
 #include <asm/kvm_hyp.h>
 #include <asm/fpsimd.h>
 
+<<<<<<< HEAD
+=======
+extern struct exception_table_entry __start___kvm_ex_table;
+extern struct exception_table_entry __stop___kvm_ex_table;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static bool __hyp_text __fpsimd_enabled_nvhe(void)
 {
 	return !(read_sysreg(cptr_el2) & CPTR_EL2_TFP);
@@ -216,10 +226,17 @@ static bool __hyp_text __translate_far_to_hpfar(u64 far, u64 *hpfar)
 	 * saved the guest context yet, and we may return early...
 	 */
 	par = read_sysreg(par_el1);
+<<<<<<< HEAD
 	asm volatile("at s1e1r, %0" : : "r" (far));
 	isb();
 
 	tmp = read_sysreg(par_el1);
+=======
+	if (!__kvm_at("s1e1r", far))
+		tmp = read_sysreg(par_el1);
+	else
+		tmp = 1; /* back to the guest */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	write_sysreg(par, par_el1);
 
 	if (unlikely(tmp & 1))
@@ -405,6 +422,7 @@ again:
 
 	__set_host_arch_workaround_state(vcpu);
 
+<<<<<<< HEAD
 	if (cpus_have_const_cap(ARM64_HARDEN_BP_POST_GUEST_EXIT)) {
 		u32 midr = read_cpuid_id();
 
@@ -415,6 +433,8 @@ again:
 		}
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	fp_enabled = __fpsimd_enabled();
 
 	__sysreg_save_guest_state(guest_ctxt);
@@ -454,7 +474,11 @@ static void __hyp_text __hyp_call_panic_nvhe(u64 spsr, u64 elr, u64 par,
 	 * making sure it is a kernel address and not a PC-relative
 	 * reference.
 	 */
+<<<<<<< HEAD
 	asm volatile("ldr %0, =__hyp_panic_string" : "=r" (str_va));
+=======
+	asm volatile("ldr %0, =%1" : "=r" (str_va) : "S" (__hyp_panic_string));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	__hyp_do_panic(str_va,
 		       spsr,  elr,
@@ -496,3 +520,33 @@ void __hyp_text __noreturn hyp_panic(struct kvm_cpu_context *host_ctxt)
 
 	unreachable();
 }
+<<<<<<< HEAD
+=======
+
+asmlinkage void __hyp_text kvm_unexpected_el2_exception(void)
+{
+	unsigned long addr, fixup;
+	struct kvm_cpu_context *host_ctxt;
+	struct exception_table_entry *entry, *end;
+	unsigned long elr_el2 = read_sysreg(elr_el2);
+
+	entry = hyp_symbol_addr(__start___kvm_ex_table);
+	end = hyp_symbol_addr(__stop___kvm_ex_table);
+	host_ctxt = __hyp_this_cpu_ptr(kvm_host_cpu_state);
+
+	while (entry < end) {
+		addr = (unsigned long)&entry->insn + entry->insn;
+		fixup = (unsigned long)&entry->fixup + entry->fixup;
+
+		if (addr != elr_el2) {
+			entry++;
+			continue;
+		}
+
+		write_sysreg(fixup, elr_el2);
+		return;
+	}
+
+	hyp_panic(host_ctxt);
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

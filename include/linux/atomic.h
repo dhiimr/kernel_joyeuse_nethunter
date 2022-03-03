@@ -654,8 +654,11 @@ static inline int atomic_dec_if_positive(atomic_t *v)
 }
 #endif
 
+<<<<<<< HEAD
 #define atomic_cond_read_acquire(v, c)	smp_cond_load_acquire(&(v)->counter, (c))
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_GENERIC_ATOMIC64
 #include <asm-generic/atomic64.h>
 #endif
@@ -1075,8 +1078,11 @@ static inline long long atomic64_fetch_andnot_release(long long i, atomic64_t *v
 }
 #endif
 
+<<<<<<< HEAD
 #define atomic64_cond_read_acquire(v, c)	smp_cond_load_acquire(&(v)->counter, (c))
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm-generic/atomic-long.h>
 
 #endif /* _LINUX_ATOMIC_H */

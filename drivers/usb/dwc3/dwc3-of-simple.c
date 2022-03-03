@@ -28,13 +28,19 @@
 #include <linux/of.h>
 #include <linux/of_platform.h>
 #include <linux/pm_runtime.h>
+<<<<<<< HEAD
 #include <linux/regulator/consumer.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct dwc3_of_simple {
 	struct device		*dev;
 	struct clk		**clks;
 	int			num_clocks;
+<<<<<<< HEAD
 	struct regulator	*gdsc;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static int dwc3_of_simple_clk_init(struct dwc3_of_simple *simple, int count)
@@ -99,6 +105,7 @@ static int dwc3_of_simple_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, simple);
 	simple->dev = dev;
 
+<<<<<<< HEAD
 	simple->gdsc = devm_regulator_get(dev, "USB3_GDSC");
 	if (IS_ERR(simple->gdsc)) {
 		simple->gdsc = NULL;
@@ -110,6 +117,8 @@ static int dwc3_of_simple_probe(struct platform_device *pdev)
 		}
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = dwc3_of_simple_clk_init(simple, of_count_phandle_with_args(np,
 						"clocks", "#clock-cells"));
 	if (ret)
@@ -143,9 +152,12 @@ static int dwc3_of_simple_remove(struct platform_device *pdev)
 		clk_put(simple->clks[i]);
 	}
 
+<<<<<<< HEAD
 	if (simple->gdsc)
 		regulator_disable(simple->gdsc);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	of_platform_depopulate(dev);
 
 	pm_runtime_disable(dev);

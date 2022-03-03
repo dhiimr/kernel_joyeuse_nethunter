@@ -257,11 +257,16 @@ static int qxl_process_single_command(struct qxl_device *qdev,
 			apply_surf_reloc(qdev, &reloc_info[i]);
 	}
 
+<<<<<<< HEAD
 	ret = qxl_push_command_ring_release(qdev, release, cmd->type, true);
 	if (ret)
 		qxl_release_backoff_reserve_list(release);
 	else
 		qxl_release_fence_buffer_objects(release);
+=======
+	qxl_release_fence_buffer_objects(release);
+	ret = qxl_push_command_ring_release(qdev, release, cmd->type, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 out_free_bos:
 out_free_release:

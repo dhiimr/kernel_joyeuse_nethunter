@@ -40,8 +40,13 @@ SECTIONS
 #endif
 	_startcode_end = .;
 
+<<<<<<< HEAD
 	/* bootloader code and data starts behind area of extracted kernel */
 	. = (SZ_end - SZparisc_kernel_start + KERNEL_BINARY_TEXT_START);
+=======
+	/* bootloader code and data starts at least behind area of extracted kernel */
+	. = MAX(ABSOLUTE(.), (SZ_end - SZparisc_kernel_start + KERNEL_BINARY_TEXT_START));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* align on next page boundary */
 	. = ALIGN(4096);

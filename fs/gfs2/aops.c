@@ -280,6 +280,25 @@ static int gfs2_write_jdata_pagevec(struct address_space *mapping,
 	for(i = 0; i < nr_pages; i++) {
 		struct page *page = pvec->pages[i];
 
+<<<<<<< HEAD
+=======
+		/*
+		 * At this point, the page may be truncated or
+		 * invalidated (changing page->mapping to NULL), or
+		 * even swizzled back from swapper_space to tmpfs file
+		 * mapping. However, page->index will not change
+		 * because we have a reference on the page.
+		 */
+		if (page->index > end) {
+			/*
+			 * can't be range_cyclic (1st pass) because
+			 * end == -1 in that case.
+			 */
+			ret = 1;
+			break;
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		*done_index = page->index;
 
 		lock_page(page);
@@ -397,8 +416,13 @@ retry:
 		tag_pages_for_writeback(mapping, index, end);
 	done_index = index;
 	while (!done && (index <= end)) {
+<<<<<<< HEAD
 		nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index, end,
 				tag);
+=======
+		nr_pages = pagevec_lookup_tag(&pvec, mapping, &index, tag,
+			      min(end - index, (pgoff_t)PAGEVEC_SIZE-1) + 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (nr_pages == 0)
 			break;
 
@@ -507,7 +531,11 @@ static int stuffed_readpage(struct gfs2_inode *ip, struct page *page)
  *
  */
 
+<<<<<<< HEAD
 static int __gfs2_readpage(struct file *file, struct page *page)
+=======
+static int __gfs2_readpage(void *file, struct page *page)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct gfs2_inode *ip = GFS2_I(page->mapping->host);
 	struct gfs2_sbd *sdp = GFS2_SB(page->mapping->host);

@@ -297,12 +297,17 @@ static ssize_t kone_sysfs_write_settings(struct file *fp, struct kobject *kobj,
 	struct kone_device *kone = hid_get_drvdata(dev_get_drvdata(dev));
 	struct usb_device *usb_dev = interface_to_usbdev(to_usb_interface(dev));
 	int retval = 0, difference, old_profile;
+<<<<<<< HEAD
+=======
+	struct kone_settings *settings = (struct kone_settings *)buf;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* I need to get my data in one piece */
 	if (off != 0 || count != sizeof(struct kone_settings))
 		return -EINVAL;
 
 	mutex_lock(&kone->kone_lock);
+<<<<<<< HEAD
 	difference = memcmp(buf, &kone->settings, sizeof(struct kone_settings));
 	if (difference) {
 		retval = kone_set_settings(usb_dev,
@@ -314,14 +319,40 @@ static ssize_t kone_sysfs_write_settings(struct file *fp, struct kobject *kobj,
 
 		old_profile = kone->settings.startup_profile;
 		memcpy(&kone->settings, buf, sizeof(struct kone_settings));
+=======
+	difference = memcmp(settings, &kone->settings,
+			    sizeof(struct kone_settings));
+	if (difference) {
+		if (settings->startup_profile < 1 ||
+		    settings->startup_profile > 5) {
+			retval = -EINVAL;
+			goto unlock;
+		}
+
+		retval = kone_set_settings(usb_dev, settings);
+		if (retval)
+			goto unlock;
+
+		old_profile = kone->settings.startup_profile;
+		memcpy(&kone->settings, settings, sizeof(struct kone_settings));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		kone_profile_activated(kone, kone->settings.startup_profile);
 
 		if (kone->settings.startup_profile != old_profile)
 			kone_profile_report(kone, kone->settings.startup_profile);
 	}
+<<<<<<< HEAD
 	mutex_unlock(&kone->kone_lock);
 
+=======
+unlock:
+	mutex_unlock(&kone->kone_lock);
+
+	if (retval)
+		return retval;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return sizeof(struct kone_settings);
 }
 static BIN_ATTR(settings, 0660, kone_sysfs_read_settings,
@@ -743,6 +774,12 @@ static int kone_probe(struct hid_device *hdev, const struct hid_device_id *id)
 {
 	int retval;
 
+<<<<<<< HEAD
+=======
+	if (!hid_is_usb(hdev))
+		return -EINVAL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	retval = hid_parse(hdev);
 	if (retval) {
 		hid_err(hdev, "parse failed\n");

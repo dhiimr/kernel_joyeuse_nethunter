@@ -40,12 +40,20 @@ static DEFINE_RAW_SPINLOCK(minicache_lock);
  * instruction.  If your processor does not supply this, you have to write your
  * own copy_user_highpage that does the right thing.
  */
+<<<<<<< HEAD
 static void __naked
 mc_copy_user_page(void *from, void *to)
 {
 	asm volatile(
 	"stmfd	sp!, {r4, lr}			@ 2\n\
 	mov	r4, %2				@ 1\n\
+=======
+static void mc_copy_user_page(void *from, void *to)
+{
+	int tmp;
+
+	asm volatile ("\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ldmia	%0!, {r2, r3, ip, lr}		@ 4\n\
 1:	mcr	p15, 0, %1, c7, c6, 1		@ 1   invalidate D line\n\
 	stmia	%1!, {r2, r3, ip, lr}		@ 4\n\
@@ -55,6 +63,7 @@ mc_copy_user_page(void *from, void *to)
 	mcr	p15, 0, %1, c7, c6, 1		@ 1   invalidate D line\n\
 	stmia	%1!, {r2, r3, ip, lr}		@ 4\n\
 	ldmia	%0!, {r2, r3, ip, lr}		@ 4\n\
+<<<<<<< HEAD
 	subs	r4, r4, #1			@ 1\n\
 	stmia	%1!, {r2, r3, ip, lr}		@ 4\n\
 	ldmneia	%0!, {r2, r3, ip, lr}		@ 4\n\
@@ -62,6 +71,15 @@ mc_copy_user_page(void *from, void *to)
 	ldmfd	sp!, {r4, pc}			@ 3"
 	:
 	: "r" (from), "r" (to), "I" (PAGE_SIZE / 64));
+=======
+	subs	%2, %2, #1			@ 1\n\
+	stmia	%1!, {r2, r3, ip, lr}		@ 4\n\
+	ldmneia	%0!, {r2, r3, ip, lr}		@ 4\n\
+	bne	1b				@ "
+	: "+&r" (from), "+&r" (to), "=&r" (tmp)
+	: "2" (PAGE_SIZE / 64)
+	: "r2", "r3", "ip", "lr");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void v4_mc_copy_user_highpage(struct page *to, struct page *from,

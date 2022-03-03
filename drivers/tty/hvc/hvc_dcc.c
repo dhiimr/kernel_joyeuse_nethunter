@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010, 2014, 2017 The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010, 2014 The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -11,10 +15,13 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/kfifo.h>
 #include <linux/spinlock.h>
 #include <linux/moduleparam.h>
 #include <linux/console.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <asm/dcc.h>
 #include <asm/processor.h>
@@ -52,12 +59,15 @@ static int hvc_dcc_get_chars(uint32_t vt, char *buf, int count)
 	return i;
 }
 
+<<<<<<< HEAD
 /*
  * Check if the DCC is enabled.  If CONFIG_HVC_DCC_SERIALIZE_SMP is enabled,
  * then we assume then this function will be called first on core 0.  That
  * way, dcc_core0_available will be true only if it's available on core 0.
  */
 #ifndef CONFIG_HVC_DCC_SERIALIZE_SMP
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static bool hvc_dcc_check(void)
 {
 	unsigned long time = jiffies + (HZ / 10);
@@ -72,6 +82,7 @@ static bool hvc_dcc_check(void)
 
 	return false;
 }
+<<<<<<< HEAD
 #endif
 
 #ifdef CONFIG_HVC_DCC_SERIALIZE_SMP
@@ -231,14 +242,19 @@ static const struct hv_ops hvc_dcc_get_put_ops = {
 };
 
 #else
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static const struct hv_ops hvc_dcc_get_put_ops = {
 	.get_chars = hvc_dcc_get_chars,
 	.put_chars = hvc_dcc_put_chars,
 };
 
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int __init hvc_dcc_console_init(void)
 {
 	int ret;

@@ -1185,49 +1185,81 @@
 					usart0_clk: usart0_clk {
 						#clock-cells = <0>;
 						reg = <12>;
+<<<<<<< HEAD
 						atmel,clk-output-range = <0 66000000>;
+=======
+						atmel,clk-output-range = <0 83000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 
 					usart1_clk: usart1_clk {
 						#clock-cells = <0>;
 						reg = <13>;
+<<<<<<< HEAD
 						atmel,clk-output-range = <0 66000000>;
+=======
+						atmel,clk-output-range = <0 83000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 
 					usart2_clk: usart2_clk {
 						#clock-cells = <0>;
 						reg = <14>;
+<<<<<<< HEAD
 						atmel,clk-output-range = <0 66000000>;
+=======
+						atmel,clk-output-range = <0 83000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 
 					usart3_clk: usart3_clk {
 						#clock-cells = <0>;
 						reg = <15>;
+<<<<<<< HEAD
 						atmel,clk-output-range = <0 66000000>;
+=======
+						atmel,clk-output-range = <0 83000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 
 					uart0_clk: uart0_clk {
 						#clock-cells = <0>;
 						reg = <16>;
+<<<<<<< HEAD
 						atmel,clk-output-range = <0 66000000>;
+=======
+						atmel,clk-output-range = <0 83000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 
 					twi0_clk: twi0_clk {
 						reg = <18>;
 						#clock-cells = <0>;
+<<<<<<< HEAD
 						atmel,clk-output-range = <0 16625000>;
+=======
+						atmel,clk-output-range = <0 41500000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 
 					twi1_clk: twi1_clk {
 						#clock-cells = <0>;
 						reg = <19>;
+<<<<<<< HEAD
 						atmel,clk-output-range = <0 16625000>;
+=======
+						atmel,clk-output-range = <0 41500000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 
 					twi2_clk: twi2_clk {
 						#clock-cells = <0>;
 						reg = <20>;
+<<<<<<< HEAD
 						atmel,clk-output-range = <0 16625000>;
+=======
+						atmel,clk-output-range = <0 41500000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 
 					mci0_clk: mci0_clk {
@@ -1243,19 +1275,31 @@
 					spi0_clk: spi0_clk {
 						#clock-cells = <0>;
 						reg = <24>;
+<<<<<<< HEAD
 						atmel,clk-output-range = <0 133000000>;
+=======
+						atmel,clk-output-range = <0 166000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 
 					spi1_clk: spi1_clk {
 						#clock-cells = <0>;
 						reg = <25>;
+<<<<<<< HEAD
 						atmel,clk-output-range = <0 133000000>;
+=======
+						atmel,clk-output-range = <0 166000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 
 					tcb0_clk: tcb0_clk {
 						#clock-cells = <0>;
 						reg = <26>;
+<<<<<<< HEAD
 						atmel,clk-output-range = <0 133000000>;
+=======
+						atmel,clk-output-range = <0 166000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 
 					pwm_clk: pwm_clk {
@@ -1266,7 +1310,11 @@
 					adc_clk: adc_clk {
 						#clock-cells = <0>;
 						reg = <29>;
+<<<<<<< HEAD
 						atmel,clk-output-range = <0 66000000>;
+=======
+						atmel,clk-output-range = <0 83000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 
 					dma0_clk: dma0_clk {
@@ -1297,13 +1345,21 @@
 					ssc0_clk: ssc0_clk {
 						#clock-cells = <0>;
 						reg = <38>;
+<<<<<<< HEAD
 						atmel,clk-output-range = <0 66000000>;
+=======
+						atmel,clk-output-range = <0 83000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 
 					ssc1_clk: ssc1_clk {
 						#clock-cells = <0>;
 						reg = <39>;
+<<<<<<< HEAD
 						atmel,clk-output-range = <0 66000000>;
+=======
+						atmel,clk-output-range = <0 83000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 
 					sha_clk: sha_clk {

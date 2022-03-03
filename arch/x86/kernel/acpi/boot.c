@@ -1553,10 +1553,25 @@ void __init acpi_boot_table_init(void)
 	/*
 	 * Initialize the ACPI boot-time table parser.
 	 */
+<<<<<<< HEAD
 	if (acpi_table_init()) {
 		disable_acpi();
 		return;
 	}
+=======
+	if (acpi_locate_initial_tables())
+		disable_acpi();
+	else
+		acpi_reserve_initial_tables();
+}
+
+int __init early_acpi_boot_init(void)
+{
+	if (acpi_disabled)
+		return 1;
+
+	acpi_table_init_complete();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	acpi_table_parse(ACPI_SIG_BOOT, acpi_parse_sbf);
 
@@ -1569,6 +1584,7 @@ void __init acpi_boot_table_init(void)
 		} else {
 			printk(KERN_WARNING PREFIX "Disabling ACPI support\n");
 			disable_acpi();
+<<<<<<< HEAD
 			return;
 		}
 	}
@@ -1581,6 +1597,11 @@ int __init early_acpi_boot_init(void)
 	 */
 	if (acpi_disabled)
 		return 1;
+=======
+			return 1;
+		}
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Process the Multiple APIC Description Table (MADT), if present
@@ -1738,7 +1759,11 @@ int __acpi_acquire_global_lock(unsigned int *lock)
 		new = (((old & ~0x3) + 2) + ((old >> 1) & 0x1));
 		val = cmpxchg(lock, old, new);
 	} while (unlikely (val != old));
+<<<<<<< HEAD
 	return (new < 3) ? -1 : 0;
+=======
+	return ((new & 0x3) < 3) ? -1 : 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 int __acpi_release_global_lock(unsigned int *lock)

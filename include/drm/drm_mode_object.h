@@ -24,11 +24,17 @@
 #define __DRM_MODESET_H__
 
 #include <linux/kref.h>
+<<<<<<< HEAD
 #include <drm/drm_lease.h>
 struct drm_object_properties;
 struct drm_property;
 struct drm_device;
 struct drm_file;
+=======
+struct drm_object_properties;
+struct drm_property;
+struct drm_device;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**
  * struct drm_mode_object - base structure for modeset objects
@@ -60,7 +66,11 @@ struct drm_mode_object {
 	void (*free_cb)(struct kref *kref);
 };
 
+<<<<<<< HEAD
 #define DRM_OBJECT_MAX_PROPERTY 64
+=======
+#define DRM_OBJECT_MAX_PROPERTY 24
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * struct drm_object_properties - property tracking for &drm_mode_object
  */
@@ -115,7 +125,10 @@ struct drm_object_properties {
 	}
 
 struct drm_mode_object *drm_mode_object_find(struct drm_device *dev,
+<<<<<<< HEAD
 					     struct drm_file *file_priv,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					     uint32_t id, uint32_t type);
 void drm_mode_object_get(struct drm_mode_object *obj);
 void drm_mode_object_put(struct drm_mode_object *obj);
@@ -154,6 +167,9 @@ int drm_object_property_get_value(struct drm_mode_object *obj,
 void drm_object_attach_property(struct drm_mode_object *obj,
 				struct drm_property *property,
 				uint64_t init_val);
+<<<<<<< HEAD
 
 bool drm_mode_object_lease_required(uint32_t type);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif

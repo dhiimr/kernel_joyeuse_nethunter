@@ -119,7 +119,11 @@ nlm4_decode_lock(__be32 *p, struct nlm_lock *lock)
 
 	locks_init_lock(fl);
 	fl->fl_owner = current->files;
+<<<<<<< HEAD
 	fl->fl_pid   = current->tgid;
+=======
+	fl->fl_pid   = (pid_t)lock->svid;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	fl->fl_flags = FL_POSIX;
 	fl->fl_type  = F_RDLCK;		/* as good as anything else */
 	p = xdr_decode_hyper(p, &start);
@@ -266,7 +270,11 @@ nlm4svc_decode_shareargs(struct svc_rqst *rqstp, __be32 *p)
 	memset(lock, 0, sizeof(*lock));
 	locks_init_lock(&lock->fl);
 	lock->svid = ~(u32) 0;
+<<<<<<< HEAD
 	lock->fl.fl_pid = current->tgid;
+=======
+	lock->fl.fl_pid = (pid_t)lock->svid;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!(p = nlm4_decode_cookie(p, &argp->cookie))
 	 || !(p = xdr_decode_string_inplace(p, &lock->caller,

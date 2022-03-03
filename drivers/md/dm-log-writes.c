@@ -57,6 +57,10 @@
 
 #define WRITE_LOG_VERSION 1ULL
 #define WRITE_LOG_MAGIC 0x6a736677736872ULL
+<<<<<<< HEAD
+=======
+#define WRITE_LOG_SUPER_SECTOR 0
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * The disk format for this is braindead simple.
@@ -112,6 +116,10 @@ struct log_writes_c {
 	struct list_head logging_blocks;
 	wait_queue_head_t wait;
 	struct task_struct *log_kthread;
+<<<<<<< HEAD
+=======
+	struct completion super_done;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct pending_block {
@@ -177,6 +185,17 @@ static void log_end_io(struct bio *bio)
 	bio_put(bio);
 }
 
+<<<<<<< HEAD
+=======
+static void log_end_super(struct bio *bio)
+{
+	struct log_writes_c *lc = bio->bi_private;
+
+	complete(&lc->super_done);
+	log_end_io(bio);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Meant to be called if there is an error, it will free all the pages
  * associated with the block.
@@ -212,7 +231,12 @@ static int write_metadata(struct log_writes_c *lc, void *entry,
 	bio->bi_iter.bi_size = 0;
 	bio->bi_iter.bi_sector = sector;
 	bio_set_dev(bio, lc->logdev->bdev);
+<<<<<<< HEAD
 	bio->bi_end_io = log_end_io;
+=======
+	bio->bi_end_io = (sector == WRITE_LOG_SUPER_SECTOR) ?
+			  log_end_super : log_end_io;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bio->bi_private = lc;
 	bio_set_op_attrs(bio, REQ_OP_WRITE, 0);
 
@@ -334,11 +358,25 @@ static int log_super(struct log_writes_c *lc)
 	super.nr_entries = cpu_to_le64(lc->logged_entries);
 	super.sectorsize = cpu_to_le32(lc->sectorsize);
 
+<<<<<<< HEAD
 	if (write_metadata(lc, &super, sizeof(super), NULL, 0, 0)) {
+=======
+	if (write_metadata(lc, &super, sizeof(super), NULL, 0,
+			   WRITE_LOG_SUPER_SECTOR)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		DMERR("Couldn't write super");
 		return -1;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Super sector should be writen in-order, otherwise the
+	 * nr_entries could be rewritten incorrectly by an old bio.
+	 */
+	wait_for_completion_io(&lc->super_done);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -447,6 +485,10 @@ static int log_writes_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	INIT_LIST_HEAD(&lc->unflushed_blocks);
 	INIT_LIST_HEAD(&lc->logging_blocks);
 	init_waitqueue_head(&lc->wait);
+<<<<<<< HEAD
+=======
+	init_completion(&lc->super_done);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	atomic_set(&lc->io_blocks, 0);
 	atomic_set(&lc->pending_blocks, 0);
 

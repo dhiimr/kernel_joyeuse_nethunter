@@ -187,6 +187,7 @@ TRACE_EVENT(wil6210_rx,
 		  __entry->seq, __entry->type, __entry->subtype)
 );
 
+<<<<<<< HEAD
 TRACE_EVENT(wil6210_rx_status,
 	    TP_PROTO(struct wil6210_priv *wil, u8 use_compressed, u16 buff_id,
 		     void *msg),
@@ -221,6 +222,8 @@ TRACE_EVENT(wil6210_rx_status,
 		      __entry->seq, __entry->type, __entry->subtype)
 );
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 TRACE_EVENT(wil6210_tx,
 	TP_PROTO(u8 vring, u16 index, unsigned int len, u8 frags),
 	TP_ARGS(vring, index, len, frags),
@@ -260,6 +263,7 @@ TRACE_EVENT(wil6210_tx_done,
 		  __entry->err)
 );
 
+<<<<<<< HEAD
 TRACE_EVENT(wil6210_tx_status,
 	    TP_PROTO(struct wil_ring_tx_status *msg, u16 index,
 		     unsigned int len),
@@ -285,6 +289,8 @@ TRACE_EVENT(wil6210_tx_status,
 		      __entry->num_descs, __entry->status, __entry->mcs)
 );
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* WIL6210_TRACE_H || TRACE_HEADER_MULTI_READ*/
 
 #if defined(CONFIG_WIL6210_TRACING) && !defined(__CHECKER__)

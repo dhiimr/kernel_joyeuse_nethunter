@@ -7,7 +7,11 @@
 struct reset_controller_dev;
 
 /**
+<<<<<<< HEAD
  * struct reset_control_ops
+=======
+ * struct reset_control_ops - reset controller driver callbacks
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * @reset: for self-deasserting resets, does all necessary
  *         things to reset the device

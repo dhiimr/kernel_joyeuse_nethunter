@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2016-2019, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Copyright (C) 2014 Red Hat
  * Author: Rob Clark <robdclark@gmail.com>
  *
@@ -16,20 +19,27 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+<<<<<<< HEAD
 #include <linux/msm_drm_notify.h>
 #include <linux/notifier.h>
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "msm_drv.h"
 #include "msm_kms.h"
 #include "msm_gem.h"
 #include "msm_fence.h"
+<<<<<<< HEAD
 #include "sde_trace.h"
 
 #define MULTIPLE_CONN_DETECTED(x) (x > 1)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct msm_commit {
 	struct drm_device *dev;
 	struct drm_atomic_state *state;
+<<<<<<< HEAD
 	uint32_t crtc_mask;
 	uint32_t plane_mask;
 	bool nonblock;
@@ -78,23 +88,41 @@ static int msm_drm_notifier_call_chain(unsigned long val, void *v)
 	return blocking_notifier_call_chain(&msm_drm_notifier_list, val,
 					    v);
 }
+=======
+	struct work_struct work;
+	uint32_t crtc_mask;
+};
+
+static void commit_worker(struct work_struct *work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* block until specified crtcs are no longer pending update, and
  * atomically mark them as pending update
  */
+<<<<<<< HEAD
 static int start_atomic(struct msm_drm_private *priv, uint32_t crtc_mask,
 			uint32_t plane_mask)
+=======
+static int start_atomic(struct msm_drm_private *priv, uint32_t crtc_mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int ret;
 
 	spin_lock(&priv->pending_crtcs_event.lock);
 	ret = wait_event_interruptible_locked(priv->pending_crtcs_event,
+<<<<<<< HEAD
 			!(priv->pending_crtcs & crtc_mask) &&
 			!(priv->pending_planes & plane_mask));
 	if (ret == 0) {
 		DBG("start: %08x", crtc_mask);
 		priv->pending_crtcs |= crtc_mask;
 		priv->pending_planes |= plane_mask;
+=======
+			!(priv->pending_crtcs & crtc_mask));
+	if (ret == 0) {
+		DBG("start: %08x", crtc_mask);
+		priv->pending_crtcs |= crtc_mask;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	spin_unlock(&priv->pending_crtcs_event.lock);
 
@@ -103,17 +131,25 @@ static int start_atomic(struct msm_drm_private *priv, uint32_t crtc_mask,
 
 /* clear specified crtcs (no longer pending update)
  */
+<<<<<<< HEAD
 static void end_atomic(struct msm_drm_private *priv, uint32_t crtc_mask,
 			uint32_t plane_mask)
+=======
+static void end_atomic(struct msm_drm_private *priv, uint32_t crtc_mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	spin_lock(&priv->pending_crtcs_event.lock);
 	DBG("end: %08x", crtc_mask);
 	priv->pending_crtcs &= ~crtc_mask;
+<<<<<<< HEAD
 	priv->pending_planes &= ~plane_mask;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	wake_up_all_locked(&priv->pending_crtcs_event);
 	spin_unlock(&priv->pending_crtcs_event.lock);
 }
 
+<<<<<<< HEAD
 static void commit_destroy(struct msm_commit *c)
 {
 	end_atomic(c->dev->dev_private, c->crtc_mask, c->plane_mask);
@@ -188,6 +224,30 @@ static inline bool _msm_seamless_for_conn(struct drm_connector *connector,
 
 static void msm_atomic_wait_for_commit_done(
 		struct drm_device *dev,
+=======
+static struct msm_commit *commit_init(struct drm_atomic_state *state)
+{
+	struct msm_commit *c = kzalloc(sizeof(*c), GFP_KERNEL);
+
+	if (!c)
+		return NULL;
+
+	c->dev = state->dev;
+	c->state = state;
+
+	INIT_WORK(&c->work, commit_worker);
+
+	return c;
+}
+
+static void commit_destroy(struct msm_commit *c)
+{
+	end_atomic(c->dev->dev_private, c->crtc_mask);
+	kfree(c);
+}
+
+static void msm_atomic_wait_for_commit_done(struct drm_device *dev,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct drm_atomic_state *old_state)
 {
 	struct drm_crtc *crtc;
@@ -209,6 +269,7 @@ static void msm_atomic_wait_for_commit_done(
 	}
 }
 
+<<<<<<< HEAD
 static void
 msm_disable_outputs(struct drm_device *dev, struct drm_atomic_state *old_state)
 {
@@ -567,6 +628,12 @@ static void msm_atomic_helper_commit_modeset_enables(struct drm_device *dev,
  * nothing can fail short of armageddon.
  */
 static void complete_commit(struct msm_commit *c)
+=======
+/* The (potentially) asynchronous part of the commit.  At this point
+ * nothing can fail short of armageddon.
+ */
+static void complete_commit(struct msm_commit *c, bool async)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct drm_atomic_state *state = c->state;
 	struct drm_device *dev = state->dev;
@@ -577,11 +644,19 @@ static void complete_commit(struct msm_commit *c)
 
 	kms->funcs->prepare_commit(kms, state);
 
+<<<<<<< HEAD
 	msm_atomic_helper_commit_modeset_disables(dev, state);
 
 	drm_atomic_helper_commit_planes(dev, state, 0);
 
 	msm_atomic_helper_commit_modeset_enables(dev, state);
+=======
+	drm_atomic_helper_commit_modeset_disables(dev, state);
+
+	drm_atomic_helper_commit_planes(dev, state, 0);
+
+	drm_atomic_helper_commit_modeset_enables(dev, state);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* NOTE: _wait_for_vblanks() only waits for vblank on
 	 * enabled CRTCs.  So we end up faulting when disabling
@@ -607,6 +682,7 @@ static void complete_commit(struct msm_commit *c)
 	commit_destroy(c);
 }
 
+<<<<<<< HEAD
 static void _msm_drm_commit_work_cb(struct kthread_work *work)
 {
 	struct msm_commit *commit =  NULL;
@@ -698,6 +774,40 @@ static void msm_atomic_commit_dispatch(struct drm_device *dev,
 	/* free nonblocking commits in this context, after processing */
 	if (!nonblock)
 		kfree(commit);
+=======
+static void commit_worker(struct work_struct *work)
+{
+	complete_commit(container_of(work, struct msm_commit, work), true);
+}
+
+/*
+ * this func is identical to the drm_atomic_helper_check, but we keep this
+ * because we might eventually need to have a more finegrained check
+ * sequence without using the atomic helpers.
+ *
+ * In the past, we first called drm_atomic_helper_check_planes, and then
+ * drm_atomic_helper_check_modeset. We needed this because the MDP5 plane's
+ * ->atomic_check could update ->mode_changed for pixel format changes.
+ * This, however isn't needed now because if there is a pixel format change,
+ * we just assign a new hwpipe for it with a new SMP allocation. We might
+ * eventually hit a condition where we would need to do a full modeset if
+ * we run out of planes. There, we'd probably need to set mode_changed.
+ */
+int msm_atomic_check(struct drm_device *dev,
+		     struct drm_atomic_state *state)
+{
+	int ret;
+
+	ret = drm_atomic_helper_check_modeset(dev, state);
+	if (ret)
+		return ret;
+
+	ret = drm_atomic_helper_check_planes(dev, state);
+	if (ret)
+		return ret;
+
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -723,6 +833,7 @@ int msm_atomic_commit(struct drm_device *dev,
 	struct drm_plane_state *old_plane_state, *new_plane_state;
 	int i, ret;
 
+<<<<<<< HEAD
 	if (!priv || priv->shutdown_in_progress) {
 		DRM_ERROR("priv is null or shutdwon is in-progress\n");
 		return -EINVAL;
@@ -736,6 +847,13 @@ int msm_atomic_commit(struct drm_device *dev,
 	}
 
 	c = commit_init(state, nonblock);
+=======
+	ret = drm_atomic_helper_prepare_planes(dev, state);
+	if (ret)
+		return ret;
+
+	c = commit_init(state);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!c) {
 		ret = -ENOMEM;
 		goto error;
@@ -758,14 +876,21 @@ int msm_atomic_commit(struct drm_device *dev,
 
 			drm_atomic_set_fence_for_plane(new_plane_state, fence);
 		}
+<<<<<<< HEAD
 		c->plane_mask |= (1 << drm_plane_index(plane));
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/*
 	 * Wait for pending updates on any of the same crtc's and then
 	 * mark our set of crtc's as busy:
 	 */
+<<<<<<< HEAD
 	ret = start_atomic(dev->dev_private, c->crtc_mask, c->plane_mask);
+=======
+	ret = start_atomic(dev->dev_private, c->crtc_mask);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		goto err_free;
 
@@ -782,6 +907,7 @@ int msm_atomic_commit(struct drm_device *dev,
 		priv->kms->funcs->swap_state(priv->kms, state);
 
 	/*
+<<<<<<< HEAD
 	 * Provide the driver a chance to prepare for output fences. This is
 	 * done after the point of no return, but before asynchronous commits
 	 * are dispatched to work queues, so that the fence preparation is
@@ -791,6 +917,8 @@ int msm_atomic_commit(struct drm_device *dev,
 		priv->kms->funcs->prepare_fence(priv->kms, state);
 
 	/*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * Everything below can be run asynchronously without the need to grab
 	 * any modeset locks at all under one conditions: It must be guaranteed
 	 * that the asynchronous work has either been cancelled (if the driver
@@ -807,16 +935,29 @@ int msm_atomic_commit(struct drm_device *dev,
 	 */
 
 	drm_atomic_state_get(state);
+<<<<<<< HEAD
 	msm_atomic_commit_dispatch(dev, state, c);
 
 	SDE_ATRACE_END("atomic_commit");
+=======
+	if (nonblock) {
+		queue_work(priv->atomic_wq, &c->work);
+		return 0;
+	}
+
+	complete_commit(c, false);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 
 err_free:
 	kfree(c);
 error:
 	drm_atomic_helper_cleanup_planes(dev, state);
+<<<<<<< HEAD
 	SDE_ATRACE_END("atomic_commit");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 

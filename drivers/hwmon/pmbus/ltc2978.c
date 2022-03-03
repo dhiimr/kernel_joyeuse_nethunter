@@ -89,8 +89,13 @@ enum chips { ltc2974, ltc2975, ltc2977, ltc2978, ltc2980, ltc3880, ltc3882,
 
 #define LTC_POLL_TIMEOUT		100	/* in milli-seconds */
 
+<<<<<<< HEAD
 #define LTC_NOT_BUSY			BIT(5)
 #define LTC_NOT_PENDING			BIT(4)
+=======
+#define LTC_NOT_BUSY			BIT(6)
+#define LTC_NOT_PENDING			BIT(5)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * LTC2978 clears peak data whenever the CLEAR_FAULTS command is executed, which

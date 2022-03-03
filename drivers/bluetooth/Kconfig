@@ -378,6 +378,7 @@ config BT_QCOMSMD
 	  Say Y here to compile support for HCI over Qualcomm SMD into the
 	  kernel or say M to compile as a module.
 
+<<<<<<< HEAD
 config MSM_BT_POWER
 	bool "MSM Bluetooth Power Control"
 	depends on ARCH_QCOM && RFKILL
@@ -409,4 +410,6 @@ config BTFM_SLIM_WCN3990
 	  It is designed to adapt any future BT/FM device to implement a specific
 	  chip initialization process and control.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endmenu

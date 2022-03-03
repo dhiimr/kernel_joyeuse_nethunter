@@ -719,6 +719,10 @@ static int st21nfca_hci_complete_target_discovered(struct nfc_hci_dev *hdev,
 							NFC_PROTO_FELICA_MASK;
 		} else {
 			kfree_skb(nfcid_skb);
+<<<<<<< HEAD
+=======
+			nfcid_skb = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/* P2P in type A */
 			r = nfc_hci_get_param(hdev, ST21NFCA_RF_READER_F_GATE,
 					ST21NFCA_RF_READER_F_NFCID1,

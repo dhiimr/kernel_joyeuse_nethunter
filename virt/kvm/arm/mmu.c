@@ -307,12 +307,15 @@ static void unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size)
 		next = stage2_pgd_addr_end(addr, end);
 		if (!stage2_pgd_none(*pgd))
 			unmap_stage2_puds(kvm, pgd, addr, next);
+<<<<<<< HEAD
 		/*
 		 * If the range is too large, release the kvm->mmu_lock
 		 * to prevent starvation and lockup detector warnings.
 		 */
 		if (next != end)
 			cond_resched_lock(&kvm->mmu_lock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} while (pgd++, addr = next, addr != end);
 }
 
@@ -375,7 +378,12 @@ static void stage2_flush_memslot(struct kvm *kvm,
 	pgd = kvm->arch.pgd + stage2_pgd_index(addr);
 	do {
 		next = stage2_pgd_addr_end(addr, end);
+<<<<<<< HEAD
 		stage2_flush_puds(kvm, pgd, addr, next);
+=======
+		if (!stage2_pgd_none(*pgd))
+			stage2_flush_puds(kvm, pgd, addr, next);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} while (pgd++, addr = next, addr != end);
 }
 
@@ -1068,8 +1076,19 @@ static bool transparent_hugepage_adjust(kvm_pfn_t *pfnp, phys_addr_t *ipap)
 {
 	kvm_pfn_t pfn = *pfnp;
 	gfn_t gfn = *ipap >> PAGE_SHIFT;
+<<<<<<< HEAD
 
 	if (PageTransCompoundMap(pfn_to_page(pfn))) {
+=======
+	struct page *page = pfn_to_page(pfn);
+
+	/*
+	 * PageTransCompoungMap() returns true for THP and
+	 * hugetlbfs. Make sure the adjustment is done only for THP
+	 * pages.
+	 */
+	if (!PageHuge(page) && PageTransCompoundMap(page)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		unsigned long mask;
 		/*
 		 * The address we faulted on is backed by a transparent huge
@@ -1729,7 +1748,12 @@ int kvm_test_age_hva(struct kvm *kvm, unsigned long hva)
 	if (!kvm->arch.pgd)
 		return 0;
 	trace_kvm_test_age_hva(hva);
+<<<<<<< HEAD
 	return handle_hva_to_gpa(kvm, hva, hva, kvm_test_age_hva_handler, NULL);
+=======
+	return handle_hva_to_gpa(kvm, hva, hva + PAGE_SIZE,
+				 kvm_test_age_hva_handler, NULL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void kvm_mmu_free_memory_caches(struct kvm_vcpu *vcpu)
@@ -1868,7 +1892,11 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
 	 * Prevent userspace from creating a memory region outside of the IPA
 	 * space addressable by the KVM guest IPA space.
 	 */
+<<<<<<< HEAD
 	if (memslot->base_gfn + memslot->npages >=
+=======
+	if (memslot->base_gfn + memslot->npages >
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    (KVM_PHYS_SIZE >> PAGE_SHIFT))
 		return -EFAULT;
 

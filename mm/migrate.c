@@ -239,7 +239,11 @@ static bool remove_migration_pte(struct page *page, struct vm_area_struct *vma,
 		 */
 		entry = pte_to_swp_entry(*pvmw.pte);
 		if (is_write_migration_entry(entry))
+<<<<<<< HEAD
 			pte = maybe_mkwrite(pte, vma->vm_flags);
+=======
+			pte = maybe_mkwrite(pte, vma);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (unlikely(is_zone_device_page(new))) {
 			if (is_device_private_page(new)) {
@@ -671,8 +675,11 @@ void migrate_page_states(struct page *newpage, struct page *page)
 		SetPageActive(newpage);
 	} else if (TestClearPageUnevictable(page))
 		SetPageUnevictable(newpage);
+<<<<<<< HEAD
 	if (PageWorkingset(page))
 		SetPageWorkingset(newpage);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (PageChecked(page))
 		SetPageChecked(newpage);
 	if (PageMappedToDisk(page))
@@ -1090,7 +1097,11 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
 		VM_BUG_ON_PAGE(PageAnon(page) && !PageKsm(page) && !anon_vma,
 				page);
 		try_to_unmap(page,
+<<<<<<< HEAD
 			TTU_MIGRATION|TTU_IGNORE_MLOCK|TTU_IGNORE_ACCESS, NULL);
+=======
+			TTU_MIGRATION|TTU_IGNORE_MLOCK|TTU_IGNORE_ACCESS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		page_was_mapped = 1;
 	}
 
@@ -1328,7 +1339,11 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
 
 	if (page_mapped(hpage)) {
 		try_to_unmap(hpage,
+<<<<<<< HEAD
 			TTU_MIGRATION|TTU_IGNORE_MLOCK|TTU_IGNORE_ACCESS, NULL);
+=======
+			TTU_MIGRATION|TTU_IGNORE_MLOCK|TTU_IGNORE_ACCESS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		page_was_mapped = 1;
 	}
 
@@ -1412,8 +1427,11 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
 	int swapwrite = current->flags & PF_SWAPWRITE;
 	int rc;
 
+<<<<<<< HEAD
 	trace_mm_migrate_pages_start(mode, reason);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!swapwrite)
 		current->flags |= PF_SWAPWRITE;
 
@@ -1966,7 +1984,11 @@ bool pmd_trans_migrating(pmd_t pmd)
  * node. Caller is expected to have an elevated reference count on
  * the page that will be dropped by this function before returning.
  */
+<<<<<<< HEAD
 int migrate_misplaced_page(struct page *page, struct vm_fault *vmf,
+=======
+int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			   int node)
 {
 	pg_data_t *pgdat = NODE_DATA(node);
@@ -1979,7 +2001,11 @@ int migrate_misplaced_page(struct page *page, struct vm_fault *vmf,
 	 * with execute permissions as they are probably shared libraries.
 	 */
 	if (page_mapcount(page) != 1 && page_is_file_cache(page) &&
+<<<<<<< HEAD
 	    (vmf->vma_flags & VM_EXEC))
+=======
+	    (vma->vm_flags & VM_EXEC))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out;
 
 	/*

@@ -251,7 +251,10 @@ static int dln2_adc_set_chan_period(struct dln2_adc *dln2,
 static int dln2_adc_read(struct dln2_adc *dln2, unsigned int channel)
 {
 	int ret, i;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = platform_get_drvdata(dln2->pdev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u16 conflict;
 	__le16 value;
 	int olen = sizeof(value);
@@ -260,6 +263,7 @@ static int dln2_adc_read(struct dln2_adc *dln2, unsigned int channel)
 		.chan = channel,
 	};
 
+<<<<<<< HEAD
 	ret = iio_device_claim_direct_mode(indio_dev);
 	if (ret < 0)
 		return ret;
@@ -267,6 +271,11 @@ static int dln2_adc_read(struct dln2_adc *dln2, unsigned int channel)
 	ret = dln2_adc_set_chan_enabled(dln2, channel, true);
 	if (ret < 0)
 		goto release_direct;
+=======
+	ret = dln2_adc_set_chan_enabled(dln2, channel, true);
+	if (ret < 0)
+		return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = dln2_adc_set_port_enabled(dln2, true, &conflict);
 	if (ret < 0) {
@@ -303,8 +312,11 @@ disable_port:
 	dln2_adc_set_port_enabled(dln2, false, NULL);
 disable_chan:
 	dln2_adc_set_chan_enabled(dln2, channel, false);
+<<<<<<< HEAD
 release_direct:
 	iio_device_release_direct_mode(indio_dev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }
@@ -340,10 +352,22 @@ static int dln2_adc_read_raw(struct iio_dev *indio_dev,
 
 	switch (mask) {
 	case IIO_CHAN_INFO_RAW:
+<<<<<<< HEAD
+=======
+		ret = iio_device_claim_direct_mode(indio_dev);
+		if (ret < 0)
+			return ret;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mutex_lock(&dln2->mutex);
 		ret = dln2_adc_read(dln2, chan->channel);
 		mutex_unlock(&dln2->mutex);
 
+<<<<<<< HEAD
+=======
+		iio_device_release_direct_mode(indio_dev);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (ret < 0)
 			return ret;
 
@@ -528,6 +552,13 @@ static int dln2_adc_triggered_buffer_postenable(struct iio_dev *indio_dev)
 	u16 conflict;
 	unsigned int trigger_chan;
 
+<<<<<<< HEAD
+=======
+	ret = iio_triggered_buffer_postenable(indio_dev);
+	if (ret)
+		return ret;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_lock(&dln2->mutex);
 
 	/* Enable ADC */
@@ -541,6 +572,10 @@ static int dln2_adc_triggered_buffer_postenable(struct iio_dev *indio_dev)
 				(int)conflict);
 			ret = -EBUSY;
 		}
+<<<<<<< HEAD
+=======
+		iio_triggered_buffer_predisable(indio_dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ret;
 	}
 
@@ -554,6 +589,10 @@ static int dln2_adc_triggered_buffer_postenable(struct iio_dev *indio_dev)
 		mutex_unlock(&dln2->mutex);
 		if (ret < 0) {
 			dev_dbg(&dln2->pdev->dev, "Problem in %s\n", __func__);
+<<<<<<< HEAD
+=======
+			iio_triggered_buffer_predisable(indio_dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return ret;
 		}
 	} else {
@@ -561,12 +600,20 @@ static int dln2_adc_triggered_buffer_postenable(struct iio_dev *indio_dev)
 		mutex_unlock(&dln2->mutex);
 	}
 
+<<<<<<< HEAD
 	return iio_triggered_buffer_postenable(indio_dev);
+=======
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int dln2_adc_triggered_buffer_predisable(struct iio_dev *indio_dev)
 {
+<<<<<<< HEAD
 	int ret;
+=======
+	int ret, ret2;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct dln2_adc *dln2 = iio_priv(indio_dev);
 
 	mutex_lock(&dln2->mutex);
@@ -581,12 +628,23 @@ static int dln2_adc_triggered_buffer_predisable(struct iio_dev *indio_dev)
 	ret = dln2_adc_set_port_enabled(dln2, false, NULL);
 
 	mutex_unlock(&dln2->mutex);
+<<<<<<< HEAD
 	if (ret < 0) {
 		dev_dbg(&dln2->pdev->dev, "Problem in %s\n", __func__);
 		return ret;
 	}
 
 	return iio_triggered_buffer_predisable(indio_dev);
+=======
+	if (ret < 0)
+		dev_dbg(&dln2->pdev->dev, "Problem in %s\n", __func__);
+
+	ret2 = iio_triggered_buffer_predisable(indio_dev);
+	if (ret == 0)
+		ret = ret2;
+
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct iio_buffer_setup_ops dln2_adc_buffer_setup_ops = {
@@ -667,7 +725,15 @@ static int dln2_adc_probe(struct platform_device *pdev)
 	}
 	dln2->trig->ops = &dln2_adc_trigger_ops;
 	iio_trigger_set_drvdata(dln2->trig, dln2);
+<<<<<<< HEAD
 	devm_iio_trigger_register(dev, dln2->trig);
+=======
+	ret = devm_iio_trigger_register(dev, dln2->trig);
+	if (ret) {
+		dev_err(dev, "failed to register trigger: %d\n", ret);
+		return ret;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	iio_trigger_set_immutable(indio_dev, dln2->trig);
 
 	ret = devm_iio_triggered_buffer_setup(dev, indio_dev, NULL,

@@ -430,8 +430,12 @@ int w1_reset_resume_command(struct w1_master *dev)
 	if (w1_reset_bus(dev))
 		return -1;
 
+<<<<<<< HEAD
 	/* This will make only the last matched slave perform a skip ROM. */
 	w1_write_8(dev, W1_RESUME_CMD);
+=======
+	w1_write_8(dev, dev->slave_count > 1 ? W1_RESUME_CMD : W1_SKIP_ROM);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 EXPORT_SYMBOL_GPL(w1_reset_resume_command);

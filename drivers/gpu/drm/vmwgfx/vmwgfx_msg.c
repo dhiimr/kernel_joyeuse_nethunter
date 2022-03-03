@@ -264,7 +264,11 @@ static int vmw_recv_msg(struct rpc_channel *channel, void **msg,
 
 		if ((HIGH_WORD(ebx) & MESSAGE_STATUS_SUCCESS) == 0) {
 			kfree(reply);
+<<<<<<< HEAD
 
+=======
+			reply = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if ((HIGH_WORD(ebx) & MESSAGE_STATUS_CPT) != 0) {
 				/* A checkpoint occurred. Retry. */
 				continue;
@@ -288,7 +292,11 @@ static int vmw_recv_msg(struct rpc_channel *channel, void **msg,
 
 		if ((HIGH_WORD(ecx) & MESSAGE_STATUS_SUCCESS) == 0) {
 			kfree(reply);
+<<<<<<< HEAD
 
+=======
+			reply = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if ((HIGH_WORD(ecx) & MESSAGE_STATUS_CPT) != 0) {
 				/* A checkpoint occurred. Retry. */
 				continue;
@@ -300,7 +308,11 @@ static int vmw_recv_msg(struct rpc_channel *channel, void **msg,
 		break;
 	}
 
+<<<<<<< HEAD
 	if (retries == RETRIES)
+=======
+	if (!reply)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	*msg_len = reply_len;

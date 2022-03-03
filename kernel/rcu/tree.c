@@ -124,7 +124,11 @@ int rcu_num_lvls __read_mostly = RCU_NUM_LVLS;
 int num_rcu_lvl[] = NUM_RCU_LVL_INIT;
 int rcu_num_nodes __read_mostly = NUM_RCU_NODES; /* Total # rcu_nodes in use. */
 /* panic() on RCU Stall sysctl. */
+<<<<<<< HEAD
 int sysctl_panic_on_rcu_stall __read_mostly = CONFIG_RCU_PANIC_ON_STALL;
+=======
+int sysctl_panic_on_rcu_stall __read_mostly;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * The rcu_scheduler_active variable is initialized to the value
@@ -4193,8 +4197,11 @@ static void __init rcu_dump_rcu_node_tree(struct rcu_state *rsp)
 	pr_cont("\n");
 }
 
+<<<<<<< HEAD
 struct workqueue_struct *rcu_gp_wq;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void __init rcu_init(void)
 {
 	int cpu;
@@ -4222,10 +4229,13 @@ void __init rcu_init(void)
 		if (IS_ENABLED(CONFIG_TREE_SRCU))
 			srcu_online_cpu(cpu);
 	}
+<<<<<<< HEAD
 
 	/* Create workqueue for expedited GPs and for Tree SRCU. */
 	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
 	WARN_ON(!rcu_gp_wq);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #include "tree_exp.h"

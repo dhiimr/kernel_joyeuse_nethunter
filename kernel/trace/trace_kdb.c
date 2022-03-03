@@ -41,12 +41,17 @@ static void ftrace_dump_buf(int skip_lines, long cpu_file)
 
 	kdb_printf("Dumping ftrace buffer:\n");
 
+<<<<<<< HEAD
 	/* reset all but tr, trace, and overruns */
 	memset(&iter.seq, 0,
 		   sizeof(struct trace_iterator) -
 		   offsetof(struct trace_iterator, seq));
 	iter.iter_flags |= TRACE_FILE_LAT_FMT;
 	iter.pos = -1;
+=======
+	trace_iterator_reset(&iter);
+	iter.iter_flags |= TRACE_FILE_LAT_FMT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (cpu_file == RING_BUFFER_ALL_CPUS) {
 		for_each_tracing_cpu(cpu) {

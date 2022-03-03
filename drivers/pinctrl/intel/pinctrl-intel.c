@@ -602,6 +602,13 @@ static int intel_config_set_pull(struct intel_pinctrl *pctrl, unsigned pin,
 
 		value |= PADCFG1_TERM_UP;
 
+<<<<<<< HEAD
+=======
+		/* Set default strength value in case none is given */
+		if (arg == 1)
+			arg = 5000;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		switch (arg) {
 		case 20000:
 			value |= PADCFG1_TERM_20K << PADCFG1_TERM_SHIFT;
@@ -624,6 +631,13 @@ static int intel_config_set_pull(struct intel_pinctrl *pctrl, unsigned pin,
 	case PIN_CONFIG_BIAS_PULL_DOWN:
 		value &= ~(PADCFG1_TERM_UP | PADCFG1_TERM_MASK);
 
+<<<<<<< HEAD
+=======
+		/* Set default strength value in case none is given */
+		if (arg == 1)
+			arg = 5000;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		switch (arg) {
 		case 20000:
 			value |= PADCFG1_TERM_20K << PADCFG1_TERM_SHIFT;

@@ -173,7 +173,11 @@ static int sp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 		if (ret) {
 			dev_err(dev, "dma_set_mask_and_coherent failed (%d)\n",
 				ret);
+<<<<<<< HEAD
 			goto e_err;
+=======
+			goto free_irqs;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 
@@ -181,12 +185,21 @@ static int sp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 
 	ret = sp_init(sp);
 	if (ret)
+<<<<<<< HEAD
 		goto e_err;
+=======
+		goto free_irqs;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dev_notice(dev, "enabled\n");
 
 	return 0;
 
+<<<<<<< HEAD
+=======
+free_irqs:
+	sp_free_irqs(sp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 e_err:
 	dev_notice(dev, "initialization failed\n");
 	return ret;

@@ -23,6 +23,12 @@
 		i2c0 = &i2c1;
 		i2c1 = &i2c2;
 		i2c2 = &i2c3;
+<<<<<<< HEAD
+=======
+		mmc0 = &mmc1;
+		mmc1 = &mmc2;
+		mmc2 = &mmc3;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		serial0 = &uart1;
 		serial1 = &uart2;
 		serial2 = &uart3;

@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2014,2017-2018 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2014, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -56,8 +60,12 @@ static int change_memory_common(unsigned long addr, int numpages,
 	if (!size)
 		return 0;
 
+<<<<<<< HEAD
 	if (!IS_ENABLED(CONFIG_FORCE_PAGES) &&
 	    !in_range(start, size, MODULES_VADDR, MODULES_END) &&
+=======
+	if (!in_range(start, size, MODULES_VADDR, MODULES_END) &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    !in_range(start, size, VMALLOC_START, VMALLOC_END))
 		return -EINVAL;
 
@@ -98,6 +106,7 @@ int set_memory_x(unsigned long addr, int numpages)
 					__pgprot(0),
 					__pgprot(L_PTE_XN));
 }
+<<<<<<< HEAD
 
 #ifdef CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC
 void __kernel_map_pages(struct page *page, int numpages, int enable)
@@ -114,3 +123,5 @@ void __kernel_map_pages(struct page *page, int numpages, int enable)
 		set_memory_ro(addr, numpages);
 }
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

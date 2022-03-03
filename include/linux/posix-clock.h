@@ -82,29 +82,55 @@ struct posix_clock_operations {
  *
  * @ops:     Functional interface to the clock
  * @cdev:    Character device instance for this clock
+<<<<<<< HEAD
  * @kref:    Reference count.
  * @rwsem:   Protects the 'zombie' field from concurrent access.
  * @zombie:  If 'zombie' is true, then the hardware has disappeared.
  * @release: A function to free the structure when the reference count reaches
  *           zero. May be NULL if structure is statically allocated.
+=======
+ * @dev:     Pointer to the clock's device.
+ * @rwsem:   Protects the 'zombie' field from concurrent access.
+ * @zombie:  If 'zombie' is true, then the hardware has disappeared.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Drivers should embed their struct posix_clock within a private
  * structure, obtaining a reference to it during callbacks using
  * container_of().
+<<<<<<< HEAD
+=======
+ *
+ * Drivers should supply an initialized but not exposed struct device
+ * to posix_clock_register(). It is used to manage lifetime of the
+ * driver's private structure. It's 'release' field should be set to
+ * a release function for this private structure.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 struct posix_clock {
 	struct posix_clock_operations ops;
 	struct cdev cdev;
+<<<<<<< HEAD
 	struct kref kref;
 	struct rw_semaphore rwsem;
 	bool zombie;
 	void (*release)(struct posix_clock *clk);
+=======
+	struct device *dev;
+	struct rw_semaphore rwsem;
+	bool zombie;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
  * posix_clock_register() - register a new clock
+<<<<<<< HEAD
  * @clk:   Pointer to the clock. Caller must provide 'ops' and 'release'
  * @devid: Allocated device id
+=======
+ * @clk:   Pointer to the clock. Caller must provide 'ops' field
+ * @dev:   Pointer to the initialized device. Caller must provide
+ *         'release' field
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * A clock driver calls this function to register itself with the
  * clock device subsystem. If 'clk' points to dynamically allocated
@@ -113,7 +139,11 @@ struct posix_clock {
  *
  * Returns zero on success, non-zero otherwise.
  */
+<<<<<<< HEAD
 int posix_clock_register(struct posix_clock *clk, dev_t devid);
+=======
+int posix_clock_register(struct posix_clock *clk, struct device *dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**
  * posix_clock_unregister() - unregister a clock

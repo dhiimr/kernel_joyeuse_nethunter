@@ -1152,6 +1152,10 @@ stop_rr_fcf_flogi:
 			phba->fcf.fcf_flag &= ~FCF_DISCOVERY;
 			phba->hba_flag &= ~(FCF_RR_INPROG | HBA_DEVLOSS_TMO);
 			spin_unlock_irq(&phba->hbalock);
+<<<<<<< HEAD
+=======
+			phba->fcf.fcf_redisc_attempted = 0; /* reset */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto out;
 		}
 		if (!rc) {
@@ -1166,8 +1170,23 @@ stop_rr_fcf_flogi:
 			phba->fcf.fcf_flag &= ~FCF_DISCOVERY;
 			phba->hba_flag &= ~(FCF_RR_INPROG | HBA_DEVLOSS_TMO);
 			spin_unlock_irq(&phba->hbalock);
+<<<<<<< HEAD
 			goto out;
 		}
+=======
+			phba->fcf.fcf_redisc_attempted = 0; /* reset */
+			goto out;
+		}
+	} else if (vport->port_state > LPFC_FLOGI &&
+		   vport->fc_flag & FC_PT2PT) {
+		/*
+		 * In a p2p topology, it is possible that discovery has
+		 * already progressed, and this completion can be ignored.
+		 * Recheck the indicated topology.
+		 */
+		if (!sp->cmn.fPort)
+			goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 flogifail:
@@ -1335,6 +1354,11 @@ lpfc_els_abort_flogi(struct lpfc_hba *phba)
 			Fabric_DID);
 
 	pring = lpfc_phba_elsring(phba);
+<<<<<<< HEAD
+=======
+	if (unlikely(!pring))
+		return -EIO;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Check the txcmplq for an iocb that matches the nport the driver is
@@ -1548,8 +1572,15 @@ lpfc_plogi_confirm_nport(struct lpfc_hba *phba, uint32_t *prsp,
 	 */
 	new_ndlp = lpfc_findnode_wwpn(vport, &sp->portName);
 
+<<<<<<< HEAD
 	if (new_ndlp == ndlp && NLP_CHK_NODE_ACT(new_ndlp))
 		return ndlp;
+=======
+	/* return immediately if the WWPN matches ndlp */
+	if (new_ndlp == ndlp && NLP_CHK_NODE_ACT(new_ndlp))
+		return ndlp;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (phba->sli_rev == LPFC_SLI_REV4) {
 		active_rrqs_xri_bitmap = mempool_alloc(phba->active_rrq_pool,
 						       GFP_KERNEL);
@@ -1558,9 +1589,19 @@ lpfc_plogi_confirm_nport(struct lpfc_hba *phba, uint32_t *prsp,
 			       phba->cfg_rrq_xri_bitmap_sz);
 	}
 
+<<<<<<< HEAD
 	lpfc_printf_vlog(vport, KERN_INFO, LOG_ELS,
 		 "3178 PLOGI confirm: ndlp %p x%x: new_ndlp %p\n",
 		 ndlp, ndlp->nlp_DID, new_ndlp);
+=======
+	lpfc_printf_vlog(vport, KERN_INFO, LOG_ELS | LOG_NODE,
+			 "3178 PLOGI confirm: ndlp x%x x%x x%x: "
+			 "new_ndlp x%x x%x x%x\n",
+			 ndlp->nlp_DID, ndlp->nlp_flag,  ndlp->nlp_fc4_type,
+			 (new_ndlp ? new_ndlp->nlp_DID : 0),
+			 (new_ndlp ? new_ndlp->nlp_flag : 0),
+			 (new_ndlp ? new_ndlp->nlp_fc4_type : 0));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!new_ndlp) {
 		rc = memcmp(&ndlp->nlp_portname, name,
@@ -1609,6 +1650,17 @@ lpfc_plogi_confirm_nport(struct lpfc_hba *phba, uint32_t *prsp,
 			       phba->cfg_rrq_xri_bitmap_sz);
 	}
 
+<<<<<<< HEAD
+=======
+	/* At this point in this routine, we know new_ndlp will be
+	 * returned. however, any previous GID_FTs that were done
+	 * would have updated nlp_fc4_type in ndlp, so we must ensure
+	 * new_ndlp has the right value.
+	 */
+	if (vport->fc_flag & FC_FABRIC)
+		new_ndlp->nlp_fc4_type = ndlp->nlp_fc4_type;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	lpfc_unreg_rpi(vport, new_ndlp);
 	new_ndlp->nlp_DID = ndlp->nlp_DID;
 	new_ndlp->nlp_prev_state = ndlp->nlp_prev_state;
@@ -1730,6 +1782,15 @@ lpfc_plogi_confirm_nport(struct lpfc_hba *phba, uint32_t *prsp,
 	    active_rrqs_xri_bitmap)
 		mempool_free(active_rrqs_xri_bitmap,
 			     phba->active_rrq_pool);
+<<<<<<< HEAD
+=======
+
+	lpfc_printf_vlog(vport, KERN_INFO, LOG_ELS | LOG_NODE,
+			 "3173 PLOGI confirm exit: new_ndlp x%x x%x x%x\n",
+			 new_ndlp->nlp_DID, new_ndlp->nlp_flag,
+			 new_ndlp->nlp_fc4_type);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return new_ndlp;
 }
 
@@ -4078,9 +4139,17 @@ lpfc_cmpl_els_rsp(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
 		mempool_free(mbox, phba->mbox_mem_pool);
 	}
 out:
+<<<<<<< HEAD
 	if (ndlp && NLP_CHK_NODE_ACT(ndlp)) {
 		spin_lock_irq(shost->host_lock);
 		ndlp->nlp_flag &= ~(NLP_ACC_REGLOGIN | NLP_RM_DFLT_RPI);
+=======
+	if (ndlp && NLP_CHK_NODE_ACT(ndlp) && shost) {
+		spin_lock_irq(shost->host_lock);
+		if (mbox)
+			ndlp->nlp_flag &= ~NLP_ACC_REGLOGIN;
+		ndlp->nlp_flag &= ~NLP_RM_DFLT_RPI;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		spin_unlock_irq(shost->host_lock);
 
 		/* If the node is not being used by another discovery thread,
@@ -5526,7 +5595,11 @@ lpfc_els_rcv_rdp(struct lpfc_vport *vport, struct lpfc_iocbq *cmdiocb,
 	struct ls_rjt stat;
 
 	if (phba->sli_rev < LPFC_SLI_REV4 ||
+<<<<<<< HEAD
 	    bf_get(lpfc_sli_intf_if_type, &phba->sli4_hba.sli_intf) !=
+=======
+	    bf_get(lpfc_sli_intf_if_type, &phba->sli4_hba.sli_intf) <
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						LPFC_SLI_INTF_IF_TYPE_2) {
 		rjt_err = LSRJT_UNABLE_TPC;
 		rjt_expl = LSEXP_REQ_UNSUPPORTED;
@@ -7065,7 +7138,14 @@ int
 lpfc_send_rrq(struct lpfc_hba *phba, struct lpfc_node_rrq *rrq)
 {
 	struct lpfc_nodelist *ndlp = lpfc_findnode_did(rrq->vport,
+<<<<<<< HEAD
 							rrq->nlp_DID);
+=======
+						       rrq->nlp_DID);
+	if (!ndlp)
+		return 1;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (lpfc_test_rrq_active(phba, ndlp, rrq->xritag))
 		return lpfc_issue_els_rrq(rrq->vport, ndlp,
 					 rrq->nlp_DID, rrq);
@@ -7886,6 +7966,11 @@ lpfc_els_unsol_buffer(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
 	spin_lock_irq(shost->host_lock);
 	if (ndlp->nlp_flag & NLP_IN_DEV_LOSS) {
 		spin_unlock_irq(shost->host_lock);
+<<<<<<< HEAD
+=======
+		if (newnode)
+			lpfc_nlp_put(ndlp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto dropit;
 	}
 	spin_unlock_irq(shost->host_lock);

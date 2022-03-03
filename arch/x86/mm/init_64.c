@@ -1282,18 +1282,30 @@ int kern_addr_valid(unsigned long addr)
 		return 0;
 
 	p4d = p4d_offset(pgd, addr);
+<<<<<<< HEAD
 	if (p4d_none(*p4d))
 		return 0;
 
 	pud = pud_offset(p4d, addr);
 	if (pud_none(*pud))
+=======
+	if (!p4d_present(*p4d))
+		return 0;
+
+	pud = pud_offset(p4d, addr);
+	if (!pud_present(*pud))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 
 	if (pud_large(*pud))
 		return pfn_valid(pud_pfn(*pud));
 
 	pmd = pmd_offset(pud, addr);
+<<<<<<< HEAD
 	if (pmd_none(*pmd))
+=======
+	if (!pmd_present(*pmd))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 
 	if (pmd_large(*pmd))

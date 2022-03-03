@@ -944,11 +944,18 @@ struct drm_crtc *drm_crtc_from_index(struct drm_device *dev, int idx);
  * userspace interface should be done using &drm_property.
  */
 static inline struct drm_crtc *drm_crtc_find(struct drm_device *dev,
+<<<<<<< HEAD
 		struct drm_file *file_priv,
 		uint32_t id)
 {
 	struct drm_mode_object *mo;
 	mo = drm_mode_object_find(dev, file_priv, id, DRM_MODE_OBJECT_CRTC);
+=======
+	uint32_t id)
+{
+	struct drm_mode_object *mo;
+	mo = drm_mode_object_find(dev, id, DRM_MODE_OBJECT_CRTC);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return mo ? obj_to_crtc(mo) : NULL;
 }
 

@@ -174,9 +174,12 @@ struct sk_buff **udp_gro_receive(struct sk_buff **head, struct sk_buff *skb,
 				 struct udphdr *uh, udp_lookup_t lookup);
 int udp_gro_complete(struct sk_buff *skb, int nhoff, udp_lookup_t lookup);
 
+<<<<<<< HEAD
 struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
 				  netdev_features_t features);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline struct udphdr *udp_gro_udphdr(struct sk_buff *skb)
 {
 	struct udphdr *uh;
@@ -277,7 +280,10 @@ int udp_abort(struct sock *sk, int err);
 int udp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len);
 int udp_push_pending_frames(struct sock *sk);
 void udp_flush_pending_frames(struct sock *sk);
+<<<<<<< HEAD
 int udp_cmsg_send(struct sock *sk, struct msghdr *msg, u16 *gso_size);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void udp4_hwcsum(struct sk_buff *skb, __be32 src, __be32 dst);
 int udp_rcv(struct sk_buff *skb);
 int udp_ioctl(struct sock *sk, int cmd, unsigned long arg);
@@ -405,6 +411,7 @@ static inline int copy_linear_skb(struct sk_buff *skb, int len, int off,
 } while(0)
 
 #if IS_ENABLED(CONFIG_IPV6)
+<<<<<<< HEAD
 #define __UDPX_MIB(sk, ipv4)						\
 ({									\
 	ipv4 ? (IS_UDPLITE(sk) ? sock_net(sk)->mib.udplite_statistics :	\
@@ -423,6 +430,19 @@ static inline int copy_linear_skb(struct sk_buff *skb, int len, int off,
 #define __UDPX_INC_STATS(sk, field) \
 	__SNMP_INC_STATS(__UDPX_MIB(sk, (sk)->sk_family == AF_INET), field)
 
+=======
+#define __UDPX_INC_STATS(sk, field)					\
+do {									\
+	if ((sk)->sk_family == AF_INET)					\
+		__UDP_INC_STATS(sock_net(sk), field, 0);		\
+	else								\
+		__UDP6_INC_STATS(sock_net(sk), field, 0);		\
+} while (0)
+#else
+#define __UDPX_INC_STATS(sk, field) __UDP_INC_STATS(sock_net(sk), field, 0)
+#endif
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* /proc */
 int udp_seq_open(struct inode *inode, struct file *file);
 
@@ -458,6 +478,7 @@ void udp_encap_enable(void);
 void udpv6_encap_enable(void);
 #endif
 
+<<<<<<< HEAD
 static inline struct sk_buff *udp_rcv_segment(struct sock *sk,
 					      struct sk_buff *skb, bool ipv4)
 {
@@ -487,4 +508,6 @@ static inline struct sk_buff *udp_rcv_segment(struct sock *sk,
 	return segs;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif	/* _UDP_H */

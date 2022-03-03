@@ -27,7 +27,10 @@
 /* bInterfaceProtocol values to denote the version of the standard used */
 #define UAC_VERSION_1			0x00
 #define UAC_VERSION_2			0x20
+<<<<<<< HEAD
 #define UAC_VERSION_3			0x30
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* A.2 Audio Interface Subclass Codes */
 #define USB_SUBCLASS_AUDIOCONTROL	0x01

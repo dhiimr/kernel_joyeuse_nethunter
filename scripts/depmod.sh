@@ -15,6 +15,11 @@ if ! test -r System.map ; then
 	exit 0
 fi
 
+<<<<<<< HEAD
+=======
+# legacy behavior: "depmod" in /sbin, no /sbin in PATH
+PATH="$PATH:/sbin"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 if [ -z $(command -v $DEPMOD) ]; then
 	echo "Warning: 'make modules_install' requires $DEPMOD. Please install it." >&2
 	echo "This is probably in the kmod package." >&2

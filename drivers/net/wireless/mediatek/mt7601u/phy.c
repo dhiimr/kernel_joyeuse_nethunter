@@ -221,7 +221,11 @@ int mt7601u_wait_bbp_ready(struct mt7601u_dev *dev)
 
 	do {
 		val = mt7601u_bbp_rr(dev, MT_BBP_REG_VERSION);
+<<<<<<< HEAD
 		if (val && ~val)
+=======
+		if (val && val != 0xff)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 	} while (--i);
 

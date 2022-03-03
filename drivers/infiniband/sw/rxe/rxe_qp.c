@@ -34,6 +34,10 @@
 #include <linux/skbuff.h>
 #include <linux/delay.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/vmalloc.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "rxe.h"
 #include "rxe_loc.h"
@@ -255,8 +259,14 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
 			   qp->sq.queue->buf_size, &qp->sq.queue->ip);
 
 	if (err) {
+<<<<<<< HEAD
 		kvfree(qp->sq.queue->buf);
 		kfree(qp->sq.queue);
+=======
+		vfree(qp->sq.queue->buf);
+		kfree(qp->sq.queue);
+		qp->sq.queue = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return err;
 	}
 
@@ -308,8 +318,14 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
 				   qp->rq.queue->buf_size,
 				   &qp->rq.queue->ip);
 		if (err) {
+<<<<<<< HEAD
 			kvfree(qp->rq.queue->buf);
 			kfree(qp->rq.queue);
+=======
+			vfree(qp->rq.queue->buf);
+			kfree(qp->rq.queue);
+			qp->rq.queue = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return err;
 		}
 	}
@@ -369,6 +385,14 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
 err2:
 	rxe_queue_cleanup(qp->sq.queue);
 err1:
+<<<<<<< HEAD
+=======
+	qp->pd = NULL;
+	qp->rcq = NULL;
+	qp->scq = NULL;
+	qp->srq = NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (srq)
 		rxe_drop_ref(srq);
 	rxe_drop_ref(scq);
@@ -592,15 +616,25 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
 	struct ib_gid_attr sgid_attr;
 
 	if (mask & IB_QP_MAX_QP_RD_ATOMIC) {
+<<<<<<< HEAD
 		int max_rd_atomic = __roundup_pow_of_two(attr->max_rd_atomic);
+=======
+		int max_rd_atomic = attr->max_rd_atomic ?
+			roundup_pow_of_two(attr->max_rd_atomic) : 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		qp->attr.max_rd_atomic = max_rd_atomic;
 		atomic_set(&qp->req.rd_atomic, max_rd_atomic);
 	}
 
 	if (mask & IB_QP_MAX_DEST_RD_ATOMIC) {
+<<<<<<< HEAD
 		int max_dest_rd_atomic =
 			__roundup_pow_of_two(attr->max_dest_rd_atomic);
+=======
+		int max_dest_rd_atomic = attr->max_dest_rd_atomic ?
+			roundup_pow_of_two(attr->max_dest_rd_atomic) : 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		qp->attr.max_dest_rd_atomic = max_dest_rd_atomic;
 

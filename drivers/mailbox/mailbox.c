@@ -53,7 +53,11 @@ static int add_to_rbuf(struct mbox_chan *chan, void *mssg)
 	return idx;
 }
 
+<<<<<<< HEAD
 static int __msg_submit(struct mbox_chan *chan)
+=======
+static void msg_submit(struct mbox_chan *chan)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned count, idx;
 	unsigned long flags;
@@ -85,6 +89,7 @@ static int __msg_submit(struct mbox_chan *chan)
 exit:
 	spin_unlock_irqrestore(&chan->lock, flags);
 
+<<<<<<< HEAD
 	return err;
 }
 
@@ -106,6 +111,14 @@ static void msg_submit(struct mbox_chan *chan)
 	if (!err && (chan->txdone_method & TXDONE_BY_POLL))
 		/* kick start the timer immediately to avoid delays */
 		hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
+=======
+	/* kick start the timer immediately to avoid delays */
+	if (!err && (chan->txdone_method & TXDONE_BY_POLL)) {
+		/* but only if not already active */
+		if (!hrtimer_active(&chan->mbox->poll_hrt))
+			hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void tx_tick(struct mbox_chan *chan, int r)
@@ -143,11 +156,18 @@ static enum hrtimer_restart txdone_hrtimer(struct hrtimer *hrtimer)
 		struct mbox_chan *chan = &mbox->chans[i];
 
 		if (chan->active_req && chan->cl) {
+<<<<<<< HEAD
 			txdone = chan->mbox->ops->last_tx_done(chan);
 			if (txdone)
 				tx_tick(chan, 0);
 			else
 				resched = true;
+=======
+			resched = true;
+			txdone = chan->mbox->ops->last_tx_done(chan);
+			if (txdone)
+				tx_tick(chan, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 
@@ -302,6 +322,7 @@ int mbox_send_message(struct mbox_chan *chan, void *mssg)
 EXPORT_SYMBOL_GPL(mbox_send_message);
 
 /**
+<<<<<<< HEAD
  * mbox_send_controller_data-	For client to submit a message to be
  *				sent only to the controller.
  * @chan: Mailbox channel assigned to this client.
@@ -350,6 +371,8 @@ void mbox_chan_debug(struct mbox_chan *chan)
 EXPORT_SYMBOL(mbox_chan_debug);
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * mbox_request_channel - Request a mailbox channel.
  * @cl: Identity of the client requesting the channel.
  * @index: Index of mailbox specifier in 'mboxes' property.
@@ -417,7 +440,11 @@ struct mbox_chan *mbox_request_channel(struct mbox_client *cl, int index)
 	init_completion(&chan->tx_complete);
 
 	if (chan->txdone_method	== TXDONE_BY_POLL && cl->knows_txdone)
+<<<<<<< HEAD
 		chan->txdone_method |= TXDONE_BY_ACK;
+=======
+		chan->txdone_method = TXDONE_BY_ACK;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	spin_unlock_irqrestore(&chan->lock, flags);
 
@@ -457,11 +484,21 @@ struct mbox_chan *mbox_request_channel_byname(struct mbox_client *cl,
 
 	of_property_for_each_string(np, "mbox-names", prop, mbox_name) {
 		if (!strncmp(name, mbox_name, strlen(name)))
+<<<<<<< HEAD
 			break;
 		index++;
 	}
 
 	return mbox_request_channel(cl, index);
+=======
+			return mbox_request_channel(cl, index);
+		index++;
+	}
+
+	dev_err(cl->dev, "%s() could not locate channel named \"%s\"\n",
+		__func__, name);
+	return ERR_PTR(-EINVAL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(mbox_request_channel_byname);
 
@@ -484,7 +521,11 @@ void mbox_free_channel(struct mbox_chan *chan)
 	spin_lock_irqsave(&chan->lock, flags);
 	chan->cl = NULL;
 	chan->active_req = NULL;
+<<<<<<< HEAD
 	if (chan->txdone_method == (TXDONE_BY_POLL | TXDONE_BY_ACK))
+=======
+	if (chan->txdone_method == TXDONE_BY_ACK)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		chan->txdone_method = TXDONE_BY_POLL;
 
 	module_put(chan->mbox->dev->driver->owner);

@@ -832,6 +832,7 @@ void kernfs_drain_open_files(struct kernfs_node *kn)
  * to see if it supports poll (Neither 'poll' nor 'select' return
  * an appropriate error code).  When in doubt, set a suitable timeout value.
  */
+<<<<<<< HEAD
 unsigned int kernfs_generic_poll(struct kernfs_open_file *of, poll_table *wait)
 {
 	struct kernfs_node *kn = kernfs_dentry_node(of->file->f_path.dentry);
@@ -845,10 +846,13 @@ unsigned int kernfs_generic_poll(struct kernfs_open_file *of, poll_table *wait)
 	return DEFAULT_POLLMASK;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static unsigned int kernfs_fop_poll(struct file *filp, poll_table *wait)
 {
 	struct kernfs_open_file *of = kernfs_of(filp);
 	struct kernfs_node *kn = kernfs_dentry_node(filp->f_path.dentry);
+<<<<<<< HEAD
 	unsigned int ret;
 
 	if (!kernfs_get_active(kn))
@@ -861,6 +865,24 @@ static unsigned int kernfs_fop_poll(struct file *filp, poll_table *wait)
 
 	kernfs_put_active(kn);
 	return ret;
+=======
+	struct kernfs_open_node *on = kn->attr.open;
+
+	if (!kernfs_get_active(kn))
+		goto trigger;
+
+	poll_wait(filp, &on->poll, wait);
+
+	kernfs_put_active(kn);
+
+	if (of->event != atomic_read(&on->event))
+		goto trigger;
+
+	return DEFAULT_POLLMASK;
+
+ trigger:
+	return DEFAULT_POLLMASK|POLLERR|POLLPRI;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void kernfs_notify_workfn(struct work_struct *work)

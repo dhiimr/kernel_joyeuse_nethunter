@@ -206,7 +206,11 @@ static struct shash_alg algs[] = {
 		.digestsize     = CHKSUM_DIGEST_SIZE,
 		.base           = {
 			.cra_name               = "crc32",
+<<<<<<< HEAD
 			.cra_driver_name        = DRIVER_NAME,
+=======
+			.cra_driver_name        = "stm32-crc32-crc32",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.cra_priority           = 200,
 			.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
 			.cra_blocksize          = CHKSUM_BLOCK_SIZE,
@@ -228,7 +232,11 @@ static struct shash_alg algs[] = {
 		.digestsize     = CHKSUM_DIGEST_SIZE,
 		.base           = {
 			.cra_name               = "crc32c",
+<<<<<<< HEAD
 			.cra_driver_name        = DRIVER_NAME,
+=======
+			.cra_driver_name        = "stm32-crc32-crc32c",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.cra_priority           = 200,
 			.cra_flags		= CRYPTO_ALG_OPTIONAL_KEY,
 			.cra_blocksize          = CHKSUM_BLOCK_SIZE,

@@ -237,6 +237,10 @@ static int ehci_hcd_omap_probe(struct platform_device *pdev)
 
 err_pm_runtime:
 	pm_runtime_put_sync(dev);
+<<<<<<< HEAD
+=======
+	pm_runtime_disable(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 err_phy:
 	for (i = 0; i < omap->nports; i++) {

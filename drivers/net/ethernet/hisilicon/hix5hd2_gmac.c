@@ -736,7 +736,11 @@ static int hix5hd2_fill_sg_desc(struct hix5hd2_priv *priv,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int hix5hd2_net_xmit(struct sk_buff *skb, struct net_device *dev)
+=======
+static netdev_tx_t hix5hd2_net_xmit(struct sk_buff *skb, struct net_device *dev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct hix5hd2_priv *priv = netdev_priv(dev);
 	struct hix5hd2_desc *desc;
@@ -1202,7 +1206,11 @@ static int hix5hd2_dev_probe(struct platform_device *pdev)
 		goto err_free_mdio;
 
 	priv->phy_mode = of_get_phy_mode(node);
+<<<<<<< HEAD
 	if (priv->phy_mode < 0) {
+=======
+	if ((int)priv->phy_mode < 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		netdev_err(ndev, "not find phy-mode\n");
 		ret = -EINVAL;
 		goto err_mdiobus;

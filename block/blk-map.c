@@ -152,7 +152,11 @@ int blk_rq_map_user_iov(struct request_queue *q, struct request *rq,
 	return 0;
 
 unmap_rq:
+<<<<<<< HEAD
 	__blk_rq_unmap_user(bio);
+=======
+	blk_rq_unmap_user(bio);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 fail:
 	rq->bio = NULL;
 	return ret;

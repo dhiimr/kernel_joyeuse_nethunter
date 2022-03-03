@@ -16,7 +16,11 @@ Required properties:
 
 Optional properties:
 - interrupts: interrupt line number for the SMI error/done interrupt
+<<<<<<< HEAD
 - clocks: phandle for up to three required clocks for the MDIO instance
+=======
+- clocks: phandle for up to four required clocks for the MDIO instance
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 The child nodes of the MDIO driver are the individual PHY devices
 connected to this MDIO bus. They must have a "reg" property given the

@@ -158,7 +158,11 @@ static int qcom_scm_call(struct device *dev, u32 svc_id, u32 cmd_id,
 		kfree(args_virt);
 	}
 
+<<<<<<< HEAD
 	if (res->a0 < 0)
+=======
+	if ((long)res->a0 < 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return qcom_scm_remap_error(res->a0);
 
 	return 0;

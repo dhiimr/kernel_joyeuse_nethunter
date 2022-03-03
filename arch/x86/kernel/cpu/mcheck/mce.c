@@ -589,7 +589,11 @@ static int srao_decode_notifier(struct notifier_block *nb, unsigned long val,
 
 	if (mce_usable_address(mce) && (mce->severity == MCE_AO_SEVERITY)) {
 		pfn = mce->addr >> PAGE_SHIFT;
+<<<<<<< HEAD
 		if (memory_failure(pfn, MCE_VECTOR, 0))
+=======
+		if (!memory_failure(pfn, MCE_VECTOR, 0))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			mce_unmap_kpfn(pfn);
 	}
 
@@ -701,10 +705,16 @@ bool machine_check_poll(enum mcp_flags flags, mce_banks_t *b)
 
 		barrier();
 		m.status = mce_rdmsrl(msr_ops.status(i));
+<<<<<<< HEAD
+=======
+
+		/* If this entry is not valid, ignore it */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!(m.status & MCI_STATUS_VAL))
 			continue;
 
 		/*
+<<<<<<< HEAD
 		 * Uncorrected or signalled events are handled by the exception
 		 * handler when it is enabled, so don't process those here.
 		 *
@@ -714,6 +724,45 @@ bool machine_check_poll(enum mcp_flags flags, mce_banks_t *b)
 		    (m.status & (mca_cfg.ser ? MCI_STATUS_S : MCI_STATUS_UC)))
 			continue;
 
+=======
+		 * If we are logging everything (at CPU online) or this
+		 * is a corrected error, then we must log it.
+		 */
+		if ((flags & MCP_UC) || !(m.status & MCI_STATUS_UC))
+			goto log_it;
+
+		/*
+		 * Newer Intel systems that support software error
+		 * recovery need to make additional checks. Other
+		 * CPUs should skip over uncorrected errors, but log
+		 * everything else.
+		 */
+		if (!mca_cfg.ser) {
+			if (m.status & MCI_STATUS_UC)
+				continue;
+			goto log_it;
+		}
+
+		/* Log "not enabled" (speculative) errors */
+		if (!(m.status & MCI_STATUS_EN))
+			goto log_it;
+
+		/*
+		 * Log UCNA (SDM: 15.6.3 "UCR Error Classification")
+		 * UC == 1 && PCC == 0 && S == 0
+		 */
+		if (!(m.status & MCI_STATUS_PCC) && !(m.status & MCI_STATUS_S))
+			goto log_it;
+
+		/*
+		 * Skip anything else. Presumption is that our read of this
+		 * bank is racing with a machine check. Leave the log alone
+		 * for do_machine_check() to deal with it.
+		 */
+		continue;
+
+log_it:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		error_seen = true;
 
 		mce_read_aux(&m, i);
@@ -772,8 +821,13 @@ static int mce_no_way_out(struct mce *m, char **msg, unsigned long *validp,
 		if (quirk_no_way_out)
 			quirk_no_way_out(i, m, regs);
 
+<<<<<<< HEAD
 		if (mce_severity(m, mca_cfg.tolerant, &tmp, true) >= MCE_PANIC_SEVERITY) {
 			m->bank = i;
+=======
+		m->bank = i;
+		if (mce_severity(m, mca_cfg.tolerant, &tmp, true) >= MCE_PANIC_SEVERITY) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			mce_read_aux(m, i);
 			*msg = tmp;
 			return 1;
@@ -1469,6 +1523,7 @@ EXPORT_SYMBOL_GPL(mce_notify_irq);
 static int __mcheck_cpu_mce_banks_init(void)
 {
 	int i;
+<<<<<<< HEAD
 	u8 num_banks = mca_cfg.banks;
 
 	mce_banks = kzalloc(num_banks * sizeof(struct mce_bank), GFP_KERNEL);
@@ -1476,6 +1531,14 @@ static int __mcheck_cpu_mce_banks_init(void)
 		return -ENOMEM;
 
 	for (i = 0; i < num_banks; i++) {
+=======
+
+	mce_banks = kcalloc(MAX_NR_BANKS, sizeof(struct mce_bank), GFP_KERNEL);
+	if (!mce_banks)
+		return -ENOMEM;
+
+	for (i = 0; i < MAX_NR_BANKS; i++) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct mce_bank *b = &mce_banks[i];
 
 		b->ctl = -1ULL;
@@ -1489,12 +1552,18 @@ static int __mcheck_cpu_mce_banks_init(void)
  */
 static int __mcheck_cpu_cap_init(void)
 {
+<<<<<<< HEAD
 	unsigned b;
 	u64 cap;
+=======
+	u64 cap;
+	u8 b;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rdmsrl(MSR_IA32_MCG_CAP, cap);
 
 	b = cap & MCG_BANKCNT_MASK;
+<<<<<<< HEAD
 	if (!mca_cfg.banks)
 		pr_info("CPU supports %d MCE banks\n", b);
 
@@ -1511,6 +1580,15 @@ static int __mcheck_cpu_cap_init(void)
 	if (!mce_banks) {
 		int err = __mcheck_cpu_mce_banks_init();
 
+=======
+	if (WARN_ON_ONCE(b > MAX_NR_BANKS))
+		b = MAX_NR_BANKS;
+
+	mca_cfg.banks = max(mca_cfg.banks, b);
+
+	if (!mce_banks) {
+		int err = __mcheck_cpu_mce_banks_init();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (err)
 			return err;
 	}
@@ -1630,6 +1708,7 @@ static int __mcheck_cpu_apply_quirks(struct cpuinfo_x86 *c)
 		if (c->x86 == 0x15 && c->x86_model <= 0xf)
 			mce_flags.overflow_recov = 1;
 
+<<<<<<< HEAD
 		/*
 		 * Turn off MC4_MISC thresholding banks on those models since
 		 * they're not supported there.
@@ -1660,6 +1739,8 @@ static int __mcheck_cpu_apply_quirks(struct cpuinfo_x86 *c)
 			if (need_toggle)
 				wrmsrl(MSR_K7_HWCR, hwcr);
 		}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (c->x86_vendor == X86_VENDOR_INTEL) {
@@ -2470,6 +2551,11 @@ EXPORT_SYMBOL_GPL(mcsafe_key);
 
 static int __init mcheck_late_init(void)
 {
+<<<<<<< HEAD
+=======
+	pr_info("Using %d MCE banks\n", mca_cfg.banks);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (mca_cfg.recovery)
 		static_branch_inc(&mcsafe_key);
 

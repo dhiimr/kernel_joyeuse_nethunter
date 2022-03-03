@@ -119,7 +119,11 @@ void caif_free_client(struct cflayer *adap_layer);
  * The link_support layer is used to add any Link Layer specific
  * framing.
  */
+<<<<<<< HEAD
 void caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
+=======
+int caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			struct cflayer *link_support, int head_room,
 			struct cflayer **layer, int (**rcv_func)(
 				struct sk_buff *, struct net_device *,

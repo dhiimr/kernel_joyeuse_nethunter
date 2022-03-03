@@ -18,7 +18,10 @@
 #include "ext4.h"
 #include "xattr.h"
 #include "truncate.h"
+<<<<<<< HEAD
 #include <trace/events/android_fs.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define EXT4_XATTR_SYSTEM_DATA	"data"
 #define EXT4_MIN_INLINE_DATA_SIZE	((sizeof(__le32) * EXT4_N_BLOCKS))
@@ -512,6 +515,7 @@ int ext4_readpage_inline(struct inode *inode, struct page *page)
 		return -EAGAIN;
 	}
 
+<<<<<<< HEAD
 	if (trace_android_fs_dataread_start_enabled()) {
 		char *path, pathbuf[MAX_TRACE_PATHBUF_LEN];
 
@@ -523,6 +527,8 @@ int ext4_readpage_inline(struct inode *inode, struct page *page)
 						path, current->comm);
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Current inline data can only exist in the 1st page,
 	 * So for all the other pages, just set them uptodate.
@@ -534,8 +540,11 @@ int ext4_readpage_inline(struct inode *inode, struct page *page)
 		SetPageUptodate(page);
 	}
 
+<<<<<<< HEAD
 	trace_android_fs_dataread_end(inode, page_offset(page), PAGE_SIZE);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	up_read(&EXT4_I(inode)->xattr_sem);
 
 	unlock_page(page);
@@ -770,6 +779,15 @@ int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
 	ext4_write_lock_xattr(inode, &no_expand);
 	BUG_ON(!ext4_has_inline_data(inode));
 
+<<<<<<< HEAD
+=======
+	/*
+	 * ei->i_inline_off may have changed since ext4_write_begin()
+	 * called ext4_try_to_write_inline_data()
+	 */
+	(void) ext4_find_inline_data_nolock(inode);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kaddr = kmap_atomic(page);
 	ext4_write_inline_data(inode, &iloc, kaddr, pos, len);
 	kunmap_atomic(kaddr);
@@ -1139,7 +1157,19 @@ static void ext4_restore_inline_data(handle_t *handle, struct inode *inode,
 				     struct ext4_iloc *iloc,
 				     void *buf, int inline_size)
 {
+<<<<<<< HEAD
 	ext4_create_inline_data(handle, inode, inline_size);
+=======
+	int ret;
+
+	ret = ext4_create_inline_data(handle, inode, inline_size);
+	if (ret) {
+		ext4_msg(inode->i_sb, KERN_EMERG,
+			"error restoring inline_data for inode -- potential data loss! (inode %lu, error %d)",
+			inode->i_ino, ret);
+		return;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ext4_write_inline_data(inode, iloc, buf, 0, inline_size);
 	ext4_set_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
 }
@@ -1439,7 +1469,11 @@ int htree_inlinedir_to_tree(struct file *dir_file,
 		err = ext4_htree_store_dirent(dir_file, hinfo->hash,
 					      hinfo->minor_hash, de, &tmp_str);
 		if (err) {
+<<<<<<< HEAD
 			count = err;
+=======
+			ret = err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto out;
 		}
 		count++;
@@ -1909,6 +1943,10 @@ int ext4_inline_data_truncate(struct inode *inode, int *has_inline)
 
 	ext4_write_lock_xattr(inode, &no_expand);
 	if (!ext4_has_inline_data(inode)) {
+<<<<<<< HEAD
+=======
+		ext4_write_unlock_xattr(inode, &no_expand);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		*has_inline = 0;
 		ext4_journal_stop(handle);
 		return 0;

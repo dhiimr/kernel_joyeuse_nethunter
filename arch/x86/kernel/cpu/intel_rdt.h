@@ -7,12 +7,21 @@
 #include <linux/jump_label.h>
 
 #define IA32_L3_QOS_CFG		0xc81
+<<<<<<< HEAD
+=======
+#define IA32_L2_QOS_CFG		0xc82
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define IA32_L3_CBM_BASE	0xc90
 #define IA32_L2_CBM_BASE	0xd10
 #define IA32_MBA_THRTL_BASE	0xd50
 
 #define L3_QOS_CDP_ENABLE	0x01ULL
 
+<<<<<<< HEAD
+=======
+#define L2_QOS_CDP_ENABLE	0x01ULL
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Event IDs are used to program IA32_QM_EVTSEL before reading event
  * counter from IA32_QM_CTR
@@ -354,6 +363,11 @@ enum {
 	RDT_RESOURCE_L3DATA,
 	RDT_RESOURCE_L3CODE,
 	RDT_RESOURCE_L2,
+<<<<<<< HEAD
+=======
+	RDT_RESOURCE_L2DATA,
+	RDT_RESOURCE_L2CODE,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	RDT_RESOURCE_MBA,
 
 	/* Must be the last */
@@ -437,5 +451,9 @@ void cqm_setup_limbo_handler(struct rdt_domain *dom, unsigned long delay_ms);
 void cqm_handle_limbo(struct work_struct *work);
 bool has_busy_rmid(struct rdt_resource *r, struct rdt_domain *d);
 void __check_limbo(struct rdt_domain *d, bool force_free);
+<<<<<<< HEAD
+=======
+void rdt_domain_reconfigure_cdp(struct rdt_resource *r);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif /* _ASM_X86_INTEL_RDT_H */

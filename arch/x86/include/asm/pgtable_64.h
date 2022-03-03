@@ -56,6 +56,7 @@ struct mm_struct;
 void set_pte_vaddr_p4d(p4d_t *p4d_page, unsigned long vaddr, pte_t new_pte);
 void set_pte_vaddr_pud(pud_t *pud_page, unsigned long vaddr, pte_t new_pte);
 
+<<<<<<< HEAD
 static inline void native_pte_clear(struct mm_struct *mm, unsigned long addr,
 				    pte_t *ptep)
 {
@@ -65,6 +66,17 @@ static inline void native_pte_clear(struct mm_struct *mm, unsigned long addr,
 static inline void native_set_pte(pte_t *ptep, pte_t pte)
 {
 	*ptep = pte;
+=======
+static inline void native_set_pte(pte_t *ptep, pte_t pte)
+{
+	WRITE_ONCE(*ptep, pte);
+}
+
+static inline void native_pte_clear(struct mm_struct *mm, unsigned long addr,
+				    pte_t *ptep)
+{
+	native_set_pte(ptep, native_make_pte(0));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void native_set_pte_atomic(pte_t *ptep, pte_t pte)
@@ -74,7 +86,11 @@ static inline void native_set_pte_atomic(pte_t *ptep, pte_t pte)
 
 static inline void native_set_pmd(pmd_t *pmdp, pmd_t pmd)
 {
+<<<<<<< HEAD
 	*pmdp = pmd;
+=======
+	WRITE_ONCE(*pmdp, pmd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void native_pmd_clear(pmd_t *pmd)
@@ -110,7 +126,11 @@ static inline pmd_t native_pmdp_get_and_clear(pmd_t *xp)
 
 static inline void native_set_pud(pud_t *pudp, pud_t pud)
 {
+<<<<<<< HEAD
 	*pudp = pud;
+=======
+	WRITE_ONCE(*pudp, pud);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void native_pud_clear(pud_t *pud)
@@ -220,9 +240,15 @@ static inline pgd_t pti_set_user_pgd(pgd_t *pgdp, pgd_t pgd)
 static inline void native_set_p4d(p4d_t *p4dp, p4d_t p4d)
 {
 #if defined(CONFIG_PAGE_TABLE_ISOLATION) && !defined(CONFIG_X86_5LEVEL)
+<<<<<<< HEAD
 	p4dp->pgd = pti_set_user_pgd(&p4dp->pgd, p4d.pgd);
 #else
 	*p4dp = p4d;
+=======
+	WRITE_ONCE(p4dp->pgd, pti_set_user_pgd(&p4dp->pgd, p4d.pgd));
+#else
+	WRITE_ONCE(*p4dp, p4d);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 }
 
@@ -238,9 +264,15 @@ static inline void native_p4d_clear(p4d_t *p4d)
 static inline void native_set_pgd(pgd_t *pgdp, pgd_t pgd)
 {
 #ifdef CONFIG_PAGE_TABLE_ISOLATION
+<<<<<<< HEAD
 	*pgdp = pti_set_user_pgd(pgdp, pgd);
 #else
 	*pgdp = pgd;
+=======
+	WRITE_ONCE(*pgdp, pti_set_user_pgd(pgdp, pgd));
+#else
+	WRITE_ONCE(*pgdp, pgd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 }
 

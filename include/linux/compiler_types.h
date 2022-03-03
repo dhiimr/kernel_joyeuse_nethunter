@@ -230,6 +230,13 @@ struct ftrace_likely_data {
 # define __latent_entropy
 #endif
 
+<<<<<<< HEAD
+=======
+#ifndef __copy
+# define __copy(symbol)
+#endif
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifndef __randomize_layout
 # define __randomize_layout __designated_init
 #endif
@@ -265,6 +272,7 @@ struct ftrace_likely_data {
 # define __nostackprotector
 #endif
 
+<<<<<<< HEAD
 #ifndef __norecordmcount
 #define __norecordmcount
 #endif
@@ -273,6 +281,8 @@ struct ftrace_likely_data {
 #define __nocfi
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Assume alignment of return value.
  */

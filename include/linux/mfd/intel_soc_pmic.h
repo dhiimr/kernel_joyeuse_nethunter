@@ -25,6 +25,10 @@ struct intel_soc_pmic {
 	int irq;
 	struct regmap *regmap;
 	struct regmap_irq_chip_data *irq_chip_data;
+<<<<<<< HEAD
+=======
+	struct regmap_irq_chip_data *irq_chip_data_pwrbtn;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct regmap_irq_chip_data *irq_chip_data_tmu;
 	struct regmap_irq_chip_data *irq_chip_data_bcu;
 	struct regmap_irq_chip_data *irq_chip_data_adc;

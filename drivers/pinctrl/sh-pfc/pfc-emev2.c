@@ -1263,6 +1263,17 @@ static const char * const dtv_groups[] = {
 	"dtv_b",
 };
 
+<<<<<<< HEAD
+=======
+static const char * const err_rst_reqb_groups[] = {
+	"err_rst_reqb",
+};
+
+static const char * const ext_clki_groups[] = {
+	"ext_clki",
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const char * const iic0_groups[] = {
 	"iic0",
 };
@@ -1285,6 +1296,13 @@ static const char * const lcd_groups[] = {
 	"yuv3",
 };
 
+<<<<<<< HEAD
+=======
+static const char * const lowpwr_groups[] = {
+	"lowpwr",
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const char * const ntsc_groups[] = {
 	"ntsc_clk",
 	"ntsc_data",
@@ -1298,6 +1316,13 @@ static const char * const pwm1_groups[] = {
 	"pwm1",
 };
 
+<<<<<<< HEAD
+=======
+static const char * const ref_clko_groups[] = {
+	"ref_clko",
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const char * const sd_groups[] = {
 	"sd_cki",
 };
@@ -1391,13 +1416,26 @@ static const struct sh_pfc_function pinmux_functions[] = {
 	SH_PFC_FUNCTION(cam),
 	SH_PFC_FUNCTION(cf),
 	SH_PFC_FUNCTION(dtv),
+<<<<<<< HEAD
+=======
+	SH_PFC_FUNCTION(err_rst_reqb),
+	SH_PFC_FUNCTION(ext_clki),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	SH_PFC_FUNCTION(iic0),
 	SH_PFC_FUNCTION(iic1),
 	SH_PFC_FUNCTION(jtag),
 	SH_PFC_FUNCTION(lcd),
+<<<<<<< HEAD
 	SH_PFC_FUNCTION(ntsc),
 	SH_PFC_FUNCTION(pwm0),
 	SH_PFC_FUNCTION(pwm1),
+=======
+	SH_PFC_FUNCTION(lowpwr),
+	SH_PFC_FUNCTION(ntsc),
+	SH_PFC_FUNCTION(pwm0),
+	SH_PFC_FUNCTION(pwm1),
+	SH_PFC_FUNCTION(ref_clko),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	SH_PFC_FUNCTION(sd),
 	SH_PFC_FUNCTION(sdi0),
 	SH_PFC_FUNCTION(sdi1),

@@ -161,10 +161,13 @@
 	};
 };
 
+<<<<<<< HEAD
 &emmc {
 	/delete-property/mmc-hs200-1_8v;
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 &i2c2 {
 	status = "disabled";
 };

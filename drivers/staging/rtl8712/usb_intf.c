@@ -275,7 +275,11 @@ static uint r8712_usb_dvobj_init(struct _adapter *padapter)
 
 	pdvobjpriv->padapter = padapter;
 	padapter->EepromAddressSize = 6;
+<<<<<<< HEAD
 	phost_iface = &pintf->altsetting[0];
+=======
+	phost_iface = pintf->cur_altsetting;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	piface_desc = &phost_iface->desc;
 	pdvobjpriv->nr_endpoint = piface_desc->bNumEndpoints;
 	if (pusbd->speed == USB_SPEED_HIGH) {

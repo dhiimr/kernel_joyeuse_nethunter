@@ -79,6 +79,11 @@
 
 	arcpct: pct {
 		compatible = "snps,archs-pct";
+<<<<<<< HEAD
+=======
+		interrupt-parent = <&cpu_intc>;
+		interrupts = <20>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	/* TIMER0 with interrupt for clockevent */
@@ -161,19 +166,35 @@
 			reg = <0x8000 0x2000>;
 			interrupts = <10>;
 			interrupt-names = "macirq";
+<<<<<<< HEAD
 			phy-mode = "rgmii";
 			snps,pbl = <32>;
+=======
+			phy-mode = "rgmii-id";
+			snps,pbl = <32>;
+			snps,multicast-filter-bins = <256>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			clocks = <&gmacclk>;
 			clock-names = "stmmaceth";
 			phy-handle = <&phy0>;
 			resets = <&cgu_rst HSDK_ETH_RESET>;
 			reset-names = "stmmaceth";
 
+<<<<<<< HEAD
+=======
+			tx-fifo-depth = <4096>;
+			rx-fifo-depth = <4096>;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			mdio {
 				#address-cells = <1>;
 				#size-cells = <0>;
 				compatible = "snps,dwmac-mdio";
+<<<<<<< HEAD
 				phy0: ethernet-phy@0 {
+=======
+				phy0: ethernet-phy@0 { /* Micrel KSZ9031 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					reg = <0>;
 					ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
 					ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;

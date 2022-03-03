@@ -216,6 +216,7 @@ static acpi_status intel_pmic_regs_handler(u32 function,
 		void *handler_context, void *region_context)
 {
 	struct intel_pmic_opregion *opregion = region_context;
+<<<<<<< HEAD
 	int result = 0;
 
 	switch (address) {
@@ -241,6 +242,38 @@ static acpi_status intel_pmic_regs_handler(u32 function,
 				*value64 = opregion->ctx.val;
 		}
 		memset(&opregion->ctx, 0x00, sizeof(opregion->ctx));
+=======
+	int result = -EINVAL;
+
+	if (function == ACPI_WRITE) {
+		switch (address) {
+		case 0:
+			return AE_OK;
+		case 1:
+			opregion->ctx.addr |= (*value64 & 0xff) << 8;
+			return AE_OK;
+		case 2:
+			opregion->ctx.addr |= *value64 & 0xff;
+			return AE_OK;
+		case 3:
+			opregion->ctx.val = *value64 & 0xff;
+			return AE_OK;
+		case 4:
+			if (*value64) {
+				result = regmap_write(opregion->regmap, opregion->ctx.addr,
+						      opregion->ctx.val);
+			} else {
+				result = regmap_read(opregion->regmap, opregion->ctx.addr,
+						     &opregion->ctx.val);
+			}
+			opregion->ctx.addr = 0;
+		}
+	}
+
+	if (function == ACPI_READ && address == 3) {
+		*value64 = opregion->ctx.val;
+		return AE_OK;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (result < 0) {

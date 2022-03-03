@@ -78,7 +78,11 @@
 };
 
 &mmc0 {
+<<<<<<< HEAD
 	pinctrl-0 = <&mmc0_pins_a>;
+=======
+	pinctrl-0 = <&mmc0_pins>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pinctrl-names = "default";
 	broken-cd;
 	bus-width = <4>;
@@ -87,7 +91,11 @@
 };
 
 &uart0 {
+<<<<<<< HEAD
 	pinctrl-0 = <&uart0_pins_a>;
+=======
+	pinctrl-0 = <&uart0_pb_pins>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pinctrl-names = "default";
 	status = "okay";
 };

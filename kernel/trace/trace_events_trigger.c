@@ -127,9 +127,16 @@ static void *trigger_next(struct seq_file *m, void *t, loff_t *pos)
 {
 	struct trace_event_file *event_file = event_file_data(m->private);
 
+<<<<<<< HEAD
 	if (t == SHOW_AVAILABLE_TRIGGERS)
 		return NULL;
 
+=======
+	if (t == SHOW_AVAILABLE_TRIGGERS) {
+		(*pos)++;
+		return NULL;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return seq_list_next(t, &event_file->triggers, pos);
 }
 
@@ -222,11 +229,25 @@ static int event_trigger_regex_open(struct inode *inode, struct file *file)
 
 static int trigger_process_regex(struct trace_event_file *file, char *buff)
 {
+<<<<<<< HEAD
 	char *command, *next = buff;
 	struct event_command *p;
 	int ret = -EINVAL;
 
 	command = strsep(&next, ": \t");
+=======
+	char *command, *next;
+	struct event_command *p;
+	int ret = -EINVAL;
+
+	next = buff = skip_spaces(buff);
+	command = strsep(&next, ": \t");
+	if (next) {
+		next = skip_spaces(next);
+		if (!*next)
+			next = NULL;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	command = (command[0] != '!') ? command : command + 1;
 
 	mutex_lock(&trigger_cmd_mutex);
@@ -629,8 +650,19 @@ event_trigger_callback(struct event_command *cmd_ops,
 	int ret;
 
 	/* separate the trigger from the filter (t:n [if filter]) */
+<<<<<<< HEAD
 	if (param && isdigit(param[0]))
 		trigger = strsep(&param, " \t");
+=======
+	if (param && isdigit(param[0])) {
+		trigger = strsep(&param, " \t");
+		if (param) {
+			param = skip_spaces(param);
+			if (!*param)
+				param = NULL;
+		}
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	trigger_ops = cmd_ops->get_trigger_ops(cmd, trigger);
 
@@ -1074,6 +1106,7 @@ register_snapshot_trigger(char *glob, struct event_trigger_ops *ops,
 			  struct event_trigger_data *data,
 			  struct trace_event_file *file)
 {
+<<<<<<< HEAD
 	int ret = register_trigger(glob, ops, data, file);
 
 	if (ret > 0 && tracing_alloc_snapshot_instance(file->tr) != 0) {
@@ -1082,6 +1115,12 @@ register_snapshot_trigger(char *glob, struct event_trigger_ops *ops,
 	}
 
 	return ret;
+=======
+	if (tracing_alloc_snapshot_instance(file->tr) != 0)
+		return 0;
+
+	return register_trigger(glob, ops, data, file);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int
@@ -1345,6 +1384,14 @@ int event_enable_trigger_func(struct event_command *cmd_ops,
 	trigger = strsep(&param, " \t");
 	if (!trigger)
 		return -EINVAL;
+<<<<<<< HEAD
+=======
+	if (param) {
+		param = skip_spaces(param);
+		if (!*param)
+			param = NULL;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	system = strsep(&trigger, ":");
 	if (!trigger)

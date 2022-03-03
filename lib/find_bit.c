@@ -133,6 +133,7 @@ EXPORT_SYMBOL(find_last_bit);
 
 #ifdef __BIG_ENDIAN
 
+<<<<<<< HEAD
 /* include/linux/byteorder does not support "unsigned long" type */
 static inline unsigned long ext2_swab(const unsigned long y)
 {
@@ -145,6 +146,8 @@ static inline unsigned long ext2_swab(const unsigned long y)
 #endif
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #if !defined(find_next_bit_le) || !defined(find_next_zero_bit_le)
 static unsigned long _find_next_bit_le(const unsigned long *addr,
 		unsigned long nbits, unsigned long start, unsigned long invert)
@@ -157,7 +160,11 @@ static unsigned long _find_next_bit_le(const unsigned long *addr,
 	tmp = addr[start / BITS_PER_LONG] ^ invert;
 
 	/* Handle 1st word. */
+<<<<<<< HEAD
 	tmp &= ext2_swab(BITMAP_FIRST_WORD_MASK(start));
+=======
+	tmp &= swab(BITMAP_FIRST_WORD_MASK(start));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	start = round_down(start, BITS_PER_LONG);
 
 	while (!tmp) {
@@ -168,7 +175,11 @@ static unsigned long _find_next_bit_le(const unsigned long *addr,
 		tmp = addr[start / BITS_PER_LONG] ^ invert;
 	}
 
+<<<<<<< HEAD
 	return min(start + __ffs(ext2_swab(tmp)), nbits);
+=======
+	return min(start + __ffs(swab(tmp)), nbits);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #endif
 

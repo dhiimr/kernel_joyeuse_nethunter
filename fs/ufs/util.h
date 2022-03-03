@@ -229,7 +229,11 @@ ufs_get_inode_gid(struct super_block *sb, struct ufs_inode *inode)
 	case UFS_UID_44BSD:
 		return fs32_to_cpu(sb, inode->ui_u3.ui_44.ui_gid);
 	case UFS_UID_EFT:
+<<<<<<< HEAD
 		if (inode->ui_u1.oldids.ui_suid == 0xFFFF)
+=======
+		if (inode->ui_u1.oldids.ui_sgid == 0xFFFF)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return fs32_to_cpu(sb, inode->ui_u3.ui_sun.ui_gid);
 		/* Fall through */
 	default:

@@ -65,6 +65,7 @@
 use warnings;
 use strict;
 use File::Find;
+<<<<<<< HEAD
 
 my $nm = ($ENV{'NM'} || "nm") . " -p";
 my $objdump = ($ENV{'OBJDUMP'} || "objdump") . " -s -j .comment";
@@ -72,6 +73,16 @@ my $srctree = "";
 my $objtree = "";
 $srctree = "$ENV{'srctree'}/" if (exists($ENV{'srctree'}));
 $objtree = "$ENV{'objtree'}/" if (exists($ENV{'objtree'}));
+=======
+use File::Spec;
+
+my $nm = ($ENV{'NM'} || "nm") . " -p";
+my $objdump = ($ENV{'OBJDUMP'} || "objdump") . " -s -j .comment";
+my $srctree = File::Spec->curdir();
+my $objtree = File::Spec->curdir();
+$srctree = File::Spec->rel2abs($ENV{'srctree'}) if (exists($ENV{'srctree'}));
+$objtree = File::Spec->rel2abs($ENV{'objtree'}) if (exists($ENV{'objtree'}));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 if ($#ARGV != -1) {
 	print STDERR "usage: $0 takes no parameters\n";
@@ -231,9 +242,15 @@ sub do_nm
 	}
 	($source = $basename) =~ s/\.o$//;
 	if (-e "$source.c" || -e "$source.S") {
+<<<<<<< HEAD
 		$source = "$objtree$File::Find::dir/$source";
 	} else {
 		$source = "$srctree$File::Find::dir/$source";
+=======
+		$source = File::Spec->catfile($objtree, $File::Find::dir, $source)
+	} else {
+		$source = File::Spec->catfile($srctree, $File::Find::dir, $source)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	if (! -e "$source.c" && ! -e "$source.S") {
 		# No obvious source, exclude the object if it is conglomerate

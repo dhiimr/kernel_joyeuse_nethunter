@@ -13,7 +13,11 @@
 #include <linux/dcache.h>
 #include <linux/magic.h>
 #include <linux/types.h>
+<<<<<<< HEAD
 //#include "flask.h"
+=======
+#include "flask.h"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define SECSID_NULL			0x00000000 /* unspecified SID */
 #define SECSID_WILD			0xffffffff /* wildcard SID */

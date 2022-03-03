@@ -4,9 +4,12 @@ ifeq ($(wildcard $(srctree)/arch/$(SRCARCH)/include/uapi/asm/a.out.h),)
 no-export-headers += a.out.h
 endif
 
+<<<<<<< HEAD
 header-y += hbtp_input.h
 header-y += qbt1000.h
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 ifeq ($(wildcard $(srctree)/arch/$(SRCARCH)/include/uapi/asm/kvm.h),)
 no-export-headers += kvm.h
 endif
@@ -14,6 +17,7 @@ endif
 ifeq ($(wildcard $(srctree)/arch/$(SRCARCH)/include/uapi/asm/kvm_para.h),)
 no-export-headers += kvm_para.h
 endif
+<<<<<<< HEAD
 
 header-y += mhi.h
 header-y += sockev.h
@@ -25,3 +29,5 @@ ifneq ($(VSERVICES_SUPPORT), "")
 include include/linux/Kbuild.vservices
 endif
 header-y += okl4-link-shbuf.h
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

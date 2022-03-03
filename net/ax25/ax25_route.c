@@ -443,9 +443,17 @@ int ax25_rt_autobind(ax25_cb *ax25, ax25_address *addr)
 	}
 
 	if (ax25->sk != NULL) {
+<<<<<<< HEAD
 		bh_lock_sock(ax25->sk);
 		sock_reset_flag(ax25->sk, SOCK_ZAPPED);
 		bh_unlock_sock(ax25->sk);
+=======
+		local_bh_disable();
+		bh_lock_sock(ax25->sk);
+		sock_reset_flag(ax25->sk, SOCK_ZAPPED);
+		bh_unlock_sock(ax25->sk);
+		local_bh_enable();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 put:

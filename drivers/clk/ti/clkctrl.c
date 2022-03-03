@@ -124,9 +124,12 @@ static int _omap4_clkctrl_clk_enable(struct clk_hw *hw)
 	int ret;
 	union omap4_timeout timeout = { 0 };
 
+<<<<<<< HEAD
 	if (!clk->enable_bit)
 		return 0;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (clk->clkdm) {
 		ret = ti_clk_ll_ops->clkdm_clk_enable(clk->clkdm, hw->clk);
 		if (ret) {
@@ -138,6 +141,12 @@ static int _omap4_clkctrl_clk_enable(struct clk_hw *hw)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	if (!clk->enable_bit)
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	val = ti_clk_ll_ops->clk_readl(&clk->enable_reg);
 
 	val &= ~OMAP4_MODULEMODE_MASK;
@@ -166,7 +175,11 @@ static void _omap4_clkctrl_clk_disable(struct clk_hw *hw)
 	union omap4_timeout timeout = { 0 };
 
 	if (!clk->enable_bit)
+<<<<<<< HEAD
 		return;
+=======
+		goto exit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	val = ti_clk_ll_ops->clk_readl(&clk->enable_reg);
 
@@ -215,6 +228,10 @@ static struct clk_hw *_ti_omap4_clkctrl_xlate(struct of_phandle_args *clkspec,
 {
 	struct omap_clkctrl_provider *provider = data;
 	struct omap_clkctrl_clk *entry;
+<<<<<<< HEAD
+=======
+	bool found = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (clkspec->args_count != 2)
 		return ERR_PTR(-EINVAL);
@@ -224,11 +241,21 @@ static struct clk_hw *_ti_omap4_clkctrl_xlate(struct of_phandle_args *clkspec,
 
 	list_for_each_entry(entry, &provider->clocks, node) {
 		if (entry->reg_offset == clkspec->args[0] &&
+<<<<<<< HEAD
 		    entry->bit_offset == clkspec->args[1])
 			break;
 	}
 
 	if (!entry)
+=======
+		    entry->bit_offset == clkspec->args[1]) {
+			found = true;
+			break;
+		}
+	}
+
+	if (!found)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ERR_PTR(-EINVAL);
 
 	return entry->clk;

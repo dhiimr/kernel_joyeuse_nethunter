@@ -698,21 +698,29 @@ struct go7007 *go7007_alloc(const struct go7007_board_info *board,
 						struct device *dev)
 {
 	struct go7007 *go;
+<<<<<<< HEAD
 	int i;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	go = kzalloc(sizeof(struct go7007), GFP_KERNEL);
 	if (go == NULL)
 		return NULL;
 	go->dev = dev;
 	go->board_info = board;
+<<<<<<< HEAD
 	go->board_id = 0;
 	go->tuner_type = -1;
 	go->channel_number = 0;
 	go->name[0] = 0;
+=======
+	go->tuner_type = -1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_init(&go->hw_lock);
 	init_waitqueue_head(&go->frame_waitq);
 	spin_lock_init(&go->spinlock);
 	go->status = STATUS_INIT;
+<<<<<<< HEAD
 	memset(&go->i2c_adapter, 0, sizeof(go->i2c_adapter));
 	go->i2c_adapter_online = 0;
 	go->interrupt_available = 0;
@@ -741,6 +749,14 @@ struct go7007 *go7007_alloc(const struct go7007_board_info *board,
 		go->modet_map[i] = 0;
 	go->audio_deliver = NULL;
 	go->audio_enabled = 0;
+=======
+	init_waitqueue_head(&go->interrupt_waitq);
+	go7007_update_board(go);
+	go->format = V4L2_PIX_FMT_MJPEG;
+	go->bitrate = 1500000;
+	go->fps_scale = 1;
+	go->aspect_ratio = GO7007_RATIO_1_1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return go;
 }

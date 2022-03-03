@@ -64,13 +64,21 @@ static int w1_ds2438_get_page(struct w1_slave *sl, int pageno, u8 *buf)
 		if (w1_reset_select_slave(sl))
 			continue;
 		w1_buf[0] = W1_DS2438_RECALL_MEMORY;
+<<<<<<< HEAD
 		w1_buf[1] = 0x00;
+=======
+		w1_buf[1] = (u8)pageno;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		w1_write_block(sl->master, w1_buf, 2);
 
 		if (w1_reset_select_slave(sl))
 			continue;
 		w1_buf[0] = W1_DS2438_READ_SCRATCH;
+<<<<<<< HEAD
 		w1_buf[1] = 0x00;
+=======
+		w1_buf[1] = (u8)pageno;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		w1_write_block(sl->master, w1_buf, 2);
 
 		count = w1_read_block(sl->master, buf, DS2438_PAGE_SIZE + 1);
@@ -186,8 +194,13 @@ static int w1_ds2438_change_config_bit(struct w1_slave *sl, u8 mask, u8 value)
 	return -1;
 }
 
+<<<<<<< HEAD
 static uint16_t w1_ds2438_get_voltage(struct w1_slave *sl,
 				      int adc_input, uint16_t *voltage)
+=======
+static int w1_ds2438_get_voltage(struct w1_slave *sl,
+				 int adc_input, uint16_t *voltage)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned int retries = W1_DS2438_RETRIES;
 	u8 w1_buf[DS2438_PAGE_SIZE + 1 /*for CRC*/];
@@ -235,6 +248,28 @@ post_unlock:
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static int w1_ds2438_get_current(struct w1_slave *sl, int16_t *voltage)
+{
+	u8 w1_buf[DS2438_PAGE_SIZE + 1 /*for CRC*/];
+	int ret;
+
+	mutex_lock(&sl->master->bus_mutex);
+
+	if (w1_ds2438_get_page(sl, 0, w1_buf) == 0) {
+		/* The voltage measured across current sense resistor RSENS. */
+		*voltage = (((int16_t) w1_buf[DS2438_CURRENT_MSB]) << 8) | ((int16_t) w1_buf[DS2438_CURRENT_LSB]);
+		ret = 0;
+	} else
+		ret = -1;
+
+	mutex_unlock(&sl->master->bus_mutex);
+
+	return ret;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static ssize_t iad_write(struct file *filp, struct kobject *kobj,
 			 struct bin_attribute *bin_attr, char *buf,
 			 loff_t off, size_t count)
@@ -257,6 +292,30 @@ static ssize_t iad_write(struct file *filp, struct kobject *kobj,
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static ssize_t iad_read(struct file *filp, struct kobject *kobj,
+			struct bin_attribute *bin_attr, char *buf,
+			loff_t off, size_t count)
+{
+	struct w1_slave *sl = kobj_to_w1_slave(kobj);
+	int ret;
+	int16_t voltage;
+
+	if (off != 0)
+		return 0;
+	if (!buf)
+		return -EINVAL;
+
+	if (w1_ds2438_get_current(sl, &voltage) == 0) {
+		ret = snprintf(buf, count, "%i\n", voltage);
+	} else
+		ret = -EIO;
+
+	return ret;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static ssize_t page0_read(struct file *filp, struct kobject *kobj,
 			  struct bin_attribute *bin_attr, char *buf,
 			  loff_t off, size_t count)
@@ -272,9 +331,19 @@ static ssize_t page0_read(struct file *filp, struct kobject *kobj,
 
 	mutex_lock(&sl->master->bus_mutex);
 
+<<<<<<< HEAD
 	if (w1_ds2438_get_page(sl, 0, w1_buf) == 0) {
 		memcpy(buf, &w1_buf, DS2438_PAGE_SIZE);
 		ret = DS2438_PAGE_SIZE;
+=======
+	/* Read no more than page0 size */
+	if (count > DS2438_PAGE_SIZE)
+		count = DS2438_PAGE_SIZE;
+
+	if (w1_ds2438_get_page(sl, 0, w1_buf) == 0) {
+		memcpy(buf, &w1_buf, count);
+		ret = count;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else
 		ret = -EIO;
 
@@ -289,7 +358,10 @@ static ssize_t temperature_read(struct file *filp, struct kobject *kobj,
 {
 	struct w1_slave *sl = kobj_to_w1_slave(kobj);
 	int ret;
+<<<<<<< HEAD
 	ssize_t c = PAGE_SIZE;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int16_t temp;
 
 	if (off != 0)
@@ -298,8 +370,12 @@ static ssize_t temperature_read(struct file *filp, struct kobject *kobj,
 		return -EINVAL;
 
 	if (w1_ds2438_get_temperature(sl, &temp) == 0) {
+<<<<<<< HEAD
 		c -= snprintf(buf + PAGE_SIZE - c, c, "%d\n", temp);
 		ret = PAGE_SIZE - c;
+=======
+		ret = snprintf(buf, count, "%i\n", temp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else
 		ret = -EIO;
 
@@ -312,7 +388,10 @@ static ssize_t vad_read(struct file *filp, struct kobject *kobj,
 {
 	struct w1_slave *sl = kobj_to_w1_slave(kobj);
 	int ret;
+<<<<<<< HEAD
 	ssize_t c = PAGE_SIZE;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	uint16_t voltage;
 
 	if (off != 0)
@@ -321,8 +400,12 @@ static ssize_t vad_read(struct file *filp, struct kobject *kobj,
 		return -EINVAL;
 
 	if (w1_ds2438_get_voltage(sl, DS2438_ADC_INPUT_VAD, &voltage) == 0) {
+<<<<<<< HEAD
 		c -= snprintf(buf + PAGE_SIZE - c, c, "%d\n", voltage);
 		ret = PAGE_SIZE - c;
+=======
+		ret = snprintf(buf, count, "%u\n", voltage);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else
 		ret = -EIO;
 
@@ -335,7 +418,10 @@ static ssize_t vdd_read(struct file *filp, struct kobject *kobj,
 {
 	struct w1_slave *sl = kobj_to_w1_slave(kobj);
 	int ret;
+<<<<<<< HEAD
 	ssize_t c = PAGE_SIZE;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	uint16_t voltage;
 
 	if (off != 0)
@@ -344,15 +430,23 @@ static ssize_t vdd_read(struct file *filp, struct kobject *kobj,
 		return -EINVAL;
 
 	if (w1_ds2438_get_voltage(sl, DS2438_ADC_INPUT_VDD, &voltage) == 0) {
+<<<<<<< HEAD
 		c -= snprintf(buf + PAGE_SIZE - c, c, "%d\n", voltage);
 		ret = PAGE_SIZE - c;
+=======
+		ret = snprintf(buf, count, "%u\n", voltage);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else
 		ret = -EIO;
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static BIN_ATTR(iad, S_IRUGO | S_IWUSR | S_IWGRP, NULL, iad_write, 1);
+=======
+static BIN_ATTR(iad, S_IRUGO | S_IWUSR | S_IWGRP, iad_read, iad_write, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static BIN_ATTR_RO(page0, DS2438_PAGE_SIZE);
 static BIN_ATTR_RO(temperature, 0/* real length varies */);
 static BIN_ATTR_RO(vad, 0/* real length varies */);

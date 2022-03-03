@@ -3,11 +3,14 @@
 # Makefile for misc devices that really don't fit anywhere else.
 #
 
+<<<<<<< HEAD
 #board id
 obj-y += board_id.o
 
 obj-$(CONFIG_DRV2624_HAPTIC) += drv2624_haptic/
 obj-$(CONFIG_AW8624_HAPTIC) += aw8624_haptic/
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-$(CONFIG_IBM_ASM)		+= ibmasm/
 obj-$(CONFIG_AD525X_DPOT)	+= ad525x_dpot.o
 obj-$(CONFIG_AD525X_DPOT_I2C)	+= ad525x_dpot-i2c.o
@@ -55,6 +58,7 @@ obj-$(CONFIG_SRAM)		+= sram.o
 obj-$(CONFIG_SRAM_EXEC)		+= sram-exec.o
 obj-y				+= mic/
 obj-$(CONFIG_GENWQE)		+= genwqe/
+<<<<<<< HEAD
 obj-$(CONFIG_HDCP_QSEECOM)	+= hdcp_qseecom.o
 obj-$(CONFIG_HDCP_QSEECOM)	+= msm_hdcp.o
 obj-$(CONFIG_QSEECOM)		+= qseecom.o
@@ -73,6 +77,14 @@ obj-$(CONFIG_QPNP_MISC) 	+= qpnp-misc.o
 obj-$(CONFIG_OKL4_USER_VIRQ)	+= okl4-virq.o
 obj-$(CONFIG_OKL4_RINGBUF)	+= okl4-ringbuf.o
 obj-$(CONFIG_TEST_IRQ_REQUESTER) += irq_requester.o
+=======
+obj-$(CONFIG_ECHO)		+= echo/
+obj-$(CONFIG_VEXPRESS_SYSCFG)	+= vexpress-syscfg.o
+obj-$(CONFIG_CXL_BASE)		+= cxl/
+obj-$(CONFIG_ASPEED_LPC_CTRL)	+= aspeed-lpc-ctrl.o
+obj-$(CONFIG_ASPEED_LPC_SNOOP)	+= aspeed-lpc-snoop.o
+obj-$(CONFIG_PCI_ENDPOINT_TEST)	+= pci_endpoint_test.o
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 lkdtm-$(CONFIG_LKDTM)		+= lkdtm_core.o
 lkdtm-$(CONFIG_LKDTM)		+= lkdtm_bugs.o
@@ -83,6 +95,7 @@ lkdtm-$(CONFIG_LKDTM)		+= lkdtm_rodata_objcopy.o
 lkdtm-$(CONFIG_LKDTM)		+= lkdtm_usercopy.o
 
 KCOV_INSTRUMENT_lkdtm_rodata.o	:= n
+<<<<<<< HEAD
 CFLAGS_lkdtm_rodata.o		+= $(DISABLE_LTO)
 
 OBJCOPYFLAGS :=
@@ -98,3 +111,12 @@ obj-$(CONFIG_OKL4_GUEST)        += okl4-panic.o
 obj-$(CONFIG_OKL4_LINK_SHBUF)    += okl4-link-shbuf.o
 obj-$(CONFIG_ANT_CHECK)		+= ant_check.o
 obj-$(CONFIG_ANT_CHECK_DIV)		+= ant_check_div.o
+=======
+
+OBJCOPYFLAGS :=
+OBJCOPYFLAGS_lkdtm_rodata_objcopy.o := \
+	--rename-section .text=.rodata,alloc,readonly,load,contents
+targets += lkdtm_rodata.o lkdtm_rodata_objcopy.o
+$(obj)/lkdtm_rodata_objcopy.o: $(obj)/lkdtm_rodata.o FORCE
+	$(call if_changed,objcopy)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

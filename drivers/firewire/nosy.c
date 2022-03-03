@@ -359,6 +359,10 @@ nosy_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	struct client *client = file->private_data;
 	spinlock_t *client_list_lock = &client->lynx->client_list_lock;
 	struct nosy_stats stats;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	switch (cmd) {
 	case NOSY_IOC_GET_STATS:
@@ -373,11 +377,23 @@ nosy_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			return 0;
 
 	case NOSY_IOC_START:
+<<<<<<< HEAD
 		spin_lock_irq(client_list_lock);
 		list_add_tail(&client->link, &client->lynx->client_list);
 		spin_unlock_irq(client_list_lock);
 
 		return 0;
+=======
+		ret = -EBUSY;
+		spin_lock_irq(client_list_lock);
+		if (list_empty(&client->link)) {
+			list_add_tail(&client->link, &client->lynx->client_list);
+			ret = 0;
+		}
+		spin_unlock_irq(client_list_lock);
+
+		return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	case NOSY_IOC_STOP:
 		spin_lock_irq(client_list_lock);

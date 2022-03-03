@@ -506,8 +506,13 @@ static int iort_dev_find_its_id(struct device *dev, u32 req_id,
 
 	/* Move to ITS specific data */
 	its = (struct acpi_iort_its_group *)node->node_data;
+<<<<<<< HEAD
 	if (idx > its->its_count) {
 		dev_err(dev, "requested ITS ID index [%d] is greater than available [%d]\n",
+=======
+	if (idx >= its->its_count) {
+		dev_err(dev, "requested ITS ID index [%d] overruns ITS entries [%d]\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			idx, its->its_count);
 		return -ENXIO;
 	}

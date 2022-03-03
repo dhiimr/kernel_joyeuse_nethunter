@@ -233,7 +233,11 @@ static int __net_init ping_v6_proc_init_net(struct net *net)
 	return ping_proc_register(net, &ping_v6_seq_afinfo);
 }
 
+<<<<<<< HEAD
 static void __net_init ping_v6_proc_exit_net(struct net *net)
+=======
+static void __net_exit ping_v6_proc_exit_net(struct net *net)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return ping_proc_unregister(net, &ping_v6_seq_afinfo);
 }

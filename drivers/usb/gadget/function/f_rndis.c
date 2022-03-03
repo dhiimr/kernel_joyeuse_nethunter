@@ -70,6 +70,7 @@
  *   - MS-Windows drivers sometimes emit undocumented requests.
  */
 
+<<<<<<< HEAD
 static bool rndis_multipacket_dl_disable;
 module_param(rndis_multipacket_dl_disable, bool, 0644);
 MODULE_PARM_DESC(rndis_multipacket_dl_disable,
@@ -80,6 +81,8 @@ module_param(rndis_ul_max_pkt_per_xfer, uint, 0644);
 MODULE_PARM_DESC(rndis_ul_max_pkt_per_xfer,
 	"Maximum packets per transfer for UL aggregation");
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct f_rndis {
 	struct gether			port;
 	u8				ctrl_id, data_id;
@@ -101,8 +104,15 @@ static inline struct f_rndis *func_to_rndis(struct usb_function *f)
 /* peak (theoretical) bulk transfer rate in bits-per-second */
 static unsigned int bitrate(struct usb_gadget *g)
 {
+<<<<<<< HEAD
 	if (gadget_is_superspeed(g) && g->speed == USB_SPEED_SUPER)
 		return 13 * 1024 * 8 * 1000 * 8;
+=======
+	if (gadget_is_superspeed(g) && g->speed >= USB_SPEED_SUPER_PLUS)
+		return 4250000000U;
+	if (gadget_is_superspeed(g) && g->speed == USB_SPEED_SUPER)
+		return 3750000000U;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	else if (gadget_is_dualspeed(g) && g->speed == USB_SPEED_HIGH)
 		return 13 * 512 * 8 * 1000 * 8;
 	else
@@ -632,6 +642,10 @@ static void rndis_disable(struct usb_function *f)
 	gether_disconnect(&rndis->port);
 
 	usb_ep_disable(rndis->notify);
+<<<<<<< HEAD
+=======
+	rndis->notify->desc = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*-------------------------------------------------------------------------*/
@@ -752,6 +766,7 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 	rndis_data_intf.bInterfaceNumber = status;
 	rndis_union_desc.bSlaveInterface0 = status;
 
+<<<<<<< HEAD
 	if (rndis_opts->wceis) {
 		/* "Wireless" RNDIS; auto-detected by Windows */
 		rndis_iad_descriptor.bFunctionClass =
@@ -773,6 +788,8 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 						USB_CDC_ACM_PROTO_VENDOR;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	status = -ENODEV;
 
 	/* allocate instance-specific endpoints */
@@ -821,7 +838,11 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 	ss_notify_desc.bEndpointAddress = fs_notify_desc.bEndpointAddress;
 
 	status = usb_assign_descriptors(f, eth_fs_function, eth_hs_function,
+<<<<<<< HEAD
 			eth_ss_function, NULL);
+=======
+			eth_ss_function, eth_ss_function);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (status)
 		goto fail;
 
@@ -830,7 +851,10 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 
 	rndis_set_param_medium(rndis->params, RNDIS_MEDIUM_802_3, 0);
 	rndis_set_host_mac(rndis->params, rndis->ethaddr);
+<<<<<<< HEAD
 	rndis_set_max_pkt_xfer(rndis->params, rndis_ul_max_pkt_per_xfer);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (rndis->manufacturer && rndis->vendorID &&
 			rndis_set_param_vendor(rndis->params, rndis->vendorID,
@@ -911,9 +935,12 @@ USB_ETHER_CONFIGFS_ITEM_ATTR_U8_RW(rndis, subclass);
 /* f_rndis_opts_protocol */
 USB_ETHER_CONFIGFS_ITEM_ATTR_U8_RW(rndis, protocol);
 
+<<<<<<< HEAD
 /* f_rndis_opts_wceis */
 USB_ETHERNET_CONFIGFS_ITEM_ATTR_WCEIS(rndis);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct configfs_attribute *rndis_attrs[] = {
 	&rndis_opts_attr_dev_addr,
 	&rndis_opts_attr_host_addr,
@@ -922,7 +949,10 @@ static struct configfs_attribute *rndis_attrs[] = {
 	&rndis_opts_attr_class,
 	&rndis_opts_attr_subclass,
 	&rndis_opts_attr_protocol,
+<<<<<<< HEAD
 	&rndis_opts_attr_wceis,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	NULL,
 };
 
@@ -987,9 +1017,12 @@ static struct usb_function_instance *rndis_alloc_inst(void)
 	}
 	opts->rndis_interf_group = rndis_interf_group;
 
+<<<<<<< HEAD
 	/* Enable "Wireless" RNDIS by default */
 	opts->wceis = true;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return &opts->func_inst;
 }
 
@@ -1047,7 +1080,10 @@ static struct usb_function *rndis_alloc(struct usb_function_instance *fi)
 	rndis->port.header_len = sizeof(struct rndis_packet_msg_type);
 	rndis->port.wrap = rndis_add_header;
 	rndis->port.unwrap = rndis_rm_hdr;
+<<<<<<< HEAD
 	rndis->port.ul_max_pkts_per_xfer = rndis_ul_max_pkt_per_xfer;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rndis->port.func.name = "rndis";
 	/* descriptors are per-instance copies */
@@ -1058,7 +1094,11 @@ static struct usb_function *rndis_alloc(struct usb_function_instance *fi)
 	rndis->port.func.disable = rndis_disable;
 	rndis->port.func.free_func = rndis_free;
 
+<<<<<<< HEAD
 	params = rndis_register(rndis_response_available, rndis, NULL);
+=======
+	params = rndis_register(rndis_response_available, rndis);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (IS_ERR(params)) {
 		kfree(rndis);
 		return ERR_CAST(params);

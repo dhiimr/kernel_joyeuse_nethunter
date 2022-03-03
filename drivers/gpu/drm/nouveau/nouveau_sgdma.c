@@ -106,6 +106,7 @@ nouveau_sgdma_create_ttm(struct ttm_bo_device *bdev,
 	else
 		nvbe->ttm.ttm.func = &nv50_sgdma_backend;
 
+<<<<<<< HEAD
 	if (ttm_dma_tt_init(&nvbe->ttm, bdev, size, page_flags, dummy_read_page))
 		/*
 		 * A failing ttm_dma_tt_init() will call ttm_tt_destroy()
@@ -113,5 +114,11 @@ nouveau_sgdma_create_ttm(struct ttm_bo_device *bdev,
 		 * to free nvbe here.
 		 */
 		return NULL;
+=======
+	if (ttm_dma_tt_init(&nvbe->ttm, bdev, size, page_flags, dummy_read_page)) {
+		kfree(nvbe);
+		return NULL;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return &nvbe->ttm.ttm;
 }

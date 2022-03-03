@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0
+<<<<<<< HEAD
 KASAN_SANITIZE_scm.o := n
 obj-$(CONFIG_QCOM_CPUSS_DUMP) += cpuss_dump.o
 obj-$(CONFIG_QCOM_GLINK_SSR) +=	glink_ssr.o
@@ -23,10 +24,19 @@ obj-$(CONFIG_QCOM_QMI_POWER_COLLAPSE) += wda_qmi.o
 obj-$(CONFIG_QCOM_SMD_RPM)	+= smd-rpm.o
 obj-$(CONFIG_QCOM_SMEM) +=	smem.o
 obj-$(CONFIG_MSM_SPM) += msm-spm.o spm_devices.o
+=======
+obj-$(CONFIG_QCOM_GLINK_SSR) +=	glink_ssr.o
+obj-$(CONFIG_QCOM_GSBI)	+=	qcom_gsbi.o
+obj-$(CONFIG_QCOM_MDT_LOADER)	+= mdt_loader.o
+obj-$(CONFIG_QCOM_PM)	+=	spm.o
+obj-$(CONFIG_QCOM_SMD_RPM)	+= smd-rpm.o
+obj-$(CONFIG_QCOM_SMEM) +=	smem.o
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
 obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
 obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
 obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
+<<<<<<< HEAD
 CFLAGS_scm.o :=$(call as-instr,.arch_extension sec,-DREQUIRES_SEC=1)
 obj-$(CONFIG_QCOM_SCM)  +=      scm.o
 obj-$(CONFIG_QCOM_SCM_QCPE)  += scm_qcpe.o
@@ -105,3 +115,5 @@ obj-$(CONFIG_QCOM_HYP_CORE_CTL) += hyp_core_ctl.o
 obj-y += serial_num.o
 obj-$(CONFIG_QCOM_AOP_DDRSS_COMMANDS) += aop_ddrss_cmds.o
 obj-$(CONFIG_RMNET_CTL) += rmnet_ctl/
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

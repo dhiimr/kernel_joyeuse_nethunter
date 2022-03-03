@@ -587,6 +587,7 @@ config TILE_SROM
 	  how to partition a single ROM for multiple purposes.
 
 source "drivers/char/xillybus/Kconfig"
+<<<<<<< HEAD
 source "drivers/char/diag/Kconfig"
 
 config MSM_FASTCVPD
@@ -661,3 +662,8 @@ config VSERVICES_VTTY_COUNT
 	help
 	  The maximum number of Virtual Services serial devices to support.
 	  This limit applies to both the client and server.
+=======
+
+endmenu
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

@@ -1200,6 +1200,10 @@ static void __setup_root(struct btrfs_root *root, struct btrfs_fs_info *fs_info,
 	refcount_set(&root->refs, 1);
 	atomic_set(&root->will_be_snapshotted, 0);
 	atomic64_set(&root->qgroup_meta_rsv, 0);
+<<<<<<< HEAD
+=======
+	atomic_set(&root->snapshot_force_cow, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	root->log_transid = 0;
 	root->log_transid_committed = -1;
 	root->last_log_commit = 0;
@@ -1509,9 +1513,22 @@ int btrfs_init_fs_root(struct btrfs_root *root)
 	spin_lock_init(&root->ino_cache_lock);
 	init_waitqueue_head(&root->ino_cache_wait);
 
+<<<<<<< HEAD
 	ret = get_anon_bdev(&root->anon_dev);
 	if (ret)
 		goto fail;
+=======
+	/*
+	 * Don't assign anonymous block device to roots that are not exposed to
+	 * userspace, the id pool is limited to 1M
+	 */
+	if (is_fstree(root->root_key.objectid) &&
+	    btrfs_root_refs(&root->root_item) > 0) {
+		ret = get_anon_bdev(&root->anon_dev);
+		if (ret)
+			goto fail;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_lock(&root->objectid_mutex);
 	ret = btrfs_find_highest_objectid(root,
@@ -1679,8 +1696,13 @@ static void end_workqueue_fn(struct btrfs_work *work)
 	bio->bi_status = end_io_wq->status;
 	bio->bi_private = end_io_wq->private;
 	bio->bi_end_io = end_io_wq->end_io;
+<<<<<<< HEAD
 	kmem_cache_free(btrfs_end_io_wq_cache, end_io_wq);
 	bio_endio(bio);
+=======
+	bio_endio(bio);
+	kmem_cache_free(btrfs_end_io_wq_cache, end_io_wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int cleaner_kthread(void *arg)
@@ -1688,9 +1710,14 @@ static int cleaner_kthread(void *arg)
 	struct btrfs_root *root = arg;
 	struct btrfs_fs_info *fs_info = root->fs_info;
 	int again;
+<<<<<<< HEAD
 	struct btrfs_trans_handle *trans;
 
 	do {
+=======
+
+	while (1) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		again = 0;
 
 		/* Make the cleaner go to sleep early. */
@@ -1739,6 +1766,7 @@ static int cleaner_kthread(void *arg)
 		 */
 		btrfs_delete_unused_bgs(fs_info);
 sleep:
+<<<<<<< HEAD
 		if (!again) {
 			set_current_state(TASK_INTERRUPTIBLE);
 			if (!kthread_should_stop())
@@ -1775,6 +1803,18 @@ sleep:
 	}
 
 	return 0;
+=======
+		if (kthread_should_park())
+			kthread_parkme();
+		if (kthread_should_stop())
+			return 0;
+		if (!again) {
+			set_current_state(TASK_INTERRUPTIBLE);
+			schedule();
+			__set_current_state(TASK_RUNNING);
+		}
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int transaction_kthread(void *arg)
@@ -2078,7 +2118,11 @@ static void free_root_extent_buffers(struct btrfs_root *root)
 }
 
 /* helper to cleanup tree roots */
+<<<<<<< HEAD
 static void free_root_pointers(struct btrfs_fs_info *info, int chunk_root)
+=======
+static void free_root_pointers(struct btrfs_fs_info *info, bool free_chunk_root)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	free_root_extent_buffers(info->tree_root);
 
@@ -2087,7 +2131,11 @@ static void free_root_pointers(struct btrfs_fs_info *info, int chunk_root)
 	free_root_extent_buffers(info->csum_root);
 	free_root_extent_buffers(info->quota_root);
 	free_root_extent_buffers(info->uuid_root);
+<<<<<<< HEAD
 	if (chunk_root)
+=======
+	if (free_chunk_root)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		free_root_extent_buffers(info->chunk_root);
 	free_root_extent_buffers(info->free_space_root);
 }
@@ -2482,7 +2530,10 @@ int open_ctree(struct super_block *sb,
 	spin_lock_init(&fs_info->fs_roots_radix_lock);
 	spin_lock_init(&fs_info->delayed_iput_lock);
 	spin_lock_init(&fs_info->defrag_inodes_lock);
+<<<<<<< HEAD
 	spin_lock_init(&fs_info->tree_mod_seq_lock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_init(&fs_info->super_lock);
 	spin_lock_init(&fs_info->qgroup_op_lock);
 	spin_lock_init(&fs_info->buffer_lock);
@@ -2941,6 +2992,10 @@ retry_root_backup:
 	/* do not make disk changes in broken FS or nologreplay is given */
 	if (btrfs_super_log_root(disk_super) != 0 &&
 	    !btrfs_test_opt(fs_info, NOLOGREPLAY)) {
+<<<<<<< HEAD
+=======
+		btrfs_info(fs_info, "start tree-log replay");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = btrfs_replay_log(fs_info, fs_devices);
 		if (ret) {
 			err = ret;
@@ -3096,7 +3151,11 @@ fail_block_groups:
 	btrfs_put_block_group_cache(fs_info);
 
 fail_tree_roots:
+<<<<<<< HEAD
 	free_root_pointers(fs_info, 1);
+=======
+	free_root_pointers(fs_info, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	invalidate_inode_pages2(fs_info->btree_inode->i_mapping);
 
 fail_sb_buffer:
@@ -3124,7 +3183,11 @@ recovery_tree_root:
 	if (!btrfs_test_opt(fs_info, USEBACKUPROOT))
 		goto fail_tree_roots;
 
+<<<<<<< HEAD
 	free_root_pointers(fs_info, 0);
+=======
+	free_root_pointers(fs_info, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* don't use the log in recovery mode, it won't be valid */
 	btrfs_set_super_log_root(disk_super, 0);
@@ -3358,11 +3421,31 @@ static void btrfs_end_empty_barrier(struct bio *bio)
  */
 static void write_dev_flush(struct btrfs_device *device)
 {
+<<<<<<< HEAD
 	struct request_queue *q = bdev_get_queue(device->bdev);
 	struct bio *bio = device->flush_bio;
 
 	if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
 		return;
+=======
+	struct bio *bio = device->flush_bio;
+
+#ifndef CONFIG_BTRFS_FS_CHECK_INTEGRITY
+	/*
+	 * When a disk has write caching disabled, we skip submission of a bio
+	 * with flush and sync requests before writing the superblock, since
+	 * it's not needed. However when the integrity checker is enabled, this
+	 * results in reports that there are metadata blocks referred by a
+	 * superblock that were not properly flushed. So don't skip the bio
+	 * submission only when the integrity checker is enabled for the sake
+	 * of simplicity, since this is a debug tool and not meant for use in
+	 * non-debug builds.
+	 */
+	struct request_queue *q = bdev_get_queue(device->bdev);
+	if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
+		return;
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	bio_reset(bio);
 	bio->bi_end_io = btrfs_end_empty_barrier;
@@ -3713,6 +3796,16 @@ void close_ctree(struct btrfs_fs_info *fs_info)
 	int ret;
 
 	set_bit(BTRFS_FS_CLOSING_START, &fs_info->flags);
+<<<<<<< HEAD
+=======
+	/*
+	 * We don't want the cleaner to start new transactions, add more delayed
+	 * iputs, etc. while we're closing. We can't use kthread_stop() yet
+	 * because that frees the task_struct, and the transaction kthread might
+	 * still try to wake up the cleaner.
+	 */
+	kthread_park(fs_info->cleaner_kthread);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* wait for the qgroup rescan worker to stop */
 	btrfs_qgroup_wait_for_completion(fs_info, false);
@@ -3740,12 +3833,33 @@ void close_ctree(struct btrfs_fs_info *fs_info)
 
 	if (!sb_rdonly(fs_info->sb)) {
 		/*
+<<<<<<< HEAD
 		 * If the cleaner thread is stopped and there are
 		 * block groups queued for removal, the deletion will be
 		 * skipped when we quit the cleaner thread.
 		 */
 		btrfs_delete_unused_bgs(fs_info);
 
+=======
+		 * The cleaner kthread is stopped, so do one final pass over
+		 * unused block groups.
+		 */
+		btrfs_delete_unused_bgs(fs_info);
+
+		/*
+		 * There might be existing delayed inode workers still running
+		 * and holding an empty delayed inode item. We must wait for
+		 * them to complete first because they can create a transaction.
+		 * This happens when someone calls btrfs_balance_delayed_items()
+		 * and then a transaction commit runs the same delayed nodes
+		 * before any delayed worker has done something with the nodes.
+		 * We must wait for any worker here and not at transaction
+		 * commit time since that could cause a deadlock.
+		 * This is a very rare case.
+		 */
+		btrfs_flush_workqueue(fs_info->delayed_workers);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = btrfs_commit_super(fs_info);
 		if (ret)
 			btrfs_err(fs_info, "commit super ret %d", ret);
@@ -3782,10 +3896,24 @@ void close_ctree(struct btrfs_fs_info *fs_info)
 	invalidate_inode_pages2(fs_info->btree_inode->i_mapping);
 	btrfs_stop_all_workers(fs_info);
 
+<<<<<<< HEAD
 	btrfs_free_block_groups(fs_info);
 
 	clear_bit(BTRFS_FS_OPEN, &fs_info->flags);
 	free_root_pointers(fs_info, 1);
+=======
+	clear_bit(BTRFS_FS_OPEN, &fs_info->flags);
+	free_root_pointers(fs_info, true);
+
+	/*
+	 * We must free the block groups after dropping the fs_roots as we could
+	 * have had an IO error and have left over tree log blocks that aren't
+	 * cleaned up until the fs roots are freed.  This makes the block group
+	 * accounting appear to be wrong because there's pending reserved bytes,
+	 * so make sure we do the block group cleanup afterwards.
+	 */
+	btrfs_free_block_groups(fs_info);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	iput(fs_info->btree_inode);
 
@@ -4338,6 +4466,10 @@ static void btrfs_cleanup_bg_io(struct btrfs_block_group_cache *cache)
 		cache->io_ctl.inode = NULL;
 		iput(inode);
 	}
+<<<<<<< HEAD
+=======
+	ASSERT(cache->io_ctl.pages == NULL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	btrfs_put_block_group(cache);
 }
 
@@ -4408,7 +4540,10 @@ void btrfs_cleanup_one_transaction(struct btrfs_transaction *cur_trans,
 	wake_up(&fs_info->transaction_wait);
 
 	btrfs_destroy_delayed_inodes(fs_info);
+<<<<<<< HEAD
 	btrfs_assert_delayed_root_empty(fs_info);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	btrfs_destroy_marked_extents(fs_info, &cur_trans->dirty_pages,
 				     EXTENT_DIRTY);

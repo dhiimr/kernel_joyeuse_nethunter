@@ -17,7 +17,10 @@ obj-$(CONFIG_USB_F_SERIAL)	+= usb_f_serial.o
 usb_f_obex-y			:= f_obex.o
 obj-$(CONFIG_USB_F_OBEX)	+= usb_f_obex.o
 obj-$(CONFIG_USB_U_ETHER)	+= u_ether.o
+<<<<<<< HEAD
 obj-$(CONFIG_USB_RNDIS)		+= rndis.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 usb_f_ncm-y			:= f_ncm.o
 obj-$(CONFIG_USB_F_NCM)		+= usb_f_ncm.o
 usb_f_ecm-y			:= f_ecm.o
@@ -28,7 +31,11 @@ usb_f_eem-y			:= f_eem.o
 obj-$(CONFIG_USB_F_EEM)		+= usb_f_eem.o
 usb_f_ecm_subset-y		:= f_subset.o
 obj-$(CONFIG_USB_F_SUBSET)	+= usb_f_ecm_subset.o
+<<<<<<< HEAD
 usb_f_rndis-y			:= f_rndis.o
+=======
+usb_f_rndis-y			:= f_rndis.o rndis.o
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-$(CONFIG_USB_F_RNDIS)	+= usb_f_rndis.o
 usb_f_mass_storage-y		:= f_mass_storage.o storage_common.o
 obj-$(CONFIG_USB_F_MASS_STORAGE)+= usb_f_mass_storage.o
@@ -51,6 +58,7 @@ usb_f_printer-y			:= f_printer.o
 obj-$(CONFIG_USB_F_PRINTER)	+= usb_f_printer.o
 usb_f_tcm-y			:= f_tcm.o
 obj-$(CONFIG_USB_F_TCM)		+= usb_f_tcm.o
+<<<<<<< HEAD
 usb_f_mtp-y                     := f_mtp.o
 obj-$(CONFIG_USB_F_MTP)         += usb_f_mtp.o
 usb_f_ptp-y                     := f_ptp.o
@@ -69,3 +77,5 @@ usb_f_gsi-y			:= f_gsi.o
 obj-$(CONFIG_USB_F_GSI)		+= usb_f_gsi.o
 usb_f_qdss-y			:= f_qdss.o u_qdss.o
 obj-$(CONFIG_USB_F_QDSS)	+= usb_f_qdss.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

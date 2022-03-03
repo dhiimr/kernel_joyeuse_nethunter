@@ -230,6 +230,21 @@ static int port_check(struct device *dev, void *dev_drv)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * Iterates through all the devices connected to the bus and return 1
+ * if the device is a parallel port.
+ */
+
+static int port_detect(struct device *dev, void *dev_drv)
+{
+	if (is_parport(dev))
+		return 1;
+	return 0;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  *	parport_register_driver - register a parallel port device driver
  *	@drv: structure describing the driver
@@ -282,6 +297,18 @@ int __parport_register_driver(struct parport_driver *drv, struct module *owner,
 		if (ret)
 			return ret;
 
+<<<<<<< HEAD
+=======
+		/*
+		 * check if bus has any parallel port registered, if
+		 * none is found then load the lowlevel driver.
+		 */
+		ret = bus_for_each_dev(&parport_bus_type, NULL, NULL,
+				       port_detect);
+		if (!ret)
+			get_lowlevel_driver();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mutex_lock(&registration_lock);
 		if (drv->match_port)
 			bus_for_each_dev(&parport_bus_type, NULL, drv,
@@ -895,6 +922,10 @@ parport_register_dev_model(struct parport *port, const char *name,
 	par_dev->devmodel = true;
 	ret = device_register(&par_dev->dev);
 	if (ret) {
+<<<<<<< HEAD
+=======
+		kfree(par_dev->state);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		put_device(&par_dev->dev);
 		goto err_put_port;
 	}
@@ -912,6 +943,10 @@ parport_register_dev_model(struct parport *port, const char *name,
 			spin_unlock(&port->physport->pardevice_lock);
 			pr_debug("%s: cannot grant exclusive access for device %s\n",
 				 port->name, name);
+<<<<<<< HEAD
+=======
+			kfree(par_dev->state);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			device_unregister(&par_dev->dev);
 			goto err_put_port;
 		}

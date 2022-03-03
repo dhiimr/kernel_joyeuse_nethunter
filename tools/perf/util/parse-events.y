@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 %pure-parser
+=======
+%define api.pure full
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 %parse-param {void *_parse_state}
 %parse-param {void *scanner}
 %lex-param {void* scanner}

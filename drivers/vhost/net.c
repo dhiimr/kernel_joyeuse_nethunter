@@ -35,7 +35,11 @@
 
 #include "vhost.h"
 
+<<<<<<< HEAD
 static int experimental_zcopytx = 1;
+=======
+static int experimental_zcopytx = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 module_param(experimental_zcopytx, int, 0444);
 MODULE_PARM_DESC(experimental_zcopytx, "Enable Zero Copy TX;"
 		                       " 1 -Enable; 0 - Disable");
@@ -44,6 +48,15 @@ MODULE_PARM_DESC(experimental_zcopytx, "Enable Zero Copy TX;"
  * Using this limit prevents one virtqueue from starving others. */
 #define VHOST_NET_WEIGHT 0x80000
 
+<<<<<<< HEAD
+=======
+/* Max number of packets transferred before requeueing the job.
+ * Using this limit prevents one virtqueue from starving others with small
+ * pkts.
+ */
+#define VHOST_NET_PKT_WEIGHT 256
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* MAX number of TX used buffers for outstanding zerocopy */
 #define VHOST_MAX_PEND 128
 #define VHOST_GOODCOPY_LEN 256
@@ -460,7 +473,13 @@ static void handle_tx(struct vhost_net *net)
 	size_t hdr_size;
 	struct socket *sock;
 	struct vhost_net_ubuf_ref *uninitialized_var(ubufs);
+<<<<<<< HEAD
 	bool zcopy, zcopy_used;
+=======
+	struct ubuf_info *ubuf;
+	bool zcopy, zcopy_used;
+	int sent_pkts = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_lock(&vq->mutex);
 	sock = vq->private_data;
@@ -475,7 +494,11 @@ static void handle_tx(struct vhost_net *net)
 	hdr_size = nvq->vhost_hlen;
 	zcopy = nvq->ubufs;
 
+<<<<<<< HEAD
 	for (;;) {
+=======
+	do {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* Release DMAs done buffers first */
 		if (zcopy)
 			vhost_zerocopy_signal_used(net, vq);
@@ -525,9 +548,13 @@ static void handle_tx(struct vhost_net *net)
 
 		/* use msg_control to pass vhost zerocopy ubuf info to skb */
 		if (zcopy_used) {
+<<<<<<< HEAD
 			struct ubuf_info *ubuf;
 			ubuf = nvq->ubuf_info + nvq->upend_idx;
 
+=======
+			ubuf = nvq->ubuf_info + nvq->upend_idx;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			vq->heads[nvq->upend_idx].id = cpu_to_vhost32(vq, head);
 			vq->heads[nvq->upend_idx].len = VHOST_DMA_IN_PROGRESS;
 			ubuf->callback = vhost_zerocopy_callback;
@@ -543,7 +570,10 @@ static void handle_tx(struct vhost_net *net)
 			msg.msg_control = NULL;
 			ubufs = NULL;
 		}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		total_len += len;
 		if (total_len < VHOST_NET_WEIGHT &&
 		    !vhost_vq_avail_empty(&net->dev, vq) &&
@@ -557,7 +587,12 @@ static void handle_tx(struct vhost_net *net)
 		err = sock->ops->sendmsg(sock, &msg, len);
 		if (unlikely(err < 0)) {
 			if (zcopy_used) {
+<<<<<<< HEAD
 				vhost_net_ubuf_put(ubufs);
+=======
+				if (vq->heads[ubuf->desc].len == VHOST_DMA_IN_PROGRESS)
+					vhost_net_ubuf_put(ubufs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				nvq->upend_idx = ((unsigned)nvq->upend_idx - 1)
 					% UIO_MAXIOV;
 			}
@@ -572,11 +607,15 @@ static void handle_tx(struct vhost_net *net)
 		else
 			vhost_zerocopy_signal_used(net, vq);
 		vhost_net_tx_packet(net);
+<<<<<<< HEAD
 		if (unlikely(total_len >= VHOST_NET_WEIGHT)) {
 			vhost_poll_queue(&vq->poll);
 			break;
 		}
 	}
+=======
+	} while (likely(!vhost_exceeds_weight(vq, ++sent_pkts, total_len)));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	mutex_unlock(&vq->mutex);
 }
@@ -754,6 +793,10 @@ static void handle_rx(struct vhost_net *net)
 	struct socket *sock;
 	struct iov_iter fixup;
 	__virtio16 num_buffers;
+<<<<<<< HEAD
+=======
+	int recv_pkts = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_lock_nested(&vq->mutex, 0);
 	sock = vq->private_data;
@@ -773,7 +816,15 @@ static void handle_rx(struct vhost_net *net)
 		vq->log : NULL;
 	mergeable = vhost_has_feature(vq, VIRTIO_NET_F_MRG_RXBUF);
 
+<<<<<<< HEAD
 	while ((sock_len = vhost_net_rx_peek_head_len(net, sock->sk))) {
+=======
+	do {
+		sock_len = vhost_net_rx_peek_head_len(net, sock->sk);
+
+		if (!sock_len)
+			break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		sock_len += sock_hlen;
 		vhost_len = sock_len + vhost_hlen;
 		headcount = get_rx_bufs(vq, vq->heads, vhost_len,
@@ -854,11 +905,16 @@ static void handle_rx(struct vhost_net *net)
 			vhost_log_write(vq, vq_log, log, vhost_len,
 					vq->iov, in);
 		total_len += vhost_len;
+<<<<<<< HEAD
 		if (unlikely(total_len >= VHOST_NET_WEIGHT)) {
 			vhost_poll_queue(&vq->poll);
 			goto out;
 		}
 	}
+=======
+	} while (likely(!vhost_exceeds_weight(vq, ++recv_pkts, total_len)));
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	vhost_net_enable_vq(net, vq);
 out:
 	mutex_unlock(&vq->mutex);
@@ -936,7 +992,12 @@ static int vhost_net_open(struct inode *inode, struct file *f)
 		n->vqs[i].sock_hlen = 0;
 		vhost_net_buf_init(&n->vqs[i].rxq);
 	}
+<<<<<<< HEAD
 	vhost_dev_init(dev, vqs, VHOST_NET_VQ_MAX);
+=======
+	vhost_dev_init(dev, vqs, VHOST_NET_VQ_MAX,
+		       VHOST_NET_PKT_WEIGHT, VHOST_NET_WEIGHT);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	vhost_poll_init(n->poll + VHOST_NET_VQ_TX, handle_tx_net, POLLOUT, dev);
 	vhost_poll_init(n->poll + VHOST_NET_VQ_RX, handle_rx_net, POLLIN, dev);
@@ -1020,11 +1081,15 @@ static int vhost_net_release(struct inode *inode, struct file *f)
 
 static struct socket *get_raw_socket(int fd)
 {
+<<<<<<< HEAD
 	struct {
 		struct sockaddr_ll sa;
 		char  buf[MAX_ADDR_LEN];
 	} uaddr;
 	int uaddr_len = sizeof uaddr, r;
+=======
+	int r;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct socket *sock = sockfd_lookup(fd, &r);
 
 	if (!sock)
@@ -1036,12 +1101,16 @@ static struct socket *get_raw_socket(int fd)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	r = sock->ops->getname(sock, (struct sockaddr *)&uaddr.sa,
 			       &uaddr_len, 0);
 	if (r)
 		goto err;
 
 	if (uaddr.sa.sll_family != AF_PACKET) {
+=======
+	if (sock->sk->sk_family != AF_PACKET) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		r = -EPFNOSUPPORT;
 		goto err;
 	}

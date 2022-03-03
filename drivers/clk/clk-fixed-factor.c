@@ -74,7 +74,11 @@ struct clk_hw *clk_hw_register_fixed_factor(struct device *dev,
 		unsigned int mult, unsigned int div)
 {
 	struct clk_fixed_factor *fix;
+<<<<<<< HEAD
 	struct clk_init_data init = {};
+=======
+	struct clk_init_data init;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct clk_hw *hw;
 	int ret;
 

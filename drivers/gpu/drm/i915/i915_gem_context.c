@@ -141,6 +141,11 @@ static void i915_gem_context_free(struct i915_gem_context *ctx)
 		__i915_gem_object_release_unless_active(ce->state->obj);
 	}
 
+<<<<<<< HEAD
+=======
+	kfree(ctx->jump_whitelist);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(ctx->name);
 	put_pid(ctx->pid);
 
@@ -321,6 +326,12 @@ __create_hw_context(struct drm_i915_private *dev_priv,
 	else
 		ctx->ggtt_offset_bias = I915_GTT_PAGE_SIZE;
 
+<<<<<<< HEAD
+=======
+	ctx->jump_whitelist = NULL;
+	ctx->jump_whitelist_cmds = 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ctx;
 
 err_pid:
@@ -988,6 +999,7 @@ int i915_gem_context_destroy_ioctl(struct drm_device *dev, void *data,
 	if (args->ctx_id == DEFAULT_CONTEXT_HANDLE)
 		return -ENOENT;
 
+<<<<<<< HEAD
 	ctx = i915_gem_context_lookup(file_priv, args->ctx_id);
 	if (!ctx)
 		return -ENOENT;
@@ -995,11 +1007,25 @@ int i915_gem_context_destroy_ioctl(struct drm_device *dev, void *data,
 	ret = mutex_lock_interruptible(&dev->struct_mutex);
 	if (ret)
 		goto out;
+=======
+	ret = i915_mutex_lock_interruptible(dev);
+	if (ret)
+		return ret;
+
+	ctx = i915_gem_context_lookup(file_priv, args->ctx_id);
+	if (!ctx) {
+		mutex_unlock(&dev->struct_mutex);
+		return -ENOENT;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	__destroy_hw_context(ctx, file_priv);
 	mutex_unlock(&dev->struct_mutex);
 
+<<<<<<< HEAD
 out:
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	i915_gem_context_put(ctx);
 	return 0;
 }

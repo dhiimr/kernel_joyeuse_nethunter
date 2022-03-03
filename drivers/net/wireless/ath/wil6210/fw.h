@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2014,2016 Qualcomm Atheros, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,8 +17,11 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+<<<<<<< HEAD
 #ifndef __WIL_FW_H__
 #define __WIL_FW_H__
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define WIL_FW_SIGNATURE (0x36323130) /* '0126' */
 #define WIL_FW_FMT_VERSION (1) /* format version driver supports */
@@ -61,15 +67,19 @@ struct wil_fw_record_comment { /* type == wil_fw_type_comment */
 	u8 data[0]; /* free-form data [data_size], see above */
 } __packed;
 
+<<<<<<< HEAD
 /* Comment header - common for all comment record types */
 struct wil_fw_record_comment_hdr {
 	__le32 magic;
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* FW capabilities encoded inside a comment record */
 #define WIL_FW_CAPABILITIES_MAGIC (0xabcddcba)
 struct wil_fw_record_capabilities { /* type == wil_fw_type_comment */
 	/* identifies capabilities record */
+<<<<<<< HEAD
 	struct wil_fw_record_comment_hdr hdr;
 	/* capabilities (variable size), see enum wmi_fw_capability */
 	u8 capabilities[0];
@@ -116,6 +126,12 @@ struct wil_fw_record_brd_file { /* type == wil_fw_type_comment */
 	__le32 base_addr;
 	__le32 max_size_bytes;
 } __packed;
+=======
+	__le32 magic;
+	/* capabilities (variable size), see enum wmi_fw_capability */
+	u8 capabilities[0];
+};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* perform action
  * data_size = @head.size - offsetof(struct wil_fw_record_action, data)
@@ -209,5 +225,8 @@ struct wil_fw_record_gateway_data4 { /* type == wil_fw_type_gateway_data4 */
 	__le32 command;
 	struct wil_fw_data_gw4 data[0]; /* total size [data_size], see above */
 } __packed;
+<<<<<<< HEAD
 
 #endif /* __WIL_FW_H__ */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

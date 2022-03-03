@@ -14,9 +14,12 @@ struct mem_section;
 struct memory_block;
 struct resource;
 
+<<<<<<< HEAD
 /* Timeout for migration re-tries in seconds */
 #define MIGRATE_TIMEOUT_SEC		60
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_MEMORY_HOTPLUG
 /*
  * Return page for the valid pfn only if the page is online. All pfn
@@ -107,7 +110,11 @@ extern int test_pages_in_a_zone(unsigned long start_pfn, unsigned long end_pfn,
 	unsigned long *valid_start, unsigned long *valid_end);
 extern void __offline_isolated_pages(unsigned long, unsigned long);
 
+<<<<<<< HEAD
 typedef int (*online_page_callback_t)(struct page *page);
+=======
+typedef void (*online_page_callback_t)(struct page *page);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 extern int set_online_page_callback(online_page_callback_t callback);
 extern int restore_online_page_callback(online_page_callback_t callback);
@@ -117,7 +124,10 @@ extern void __online_page_increment_counters(struct page *page);
 extern void __online_page_free(struct page *page);
 
 extern int try_online_node(int nid);
+<<<<<<< HEAD
 extern bool try_online_one_block(int nid);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 extern bool memhp_auto_online;
 /* If movable_node boot option specified */
@@ -282,11 +292,14 @@ static inline int try_online_node(int nid)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline bool try_online_one_block(int nid)
 {
 	return false;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline void get_online_mems(void) {}
 static inline void put_online_mems(void) {}
 
@@ -325,6 +338,10 @@ static inline void remove_memory(int nid, u64 start, u64 size) {}
 
 extern int walk_memory_range(unsigned long start_pfn, unsigned long end_pfn,
 		void *arg, int (*func)(struct memory_block *, void *));
+<<<<<<< HEAD
+=======
+extern int __add_memory(int nid, u64 start, u64 size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern int add_memory(int nid, u64 start, u64 size);
 extern int add_memory_resource(int nid, struct resource *resource, bool online);
 extern int arch_add_memory(int nid, u64 start, u64 size, bool want_memblock);
@@ -340,6 +357,11 @@ extern struct page *sparse_decode_mem_map(unsigned long coded_mem_map,
 					  unsigned long pnum);
 extern bool allow_online_pfn_range(int nid, unsigned long pfn, unsigned long nr_pages,
 		int online_type);
+<<<<<<< HEAD
 extern struct zone *zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
 		unsigned long nr_pages);
+=======
+extern struct zone *zone_for_pfn_range(int online_type, int nid,
+		unsigned long start_pfn, unsigned long nr_pages);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* __LINUX_MEMORY_HOTPLUG_H */

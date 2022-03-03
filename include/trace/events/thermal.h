@@ -21,6 +21,7 @@ TRACE_DEFINE_ENUM(THERMAL_TRIP_ACTIVE);
 			 { THERMAL_TRIP_PASSIVE,  "PASSIVE"},	\
 			 { THERMAL_TRIP_ACTIVE,   "ACTIVE"})
 
+<<<<<<< HEAD
 TRACE_EVENT(thermal_query_temp,
 
 	TP_PROTO(struct thermal_zone_device *tz, int temp),
@@ -44,6 +45,8 @@ TRACE_EVENT(thermal_query_temp,
 		__entry->temp)
 );
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 TRACE_EVENT(thermal_temperature,
 
 	TP_PROTO(struct thermal_zone_device *tz),
@@ -69,6 +72,7 @@ TRACE_EVENT(thermal_temperature,
 		__entry->temp)
 );
 
+<<<<<<< HEAD
 TRACE_EVENT(cdev_update_start,
 
 	TP_PROTO(struct thermal_cooling_device *cdev),
@@ -92,36 +96,61 @@ TRACE_EVENT(cdev_update,
 		 unsigned long min_target),
 
 	TP_ARGS(cdev, target, min_target),
+=======
+TRACE_EVENT(cdev_update,
+
+	TP_PROTO(struct thermal_cooling_device *cdev, unsigned long target),
+
+	TP_ARGS(cdev, target),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	TP_STRUCT__entry(
 		__string(type, cdev->type)
 		__field(unsigned long, target)
+<<<<<<< HEAD
 		__field(unsigned long, min_target)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	),
 
 	TP_fast_assign(
 		__assign_str(type, cdev->type);
 		__entry->target = target;
+<<<<<<< HEAD
 		__entry->min_target = min_target;
 	),
 
 	TP_printk("type=%s target=%lu min_target=%lu", __get_str(type),
 				__entry->target, __entry->min_target)
+=======
+	),
+
+	TP_printk("type=%s target=%lu", __get_str(type), __entry->target)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 );
 
 TRACE_EVENT(thermal_zone_trip,
 
 	TP_PROTO(struct thermal_zone_device *tz, int trip,
+<<<<<<< HEAD
 		enum thermal_trip_type trip_type, bool is_trip),
 
 	TP_ARGS(tz, trip, trip_type, is_trip),
+=======
+		enum thermal_trip_type trip_type),
+
+	TP_ARGS(tz, trip, trip_type),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	TP_STRUCT__entry(
 		__string(thermal_zone, tz->type)
 		__field(int, id)
 		__field(int, trip)
 		__field(enum thermal_trip_type, trip_type)
+<<<<<<< HEAD
 		__field(bool, is_trip)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	),
 
 	TP_fast_assign(
@@ -129,6 +158,7 @@ TRACE_EVENT(thermal_zone_trip,
 		__entry->id = tz->id;
 		__entry->trip = trip;
 		__entry->trip_type = trip_type;
+<<<<<<< HEAD
 		__entry->is_trip = is_trip;
 	),
 
@@ -208,6 +238,15 @@ TRACE_EVENT(thermal_set_trip,
 		__entry->high)
 );
 
+=======
+	),
+
+	TP_printk("thermal_zone=%s id=%d trip=%d trip_type=%s",
+		__get_str(thermal_zone), __entry->id, __entry->trip,
+		show_tzt_type(__entry->trip_type))
+);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 TRACE_EVENT(thermal_power_cpu_get_power,
 	TP_PROTO(const struct cpumask *cpus, unsigned long freq, u32 *load,
 		size_t load_len, u32 dynamic_power, u32 static_power),

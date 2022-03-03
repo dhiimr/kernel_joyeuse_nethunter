@@ -14,6 +14,7 @@
 # Based on the ia64 boot/Makefile.
 #
 
+<<<<<<< HEAD
 include $(srctree)/arch/arm64/boot/dts/Makefile
 
 OBJCOPYFLAGS_Image :=-O binary -R .note -R .note.gnu.build-id -R .comment -S
@@ -41,6 +42,11 @@ endif
 
 rtic_mp.dtb: vmlinux FORCE
 	$(DTC) -O dtb -o rtic_mp.dtb -b 0 $(DTC_FLAGS) rtic_mp.dts
+=======
+OBJCOPYFLAGS_Image :=-O binary -R .note -R .note.gnu.build-id -R .comment -S
+
+targets := Image Image.bz2 Image.gz Image.lz4 Image.lzma Image.lzo
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 $(obj)/Image: vmlinux FORCE
 	$(call if_changed,objcopy)
@@ -48,6 +54,7 @@ $(obj)/Image: vmlinux FORCE
 $(obj)/Image.bz2: $(obj)/Image FORCE
 	$(call if_changed,bzip2)
 
+<<<<<<< HEAD
 $(obj)/Image-dtb-hdr: $(obj)/Image FORCE
 	echo -n 'UNCOMPRESSED_IMG' > $@ && \
 	$(call size_append, $(filter-out FORCE,$^)) >> $@
@@ -55,6 +62,8 @@ $(obj)/Image-dtb-hdr: $(obj)/Image FORCE
 $(obj)/Image-dtb: $(obj)/Image-dtb-hdr $(obj)/Image $(DTB_OBJS) FORCE
 	$(call if_changed,cat)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 $(obj)/Image.gz: $(obj)/Image FORCE
 	$(call if_changed,gzip)
 
@@ -67,6 +76,7 @@ $(obj)/Image.lzma: $(obj)/Image FORCE
 $(obj)/Image.lzo: $(obj)/Image FORCE
 	$(call if_changed,lzo)
 
+<<<<<<< HEAD
 $(obj)/Image.gz-dtb: $(obj)/Image.gz $(DTB_OBJS) FORCE
 	$(call if_changed,cat)
 
@@ -76,6 +86,8 @@ $(obj)/dtbo.img: $(DTBO_OBJS) FORCE
 $(obj)/dtb: $(DTB_OBJS) FORCE
 	$(call if_changed,mkdtb)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 install:
 	$(CONFIG_SHELL) $(srctree)/$(src)/install.sh $(KERNELRELEASE) \
 	$(obj)/Image System.map "$(INSTALL_PATH)"

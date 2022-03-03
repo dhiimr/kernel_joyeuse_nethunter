@@ -81,11 +81,19 @@ static size_t rpc_ntop6(const struct sockaddr *sap,
 
 	rc = snprintf(scopebuf, sizeof(scopebuf), "%c%u",
 			IPV6_SCOPE_DELIMITER, sin6->sin6_scope_id);
+<<<<<<< HEAD
 	if (unlikely((size_t)rc > sizeof(scopebuf)))
 		return 0;
 
 	len += rc;
 	if (unlikely(len > buflen))
+=======
+	if (unlikely((size_t)rc >= sizeof(scopebuf)))
+		return 0;
+
+	len += rc;
+	if (unlikely(len >= buflen))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 
 	strcat(buf, scopebuf);
@@ -184,7 +192,11 @@ static int rpc_parse_scope_id(struct net *net, const char *buf,
 			scope_id = dev->ifindex;
 			dev_put(dev);
 		} else {
+<<<<<<< HEAD
 			if (kstrtou32(p, 10, &scope_id) == 0) {
+=======
+			if (kstrtou32(p, 10, &scope_id) != 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				kfree(p);
 				return 0;
 			}

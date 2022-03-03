@@ -82,7 +82,11 @@ unsigned int mc146818_get_time(struct rtc_time *time)
 	time->tm_year += real_year - 72;
 #endif
 
+<<<<<<< HEAD
 	if (century)
+=======
+	if (century > 19)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		time->tm_year += (century - 19) * 100;
 
 	/*

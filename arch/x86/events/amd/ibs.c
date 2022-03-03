@@ -89,6 +89,11 @@ struct perf_ibs {
 	u64				max_period;
 	unsigned long			offset_mask[1];
 	int				offset_max;
+<<<<<<< HEAD
+=======
+	unsigned int			fetch_count_reset_broken : 1;
+	unsigned int			fetch_ignore_if_zero_rip : 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct cpu_perf_ibs __percpu	*pcpu;
 
 	struct attribute		**format_attrs;
@@ -346,11 +351,23 @@ static u64 get_ibs_op_count(u64 config)
 {
 	u64 count = 0;
 
+<<<<<<< HEAD
 	if (config & IBS_OP_VAL)
 		count += (config & IBS_OP_MAX_CNT) << 4; /* cnt rolled over */
 
 	if (ibs_caps & IBS_CAPS_RDWROPCNT)
 		count += (config & IBS_OP_CUR_CNT) >> 32;
+=======
+	/*
+	 * If the internal 27-bit counter rolled over, the count is MaxCnt
+	 * and the lower 7 bits of CurCnt are randomized.
+	 * Otherwise CurCnt has the full 27-bit current counter value.
+	 */
+	if (config & IBS_OP_VAL)
+		count = (config & IBS_OP_MAX_CNT) << 4;
+	else if (ibs_caps & IBS_CAPS_RDWROPCNT)
+		count = (config & IBS_OP_CUR_CNT) >> 32;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return count;
 }
@@ -375,7 +392,16 @@ perf_ibs_event_update(struct perf_ibs *perf_ibs, struct perf_event *event,
 static inline void perf_ibs_enable_event(struct perf_ibs *perf_ibs,
 					 struct hw_perf_event *hwc, u64 config)
 {
+<<<<<<< HEAD
 	wrmsrl(hwc->config_base, hwc->config | config | perf_ibs->enable_mask);
+=======
+	u64 tmp = hwc->config | config;
+
+	if (perf_ibs->fetch_count_reset_broken)
+		wrmsrl(hwc->config_base, tmp & ~perf_ibs->enable_mask);
+
+	wrmsrl(hwc->config_base, tmp | perf_ibs->enable_mask);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -389,7 +415,12 @@ static inline void perf_ibs_disable_event(struct perf_ibs *perf_ibs,
 					  struct hw_perf_event *hwc, u64 config)
 {
 	config &= ~perf_ibs->cnt_mask;
+<<<<<<< HEAD
 	wrmsrl(hwc->config_base, config);
+=======
+	if (boot_cpu_data.x86 == 0x10)
+		wrmsrl(hwc->config_base, config);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	config &= ~perf_ibs->enable_mask;
 	wrmsrl(hwc->config_base, config);
 }
@@ -564,7 +595,12 @@ static struct perf_ibs perf_ibs_op = {
 	},
 	.msr			= MSR_AMD64_IBSOPCTL,
 	.config_mask		= IBS_OP_CONFIG_MASK,
+<<<<<<< HEAD
 	.cnt_mask		= IBS_OP_MAX_CNT,
+=======
+	.cnt_mask		= IBS_OP_MAX_CNT | IBS_OP_CUR_CNT |
+				  IBS_OP_CUR_CNT_RAND,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.enable_mask		= IBS_OP_ENABLE,
 	.valid_mask		= IBS_OP_VAL,
 	.max_period		= IBS_OP_MAX_CNT << 4,
@@ -625,7 +661,11 @@ fail:
 	if (event->attr.sample_type & PERF_SAMPLE_RAW)
 		offset_max = perf_ibs->offset_max;
 	else if (check_rip)
+<<<<<<< HEAD
 		offset_max = 2;
+=======
+		offset_max = 3;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	else
 		offset_max = 1;
 	do {
@@ -635,6 +675,7 @@ fail:
 				       perf_ibs->offset_max,
 				       offset + 1);
 	} while (offset < offset_max);
+<<<<<<< HEAD
 	if (event->attr.sample_type & PERF_SAMPLE_RAW) {
 		/*
 		 * Read IbsBrTarget and IbsOpData4 separately
@@ -647,6 +688,26 @@ fail:
 		}
 		if (ibs_caps & IBS_CAPS_OPDATA4) {
 			rdmsrl(MSR_AMD64_IBSOPDATA4, *buf++);
+=======
+	/*
+	 * Read IbsBrTarget, IbsOpData4, and IbsExtdCtl separately
+	 * depending on their availability.
+	 * Can't add to offset_max as they are staggered
+	 */
+	if (event->attr.sample_type & PERF_SAMPLE_RAW) {
+		if (perf_ibs == &perf_ibs_op) {
+			if (ibs_caps & IBS_CAPS_BRNTRGT) {
+				rdmsrl(MSR_AMD64_IBSBRTARGET, *buf++);
+				size++;
+			}
+			if (ibs_caps & IBS_CAPS_OPDATA4) {
+				rdmsrl(MSR_AMD64_IBSOPDATA4, *buf++);
+				size++;
+			}
+		}
+		if (perf_ibs == &perf_ibs_fetch && (ibs_caps & IBS_CAPS_FETCHCTLEXTD)) {
+			rdmsrl(MSR_AMD64_ICIBSEXTDCTL, *buf++);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			size++;
 		}
 	}
@@ -656,6 +717,13 @@ fail:
 	if (check_rip && (ibs_data.regs[2] & IBS_RIP_INVALID)) {
 		regs.flags &= ~PERF_EFLAGS_EXACT;
 	} else {
+<<<<<<< HEAD
+=======
+		/* Workaround for erratum #1197 */
+		if (perf_ibs->fetch_ignore_if_zero_rip && !(ibs_data.regs[1]))
+			goto out;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		set_linear_ip(&regs, ibs_data.regs[1]);
 		regs.flags |= PERF_EFLAGS_EXACT;
 	}
@@ -672,10 +740,24 @@ fail:
 
 	throttle = perf_event_overflow(event, &data, &regs);
 out:
+<<<<<<< HEAD
 	if (throttle)
 		perf_ibs_stop(event, 0);
 	else
 		perf_ibs_enable_event(perf_ibs, hwc, period >> 4);
+=======
+	if (throttle) {
+		perf_ibs_stop(event, 0);
+	} else {
+		period >>= 4;
+
+		if ((ibs_caps & IBS_CAPS_RDWROPCNT) &&
+		    (*config & IBS_OP_CNT_CTL))
+			period |= *config & IBS_OP_CUR_CNT_RAND;
+
+		perf_ibs_enable_event(perf_ibs, hwc, period);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	perf_event_update_userpage(event);
 
@@ -735,6 +817,19 @@ static __init void perf_event_ibs_init(void)
 {
 	struct attribute **attr = ibs_op_format_attrs;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Some chips fail to reset the fetch count when it is written; instead
+	 * they need a 0-1 transition of IbsFetchEn.
+	 */
+	if (boot_cpu_data.x86 >= 0x16 && boot_cpu_data.x86 <= 0x18)
+		perf_ibs_fetch.fetch_count_reset_broken = 1;
+
+	if (boot_cpu_data.x86 == 0x19 && boot_cpu_data.x86_model < 0x10)
+		perf_ibs_fetch.fetch_ignore_if_zero_rip = 1;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	perf_ibs_pmu_init(&perf_ibs_fetch, "ibs_fetch");
 
 	if (ibs_caps & IBS_CAPS_OPCNT) {

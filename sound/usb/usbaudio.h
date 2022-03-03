@@ -37,7 +37,11 @@ struct snd_usb_audio {
 	struct usb_interface *pm_intf;
 	u32 usb_id;
 	struct mutex mutex;
+<<<<<<< HEAD
 	unsigned int autosuspended:1;	
+=======
+	unsigned int system_suspend;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	atomic_t active;
 	atomic_t shutdown;
 	atomic_t usage_count;
@@ -61,11 +65,18 @@ struct snd_usb_audio {
 	bool autoclock;			/* from the 'autoclock' module param */
 
 	struct usb_host_interface *ctrl_intf;	/* the audio control interface */
+<<<<<<< HEAD
 	struct mutex dev_lock;	/* to protect any race with disconnect */
 	int card_num;	/* cache pcm card number to use upon disconnect */
 	void (*disconnect_cb)(struct snd_usb_audio *chip);
 };
 
+=======
+};
+
+#define USB_AUDIO_IFACE_UNUSED	((void *)-1L)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define usb_audio_err(chip, fmt, args...) \
 	dev_err(&(chip)->dev->dev, fmt, ##args)
 #define usb_audio_warn(chip, fmt, args...) \

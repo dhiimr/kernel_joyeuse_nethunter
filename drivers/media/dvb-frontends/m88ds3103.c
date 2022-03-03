@@ -309,6 +309,12 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
 	u16 u16tmp;
 	u32 tuner_frequency_khz, target_mclk;
 	s32 s32tmp;
+<<<<<<< HEAD
+=======
+	static const struct reg_sequence reset_buf[] = {
+		{0x07, 0x80}, {0x07, 0x00}
+	};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dev_dbg(&client->dev,
 		"delivery_system=%d modulation=%d frequency=%u symbol_rate=%d inversion=%d pilot=%d rolloff=%d\n",
@@ -321,11 +327,15 @@ static int m88ds3103_set_frontend(struct dvb_frontend *fe)
 	}
 
 	/* reset */
+<<<<<<< HEAD
 	ret = regmap_write(dev->regmap, 0x07, 0x80);
 	if (ret)
 		goto err;
 
 	ret = regmap_write(dev->regmap, 0x07, 0x00);
+=======
+	ret = regmap_multi_reg_write(dev->regmap, reset_buf, 2);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		goto err;
 

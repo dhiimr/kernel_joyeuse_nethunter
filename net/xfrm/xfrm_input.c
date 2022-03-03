@@ -130,7 +130,11 @@ struct sec_path *secpath_dup(struct sec_path *src)
 	sp->len = 0;
 	sp->olen = 0;
 
+<<<<<<< HEAD
 	memset(sp->ovec, 0, sizeof(sp->ovec[XFRM_MAX_OFFLOAD_DEPTH]));
+=======
+	memset(sp->ovec, 0, sizeof(sp->ovec));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (src) {
 		int i;
@@ -245,6 +249,12 @@ int xfrm_input(struct sk_buff *skb, int nexthdr, __be32 spi, int encap_type)
 			else
 				XFRM_INC_STATS(net,
 					       LINUX_MIB_XFRMINSTATEINVALID);
+<<<<<<< HEAD
+=======
+
+			if (encap_type == -1)
+				dev_put(skb->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto drop;
 		}
 
@@ -320,7 +330,10 @@ int xfrm_input(struct sk_buff *skb, int nexthdr, __be32 spi, int encap_type)
 
 	seq = 0;
 	if (!spi && (err = xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
+<<<<<<< HEAD
 		secpath_reset(skb);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		XFRM_INC_STATS(net, LINUX_MIB_XFRMINHDRERROR);
 		goto drop;
 	}
@@ -329,21 +342,30 @@ int xfrm_input(struct sk_buff *skb, int nexthdr, __be32 spi, int encap_type)
 				   XFRM_SPI_SKB_CB(skb)->daddroff);
 	do {
 		if (skb->sp->len == XFRM_MAX_DEPTH) {
+<<<<<<< HEAD
 			secpath_reset(skb);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			XFRM_INC_STATS(net, LINUX_MIB_XFRMINBUFFERERROR);
 			goto drop;
 		}
 
 		x = xfrm_state_lookup(net, mark, daddr, spi, nexthdr, family);
 		if (x == NULL) {
+<<<<<<< HEAD
 			secpath_reset(skb);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			XFRM_INC_STATS(net, LINUX_MIB_XFRMINNOSTATES);
 			xfrm_audit_state_notfound(skb, family, spi, seq);
 			goto drop;
 		}
 
+<<<<<<< HEAD
 		skb->mark = xfrm_smark_get(skb->mark, x);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		skb->sp->xvec[skb->sp->len++] = x;
 
 		skb_dst_force(skb);
@@ -404,7 +426,11 @@ resume:
 		dev_put(skb->dev);
 
 		spin_lock(&x->lock);
+<<<<<<< HEAD
 		if (nexthdr <= 0) {
+=======
+		if (nexthdr < 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (nexthdr == -EBADMSG) {
 				xfrm_audit_state_icvfail(x, skb,
 							 x->type->proto);
@@ -417,7 +443,11 @@ resume:
 		/* only the first xfrm gets the encap type */
 		encap_type = 0;
 
+<<<<<<< HEAD
 		if (async && x->repl->recheck(x, skb, seq)) {
+=======
+		if (x->repl->recheck(x, skb, seq)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			XFRM_INC_STATS(net, LINUX_MIB_XFRMINSTATESEQERROR);
 			goto drop_unlock;
 		}

@@ -639,7 +639,11 @@ static int isight_probe(struct fw_unit *unit,
 	if (!isight->audio_base) {
 		dev_err(&unit->device, "audio unit base not found\n");
 		err = -ENXIO;
+<<<<<<< HEAD
 		goto err_unit;
+=======
+		goto error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	fw_iso_resources_init(&isight->resources, unit);
 
@@ -668,12 +672,21 @@ static int isight_probe(struct fw_unit *unit,
 	dev_set_drvdata(&unit->device, isight);
 
 	return 0;
+<<<<<<< HEAD
 
 err_unit:
 	fw_unit_put(isight->unit);
 	mutex_destroy(&isight->mutex);
 error:
 	snd_card_free(card);
+=======
+error:
+	snd_card_free(card);
+
+	mutex_destroy(&isight->mutex);
+	fw_unit_put(isight->unit);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return err;
 }
 

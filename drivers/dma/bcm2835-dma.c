@@ -891,8 +891,15 @@ static int bcm2835_dma_probe(struct platform_device *pdev)
 		pdev->dev.dma_mask = &pdev->dev.coherent_dma_mask;
 
 	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+<<<<<<< HEAD
 	if (rc)
 		return rc;
+=======
+	if (rc) {
+		dev_err(&pdev->dev, "Unable to set DMA mask\n");
+		return rc;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	od = devm_kzalloc(&pdev->dev, sizeof(*od), GFP_KERNEL);
 	if (!od)

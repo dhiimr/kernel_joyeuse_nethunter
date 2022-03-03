@@ -7,6 +7,10 @@
 # define swab16 __swab16
 # define swab32 __swab32
 # define swab64 __swab64
+<<<<<<< HEAD
+=======
+# define swab __swab
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # define swahw32 __swahw32
 # define swahb32 __swahb32
 # define swab16p __swab16p

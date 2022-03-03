@@ -171,6 +171,12 @@ long arch_ptrace(struct task_struct *child, long request,
 		if ((addr & (sizeof(unsigned long)-1)) ||
 		     addr >= sizeof(struct pt_regs))
 			break;
+<<<<<<< HEAD
+=======
+		if (addr == PT_IAOQ0 || addr == PT_IAOQ1) {
+			data |= 3; /* ensure userspace privilege */
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if ((addr >= PT_GR1 && addr <= PT_GR31) ||
 				addr == PT_IAOQ0 || addr == PT_IAOQ1 ||
 				(addr >= PT_FR0 && addr <= PT_FR31 + 4) ||
@@ -232,6 +238,7 @@ long arch_ptrace(struct task_struct *child, long request,
 
 static compat_ulong_t translate_usr_offset(compat_ulong_t offset)
 {
+<<<<<<< HEAD
 	if (offset < 0)
 		return sizeof(struct pt_regs);
 	else if (offset <= 32*4)	/* gr[0..31] */
@@ -242,6 +249,20 @@ static compat_ulong_t translate_usr_offset(compat_ulong_t offset)
 		return offset * 2 + 4 - 32*8;
 	else
 		return sizeof(struct pt_regs);
+=======
+	compat_ulong_t pos;
+
+	if (offset < 32*4)	/* gr[0..31] */
+		pos = offset * 2 + 4;
+	else if (offset < 32*4+32*8)	/* fr[0] ... fr[31] */
+		pos = (offset - 32*4) + PT_FR0;
+	else if (offset < sizeof(struct pt_regs)/2 + 32*4) /* sr[0] ... ipsw */
+		pos = (offset - 32*4 - 32*8) * 2 + PT_SR0 + 4;
+	else
+		pos = sizeof(struct pt_regs);
+
+	return pos;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
@@ -285,9 +306,18 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 			addr = translate_usr_offset(addr);
 			if (addr >= sizeof(struct pt_regs))
 				break;
+<<<<<<< HEAD
 			if (addr >= PT_FR0 && addr <= PT_FR31 + 4) {
 				/* Special case, fp regs are 64 bits anyway */
 				*(__u64 *) ((char *) task_regs(child) + addr) = data;
+=======
+			if (addr == PT_IAOQ0+4 || addr == PT_IAOQ1+4) {
+				data |= 3; /* ensure userspace privilege */
+			}
+			if (addr >= PT_FR0 && addr <= PT_FR31 + 4) {
+				/* Special case, fp regs are 64 bits anyway */
+				*(__u32 *) ((char *) task_regs(child) + addr) = data;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				ret = 0;
 			}
 			else if ((addr >= PT_GR1+4 && addr <= PT_GR31+4) ||
@@ -500,7 +530,12 @@ static void set_reg(struct pt_regs *regs, int num, unsigned long val)
 			return;
 	case RI(iaoq[0]):
 	case RI(iaoq[1]):
+<<<<<<< HEAD
 			regs->iaoq[num - RI(iaoq[0])] = val;
+=======
+			/* set 2 lowest bits to ensure userspace privilege: */
+			regs->iaoq[num - RI(iaoq[0])] = val | 3;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return;
 	case RI(sar):	regs->sar = val;
 			return;

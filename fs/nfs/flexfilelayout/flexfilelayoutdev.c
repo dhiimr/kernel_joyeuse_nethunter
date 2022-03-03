@@ -18,7 +18,11 @@
 
 #define NFSDBG_FACILITY		NFSDBG_PNFS_LD
 
+<<<<<<< HEAD
 static unsigned int dataserver_timeo = NFS_DEF_TCP_RETRANS;
+=======
+static unsigned int dataserver_timeo = NFS_DEF_TCP_TIMEO;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static unsigned int dataserver_retrans;
 
 static bool ff_layout_has_available_ds(struct pnfs_layout_segment *lseg);
@@ -306,7 +310,11 @@ int ff_layout_track_ds_error(struct nfs4_flexfile_layout *flo,
 	if (status == 0)
 		return 0;
 
+<<<<<<< HEAD
 	if (mirror->mirror_ds == NULL)
+=======
+	if (IS_ERR_OR_NULL(mirror->mirror_ds))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	dserr = kmalloc(sizeof(*dserr), gfp_flags);
@@ -428,10 +436,17 @@ nfs4_ff_layout_prepare_ds(struct pnfs_layout_segment *lseg, u32 ds_idx,
 		goto out_fail;
 
 	ds = mirror->mirror_ds->ds;
+<<<<<<< HEAD
 	/* matching smp_wmb() in _nfs4_pnfs_v3/4_ds_connect */
 	smp_rmb();
 	if (ds->ds_clp)
 		goto out;
+=======
+	if (READ_ONCE(ds->ds_clp))
+		goto out;
+	/* matching smp_wmb() in _nfs4_pnfs_v3/4_ds_connect */
+	smp_rmb();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* FIXME: For now we assume the server sent only one version of NFS
 	 * to use for the DS.

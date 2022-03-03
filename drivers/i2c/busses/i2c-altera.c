@@ -81,6 +81,10 @@
  * @isr_mask: cached copy of local ISR enables.
  * @isr_status: cached copy of local ISR status.
  * @lock: spinlock for IRQ synchronization.
+<<<<<<< HEAD
+=======
+ * @isr_mutex: mutex for IRQ thread.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 struct altr_i2c_dev {
 	void __iomem *base;
@@ -97,6 +101,10 @@ struct altr_i2c_dev {
 	u32 isr_mask;
 	u32 isr_status;
 	spinlock_t lock;	/* IRQ synchronization */
+<<<<<<< HEAD
+=======
+	struct mutex isr_mutex;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static void
@@ -182,7 +190,11 @@ static void altr_i2c_init(struct altr_i2c_dev *idev)
 	/* SCL Low Time */
 	writel(t_low, idev->base + ALTR_I2C_SCL_LOW);
 	/* SDA Hold Time, 300ns */
+<<<<<<< HEAD
 	writel(div_u64(300 * clk_mhz, 1000), idev->base + ALTR_I2C_SDA_HOLD);
+=======
+	writel(3 * clk_mhz / 10, idev->base + ALTR_I2C_SDA_HOLD);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Mask all master interrupt bits */
 	altr_i2c_int_enable(idev, ALTR_I2C_ALL_IRQ, false);
@@ -256,10 +268,18 @@ static irqreturn_t altr_i2c_isr(int irq, void *_dev)
 	struct altr_i2c_dev *idev = _dev;
 	u32 status = idev->isr_status;
 
+<<<<<<< HEAD
 	if (!idev->msg) {
 		dev_warn(idev->dev, "unexpected interrupt\n");
 		altr_i2c_int_clear(idev, ALTR_I2C_ALL_IRQ);
 		return IRQ_HANDLED;
+=======
+	mutex_lock(&idev->isr_mutex);
+	if (!idev->msg) {
+		dev_warn(idev->dev, "unexpected interrupt\n");
+		altr_i2c_int_clear(idev, ALTR_I2C_ALL_IRQ);
+		goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	read = (idev->msg->flags & I2C_M_RD) != 0;
 
@@ -312,6 +332,11 @@ static irqreturn_t altr_i2c_isr(int irq, void *_dev)
 		complete(&idev->msg_complete);
 		dev_dbg(idev->dev, "Message Complete\n");
 	}
+<<<<<<< HEAD
+=======
+out:
+	mutex_unlock(&idev->isr_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return IRQ_HANDLED;
 }
@@ -323,6 +348,10 @@ static int altr_i2c_xfer_msg(struct altr_i2c_dev *idev, struct i2c_msg *msg)
 	u32 value;
 	u8 addr = i2c_8bit_addr_from_msg(msg);
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&idev->isr_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	idev->msg = msg;
 	idev->msg_len = msg->len;
 	idev->buf = msg->buf;
@@ -347,6 +376,10 @@ static int altr_i2c_xfer_msg(struct altr_i2c_dev *idev, struct i2c_msg *msg)
 		altr_i2c_int_enable(idev, imask, true);
 		altr_i2c_fill_tx_fifo(idev);
 	}
+<<<<<<< HEAD
+=======
+	mutex_unlock(&idev->isr_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	time_left = wait_for_completion_timeout(&idev->msg_complete,
 						ALTR_I2C_XFER_TIMEOUT);
@@ -395,7 +428,10 @@ static int altr_i2c_probe(struct platform_device *pdev)
 	struct altr_i2c_dev *idev = NULL;
 	struct resource *res;
 	int irq, ret;
+<<<<<<< HEAD
 	u32 val;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	idev = devm_kzalloc(&pdev->dev, sizeof(*idev), GFP_KERNEL);
 	if (!idev)
@@ -421,18 +457,32 @@ static int altr_i2c_probe(struct platform_device *pdev)
 	idev->dev = &pdev->dev;
 	init_completion(&idev->msg_complete);
 	spin_lock_init(&idev->lock);
+<<<<<<< HEAD
 
 	val = device_property_read_u32(idev->dev, "fifo-size",
 				       &idev->fifo_size);
 	if (val) {
+=======
+	mutex_init(&idev->isr_mutex);
+
+	ret = device_property_read_u32(idev->dev, "fifo-size",
+				       &idev->fifo_size);
+	if (ret) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_err(&pdev->dev, "FIFO size set to default of %d\n",
 			ALTR_I2C_DFLT_FIFO_SZ);
 		idev->fifo_size = ALTR_I2C_DFLT_FIFO_SZ;
 	}
 
+<<<<<<< HEAD
 	val = device_property_read_u32(idev->dev, "clock-frequency",
 				       &idev->bus_clk_rate);
 	if (val) {
+=======
+	ret = device_property_read_u32(idev->dev, "clock-frequency",
+				       &idev->bus_clk_rate);
+	if (ret) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_err(&pdev->dev, "Default to 100kHz\n");
 		idev->bus_clk_rate = 100000;	/* default clock rate */
 	}

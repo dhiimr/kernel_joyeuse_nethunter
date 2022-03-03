@@ -192,13 +192,21 @@ void tegra_idle_lp2_last(void)
 {
 	tegra_pm_set(TEGRA_SUSPEND_LP2);
 
+<<<<<<< HEAD
 	cpu_cluster_pm_enter(0);
+=======
+	cpu_cluster_pm_enter();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	suspend_cpu_complex();
 
 	cpu_suspend(PHYS_OFFSET - PAGE_OFFSET, &tegra_sleep_cpu);
 
 	restore_cpu_complex();
+<<<<<<< HEAD
 	cpu_cluster_pm_exit(0);
+=======
+	cpu_cluster_pm_exit();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 enum tegra_suspend_mode tegra_pm_validate_suspend_mode(

@@ -760,7 +760,11 @@
 #define RT5670_PWR_VREF2_BIT			4
 #define RT5670_PWR_FV2				(0x1 << 3)
 #define RT5670_PWR_FV2_BIT			3
+<<<<<<< HEAD
 #define RT5670_LDO_SEL_MASK			(0x3)
+=======
+#define RT5670_LDO_SEL_MASK			(0x7)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define RT5670_LDO_SEL_SFT			0
 
 /* Power Management for Analog 2 (0x64) */

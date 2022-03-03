@@ -52,7 +52,11 @@ static int loop_set_tx_mask(struct rc_dev *dev, u32 mask)
 
 	if ((mask & (RXMASK_REGULAR | RXMASK_LEARNING)) != mask) {
 		dprintk("invalid tx mask: %u\n", mask);
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		return 2;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	dprintk("setting tx mask: %u\n", mask);

@@ -7,6 +7,10 @@
  */
 
 #include <linux/elf.h>
+<<<<<<< HEAD
+=======
+#include <linux/ftrace.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/sort.h>
@@ -14,10 +18,13 @@
 #include <asm/cache.h>
 #include <asm/opcodes.h>
 
+<<<<<<< HEAD
 #define PLT_ENT_STRIDE		L1_CACHE_BYTES
 #define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
 #define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_THUMB2_KERNEL
 #define PLT_ENT_LDR		__opcode_to_mem_thumb32(0xf8dff000 | \
 							(PLT_ENT_STRIDE - 4))
@@ -26,9 +33,17 @@
 						    (PLT_ENT_STRIDE - 8))
 #endif
 
+<<<<<<< HEAD
 struct plt_entries {
 	u32	ldr[PLT_ENT_COUNT];
 	u32	lit[PLT_ENT_COUNT];
+=======
+static const u32 fixed_plts[] = {
+#ifdef CONFIG_DYNAMIC_FTRACE
+	FTRACE_ADDR,
+	MCOUNT_ADDR,
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static bool in_init(const struct module *mod, unsigned long loc)
@@ -36,14 +51,50 @@ static bool in_init(const struct module *mod, unsigned long loc)
 	return loc - (u32)mod->init_layout.base < mod->init_layout.size;
 }
 
+<<<<<<< HEAD
+=======
+static void prealloc_fixed(struct mod_plt_sec *pltsec, struct plt_entries *plt)
+{
+	int i;
+
+	if (!ARRAY_SIZE(fixed_plts) || pltsec->plt_count)
+		return;
+	pltsec->plt_count = ARRAY_SIZE(fixed_plts);
+
+	for (i = 0; i < ARRAY_SIZE(plt->ldr); ++i)
+		plt->ldr[i] = PLT_ENT_LDR;
+
+	BUILD_BUG_ON(sizeof(fixed_plts) > sizeof(plt->lit));
+	memcpy(plt->lit, fixed_plts, sizeof(fixed_plts));
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 u32 get_module_plt(struct module *mod, unsigned long loc, Elf32_Addr val)
 {
 	struct mod_plt_sec *pltsec = !in_init(mod, loc) ? &mod->arch.core :
 							  &mod->arch.init;
+<<<<<<< HEAD
 
 	struct plt_entries *plt = (struct plt_entries *)pltsec->plt->sh_addr;
 	int idx = 0;
 
+=======
+	struct plt_entries *plt;
+	int idx;
+
+	/* cache the address, ELF header is available only during module load */
+	if (!pltsec->plt_ent)
+		pltsec->plt_ent = (struct plt_entries *)pltsec->plt->sh_addr;
+	plt = pltsec->plt_ent;
+
+	prealloc_fixed(pltsec, plt);
+
+	for (idx = 0; idx < ARRAY_SIZE(fixed_plts); ++idx)
+		if (plt->lit[idx] == val)
+			return (u32)&plt->ldr[idx];
+
+	idx = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Look for an existing entry pointing to 'val'. Given that the
 	 * relocations are sorted, this will be the last entry we allocated.
@@ -191,8 +242,13 @@ static unsigned int count_plts(const Elf32_Sym *syms, Elf32_Addr base,
 int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
 			      char *secstrings, struct module *mod)
 {
+<<<<<<< HEAD
 	unsigned long core_plts = 0;
 	unsigned long init_plts = 0;
+=======
+	unsigned long core_plts = ARRAY_SIZE(fixed_plts);
+	unsigned long init_plts = ARRAY_SIZE(fixed_plts);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	Elf32_Shdr *s, *sechdrs_end = sechdrs + ehdr->e_shnum;
 	Elf32_Sym *syms = NULL;
 
@@ -247,6 +303,10 @@ int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
 	mod->arch.core.plt->sh_size = round_up(core_plts * PLT_ENT_SIZE,
 					       sizeof(struct plt_entries));
 	mod->arch.core.plt_count = 0;
+<<<<<<< HEAD
+=======
+	mod->arch.core.plt_ent = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mod->arch.init.plt->sh_type = SHT_NOBITS;
 	mod->arch.init.plt->sh_flags = SHF_EXECINSTR | SHF_ALLOC;
@@ -254,6 +314,10 @@ int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
 	mod->arch.init.plt->sh_size = round_up(init_plts * PLT_ENT_SIZE,
 					       sizeof(struct plt_entries));
 	mod->arch.init.plt_count = 0;
+<<<<<<< HEAD
+=======
+	mod->arch.init.plt_ent = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	pr_debug("%s: plt=%x, init.plt=%x\n", __func__,
 		 mod->arch.core.plt->sh_size, mod->arch.init.plt->sh_size);

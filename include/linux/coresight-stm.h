@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0 */
 #ifndef __LINUX_CORESIGHT_STM_H_
 #define __LINUX_CORESIGHT_STM_H_
+<<<<<<< HEAD
 #include <asm/local.h>
 #include <linux/stm.h>
 #include <linux/bitmap.h>
@@ -110,4 +111,9 @@ static inline int stm_trace(uint32_t flags, uint8_t entity_id,
 static inline void stm_send(void *addr, const void *data, u32 size,
 			    u8 write_bytes) {}
 #endif
+=======
+
+#include <uapi/linux/coresight-stm.h>
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif

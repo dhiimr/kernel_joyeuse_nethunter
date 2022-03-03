@@ -49,14 +49,22 @@
 #include "adf_pf2vf_msg.h"
 
 /**
+<<<<<<< HEAD
  * adf_vf2pf_init() - send init msg to PF
+=======
+ * adf_vf2pf_notify_init() - send init msg to PF
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @accel_dev:  Pointer to acceleration VF device.
  *
  * Function sends an init messge from the VF to a PF
  *
  * Return: 0 on success, error code otherwise.
  */
+<<<<<<< HEAD
 int adf_vf2pf_init(struct adf_accel_dev *accel_dev)
+=======
+int adf_vf2pf_notify_init(struct adf_accel_dev *accel_dev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u32 msg = (ADF_VF2PF_MSGORIGIN_SYSTEM |
 		(ADF_VF2PF_MSGTYPE_INIT << ADF_VF2PF_MSGTYPE_SHIFT));
@@ -69,17 +77,28 @@ int adf_vf2pf_init(struct adf_accel_dev *accel_dev)
 	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(adf_vf2pf_init);
 
 /**
  * adf_vf2pf_shutdown() - send shutdown msg to PF
+=======
+EXPORT_SYMBOL_GPL(adf_vf2pf_notify_init);
+
+/**
+ * adf_vf2pf_notify_shutdown() - send shutdown msg to PF
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @accel_dev:  Pointer to acceleration VF device.
  *
  * Function sends a shutdown messge from the VF to a PF
  *
  * Return: void
  */
+<<<<<<< HEAD
 void adf_vf2pf_shutdown(struct adf_accel_dev *accel_dev)
+=======
+void adf_vf2pf_notify_shutdown(struct adf_accel_dev *accel_dev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u32 msg = (ADF_VF2PF_MSGORIGIN_SYSTEM |
 	    (ADF_VF2PF_MSGTYPE_SHUTDOWN << ADF_VF2PF_MSGTYPE_SHIFT));
@@ -89,4 +108,8 @@ void adf_vf2pf_shutdown(struct adf_accel_dev *accel_dev)
 			dev_err(&GET_DEV(accel_dev),
 				"Failed to send Shutdown event to PF\n");
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(adf_vf2pf_shutdown);
+=======
+EXPORT_SYMBOL_GPL(adf_vf2pf_notify_shutdown);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

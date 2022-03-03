@@ -71,6 +71,10 @@ err_remove_config_dt:
 
 static const struct of_device_id dwmac_generic_match[] = {
 	{ .compatible = "st,spear600-gmac"},
+<<<<<<< HEAD
+=======
+	{ .compatible = "snps,dwmac-3.40a"},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ .compatible = "snps,dwmac-3.50a"},
 	{ .compatible = "snps,dwmac-3.610"},
 	{ .compatible = "snps,dwmac-3.70a"},

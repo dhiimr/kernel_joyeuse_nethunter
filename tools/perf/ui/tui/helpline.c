@@ -24,7 +24,11 @@ static void tui_helpline__push(const char *msg)
 	SLsmg_set_color(0);
 	SLsmg_write_nstring((char *)msg, SLtt_Screen_Cols);
 	SLsmg_refresh();
+<<<<<<< HEAD
 	strncpy(ui_helpline__current, msg, sz)[sz - 1] = '\0';
+=======
+	strlcpy(ui_helpline__current, msg, sz);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int tui_helpline__show(const char *format, va_list ap)

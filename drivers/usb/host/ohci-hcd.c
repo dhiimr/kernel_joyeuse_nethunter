@@ -100,7 +100,11 @@ static void io_watchdog_func(unsigned long _ohci);
 
 
 /* Some boards misreport power switching/overcurrent */
+<<<<<<< HEAD
 static bool distrust_firmware = true;
+=======
+static bool distrust_firmware;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 module_param (distrust_firmware, bool, 0);
 MODULE_PARM_DESC (distrust_firmware,
 	"true to distrust firmware power/overcurrent setup");
@@ -280,7 +284,11 @@ static int ohci_urb_enqueue (
 						ed->interval);
 				if (urb_priv->td_cnt >= urb_priv->length) {
 					++urb_priv->td_cnt;	/* Mark it */
+<<<<<<< HEAD
 					ohci_dbg(ohci, "iso underrun %pK (%u+%u < %u)\n",
+=======
+					ohci_dbg(ohci, "iso underrun %p (%u+%u < %u)\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 							urb, frame, length,
 							next);
 				}
@@ -388,7 +396,11 @@ sanitize:
 		/* caller was supposed to have unlinked any requests;
 		 * that's not our job.  can't recover; must leak ed.
 		 */
+<<<<<<< HEAD
 		ohci_err (ohci, "leak ed %pK (#%02x) state %d%s\n",
+=======
+		ohci_err (ohci, "leak ed %p (#%02x) state %d%s\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ed, ep->desc.bEndpointAddress, ed->state,
 			list_empty (&ed->td_list) ? "" : " (has tds)");
 		td_free (ohci, ed->dummy);
@@ -417,8 +429,12 @@ static void ohci_usb_reset (struct ohci_hcd *ohci)
  * other cases where the next software may expect clean state from the
  * "firmware".  this is bus-neutral, unlike shutdown() methods.
  */
+<<<<<<< HEAD
 static void
 ohci_shutdown (struct usb_hcd *hcd)
+=======
+static void _ohci_shutdown(struct usb_hcd *hcd)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct ohci_hcd *ohci;
 
@@ -434,6 +450,19 @@ ohci_shutdown (struct usb_hcd *hcd)
 	ohci->rh_state = OHCI_RH_HALTED;
 }
 
+<<<<<<< HEAD
+=======
+static void ohci_shutdown(struct usb_hcd *hcd)
+{
+	struct ohci_hcd	*ohci = hcd_to_ohci(hcd);
+	unsigned long flags;
+
+	spin_lock_irqsave(&ohci->lock, flags);
+	_ohci_shutdown(hcd);
+	spin_unlock_irqrestore(&ohci->lock, flags);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*-------------------------------------------------------------------------*
  * HC functions
  *-------------------------------------------------------------------------*/
@@ -656,6 +685,7 @@ retry:
 
 	/* handle root hub init quirks ... */
 	val = roothub_a (ohci);
+<<<<<<< HEAD
 	val &= ~(RH_A_PSM | RH_A_OCPM);
 	if (ohci->flags & OHCI_QUIRK_SUPERIO) {
 		/* NSC 87560 and maybe others */
@@ -670,6 +700,26 @@ retry:
 		val |= RH_A_NPS;
 		ohci_writel (ohci, val, &ohci->regs->roothub.a);
 	}
+=======
+	/* Configure for per-port over-current protection by default */
+	val &= ~RH_A_NOCP;
+	val |= RH_A_OCPM;
+	if (ohci->flags & OHCI_QUIRK_SUPERIO) {
+		/* NSC 87560 and maybe others.
+		 * Ganged power switching, no over-current protection.
+		 */
+		val |= RH_A_NOCP;
+		val &= ~(RH_A_POTPGT | RH_A_NPS | RH_A_PSM | RH_A_OCPM);
+	} else if ((ohci->flags & OHCI_QUIRK_AMD756) ||
+			(ohci->flags & OHCI_QUIRK_HUB_POWER)) {
+		/* hub power always on; required for AMD-756 and some
+		 * Mac platforms.
+		 */
+		val |= RH_A_NPS;
+	}
+	ohci_writel(ohci, val, &ohci->regs->roothub.a);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ohci_writel (ohci, RH_HS_LPSC, &ohci->regs->roothub.status);
 	ohci_writel (ohci, (val & RH_A_NPS) ? 0 : RH_B_PPCM,
 						&ohci->regs->roothub.b);
@@ -752,7 +802,11 @@ static void io_watchdog_func(unsigned long _ohci)
  died:
 			usb_hc_died(ohci_to_hcd(ohci));
 			ohci_dump(ohci);
+<<<<<<< HEAD
 			ohci_shutdown(ohci_to_hcd(ohci));
+=======
+			_ohci_shutdown(ohci_to_hcd(ohci));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto done;
 		} else {
 			/* No write back because the done queue was empty */
@@ -1033,7 +1087,11 @@ int ohci_restart(struct ohci_hcd *ohci)
 		case ED_UNLINK:
 			break;
 		default:
+<<<<<<< HEAD
 			ohci_dbg(ohci, "bogus ed %pK state %d\n",
+=======
+			ohci_dbg(ohci, "bogus ed %p state %d\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					ed, ed->state);
 		}
 

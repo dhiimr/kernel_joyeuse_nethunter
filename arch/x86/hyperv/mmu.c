@@ -57,12 +57,23 @@ static inline int fill_gva_list(u64 gva_list[], int offset,
 		 * Lower 12 bits encode the number of additional
 		 * pages to flush (in addition to the 'cur' page).
 		 */
+<<<<<<< HEAD
 		if (diff >= HV_TLB_FLUSH_UNIT)
 			gva_list[gva_n] |= ~PAGE_MASK;
 		else if (diff)
 			gva_list[gva_n] |= (diff - 1) >> PAGE_SHIFT;
 
 		cur += HV_TLB_FLUSH_UNIT;
+=======
+		if (diff >= HV_TLB_FLUSH_UNIT) {
+			gva_list[gva_n] |= ~PAGE_MASK;
+			cur += HV_TLB_FLUSH_UNIT;
+		}  else if (diff) {
+			gva_list[gva_n] |= (diff - 1) >> PAGE_SHIFT;
+			cur = end;
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		gva_n++;
 
 	} while (cur < end);

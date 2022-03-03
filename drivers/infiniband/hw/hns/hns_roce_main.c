@@ -294,6 +294,12 @@ static int hns_roce_query_gid(struct ib_device *ib_dev, u8 port_num, int index,
 static int hns_roce_query_pkey(struct ib_device *ib_dev, u8 port, u16 index,
 			       u16 *pkey)
 {
+<<<<<<< HEAD
+=======
+	if (index > 0)
+		return -EINVAL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	*pkey = PKEY_ID;
 
 	return 0;
@@ -374,7 +380,11 @@ static int hns_roce_mmap(struct ib_ucontext *context,
 		return -EINVAL;
 
 	if (vma->vm_pgoff == 0) {
+<<<<<<< HEAD
 		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+=======
+		vma->vm_page_prot = pgprot_device(vma->vm_page_prot);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (io_remap_pfn_range(vma, vma->vm_start,
 				       to_hr_ucontext(context)->uar.pfn,
 				       PAGE_SIZE, vma->vm_page_prot))

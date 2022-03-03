@@ -742,7 +742,11 @@ static int __init atari_scsi_probe(struct platform_device *pdev)
 		atari_scsi_template.sg_tablesize = SG_ALL;
 	} else {
 		atari_scsi_template.can_queue    = 1;
+<<<<<<< HEAD
 		atari_scsi_template.sg_tablesize = SG_NONE;
+=======
+		atari_scsi_template.sg_tablesize = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (setup_can_queue > 0)
@@ -751,8 +755,13 @@ static int __init atari_scsi_probe(struct platform_device *pdev)
 	if (setup_cmd_per_lun > 0)
 		atari_scsi_template.cmd_per_lun = setup_cmd_per_lun;
 
+<<<<<<< HEAD
 	/* Leave sg_tablesize at 0 on a Falcon! */
 	if (ATARIHW_PRESENT(TT_SCSI) && setup_sg_tablesize >= 0)
+=======
+	/* Don't increase sg_tablesize on Falcon! */
+	if (ATARIHW_PRESENT(TT_SCSI) && setup_sg_tablesize > 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		atari_scsi_template.sg_tablesize = setup_sg_tablesize;
 
 	if (setup_hostid >= 0) {

@@ -148,6 +148,20 @@ static void hv_init_clockevent_device(struct clock_event_device *dev, int cpu)
 int hv_synic_alloc(void)
 {
 	int cpu;
+<<<<<<< HEAD
+=======
+	struct hv_per_cpu_context *hv_cpu;
+
+	/*
+	 * First, zero all per-cpu memory areas so hv_synic_free() can
+	 * detect what memory has been allocated and cleanup properly
+	 * after any failures.
+	 */
+	for_each_present_cpu(cpu) {
+		hv_cpu = per_cpu_ptr(hv_context.cpu_context, cpu);
+		memset(hv_cpu, 0, sizeof(*hv_cpu));
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	hv_context.hv_numa_map = kzalloc(sizeof(struct cpumask) * nr_node_ids,
 					 GFP_ATOMIC);
@@ -157,10 +171,15 @@ int hv_synic_alloc(void)
 	}
 
 	for_each_present_cpu(cpu) {
+<<<<<<< HEAD
 		struct hv_per_cpu_context *hv_cpu
 			= per_cpu_ptr(hv_context.cpu_context, cpu);
 
 		memset(hv_cpu, 0, sizeof(*hv_cpu));
+=======
+		hv_cpu = per_cpu_ptr(hv_context.cpu_context, cpu);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		tasklet_init(&hv_cpu->msg_dpc,
 			     vmbus_on_msg_dpc, (unsigned long) hv_cpu);
 
@@ -356,7 +375,10 @@ int hv_synic_cleanup(unsigned int cpu)
 
 		clockevents_unbind_device(hv_cpu->clk_evt, cpu);
 		hv_ce_shutdown(hv_cpu->clk_evt);
+<<<<<<< HEAD
 		put_cpu_ptr(hv_cpu);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	hv_get_synint_state(HV_X64_MSR_SINT0 + VMBUS_MESSAGE_SINT,

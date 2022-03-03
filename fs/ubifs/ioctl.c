@@ -28,6 +28,14 @@
 #include <linux/mount.h>
 #include "ubifs.h"
 
+<<<<<<< HEAD
+=======
+/* Need to be kept consistent with checked flags in ioctl2ubifs() */
+#define UBIFS_SUPPORTED_IOCTL_FLAGS \
+	(FS_COMPR_FL | FS_SYNC_FL | FS_APPEND_FL | \
+	 FS_IMMUTABLE_FL | FS_DIRSYNC_FL)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * ubifs_set_inode_flags - set VFS inode flags.
  * @inode: VFS inode to set flags for
@@ -38,8 +46,12 @@ void ubifs_set_inode_flags(struct inode *inode)
 {
 	unsigned int flags = ubifs_inode(inode)->flags;
 
+<<<<<<< HEAD
 	inode->i_flags &= ~(S_SYNC | S_APPEND | S_IMMUTABLE | S_DIRSYNC |
 			    S_ENCRYPTED);
+=======
+	inode->i_flags &= ~(S_SYNC | S_APPEND | S_IMMUTABLE | S_DIRSYNC);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (flags & UBIFS_SYNC_FL)
 		inode->i_flags |= S_SYNC;
 	if (flags & UBIFS_APPEND_FL)
@@ -48,8 +60,11 @@ void ubifs_set_inode_flags(struct inode *inode)
 		inode->i_flags |= S_IMMUTABLE;
 	if (flags & UBIFS_DIRSYNC_FL)
 		inode->i_flags |= S_DIRSYNC;
+<<<<<<< HEAD
 	if (flags & UBIFS_CRYPT_FL)
 		inode->i_flags |= S_ENCRYPTED;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -127,7 +142,12 @@ static int setflags(struct inode *inode, int flags)
 		}
 	}
 
+<<<<<<< HEAD
 	ui->flags = ioctl2ubifs(flags);
+=======
+	ui->flags &= ~ioctl2ubifs(UBIFS_SUPPORTED_IOCTL_FLAGS);
+	ui->flags |= ioctl2ubifs(flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ubifs_set_inode_flags(inode);
 	inode->i_ctime = current_time(inode);
 	release = ui->dirty;
@@ -169,6 +189,12 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		if (get_user(flags, (int __user *) arg))
 			return -EFAULT;
 
+<<<<<<< HEAD
+=======
+		if (flags & ~UBIFS_SUPPORTED_IOCTL_FLAGS)
+			return -EOPNOTSUPP;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!S_ISDIR(inode->i_mode))
 			flags &= ~FS_DIRSYNC_FL;
 

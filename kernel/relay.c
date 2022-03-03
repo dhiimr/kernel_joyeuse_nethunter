@@ -196,6 +196,10 @@ free_buf:
 static void relay_destroy_channel(struct kref *kref)
 {
 	struct rchan *chan = container_of(kref, struct rchan, kref);
+<<<<<<< HEAD
+=======
+	free_percpu(chan->buf);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(chan);
 }
 
@@ -580,6 +584,14 @@ struct rchan *relay_open(const char *base_filename,
 		return NULL;
 
 	chan->buf = alloc_percpu(struct rchan_buf *);
+<<<<<<< HEAD
+=======
+	if (!chan->buf) {
+		kfree(chan);
+		return NULL;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	chan->version = RELAYFS_CHANNEL_VERSION;
 	chan->n_subbufs = n_subbufs;
 	chan->subbuf_size = subbuf_size;

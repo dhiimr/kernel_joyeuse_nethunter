@@ -135,7 +135,13 @@ int snd_seq_port_subscribe(struct snd_seq_client_port *port,
 			   struct snd_seq_port_subscribe *info);
 
 /* get matched subscriber */
+<<<<<<< HEAD
 struct snd_seq_subscribers *snd_seq_port_get_subscription(struct snd_seq_port_subs_info *src_grp,
 							  struct snd_seq_addr *dest_addr);
+=======
+int snd_seq_port_get_subscription(struct snd_seq_port_subs_info *src_grp,
+				  struct snd_seq_addr *dest_addr,
+				  struct snd_seq_port_subscribe *subs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif

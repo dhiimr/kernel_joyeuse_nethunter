@@ -481,10 +481,17 @@ static void acpi_device_del(struct acpi_device *device)
 	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node)
 		if (!strcmp(acpi_device_bus_id->bus_id,
 			    acpi_device_hid(device))) {
+<<<<<<< HEAD
 			if (acpi_device_bus_id->instance_no > 0)
 				acpi_device_bus_id->instance_no--;
 			else {
 				list_del(&acpi_device_bus_id->node);
+=======
+			ida_simple_remove(&acpi_device_bus_id->instance_ida, device->pnp.instance_no);
+			if (ida_is_empty(&acpi_device_bus_id->instance_ida)) {
+				list_del(&acpi_device_bus_id->node);
+				kfree_const(acpi_device_bus_id->bus_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				kfree(acpi_device_bus_id);
 			}
 			break;
@@ -584,6 +591,11 @@ static int acpi_get_device_data(acpi_handle handle, struct acpi_device **device,
 	if (!device)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	*device = NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	status = acpi_get_data_full(handle, acpi_scan_drop_device,
 				    (void **)device, callback);
 	if (ACPI_FAILURE(status) || !*device) {
@@ -619,12 +631,47 @@ void acpi_bus_put_acpi_device(struct acpi_device *adev)
 	put_device(&adev->dev);
 }
 
+<<<<<<< HEAD
 int acpi_device_add(struct acpi_device *device,
 		    void (*release)(struct device *))
 {
 	int result;
 	struct acpi_device_bus_id *acpi_device_bus_id, *new_bus_id;
 	int found = 0;
+=======
+static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
+{
+	struct acpi_device_bus_id *acpi_device_bus_id;
+
+	/* Find suitable bus_id and instance number in acpi_bus_id_list. */
+	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node) {
+		if (!strcmp(acpi_device_bus_id->bus_id, dev_id))
+			return acpi_device_bus_id;
+	}
+	return NULL;
+}
+
+static int acpi_device_set_name(struct acpi_device *device,
+				struct acpi_device_bus_id *acpi_device_bus_id)
+{
+	struct ida *instance_ida = &acpi_device_bus_id->instance_ida;
+	int result;
+
+	result = ida_simple_get(instance_ida, 0, ACPI_MAX_DEVICE_INSTANCES, GFP_KERNEL);
+	if (result < 0)
+		return result;
+
+	device->pnp.instance_no = result;
+	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, result);
+	return 0;
+}
+
+int acpi_device_add(struct acpi_device *device,
+		    void (*release)(struct device *))
+{
+	struct acpi_device_bus_id *acpi_device_bus_id;
+	int result;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (device->handle) {
 		acpi_status status;
@@ -650,6 +697,7 @@ int acpi_device_add(struct acpi_device *device,
 	INIT_LIST_HEAD(&device->del_list);
 	mutex_init(&device->physical_node_lock);
 
+<<<<<<< HEAD
 	new_bus_id = kzalloc(sizeof(struct acpi_device_bus_id), GFP_KERNEL);
 	if (!new_bus_id) {
 		pr_err(PREFIX "Memory allocation error\n");
@@ -678,6 +726,41 @@ int acpi_device_add(struct acpi_device *device,
 		list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
 	}
 	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, acpi_device_bus_id->instance_no);
+=======
+	mutex_lock(&acpi_device_lock);
+
+	acpi_device_bus_id = acpi_device_bus_id_match(acpi_device_hid(device));
+	if (acpi_device_bus_id) {
+		result = acpi_device_set_name(device, acpi_device_bus_id);
+		if (result)
+			goto err_unlock;
+	} else {
+		acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
+					     GFP_KERNEL);
+		if (!acpi_device_bus_id) {
+			result = -ENOMEM;
+			goto err_unlock;
+		}
+		acpi_device_bus_id->bus_id =
+			kstrdup_const(acpi_device_hid(device), GFP_KERNEL);
+		if (!acpi_device_bus_id->bus_id) {
+			kfree(acpi_device_bus_id);
+			result = -ENOMEM;
+			goto err_unlock;
+		}
+
+		ida_init(&acpi_device_bus_id->instance_ida);
+
+		result = acpi_device_set_name(device, acpi_device_bus_id);
+		if (result) {
+			kfree_const(acpi_device_bus_id->bus_id);
+			kfree(acpi_device_bus_id);
+			goto err_unlock;
+		}
+
+		list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (device->parent)
 		list_add_tail(&device->node, &device->parent->children);
@@ -708,9 +791,16 @@ int acpi_device_add(struct acpi_device *device,
 	if (device->parent)
 		list_del(&device->node);
 	list_del(&device->wakeup_list);
+<<<<<<< HEAD
 	mutex_unlock(&acpi_device_lock);
 
  err_detach:
+=======
+
+ err_unlock:
+	mutex_unlock(&acpi_device_lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	acpi_detach_data(device->handle, acpi_scan_drop_device);
 	return result;
 }
@@ -920,12 +1010,18 @@ static void acpi_bus_init_power_state(struct acpi_device *device, int state)
 
 		if (buffer.length && package
 		    && package->type == ACPI_TYPE_PACKAGE
+<<<<<<< HEAD
 		    && package->package.count) {
 			int err = acpi_extract_power_resources(package, 0,
 							       &ps->resources);
 			if (!err)
 				device->power.flags.power_resources = 1;
 		}
+=======
+		    && package->package.count)
+			acpi_extract_power_resources(package, 0, &ps->resources);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ACPI_FREE(buffer.pointer);
 	}
 
@@ -972,14 +1068,37 @@ static void acpi_bus_get_power_flags(struct acpi_device *device)
 		acpi_bus_init_power_state(device, i);
 
 	INIT_LIST_HEAD(&device->power.states[ACPI_STATE_D3_COLD].resources);
+<<<<<<< HEAD
 	if (!list_empty(&device->power.states[ACPI_STATE_D3_HOT].resources))
 		device->power.states[ACPI_STATE_D3_COLD].flags.valid = 1;
 
 	/* Set defaults for D0 and D3hot states (always valid) */
+=======
+
+	/* Set the defaults for D0 and D3hot (always supported). */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	device->power.states[ACPI_STATE_D0].flags.valid = 1;
 	device->power.states[ACPI_STATE_D0].power = 100;
 	device->power.states[ACPI_STATE_D3_HOT].flags.valid = 1;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Use power resources only if the D0 list of them is populated, because
+	 * some platforms may provide _PR3 only to indicate D3cold support and
+	 * in those cases the power resources list returned by it may be bogus.
+	 */
+	if (!list_empty(&device->power.states[ACPI_STATE_D0].resources)) {
+		device->power.flags.power_resources = 1;
+		/*
+		 * D3cold is supported if the D3hot list of power resources is
+		 * not empty.
+		 */
+		if (!list_empty(&device->power.states[ACPI_STATE_D3_HOT].resources))
+			device->power.states[ACPI_STATE_D3_COLD].flags.valid = 1;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (acpi_bus_init_power(device))
 		device->flags.power_manageable = 0;
 }

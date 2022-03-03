@@ -816,6 +816,10 @@ struct ath_hw {
 	struct ath9k_pacal_info pacal_info;
 	struct ar5416Stats stats;
 	struct ath9k_tx_queue_info txq[ATH9K_NUM_TX_QUEUES];
+<<<<<<< HEAD
+=======
+	DECLARE_BITMAP(pending_del_keymap, ATH_KEYMAX);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	enum ath9k_int imask;
 	u32 imrs2_reg;

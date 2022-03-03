@@ -38,7 +38,11 @@
 
 			trips {
 				cpu-crit {
+<<<<<<< HEAD
 					temperature	= <80000>;
+=======
+					temperature	= <90000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					hysteresis	= <0>;
 					type		= "critical";
 				};
@@ -454,6 +458,10 @@
 					     "dsi0_ddr2",
 					     "dsi0_ddr";
 
+<<<<<<< HEAD
+=======
+			status = "disabled";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		};
 
 		thermal: thermal@7e212000 {

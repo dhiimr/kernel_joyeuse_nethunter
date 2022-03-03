@@ -280,8 +280,11 @@ men-chameleon-bus.txt
 	- info on MEN chameleon bus.
 metag/
 	- directory with info about Linux on Meta architecture.
+<<<<<<< HEAD
 mhi.txt
 	- Modem Host Interface
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 mic/
 	- Intel Many Integrated Core (MIC) architecture device driver.
 mips/

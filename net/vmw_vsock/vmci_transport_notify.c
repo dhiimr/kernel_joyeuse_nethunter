@@ -355,7 +355,11 @@ vmci_transport_notify_pkt_poll_in(struct sock *sk,
 		 * queue. Ask for notifications when there is something to
 		 * read.
 		 */
+<<<<<<< HEAD
 		if (sk->sk_state == SS_CONNECTED) {
+=======
+		if (sk->sk_state == TCP_ESTABLISHED) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (!send_waiting_read(sk, 1))
 				return -1;
 

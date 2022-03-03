@@ -179,6 +179,10 @@ struct nfs_client *nfs_alloc_client(const struct nfs_client_initdata *cl_init)
 	INIT_LIST_HEAD(&clp->cl_superblocks);
 	clp->cl_rpcclient = ERR_PTR(-EINVAL);
 
+<<<<<<< HEAD
+=======
+	clp->cl_flags = cl_init->init_flags;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	clp->cl_proto = cl_init->proto;
 	clp->cl_net = get_net(cl_init->net);
 
@@ -290,6 +294,10 @@ static struct nfs_client *nfs_match_client(const struct nfs_client_initdata *dat
 	struct nfs_client *clp;
 	const struct sockaddr *sap = data->addr;
 	struct nfs_net *nn = net_generic(data->net, nfs_net_id);
+<<<<<<< HEAD
+=======
+	int error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 again:
 	list_for_each_entry(clp, &nn->nfs_client_list, cl_share_link) {
@@ -302,9 +310,17 @@ again:
 		if (clp->cl_cons_state > NFS_CS_READY) {
 			atomic_inc(&clp->cl_count);
 			spin_unlock(&nn->nfs_client_lock);
+<<<<<<< HEAD
 			nfs_wait_client_init_complete(clp);
 			nfs_put_client(clp);
 			spin_lock(&nn->nfs_client_lock);
+=======
+			error = nfs_wait_client_init_complete(clp);
+			nfs_put_client(clp);
+			spin_lock(&nn->nfs_client_lock);
+			if (error < 0)
+				return ERR_PTR(error);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto again;
 		}
 
@@ -403,7 +419,11 @@ struct nfs_client *nfs_get_client(const struct nfs_client_initdata *cl_init)
 
 	if (cl_init->hostname == NULL) {
 		WARN_ON(1);
+<<<<<<< HEAD
 		return NULL;
+=======
+		return ERR_PTR(-EINVAL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* see if the client already exists */
@@ -415,13 +435,21 @@ struct nfs_client *nfs_get_client(const struct nfs_client_initdata *cl_init)
 			spin_unlock(&nn->nfs_client_lock);
 			if (new)
 				new->rpc_ops->free_client(new);
+<<<<<<< HEAD
+=======
+			if (IS_ERR(clp))
+				return clp;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return nfs_found_client(cl_init, clp);
 		}
 		if (new) {
 			list_add_tail(&new->cl_share_link,
 					&nn->nfs_client_list);
 			spin_unlock(&nn->nfs_client_lock);
+<<<<<<< HEAD
 			new->cl_flags = cl_init->init_flags;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return rpc_ops->init_client(new, cl_init);
 		}
 

@@ -25,6 +25,12 @@
 #define VENDOR_ID_CYPRESS		0x04b4
 #define PRODUCT_ID_CYPHIDCOM		0x5500
 
+<<<<<<< HEAD
+=======
+/* Simply Automated HID->COM UPB PIM (using Cypress PID 0x5500) */
+#define VENDOR_ID_SAI			0x17dd
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* FRWD Dongle - a GPS sports watch */
 #define VENDOR_ID_FRWD			0x6737
 #define PRODUCT_ID_CYPHIDCOM_FRWD	0x0001

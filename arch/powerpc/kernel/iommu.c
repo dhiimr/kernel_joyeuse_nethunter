@@ -785,9 +785,15 @@ dma_addr_t iommu_map_page(struct device *dev, struct iommu_table *tbl,
 
 	vaddr = page_address(page) + offset;
 	uaddr = (unsigned long)vaddr;
+<<<<<<< HEAD
 	npages = iommu_num_pages(uaddr, size, IOMMU_PAGE_SIZE(tbl));
 
 	if (tbl) {
+=======
+
+	if (tbl) {
+		npages = iommu_num_pages(uaddr, size, IOMMU_PAGE_SIZE(tbl));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		align = 0;
 		if (tbl->it_page_shift < PAGE_SHIFT && size >= PAGE_SIZE &&
 		    ((unsigned long)vaddr & ~PAGE_MASK) == 0)
@@ -1055,7 +1061,11 @@ int iommu_take_ownership(struct iommu_table *tbl)
 
 	spin_lock_irqsave(&tbl->large_pool.lock, flags);
 	for (i = 0; i < tbl->nr_pools; i++)
+<<<<<<< HEAD
 		spin_lock(&tbl->pools[i].lock);
+=======
+		spin_lock_nest_lock(&tbl->pools[i].lock, &tbl->large_pool.lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (tbl->it_offset == 0)
 		clear_bit(0, tbl->it_map);
@@ -1084,7 +1094,11 @@ void iommu_release_ownership(struct iommu_table *tbl)
 
 	spin_lock_irqsave(&tbl->large_pool.lock, flags);
 	for (i = 0; i < tbl->nr_pools; i++)
+<<<<<<< HEAD
 		spin_lock(&tbl->pools[i].lock);
+=======
+		spin_lock_nest_lock(&tbl->pools[i].lock, &tbl->large_pool.lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	memset(tbl->it_map, 0, sz);
 

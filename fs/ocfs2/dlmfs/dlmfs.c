@@ -88,13 +88,21 @@ struct workqueue_struct *user_dlm_worker;
  */
 #define DLMFS_CAPABILITIES "bast stackglue"
 static int param_set_dlmfs_capabilities(const char *val,
+<<<<<<< HEAD
 					const struct kernel_param *kp)
+=======
+					struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	printk(KERN_ERR "%s: readonly parameter\n", kp->name);
 	return -EINVAL;
 }
 static int param_get_dlmfs_capabilities(char *buffer,
+<<<<<<< HEAD
 					const struct kernel_param *kp)
+=======
+					struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return strlcpy(buffer, DLMFS_CAPABILITIES,
 		       strlen(DLMFS_CAPABILITIES) + 1);

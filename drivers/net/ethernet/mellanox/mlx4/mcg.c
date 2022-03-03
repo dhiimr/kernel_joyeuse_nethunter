@@ -1490,7 +1490,11 @@ int mlx4_flow_steer_promisc_add(struct mlx4_dev *dev, u8 port,
 	rule.port = port;
 	rule.qpn = qpn;
 	INIT_LIST_HEAD(&rule.list);
+<<<<<<< HEAD
 	mlx4_err(dev, "going promisc on %x\n", port);
+=======
+	mlx4_info(dev, "going promisc on %x\n", port);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return  mlx4_flow_attach(dev, &rule, regid_p);
 }

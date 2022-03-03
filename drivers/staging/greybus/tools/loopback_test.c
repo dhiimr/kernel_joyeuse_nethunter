@@ -20,6 +20,10 @@
 #include <signal.h>
 
 #define MAX_NUM_DEVICES 10
+<<<<<<< HEAD
+=======
+#define MAX_SYSFS_PREFIX 0x80
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define MAX_SYSFS_PATH	0x200
 #define CSV_MAX_LINE	0x1000
 #define SYSFS_MAX_INT	0x20
@@ -68,7 +72,11 @@ struct loopback_results {
 };
 
 struct loopback_device {
+<<<<<<< HEAD
 	char name[MAX_SYSFS_PATH];
+=======
+	char name[MAX_STR_LEN];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	char sysfs_entry[MAX_SYSFS_PATH];
 	char debugfs_entry[MAX_SYSFS_PATH];
 	struct loopback_results results;
@@ -94,8 +102,13 @@ struct loopback_test {
 	int stop_all;
 	int poll_count;
 	char test_name[MAX_STR_LEN];
+<<<<<<< HEAD
 	char sysfs_prefix[MAX_SYSFS_PATH];
 	char debugfs_prefix[MAX_SYSFS_PATH];
+=======
+	char sysfs_prefix[MAX_SYSFS_PREFIX];
+	char debugfs_prefix[MAX_SYSFS_PREFIX];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct timespec poll_timeout;
 	struct loopback_device devices[MAX_NUM_DEVICES];
 	struct loopback_results aggregate_results;
@@ -644,7 +657,11 @@ baddir:
 static int open_poll_files(struct loopback_test *t)
 {
 	struct loopback_device *dev;
+<<<<<<< HEAD
 	char buf[MAX_STR_LEN];
+=======
+	char buf[MAX_SYSFS_PATH + MAX_STR_LEN];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	char dummy;
 	int fds_idx = 0;
 	int i;
@@ -914,10 +931,17 @@ int main(int argc, char *argv[])
 			t.iteration_max = atoi(optarg);
 			break;
 		case 'S':
+<<<<<<< HEAD
 			snprintf(t.sysfs_prefix, MAX_SYSFS_PATH, "%s", optarg);
 			break;
 		case 'D':
 			snprintf(t.debugfs_prefix, MAX_SYSFS_PATH, "%s", optarg);
+=======
+			snprintf(t.sysfs_prefix, MAX_SYSFS_PREFIX, "%s", optarg);
+			break;
+		case 'D':
+			snprintf(t.debugfs_prefix, MAX_SYSFS_PREFIX, "%s", optarg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		case 'm':
 			t.mask = atol(optarg);
@@ -968,10 +992,17 @@ int main(int argc, char *argv[])
 	}
 
 	if (!strcmp(t.sysfs_prefix, ""))
+<<<<<<< HEAD
 		snprintf(t.sysfs_prefix, MAX_SYSFS_PATH, "%s", sysfs_prefix);
 
 	if (!strcmp(t.debugfs_prefix, ""))
 		snprintf(t.debugfs_prefix, MAX_SYSFS_PATH, "%s", debugfs_prefix);
+=======
+		snprintf(t.sysfs_prefix, MAX_SYSFS_PREFIX, "%s", sysfs_prefix);
+
+	if (!strcmp(t.debugfs_prefix, ""))
+		snprintf(t.debugfs_prefix, MAX_SYSFS_PREFIX, "%s", debugfs_prefix);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = find_loopback_devices(&t);
 	if (ret)

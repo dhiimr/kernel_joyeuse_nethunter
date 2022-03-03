@@ -59,9 +59,13 @@ static int qcom_apcs_ipc_probe(struct platform_device *pdev)
 		return -ENOMEM;
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!res)
 		return -ENODEV;
 	base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+=======
+	base = devm_ioremap_resource(&pdev->dev, res);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (IS_ERR(base))
 		return PTR_ERR(base);
 
@@ -102,12 +106,15 @@ static int qcom_apcs_ipc_remove(struct platform_device *pdev)
 static const struct of_device_id qcom_apcs_ipc_of_match[] = {
 	{ .compatible = "qcom,msm8916-apcs-kpss-global", .data = (void *)8 },
 	{ .compatible = "qcom,msm8996-apcs-hmss-global", .data = (void *)16 },
+<<<<<<< HEAD
 	{ .compatible = "qcom,sm8150-apcs-hmss-global", .data = (void *)12 },
 	{ .compatible = "qcom,sm8150-spcs-global", .data = (void *)0 },
 	{ .compatible = "qcom,sdxprairie-apcs-gcc", .data = (void *)8 },
 	{ .compatible = "qcom,trinket-apcs-hmss-global", .data = (void *)8 },
 	{ .compatible = "qcom,atoll-apcs-hmss-global", .data = (void *)12 },
 	{ .compatible = "qcom,atoll-apcs-hmss-ipc2", .data = (void *)0 },
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{}
 };
 MODULE_DEVICE_TABLE(of, qcom_apcs_ipc_of_match);
@@ -118,7 +125,10 @@ static struct platform_driver qcom_apcs_ipc_driver = {
 	.driver = {
 		.name = "qcom_apcs_ipc",
 		.of_match_table = qcom_apcs_ipc_of_match,
+<<<<<<< HEAD
 		.suppress_bind_attrs = true,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 };
 

@@ -214,7 +214,11 @@ static int cmd_to_func(struct nfit_mem *nfit_mem, unsigned int cmd,
 	if (call_pkg) {
 		int i;
 
+<<<<<<< HEAD
 		if (nfit_mem->family != call_pkg->nd_family)
+=======
+		if (nfit_mem && nfit_mem->family != call_pkg->nd_family)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return -ENOTTY;
 
 		for (i = 0; i < ARRAY_SIZE(call_pkg->nd_reserved2); i++)
@@ -223,6 +227,13 @@ static int cmd_to_func(struct nfit_mem *nfit_mem, unsigned int cmd,
 		return call_pkg->nd_command;
 	}
 
+<<<<<<< HEAD
+=======
+	/* In the !call_pkg case, bus commands == bus functions */
+	if (!nfit_mem)
+		return cmd;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Linux ND commands == NVDIMM_FAMILY_INTEL function numbers */
 	if (nfit_mem->family == NVDIMM_FAMILY_INTEL)
 		return cmd;
@@ -238,6 +249,10 @@ int acpi_nfit_ctl(struct nvdimm_bus_descriptor *nd_desc, struct nvdimm *nvdimm,
 		unsigned int cmd, void *buf, unsigned int buf_len, int *cmd_rc)
 {
 	struct acpi_nfit_desc *acpi_desc = to_acpi_nfit_desc(nd_desc);
+<<<<<<< HEAD
+=======
+	struct nfit_mem *nfit_mem = nvdimm_provider_data(nvdimm);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	union acpi_object in_obj, in_buf, *out_obj;
 	const struct nd_cmd_desc *desc = NULL;
 	struct device *dev = acpi_desc->dev;
@@ -252,18 +267,31 @@ int acpi_nfit_ctl(struct nvdimm_bus_descriptor *nd_desc, struct nvdimm *nvdimm,
 	if (cmd_rc)
 		*cmd_rc = -EINVAL;
 
+<<<<<<< HEAD
 	if (nvdimm) {
 		struct nfit_mem *nfit_mem = nvdimm_provider_data(nvdimm);
+=======
+	if (cmd == ND_CMD_CALL)
+		call_pkg = buf;
+	func = cmd_to_func(nfit_mem, cmd, call_pkg);
+	if (func < 0)
+		return func;
+
+	if (nvdimm) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct acpi_device *adev = nfit_mem->adev;
 
 		if (!adev)
 			return -ENOTTY;
 
+<<<<<<< HEAD
 		if (cmd == ND_CMD_CALL)
 			call_pkg = buf;
 		func = cmd_to_func(nfit_mem, cmd, call_pkg);
 		if (func < 0)
 			return func;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dimm_name = nvdimm_name(nvdimm);
 		cmd_name = nvdimm_cmd_name(cmd);
 		cmd_mask = nvdimm_cmd_mask(nvdimm);
@@ -274,12 +302,18 @@ int acpi_nfit_ctl(struct nvdimm_bus_descriptor *nd_desc, struct nvdimm *nvdimm,
 	} else {
 		struct acpi_device *adev = to_acpi_dev(acpi_desc);
 
+<<<<<<< HEAD
 		func = cmd;
 		cmd_name = nvdimm_bus_cmd_name(cmd);
 		cmd_mask = nd_desc->cmd_mask;
 		dsm_mask = cmd_mask;
 		if (cmd == ND_CMD_CALL)
 			dsm_mask = nd_desc->bus_dsm_mask;
+=======
+		cmd_name = nvdimm_bus_cmd_name(cmd);
+		cmd_mask = nd_desc->cmd_mask;
+		dsm_mask = nd_desc->bus_dsm_mask;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		desc = nd_cmd_bus_desc(cmd);
 		guid = to_nfit_uuid(NFIT_DEV_BUS);
 		handle = adev->handle;
@@ -1271,7 +1305,11 @@ static ssize_t format1_show(struct device *dev,
 					le16_to_cpu(nfit_dcr->dcr->code));
 			break;
 		}
+<<<<<<< HEAD
 		if (rc != ENXIO)
+=======
+		if (rc != -ENXIO)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 	}
 	mutex_unlock(&acpi_desc->init_mutex);
@@ -2452,6 +2490,12 @@ static int acpi_nfit_register_region(struct acpi_nfit_desc *acpi_desc,
 		struct acpi_nfit_memory_map *memdev = nfit_memdev->memdev;
 		struct nd_mapping_desc *mapping;
 
+<<<<<<< HEAD
+=======
+		/* range index 0 == unmapped in SPA or invalid-SPA */
+		if (memdev->range_index == 0 || spa->range_index == 0)
+			continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (memdev->range_index != spa->range_index)
 			continue;
 		if (count >= ND_MAX_MAPPINGS) {

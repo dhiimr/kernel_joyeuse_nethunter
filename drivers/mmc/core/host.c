@@ -4,7 +4,10 @@
  *  Copyright (C) 2003 Russell King, All Rights Reserved.
  *  Copyright (C) 2007-2008 Pierre Ossman
  *  Copyright (C) 2010 Linus Walleij
+<<<<<<< HEAD
  *  Copyright (c) 2012, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -25,8 +28,11 @@
 
 #include <linux/mmc/host.h>
 #include <linux/mmc/card.h>
+<<<<<<< HEAD
 #include <linux/mmc/ring_buffer.h>
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/mmc/slot-gpio.h>
 
 #include "core.h"
@@ -35,9 +41,13 @@
 #include "pwrseq.h"
 #include "sdio_ops.h"
 
+<<<<<<< HEAD
 #define MMC_DEVFRQ_DEFAULT_UP_THRESHOLD 35
 #define MMC_DEVFRQ_DEFAULT_DOWN_THRESHOLD 5
 #define MMC_DEVFRQ_DEFAULT_POLLING_MSEC 100
+=======
+#define cls_dev_to_mmc_host(d)	container_of(d, struct mmc_host, class_dev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static DEFINE_IDA(mmc_host_ida);
 
@@ -48,6 +58,7 @@ static void mmc_host_classdev_release(struct device *dev)
 	kfree(host);
 }
 
+<<<<<<< HEAD
 static int mmc_host_prepare(struct device *dev)
 {
 	/*
@@ -70,6 +81,11 @@ static struct class mmc_host_class = {
 	.name		= "mmc_host",
 	.dev_release	= mmc_host_classdev_release,
 	.pm		= &mmc_pm_ops,
+=======
+static struct class mmc_host_class = {
+	.name		= "mmc_host",
+	.dev_release	= mmc_host_classdev_release,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 int mmc_register_host_class(void)
@@ -82,6 +98,7 @@ void mmc_unregister_host_class(void)
 	class_unregister(&mmc_host_class);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_MMC_CLKGATE
 static ssize_t clkgate_delay_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -380,6 +397,8 @@ static inline bool mmc_host_clk_gate_wq_init(struct mmc_host *host)
 }
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void mmc_retune_enable(struct mmc_host *host)
 {
 	host->can_retune = 1;
@@ -387,7 +406,10 @@ void mmc_retune_enable(struct mmc_host *host)
 		mod_timer(&host->retune_timer,
 			  jiffies + host->retune_period * HZ);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mmc_retune_enable);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Pause re-tuning for a small set of operations.  The pause begins after the
@@ -420,7 +442,10 @@ void mmc_retune_disable(struct mmc_host *host)
 	host->retune_now = 0;
 	host->need_retune = 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mmc_retune_disable);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 void mmc_retune_timer_stop(struct mmc_host *host)
 {
@@ -459,8 +484,12 @@ int mmc_retune(struct mmc_host *host)
 	else
 		return 0;
 
+<<<<<<< HEAD
 	if (!host->need_retune || host->doing_retune || !host->card ||
 			mmc_card_hs400es(host->card))
+=======
+	if (!host->need_retune || host->doing_retune || !host->card)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 
 	host->need_retune = 0;
@@ -701,6 +730,7 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
 
 	if (mmc_gpio_alloc(host)) {
 		put_device(&host->class_dev);
+<<<<<<< HEAD
 		ida_simple_remove(&mmc_host_ida, host->index);
 		kfree(host);
 		return NULL;
@@ -713,14 +743,22 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
 
 	mmc_host_clk_init(host);
 
+=======
+		return NULL;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_init(&host->lock);
 	init_waitqueue_head(&host->wq);
 	INIT_DELAYED_WORK(&host->detect, mmc_rescan);
 	INIT_DELAYED_WORK(&host->sdio_irq_work, sdio_irq_work);
 	setup_timer(&host->retune_timer, mmc_retune_timer, (unsigned long)host);
 
+<<<<<<< HEAD
 	mutex_init(&host->rpmb_req_mutex);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * By default, hosts do not support SGIO or large requests.
 	 * They have to set these according to their abilities.
@@ -731,13 +769,17 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
 	host->max_req_size = PAGE_SIZE;
 	host->max_blk_size = 512;
 	host->max_blk_count = PAGE_SIZE / 512;
+<<<<<<< HEAD
 	host->ios.power_delay_ms = 10;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return host;
 }
 
 EXPORT_SYMBOL(mmc_alloc_host);
 
+<<<<<<< HEAD
 static ssize_t show_enable(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -952,6 +994,8 @@ static struct attribute_group dev_attr_grp = {
 	.attrs = dev_attrs,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  *	mmc_add_host - initialise host hardware
  *	@host: mmc host
@@ -973,6 +1017,7 @@ int mmc_add_host(struct mmc_host *host)
 
 	led_trigger_register_simple(dev_name(&host->class_dev), &host->led);
 
+<<<<<<< HEAD
 	host->clk_scaling.upthreshold = MMC_DEVFRQ_DEFAULT_UP_THRESHOLD;
 	host->clk_scaling.downthreshold = MMC_DEVFRQ_DEFAULT_DOWN_THRESHOLD;
 	host->clk_scaling.polling_delay_ms = MMC_DEVFRQ_DEFAULT_POLLING_MSEC;
@@ -1001,6 +1046,14 @@ int mmc_add_host(struct mmc_host *host)
 	mmc_start_host(host);
 	if (!(host->pm_flags & MMC_PM_IGNORE_PM_NOTIFY))
 		mmc_register_pm_notifier(host);
+=======
+#ifdef CONFIG_DEBUG_FS
+	mmc_add_host_debugfs(host);
+#endif
+
+	mmc_start_host(host);
+	mmc_register_pm_notifier(host);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -1017,14 +1070,19 @@ EXPORT_SYMBOL(mmc_add_host);
  */
 void mmc_remove_host(struct mmc_host *host)
 {
+<<<<<<< HEAD
 	if (!(host->pm_flags & MMC_PM_IGNORE_PM_NOTIFY))
 		mmc_unregister_pm_notifier(host);
+=======
+	mmc_unregister_pm_notifier(host);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mmc_stop_host(host);
 
 #ifdef CONFIG_DEBUG_FS
 	mmc_remove_host_debugfs(host);
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_BLOCK
 	mmc_latency_hist_sysfs_exit(host);
 #endif
@@ -1037,6 +1095,11 @@ void mmc_remove_host(struct mmc_host *host)
 	led_trigger_unregister_simple(host->led);
 
 	mmc_host_clk_exit(host);
+=======
+	device_del(&host->class_dev);
+
+	led_trigger_unregister_simple(host->led);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 EXPORT_SYMBOL(mmc_remove_host);

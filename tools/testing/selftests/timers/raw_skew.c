@@ -112,6 +112,10 @@ int main(int argv, char **argc)
 		printf("WARNING: ADJ_OFFSET in progress, this will cause inaccurate results\n");
 
 	printf("Estimating clock drift: ");
+<<<<<<< HEAD
+=======
+	fflush(stdout);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sleep(120);
 
 	get_monotonic_and_raw(&mon, &raw);

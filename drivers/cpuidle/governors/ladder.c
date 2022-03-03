@@ -62,10 +62,16 @@ static inline void ladder_do_selection(struct ladder_device *ldev,
  * ladder_select_state - selects the next state to enter
  * @drv: cpuidle driver
  * @dev: the CPU
+<<<<<<< HEAD
  * @dummy: not used
  */
 static int ladder_select_state(struct cpuidle_driver *drv,
 			       struct cpuidle_device *dev, bool *dummy)
+=======
+ */
+static int ladder_select_state(struct cpuidle_driver *drv,
+				struct cpuidle_device *dev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct ladder_device *ldev = this_cpu_ptr(&ladder_devices);
 	struct ladder_device_state *last_state;

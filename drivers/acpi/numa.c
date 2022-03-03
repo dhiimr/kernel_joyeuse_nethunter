@@ -46,7 +46,11 @@ int acpi_numa __initdata;
 
 int pxm_to_node(int pxm)
 {
+<<<<<<< HEAD
 	if (pxm < 0)
+=======
+	if (pxm < 0 || pxm >= MAX_PXM_DOMAINS || numa_off)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return NUMA_NO_NODE;
 	return pxm_to_node_map[pxm];
 }

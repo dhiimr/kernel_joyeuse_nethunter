@@ -636,7 +636,11 @@ static int stm32_rtc_probe(struct platform_device *pdev)
 	 */
 	ret = stm32_rtc_init(pdev, rtc);
 	if (ret)
+<<<<<<< HEAD
 		goto err;
+=======
+		goto err_no_rtc_ck;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rtc->irq_alarm = platform_get_irq(pdev, 0);
 	if (rtc->irq_alarm <= 0) {
@@ -680,10 +684,19 @@ static int stm32_rtc_probe(struct platform_device *pdev)
 		dev_warn(&pdev->dev, "Date/Time must be initialized\n");
 
 	return 0;
+<<<<<<< HEAD
 err:
 	if (rtc->data->has_pclk)
 		clk_disable_unprepare(rtc->pclk);
 	clk_disable_unprepare(rtc->rtc_ck);
+=======
+
+err:
+	clk_disable_unprepare(rtc->rtc_ck);
+err_no_rtc_ck:
+	if (rtc->data->has_pclk)
+		clk_disable_unprepare(rtc->pclk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	regmap_update_bits(rtc->dbp, PWR_CR, PWR_CR_DBP, 0);
 

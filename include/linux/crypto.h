@@ -24,7 +24,10 @@
 #include <linux/slab.h>
 #include <linux/string.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
 #include <linux/completion.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Autoloaded crypto modules should only use a prefixed name to avoid allowing
@@ -482,6 +485,7 @@ struct crypto_alg {
 } CRYPTO_MINALIGN_ATTR;
 
 /*
+<<<<<<< HEAD
  * A helper struct for waiting for completion of async crypto ops
  */
 struct crypto_wait {
@@ -521,6 +525,8 @@ static inline void crypto_init_wait(struct crypto_wait *wait)
 }
 
 /*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Algorithm registration interface.
  */
 int crypto_register_alg(struct crypto_alg *alg);

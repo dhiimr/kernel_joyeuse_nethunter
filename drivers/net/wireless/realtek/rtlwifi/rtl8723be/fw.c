@@ -584,6 +584,11 @@ void rtl8723be_set_fw_rsvdpagepkt(struct ieee80211_hw *hw,
 		      u1rsvdpageloc, sizeof(u1rsvdpageloc));
 
 	skb = dev_alloc_skb(totalpacketlen);
+<<<<<<< HEAD
+=======
+	if (!skb)
+		return;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	skb_put_data(skb, &reserved_page_packet, totalpacketlen);
 
 	rtstatus = rtl_cmd_send_packet(hw, skb);

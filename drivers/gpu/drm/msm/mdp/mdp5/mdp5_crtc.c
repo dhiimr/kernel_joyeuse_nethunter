@@ -1004,8 +1004,13 @@ static void mdp5_crtc_wait_for_pp_done(struct drm_crtc *crtc)
 	ret = wait_for_completion_timeout(&mdp5_crtc->pp_completion,
 						msecs_to_jiffies(50));
 	if (ret == 0)
+<<<<<<< HEAD
 		dev_warn(dev->dev, "pp done time out, lm=%d\n",
 			 mdp5_cstate->pipeline.mixer->lm);
+=======
+		dev_warn_ratelimited(dev->dev, "pp done time out, lm=%d\n",
+				     mdp5_cstate->pipeline.mixer->lm);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void mdp5_crtc_wait_for_flush_done(struct drm_crtc *crtc)

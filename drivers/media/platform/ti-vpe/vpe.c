@@ -352,20 +352,36 @@ enum {
 };
 
 /* find our format description corresponding to the passed v4l2_format */
+<<<<<<< HEAD
 static struct vpe_fmt *find_format(struct v4l2_format *f)
+=======
+static struct vpe_fmt *__find_format(u32 fourcc)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct vpe_fmt *fmt;
 	unsigned int k;
 
 	for (k = 0; k < ARRAY_SIZE(vpe_formats); k++) {
 		fmt = &vpe_formats[k];
+<<<<<<< HEAD
 		if (fmt->fourcc == f->fmt.pix.pixelformat)
+=======
+		if (fmt->fourcc == fourcc)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return fmt;
 	}
 
 	return NULL;
 }
 
+<<<<<<< HEAD
+=======
+static struct vpe_fmt *find_format(struct v4l2_format *f)
+{
+	return __find_format(f->fmt.pix.pixelformat);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * there is one vpe_dev structure in the driver, it is shared by
  * all instances.
@@ -1044,11 +1060,20 @@ static void add_out_dtd(struct vpe_ctx *ctx, int port)
 	dma_addr_t dma_addr;
 	u32 flags = 0;
 	u32 offset = 0;
+<<<<<<< HEAD
+=======
+	u32 stride;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (port == VPE_PORT_MV_OUT) {
 		vpdma_fmt = &vpdma_misc_fmts[VPDMA_DATA_FMT_MV];
 		dma_addr = ctx->mv_buf_dma[mv_buf_selector];
 		q_data = &ctx->q_data[Q_DATA_SRC];
+<<<<<<< HEAD
+=======
+		stride = ALIGN((q_data->width * vpdma_fmt->depth) >> 3,
+			       VPDMA_STRIDE_ALIGN);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		/* to incorporate interleaved formats */
 		int plane = fmt->coplanar ? p_data->vb_part : 0;
@@ -1075,6 +1100,10 @@ static void add_out_dtd(struct vpe_ctx *ctx, int port)
 		}
 		/* Apply the offset */
 		dma_addr += offset;
+<<<<<<< HEAD
+=======
+		stride = q_data->bytesperline[VPE_LUMA];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (q_data->flags & Q_DATA_FRAME_1D)
@@ -1086,7 +1115,11 @@ static void add_out_dtd(struct vpe_ctx *ctx, int port)
 			   MAX_W, MAX_H);
 
 	vpdma_add_out_dtd(&ctx->desc_list, q_data->width,
+<<<<<<< HEAD
 			  q_data->bytesperline[VPE_LUMA], &q_data->c_rect,
+=======
+			  stride, &q_data->c_rect,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			  vpdma_fmt, dma_addr, MAX_OUT_WIDTH_REG1,
 			  MAX_OUT_HEIGHT_REG1, p_data->channel, flags);
 }
@@ -1105,10 +1138,19 @@ static void add_in_dtd(struct vpe_ctx *ctx, int port)
 	dma_addr_t dma_addr;
 	u32 flags = 0;
 	u32 offset = 0;
+<<<<<<< HEAD
+=======
+	u32 stride;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (port == VPE_PORT_MV_IN) {
 		vpdma_fmt = &vpdma_misc_fmts[VPDMA_DATA_FMT_MV];
 		dma_addr = ctx->mv_buf_dma[mv_buf_selector];
+<<<<<<< HEAD
+=======
+		stride = ALIGN((q_data->width * vpdma_fmt->depth) >> 3,
+			       VPDMA_STRIDE_ALIGN);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		/* to incorporate interleaved formats */
 		int plane = fmt->coplanar ? p_data->vb_part : 0;
@@ -1135,6 +1177,10 @@ static void add_in_dtd(struct vpe_ctx *ctx, int port)
 		}
 		/* Apply the offset */
 		dma_addr += offset;
+<<<<<<< HEAD
+=======
+		stride = q_data->bytesperline[VPE_LUMA];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (q_data->flags & Q_DATA_INTERLACED_SEQ_TB) {
 			/*
@@ -1170,10 +1216,17 @@ static void add_in_dtd(struct vpe_ctx *ctx, int port)
 	if (p_data->vb_part && fmt->fourcc == V4L2_PIX_FMT_NV12)
 		frame_height /= 2;
 
+<<<<<<< HEAD
 	vpdma_add_in_dtd(&ctx->desc_list, q_data->width,
 			 q_data->bytesperline[VPE_LUMA], &q_data->c_rect,
 		vpdma_fmt, dma_addr, p_data->channel, field, flags, frame_width,
 		frame_height, 0, 0);
+=======
+	vpdma_add_in_dtd(&ctx->desc_list, q_data->width, stride,
+			 &q_data->c_rect, vpdma_fmt, dma_addr,
+			 p_data->channel, field, flags, frame_width,
+			 frame_height, 0, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -1422,9 +1475,12 @@ static irqreturn_t vpe_irq(int irq_vpe, void *data)
 	 /* the previous dst mv buffer becomes the next src mv buffer */
 	ctx->src_mv_buf_selector = !ctx->src_mv_buf_selector;
 
+<<<<<<< HEAD
 	if (ctx->aborting)
 		goto finished;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	s_vb = ctx->src_vbs[0];
 	d_vb = ctx->dst_vb;
 
@@ -1435,6 +1491,10 @@ static irqreturn_t vpe_irq(int irq_vpe, void *data)
 		d_vb->timecode = s_vb->timecode;
 
 	d_vb->sequence = ctx->sequence;
+<<<<<<< HEAD
+=======
+	s_vb->sequence = ctx->sequence;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	d_q_data = &ctx->q_data[Q_DATA_DST];
 	if (d_q_data->flags & Q_IS_INTERLACED) {
@@ -1488,6 +1548,12 @@ static irqreturn_t vpe_irq(int irq_vpe, void *data)
 	ctx->src_vbs[0] = NULL;
 	ctx->dst_vb = NULL;
 
+<<<<<<< HEAD
+=======
+	if (ctx->aborting)
+		goto finished;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ctx->bufs_completed++;
 	if (ctx->bufs_completed < ctx->bufs_per_job && job_ready(ctx)) {
 		device_run(ctx);
@@ -1600,9 +1666,15 @@ static int __vpe_try_fmt(struct vpe_ctx *ctx, struct v4l2_format *f,
 	unsigned int stride = 0;
 
 	if (!fmt || !(fmt->types & type)) {
+<<<<<<< HEAD
 		vpe_err(ctx->dev, "Fourcc format (0x%08x) invalid.\n",
 			pix->pixelformat);
 		return -EINVAL;
+=======
+		vpe_dbg(ctx->dev, "Fourcc format (0x%08x) invalid.\n",
+			pix->pixelformat);
+		fmt = __find_format(V4L2_PIX_FMT_YUYV);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (pix->field != V4L2_FIELD_NONE && pix->field != V4L2_FIELD_ALTERNATE
@@ -1649,7 +1721,11 @@ static int __vpe_try_fmt(struct vpe_ctx *ctx, struct v4l2_format *f,
 			      &pix->height, MIN_H, MAX_H, H_ALIGN,
 			      S_ALIGN);
 
+<<<<<<< HEAD
 	if (!pix->num_planes)
+=======
+	if (!pix->num_planes || pix->num_planes > 2)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pix->num_planes = fmt->coplanar ? 2 : 1;
 	else if (pix->num_planes > 1 && !fmt->coplanar)
 		pix->num_planes = 1;
@@ -1688,6 +1764,13 @@ static int __vpe_try_fmt(struct vpe_ctx *ctx, struct v4l2_format *f,
 		if (stride > plane_fmt->bytesperline)
 			plane_fmt->bytesperline = stride;
 
+<<<<<<< HEAD
+=======
+		plane_fmt->bytesperline = clamp_t(u32, plane_fmt->bytesperline,
+						  stride,
+						  VPDMA_MAX_STRIDE);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		plane_fmt->bytesperline = ALIGN(plane_fmt->bytesperline,
 						VPDMA_STRIDE_ALIGN);
 
@@ -2308,7 +2391,11 @@ static int vpe_open(struct file *file)
 	v4l2_ctrl_handler_setup(hdl);
 
 	s_q_data = &ctx->q_data[Q_DATA_SRC];
+<<<<<<< HEAD
 	s_q_data->fmt = &vpe_formats[2];
+=======
+	s_q_data->fmt = __find_format(V4L2_PIX_FMT_YUYV);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	s_q_data->width = 1920;
 	s_q_data->height = 1080;
 	s_q_data->nplanes = 1;
@@ -2386,6 +2473,15 @@ static int vpe_release(struct file *file)
 
 	mutex_lock(&dev->dev_mutex);
 	free_mv_buffers(ctx);
+<<<<<<< HEAD
+=======
+
+	vpdma_unmap_desc_buf(dev->vpdma, &ctx->desc_list.buf);
+	vpdma_unmap_desc_buf(dev->vpdma, &ctx->mmr_adb);
+	vpdma_unmap_desc_buf(dev->vpdma, &ctx->sc_coeff_h);
+	vpdma_unmap_desc_buf(dev->vpdma, &ctx->sc_coeff_v);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	vpdma_free_desc_list(&ctx->desc_list);
 	vpdma_free_desc_buf(&ctx->mmr_adb);
 
@@ -2446,6 +2542,11 @@ static int vpe_runtime_get(struct platform_device *pdev)
 
 	r = pm_runtime_get_sync(&pdev->dev);
 	WARN_ON(r < 0);
+<<<<<<< HEAD
+=======
+	if (r)
+		pm_runtime_put_noidle(&pdev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return r < 0 ? r : 0;
 }
 

@@ -113,7 +113,11 @@ static int cdp_dp_mailbox_write(struct cdn_dp_device *dp, u8 val)
 
 static int cdn_dp_mailbox_validate_receive(struct cdn_dp_device *dp,
 					   u8 module_id, u8 opcode,
+<<<<<<< HEAD
 					   u8 req_size)
+=======
+					   u16 req_size)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u32 mbox_size, i;
 	u8 header[4];

@@ -750,7 +750,11 @@
 			/* no rts / cts for uart2 */
 		};
 
+<<<<<<< HEAD
 		spi {
+=======
+		spi-pins {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			spi_txd:spi-txd {
 				rockchip,pins = <1 29 RK_FUNC_3 &pcfg_pull_default>;
 			};

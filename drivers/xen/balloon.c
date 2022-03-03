@@ -43,6 +43,11 @@
 #include <linux/sched.h>
 #include <linux/cred.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
+=======
+#include <linux/freezer.h>
+#include <linux/kthread.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/mm.h>
 #include <linux/bootmem.h>
 #include <linux/pagemap.h>
@@ -56,6 +61,10 @@
 #include <linux/percpu-defs.h>
 #include <linux/slab.h>
 #include <linux/sysctl.h>
+<<<<<<< HEAD
+=======
+#include <linux/moduleparam.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <asm/page.h>
 #include <asm/pgalloc.h>
@@ -72,6 +81,15 @@
 #include <xen/features.h>
 #include <xen/page.h>
 
+<<<<<<< HEAD
+=======
+#undef MODULE_PARAM_PREFIX
+#define MODULE_PARAM_PREFIX "xen."
+
+static uint __read_mostly balloon_boot_timeout = 180;
+module_param(balloon_boot_timeout, uint, 0444);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int xen_hotplug_unpopulated;
 
 #ifdef CONFIG_XEN_BALLOON_MEMORY_HOTPLUG
@@ -119,7 +137,11 @@ static struct ctl_table xen_root[] = {
 #define EXTENT_ORDER (fls(XEN_PFN_PER_PAGE) - 1)
 
 /*
+<<<<<<< HEAD
  * balloon_process() state:
+=======
+ * balloon_thread() state:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * BP_DONE: done or nothing to do,
  * BP_WAIT: wait to be rescheduled,
@@ -127,13 +149,24 @@ static struct ctl_table xen_root[] = {
  * BP_ECANCELED: error, balloon operation canceled.
  */
 
+<<<<<<< HEAD
 enum bp_state {
+=======
+static enum bp_state {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	BP_DONE,
 	BP_WAIT,
 	BP_EAGAIN,
 	BP_ECANCELED
+<<<<<<< HEAD
 };
 
+=======
+} balloon_state = BP_DONE;
+
+/* Main waiting point for xen-balloon thread. */
+static DECLARE_WAIT_QUEUE_HEAD(balloon_thread_wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static DEFINE_MUTEX(balloon_mutex);
 
@@ -148,10 +181,13 @@ static xen_pfn_t frame_list[PAGE_SIZE / sizeof(xen_pfn_t)];
 static LIST_HEAD(ballooned_pages);
 static DECLARE_WAIT_QUEUE_HEAD(balloon_wq);
 
+<<<<<<< HEAD
 /* Main work function, always executed in process context. */
 static void balloon_process(struct work_struct *work);
 static DECLARE_DELAYED_WORK(balloon_worker, balloon_process);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* When ballooning out (allocating memory to return to Xen) we don't really
    want the kernel to try too hard since that can trigger the oom killer. */
 #define GFP_BALLOON \
@@ -212,6 +248,7 @@ static struct page *balloon_next_page(struct page *page)
 	return list_entry(next, struct page, lru);
 }
 
+<<<<<<< HEAD
 static enum bp_state update_schedule(enum bp_state state)
 {
 	if (state == BP_WAIT)
@@ -224,6 +261,17 @@ static enum bp_state update_schedule(enum bp_state state)
 		balloon_stats.schedule_delay = 1;
 		balloon_stats.retry_count = 1;
 		return BP_DONE;
+=======
+static void update_schedule(void)
+{
+	if (balloon_state == BP_WAIT || balloon_state == BP_ECANCELED)
+		return;
+
+	if (balloon_state == BP_DONE) {
+		balloon_stats.schedule_delay = 1;
+		balloon_stats.retry_count = 1;
+		return;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	++balloon_stats.retry_count;
@@ -232,7 +280,12 @@ static enum bp_state update_schedule(enum bp_state state)
 			balloon_stats.retry_count > balloon_stats.max_retry_count) {
 		balloon_stats.schedule_delay = 1;
 		balloon_stats.retry_count = 1;
+<<<<<<< HEAD
 		return BP_ECANCELED;
+=======
+		balloon_state = BP_ECANCELED;
+		return;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	balloon_stats.schedule_delay <<= 1;
@@ -240,7 +293,11 @@ static enum bp_state update_schedule(enum bp_state state)
 	if (balloon_stats.schedule_delay > balloon_stats.max_schedule_delay)
 		balloon_stats.schedule_delay = balloon_stats.max_schedule_delay;
 
+<<<<<<< HEAD
 	return BP_EAGAIN;
+=======
+	balloon_state = BP_EAGAIN;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #ifdef CONFIG_XEN_BALLOON_MEMORY_HOTPLUG
@@ -356,7 +413,14 @@ static enum bp_state reserve_additional_memory(void)
 	 * callers drop the mutex before trying again.
 	 */
 	mutex_unlock(&balloon_mutex);
+<<<<<<< HEAD
 	rc = add_memory_resource(nid, resource, memhp_auto_online);
+=======
+	/* add_memory_resource() requires the device_hotplug lock */
+	lock_device_hotplug();
+	rc = add_memory_resource(nid, resource, memhp_auto_online);
+	unlock_device_hotplug();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_lock(&balloon_mutex);
 
 	if (rc) {
@@ -386,7 +450,11 @@ static void xen_online_page(struct page *page)
 static int xen_memory_notifier(struct notifier_block *nb, unsigned long val, void *v)
 {
 	if (val == MEM_ONLINE)
+<<<<<<< HEAD
 		schedule_delayed_work(&balloon_worker, 0);
+=======
+		wake_up(&balloon_thread_wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return NOTIFY_OK;
 }
@@ -398,7 +466,12 @@ static struct notifier_block xen_memory_nb = {
 #else
 static enum bp_state reserve_additional_memory(void)
 {
+<<<<<<< HEAD
 	balloon_stats.target_pages = balloon_stats.current_pages;
+=======
+	balloon_stats.target_pages = balloon_stats.current_pages +
+				     balloon_stats.target_unpopulated;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return BP_ECANCELED;
 }
 #endif /* CONFIG_XEN_BALLOON_MEMORY_HOTPLUG */
@@ -567,11 +640,28 @@ static enum bp_state decrease_reservation(unsigned long nr_pages, gfp_t gfp)
 }
 
 /*
+<<<<<<< HEAD
  * As this is a work item it is guaranteed to run as a single instance only.
+=======
+ * Stop waiting if either state is BP_DONE and ballooning action is
+ * needed, or if the credit has changed while state is not BP_DONE.
+ */
+static bool balloon_thread_cond(long credit)
+{
+	if (balloon_state == BP_DONE)
+		credit = 0;
+
+	return current_credit() != credit || kthread_should_stop();
+}
+
+/*
+ * As this is a kthread it is guaranteed to run as a single instance only.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * We may of course race updates of the target counts (which are protected
  * by the balloon lock), or with changes to the Xen hard limit, but we will
  * recover from these in time.
  */
+<<<<<<< HEAD
 static void balloon_process(struct work_struct *work)
 {
 	enum bp_state state = BP_DONE;
@@ -579,12 +669,43 @@ static void balloon_process(struct work_struct *work)
 
 
 	do {
+=======
+static int balloon_thread(void *unused)
+{
+	long credit;
+	unsigned long timeout;
+
+	set_freezable();
+	for (;;) {
+		switch (balloon_state) {
+		case BP_DONE:
+		case BP_ECANCELED:
+			timeout = 3600 * HZ;
+			break;
+		case BP_EAGAIN:
+			timeout = balloon_stats.schedule_delay * HZ;
+			break;
+		case BP_WAIT:
+			timeout = HZ;
+			break;
+		}
+
+		credit = current_credit();
+
+		wait_event_freezable_timeout(balloon_thread_wq,
+			balloon_thread_cond(credit), timeout);
+
+		if (kthread_should_stop())
+			return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mutex_lock(&balloon_mutex);
 
 		credit = current_credit();
 
 		if (credit > 0) {
 			if (balloon_is_inflated())
+<<<<<<< HEAD
 				state = increase_reservation(credit);
 			else
 				state = reserve_additional_memory();
@@ -594,16 +715,39 @@ static void balloon_process(struct work_struct *work)
 			state = decrease_reservation(-credit, GFP_BALLOON);
 
 		state = update_schedule(state);
+=======
+				balloon_state = increase_reservation(credit);
+			else
+				balloon_state = reserve_additional_memory();
+		}
+
+		if (credit < 0) {
+			long n_pages;
+
+			n_pages = min(-credit, si_mem_available());
+			balloon_state = decrease_reservation(n_pages,
+							     GFP_BALLOON);
+			if (balloon_state == BP_DONE && n_pages != -credit &&
+			    n_pages < totalreserve_pages)
+				balloon_state = BP_EAGAIN;
+		}
+
+		update_schedule();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		mutex_unlock(&balloon_mutex);
 
 		cond_resched();
+<<<<<<< HEAD
 
 	} while (credit && state == BP_DONE);
 
 	/* Schedule more work if there is some still to be done. */
 	if (state == BP_EAGAIN)
 		schedule_delayed_work(&balloon_worker, balloon_stats.schedule_delay * HZ);
+=======
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Resets the Xen limit, sets new target, and kicks off processing. */
@@ -611,7 +755,11 @@ void balloon_set_new_target(unsigned long target)
 {
 	/* No need for lock. Not read-modify-write updates. */
 	balloon_stats.target_pages = target;
+<<<<<<< HEAD
 	schedule_delayed_work(&balloon_worker, 0);
+=======
+	wake_up(&balloon_thread_wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(balloon_set_new_target);
 
@@ -622,6 +770,7 @@ static int add_ballooned_pages(int nr_pages)
 	if (xen_hotplug_unpopulated) {
 		st = reserve_additional_memory();
 		if (st != BP_ECANCELED) {
+<<<<<<< HEAD
 			mutex_unlock(&balloon_mutex);
 			wait_event(balloon_wq,
 				   !list_empty(&ballooned_pages));
@@ -630,6 +779,21 @@ static int add_ballooned_pages(int nr_pages)
 		}
 	}
 
+=======
+			int rc;
+
+			mutex_unlock(&balloon_mutex);
+			rc = wait_event_interruptible(balloon_wq,
+				   !list_empty(&ballooned_pages));
+			mutex_lock(&balloon_mutex);
+			return rc ? -ENOMEM : 0;
+		}
+	}
+
+	if (si_mem_available() < nr_pages)
+		return -ENOMEM;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	st = decrease_reservation(nr_pages, GFP_USER);
 	if (st != BP_DONE)
 		return -ENOMEM;
@@ -681,6 +845,15 @@ int alloc_xenballooned_pages(int nr_pages, struct page **pages)
  out_undo:
 	mutex_unlock(&balloon_mutex);
 	free_xenballooned_pages(pgno, pages);
+<<<<<<< HEAD
+=======
+	/*
+	 * NB: free_xenballooned_pages will only subtract pgno pages, but since
+	 * target_unpopulated is incremented with nr_pages at the start we need
+	 * to remove the remaining ones also, or accounting will be screwed.
+	 */
+	balloon_stats.target_unpopulated -= nr_pages - pgno;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 EXPORT_SYMBOL(alloc_xenballooned_pages);
@@ -705,7 +878,11 @@ void free_xenballooned_pages(int nr_pages, struct page **pages)
 
 	/* The balloon may be too large now. Shrink it if needed. */
 	if (current_credit())
+<<<<<<< HEAD
 		schedule_delayed_work(&balloon_worker, 0);
+=======
+		wake_up(&balloon_thread_wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_unlock(&balloon_mutex);
 }
@@ -739,6 +916,11 @@ static void __init balloon_add_region(unsigned long start_pfn,
 
 static int __init balloon_init(void)
 {
+<<<<<<< HEAD
+=======
+	struct task_struct *task;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!xen_domain())
 		return -ENODEV;
 
@@ -759,7 +941,11 @@ static int __init balloon_init(void)
 	balloon_stats.schedule_delay = 1;
 	balloon_stats.max_schedule_delay = 32;
 	balloon_stats.retry_count = 1;
+<<<<<<< HEAD
 	balloon_stats.max_retry_count = RETRY_UNLIMITED;
+=======
+	balloon_stats.max_retry_count = 4;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_XEN_BALLOON_MEMORY_HOTPLUG
 	set_online_page_callback(&xen_online_page);
@@ -782,9 +968,56 @@ static int __init balloon_init(void)
 	}
 #endif
 
+<<<<<<< HEAD
+=======
+	task = kthread_run(balloon_thread, NULL, "xen-balloon");
+	if (IS_ERR(task)) {
+		pr_err("xen-balloon thread could not be started, ballooning will not work!\n");
+		return PTR_ERR(task);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Init the xen-balloon driver. */
 	xen_balloon_init();
 
 	return 0;
 }
 subsys_initcall(balloon_init);
+<<<<<<< HEAD
+=======
+
+static int __init balloon_wait_finish(void)
+{
+	long credit, last_credit = 0;
+	unsigned long last_changed = 0;
+
+	if (!xen_domain())
+		return -ENODEV;
+
+	/* PV guests don't need to wait. */
+	if (xen_pv_domain() || !current_credit())
+		return 0;
+
+	pr_notice("Waiting for initial ballooning down having finished.\n");
+
+	while ((credit = current_credit()) < 0) {
+		if (credit != last_credit) {
+			last_changed = jiffies;
+			last_credit = credit;
+		}
+		if (balloon_state == BP_ECANCELED) {
+			pr_warn_once("Initial ballooning failed, %ld pages need to be freed.\n",
+				     -credit);
+			if (jiffies - last_changed >= HZ * balloon_boot_timeout)
+				panic("Initial ballooning failed!\n");
+		}
+
+		schedule_timeout_interruptible(HZ / 10);
+	}
+
+	pr_notice("Initial ballooning down finished.\n");
+
+	return 0;
+}
+late_initcall_sync(balloon_wait_finish);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

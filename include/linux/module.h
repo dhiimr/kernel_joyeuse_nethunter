@@ -19,7 +19,10 @@
 #include <linux/jump_label.h>
 #include <linux/export.h>
 #include <linux/rbtree_latch.h>
+<<<<<<< HEAD
 #include <linux/cfi.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <linux/percpu.h>
 #include <asm/module.h>
@@ -129,13 +132,21 @@ extern void cleanup_module(void);
 #define module_init(initfn)					\
 	static inline initcall_t __maybe_unused __inittest(void)		\
 	{ return initfn; }					\
+<<<<<<< HEAD
 	int init_module(void) __attribute__((alias(#initfn)));
+=======
+	int init_module(void) __copy(initfn) __attribute__((alias(#initfn)));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* This is only required if you want to be unloadable. */
 #define module_exit(exitfn)					\
 	static inline exitcall_t __maybe_unused __exittest(void)		\
 	{ return exitfn; }					\
+<<<<<<< HEAD
 	void cleanup_module(void) __attribute__((alias(#exitfn)));
+=======
+	void cleanup_module(void) __copy(exitfn) __attribute__((alias(#exitfn)));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif
 
@@ -347,10 +358,13 @@ struct module {
 	const s32 *crcs;
 	unsigned int num_syms;
 
+<<<<<<< HEAD
 #ifdef CONFIG_CFI_CLANG
 	cfi_check_fn cfi_check;
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Kernel parameters. */
 #ifdef CONFIG_SYSFS
 	struct mutex param_lock;
@@ -362,6 +376,10 @@ struct module {
 	unsigned int num_gpl_syms;
 	const struct kernel_symbol *gpl_syms;
 	const s32 *gpl_crcs;
+<<<<<<< HEAD
+=======
+	bool using_gplonly_symbols;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_UNUSED_SYMBOLS
 	/* unused exported symbols. */
@@ -527,6 +545,7 @@ struct module *find_module(const char *name);
 struct symsearch {
 	const struct kernel_symbol *start, *stop;
 	const s32 *crcs;
+<<<<<<< HEAD
 	enum {
 		NOT_GPL_ONLY,
 		GPL_ONLY,
@@ -555,6 +574,16 @@ bool each_symbol_section(bool (*fn)(const struct symsearch *arr,
 				    struct module *owner,
 				    void *data), void *data);
 
+=======
+	enum mod_license {
+		NOT_GPL_ONLY,
+		GPL_ONLY,
+		WILL_BE_GPL_ONLY,
+	} license;
+	bool unused;
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Returns 0 and fills in value, defined and namebuf, or -ERANGE if
    symnum out of range. */
 int module_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
@@ -602,7 +631,10 @@ static inline void __module_get(struct module *module)
 #define symbol_put_addr(p) do { } while (0)
 
 #endif /* CONFIG_MODULE_UNLOAD */
+<<<<<<< HEAD
 int ref_module(struct module *a, struct module *b);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* This is a #define so the string doesn't get put in every .o file */
 #define module_name(mod)			\

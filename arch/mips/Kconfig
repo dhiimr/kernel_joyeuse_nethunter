@@ -273,6 +273,12 @@ config BCM63XX
 	select SYS_SUPPORTS_32BIT_KERNEL
 	select SYS_SUPPORTS_BIG_ENDIAN
 	select SYS_HAS_EARLY_PRINTK
+<<<<<<< HEAD
+=======
+	select SYS_HAS_CPU_BMIPS32_3300
+	select SYS_HAS_CPU_BMIPS4350
+	select SYS_HAS_CPU_BMIPS4380
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select SWAP_IO_SPACE
 	select GPIOLIB
 	select HAVE_CLK
@@ -800,7 +806,10 @@ config SIBYTE_SWARM
 	select SYS_SUPPORTS_HIGHMEM
 	select SYS_SUPPORTS_LITTLE_ENDIAN
 	select ZONE_DMA32 if 64BIT
+<<<<<<< HEAD
 	select SWIOTLB if ARCH_DMA_ADDR_T_64BIT && PCI
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config SIBYTE_LITTLESUR
 	bool "Sibyte BCM91250C2-LittleSur"
@@ -813,6 +822,10 @@ config SIBYTE_LITTLESUR
 	select SYS_SUPPORTS_BIG_ENDIAN
 	select SYS_SUPPORTS_HIGHMEM
 	select SYS_SUPPORTS_LITTLE_ENDIAN
+<<<<<<< HEAD
+=======
+	select ZONE_DMA32 if 64BIT
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config SIBYTE_SENTOSA
 	bool "Sibyte BCM91250E-Sentosa"
@@ -823,7 +836,10 @@ config SIBYTE_SENTOSA
 	select SYS_HAS_CPU_SB1
 	select SYS_SUPPORTS_BIG_ENDIAN
 	select SYS_SUPPORTS_LITTLE_ENDIAN
+<<<<<<< HEAD
 	select SWIOTLB if ARCH_DMA_ADDR_T_64BIT && PCI
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config SIBYTE_BIGSUR
 	bool "Sibyte BCM91480B-BigSur"
@@ -837,7 +853,10 @@ config SIBYTE_BIGSUR
 	select SYS_SUPPORTS_HIGHMEM
 	select SYS_SUPPORTS_LITTLE_ENDIAN
 	select ZONE_DMA32 if 64BIT
+<<<<<<< HEAD
 	select SWIOTLB if ARCH_DMA_ADDR_T_64BIT && PCI
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config SNI_RM
 	bool "SNI RM200/300/400"
@@ -858,6 +877,10 @@ config SNI_RM
 	select I8253
 	select I8259
 	select ISA
+<<<<<<< HEAD
+=======
+	select MIPS_L1_CACHE_SHIFT_6
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select SWAP_IO_SPACE if CPU_BIG_ENDIAN
 	select SYS_HAS_CPU_R4X00
 	select SYS_HAS_CPU_R5000
@@ -1384,6 +1407,10 @@ config CPU_LOONGSON3
 	select WEAK_REORDERING_BEYOND_LLSC
 	select MIPS_PGD_C0_CONTEXT
 	select MIPS_L1_CACHE_SHIFT_6
+<<<<<<< HEAD
+=======
+	select MIPS_FP_SUPPORT
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select GPIOLIB
 	help
 		The Loongson 3 processor implements the MIPS64R2 instruction
@@ -2987,7 +3014,11 @@ config HAVE_LATENCYTOP_SUPPORT
 config PGTABLE_LEVELS
 	int
 	default 4 if PAGE_SIZE_4KB && MIPS_VA_BITS_48
+<<<<<<< HEAD
 	default 3 if 64BIT && !PAGE_SIZE_64KB
+=======
+	default 3 if 64BIT && (!PAGE_SIZE_64KB || MIPS_VA_BITS_48)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	default 2
 
 source "init/Kconfig"

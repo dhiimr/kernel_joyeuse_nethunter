@@ -13,6 +13,10 @@
 struct file;
 
 extern void fput(struct file *);
+<<<<<<< HEAD
+=======
+extern void fput_many(struct file *, unsigned int);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct file_operations;
 struct vfsmount;
@@ -41,6 +45,10 @@ static inline void fdput(struct fd fd)
 }
 
 extern struct file *fget(unsigned int fd);
+<<<<<<< HEAD
+=======
+extern struct file *fget_many(unsigned int fd, unsigned int refs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern struct file *fget_raw(unsigned int fd);
 extern unsigned long __fdget(unsigned int fd);
 extern unsigned long __fdget_raw(unsigned int fd);
@@ -85,7 +93,10 @@ extern void put_unused_fd(unsigned int fd);
 extern void fd_install(unsigned int fd, struct file *file);
 
 extern void flush_delayed_fput(void);
+<<<<<<< HEAD
 extern void flush_delayed_fput_wait(void);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void __fput_sync(struct file *);
 
 #endif /* __LINUX_FILE_H */

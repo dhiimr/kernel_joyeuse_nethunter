@@ -22,7 +22,11 @@
 
 static inline unsigned long arch_local_save_flags(void)
 {
+<<<<<<< HEAD
 	return RDCTL(CTL_STATUS);
+=======
+	return RDCTL(CTL_FSTATUS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -31,7 +35,11 @@ static inline unsigned long arch_local_save_flags(void)
  */
 static inline void arch_local_irq_restore(unsigned long flags)
 {
+<<<<<<< HEAD
 	WRCTL(CTL_STATUS, flags);
+=======
+	WRCTL(CTL_FSTATUS, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void arch_local_irq_disable(void)

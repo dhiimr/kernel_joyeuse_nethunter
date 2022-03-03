@@ -288,7 +288,11 @@ dce_virtual_encoder(struct drm_connector *connector)
 		if (connector->encoder_ids[i] == 0)
 			break;
 
+<<<<<<< HEAD
 		encoder = drm_encoder_find(connector->dev, NULL, connector->encoder_ids[i]);
+=======
+		encoder = drm_encoder_find(connector->dev, connector->encoder_ids[i]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!encoder)
 			continue;
 
@@ -298,7 +302,11 @@ dce_virtual_encoder(struct drm_connector *connector)
 
 	/* pick the first one */
 	if (enc_id)
+<<<<<<< HEAD
 		return drm_encoder_find(connector->dev, NULL, enc_id);
+=======
+		return drm_encoder_find(connector->dev, enc_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return NULL;
 }
 

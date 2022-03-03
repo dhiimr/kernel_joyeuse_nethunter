@@ -100,7 +100,11 @@
 #define      MVNETA_DESC_SWAP                    BIT(6)
 #define      MVNETA_TX_BRST_SZ_MASK(burst)       ((burst) << 22)
 #define MVNETA_PORT_STATUS                       0x2444
+<<<<<<< HEAD
 #define      MVNETA_TX_IN_PRGRS                  BIT(1)
+=======
+#define      MVNETA_TX_IN_PRGRS                  BIT(0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define      MVNETA_TX_FIFO_EMPTY                BIT(8)
 #define MVNETA_RX_MIN_FRAME_SIZE                 0x247c
 #define MVNETA_SERDES_CFG			 0x24A0
@@ -2759,11 +2763,18 @@ static int mvneta_poll(struct napi_struct *napi, int budget)
 	/* For the case where the last mvneta_poll did not process all
 	 * RX packets
 	 */
+<<<<<<< HEAD
 	rx_queue = fls(((cause_rx_tx >> 8) & 0xff));
 
 	cause_rx_tx |= pp->neta_armada3700 ? pp->cause_rx_tx :
 		port->cause_rx_tx;
 
+=======
+	cause_rx_tx |= pp->neta_armada3700 ? pp->cause_rx_tx :
+		port->cause_rx_tx;
+
+	rx_queue = fls(((cause_rx_tx >> 8) & 0xff));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (rx_queue) {
 		rx_queue = rx_queue - 1;
 		if (pp->bm_priv)
@@ -2959,7 +2970,13 @@ static int mvneta_txq_init(struct mvneta_port *pp,
 	mvneta_tx_done_pkts_coal_set(pp, txq, txq->done_pkts_coal);
 
 	/* Setup XPS mapping */
+<<<<<<< HEAD
 	if (txq_number > 1)
+=======
+	if (pp->neta_armada3700)
+		cpu = 0;
+	else if (txq_number > 1)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cpu = txq->id % num_present_cpus();
 	else
 		cpu = pp->rxq_def % num_present_cpus();
@@ -3410,6 +3427,14 @@ static int mvneta_cpu_online(unsigned int cpu, struct hlist_node *node)
 						  node_online);
 	struct mvneta_pcpu_port *port = per_cpu_ptr(pp->ports, cpu);
 
+<<<<<<< HEAD
+=======
+	/* Armada 3700's per-cpu interrupt for mvneta is broken, all interrupts
+	 * are routed to CPU 0, so we don't need all the cpu-hotplug support
+	 */
+	if (pp->neta_armada3700)
+		return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	spin_lock(&pp->lock);
 	/*
@@ -4350,7 +4375,11 @@ static int mvneta_probe(struct platform_device *pdev)
 	err = register_netdev(dev);
 	if (err < 0) {
 		dev_err(&pdev->dev, "failed to register\n");
+<<<<<<< HEAD
 		goto err_free_stats;
+=======
+		goto err_netdev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	netdev_info(dev, "Using %s mac address %pM\n", mac_from,
@@ -4369,13 +4398,19 @@ static int mvneta_probe(struct platform_device *pdev)
 	return 0;
 
 err_netdev:
+<<<<<<< HEAD
 	unregister_netdev(dev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (pp->bm_priv) {
 		mvneta_bm_pool_destroy(pp->bm_priv, pp->pool_long, 1 << pp->id);
 		mvneta_bm_pool_destroy(pp->bm_priv, pp->pool_short,
 				       1 << pp->id);
 	}
+<<<<<<< HEAD
 err_free_stats:
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	free_percpu(pp->stats);
 err_free_ports:
 	free_percpu(pp->ports);

@@ -32,8 +32,11 @@
 #include <linux/io.h>
 #include <linux/mm.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
 #include <linux/dma-contiguous.h>
 #include <linux/cma.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <asm/barrier.h>
 #include <asm/cputype.h>
@@ -47,7 +50,10 @@
 #include <asm/memblock.h>
 #include <asm/mmu_context.h>
 #include <asm/ptdump.h>
+<<<<<<< HEAD
 #include <asm/tlbflush.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define NO_BLOCK_MAPPINGS	BIT(0)
 #define NO_CONT_MAPPINGS	BIT(1)
@@ -68,6 +74,7 @@ static pte_t bm_pte[PTRS_PER_PTE] __page_aligned_bss;
 static pmd_t bm_pmd[PTRS_PER_PMD] __page_aligned_bss __maybe_unused;
 static pud_t bm_pud[PTRS_PER_PUD] __page_aligned_bss __maybe_unused;
 
+<<<<<<< HEAD
 struct dma_contig_early_reserve {
 	phys_addr_t base;
 	unsigned long size;
@@ -102,6 +109,8 @@ static bool dma_overlap(phys_addr_t start, phys_addr_t end)
 	return false;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
 			      unsigned long size, pgprot_t vma_prot)
 {
@@ -232,8 +241,12 @@ static void init_pmd(pud_t *pud, unsigned long addr, unsigned long end,
 
 		/* try section mapping first */
 		if (((addr | next | phys) & ~SECTION_MASK) == 0 &&
+<<<<<<< HEAD
 		    (flags & NO_BLOCK_MAPPINGS) == 0 &&
 		    !dma_overlap(phys, phys + next - addr)) {
+=======
+		    (flags & NO_BLOCK_MAPPINGS) == 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			pmd_set_huge(pmd, phys, prot);
 
 			/*
@@ -328,8 +341,12 @@ static void alloc_init_pud(pgd_t *pgd, unsigned long addr, unsigned long end,
 		 * For 4K granule only, attempt to put down a 1GB block
 		 */
 		if (use_1G_block(addr, next, phys) &&
+<<<<<<< HEAD
 		    (flags & NO_BLOCK_MAPPINGS) == 0 &&
 		    !dma_overlap(phys, phys + next - addr)) {
+=======
+		    (flags & NO_BLOCK_MAPPINGS) == 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			pud_set_huge(pud, phys, prot);
 
 			/*
@@ -391,6 +408,7 @@ static phys_addr_t pgd_pgtable_alloc(void)
 	return __pa(ptr);
 }
 
+<<<<<<< HEAD
 void create_pgtable_mapping(phys_addr_t start, phys_addr_t end)
 {
 	unsigned long virt = (unsigned long)phys_to_virt(start);
@@ -399,6 +417,8 @@ void create_pgtable_mapping(phys_addr_t start, phys_addr_t end)
 				PAGE_KERNEL, NULL, 0);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * This function can only be used to modify existing table entries,
  * without allocating new levels of table. Note that this permits the
@@ -652,8 +672,13 @@ static void __init map_kernel(pgd_t *pgd)
 		 * entry instead.
 		 */
 		BUG_ON(!IS_ENABLED(CONFIG_ARM64_16K_PAGES));
+<<<<<<< HEAD
 		set_pud(pud_set_fixmap_offset(pgd, FIXADDR_START),
 			__pud(__pa_symbol(bm_pmd) | PUD_TYPE_TABLE));
+=======
+		pud_populate(&init_mm, pud_set_fixmap_offset(pgd, FIXADDR_START),
+			     lm_alias(bm_pmd));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pud_clear_fixmap();
 	} else {
 		BUG();
@@ -697,6 +722,7 @@ void __init paging_init(void)
 		      SWAPPER_DIR_SIZE - PAGE_SIZE);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_MEMORY_HOTPLUG
 /*
  * hotplug_paging() is used by memory hotplug to build new page tables
@@ -1089,6 +1115,8 @@ void remove_pagetable(unsigned long start, unsigned long end, bool direct)
 #endif /* CONFIG_MEMORY_HOTREMOVE */
 #endif /* CONFIG_MEMORY_HOTPLUG */
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Check whether a kernel address is valid (derived from arch/x86/).
  */
@@ -1140,7 +1168,10 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node)
 	pgd_t *pgd;
 	pud_t *pud;
 	pmd_t *pmd;
+<<<<<<< HEAD
 	int ret = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	do {
 		next = pmd_addr_end(addr, end);
@@ -1158,6 +1189,7 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node)
 			void *p = NULL;
 
 			p = vmemmap_alloc_block_buf(PMD_SIZE, node);
+<<<<<<< HEAD
 			if (!p) {
 #ifdef CONFIG_MEMORY_HOTPLUG
 				vmemmap_free(start, end);
@@ -1167,21 +1199,34 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node)
 			}
 
 			set_pmd(pmd, __pmd(__pa(p) | PROT_SECT_NORMAL));
+=======
+			if (!p)
+				return -ENOMEM;
+
+			pmd_set_huge(pmd, __pa(p), __pgprot(PROT_SECT_NORMAL));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else
 			vmemmap_verify((pte_t *)pmd, node, addr, next);
 	} while (addr = next, addr != end);
 
+<<<<<<< HEAD
 	if (ret)
 		return vmemmap_populate_basepages(start, end, node);
 	else
 		return ret;
+=======
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #endif	/* CONFIG_ARM64_64K_PAGES */
 void vmemmap_free(unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_MEMORY_HOTREMOVE
 	remove_pagetable(start, end, false);
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #endif	/* CONFIG_SPARSEMEM_VMEMMAP */
 
@@ -1350,44 +1395,81 @@ void *__init fixmap_remap_fdt(phys_addr_t dt_phys)
 
 int __init arch_ioremap_pud_supported(void)
 {
+<<<<<<< HEAD
 	/* only 4k granule supports level 1 block mappings */
 	return IS_ENABLED(CONFIG_ARM64_4K_PAGES);
+=======
+	/*
+	 * Only 4k granule supports level 1 block mappings.
+	 * SW table walks can't handle removal of intermediate entries.
+	 */
+	return IS_ENABLED(CONFIG_ARM64_4K_PAGES) &&
+	       !IS_ENABLED(CONFIG_ARM64_PTDUMP_DEBUGFS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 int __init arch_ioremap_pmd_supported(void)
 {
+<<<<<<< HEAD
 	return 1;
 }
 
 int pud_set_huge(pud_t *pud, phys_addr_t phys, pgprot_t prot)
+=======
+	/* See arch_ioremap_pud_supported() */
+	return !IS_ENABLED(CONFIG_ARM64_PTDUMP_DEBUGFS);
+}
+
+int pud_set_huge(pud_t *pudp, phys_addr_t phys, pgprot_t prot)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	pgprot_t sect_prot = __pgprot(PUD_TYPE_SECT |
 					pgprot_val(mk_sect_prot(prot)));
 	pud_t new_pud = pfn_pud(__phys_to_pfn(phys), sect_prot);
 
 	/* Only allow permission changes for now */
+<<<<<<< HEAD
 	if (!pgattr_change_is_safe(READ_ONCE(pud_val(*pud)),
+=======
+	if (!pgattr_change_is_safe(READ_ONCE(pud_val(*pudp)),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				   pud_val(new_pud)))
 		return 0;
 
 	BUG_ON(phys & ~PUD_MASK);
+<<<<<<< HEAD
 	set_pud(pud, new_pud);
 	return 1;
 }
 
 int pmd_set_huge(pmd_t *pmd, phys_addr_t phys, pgprot_t prot)
+=======
+	set_pud(pudp, new_pud);
+	return 1;
+}
+
+int pmd_set_huge(pmd_t *pmdp, phys_addr_t phys, pgprot_t prot)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	pgprot_t sect_prot = __pgprot(PMD_TYPE_SECT |
 					pgprot_val(mk_sect_prot(prot)));
 	pmd_t new_pmd = pfn_pmd(__phys_to_pfn(phys), sect_prot);
 
 	/* Only allow permission changes for now */
+<<<<<<< HEAD
 	if (!pgattr_change_is_safe(READ_ONCE(pmd_val(*pmd)),
+=======
+	if (!pgattr_change_is_safe(READ_ONCE(pmd_val(*pmdp)),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				   pmd_val(new_pmd)))
 		return 0;
 
 	BUG_ON(phys & ~PMD_MASK);
+<<<<<<< HEAD
 	set_pmd(pmd, new_pmd);
+=======
+	set_pmd(pmdp, new_pmd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 1;
 }
 
@@ -1407,6 +1489,7 @@ int pmd_clear_huge(pmd_t *pmd)
 	return 1;
 }
 
+<<<<<<< HEAD
 int pmd_free_pte_page(pmd_t *pmdp, unsigned long addr)
 {
 	pte_t *table;
@@ -1456,4 +1539,14 @@ int pud_free_pmd_page(pud_t *pudp, unsigned long addr)
 	__flush_tlb_kernel_pgtable(addr);
 	pmd_free(NULL, table);
 	return 1;
+=======
+int pud_free_pmd_page(pud_t *pud, unsigned long addr)
+{
+	return pud_none(*pud);
+}
+
+int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
+{
+	return pmd_none(*pmd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }

@@ -974,6 +974,10 @@ static int vxlan_fdb_dump(struct sk_buff *skb, struct netlink_callback *cb,
 	for (h = 0; h < FDB_HASH_SIZE; ++h) {
 		struct vxlan_fdb *f;
 
+<<<<<<< HEAD
+=======
+		rcu_read_lock();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		hlist_for_each_entry_rcu(f, &vxlan->fdb_head[h], hlist) {
 			struct vxlan_rdst *rd;
 
@@ -986,12 +990,23 @@ static int vxlan_fdb_dump(struct sk_buff *skb, struct netlink_callback *cb,
 						     cb->nlh->nlmsg_seq,
 						     RTM_NEWNEIGH,
 						     NLM_F_MULTI, rd);
+<<<<<<< HEAD
 				if (err < 0)
 					goto out;
+=======
+				if (err < 0) {
+					rcu_read_unlock();
+					goto out;
+				}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 skip:
 				*idx += 1;
 			}
 		}
+<<<<<<< HEAD
+=======
+		rcu_read_unlock();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 out:
 	return err;
@@ -1610,6 +1625,13 @@ static struct sk_buff *vxlan_na_create(struct sk_buff *request,
 	ns_olen = request->len - skb_network_offset(request) -
 		sizeof(struct ipv6hdr) - sizeof(*ns);
 	for (i = 0; i < ns_olen-1; i += (ns->opt[i+1]<<3)) {
+<<<<<<< HEAD
+=======
+		if (!ns->opt[i + 1]) {
+			kfree_skb(reply);
+			return NULL;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (ns->opt[i] == ND_OPT_SOURCE_LL_ADDR) {
 			daddr = ns->opt + i + sizeof(struct nd_opt_hdr);
 			break;
@@ -1673,6 +1695,10 @@ static int neigh_reduce(struct net_device *dev, struct sk_buff *skb, __be32 vni)
 	struct neighbour *n;
 	struct nd_msg *msg;
 
+<<<<<<< HEAD
+=======
+	rcu_read_lock();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	in6_dev = __in6_dev_get(dev);
 	if (!in6_dev)
 		goto out;
@@ -1724,6 +1750,10 @@ static int neigh_reduce(struct net_device *dev, struct sk_buff *skb, __be32 vni)
 	}
 
 out:
+<<<<<<< HEAD
+=======
+	rcu_read_unlock();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	consume_skb(skb);
 	return NETDEV_TX_OK;
 }
@@ -1962,7 +1992,10 @@ static struct dst_entry *vxlan6_get_route(struct vxlan_dev *vxlan,
 	bool use_cache = ip_tunnel_dst_cache_usable(skb, info);
 	struct dst_entry *ndst;
 	struct flowi6 fl6;
+<<<<<<< HEAD
 	int err;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!sock6)
 		return ERR_PTR(-EIO);
@@ -1985,10 +2018,16 @@ static struct dst_entry *vxlan6_get_route(struct vxlan_dev *vxlan,
 	fl6.fl6_dport = dport;
 	fl6.fl6_sport = sport;
 
+<<<<<<< HEAD
 	err = ipv6_stub->ipv6_dst_lookup(vxlan->net,
 					 sock6->sock->sk,
 					 &ndst, &fl6);
 	if (unlikely(err < 0)) {
+=======
+	ndst = ipv6_stub->ipv6_dst_lookup_flow(vxlan->net, sock6->sock->sk,
+					       &fl6, NULL);
+	if (unlikely(IS_ERR(ndst))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		netdev_dbg(dev, "no route to %pI6\n", daddr);
 		return ERR_PTR(-ENETUNREACH);
 	}
@@ -2169,8 +2208,16 @@ static void vxlan_xmit_one(struct sk_buff *skb, struct net_device *dev,
 		vni = tunnel_id_to_key32(info->key.tun_id);
 		ifindex = 0;
 		dst_cache = &info->dst_cache;
+<<<<<<< HEAD
 		if (info->options_len)
 			md = ip_tunnel_info_opts(info);
+=======
+		if (info->options_len) {
+			if (info->options_len < sizeof(*md))
+				goto drop;
+			md = ip_tunnel_info_opts(info);
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ttl = info->key.ttl;
 		tos = info->key.tos;
 		label = info->key.label;
@@ -2451,10 +2498,25 @@ static void vxlan_vs_add_dev(struct vxlan_sock *vs, struct vxlan_dev *vxlan,
 /* Setup stats when device is created */
 static int vxlan_init(struct net_device *dev)
 {
+<<<<<<< HEAD
+=======
+	struct vxlan_dev *vxlan = netdev_priv(dev);
+	int err;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
 	if (!dev->tstats)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	err = gro_cells_init(&vxlan->gro_cells, dev);
+	if (err) {
+		free_percpu(dev->tstats);
+		return err;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -2714,8 +2776,11 @@ static void vxlan_setup(struct net_device *dev)
 
 	vxlan->dev = dev;
 
+<<<<<<< HEAD
 	gro_cells_init(&vxlan->gro_cells, dev);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (h = 0; h < FDB_HASH_SIZE; ++h)
 		INIT_HLIST_HEAD(&vxlan->fdb_head[h]);
 }
@@ -3168,6 +3233,12 @@ static void vxlan_config_apply(struct net_device *dev,
 		dev->gso_max_segs = lowerdev->gso_max_segs;
 
 		needed_headroom = lowerdev->hard_header_len;
+<<<<<<< HEAD
+=======
+		needed_headroom += lowerdev->needed_headroom;
+
+		dev->needed_tailroom = lowerdev->needed_tailroom;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		max_mtu = lowerdev->mtu - (use_ipv6 ? VXLAN6_HEADROOM :
 					   VXLAN_HEADROOM);
@@ -3214,6 +3285,10 @@ static int __vxlan_dev_create(struct net *net, struct net_device *dev,
 	struct vxlan_net *vn = net_generic(net, vxlan_net_id);
 	struct vxlan_dev *vxlan = netdev_priv(dev);
 	struct vxlan_fdb *f = NULL;
+<<<<<<< HEAD
+=======
+	bool unregister = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err;
 
 	err = vxlan_dev_configure(net, dev, conf, false, extack);
@@ -3239,12 +3314,20 @@ static int __vxlan_dev_create(struct net *net, struct net_device *dev,
 	err = register_netdevice(dev);
 	if (err)
 		goto errout;
+<<<<<<< HEAD
 
 	err = rtnl_configure_link(dev, NULL);
 	if (err) {
 		unregister_netdevice(dev);
 		goto errout;
 	}
+=======
+	unregister = true;
+
+	err = rtnl_configure_link(dev, NULL);
+	if (err)
+		goto errout;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* notify default fdb entry */
 	if (f)
@@ -3252,9 +3335,22 @@ static int __vxlan_dev_create(struct net *net, struct net_device *dev,
 
 	list_add(&vxlan->next, &vn->vxlan_list);
 	return 0;
+<<<<<<< HEAD
 errout:
 	if (f)
 		vxlan_fdb_destroy(vxlan, f, false);
+=======
+
+errout:
+	/* unregister_netdevice() destroys the default FDB entry with deletion
+	 * notification. But the addition notification was not sent yet, so
+	 * destroy the entry by hand here.
+	 */
+	if (f)
+		vxlan_fdb_destroy(vxlan, f, false);
+	if (unregister)
+		unregister_netdevice(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return err;
 }
 
@@ -3484,7 +3580,10 @@ static int vxlan_changelink(struct net_device *dev, struct nlattr *tb[],
 	struct vxlan_rdst *dst = &vxlan->default_dst;
 	struct vxlan_rdst old_dst;
 	struct vxlan_config conf;
+<<<<<<< HEAD
 	struct vxlan_fdb *f = NULL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err;
 
 	err = vxlan_nl2conf(tb, data,
@@ -3510,19 +3609,33 @@ static int vxlan_changelink(struct net_device *dev, struct nlattr *tb[],
 					   old_dst.remote_ifindex, 0);
 
 		if (!vxlan_addr_any(&dst->remote_ip)) {
+<<<<<<< HEAD
 			err = vxlan_fdb_create(vxlan, all_zeros_mac,
 					       &dst->remote_ip,
 					       NUD_REACHABLE | NUD_PERMANENT,
+=======
+			err = vxlan_fdb_update(vxlan, all_zeros_mac,
+					       &dst->remote_ip,
+					       NUD_REACHABLE | NUD_PERMANENT,
+					       NLM_F_APPEND | NLM_F_CREATE,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					       vxlan->cfg.dst_port,
 					       dst->remote_vni,
 					       dst->remote_vni,
 					       dst->remote_ifindex,
+<<<<<<< HEAD
 					       NTF_SELF, &f);
+=======
+					       NTF_SELF);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (err) {
 				spin_unlock_bh(&vxlan->hash_lock);
 				return err;
 			}
+<<<<<<< HEAD
 			vxlan_fdb_notify(vxlan, f, first_remote_rtnl(f), RTM_NEWNEIGH);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		spin_unlock_bh(&vxlan->hash_lock);
 	}

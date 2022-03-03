@@ -19,7 +19,10 @@
 #include "usb.h"
 
 static BLOCKING_NOTIFIER_HEAD(usb_notifier_list);
+<<<<<<< HEAD
 static ATOMIC_NOTIFIER_HEAD(usb_atomic_notifier_list);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**
  * usb_register_notify - register a notifier callback whenever a usb change happens
@@ -70,6 +73,7 @@ void usb_notify_remove_bus(struct usb_bus *ubus)
 {
 	blocking_notifier_call_chain(&usb_notifier_list, USB_BUS_REMOVE, ubus);
 }
+<<<<<<< HEAD
 
 /**
  * usb_register_atomic_notify - register a atomic notifier callback whenever a
@@ -100,3 +104,5 @@ void usb_atomic_notify_dead_bus(struct usb_bus *ubus)
 	atomic_notifier_call_chain(&usb_atomic_notifier_list, USB_BUS_DIED,
 					 ubus);
 }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

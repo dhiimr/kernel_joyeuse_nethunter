@@ -454,8 +454,14 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm)
 	decode_osc_support(root, "OS supports", support);
 	status = acpi_pci_osc_support(root, support);
 	if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 		dev_info(&device->dev, "_OSC failed (%s); disabling ASPM\n",
 			 acpi_format_exception(status));
+=======
+		dev_info(&device->dev, "_OSC failed (%s)%s\n",
+			 acpi_format_exception(status),
+			 pcie_aspm_support_enabled() ? "; disabling ASPM" : "");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		*no_aspm = 1;
 		return;
 	}

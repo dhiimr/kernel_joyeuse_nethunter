@@ -703,12 +703,23 @@ static void msg_done_handler(struct ssif_info *ssif_info, int result,
 			/* End of read */
 			len = ssif_info->multi_len;
 			data = ssif_info->data;
+<<<<<<< HEAD
 		} else if (blocknum != ssif_info->multi_pos) {
+=======
+		} else if (blocknum + 1 != ssif_info->multi_pos) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/*
 			 * Out of sequence block, just abort.  Block
 			 * numbers start at zero for the second block,
 			 * but multi_pos starts at one, so the +1.
 			 */
+<<<<<<< HEAD
+=======
+			if (ssif_info->ssif_debug & SSIF_DEBUG_MSG)
+				dev_dbg(&ssif_info->client->dev,
+					"Received message out of sequence, expected %u, got %u\n",
+					ssif_info->multi_pos - 1, blocknum);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			result = -EIO;
 		} else {
 			ssif_inc_stat(ssif_info, received_message_parts);
@@ -746,10 +757,21 @@ static void msg_done_handler(struct ssif_info *ssif_info, int result,
 	flags = ipmi_ssif_lock_cond(ssif_info, &oflags);
 	msg = ssif_info->curr_msg;
 	if (msg) {
+<<<<<<< HEAD
 		msg->rsp_size = len;
 		if (msg->rsp_size > IPMI_MAX_MSG_LENGTH)
 			msg->rsp_size = IPMI_MAX_MSG_LENGTH;
 		memcpy(msg->rsp, data, msg->rsp_size);
+=======
+		if (data) {
+			if (len > IPMI_MAX_MSG_LENGTH)
+				len = IPMI_MAX_MSG_LENGTH;
+			memcpy(msg->rsp, data, len);
+		} else {
+			len = 0;
+		}
+		msg->rsp_size = len;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ssif_info->curr_msg = NULL;
 	}
 
@@ -1723,7 +1745,13 @@ static int ssif_probe(struct i2c_client *client, const struct i2c_device_id *id)
 
  out:
 	if (rv) {
+<<<<<<< HEAD
 		addr_info->client = NULL;
+=======
+		if (addr_info)
+			addr_info->client = NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_err(&client->dev, "Unable to start IPMI SSIF: %d\n", rv);
 		kfree(ssif_info);
 	}

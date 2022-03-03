@@ -369,7 +369,11 @@ int malidp_de_planes_init(struct drm_device *drm)
 	const struct malidp_hw_regmap *map = &malidp->dev->map;
 	struct malidp_plane *plane = NULL;
 	enum drm_plane_type plane_type;
+<<<<<<< HEAD
 	unsigned long crtcs = 1 << drm->mode_config.num_crtc;
+=======
+	unsigned long crtcs = BIT(drm->mode_config.num_crtc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long flags = DRM_MODE_ROTATE_0 | DRM_MODE_ROTATE_90 | DRM_MODE_ROTATE_180 |
 			      DRM_MODE_ROTATE_270 | DRM_MODE_REFLECT_X | DRM_MODE_REFLECT_Y;
 	u32 *formats;

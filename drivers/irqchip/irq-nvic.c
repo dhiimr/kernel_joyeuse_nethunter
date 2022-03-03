@@ -29,7 +29,11 @@
 
 #define NVIC_ISER		0x000
 #define NVIC_ICER		0x080
+<<<<<<< HEAD
 #define NVIC_IPR		0x300
+=======
+#define NVIC_IPR		0x400
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define NVIC_MAX_BANKS		16
 /*

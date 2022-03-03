@@ -140,6 +140,7 @@ int tipc_buf_append(struct sk_buff **headbuf, struct sk_buff **buf)
 	if (fragid == FIRST_FRAGMENT) {
 		if (unlikely(head))
 			goto err;
+<<<<<<< HEAD
 		if (unlikely(skb_unclone(frag, GFP_ATOMIC)))
 			goto err;
 		head = *headbuf = frag;
@@ -152,6 +153,16 @@ int tipc_buf_append(struct sk_buff **headbuf, struct sk_buff **buf)
 		} else {
 			skb_frag_list_init(head);
 		}
+=======
+		*buf = NULL;
+		if (skb_has_frag_list(frag) && __skb_linearize(frag))
+			goto err;
+		frag = skb_unshare(frag, GFP_ATOMIC);
+		if (unlikely(!frag))
+			goto err;
+		head = *headbuf = frag;
+		TIPC_SKB_CB(head)->tail = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 	}
 
@@ -456,10 +467,14 @@ bool tipc_msg_make_bundle(struct sk_buff **skb,  struct tipc_msg *msg,
 	bmsg = buf_msg(_skb);
 	tipc_msg_init(msg_prevnode(msg), bmsg, MSG_BUNDLER, 0,
 		      INT_H_SIZE, dnode);
+<<<<<<< HEAD
 	if (msg_isdata(msg))
 		msg_set_importance(bmsg, TIPC_CRITICAL_IMPORTANCE);
 	else
 		msg_set_importance(bmsg, TIPC_SYSTEM_IMPORTANCE);
+=======
+	msg_set_importance(bmsg, msg_importance(msg));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	msg_set_seqno(bmsg, msg_seqno(msg));
 	msg_set_ack(bmsg, msg_ack(msg));
 	msg_set_bcast_ack(bmsg, msg_bcast_ack(msg));

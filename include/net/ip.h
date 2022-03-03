@@ -74,7 +74,10 @@ struct ipcm_cookie {
 	__u8			ttl;
 	__s16			tos;
 	char			priority;
+<<<<<<< HEAD
 	__u16			gso_size;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #define IPCB(skb) ((struct inet_skb_parm*)((skb)->cb))
@@ -128,7 +131,10 @@ int ip_build_and_send_pkt(struct sk_buff *skb, const struct sock *sk,
 int ip_rcv(struct sk_buff *skb, struct net_device *dev, struct packet_type *pt,
 	   struct net_device *orig_dev);
 int ip_local_deliver(struct sk_buff *skb);
+<<<<<<< HEAD
 void ip_protocol_deliver_rcu(struct net *net, struct sk_buff *skb, int proto);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int ip_mr_input(struct sk_buff *skb);
 int ip_output(struct net *net, struct sock *sk, struct sk_buff *skb);
 int ip_mc_output(struct net *net, struct sock *sk, struct sk_buff *skb);
@@ -162,7 +168,11 @@ struct sk_buff *ip_make_skb(struct sock *sk, struct flowi4 *fl4,
 					int len, int odd, struct sk_buff *skb),
 			    void *from, int length, int transhdrlen,
 			    struct ipcm_cookie *ipc, struct rtable **rtp,
+<<<<<<< HEAD
 			    struct inet_cork *cork, unsigned int flags);
+=======
+			    unsigned int flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static inline struct sk_buff *ip_finish_skb(struct sock *sk, struct flowi4 *fl4)
 {
@@ -297,8 +307,11 @@ static inline int inet_prot_sock(struct net *net)
 
 __be32 inet_current_timestamp(void);
 
+<<<<<<< HEAD
 extern int sysctl_reserved_port_bind;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* From inetpeer.c */
 extern int inet_peer_threshold;
 extern int inet_peer_minttl;
@@ -368,12 +381,24 @@ static inline unsigned int ip_dst_mtu_maybe_forward(const struct dst_entry *dst,
 						    bool forwarding)
 {
 	struct net *net = dev_net(dst->dev);
+<<<<<<< HEAD
+=======
+	unsigned int mtu;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (net->ipv4.sysctl_ip_fwd_use_pmtu ||
 	    ip_mtu_locked(dst) ||
 	    !forwarding)
 		return dst_mtu(dst);
 
+<<<<<<< HEAD
+=======
+	/* 'forwarding = true' case should always honour route mtu */
+	mtu = dst_metric_raw(dst, RTAX_MTU);
+	if (mtu)
+		return mtu;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return min(READ_ONCE(dst->dev->mtu), IP_MAX_MTU);
 }
 
@@ -397,6 +422,7 @@ static inline void ip_select_ident_segs(struct net *net, struct sk_buff *skb,
 {
 	struct iphdr *iph = ip_hdr(skb);
 
+<<<<<<< HEAD
 	if ((iph->frag_off & htons(IP_DF)) && !skb->ignore_df) {
 		/* This is only to work around buggy Windows95/2000
 		 * VJ compression implementations.  If the ID field
@@ -410,6 +436,20 @@ static inline void ip_select_ident_segs(struct net *net, struct sk_buff *skb,
 			iph->id = 0;
 		}
 	} else {
+=======
+	/* We had many attacks based on IPID, use the private
+	 * generator as much as we can.
+	 */
+	if (sk && inet_sk(sk)->inet_daddr) {
+		iph->id = htons(inet_sk(sk)->inet_id);
+		inet_sk(sk)->inet_id += segs;
+		return;
+	}
+	if ((iph->frag_off & htons(IP_DF)) && !skb->ignore_df) {
+		iph->id = 0;
+	} else {
+		/* Unfortunately we need the big hammer to get a suitable IPID */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__ip_select_ident(net, iph, segs);
 	}
 }
@@ -648,4 +688,12 @@ extern int sysctl_icmp_msgs_burst;
 int ip_misc_proc_init(void);
 #endif
 
+<<<<<<< HEAD
+=======
+static inline bool inetdev_valid_mtu(unsigned int mtu)
+{
+	return likely(mtu >= IPV4_MIN_MTU);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif	/* _IP_H */

@@ -42,6 +42,10 @@
 #include <asm/x86_init.h>
 #include <asm/pgalloc.h>
 #include <linux/atomic.h>
+<<<<<<< HEAD
+=======
+#include <asm/barrier.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/mpspec.h>
 #include <asm/i8259.h>
 #include <asm/proto.h>
@@ -182,7 +186,11 @@ EXPORT_SYMBOL_GPL(local_apic_timer_c2_ok);
 /*
  * Debug level, exported for io_apic.c
  */
+<<<<<<< HEAD
 unsigned int apic_verbosity;
+=======
+int apic_verbosity;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 int pic_mode;
 
@@ -353,8 +361,11 @@ static void __setup_APIC_LVTT(unsigned int clocks, int oneshot, int irqen)
 		 * According to Intel, MFENCE can do the serialization here.
 		 */
 		asm volatile("mfence" : : : "memory");
+<<<<<<< HEAD
 
 		printk_once(KERN_DEBUG "TSC deadline timer enabled\n");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 	}
 
@@ -475,6 +486,12 @@ static int lapic_next_deadline(unsigned long delta,
 {
 	u64 tsc;
 
+<<<<<<< HEAD
+=======
+	/* This MSR is special and need a special fence: */
+	weak_wrmsr_fence();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tsc = rdtsc();
 	wrmsrl(MSR_IA32_TSC_DEADLINE, tsc + (((u64) delta) * TSC_DIVISOR));
 	return 0;
@@ -553,7 +570,11 @@ static DEFINE_PER_CPU(struct clock_event_device, lapic_events);
 #define DEADLINE_MODEL_MATCH_REV(model, rev)	\
 	{ X86_VENDOR_INTEL, 6, model, X86_FEATURE_ANY, (unsigned long)rev }
 
+<<<<<<< HEAD
 static u32 hsx_deadline_rev(void)
+=======
+static __init u32 hsx_deadline_rev(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	switch (boot_cpu_data.x86_stepping) {
 	case 0x02: return 0x3a; /* EP */
@@ -563,7 +584,11 @@ static u32 hsx_deadline_rev(void)
 	return ~0U;
 }
 
+<<<<<<< HEAD
 static u32 bdx_deadline_rev(void)
+=======
+static __init u32 bdx_deadline_rev(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	switch (boot_cpu_data.x86_stepping) {
 	case 0x02: return 0x00000011;
@@ -575,7 +600,11 @@ static u32 bdx_deadline_rev(void)
 	return ~0U;
 }
 
+<<<<<<< HEAD
 static u32 skx_deadline_rev(void)
+=======
+static __init u32 skx_deadline_rev(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	switch (boot_cpu_data.x86_stepping) {
 	case 0x03: return 0x01000136;
@@ -588,7 +617,11 @@ static u32 skx_deadline_rev(void)
 	return ~0U;
 }
 
+<<<<<<< HEAD
 static const struct x86_cpu_id deadline_match[] = {
+=======
+static const struct x86_cpu_id deadline_match[] __initconst = {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	DEADLINE_MODEL_MATCH_FUNC( INTEL_FAM6_HASWELL_X,	hsx_deadline_rev),
 	DEADLINE_MODEL_MATCH_REV ( INTEL_FAM6_BROADWELL_X,	0x0b000020),
 	DEADLINE_MODEL_MATCH_FUNC( INTEL_FAM6_BROADWELL_XEON_D,	bdx_deadline_rev),
@@ -610,11 +643,16 @@ static const struct x86_cpu_id deadline_match[] = {
 	{},
 };
 
+<<<<<<< HEAD
 static void apic_check_deadline_errata(void)
+=======
+static __init bool apic_validate_deadline_timer(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	const struct x86_cpu_id *m;
 	u32 rev;
 
+<<<<<<< HEAD
 	if (!boot_cpu_has(X86_FEATURE_TSC_DEADLINE_TIMER) ||
 	    boot_cpu_has(X86_FEATURE_HYPERVISOR))
 		return;
@@ -622,6 +660,16 @@ static void apic_check_deadline_errata(void)
 	m = x86_match_cpu(deadline_match);
 	if (!m)
 		return;
+=======
+	if (!boot_cpu_has(X86_FEATURE_TSC_DEADLINE_TIMER))
+		return false;
+	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
+		return true;
+
+	m = x86_match_cpu(deadline_match);
+	if (!m)
+		return true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Function pointers will have the MSB set due to address layout,
@@ -633,11 +681,19 @@ static void apic_check_deadline_errata(void)
 		rev = (u32)m->driver_data;
 
 	if (boot_cpu_data.microcode >= rev)
+<<<<<<< HEAD
 		return;
+=======
+		return true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	setup_clear_cpu_cap(X86_FEATURE_TSC_DEADLINE_TIMER);
 	pr_err(FW_BUG "TSC_DEADLINE disabled due to Errata; "
 	       "please update microcode to version: 0x%x (or later)\n", rev);
+<<<<<<< HEAD
+=======
+	return false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -723,7 +779,11 @@ static __initdata unsigned long lapic_cal_pm1, lapic_cal_pm2;
 static __initdata unsigned long lapic_cal_j1, lapic_cal_j2;
 
 /*
+<<<<<<< HEAD
  * Temporary interrupt handler.
+=======
+ * Temporary interrupt handler and polled calibration function.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 static void __init lapic_cal_handler(struct clock_event_device *dev)
 {
@@ -807,7 +867,12 @@ calibrate_by_pmtimer(long deltapm, long *delta, long *deltatsc)
 static int __init calibrate_APIC_clock(void)
 {
 	struct clock_event_device *levt = this_cpu_ptr(&lapic_events);
+<<<<<<< HEAD
 	void (*real_handler)(struct clock_event_device *dev);
+=======
+	u64 tsc_perj = 0, tsc_start = 0;
+	unsigned long jif_start;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long deltaj;
 	long delta, deltatsc;
 	int pm_referenced = 0;
@@ -838,18 +903,29 @@ static int __init calibrate_APIC_clock(void)
 	apic_printk(APIC_VERBOSE, "Using local APIC timer interrupts.\n"
 		    "calibrating APIC timer ...\n");
 
+<<<<<<< HEAD
 	local_irq_disable();
 
 	/* Replace the global interrupt handler */
 	real_handler = global_clock_event->event_handler;
 	global_clock_event->event_handler = lapic_cal_handler;
 
+=======
+	/*
+	 * There are platforms w/o global clockevent devices. Instead of
+	 * making the calibration conditional on that, use a polling based
+	 * approach everywhere.
+	 */
+	local_irq_disable();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Setup the APIC counter to maximum. There is no way the lapic
 	 * can underflow in the 100ms detection time frame
 	 */
 	__setup_APIC_LVTT(0xffffffff, 0, 0);
 
+<<<<<<< HEAD
 	/* Let the interrupts run */
 	local_irq_enable();
 
@@ -860,6 +936,53 @@ static int __init calibrate_APIC_clock(void)
 
 	/* Restore the real event handler */
 	global_clock_event->event_handler = real_handler;
+=======
+	/*
+	 * Methods to terminate the calibration loop:
+	 *  1) Global clockevent if available (jiffies)
+	 *  2) TSC if available and frequency is known
+	 */
+	jif_start = READ_ONCE(jiffies);
+
+	if (tsc_khz) {
+		tsc_start = rdtsc();
+		tsc_perj = div_u64((u64)tsc_khz * 1000, HZ);
+	}
+
+	/*
+	 * Enable interrupts so the tick can fire, if a global
+	 * clockevent device is available
+	 */
+	local_irq_enable();
+
+	while (lapic_cal_loops <= LAPIC_CAL_LOOPS) {
+		/* Wait for a tick to elapse */
+		while (1) {
+			if (tsc_khz) {
+				u64 tsc_now = rdtsc();
+				if ((tsc_now - tsc_start) >= tsc_perj) {
+					tsc_start += tsc_perj;
+					break;
+				}
+			} else {
+				unsigned long jif_now = READ_ONCE(jiffies);
+
+				if (time_after(jif_now, jif_start)) {
+					jif_start = jif_now;
+					break;
+				}
+			}
+			cpu_relax();
+		}
+
+		/* Invoke the calibration routine */
+		local_irq_disable();
+		lapic_cal_handler(NULL);
+		local_irq_enable();
+	}
+
+	local_irq_disable();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Build delta t1-t2 as apic timer counts down */
 	delta = lapic_cal_t1 - lapic_cal_t2;
@@ -912,10 +1035,18 @@ static int __init calibrate_APIC_clock(void)
 	levt->features &= ~CLOCK_EVT_FEAT_DUMMY;
 
 	/*
+<<<<<<< HEAD
 	 * PM timer calibration failed or not turned on
 	 * so lets try APIC timer based calibration
 	 */
 	if (!pm_referenced) {
+=======
+	 * PM timer calibration failed or not turned on so lets try APIC
+	 * timer based calibration, if a global clockevent device is
+	 * available.
+	 */
+	if (!pm_referenced && global_clock_event) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		apic_printk(APIC_VERBOSE, "... verify APIC timer\n");
 
 		/*
@@ -1324,73 +1455,17 @@ static void lapic_setup_esr(void)
 			oldvalue, value);
 }
 
-/**
- * setup_local_APIC - setup the local APIC
- *
- * Used to setup local APIC while initializing BSP or bringing up APs.
- * Always called with preemption disabled.
- */
-void setup_local_APIC(void)
+<<<<<<< HEAD
+=======
+static void apic_pending_intr_clear(void)
 {
-	int cpu = smp_processor_id();
+	long long max_loops = cpu_khz ? cpu_khz : 1000000;
+	unsigned long long tsc = 0, ntsc;
 	unsigned int value, queued;
 	int i, j, acked = 0;
-	unsigned long long tsc = 0, ntsc;
-	long long max_loops = cpu_khz ? cpu_khz : 1000000;
 
 	if (boot_cpu_has(X86_FEATURE_TSC))
 		tsc = rdtsc();
-
-	if (disable_apic) {
-		disable_ioapic_support();
-		return;
-	}
-
-#ifdef CONFIG_X86_32
-	/* Pound the ESR really hard over the head with a big hammer - mbligh */
-	if (lapic_is_integrated() && apic->disable_esr) {
-		apic_write(APIC_ESR, 0);
-		apic_write(APIC_ESR, 0);
-		apic_write(APIC_ESR, 0);
-		apic_write(APIC_ESR, 0);
-	}
-#endif
-	perf_events_lapic_init();
-
-	/*
-	 * Double-check whether this APIC is really registered.
-	 * This is meaningless in clustered apic mode, so we skip it.
-	 */
-	BUG_ON(!apic->apic_id_registered());
-
-	/*
-	 * Intel recommends to set DFR, LDR and TPR before enabling
-	 * an APIC.  See e.g. "AP-388 82489DX User's Manual" (Intel
-	 * document number 292116).  So here it goes...
-	 */
-	apic->init_apic_ldr();
-
-#ifdef CONFIG_X86_32
-	/*
-	 * APIC LDR is initialized.  If logical_apicid mapping was
-	 * initialized during get_smp_config(), make sure it matches the
-	 * actual value.
-	 */
-	i = early_per_cpu(x86_cpu_to_logical_apicid, cpu);
-	WARN_ON(i != BAD_APICID && i != logical_smp_processor_id());
-	/* always use the value from LDR */
-	early_per_cpu(x86_cpu_to_logical_apicid, cpu) =
-		logical_smp_processor_id();
-#endif
-
-	/*
-	 * Set Task Priority to 'accept all'. We never change this
-	 * later on.
-	 */
-	value = apic_read(APIC_TASKPRI);
-	value &= ~APIC_TPRI_MASK;
-	apic_write(APIC_TASKPRI, value);
-
 	/*
 	 * After a crash, we no longer service the interrupts and a pending
 	 * interrupt from previous kernel might still have ISR bit set.
@@ -1430,6 +1505,153 @@ void setup_local_APIC(void)
 		}
 	} while (queued && max_loops > 0);
 	WARN_ON(max_loops <= 0);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
+/**
+ * setup_local_APIC - setup the local APIC
+ *
+ * Used to setup local APIC while initializing BSP or bringing up APs.
+ * Always called with preemption disabled.
+ */
+void setup_local_APIC(void)
+{
+	int cpu = smp_processor_id();
+<<<<<<< HEAD
+	unsigned int value, queued;
+	int i, j, acked = 0;
+	unsigned long long tsc = 0, ntsc;
+	long long max_loops = cpu_khz ? cpu_khz : 1000000;
+
+	if (boot_cpu_has(X86_FEATURE_TSC))
+		tsc = rdtsc();
+=======
+	unsigned int value;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
+
+	if (disable_apic) {
+		disable_ioapic_support();
+		return;
+	}
+
+<<<<<<< HEAD
+=======
+	/*
+	 * If this comes from kexec/kcrash the APIC might be enabled in
+	 * SPIV. Soft disable it before doing further initialization.
+	 */
+	value = apic_read(APIC_SPIV);
+	value &= ~APIC_SPIV_APIC_ENABLED;
+	apic_write(APIC_SPIV, value);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
+#ifdef CONFIG_X86_32
+	/* Pound the ESR really hard over the head with a big hammer - mbligh */
+	if (lapic_is_integrated() && apic->disable_esr) {
+		apic_write(APIC_ESR, 0);
+		apic_write(APIC_ESR, 0);
+		apic_write(APIC_ESR, 0);
+		apic_write(APIC_ESR, 0);
+	}
+#endif
+	perf_events_lapic_init();
+
+	/*
+	 * Double-check whether this APIC is really registered.
+	 * This is meaningless in clustered apic mode, so we skip it.
+	 */
+	BUG_ON(!apic->apic_id_registered());
+
+	/*
+	 * Intel recommends to set DFR, LDR and TPR before enabling
+	 * an APIC.  See e.g. "AP-388 82489DX User's Manual" (Intel
+	 * document number 292116).  So here it goes...
+	 */
+	apic->init_apic_ldr();
+
+#ifdef CONFIG_X86_32
+<<<<<<< HEAD
+	/*
+	 * APIC LDR is initialized.  If logical_apicid mapping was
+	 * initialized during get_smp_config(), make sure it matches the
+	 * actual value.
+	 */
+	i = early_per_cpu(x86_cpu_to_logical_apicid, cpu);
+	WARN_ON(i != BAD_APICID && i != logical_smp_processor_id());
+	/* always use the value from LDR */
+	early_per_cpu(x86_cpu_to_logical_apicid, cpu) =
+		logical_smp_processor_id();
+=======
+	if (apic->dest_logical) {
+		int logical_apicid, ldr_apicid;
+
+		/*
+		 * APIC LDR is initialized.  If logical_apicid mapping was
+		 * initialized during get_smp_config(), make sure it matches
+		 * the actual value.
+		 */
+		logical_apicid = early_per_cpu(x86_cpu_to_logical_apicid, cpu);
+		ldr_apicid = GET_APIC_LOGICAL_ID(apic_read(APIC_LDR));
+		if (logical_apicid != BAD_APICID)
+			WARN_ON(logical_apicid != ldr_apicid);
+		/* Always use the value from LDR. */
+		early_per_cpu(x86_cpu_to_logical_apicid, cpu) = ldr_apicid;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
+#endif
+
+	/*
+	 * Set Task Priority to 'accept all'. We never change this
+	 * later on.
+	 */
+	value = apic_read(APIC_TASKPRI);
+	value &= ~APIC_TPRI_MASK;
+	apic_write(APIC_TASKPRI, value);
+
+<<<<<<< HEAD
+	/*
+	 * After a crash, we no longer service the interrupts and a pending
+	 * interrupt from previous kernel might still have ISR bit set.
+	 *
+	 * Most probably by now CPU has serviced that pending interrupt and
+	 * it might not have done the ack_APIC_irq() because it thought,
+	 * interrupt came from i8259 as ExtInt. LAPIC did not get EOI so it
+	 * does not clear the ISR bit and cpu thinks it has already serivced
+	 * the interrupt. Hence a vector might get locked. It was noticed
+	 * for timer irq (vector 0x31). Issue an extra EOI to clear ISR.
+	 */
+	do {
+		queued = 0;
+		for (i = APIC_ISR_NR - 1; i >= 0; i--)
+			queued |= apic_read(APIC_IRR + i*0x10);
+
+		for (i = APIC_ISR_NR - 1; i >= 0; i--) {
+			value = apic_read(APIC_ISR + i*0x10);
+			for (j = 31; j >= 0; j--) {
+				if (value & (1<<j)) {
+					ack_APIC_irq();
+					acked++;
+				}
+			}
+		}
+		if (acked > 256) {
+			printk(KERN_ERR "LAPIC pending interrupts after %d EOI\n",
+			       acked);
+			break;
+		}
+		if (queued) {
+			if (boot_cpu_has(X86_FEATURE_TSC) && cpu_khz) {
+				ntsc = rdtsc();
+				max_loops = (cpu_khz << 10) - (ntsc - tsc);
+			} else
+				max_loops--;
+		}
+	} while (queued && max_loops > 0);
+	WARN_ON(max_loops <= 0);
+=======
+	apic_pending_intr_clear();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Now that we are all set up, enable the APIC
@@ -1856,7 +2078,12 @@ void __init init_apic_mappings(void)
 {
 	unsigned int new_apicid;
 
+<<<<<<< HEAD
 	apic_check_deadline_errata();
+=======
+	if (apic_validate_deadline_timer())
+		pr_info("TSC deadline timer available\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (x2apic_mode) {
 		boot_cpu_physical_apicid = read_apic_id();

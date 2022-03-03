@@ -81,7 +81,11 @@ static inline const union mips_vdso_data *get_vdso_data(void)
 
 static inline void __iomem *get_gic(const union mips_vdso_data *data)
 {
+<<<<<<< HEAD
 	return (void __iomem *)data - PAGE_SIZE;
+=======
+	return (void __iomem *)((unsigned long)data & PAGE_MASK) - PAGE_SIZE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #endif /* CONFIG_CLKSRC_MIPS_GIC */

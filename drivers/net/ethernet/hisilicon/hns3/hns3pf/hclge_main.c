@@ -619,8 +619,12 @@ static u8 *hclge_comm_get_strings(u32 stringset,
 		return buff;
 
 	for (i = 0; i < size; i++) {
+<<<<<<< HEAD
 		snprintf(buff, ETH_GSTRING_LEN,
 			 strs[i].desc);
+=======
+		snprintf(buff, ETH_GSTRING_LEN, "%s", strs[i].desc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		buff = buff + ETH_GSTRING_LEN;
 	}
 
@@ -2180,7 +2184,11 @@ static int hclge_get_mac_phy_link(struct hclge_dev *hdev)
 	mac_state = hclge_get_mac_link_status(hdev);
 
 	if (hdev->hw.mac.phydev) {
+<<<<<<< HEAD
 		if (!genphy_read_status(hdev->hw.mac.phydev))
+=======
+		if (hdev->hw.mac.phydev->state == PHY_RUNNING)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			link_stat = mac_state &
 				hdev->hw.mac.phydev->link;
 		else

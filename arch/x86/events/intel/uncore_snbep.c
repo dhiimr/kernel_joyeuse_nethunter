@@ -3383,6 +3383,12 @@ static int skx_cha_hw_config(struct intel_uncore_box *box, struct perf_event *ev
 	struct hw_perf_event_extra *reg1 = &event->hw.extra_reg;
 	struct extra_reg *er;
 	int idx = 0;
+<<<<<<< HEAD
+=======
+	/* Any of the CHA events may be filtered by Thread/Core-ID.*/
+	if (event->hw.config & SNBEP_CBO_PMON_CTL_TID_EN)
+		idx = SKX_CHA_MSR_PMON_BOX_FILTER_TID;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (er = skx_uncore_cha_extra_regs; er->msr; er++) {
 		if (er->event != (event->hw.config & er->config_mask))
@@ -3450,6 +3456,10 @@ static struct event_constraint skx_uncore_iio_constraints[] = {
 	UNCORE_EVENT_CONSTRAINT(0xc0, 0xc),
 	UNCORE_EVENT_CONSTRAINT(0xc5, 0xc),
 	UNCORE_EVENT_CONSTRAINT(0xd4, 0xc),
+<<<<<<< HEAD
+=======
+	UNCORE_EVENT_CONSTRAINT(0xd5, 0xc),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	EVENT_CONSTRAINT_END
 };
 

@@ -8252,9 +8252,15 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 		BNX2_WR(bp, PCI_COMMAND, reg);
 	} else if ((BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A1) &&
 		!(bp->flags & BNX2_FLAG_PCIX)) {
+<<<<<<< HEAD
 
 		dev_err(&pdev->dev,
 			"5706 A1 can only be used in a PCIX bus, aborting\n");
+=======
+		dev_err(&pdev->dev,
+			"5706 A1 can only be used in a PCIX bus, aborting\n");
+		rc = -EPERM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto err_out_unmap;
 	}
 

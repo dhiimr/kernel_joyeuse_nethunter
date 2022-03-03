@@ -209,12 +209,15 @@ static bool evtchn_fifo_is_pending(unsigned port)
 	return sync_test_bit(EVTCHN_FIFO_BIT(PENDING, word), BM(word));
 }
 
+<<<<<<< HEAD
 static bool evtchn_fifo_test_and_set_mask(unsigned port)
 {
 	event_word_t *word = event_word_from_port(port);
 	return sync_test_and_set_bit(EVTCHN_FIFO_BIT(MASKED, word), BM(word));
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void evtchn_fifo_mask(unsigned port)
 {
 	event_word_t *word = event_word_from_port(port);
@@ -227,19 +230,37 @@ static bool evtchn_fifo_is_masked(unsigned port)
 	return sync_test_bit(EVTCHN_FIFO_BIT(MASKED, word), BM(word));
 }
 /*
+<<<<<<< HEAD
  * Clear MASKED, spinning if BUSY is set.
  */
 static void clear_masked(volatile event_word_t *word)
+=======
+ * Clear MASKED if not PENDING, spinning if BUSY is set.
+ * Return true if mask was cleared.
+ */
+static bool clear_masked_cond(volatile event_word_t *word)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	event_word_t new, old, w;
 
 	w = *word;
 
 	do {
+<<<<<<< HEAD
+=======
+		if (w & (1 << EVTCHN_FIFO_PENDING))
+			return false;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		old = w & ~(1 << EVTCHN_FIFO_BUSY);
 		new = old & ~(1 << EVTCHN_FIFO_MASKED);
 		w = sync_cmpxchg(word, old, new);
 	} while (w != old);
+<<<<<<< HEAD
+=======
+
+	return true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void evtchn_fifo_unmask(unsigned port)
@@ -248,8 +269,12 @@ static void evtchn_fifo_unmask(unsigned port)
 
 	BUG_ON(!irqs_disabled());
 
+<<<<<<< HEAD
 	clear_masked(word);
 	if (evtchn_fifo_is_pending(port)) {
+=======
+	if (!clear_masked_cond(word)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct evtchn_unmask unmask = { .port = port };
 		(void)HYPERVISOR_event_channel_op(EVTCHNOP_unmask, &unmask);
 	}
@@ -270,6 +295,7 @@ static uint32_t clear_linked(volatile event_word_t *word)
 	return w & EVTCHN_FIFO_LINK_MASK;
 }
 
+<<<<<<< HEAD
 static void handle_irq_for_port(unsigned port)
 {
 	int irq;
@@ -283,6 +309,11 @@ static void consume_one_event(unsigned cpu,
 			      struct evtchn_fifo_control_block *control_block,
 			      unsigned priority, unsigned long *ready,
 			      bool drop)
+=======
+static void consume_one_event(unsigned cpu, struct evtchn_loop_ctrl *ctrl,
+			      struct evtchn_fifo_control_block *control_block,
+			      unsigned priority, unsigned long *ready)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct evtchn_fifo_queue *q = &per_cpu(cpu_queue, cpu);
 	uint32_t head;
@@ -315,16 +346,28 @@ static void consume_one_event(unsigned cpu,
 		clear_bit(priority, ready);
 
 	if (evtchn_fifo_is_pending(port) && !evtchn_fifo_is_masked(port)) {
+<<<<<<< HEAD
 		if (unlikely(drop))
 			pr_warn("Dropping pending event for port %u\n", port);
 		else
 			handle_irq_for_port(port);
+=======
+		if (unlikely(!ctrl))
+			pr_warn("Dropping pending event for port %u\n", port);
+		else
+			handle_irq_for_port(port, ctrl);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	q->head[priority] = head;
 }
 
+<<<<<<< HEAD
 static void __evtchn_fifo_handle_events(unsigned cpu, bool drop)
+=======
+static void __evtchn_fifo_handle_events(unsigned cpu,
+					struct evtchn_loop_ctrl *ctrl)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct evtchn_fifo_control_block *control_block;
 	unsigned long ready;
@@ -336,14 +379,25 @@ static void __evtchn_fifo_handle_events(unsigned cpu, bool drop)
 
 	while (ready) {
 		q = find_first_bit(&ready, EVTCHN_FIFO_MAX_QUEUES);
+<<<<<<< HEAD
 		consume_one_event(cpu, control_block, q, &ready, drop);
+=======
+		consume_one_event(cpu, ctrl, control_block, q, &ready);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ready |= xchg(&control_block->ready, 0);
 	}
 }
 
+<<<<<<< HEAD
 static void evtchn_fifo_handle_events(unsigned cpu)
 {
 	__evtchn_fifo_handle_events(cpu, false);
+=======
+static void evtchn_fifo_handle_events(unsigned cpu,
+				      struct evtchn_loop_ctrl *ctrl)
+{
+	__evtchn_fifo_handle_events(cpu, ctrl);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void evtchn_fifo_resume(void)
@@ -380,6 +434,7 @@ static void evtchn_fifo_resume(void)
 	event_array_pages = 0;
 }
 
+<<<<<<< HEAD
 static const struct evtchn_ops evtchn_ops_fifo = {
 	.max_channels      = evtchn_fifo_max_channels,
 	.nr_channels       = evtchn_fifo_nr_channels,
@@ -395,6 +450,8 @@ static const struct evtchn_ops evtchn_ops_fifo = {
 	.resume            = evtchn_fifo_resume,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int evtchn_fifo_alloc_control_block(unsigned cpu)
 {
 	void *control_block = NULL;
@@ -417,19 +474,48 @@ static int evtchn_fifo_alloc_control_block(unsigned cpu)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int xen_evtchn_cpu_prepare(unsigned int cpu)
+=======
+static int evtchn_fifo_percpu_init(unsigned int cpu)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (!per_cpu(cpu_control_block, cpu))
 		return evtchn_fifo_alloc_control_block(cpu);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int xen_evtchn_cpu_dead(unsigned int cpu)
 {
 	__evtchn_fifo_handle_events(cpu, true);
 	return 0;
 }
 
+=======
+static int evtchn_fifo_percpu_deinit(unsigned int cpu)
+{
+	__evtchn_fifo_handle_events(cpu, NULL);
+	return 0;
+}
+
+static const struct evtchn_ops evtchn_ops_fifo = {
+	.max_channels      = evtchn_fifo_max_channels,
+	.nr_channels       = evtchn_fifo_nr_channels,
+	.setup             = evtchn_fifo_setup,
+	.bind_to_cpu       = evtchn_fifo_bind_to_cpu,
+	.clear_pending     = evtchn_fifo_clear_pending,
+	.set_pending       = evtchn_fifo_set_pending,
+	.is_pending        = evtchn_fifo_is_pending,
+	.mask              = evtchn_fifo_mask,
+	.unmask            = evtchn_fifo_unmask,
+	.handle_events     = evtchn_fifo_handle_events,
+	.resume            = evtchn_fifo_resume,
+	.percpu_init       = evtchn_fifo_percpu_init,
+	.percpu_deinit     = evtchn_fifo_percpu_deinit,
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int __init xen_evtchn_fifo_init(void)
 {
 	int cpu = smp_processor_id();
@@ -443,9 +529,12 @@ int __init xen_evtchn_fifo_init(void)
 
 	evtchn_ops = &evtchn_ops_fifo;
 
+<<<<<<< HEAD
 	cpuhp_setup_state_nocalls(CPUHP_XEN_EVTCHN_PREPARE,
 				  "xen/evtchn:prepare",
 				  xen_evtchn_cpu_prepare, xen_evtchn_cpu_dead);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }

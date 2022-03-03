@@ -980,9 +980,13 @@ static int yam_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 				 sizeof(struct yamdrv_ioctl_mcs));
 		if (IS_ERR(ym))
 			return PTR_ERR(ym);
+<<<<<<< HEAD
 		if (ym->cmd != SIOCYAMSMCS)
 			return -EINVAL;
 		if (ym->bitrate > YAM_MAXBITRATE) {
+=======
+		if (ym->cmd != SIOCYAMSMCS || ym->bitrate > YAM_MAXBITRATE) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			kfree(ym);
 			return -EINVAL;
 		}
@@ -1162,6 +1166,10 @@ static int __init yam_init_driver(void)
 		err = register_netdev(dev);
 		if (err) {
 			printk(KERN_WARNING "yam: cannot register net device %s\n", dev->name);
+<<<<<<< HEAD
+=======
+			free_netdev(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto error;
 		}
 		yam_devs[i] = dev;

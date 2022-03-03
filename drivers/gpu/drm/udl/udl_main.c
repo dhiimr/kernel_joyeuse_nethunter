@@ -28,7 +28,11 @@
 static int udl_parse_vendor_descriptor(struct drm_device *dev,
 				       struct usb_device *usbdev)
 {
+<<<<<<< HEAD
 	struct udl_device *udl = dev->dev_private;
+=======
+	struct udl_device *udl = to_udl(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	char *desc;
 	char *buf;
 	char *desc_end;
@@ -164,7 +168,11 @@ void udl_urb_completion(struct urb *urb)
 
 static void udl_free_urb_list(struct drm_device *dev)
 {
+<<<<<<< HEAD
 	struct udl_device *udl = dev->dev_private;
+=======
+	struct udl_device *udl = to_udl(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int count = udl->urbs.count;
 	struct list_head *node;
 	struct urb_node *unode;
@@ -198,7 +206,11 @@ static void udl_free_urb_list(struct drm_device *dev)
 
 static int udl_alloc_urb_list(struct drm_device *dev, int count, size_t size)
 {
+<<<<<<< HEAD
 	struct udl_device *udl = dev->dev_private;
+=======
+	struct udl_device *udl = to_udl(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct urb *urb;
 	struct urb_node *unode;
 	char *buf;
@@ -262,7 +274,11 @@ retry:
 
 struct urb *udl_get_urb(struct drm_device *dev)
 {
+<<<<<<< HEAD
 	struct udl_device *udl = dev->dev_private;
+=======
+	struct udl_device *udl = to_udl(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret = 0;
 	struct list_head *entry;
 	struct urb_node *unode;
@@ -296,7 +312,11 @@ error:
 
 int udl_submit_urb(struct drm_device *dev, struct urb *urb, size_t len)
 {
+<<<<<<< HEAD
 	struct udl_device *udl = dev->dev_private;
+=======
+	struct udl_device *udl = to_udl(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 
 	BUG_ON(len > udl->urbs.size);
@@ -311,6 +331,7 @@ int udl_submit_urb(struct drm_device *dev, struct urb *urb, size_t len)
 	return ret;
 }
 
+<<<<<<< HEAD
 int udl_driver_load(struct drm_device *dev, unsigned long flags)
 {
 	struct usb_device *udev = (void*)flags;
@@ -325,6 +346,14 @@ int udl_driver_load(struct drm_device *dev, unsigned long flags)
 	udl->udev = udev;
 	udl->ddev = dev;
 	dev->dev_private = udl;
+=======
+int udl_init(struct udl_device *udl)
+{
+	struct drm_device *dev = &udl->drm;
+	int ret = -ENOMEM;
+
+	DRM_DEBUG("\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!udl_parse_vendor_descriptor(dev, udl->udev)) {
 		ret = -ENODEV;
@@ -359,7 +388,10 @@ err_fb:
 err:
 	if (udl->urbs.count)
 		udl_free_urb_list(dev);
+<<<<<<< HEAD
 	kfree(udl);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	DRM_ERROR("%d\n", ret);
 	return ret;
 }
@@ -370,14 +402,21 @@ int udl_drop_usb(struct drm_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 void udl_driver_unload(struct drm_device *dev)
 {
 	struct udl_device *udl = dev->dev_private;
+=======
+void udl_fini(struct drm_device *dev)
+{
+	struct udl_device *udl = to_udl(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (udl->urbs.count)
 		udl_free_urb_list(dev);
 
 	udl_fbdev_cleanup(dev);
+<<<<<<< HEAD
 	kfree(udl);
 }
 
@@ -386,4 +425,6 @@ void udl_driver_release(struct drm_device *dev)
 	udl_modeset_cleanup(dev);
 	drm_dev_fini(dev);
 	kfree(dev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }

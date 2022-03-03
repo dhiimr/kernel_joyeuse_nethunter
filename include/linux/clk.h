@@ -142,6 +142,7 @@ int clk_set_phase(struct clk *clk, int degrees);
 int clk_get_phase(struct clk *clk);
 
 /**
+<<<<<<< HEAD
  * clk_set_duty_cycle - adjust the duty cycle ratio of a clock signal
  * @clk: clock signal source
  * @num: numerator of the duty cycle ratio to be applied
@@ -163,6 +164,8 @@ int clk_set_duty_cycle(struct clk *clk, unsigned int num, unsigned int den);
 int clk_get_scaled_duty_cycle(struct clk *clk, unsigned int scale);
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * clk_is_match - check if two clk's point to the same hardware clock
  * @p: clk compared against q
  * @q: clk compared against p
@@ -204,6 +207,7 @@ static inline long clk_get_phase(struct clk *clk)
 	return -ENOTSUPP;
 }
 
+<<<<<<< HEAD
 static inline int clk_set_duty_cycle(struct clk *clk, unsigned int num,
 				     unsigned int den)
 {
@@ -216,6 +220,8 @@ static inline unsigned int clk_get_scaled_duty_cycle(struct clk *clk,
 	return 0;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline bool clk_is_match(const struct clk *p, const struct clk *q)
 {
 	return p == q;
@@ -580,6 +586,7 @@ struct clk *clk_get_parent(struct clk *clk);
  */
 struct clk *clk_get_sys(const char *dev_id, const char *con_id);
 
+<<<<<<< HEAD
 /**
  * clk_set_flags - set the custom HW specific flags for this clock
  * @clk: clock source
@@ -589,6 +596,8 @@ struct clk *clk_get_sys(const char *dev_id, const char *con_id);
  */
 int clk_set_flags(struct clk *clk, unsigned long flags);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else /* !CONFIG_HAVE_CLK */
 
 static inline struct clk *clk_get(struct device *dev, const char *id)

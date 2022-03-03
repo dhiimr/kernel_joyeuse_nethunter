@@ -6,6 +6,10 @@
 #include <linux/threads.h>
 #include <asm/irq.h>
 
+<<<<<<< HEAD
+=======
+/* number of IPIS _not_ including IPI_CPU_BACKTRACE */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define NR_IPI	7
 
 typedef struct {

@@ -161,7 +161,11 @@ static void dsm_label_utf16s_to_utf8s(union acpi_object *obj, char *buf)
 	len = utf16s_to_utf8s((const wchar_t *)obj->buffer.pointer,
 			      obj->buffer.length,
 			      UTF16_LITTLE_ENDIAN,
+<<<<<<< HEAD
 			      buf, PAGE_SIZE);
+=======
+			      buf, PAGE_SIZE - 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	buf[len] = '\n';
 }
 

@@ -430,9 +430,18 @@ static void scsi_device_dev_release_usercontext(struct work_struct *work)
 	struct list_head *this, *tmp;
 	struct scsi_vpd *vpd_pg80 = NULL, *vpd_pg83 = NULL;
 	unsigned long flags;
+<<<<<<< HEAD
 
 	sdev = container_of(work, struct scsi_device, ew.work);
 
+=======
+	struct module *mod;
+
+	sdev = container_of(work, struct scsi_device, ew.work);
+
+	mod = sdev->host->hostt->module;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	scsi_dh_release_device(sdev);
 
 	parent = sdev->sdev_gendev.parent;
@@ -473,11 +482,23 @@ static void scsi_device_dev_release_usercontext(struct work_struct *work)
 
 	if (parent)
 		put_device(parent);
+<<<<<<< HEAD
+=======
+	module_put(mod);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void scsi_device_dev_release(struct device *dev)
 {
 	struct scsi_device *sdp = to_scsi_device(dev);
+<<<<<<< HEAD
+=======
+
+	/* Set module pointer as NULL in case of module unloading */
+	if (!try_module_get(sdp->host->hostt->module))
+		sdp->host->hostt->module = NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	execute_in_process_context(scsi_device_dev_release_usercontext,
 				   &sdp->ew);
 }
@@ -722,6 +743,17 @@ sdev_store_delete(struct device *dev, struct device_attribute *attr,
 		  const char *buf, size_t count)
 {
 	struct kernfs_node *kn;
+<<<<<<< HEAD
+=======
+	struct scsi_device *sdev = to_scsi_device(dev);
+
+	/*
+	 * We need to try to get module, avoiding the module been removed
+	 * during delete.
+	 */
+	if (scsi_device_get(sdev))
+		return -ENODEV;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	kn = sysfs_break_active_protection(&dev->kobj, &attr->attr);
 	WARN_ON_ONCE(!kn);
@@ -736,9 +768,16 @@ sdev_store_delete(struct device *dev, struct device_attribute *attr,
 	 * state into SDEV_DEL.
 	 */
 	device_remove_file(dev, attr);
+<<<<<<< HEAD
 	scsi_remove_device(to_scsi_device(dev));
 	if (kn)
 		sysfs_unbreak_active_protection(kn);
+=======
+	scsi_remove_device(sdev);
+	if (kn)
+		sysfs_unbreak_active_protection(kn);
+	scsi_device_put(sdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return count;
 };
 static DEVICE_ATTR(delete, S_IWUSR, NULL, sdev_store_delete);
@@ -1244,8 +1283,12 @@ int scsi_sysfs_add_sdev(struct scsi_device *sdev)
 	device_enable_async_suspend(&sdev->sdev_gendev);
 	scsi_autopm_get_target(starget);
 	pm_runtime_set_active(&sdev->sdev_gendev);
+<<<<<<< HEAD
 	if (!sdev->use_rpm_auto)
 		pm_runtime_forbid(&sdev->sdev_gendev);
+=======
+	pm_runtime_forbid(&sdev->sdev_gendev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pm_runtime_enable(&sdev->sdev_gendev);
 	scsi_autopm_put_target(starget);
 

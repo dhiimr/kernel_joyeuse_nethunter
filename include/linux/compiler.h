@@ -119,10 +119,14 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
 # define ASM_UNREACHABLE
 #endif
 #ifndef unreachable
+<<<<<<< HEAD
 # define unreachable() do {		\
 	annotate_unreachable();		\
 	__builtin_unreachable();	\
 } while (0)
+=======
+# define unreachable() do { annotate_reachable(); do { } while (1); } while (0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 /*
@@ -155,6 +159,11 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
     (typeof(ptr)) (__ptr + (off)); })
 #endif
 
+<<<<<<< HEAD
+=======
+#define absolute_pointer(val)	RELOC_HIDE((void *)(val), 0)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifndef OPTIMIZER_HIDE_VAR
 #define OPTIMIZER_HIDE_VAR(var) barrier()
 #endif
@@ -188,11 +197,16 @@ void __read_once_size(const volatile void *p, void *res, int size)
 
 #ifdef CONFIG_KASAN
 /*
+<<<<<<< HEAD
  * This function is not 'inline' because __no_sanitize_address confilcts
+=======
+ * We can't declare function 'inline' because __no_sanitize_address confilcts
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * with inlining. Attempt to inline it may cause a build failure.
  * 	https://gcc.gnu.org/bugzilla/show_bug.cgi?id=67368
  * '__maybe_unused' allows us to avoid defined-but-not-used warnings.
  */
+<<<<<<< HEAD
 static __no_sanitize_address __maybe_unused
 void __read_once_size_nocheck(const volatile void *p, void *res, int size)
 {
@@ -200,11 +214,22 @@ void __read_once_size_nocheck(const volatile void *p, void *res, int size)
 }
 #else
 static __always_inline
+=======
+# define __no_kasan_or_inline __no_sanitize_address __maybe_unused
+#else
+# define __no_kasan_or_inline __always_inline
+#endif
+
+static __no_kasan_or_inline
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void __read_once_size_nocheck(const volatile void *p, void *res, int size)
 {
 	__READ_ONCE_SIZE;
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static __always_inline void __write_once_size(volatile void *p, void *res, int size)
 {
@@ -243,6 +268,10 @@ static __always_inline void __write_once_size(volatile void *p, void *res, int s
  * required ordering.
  */
 #include <asm/barrier.h>
+<<<<<<< HEAD
+=======
+#include <linux/kasan-checks.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define __READ_ONCE(x, check)						\
 ({									\
@@ -262,6 +291,16 @@ static __always_inline void __write_once_size(volatile void *p, void *res, int s
  */
 #define READ_ONCE_NOCHECK(x) __READ_ONCE(x, 0)
 
+<<<<<<< HEAD
+=======
+static __no_kasan_or_inline
+unsigned long read_word_at_a_time(const void *addr)
+{
+	kasan_check_read(addr, 1);
+	return *(unsigned long *)addr;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define WRITE_ONCE(x, val) \
 ({							\
 	union { typeof(x) __val; char __c[1]; } __u =	\
@@ -328,7 +367,11 @@ static __always_inline void __write_once_size(volatile void *p, void *res, int s
  * compiler has support to do so.
  */
 #define compiletime_assert(condition, msg) \
+<<<<<<< HEAD
 	_compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
+=======
+	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define compiletime_assert_atomic_type(t)				\
 	compiletime_assert(__native_word(t),				\
@@ -379,4 +422,13 @@ static __always_inline void __write_once_size(volatile void *p, void *res, int s
 	(_________p1); \
 })
 
+<<<<<<< HEAD
+=======
+/*
+ * This is needed in functions which generate the stack canary, see
+ * arch/x86/kernel/smpboot.c::start_secondary() for an example.
+ */
+#define prevent_tail_call_optimization()	mb()
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* __LINUX_COMPILER_H */

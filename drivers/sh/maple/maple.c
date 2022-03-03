@@ -835,8 +835,15 @@ static int __init maple_bus_init(void)
 
 	maple_queue_cache = KMEM_CACHE(maple_buffer, SLAB_HWCACHE_ALIGN);
 
+<<<<<<< HEAD
 	if (!maple_queue_cache)
 		goto cleanup_bothirqs;
+=======
+	if (!maple_queue_cache) {
+		retval = -ENOMEM;
+		goto cleanup_bothirqs;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	INIT_LIST_HEAD(&maple_waitq);
 	INIT_LIST_HEAD(&maple_sentq);
@@ -849,6 +856,10 @@ static int __init maple_bus_init(void)
 		if (!mdev[i]) {
 			while (i-- > 0)
 				maple_free_dev(mdev[i]);
+<<<<<<< HEAD
+=======
+			retval = -ENOMEM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto cleanup_cache;
 		}
 		baseunits[i] = mdev[i];

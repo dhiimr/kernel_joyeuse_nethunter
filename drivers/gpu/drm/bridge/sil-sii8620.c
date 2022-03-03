@@ -167,7 +167,11 @@ static void sii8620_read_buf(struct sii8620 *ctx, u16 addr, u8 *buf, int len)
 
 static u8 sii8620_readb(struct sii8620 *ctx, u16 addr)
 {
+<<<<<<< HEAD
 	u8 ret;
+=======
+	u8 ret = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	sii8620_read_buf(ctx, addr, &ret, 1);
 	return ret;

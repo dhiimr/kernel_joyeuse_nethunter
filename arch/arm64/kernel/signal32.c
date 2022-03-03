@@ -321,6 +321,10 @@ static int compat_restore_sigframe(struct pt_regs *regs,
 	int err;
 	sigset_t set;
 	struct compat_aux_sigframe __user *aux;
+<<<<<<< HEAD
+=======
+	unsigned long psr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = get_sigset_t(&set, &sf->uc.uc_sigmask);
 	if (err == 0) {
@@ -344,7 +348,13 @@ static int compat_restore_sigframe(struct pt_regs *regs,
 	__get_user_error(regs->compat_sp, &sf->uc.uc_mcontext.arm_sp, err);
 	__get_user_error(regs->compat_lr, &sf->uc.uc_mcontext.arm_lr, err);
 	__get_user_error(regs->pc, &sf->uc.uc_mcontext.arm_pc, err);
+<<<<<<< HEAD
 	__get_user_error(regs->pstate, &sf->uc.uc_mcontext.arm_cpsr, err);
+=======
+	__get_user_error(psr, &sf->uc.uc_mcontext.arm_cpsr, err);
+
+	regs->pstate = compat_psr_to_pstate(psr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Avoid compat_sys_sigreturn() restarting.
@@ -500,6 +510,10 @@ static int compat_setup_sigframe(struct compat_sigframe __user *sf,
 				 struct pt_regs *regs, sigset_t *set)
 {
 	struct compat_aux_sigframe __user *aux;
+<<<<<<< HEAD
+=======
+	unsigned long psr = pstate_to_compat_psr(regs->pstate);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err = 0;
 
 	__put_user_error(regs->regs[0], &sf->uc.uc_mcontext.arm_r0, err);
@@ -518,7 +532,11 @@ static int compat_setup_sigframe(struct compat_sigframe __user *sf,
 	__put_user_error(regs->compat_sp, &sf->uc.uc_mcontext.arm_sp, err);
 	__put_user_error(regs->compat_lr, &sf->uc.uc_mcontext.arm_lr, err);
 	__put_user_error(regs->pc, &sf->uc.uc_mcontext.arm_pc, err);
+<<<<<<< HEAD
 	__put_user_error(regs->pstate, &sf->uc.uc_mcontext.arm_cpsr, err);
+=======
+	__put_user_error(psr, &sf->uc.uc_mcontext.arm_cpsr, err);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	__put_user_error((compat_ulong_t)0, &sf->uc.uc_mcontext.trap_no, err);
 	/* set the compat FSR WnR */

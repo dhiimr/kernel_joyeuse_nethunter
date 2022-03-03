@@ -134,7 +134,11 @@
 
 			uart0: serial@12000 {
 				compatible = "marvell,armada-3700-uart";
+<<<<<<< HEAD
 				reg = <0x12000 0x400>;
+=======
+				reg = <0x12000 0x200>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
 				status = "disabled";
 			};
@@ -239,6 +243,18 @@
 					function = "mii";
 				};
 
+<<<<<<< HEAD
+=======
+				pcie_reset_pins: pcie-reset-pins {
+					groups = "pcie1";
+					function = "gpio";
+				};
+
+				pcie_clkreq_pins: pcie-clkreq-pins {
+					groups = "pcie1_clkreq";
+					function = "pcie";
+				};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			};
 
 			eth0: ethernet@30000 {
@@ -347,8 +363,20 @@
 			#interrupt-cells = <1>;
 			msi-parent = <&pcie0>;
 			msi-controller;
+<<<<<<< HEAD
 			ranges = <0x82000000 0 0xe8000000   0 0xe8000000 0 0x1000000 /* Port 0 MEM */
 				  0x81000000 0 0xe9000000   0 0xe9000000 0 0x10000>; /* Port 0 IO*/
+=======
+			/*
+			 * The 128 MiB address range [0xe8000000-0xf0000000] is
+			 * dedicated for PCIe and can be assigned to 8 windows
+			 * with size a power of two. Use one 64 KiB window for
+			 * IO at the end and the remaining seven windows
+			 * (totaling 127 MiB) for MEM.
+			 */
+			ranges = <0x82000000 0 0xe8000000   0 0xe8000000   0 0x07f00000   /* Port 0 MEM */
+				  0x81000000 0 0xefff0000   0 0xefff0000   0 0x00010000>; /* Port 0 IO */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			interrupt-map-mask = <0 0 0 7>;
 			interrupt-map = <0 0 0 1 &pcie_intc 0>,
 					<0 0 0 2 &pcie_intc 1>,

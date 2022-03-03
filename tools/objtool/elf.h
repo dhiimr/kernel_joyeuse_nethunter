@@ -48,7 +48,11 @@ struct section {
 	char *name;
 	int idx;
 	unsigned int len;
+<<<<<<< HEAD
 	bool changed, text;
+=======
+	bool changed, text, rodata;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct symbol {
@@ -68,6 +72,10 @@ struct rela {
 	struct list_head list;
 	struct hlist_node hash;
 	GElf_Rela rela;
+<<<<<<< HEAD
+=======
+	struct section *rela_sec;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct symbol *sym;
 	unsigned int type;
 	unsigned long offset;

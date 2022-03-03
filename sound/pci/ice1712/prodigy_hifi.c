@@ -569,7 +569,11 @@ static int wm_adc_mux_enum_get(struct snd_kcontrol *kcontrol,
 	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
 
 	mutex_lock(&ice->gpio_mutex);
+<<<<<<< HEAD
 	ucontrol->value.integer.value[0] = wm_get(ice, WM_ADC_MUX) & 0x1f;
+=======
+	ucontrol->value.enumerated.item[0] = wm_get(ice, WM_ADC_MUX) & 0x1f;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(&ice->gpio_mutex);
 	return 0;
 }
@@ -583,7 +587,11 @@ static int wm_adc_mux_enum_put(struct snd_kcontrol *kcontrol,
 
 	mutex_lock(&ice->gpio_mutex);
 	oval = wm_get(ice, WM_ADC_MUX);
+<<<<<<< HEAD
 	nval = (oval & 0xe0) | ucontrol->value.integer.value[0];
+=======
+	nval = (oval & 0xe0) | ucontrol->value.enumerated.item[0];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (nval != oval) {
 		wm_put(ice, WM_ADC_MUX, nval);
 		change = 1;

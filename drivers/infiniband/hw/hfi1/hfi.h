@@ -1043,6 +1043,11 @@ struct hfi1_devdata {
 
 	char *boardname; /* human readable board info */
 
+<<<<<<< HEAD
+=======
+	u64 ctx0_seq_drop;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* reset value */
 	u64 z_int_counter;
 	u64 z_rcv_limit;
@@ -1353,10 +1358,20 @@ struct mmu_rb_handler;
 
 /* Private data for file operations */
 struct hfi1_filedata {
+<<<<<<< HEAD
 	struct hfi1_devdata *dd;
 	struct hfi1_ctxtdata *uctxt;
 	struct hfi1_user_sdma_comp_q *cq;
 	struct hfi1_user_sdma_pkt_q *pq;
+=======
+	struct srcu_struct pq_srcu;
+	struct hfi1_devdata *dd;
+	struct hfi1_ctxtdata *uctxt;
+	struct hfi1_user_sdma_comp_q *cq;
+	/* update side lock for SRCU */
+	spinlock_t pq_rcu_lock;
+	struct hfi1_user_sdma_pkt_q __rcu *pq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u16 subctxt;
 	/* for cpu affinity; -1 if none */
 	int rec_cpu_num;

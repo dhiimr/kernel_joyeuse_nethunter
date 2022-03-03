@@ -53,6 +53,10 @@
 #define ALUA_FAILOVER_TIMEOUT		60
 #define ALUA_FAILOVER_RETRIES		5
 #define ALUA_RTPG_DELAY_MSECS		5
+<<<<<<< HEAD
+=======
+#define ALUA_RTPG_RETRY_DELAY		2
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* device handler flags */
 #define ALUA_OPTIMIZE_STPG		0x01
@@ -522,6 +526,10 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
 	unsigned int tpg_desc_tbl_off;
 	unsigned char orig_transition_tmo;
 	unsigned long flags;
+<<<<<<< HEAD
+=======
+	bool transitioning_sense = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!pg->expiry) {
 		unsigned long transition_tmo = ALUA_FAILOVER_TIMEOUT * HZ;
@@ -558,14 +566,23 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
 		 * even though it shouldn't according to T10.
 		 * The retry without rtpg_ext_hdr_req set
 		 * handles this.
+<<<<<<< HEAD
 		 */
 		if (!(pg->flags & ALUA_RTPG_EXT_HDR_UNSUPP) &&
 		    sense_hdr.sense_key == ILLEGAL_REQUEST &&
 		    sense_hdr.asc == 0x24 && sense_hdr.ascq == 0) {
+=======
+		 * Note:  some arrays return a sense key of ILLEGAL_REQUEST
+		 * with ASC 00h if they don't support the extended header.
+		 */
+		if (!(pg->flags & ALUA_RTPG_EXT_HDR_UNSUPP) &&
+		    sense_hdr.sense_key == ILLEGAL_REQUEST) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			pg->flags |= ALUA_RTPG_EXT_HDR_UNSUPP;
 			goto retry;
 		}
 		/*
+<<<<<<< HEAD
 		 * Retry on ALUA state transition or if any
 		 * UNIT ATTENTION occurred.
 		 */
@@ -573,6 +590,21 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
 		    sense_hdr.asc == 0x04 && sense_hdr.ascq == 0x0a)
 			err = SCSI_DH_RETRY;
 		else if (sense_hdr.sense_key == UNIT_ATTENTION)
+=======
+		 * If the array returns with 'ALUA state transition'
+		 * sense code here it cannot return RTPG data during
+		 * transition. So set the state to 'transitioning' directly.
+		 */
+		if (sense_hdr.sense_key == NOT_READY &&
+		    sense_hdr.asc == 0x04 && sense_hdr.ascq == 0x0a) {
+			transitioning_sense = true;
+			goto skip_rtpg;
+		}
+		/*
+		 * Retry on any other UNIT ATTENTION occurred.
+		 */
+		if (sense_hdr.sense_key == UNIT_ATTENTION)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			err = SCSI_DH_RETRY;
 		if (err == SCSI_DH_RETRY &&
 		    pg->expiry != 0 && time_before(jiffies, pg->expiry)) {
@@ -645,8 +677,13 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
 					rcu_read_lock();
 					list_for_each_entry_rcu(h,
 						&tmp_pg->dh_list, node) {
+<<<<<<< HEAD
 						/* h->sdev should always be valid */
 						BUG_ON(!h->sdev);
+=======
+						if (!h->sdev)
+							continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						h->sdev->access_state = desc[0];
 					}
 					rcu_read_unlock();
@@ -660,7 +697,15 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
 		off = 8 + (desc[7] * 4);
 	}
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&pg->lock, flags);
+=======
+ skip_rtpg:
+	spin_lock_irqsave(&pg->lock, flags);
+	if (transitioning_sense)
+		pg->state = SCSI_ACCESS_STATE_TRANSITIONING;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sdev_printk(KERN_INFO, sdev,
 		    "%s: port group %02x state %c %s supports %c%c%c%c%c%c%c\n",
 		    ALUA_DH_NAME, pg->group_id, print_alua_state(pg->state),
@@ -677,7 +722,11 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
 	case SCSI_ACCESS_STATE_TRANSITIONING:
 		if (time_before(jiffies, pg->expiry)) {
 			/* State transition, retry */
+<<<<<<< HEAD
 			pg->interval = 2;
+=======
+			pg->interval = ALUA_RTPG_RETRY_DELAY;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			err = SCSI_DH_RETRY;
 		} else {
 			struct alua_dh_data *h;
@@ -688,7 +737,12 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
 			pg->expiry = 0;
 			rcu_read_lock();
 			list_for_each_entry_rcu(h, &pg->dh_list, node) {
+<<<<<<< HEAD
 				BUG_ON(!h->sdev);
+=======
+				if (!h->sdev)
+					continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				h->sdev->access_state =
 					(pg->state & SCSI_ACCESS_STATE_MASK);
 				if (pg->pref)
@@ -802,6 +856,11 @@ static void alua_rtpg_work(struct work_struct *work)
 				spin_lock_irqsave(&pg->lock, flags);
 				pg->flags &= ~ALUA_PG_RUNNING;
 				pg->flags |= ALUA_PG_RUN_RTPG;
+<<<<<<< HEAD
+=======
+				if (!pg->interval)
+					pg->interval = ALUA_RTPG_RETRY_DELAY;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				spin_unlock_irqrestore(&pg->lock, flags);
 				queue_delayed_work(kaluad_wq, &pg->rtpg_work,
 						   pg->interval * HZ);
@@ -813,6 +872,11 @@ static void alua_rtpg_work(struct work_struct *work)
 		spin_lock_irqsave(&pg->lock, flags);
 		if (err == SCSI_DH_RETRY || pg->flags & ALUA_PG_RUN_RTPG) {
 			pg->flags &= ~ALUA_PG_RUNNING;
+<<<<<<< HEAD
+=======
+			if (!pg->interval && !(pg->flags & ALUA_PG_RUN_RTPG))
+				pg->interval = ALUA_RTPG_RETRY_DELAY;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			pg->flags |= ALUA_PG_RUN_RTPG;
 			spin_unlock_irqrestore(&pg->lock, flags);
 			queue_delayed_work(kaluad_wq, &pg->rtpg_work,
@@ -1122,7 +1186,10 @@ static void alua_bus_detach(struct scsi_device *sdev)
 	spin_lock(&h->pg_lock);
 	pg = rcu_dereference_protected(h->pg, lockdep_is_held(&h->pg_lock));
 	rcu_assign_pointer(h->pg, NULL);
+<<<<<<< HEAD
 	h->sdev = NULL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_unlock(&h->pg_lock);
 	if (pg) {
 		spin_lock_irq(&pg->lock);
@@ -1131,6 +1198,10 @@ static void alua_bus_detach(struct scsi_device *sdev)
 		kref_put(&pg->kref, release_port_group);
 	}
 	sdev->handler_data = NULL;
+<<<<<<< HEAD
+=======
+	synchronize_rcu();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(h);
 }
 
@@ -1151,10 +1222,15 @@ static int __init alua_init(void)
 	int r;
 
 	kaluad_wq = alloc_workqueue("kaluad", WQ_MEM_RECLAIM, 0);
+<<<<<<< HEAD
 	if (!kaluad_wq) {
 		/* Temporary failure, bypass */
 		return SCSI_DH_DEV_TEMP_BUSY;
 	}
+=======
+	if (!kaluad_wq)
+		return -ENOMEM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	r = scsi_register_device_handler(&alua_dh);
 	if (r != 0) {

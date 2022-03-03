@@ -26,7 +26,10 @@
 #define SD_PREFER_SIBLING	0x1000	/* Prefer to place tasks in a sibling domain */
 #define SD_OVERLAP		0x2000	/* sched_domains of this level overlap */
 #define SD_NUMA			0x4000	/* cross-node balancing */
+<<<<<<< HEAD
 #define SD_SHARE_CAP_STATES	0x8000  /* Domain members share capacity state */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Increase resolution of cpu_capacity calculations
@@ -67,6 +70,7 @@ struct sched_domain_attr {
 
 extern int sched_domain_level_max;
 
+<<<<<<< HEAD
 struct capacity_state {
 	unsigned long cap;	/* capacity - calculated by energy driver */
 	unsigned long frequency;/* frequency */
@@ -86,14 +90,19 @@ struct sched_group_energy {
 
 unsigned long capacity_curr_of(int cpu);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct sched_group;
 
 struct sched_domain_shared {
 	atomic_t	ref;
 	atomic_t	nr_busy_cpus;
 	int		has_idle_cores;
+<<<<<<< HEAD
 
 	bool            overutilized;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct sched_domain {
@@ -195,9 +204,12 @@ bool cpus_share_cache(int this_cpu, int that_cpu);
 
 typedef const struct cpumask *(*sched_domain_mask_f)(int cpu);
 typedef int (*sched_domain_flags_f)(void);
+<<<<<<< HEAD
 typedef
 const struct sched_group_energy * const(*sched_domain_energy_f)(int cpu);
 extern bool sched_is_energy_aware(void);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define SDTL_OVERLAP	0x01
 
@@ -211,7 +223,10 @@ struct sd_data {
 struct sched_domain_topology_level {
 	sched_domain_mask_f mask;
 	sched_domain_flags_f sd_flags;
+<<<<<<< HEAD
 	sched_domain_energy_f energy;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int		    flags;
 	int		    numa_level;
 	struct sd_data      data;

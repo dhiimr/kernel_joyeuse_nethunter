@@ -4371,6 +4371,16 @@ static void sym_nego_rejected(struct sym_hcb *np, struct sym_tcb *tp, struct sym
 	OUTB(np, HS_PRT, HS_BUSY);
 }
 
+<<<<<<< HEAD
+=======
+#define sym_printk(lvl, tp, cp, fmt, v...) do { \
+	if (cp)							\
+		scmd_printk(lvl, cp->cmd, fmt, ##v);		\
+	else							\
+		starget_printk(lvl, tp->starget, fmt, ##v);	\
+} while (0)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  *  chip exception handler for programmed interrupts.
  */
@@ -4416,7 +4426,11 @@ static void sym_int_sir(struct sym_hcb *np)
 	 *  been selected with ATN.  We do not want to handle that.
 	 */
 	case SIR_SEL_ATN_NO_MSG_OUT:
+<<<<<<< HEAD
 		scmd_printk(KERN_WARNING, cp->cmd,
+=======
+		sym_printk(KERN_WARNING, tp, cp,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				"No MSG OUT phase after selection with ATN\n");
 		goto out_stuck;
 	/*
@@ -4424,7 +4438,11 @@ static void sym_int_sir(struct sym_hcb *np)
 	 *  having reselected the initiator.
 	 */
 	case SIR_RESEL_NO_MSG_IN:
+<<<<<<< HEAD
 		scmd_printk(KERN_WARNING, cp->cmd,
+=======
+		sym_printk(KERN_WARNING, tp, cp,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				"No MSG IN phase after reselection\n");
 		goto out_stuck;
 	/*
@@ -4432,7 +4450,11 @@ static void sym_int_sir(struct sym_hcb *np)
 	 *  an IDENTIFY.
 	 */
 	case SIR_RESEL_NO_IDENTIFY:
+<<<<<<< HEAD
 		scmd_printk(KERN_WARNING, cp->cmd,
+=======
+		sym_printk(KERN_WARNING, tp, cp,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				"No IDENTIFY after reselection\n");
 		goto out_stuck;
 	/*
@@ -4461,7 +4483,11 @@ static void sym_int_sir(struct sym_hcb *np)
 	case SIR_RESEL_ABORTED:
 		np->lastmsg = np->msgout[0];
 		np->msgout[0] = M_NOOP;
+<<<<<<< HEAD
 		scmd_printk(KERN_WARNING, cp->cmd,
+=======
+		sym_printk(KERN_WARNING, tp, cp,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			"message %x sent on bad reselection\n", np->lastmsg);
 		goto out;
 	/*

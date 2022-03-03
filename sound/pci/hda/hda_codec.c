@@ -942,6 +942,10 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
 
 	/* power-up all before initialization */
 	hda_set_power_state(codec, AC_PWRST_D0);
+<<<<<<< HEAD
+=======
+	codec->core.dev.power.power_state = PMSG_ON;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	snd_hda_codec_proc_new(codec);
 
@@ -1679,8 +1683,16 @@ void snd_hda_ctls_clear(struct hda_codec *codec)
 {
 	int i;
 	struct hda_nid_item *items = codec->mixers.list;
+<<<<<<< HEAD
 	for (i = 0; i < codec->mixers.used; i++)
 		snd_ctl_remove(codec->card, items[i].kctl);
+=======
+
+	down_write(&codec->card->controls_rwsem);
+	for (i = 0; i < codec->mixers.used; i++)
+		snd_ctl_remove(codec->card, items[i].kctl);
+	up_write(&codec->card->controls_rwsem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	snd_array_free(&codec->mixers);
 	snd_array_free(&codec->nids);
 }
@@ -3393,7 +3405,11 @@ EXPORT_SYMBOL_GPL(snd_hda_set_power_save);
  * @nid: NID to check / update
  *
  * Check whether the given NID is in the amp list.  If it's in the list,
+<<<<<<< HEAD
  * check the current AMP status, and update the the power-status according
+=======
+ * check the current AMP status, and update the power-status according
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * to the mute status.
  *
  * This function is supposed to be set or called from the check_power_status
@@ -4002,7 +4018,11 @@ void snd_print_pcm_bits(int pcm, char *buf, int buflen)
 
 	for (i = 0, j = 0; i < ARRAY_SIZE(bits); i++)
 		if (pcm & (AC_SUPPCM_BITS_8 << i))
+<<<<<<< HEAD
 			j += snprintf(buf + j, buflen - j,  " %d", bits[i]);
+=======
+			j += scnprintf(buf + j, buflen - j,  " %d", bits[i]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	buf[j] = '\0'; /* necessary when j == 0 */
 }

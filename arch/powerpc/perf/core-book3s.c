@@ -1845,6 +1845,10 @@ static int power_pmu_event_init(struct perf_event *event)
 	int n;
 	int err;
 	struct cpu_hw_events *cpuhw;
+<<<<<<< HEAD
+=======
+	u64 bhrb_filter;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!ppmu)
 		return -ENOENT;
@@ -1941,6 +1945,7 @@ static int power_pmu_event_init(struct perf_event *event)
 	err = power_check_constraints(cpuhw, events, cflags, n + 1);
 
 	if (has_branch_stack(event)) {
+<<<<<<< HEAD
 		cpuhw->bhrb_filter = ppmu->bhrb_filter_map(
 					event->attr.branch_sample_type);
 
@@ -1948,6 +1953,16 @@ static int power_pmu_event_init(struct perf_event *event)
 			put_cpu_var(cpu_hw_events);
 			return -EOPNOTSUPP;
 		}
+=======
+		bhrb_filter = ppmu->bhrb_filter_map(
+					event->attr.branch_sample_type);
+
+		if (bhrb_filter == -1) {
+			put_cpu_var(cpu_hw_events);
+			return -EOPNOTSUPP;
+		}
+		cpuhw->bhrb_filter = bhrb_filter;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	put_cpu_var(cpu_hw_events);
@@ -2053,7 +2068,21 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
 			left += period;
 			if (left <= 0)
 				left = period;
+<<<<<<< HEAD
 			record = siar_valid(regs);
+=======
+
+			/*
+			 * If address is not requested in the sample via
+			 * PERF_SAMPLE_IP, just record that sample irrespective
+			 * of SIAR valid check.
+			 */
+			if (event->attr.sample_type & PERF_SAMPLE_IP)
+				record = siar_valid(regs);
+			else
+				record = 1;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			event->hw.last_period = event->hw.sample_period;
 		}
 		if (left < 0x80000000LL)
@@ -2066,6 +2095,20 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
 	perf_event_update_userpage(event);
 
 	/*
+<<<<<<< HEAD
+=======
+	 * Due to hardware limitation, sometimes SIAR could sample a kernel
+	 * address even when freeze on supervisor state (kernel) is set in
+	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
+	 * these cases.
+	 */
+	if (event->attr.exclude_kernel &&
+	    (event->attr.sample_type & PERF_SAMPLE_IP) &&
+	    is_kernel_addr(mfspr(SPRN_SIAR)))
+		record = 0;
+
+	/*
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * Finally record data if requested.
 	 */
 	if (record) {
@@ -2094,6 +2137,13 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
 
 		if (perf_event_overflow(event, &data, regs))
 			power_pmu_stop(event, 0);
+<<<<<<< HEAD
+=======
+	} else if (period) {
+		/* Account for interrupt in case of invalid SIAR */
+		if (perf_event_account_interrupt(event))
+			power_pmu_stop(event, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 

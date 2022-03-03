@@ -711,7 +711,11 @@ int dwc2_get_hwparams(struct dwc2_hsotg *hsotg)
 int dwc2_init_params(struct dwc2_hsotg *hsotg)
 {
 	const struct of_device_id *match;
+<<<<<<< HEAD
 	void (*set_params)(void *data);
+=======
+	void (*set_params)(struct dwc2_hsotg *data);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dwc2_set_default_params(hsotg);
 	dwc2_get_device_properties(hsotg);

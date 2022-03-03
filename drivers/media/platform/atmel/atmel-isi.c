@@ -496,7 +496,11 @@ static void stop_streaming(struct vb2_queue *vq)
 	spin_unlock_irq(&isi->irqlock);
 
 	if (!isi->enable_preview_path) {
+<<<<<<< HEAD
 		timeout = jiffies + FRAME_INTERVAL_MILLI_SEC * HZ;
+=======
+		timeout = jiffies + (FRAME_INTERVAL_MILLI_SEC * HZ) / 1000;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* Wait until the end of the current frame. */
 		while ((isi_readl(isi, ISI_STATUS) & ISI_CTRL_CDC) &&
 				time_before(jiffies, timeout))

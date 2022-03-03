@@ -199,8 +199,12 @@ static inline u32 rt6_get_cookie(const struct rt6_info *rt)
 {
 	u32 cookie = 0;
 
+<<<<<<< HEAD
 	if (rt->rt6i_flags & RTF_PCPU ||
 	    (unlikely(!list_empty(&rt->rt6i_uncached)) && rt->dst.from))
+=======
+	if (rt->dst.from)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rt = (struct rt6_info *)(rt->dst.from);
 
 	rt6_get_cookie_safe(rt, &cookie);

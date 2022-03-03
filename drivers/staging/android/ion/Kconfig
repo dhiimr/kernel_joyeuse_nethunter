@@ -3,7 +3,10 @@ menuconfig ION
 	depends on HAVE_MEMBLOCK && HAS_DMA && MMU
 	select GENERIC_ALLOCATOR
 	select DMA_SHARED_BUFFER
+<<<<<<< HEAD
 	select MSM_SECURE_BUFFER
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	---help---
 	  Chose this option to enable the ION Memory Manager,
 	  used by Android to efficiently allocate buffers
@@ -43,6 +46,7 @@ config ION_CMA_HEAP
 	  Choose this option to enable CMA heaps with Ion. This heap is backed
 	  by the Contiguous Memory Allocator (CMA). If your system has these
 	  regions, you should say Y here.
+<<<<<<< HEAD
 
 config ION_FORCE_DMA_SYNC
 	bool "Force ION to always DMA sync buffer memory"
@@ -63,3 +67,5 @@ config ION_DEFER_FREE_NO_SCHED_IDLE
 	  Choose this option to remove the SCHED_IDLE flag in case of defer free
 	  thereby increasing the priority of defer free thread.
 	  if you're not sure say Y here.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

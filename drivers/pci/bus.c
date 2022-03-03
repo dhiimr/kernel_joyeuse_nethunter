@@ -324,12 +324,17 @@ void pci_bus_add_device(struct pci_dev *dev)
 
 	dev->match_driver = true;
 	retval = device_attach(&dev->dev);
+<<<<<<< HEAD
 	if (retval < 0 && retval != -EPROBE_DEFER) {
 		dev_warn(&dev->dev, "device attach failed (%d)\n", retval);
 		pci_proc_detach_device(dev);
 		pci_remove_sysfs_dev_files(dev);
 		return;
 	}
+=======
+	if (retval < 0 && retval != -EPROBE_DEFER)
+		dev_warn(&dev->dev, "device attach failed (%d)\n", retval);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dev->is_added = 1;
 }

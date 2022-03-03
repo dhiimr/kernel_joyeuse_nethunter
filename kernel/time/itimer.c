@@ -153,10 +153,13 @@ static void set_cpu_itimer(struct task_struct *tsk, unsigned int clock_id,
 	u64 oval, nval, ointerval, ninterval;
 	struct cpu_itimer *it = &tsk->signal->it[clock_id];
 
+<<<<<<< HEAD
 	/*
 	 * Use the to_ktime conversion because that clamps the maximum
 	 * value to KTIME_MAX and avoid multiplication overflows.
 	 */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	nval = ktime_to_ns(timeval_to_ktime(value->it_value));
 	ninterval = ktime_to_ns(timeval_to_ktime(value->it_interval));
 

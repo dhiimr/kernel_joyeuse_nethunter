@@ -27,6 +27,10 @@ static const struct of_device_id tps65912_spi_of_match_table[] = {
 	{ .compatible = "ti,tps65912", },
 	{ /* sentinel */ }
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(of, tps65912_spi_of_match_table);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int tps65912_spi_probe(struct spi_device *spi)
 {

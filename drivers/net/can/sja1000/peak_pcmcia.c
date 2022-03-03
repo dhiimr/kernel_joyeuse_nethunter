@@ -487,7 +487,11 @@ static void pcan_free_channels(struct pcan_pccard *card)
 		if (!netdev)
 			continue;
 
+<<<<<<< HEAD
 		strncpy(name, netdev->name, IFNAMSIZ);
+=======
+		strlcpy(name, netdev->name, IFNAMSIZ);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		unregister_sja1000dev(netdev);
 

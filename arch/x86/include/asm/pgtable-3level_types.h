@@ -44,5 +44,9 @@ typedef union {
  */
 #define PTRS_PER_PTE	512
 
+<<<<<<< HEAD
+=======
+#define MAX_POSSIBLE_PHYSMEM_BITS	36
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif /* _ASM_X86_PGTABLE_3LEVEL_DEFS_H */

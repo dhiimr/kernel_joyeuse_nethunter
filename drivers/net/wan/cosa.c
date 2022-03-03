@@ -902,6 +902,10 @@ static ssize_t cosa_write(struct file *file,
 			chan->tx_status = 1;
 			spin_unlock_irqrestore(&cosa->lock, flags);
 			up(&chan->wsem);
+<<<<<<< HEAD
+=======
+			kfree(kbuf);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return -ERESTARTSYS;
 		}
 	}

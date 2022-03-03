@@ -479,8 +479,15 @@ static int fimc_md_register_sensor_entities(struct fimc_md *fmd)
 		return -ENXIO;
 
 	ret = pm_runtime_get_sync(fmd->pmf);
+<<<<<<< HEAD
 	if (ret < 0)
 		return ret;
+=======
+	if (ret < 0) {
+		pm_runtime_put(fmd->pmf);
+		return ret;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	fmd->num_sensors = 0;
 
@@ -496,6 +503,10 @@ static int fimc_md_register_sensor_entities(struct fimc_md *fmd)
 			continue;
 
 		ret = fimc_md_parse_port_node(fmd, port, index);
+<<<<<<< HEAD
+=======
+		of_node_put(port);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (ret < 0) {
 			of_node_put(node);
 			goto rpm_put;
@@ -529,6 +540,10 @@ static int __of_get_csis_id(struct device_node *np)
 	if (!np)
 		return -EINVAL;
 	of_property_read_u32(np, "reg", &reg);
+<<<<<<< HEAD
+=======
+	of_node_put(np);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return reg - FIMC_INPUT_MIPI_CSI2_0;
 }
 
@@ -1254,6 +1269,10 @@ static int fimc_md_get_pinctrl(struct fimc_md *fmd)
 	if (IS_ERR(pctl->state_default))
 		return PTR_ERR(pctl->state_default);
 
+<<<<<<< HEAD
+=======
+	/* PINCTRL_STATE_IDLE is optional */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pctl->state_idle = pinctrl_lookup_state(pctl->pinctrl,
 					PINCTRL_STATE_IDLE);
 	return 0;

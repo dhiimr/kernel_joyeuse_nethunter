@@ -1161,8 +1161,13 @@ static void garmin_read_process(struct garmin_data *garmin_data_p,
 		   send it directly to the tty port */
 		if (garmin_data_p->flags & FLAGS_QUEUING) {
 			pkt_add(garmin_data_p, data, data_length);
+<<<<<<< HEAD
 		} else if (bulk_data ||
 			   getLayerId(data) == GARMIN_LAYERID_APPL) {
+=======
+		} else if (bulk_data || (data_length >= sizeof(u32) &&
+				getLayerId(data) == GARMIN_LAYERID_APPL)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			spin_lock_irqsave(&garmin_data_p->lock, flags);
 			garmin_data_p->flags |= APP_RESP_SEEN;

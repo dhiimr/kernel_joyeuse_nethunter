@@ -573,7 +573,11 @@ static int acpi_pci_propagate_wakeup(struct pci_bus *bus, bool enable)
 {
 	while (bus->parent) {
 		if (acpi_pm_device_can_wakeup(&bus->self->dev))
+<<<<<<< HEAD
 			return acpi_pm_set_bridge_wakeup(&bus->self->dev, enable);
+=======
+			return acpi_pm_set_device_wakeup(&bus->self->dev, enable);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		bus = bus->parent;
 	}
@@ -581,7 +585,11 @@ static int acpi_pci_propagate_wakeup(struct pci_bus *bus, bool enable)
 	/* We have reached the root bus. */
 	if (bus->bridge) {
 		if (acpi_pm_device_can_wakeup(bus->bridge))
+<<<<<<< HEAD
 			return acpi_pm_set_bridge_wakeup(bus->bridge, enable);
+=======
+			return acpi_pm_set_device_wakeup(bus->bridge, enable);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return 0;
 }

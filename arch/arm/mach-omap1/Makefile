@@ -25,7 +25,11 @@ obj-y					+= $(i2c-omap-m) $(i2c-omap-y)
 
 led-y := leds.o
 
+<<<<<<< HEAD
 usb-fs-$(CONFIG_USB)			:= usb.o
+=======
+usb-fs-$(CONFIG_USB_SUPPORT)		:= usb.o
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-y					+= $(usb-fs-m) $(usb-fs-y)
 
 # Specific board support

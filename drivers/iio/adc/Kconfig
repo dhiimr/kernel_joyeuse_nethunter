@@ -594,6 +594,7 @@ config QCOM_SPMI_VADC
 	  To compile this driver as a module, choose M here: the module will
 	  be called qcom-spmi-vadc.
 
+<<<<<<< HEAD
 config QCOM_SPMI_ADC5
 	tristate "Qualcomm Technologies Inc. SPMI PMIC5 ADC"
 	depends on SPMI
@@ -636,6 +637,8 @@ config QCOM_RRADC
 	  To compile this driver as a module, choose M here: the module will
 	  be called qcom-rradc.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config RCAR_GYRO_ADC
 	tristate "Renesas R-Car GyroADC driver"
 	depends on ARCH_RCAR_GEN2 || (ARM && COMPILE_TEST)
@@ -677,6 +680,10 @@ config STM32_ADC_CORE
 	depends on HAS_DMA
 	depends on OF
 	depends on REGULATOR
+<<<<<<< HEAD
+=======
+	depends on HAS_IOMEM
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select IIO_BUFFER
 	select MFD_STM32_TIMERS
 	select IIO_STM32_TIMER_TRIGGER

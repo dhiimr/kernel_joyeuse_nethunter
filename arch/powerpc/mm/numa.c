@@ -1561,6 +1561,12 @@ int start_topology_update(void)
 {
 	int rc = 0;
 
+<<<<<<< HEAD
+=======
+	if (!topology_updates_enabled)
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (firmware_has_feature(FW_FEATURE_PRRN)) {
 		if (!prrn_enabled) {
 			prrn_enabled = 1;
@@ -1590,6 +1596,12 @@ int stop_topology_update(void)
 {
 	int rc = 0;
 
+<<<<<<< HEAD
+=======
+	if (!topology_updates_enabled)
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (prrn_enabled) {
 		prrn_enabled = 0;
 #ifdef CONFIG_SMP
@@ -1635,11 +1647,21 @@ static ssize_t topology_write(struct file *file, const char __user *buf,
 
 	kbuf[read_len] = '\0';
 
+<<<<<<< HEAD
 	if (!strncmp(kbuf, "on", 2))
 		start_topology_update();
 	else if (!strncmp(kbuf, "off", 3))
 		stop_topology_update();
 	else
+=======
+	if (!strncmp(kbuf, "on", 2)) {
+		topology_updates_enabled = true;
+		start_topology_update();
+	} else if (!strncmp(kbuf, "off", 3)) {
+		stop_topology_update();
+		topology_updates_enabled = false;
+	} else
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	return count;
@@ -1654,9 +1676,13 @@ static const struct file_operations topology_ops = {
 
 static int topology_update_init(void)
 {
+<<<<<<< HEAD
 	/* Do not poll for changes if disabled at boot */
 	if (topology_updates_enabled)
 		start_topology_update();
+=======
+	start_topology_update();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!proc_create("powerpc/topology_updates", 0644, NULL, &topology_ops))
 		return -ENOMEM;

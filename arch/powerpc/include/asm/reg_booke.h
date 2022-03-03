@@ -41,7 +41,11 @@
 #if defined(CONFIG_PPC_BOOK3E_64)
 #define MSR_64BIT	MSR_CM
 
+<<<<<<< HEAD
 #define MSR_		(MSR_ME | MSR_CE)
+=======
+#define MSR_		(MSR_ME | MSR_RI | MSR_CE)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define MSR_KERNEL	(MSR_ | MSR_64BIT)
 #define MSR_USER32	(MSR_ | MSR_PR | MSR_EE)
 #define MSR_USER64	(MSR_USER32 | MSR_64BIT)

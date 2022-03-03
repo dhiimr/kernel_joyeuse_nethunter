@@ -707,8 +707,13 @@ static bool ftgmac100_prep_tx_csum(struct sk_buff *skb, u32 *csum_vlan)
 	return skb_checksum_help(skb) == 0;
 }
 
+<<<<<<< HEAD
 static int ftgmac100_hard_start_xmit(struct sk_buff *skb,
 				     struct net_device *netdev)
+=======
+static netdev_tx_t ftgmac100_hard_start_xmit(struct sk_buff *skb,
+					     struct net_device *netdev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct ftgmac100 *priv = netdev_priv(netdev);
 	struct ftgmac100_txdes *txdes, *first;
@@ -734,6 +739,21 @@ static int ftgmac100_hard_start_xmit(struct sk_buff *skb,
 	 */
 	nfrags = skb_shinfo(skb)->nr_frags;
 
+<<<<<<< HEAD
+=======
+	/* Setup HW checksumming */
+	csum_vlan = 0;
+	if (skb->ip_summed == CHECKSUM_PARTIAL &&
+	    !ftgmac100_prep_tx_csum(skb, &csum_vlan))
+		goto drop;
+
+	/* Add VLAN tag */
+	if (skb_vlan_tag_present(skb)) {
+		csum_vlan |= FTGMAC100_TXDES1_INS_VLANTAG;
+		csum_vlan |= skb_vlan_tag_get(skb) & 0xffff;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Get header len */
 	len = skb_headlen(skb);
 
@@ -760,6 +780,7 @@ static int ftgmac100_hard_start_xmit(struct sk_buff *skb,
 	if (nfrags == 0)
 		f_ctl_stat |= FTGMAC100_TXDES0_LTS;
 	txdes->txdes3 = cpu_to_le32(map);
+<<<<<<< HEAD
 
 	/* Setup HW checksumming */
 	csum_vlan = 0;
@@ -773,6 +794,8 @@ static int ftgmac100_hard_start_xmit(struct sk_buff *skb,
 		csum_vlan |= skb_vlan_tag_get(skb) & 0xffff;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	txdes->txdes1 = cpu_to_le32(csum_vlan);
 
 	/* Next descriptor */
@@ -1329,6 +1352,10 @@ static int ftgmac100_poll(struct napi_struct *napi, int budget)
 	 */
 	if (unlikely(priv->need_mac_restart)) {
 		ftgmac100_start_hw(priv);
+<<<<<<< HEAD
+=======
+		priv->need_mac_restart = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* Re-enable "bad" interrupts */
 		iowrite32(FTGMAC100_INT_BAD,
@@ -1861,6 +1888,11 @@ static int ftgmac100_probe(struct platform_device *pdev)
 	return 0;
 
 err_ncsi_dev:
+<<<<<<< HEAD
+=======
+	if (priv->ndev)
+		ncsi_unregister_dev(priv->ndev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 err_register_netdev:
 	ftgmac100_destroy_mdio(netdev);
 err_setup_mdio:
@@ -1881,6 +1913,11 @@ static int ftgmac100_remove(struct platform_device *pdev)
 	netdev = platform_get_drvdata(pdev);
 	priv = netdev_priv(netdev);
 
+<<<<<<< HEAD
+=======
+	if (priv->ndev)
+		ncsi_unregister_dev(priv->ndev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unregister_netdev(netdev);
 
 	/* There's a small chance the reset task will have been re-queued,

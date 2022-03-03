@@ -997,6 +997,7 @@ void fb_edid_to_monspecs(unsigned char *edid, struct fb_monspecs *specs)
 	DPRINTK("========================================\n");
 }
 
+<<<<<<< HEAD
 /**
  * fb_edid_add_monspecs() - add monitor video modes from E-EDID data
  * @edid:	128 byte array with an E-EDID block
@@ -1088,6 +1089,8 @@ void fb_edid_add_monspecs(unsigned char *edid, struct fb_monspecs *specs)
 	specs->modedb_len = specs->modedb_len + num + svd_n;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * VESA Generalized Timing Formula (GTF)
  */
@@ -1497,9 +1500,12 @@ int fb_parse_edid(unsigned char *edid, struct fb_var_screeninfo *var)
 void fb_edid_to_monspecs(unsigned char *edid, struct fb_monspecs *specs)
 {
 }
+<<<<<<< HEAD
 void fb_edid_add_monspecs(unsigned char *edid, struct fb_monspecs *specs)
 {
 }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void fb_destroy_modedb(struct fb_videomode *modedb)
 {
 }
@@ -1607,7 +1613,10 @@ EXPORT_SYMBOL(fb_firmware_edid);
 
 EXPORT_SYMBOL(fb_parse_edid);
 EXPORT_SYMBOL(fb_edid_to_monspecs);
+<<<<<<< HEAD
 EXPORT_SYMBOL(fb_edid_add_monspecs);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 EXPORT_SYMBOL(fb_get_mode);
 EXPORT_SYMBOL(fb_validate_mode);
 EXPORT_SYMBOL(fb_destroy_modedb);

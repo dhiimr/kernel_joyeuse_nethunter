@@ -64,10 +64,17 @@ static void hsu_dma_chan_start(struct hsu_dma_chan *hsuc)
 
 	if (hsuc->direction == DMA_MEM_TO_DEV) {
 		bsr = config->dst_maxburst;
+<<<<<<< HEAD
 		mtsr = config->src_addr_width;
 	} else if (hsuc->direction == DMA_DEV_TO_MEM) {
 		bsr = config->src_maxburst;
 		mtsr = config->dst_addr_width;
+=======
+		mtsr = config->dst_addr_width;
+	} else if (hsuc->direction == DMA_DEV_TO_MEM) {
+		bsr = config->src_maxburst;
+		mtsr = config->src_addr_width;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	hsu_chan_disable(hsuc);

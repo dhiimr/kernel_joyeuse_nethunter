@@ -155,6 +155,10 @@ int main(int argc, char **argv)
 			continue;
 
 		printf("nsleep latency %-26s ", clockstring(clockid));
+<<<<<<< HEAD
+=======
+		fflush(stdout);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		length = 10;
 		while (length <= (NSEC_PER_SEC * 10)) {

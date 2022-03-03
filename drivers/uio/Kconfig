@@ -164,6 +164,7 @@ config UIO_HV_GENERIC
 	  to network and storage devices from userspace.
 
 	  If you compile this as a module, it will be called uio_hv_generic.
+<<<<<<< HEAD
 config UIO_MSM_SHAREDMEM
 	bool "MSM shared memory driver"
 	default n
@@ -171,4 +172,6 @@ config UIO_MSM_SHAREDMEM
 	  Provides the clients with their respective alloted shared memory
 	  addresses which are used as transport buffer.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif

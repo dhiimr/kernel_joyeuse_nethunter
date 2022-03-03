@@ -432,7 +432,11 @@ const struct inode_operations proc_link_inode_operations = {
 
 struct inode *proc_get_inode(struct super_block *sb, struct proc_dir_entry *de)
 {
+<<<<<<< HEAD
 	struct inode *inode = new_inode_pseudo(sb);
+=======
+	struct inode *inode = new_inode(sb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (inode) {
 		inode->i_ino = de->low_ino;
@@ -472,12 +476,26 @@ struct inode *proc_get_inode(struct super_block *sb, struct proc_dir_entry *de)
 	return inode;
 }
 
+<<<<<<< HEAD
 int proc_fill_super(struct super_block *s)
 {
 	struct inode *root_inode;
 	int ret;
 
 	s->s_iflags |= SB_I_USERNS_VISIBLE | SB_I_NODEV;
+=======
+int proc_fill_super(struct super_block *s, void *data, int silent)
+{
+	struct pid_namespace *ns = get_pid_ns(s->s_fs_info);
+	struct inode *root_inode;
+	int ret;
+
+	if (!proc_parse_options(data, ns))
+		return -EINVAL;
+
+	/* User space would break if executables or devices appear on proc */
+	s->s_iflags |= SB_I_USERNS_VISIBLE | SB_I_NOEXEC | SB_I_NODEV;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	s->s_flags |= MS_NODIRATIME | MS_NOSUID | MS_NOEXEC;
 	s->s_blocksize = 1024;
 	s->s_blocksize_bits = 10;

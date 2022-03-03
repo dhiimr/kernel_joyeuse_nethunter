@@ -4422,6 +4422,7 @@ sony_pic_read_possible_resource(struct acpi_resource *resource, void *context)
 			}
 			return AE_OK;
 		}
+<<<<<<< HEAD
 	default:
 		dprintk("Resource %d isn't an IRQ nor an IO port\n",
 			resource->type);
@@ -4430,6 +4431,18 @@ sony_pic_read_possible_resource(struct acpi_resource *resource, void *context)
 		return AE_OK;
 	}
 	return AE_CTRL_TERMINATE;
+=======
+
+	case ACPI_RESOURCE_TYPE_END_TAG:
+		return AE_OK;
+
+	default:
+		dprintk("Resource %d isn't an IRQ nor an IO port\n",
+			resource->type);
+		return AE_CTRL_TERMINATE;
+
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int sony_pic_possible_resources(struct acpi_device *device)

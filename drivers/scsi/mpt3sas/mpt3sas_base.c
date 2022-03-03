@@ -105,7 +105,11 @@ _base_get_ioc_facts(struct MPT3SAS_ADAPTER *ioc);
  *
  */
 static int
+<<<<<<< HEAD
 _scsih_set_fwfault_debug(const char *val, const struct kernel_param *kp)
+=======
+_scsih_set_fwfault_debug(const char *val, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int ret = param_set_int(val, kp);
 	struct MPT3SAS_ADAPTER *ioc;
@@ -1724,9 +1728,17 @@ _base_config_dma_addressing(struct MPT3SAS_ADAPTER *ioc, struct pci_dev *pdev)
 {
 	struct sysinfo s;
 	u64 consistent_dma_mask;
+<<<<<<< HEAD
 
 	if (ioc->dma_mask)
 		consistent_dma_mask = DMA_BIT_MASK(64);
+=======
+	/* Set 63 bit DMA mask for all SAS3 and SAS35 controllers */
+	int dma_mask = (ioc->hba_mpi_version_belonged > MPI2_VERSION) ? 63 : 64;
+
+	if (ioc->dma_mask)
+		consistent_dma_mask = DMA_BIT_MASK(dma_mask);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	else
 		consistent_dma_mask = DMA_BIT_MASK(32);
 
@@ -1734,11 +1746,19 @@ _base_config_dma_addressing(struct MPT3SAS_ADAPTER *ioc, struct pci_dev *pdev)
 		const uint64_t required_mask =
 		    dma_get_required_mask(&pdev->dev);
 		if ((required_mask > DMA_BIT_MASK(32)) &&
+<<<<<<< HEAD
 		    !pci_set_dma_mask(pdev, DMA_BIT_MASK(64)) &&
 		    !pci_set_consistent_dma_mask(pdev, consistent_dma_mask)) {
 			ioc->base_add_sg_single = &_base_add_sg_single_64;
 			ioc->sge_size = sizeof(Mpi2SGESimple64_t);
 			ioc->dma_mask = 64;
+=======
+		    !pci_set_dma_mask(pdev, DMA_BIT_MASK(dma_mask)) &&
+		    !pci_set_consistent_dma_mask(pdev, consistent_dma_mask)) {
+			ioc->base_add_sg_single = &_base_add_sg_single_64;
+			ioc->sge_size = sizeof(Mpi2SGESimple64_t);
+			ioc->dma_mask = dma_mask;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto out;
 		}
 	}
@@ -1764,7 +1784,11 @@ static int
 _base_change_consistent_dma_mask(struct MPT3SAS_ADAPTER *ioc,
 				      struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	if (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64))) {
+=======
+	if (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(ioc->dma_mask))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32)))
 			return -ENODEV;
 	}
@@ -3138,7 +3162,11 @@ _base_static_config_pages(struct MPT3SAS_ADAPTER *ioc)
 	 * flag unset in NVDATA.
 	 */
 	mpt3sas_config_get_manufacturing_pg11(ioc, &mpi_reply, &ioc->manu_pg11);
+<<<<<<< HEAD
 	if (ioc->manu_pg11.EEDPTagMode == 0) {
+=======
+	if (!ioc->is_gen35_ioc && ioc->manu_pg11.EEDPTagMode == 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pr_err("%s: overriding NVDATA EEDPTagMode setting\n",
 		    ioc->name);
 		ioc->manu_pg11.EEDPTagMode &= ~0x3;
@@ -3261,7 +3289,13 @@ _base_release_memory_pools(struct MPT3SAS_ADAPTER *ioc)
 		ioc->scsi_lookup = NULL;
 	}
 	kfree(ioc->hpr_lookup);
+<<<<<<< HEAD
 	kfree(ioc->internal_lookup);
+=======
+	ioc->hpr_lookup = NULL;
+	kfree(ioc->internal_lookup);
+	ioc->internal_lookup = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ioc->chain_lookup) {
 		for (i = 0; i < ioc->chain_depth; i++) {
 			if (ioc->chain_lookup[i].chain_buffer)
@@ -3477,7 +3511,11 @@ _base_allocate_memory_pools(struct MPT3SAS_ADAPTER *ioc)
 		total_sz += sz;
 	} while (ioc->rdpq_array_enable && (++i < ioc->reply_queue_count));
 
+<<<<<<< HEAD
 	if (ioc->dma_mask == 64) {
+=======
+	if (ioc->dma_mask > 32) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (_base_change_consistent_dma_mask(ioc, ioc->pdev) != 0) {
 			pr_warn(MPT3SAS_FMT
 			    "no suitable consistent DMA mask for %s\n",
@@ -4571,7 +4609,11 @@ _base_send_ioc_init(struct MPT3SAS_ADAPTER *ioc)
 
 	r = _base_handshake_req_reply_wait(ioc,
 	    sizeof(Mpi2IOCInitRequest_t), (u32 *)&mpi_request,
+<<<<<<< HEAD
 	    sizeof(Mpi2IOCInitReply_t), (u16 *)&mpi_reply, 10);
+=======
+	    sizeof(Mpi2IOCInitReply_t), (u16 *)&mpi_reply, 30);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (r != 0) {
 		pr_err(MPT3SAS_FMT "%s: handshake failed (r=%d)\n",
@@ -5451,14 +5493,28 @@ mpt3sas_base_attach(struct MPT3SAS_ADAPTER *ioc)
 		ioc->pend_os_device_add_sz++;
 	ioc->pend_os_device_add = kzalloc(ioc->pend_os_device_add_sz,
 	    GFP_KERNEL);
+<<<<<<< HEAD
 	if (!ioc->pend_os_device_add)
 		goto out_free_resources;
+=======
+	if (!ioc->pend_os_device_add) {
+		r = -ENOMEM;
+		goto out_free_resources;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ioc->device_remove_in_progress_sz = ioc->pend_os_device_add_sz;
 	ioc->device_remove_in_progress =
 		kzalloc(ioc->device_remove_in_progress_sz, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!ioc->device_remove_in_progress)
 		goto out_free_resources;
+=======
+	if (!ioc->device_remove_in_progress) {
+		r = -ENOMEM;
+		goto out_free_resources;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ioc->fwfault_debug = mpt3sas_fwfault_debug;
 

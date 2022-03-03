@@ -57,5 +57,9 @@ ENDPROC(__arch_clear_user)
 	.section .fixup,"ax"
 	.align	2
 9:	mov	x0, x2			// return the original size
+<<<<<<< HEAD
+=======
+	uaccess_disable_not_uao x2, x3
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret
 	.previous

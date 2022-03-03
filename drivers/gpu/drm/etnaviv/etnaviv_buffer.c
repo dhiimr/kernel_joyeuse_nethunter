@@ -258,6 +258,11 @@ void etnaviv_buffer_queue(struct etnaviv_gpu *gpu, unsigned int event,
 	unsigned int waitlink_offset = buffer->user_size - 16;
 	u32 return_target, return_dwords;
 	u32 link_target, link_dwords;
+<<<<<<< HEAD
+=======
+	unsigned int new_flush_seq = READ_ONCE(gpu->mmu->flush_seq);
+	bool need_flush = gpu->flush_seq != new_flush_seq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (drm_debug & DRM_UT_DRIVER)
 		etnaviv_buffer_dump(gpu, buffer, 0, 0x50);
@@ -270,14 +275,22 @@ void etnaviv_buffer_queue(struct etnaviv_gpu *gpu, unsigned int event,
 	 * need to append a mmu flush load state, followed by a new
 	 * link to this buffer - a total of four additional words.
 	 */
+<<<<<<< HEAD
 	if (gpu->mmu->need_flush || gpu->switch_context) {
+=======
+	if (need_flush || gpu->switch_context) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		u32 target, extra_dwords;
 
 		/* link command */
 		extra_dwords = 1;
 
 		/* flush command */
+<<<<<<< HEAD
 		if (gpu->mmu->need_flush) {
+=======
+		if (need_flush) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (gpu->mmu->version == ETNAVIV_IOMMU_V1)
 				extra_dwords += 1;
 			else
@@ -290,7 +303,11 @@ void etnaviv_buffer_queue(struct etnaviv_gpu *gpu, unsigned int event,
 
 		target = etnaviv_buffer_reserve(gpu, buffer, extra_dwords);
 
+<<<<<<< HEAD
 		if (gpu->mmu->need_flush) {
+=======
+		if (need_flush) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/* Add the MMU flush */
 			if (gpu->mmu->version == ETNAVIV_IOMMU_V1) {
 				CMD_LOAD_STATE(buffer, VIVS_GL_FLUSH_MMU,
@@ -310,7 +327,11 @@ void etnaviv_buffer_queue(struct etnaviv_gpu *gpu, unsigned int event,
 					SYNC_RECIPIENT_PE);
 			}
 
+<<<<<<< HEAD
 			gpu->mmu->need_flush = false;
+=======
+			gpu->flush_seq = new_flush_seq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		if (gpu->switch_context) {

@@ -33,7 +33,11 @@ static struct kmem_cache *_cell_cache;
  */
 struct dm_bio_prison *dm_bio_prison_create(void)
 {
+<<<<<<< HEAD
 	struct dm_bio_prison *prison = kmalloc(sizeof(*prison), GFP_KERNEL);
+=======
+	struct dm_bio_prison *prison = kzalloc(sizeof(*prison), GFP_KERNEL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!prison)
 		return NULL;

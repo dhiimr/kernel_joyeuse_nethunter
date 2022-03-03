@@ -797,7 +797,13 @@ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
 
 		if (page_offset > end_index)
 			break;
+<<<<<<< HEAD
 		page = find_or_create_page(mapping, page_offset, ra_gfp_mask);
+=======
+		page = pagecache_get_page(mapping, page_offset,
+				 FGP_LOCK|FGP_ACCESSED|FGP_CREAT|FGP_NOWAIT,
+				 ra_gfp_mask);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!page)
 			break;
 		if (!PageUptodate(page))
@@ -1662,17 +1668,61 @@ static const char *ubifs_get_link(struct dentry *dentry,
 					    struct inode *inode,
 					    struct delayed_call *done)
 {
+<<<<<<< HEAD
 	struct ubifs_inode *ui = ubifs_inode(inode);
 
 	if (!IS_ENCRYPTED(inode))
+=======
+	int err;
+	struct fscrypt_symlink_data *sd;
+	struct ubifs_inode *ui = ubifs_inode(inode);
+	struct fscrypt_str cstr;
+	struct fscrypt_str pstr;
+
+	if (!ubifs_crypt_is_encrypted(inode))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ui->data;
 
 	if (!dentry)
 		return ERR_PTR(-ECHILD);
 
+<<<<<<< HEAD
 	return fscrypt_get_symlink(inode, ui->data, ui->data_len, done);
 }
 
+=======
+	err = fscrypt_get_encryption_info(inode);
+	if (err)
+		return ERR_PTR(err);
+
+	sd = (struct fscrypt_symlink_data *)ui->data;
+	cstr.name = sd->encrypted_path;
+	cstr.len = le16_to_cpu(sd->len);
+
+	if (cstr.len == 0)
+		return ERR_PTR(-ENOENT);
+
+	if ((cstr.len + sizeof(struct fscrypt_symlink_data) - 1) > ui->data_len)
+		return ERR_PTR(-EIO);
+
+	err = fscrypt_fname_alloc_buffer(inode, cstr.len, &pstr);
+	if (err)
+		return ERR_PTR(err);
+
+	err = fscrypt_fname_disk_to_usr(inode, 0, 0, &cstr, &pstr);
+	if (err) {
+		fscrypt_fname_free_buffer(&pstr);
+		return ERR_PTR(err);
+	}
+
+	pstr.name[pstr.len] = '\0';
+
+	set_delayed_call(done, kfree_link, pstr.name);
+	return pstr.name;
+}
+
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 const struct address_space_operations ubifs_file_address_operations = {
 	.readpage       = ubifs_readpage,
 	.writepage      = ubifs_writepage,

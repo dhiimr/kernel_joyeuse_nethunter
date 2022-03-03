@@ -17,6 +17,7 @@
 #define _VMCI_HANDLE_ARRAY_H_
 
 #include <linux/vmw_vmci_defs.h>
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #define VMCI_HANDLE_ARRAY_DEFAULT_SIZE 4
@@ -32,17 +33,51 @@ struct vmci_handle_arr *vmci_handle_arr_create(size_t capacity);
 void vmci_handle_arr_destroy(struct vmci_handle_arr *array);
 void vmci_handle_arr_append_entry(struct vmci_handle_arr **array_ptr,
 				  struct vmci_handle handle);
+=======
+#include <linux/limits.h>
+#include <linux/types.h>
+
+struct vmci_handle_arr {
+	u32 capacity;
+	u32 max_capacity;
+	u32 size;
+	u32 pad;
+	struct vmci_handle entries[];
+};
+
+#define VMCI_HANDLE_ARRAY_HEADER_SIZE				\
+	offsetof(struct vmci_handle_arr, entries)
+/* Select a default capacity that results in a 64 byte sized array */
+#define VMCI_HANDLE_ARRAY_DEFAULT_CAPACITY			6
+/* Make sure that the max array size can be expressed by a u32 */
+#define VMCI_HANDLE_ARRAY_MAX_CAPACITY				\
+	((U32_MAX - VMCI_HANDLE_ARRAY_HEADER_SIZE - 1) /	\
+	sizeof(struct vmci_handle))
+
+struct vmci_handle_arr *vmci_handle_arr_create(u32 capacity, u32 max_capacity);
+void vmci_handle_arr_destroy(struct vmci_handle_arr *array);
+int vmci_handle_arr_append_entry(struct vmci_handle_arr **array_ptr,
+				 struct vmci_handle handle);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct vmci_handle vmci_handle_arr_remove_entry(struct vmci_handle_arr *array,
 						struct vmci_handle
 						entry_handle);
 struct vmci_handle vmci_handle_arr_remove_tail(struct vmci_handle_arr *array);
 struct vmci_handle
+<<<<<<< HEAD
 vmci_handle_arr_get_entry(const struct vmci_handle_arr *array, size_t index);
+=======
+vmci_handle_arr_get_entry(const struct vmci_handle_arr *array, u32 index);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 bool vmci_handle_arr_has_entry(const struct vmci_handle_arr *array,
 			       struct vmci_handle entry_handle);
 struct vmci_handle *vmci_handle_arr_get_handles(struct vmci_handle_arr *array);
 
+<<<<<<< HEAD
 static inline size_t vmci_handle_arr_get_size(
+=======
+static inline u32 vmci_handle_arr_get_size(
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	const struct vmci_handle_arr *array)
 {
 	return array->size;

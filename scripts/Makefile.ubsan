@@ -7,6 +7,10 @@ ifdef CONFIG_UBSAN
       CFLAGS_UBSAN += $(call cc-option, -fsanitize=signed-integer-overflow)
       CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
       CFLAGS_UBSAN += $(call cc-option, -fsanitize=object-size)
+<<<<<<< HEAD
+=======
+      CFLAGS_UBSAN += $(call cc-option, -fsanitize=returns-nonnull-attribute)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
       CFLAGS_UBSAN += $(call cc-option, -fsanitize=bool)
       CFLAGS_UBSAN += $(call cc-option, -fsanitize=enum)
 

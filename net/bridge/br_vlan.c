@@ -241,8 +241,15 @@ static int __vlan_add(struct net_bridge_vlan *v, u16 flags)
 		}
 
 		masterv = br_vlan_get_master(br, v->vid);
+<<<<<<< HEAD
 		if (!masterv)
 			goto out_filt;
+=======
+		if (!masterv) {
+			err = -ENOMEM;
+			goto out_filt;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		v->brvlan = masterv;
 		v->stats = masterv->stats;
 	}
@@ -636,6 +643,14 @@ void br_vlan_flush(struct net_bridge *br)
 
 	ASSERT_RTNL();
 
+<<<<<<< HEAD
+=======
+	/* delete auto-added default pvid local fdb before flushing vlans
+	 * otherwise it will be leaked on bridge device init failure
+	 */
+	br_fdb_delete_by_port(br, NULL, 0, 1);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	vg = br_vlan_group(br);
 	__vlan_flush(vg);
 	RCU_INIT_POINTER(br->vlgrp, NULL);

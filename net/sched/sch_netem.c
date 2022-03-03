@@ -431,8 +431,12 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch,
 	struct netem_skb_cb *cb;
 	struct sk_buff *skb2;
 	struct sk_buff *segs = NULL;
+<<<<<<< HEAD
 	unsigned int len = 0, last_len, prev_len = qdisc_pkt_len(skb);
 	int nb = 0;
+=======
+	unsigned int prev_len = qdisc_pkt_len(skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int count = 1;
 	int rc = NET_XMIT_SUCCESS;
 	int rc_drop = NET_XMIT_DROP;
@@ -469,7 +473,11 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch,
 	 * skb will be queued.
 	 */
 	if (count > 1 && (skb2 = skb_clone(skb, GFP_ATOMIC)) != NULL) {
+<<<<<<< HEAD
 		struct Qdisc *rootq = qdisc_root(sch);
+=======
+		struct Qdisc *rootq = qdisc_root_bh(sch);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		u32 dupsave = q->duplicate; /* prevent duplicating a dup... */
 
 		q->duplicate = 0;
@@ -489,6 +497,10 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch,
 			segs = netem_segment(skb, sch, to_free);
 			if (!segs)
 				return rc_drop;
+<<<<<<< HEAD
+=======
+			qdisc_skb_cb(segs)->pkt_len = segs->len;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else {
 			segs = skb;
 		}
@@ -504,6 +516,10 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch,
 		if (skb->ip_summed == CHECKSUM_PARTIAL &&
 		    skb_checksum_help(skb)) {
 			qdisc_drop(skb, sch, to_free);
+<<<<<<< HEAD
+=======
+			skb = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto finish_segs;
 		}
 
@@ -579,6 +595,15 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch,
 
 finish_segs:
 	if (segs) {
+<<<<<<< HEAD
+=======
+		unsigned int len, last_len;
+		int nb;
+
+		len = skb ? skb->len : 0;
+		nb = skb ? 1 : 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		while (segs) {
 			skb2 = segs->next;
 			segs->next = NULL;
@@ -594,9 +619,16 @@ finish_segs:
 			}
 			segs = skb2;
 		}
+<<<<<<< HEAD
 		sch->q.qlen += nb;
 		if (nb > 1)
 			qdisc_tree_reduce_backlog(sch, 1 - nb, prev_len - len);
+=======
+		/* Parent qdiscs accounted for 1 skb of size @prev_len */
+		qdisc_tree_reduce_backlog(sch, -(nb - 1), -(len - prev_len));
+	} else if (!skb) {
+		return NET_XMIT_DROP;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return NET_XMIT_SUCCESS;
 }
@@ -708,7 +740,11 @@ static int get_dist_table(struct Qdisc *sch, const struct nlattr *attr)
 	struct disttable *d;
 	int i;
 
+<<<<<<< HEAD
 	if (n > NETEM_DIST_MAX)
+=======
+	if (!n || n > NETEM_DIST_MAX)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	d = kvmalloc(sizeof(struct disttable) + n * sizeof(s16), GFP_KERNEL);

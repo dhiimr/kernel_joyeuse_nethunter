@@ -29,7 +29,11 @@ Contact:	Bjørn Mork <bjorn@mork.no>
 Description:
 		Unsigned integer.
 
+<<<<<<< HEAD
 		Write a number ranging from 1 to 127 to add a qmap mux
+=======
+		Write a number ranging from 1 to 254 to add a qmap mux
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		based network device, supported by recent Qualcomm based
 		modems.
 
@@ -46,5 +50,9 @@ Contact:	Bjørn Mork <bjorn@mork.no>
 Description:
 		Unsigned integer.
 
+<<<<<<< HEAD
 		Write a number ranging from 1 to 127 to delete a previously
+=======
+		Write a number ranging from 1 to 254 to delete a previously
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		created qmap mux based network device.

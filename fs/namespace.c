@@ -21,7 +21,10 @@
 #include <linux/fs_struct.h>	/* get_fs_root et.al. */
 #include <linux/fsnotify.h>	/* fsnotify_vfsmount_delete */
 #include <linux/uaccess.h>
+<<<<<<< HEAD
 #include <linux/file.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/proc_ns.h>
 #include <linux/magic.h>
 #include <linux/bootmem.h>
@@ -227,7 +230,10 @@ static struct mount *alloc_vfsmnt(const char *name)
 		mnt->mnt_count = 1;
 		mnt->mnt_writers = 0;
 #endif
+<<<<<<< HEAD
 		mnt->mnt.data = NULL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		INIT_HLIST_NODE(&mnt->mnt_hash);
 		INIT_LIST_HEAD(&mnt->mnt_child);
@@ -639,7 +645,10 @@ int sb_prepare_remount_readonly(struct super_block *sb)
 
 static void free_vfsmnt(struct mount *mnt)
 {
+<<<<<<< HEAD
 	kfree(mnt->mnt.data);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree_const(mnt->mnt_devname);
 #ifdef CONFIG_SMP
 	free_percpu(mnt->mnt_pcp);
@@ -1043,6 +1052,7 @@ vfs_kern_mount(struct file_system_type *type, int flags, const char *name, void 
 	if (!mnt)
 		return ERR_PTR(-ENOMEM);
 
+<<<<<<< HEAD
 	if (type->alloc_mnt_data) {
 		mnt->mnt.data = type->alloc_mnt_data();
 		if (!mnt->mnt.data) {
@@ -1055,6 +1065,12 @@ vfs_kern_mount(struct file_system_type *type, int flags, const char *name, void 
 		mnt->mnt.mnt_flags = MNT_INTERNAL;
 
 	root = mount_fs(type, flags, name, &mnt->mnt, data);
+=======
+	if (flags & SB_KERNMOUNT)
+		mnt->mnt.mnt_flags = MNT_INTERNAL;
+
+	root = mount_fs(type, flags, name, data);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (IS_ERR(root)) {
 		mnt_free_id(mnt);
 		free_vfsmnt(mnt);
@@ -1098,6 +1114,7 @@ static struct mount *clone_mnt(struct mount *old, struct dentry *root,
 	if (!mnt)
 		return ERR_PTR(-ENOMEM);
 
+<<<<<<< HEAD
 	if (sb->s_op->clone_mnt_data) {
 		mnt->mnt.data = sb->s_op->clone_mnt_data(old->mnt.data);
 		if (!mnt->mnt.data) {
@@ -1106,6 +1123,8 @@ static struct mount *clone_mnt(struct mount *old, struct dentry *root,
 		}
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (flag & (CL_SLAVE | CL_PRIVATE | CL_SHARED_TO_SLAVE))
 		mnt->mnt_group_id = 0; /* not a peer of original */
 	else
@@ -1220,12 +1239,15 @@ static void delayed_mntput(struct work_struct *unused)
 }
 static DECLARE_DELAYED_WORK(delayed_mntput_work, delayed_mntput);
 
+<<<<<<< HEAD
 void flush_delayed_mntput_wait(void)
 {
 	delayed_mntput(NULL);
 	flush_delayed_work(&delayed_mntput_work);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void mntput_no_expire(struct mount *mnt)
 {
 	rcu_read_lock();
@@ -1673,8 +1695,11 @@ static int do_umount(struct mount *mnt, int flags)
 out:
 	unlock_mount_hash();
 	namespace_unlock();
+<<<<<<< HEAD
 	if (retval == -EBUSY)
 		global_filetable_delayed_print(mnt);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return retval;
 }
 
@@ -1722,6 +1747,7 @@ static inline bool may_mount(void)
 	return ns_capable(current->nsproxy->mnt_ns->user_ns, CAP_SYS_ADMIN);
 }
 
+<<<<<<< HEAD
 static inline bool may_mandlock(void)
 {
 #ifndef	CONFIG_MANDATORY_FILE_LOCKING
@@ -1729,6 +1755,24 @@ static inline bool may_mandlock(void)
 #endif
 	return capable(CAP_SYS_ADMIN);
 }
+=======
+#ifdef	CONFIG_MANDATORY_FILE_LOCKING
+static bool may_mandlock(void)
+{
+	pr_warn_once("======================================================\n"
+		     "WARNING: the mand mount option is being deprecated and\n"
+		     "         will be removed in v5.15!\n"
+		     "======================================================\n");
+	return capable(CAP_SYS_ADMIN);
+}
+#else
+static inline bool may_mandlock(void)
+{
+	pr_warn("VFS: \"mand\" mount option not supported");
+	return false;
+}
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Now umount can handle mount points as well as block devices.
@@ -1744,7 +1788,10 @@ SYSCALL_DEFINE2(umount, char __user *, name, int, flags)
 	struct mount *mnt;
 	int retval;
 	int lookup_flags = 0;
+<<<<<<< HEAD
 	bool user_request = !(current->flags & PF_KTHREAD);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (flags & ~(MNT_FORCE | MNT_DETACH | MNT_EXPIRE | UMOUNT_NOFOLLOW))
 		return -EINVAL;
@@ -1770,15 +1817,19 @@ SYSCALL_DEFINE2(umount, char __user *, name, int, flags)
 	if (flags & MNT_FORCE && !capable(CAP_SYS_ADMIN))
 		goto dput_and_out;
 
+<<<<<<< HEAD
 	/* flush delayed_fput to put mnt_count */
 	if (user_request)
 		flush_delayed_fput_wait();
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	retval = do_umount(mnt, flags);
 dput_and_out:
 	/* we mustn't call path_put() as that would clear mnt_expiry_mark */
 	dput(path.dentry);
 	mntput_no_expire(mnt);
+<<<<<<< HEAD
 
 	if (!user_request)
 		goto out;
@@ -1799,6 +1850,8 @@ dput_and_out:
 		if (mnt->mnt.mnt_sb->s_op->umount_end)
 			mnt->mnt.mnt_sb->s_op->umount_end(mnt->mnt.mnt_sb, flags);
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	return retval;
 }
@@ -1931,6 +1984,23 @@ void drop_collected_mounts(struct vfsmount *mnt)
 	namespace_unlock();
 }
 
+<<<<<<< HEAD
+=======
+static bool has_locked_children(struct mount *mnt, struct dentry *dentry)
+{
+	struct mount *child;
+
+	list_for_each_entry(child, &mnt->mnt_mounts, mnt_child) {
+		if (!is_subdir(child->mnt_mountpoint, dentry))
+			continue;
+
+		if (child->mnt.mnt_flags & MNT_LOCKED)
+			return true;
+	}
+	return false;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * clone_private_mount - create a private clone of a path
  *
@@ -1945,14 +2015,37 @@ struct vfsmount *clone_private_mount(const struct path *path)
 	struct mount *old_mnt = real_mount(path->mnt);
 	struct mount *new_mnt;
 
+<<<<<<< HEAD
 	if (IS_MNT_UNBINDABLE(old_mnt))
 		return ERR_PTR(-EINVAL);
 
 	new_mnt = clone_mnt(old_mnt, path->dentry, CL_PRIVATE);
+=======
+	down_read(&namespace_sem);
+	if (IS_MNT_UNBINDABLE(old_mnt))
+		goto invalid;
+
+	if (!check_mnt(old_mnt))
+		goto invalid;
+
+	if (has_locked_children(old_mnt, path->dentry))
+		goto invalid;
+
+	new_mnt = clone_mnt(old_mnt, path->dentry, CL_PRIVATE);
+	up_read(&namespace_sem);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (IS_ERR(new_mnt))
 		return ERR_CAST(new_mnt);
 
 	return &new_mnt->mnt;
+<<<<<<< HEAD
+=======
+
+invalid:
+	up_read(&namespace_sem);
+	return ERR_PTR(-EINVAL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(clone_private_mount);
 
@@ -2268,6 +2361,7 @@ static int do_change_type(struct path *path, int ms_flags)
 	return err;
 }
 
+<<<<<<< HEAD
 static bool has_locked_children(struct mount *mnt, struct dentry *dentry)
 {
 	struct mount *child;
@@ -2281,6 +2375,8 @@ static bool has_locked_children(struct mount *mnt, struct dentry *dentry)
 	return false;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * do loopback mount.
  */
@@ -2418,6 +2514,7 @@ static int do_remount(struct path *path, int ms_flags, int sb_flags,
 		err = change_mount_flags(path->mnt, ms_flags);
 	else if (!capable(CAP_SYS_ADMIN))
 		err = -EPERM;
+<<<<<<< HEAD
 	else {
 		err = do_remount_sb2(path->mnt, sb, sb_flags, data, 0);
 		namespace_lock();
@@ -2426,6 +2523,10 @@ static int do_remount(struct path *path, int ms_flags, int sb_flags,
 		unlock_mount_hash();
 		namespace_unlock();
 	}
+=======
+	else
+		err = do_remount_sb(sb, sb_flags, data, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!err) {
 		lock_mount_hash();
 		mnt_flags |= mnt->mnt.mnt_flags & ~MNT_USER_SETTABLE_MASK;
@@ -3274,8 +3375,13 @@ SYSCALL_DEFINE2(pivot_root, const char __user *, new_root,
 	/* make certain new is below the root */
 	if (!is_path_reachable(new_mnt, new.dentry, &root))
 		goto out4;
+<<<<<<< HEAD
 	root_mp->m_count++; /* pin it so it won't go away */
 	lock_mount_hash();
+=======
+	lock_mount_hash();
+	root_mp->m_count++; /* pin it so it won't go away */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	detach_mnt(new_mnt, &parent_path);
 	detach_mnt(root_mnt, &root_parent);
 	if (root_mnt->mnt.mnt_flags & MNT_LOCKED) {

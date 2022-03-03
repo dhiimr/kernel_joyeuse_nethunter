@@ -394,6 +394,13 @@ int reservation_object_get_fences_rcu(struct reservation_object *obj,
 					   GFP_NOWAIT | __GFP_NOWARN);
 			if (!nshared) {
 				rcu_read_unlock();
+<<<<<<< HEAD
+=======
+
+				dma_fence_put(fence_excl);
+				fence_excl = NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				nshared = krealloc(shared, sz, GFP_KERNEL);
 				if (nshared) {
 					shared = nshared;

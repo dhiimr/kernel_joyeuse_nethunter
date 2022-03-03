@@ -271,8 +271,17 @@ static int omap_wdt_probe(struct platform_device *pdev)
 			wdev->wdog.bootstatus = WDIOF_CARDRESET;
 	}
 
+<<<<<<< HEAD
 	if (!early_enable)
 		omap_wdt_disable(wdev);
+=======
+	if (early_enable) {
+		omap_wdt_start(&wdev->wdog);
+		set_bit(WDOG_HW_RUNNING, &wdev->wdog.status);
+	} else {
+		omap_wdt_disable(wdev);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = watchdog_register_device(&wdev->wdog);
 	if (ret) {

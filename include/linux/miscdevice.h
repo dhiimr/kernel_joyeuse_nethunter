@@ -56,6 +56,10 @@
 #define UHID_MINOR		239
 #define USERIO_MINOR		240
 #define VHOST_VSOCK_MINOR	241
+<<<<<<< HEAD
+=======
+#define RFKILL_MINOR		242
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define MISC_DYNAMIC_MINOR	255
 
 struct device;

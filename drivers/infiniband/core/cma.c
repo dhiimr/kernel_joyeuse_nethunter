@@ -1482,6 +1482,11 @@ static struct rdma_id_private *cma_find_listener(
 {
 	struct rdma_id_private *id_priv, *id_priv_dev;
 
+<<<<<<< HEAD
+=======
+	lockdep_assert_held(&lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!bind_list)
 		return ERR_PTR(-EINVAL);
 
@@ -1530,6 +1535,10 @@ static struct rdma_id_private *cma_id_from_event(struct ib_cm_id *cm_id,
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Net namespace might be getting deleted while route lookup,
 	 * cm_id lookup is in progress. Therefore, perform netdevice
@@ -1571,6 +1580,10 @@ static struct rdma_id_private *cma_id_from_event(struct ib_cm_id *cm_id,
 	id_priv = cma_find_listener(bind_list, cm_id, ib_event, &req, *net_dev);
 err:
 	rcu_read_unlock();
+<<<<<<< HEAD
+=======
+	mutex_unlock(&lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (IS_ERR(id_priv) && *net_dev) {
 		dev_put(*net_dev);
 		*net_dev = NULL;
@@ -2212,9 +2225,16 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
 		conn_id->cm_id.iw = NULL;
 		cma_exch(conn_id, RDMA_CM_DESTROYING);
 		mutex_unlock(&conn_id->handler_mutex);
+<<<<<<< HEAD
 		cma_deref_id(conn_id);
 		rdma_destroy_id(&conn_id->id);
 		goto out;
+=======
+		mutex_unlock(&listen_id->handler_mutex);
+		cma_deref_id(conn_id);
+		rdma_destroy_id(&conn_id->id);
+		return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	mutex_unlock(&conn_id->handler_mutex);
@@ -2286,6 +2306,11 @@ static void cma_listen_on_dev(struct rdma_id_private *id_priv,
 	struct net *net = id_priv->id.route.addr.dev_addr.net;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	lockdep_assert_held(&lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (cma_family(id_priv) == AF_IB && !rdma_cap_ib_cm(cma_dev->device, 1))
 		return;
 
@@ -2471,7 +2496,12 @@ static int cma_resolve_ib_route(struct rdma_id_private *id_priv, int timeout_ms)
 	work->new_state = RDMA_CM_ROUTE_RESOLVED;
 	work->event.event = RDMA_CM_EVENT_ROUTE_RESOLVED;
 
+<<<<<<< HEAD
 	route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
+=======
+	if (!route->path_rec)
+		route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!route->path_rec) {
 		ret = -ENOMEM;
 		goto err1;
@@ -2660,6 +2690,10 @@ static int cma_resolve_iboe_route(struct rdma_id_private *id_priv)
 err2:
 	kfree(route->path_rec);
 	route->path_rec = NULL;
+<<<<<<< HEAD
+=======
+	route->num_paths = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 err1:
 	kfree(work);
 	return ret;
@@ -2788,7 +2822,11 @@ static void addr_handler(int status, struct sockaddr *src_addr,
 		if (status)
 			pr_debug_ratelimited("RDMA CM: ADDR_ERROR: failed to acquire device. status %d\n",
 					     status);
+<<<<<<< HEAD
 	} else {
+=======
+	} else if (status) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pr_debug_ratelimited("RDMA CM: ADDR_ERROR: failed to resolve IP. status %d\n", status);
 	}
 
@@ -2991,6 +3029,11 @@ static void cma_bind_port(struct rdma_bind_list *bind_list,
 	u64 sid, mask;
 	__be16 port;
 
+<<<<<<< HEAD
+=======
+	lockdep_assert_held(&lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	addr = cma_src_addr(id_priv);
 	port = htons(bind_list->port);
 
@@ -3019,6 +3062,11 @@ static int cma_alloc_port(enum rdma_port_space ps,
 	struct rdma_bind_list *bind_list;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	lockdep_assert_held(&lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bind_list = kzalloc(sizeof *bind_list, GFP_KERNEL);
 	if (!bind_list)
 		return -ENOMEM;
@@ -3045,6 +3093,11 @@ static int cma_port_is_unique(struct rdma_bind_list *bind_list,
 	struct sockaddr  *saddr = cma_src_addr(id_priv);
 	__be16 dport = cma_port(daddr);
 
+<<<<<<< HEAD
+=======
+	lockdep_assert_held(&lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hlist_for_each_entry(cur_id, &bind_list->owners, node) {
 		struct sockaddr  *cur_daddr = cma_dst_addr(cur_id);
 		struct sockaddr  *cur_saddr = cma_src_addr(cur_id);
@@ -3084,6 +3137,11 @@ static int cma_alloc_any_port(enum rdma_port_space ps,
 	unsigned int rover;
 	struct net *net = id_priv->id.route.addr.dev_addr.net;
 
+<<<<<<< HEAD
+=======
+	lockdep_assert_held(&lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	inet_get_local_port_range(net, &low, &high);
 	remaining = (high - low) + 1;
 	rover = prandom_u32() % remaining + low;
@@ -3131,6 +3189,11 @@ static int cma_check_port(struct rdma_bind_list *bind_list,
 	struct rdma_id_private *cur_id;
 	struct sockaddr *addr, *cur_addr;
 
+<<<<<<< HEAD
+=======
+	lockdep_assert_held(&lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	addr = cma_src_addr(id_priv);
 	hlist_for_each_entry(cur_id, &bind_list->owners, node) {
 		if (id_priv == cur_id)
@@ -3161,6 +3224,11 @@ static int cma_use_port(enum rdma_port_space ps,
 	unsigned short snum;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	lockdep_assert_held(&lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	snum = ntohs(cma_port(cma_src_addr(id_priv)));
 	if (snum < PROT_SOCK && !capable(CAP_NET_BIND_SERVICE))
 		return -EACCES;
@@ -4567,6 +4635,10 @@ err:
 	unregister_netdevice_notifier(&cma_nb);
 	rdma_addr_unregister_client(&addr_client);
 	ib_sa_unregister_client(&sa_client);
+<<<<<<< HEAD
+=======
+	unregister_pernet_subsys(&cma_pernet_operations);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 err_wq:
 	destroy_workqueue(cma_wq);
 	return ret;

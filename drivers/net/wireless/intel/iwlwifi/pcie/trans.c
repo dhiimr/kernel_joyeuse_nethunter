@@ -1240,8 +1240,12 @@ static int iwl_trans_pcie_start_fw(struct iwl_trans *trans,
 	/* This may fail if AMT took ownership of the device */
 	if (iwl_pcie_prepare_card_hw(trans)) {
 		IWL_WARN(trans, "Exit HW not ready\n");
+<<<<<<< HEAD
 		ret = -EIO;
 		goto out;
+=======
+		return -EIO;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	iwl_enable_rfkill_int(trans);
@@ -1927,6 +1931,7 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
 				   void *buf, int dwords)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	int offs, ret = 0;
 	u32 *vals = buf;
 
@@ -1939,6 +1944,40 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
 		ret = -EBUSY;
 	}
 	return ret;
+=======
+	int offs = 0;
+	u32 *vals = buf;
+
+	while (offs < dwords) {
+		/* limit the time we spin here under lock to 1/2s */
+		unsigned long end = jiffies + HZ / 2;
+		bool resched = false;
+
+		if (iwl_trans_grab_nic_access(trans, &flags)) {
+			iwl_write32(trans, HBUS_TARG_MEM_RADDR,
+				    addr + 4 * offs);
+
+			while (offs < dwords) {
+				vals[offs] = iwl_read32(trans,
+							HBUS_TARG_MEM_RDAT);
+				offs++;
+
+				if (time_after(jiffies, end)) {
+					resched = true;
+					break;
+				}
+			}
+			iwl_trans_release_nic_access(trans, &flags);
+
+			if (resched)
+				cond_resched();
+		} else {
+			return -EBUSY;
+		}
+	}
+
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int iwl_trans_pcie_write_mem(struct iwl_trans *trans, u32 addr,
@@ -3023,6 +3062,18 @@ struct iwl_trans *iwl_trans_pcie_alloc(struct pci_dev *pdev,
 	spin_lock_init(&trans_pcie->reg_lock);
 	mutex_init(&trans_pcie->mutex);
 	init_waitqueue_head(&trans_pcie->ucode_write_waitq);
+<<<<<<< HEAD
+=======
+
+	trans_pcie->rba.alloc_wq = alloc_workqueue("rb_allocator",
+						   WQ_HIGHPRI | WQ_UNBOUND, 1);
+	if (!trans_pcie->rba.alloc_wq) {
+		ret = -ENOMEM;
+		goto out_free_trans;
+	}
+	INIT_WORK(&trans_pcie->rba.rx_alloc, iwl_pcie_rx_allocator_work);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	trans_pcie->tso_hdr_page = alloc_percpu(struct iwl_tso_hdr_page);
 	if (!trans_pcie->tso_hdr_page) {
 		ret = -ENOMEM;
@@ -3195,10 +3246,13 @@ struct iwl_trans *iwl_trans_pcie_alloc(struct pci_dev *pdev,
 		trans_pcie->inta_mask = CSR_INI_SET_MASK;
 	 }
 
+<<<<<<< HEAD
 	trans_pcie->rba.alloc_wq = alloc_workqueue("rb_allocator",
 						   WQ_HIGHPRI | WQ_UNBOUND, 1);
 	INIT_WORK(&trans_pcie->rba.rx_alloc, iwl_pcie_rx_allocator_work);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_IWLWIFI_PCIE_RTPM
 	trans->runtime_pm_mode = IWL_PLAT_PM_MODE_D0I3;
 #else
@@ -3211,6 +3265,11 @@ out_free_ict:
 	iwl_pcie_free_ict(trans);
 out_no_pci:
 	free_percpu(trans_pcie->tso_hdr_page);
+<<<<<<< HEAD
+=======
+	destroy_workqueue(trans_pcie->rba.alloc_wq);
+out_free_trans:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	iwl_trans_free(trans);
 	return ERR_PTR(ret);
 }

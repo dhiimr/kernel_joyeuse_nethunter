@@ -73,9 +73,12 @@ static void req_retry(struct rxe_qp *qp)
 	int npsn;
 	int first = 1;
 
+<<<<<<< HEAD
 	wqe = queue_head(qp->sq.queue);
 	npsn = (qp->comp.psn - wqe->first_psn) & BTH_PSN_MASK;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	qp->req.wqe_index	= consumer_index(qp->sq.queue);
 	qp->req.psn		= qp->comp.psn;
 	qp->req.opcode		= -1;
@@ -107,11 +110,25 @@ static void req_retry(struct rxe_qp *qp)
 		if (first) {
 			first = 0;
 
+<<<<<<< HEAD
 			if (mask & WR_WRITE_OR_SEND_MASK)
 				retry_first_write_send(qp, wqe, mask, npsn);
 
 			if (mask & WR_READ_MASK)
 				wqe->iova += npsn * qp->mtu;
+=======
+			if (mask & WR_WRITE_OR_SEND_MASK) {
+				npsn = (qp->comp.psn - wqe->first_psn) &
+					BTH_PSN_MASK;
+				retry_first_write_send(qp, wqe, mask, npsn);
+			}
+
+			if (mask & WR_READ_MASK) {
+				npsn = (wqe->dma.length - wqe->dma.resid) /
+					qp->mtu;
+				wqe->iova += npsn * qp->mtu;
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		wqe->state = wqe_state_posted;
@@ -435,7 +452,11 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
 	if (pkt->mask & RXE_RETH_MASK) {
 		reth_set_rkey(pkt, ibwr->wr.rdma.rkey);
 		reth_set_va(pkt, wqe->iova);
+<<<<<<< HEAD
 		reth_set_len(pkt, wqe->dma.length);
+=======
+		reth_set_len(pkt, wqe->dma.resid);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (pkt->mask & RXE_IMMDT_MASK)
@@ -497,6 +518,15 @@ static int fill_packet(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
 			if (err)
 				return err;
 		}
+<<<<<<< HEAD
+=======
+		if (bth_pad(pkt)) {
+			u8 *pad = payload_addr(pkt) + paylen;
+
+			memset(pad, 0, bth_pad(pkt));
+			crc = rxe_crc32(rxe, crc, pad, bth_pad(pkt));
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	p = payload_addr(pkt) + paylen + bth_pad(pkt);
 
@@ -655,7 +685,12 @@ next_wqe:
 	}
 
 	if (unlikely(qp_type(qp) == IB_QPT_RC &&
+<<<<<<< HEAD
 		     qp->req.psn > (qp->comp.psn + RXE_MAX_UNACKED_PSNS))) {
+=======
+		psn_compare(qp->req.psn, (qp->comp.psn +
+				RXE_MAX_UNACKED_PSNS)) > 0)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		qp->req.wait_psn = 1;
 		goto exit;
 	}

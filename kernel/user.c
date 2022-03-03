@@ -17,7 +17,10 @@
 #include <linux/interrupt.h>
 #include <linux/export.h>
 #include <linux/user_namespace.h>
+<<<<<<< HEAD
 #include <linux/proc_fs.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/proc_ns.h>
 
 /*
@@ -203,7 +206,10 @@ struct user_struct *alloc_uid(kuid_t uid)
 		}
 		spin_unlock_irq(&uidhash_lock);
 	}
+<<<<<<< HEAD
 	proc_register_uid(uid);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return up;
 
@@ -225,7 +231,10 @@ static int __init uid_cache_init(void)
 	spin_lock_irq(&uidhash_lock);
 	uid_hash_insert(&root_user, uidhashentry(GLOBAL_ROOT_UID));
 	spin_unlock_irq(&uidhash_lock);
+<<<<<<< HEAD
 	proc_register_uid(GLOBAL_ROOT_UID);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }

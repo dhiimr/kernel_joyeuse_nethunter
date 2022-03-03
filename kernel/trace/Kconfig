@@ -73,9 +73,12 @@ config EVENT_TRACING
         select GLOB
 	bool
 
+<<<<<<< HEAD
 config GPU_TRACEPOINTS
 	bool
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config CONTEXT_SWITCH_TRACER
 	bool
 
@@ -85,6 +88,7 @@ config RING_BUFFER_ALLOW_SWAP
 	 Allow the use of ring_buffer_swap_cpu.
 	 Adds a very slight overhead to tracing when enabled.
 
+<<<<<<< HEAD
 config IPC_LOGGING
 	bool "Debug Logging for IPC Drivers"
 	select GENERIC_TRACER
@@ -114,6 +118,8 @@ config QCOM_RTB_SEPARATE_CPUS
 	  separately. This will guarantee that the last acesses for each cpu
 	  will be logged but there will be fewer entries per cpu
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # All tracer options should select GENERIC_TRACER. For those options that are
 # enabled by all tracers (context switch and event tracer) they select TRACING.
 # This allows those options to appear when no other tracer is selected. But the
@@ -192,6 +198,7 @@ config FUNCTION_GRAPH_TRACER
 	  address on the current task structure into a stack of calls.
 
 
+<<<<<<< HEAD
 config PREEMPTIRQ_EVENTS
 	bool "Enable trace events for preempt and irq disable/enable"
 	select TRACE_IRQFLAGS
@@ -203,6 +210,8 @@ config PREEMPTIRQ_EVENTS
 	  enabled. For tracing irq disable/enable events, PROVE_LOCKING must
 	  be disabled.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config IRQSOFF_TRACER
 	bool "Interrupts-off Latency Tracer"
 	default n

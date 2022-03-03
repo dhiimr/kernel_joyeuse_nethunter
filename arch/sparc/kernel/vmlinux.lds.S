@@ -167,12 +167,22 @@ SECTIONS
 	}
 	PERCPU_SECTION(SMP_CACHE_BYTES)
 
+<<<<<<< HEAD
 #ifdef CONFIG_JUMP_LABEL
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	. = ALIGN(PAGE_SIZE);
 	.exit.text : {
 		EXIT_TEXT
 	}
+<<<<<<< HEAD
 #endif
+=======
+
+	.exit.data : {
+		EXIT_DATA
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	. = ALIGN(PAGE_SIZE);
 	__init_end = .;

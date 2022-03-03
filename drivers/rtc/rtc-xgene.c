@@ -163,6 +163,13 @@ static int xgene_rtc_probe(struct platform_device *pdev)
 	if (IS_ERR(pdata->csr_base))
 		return PTR_ERR(pdata->csr_base);
 
+<<<<<<< HEAD
+=======
+	pdata->rtc = devm_rtc_allocate_device(&pdev->dev);
+	if (IS_ERR(pdata->rtc))
+		return PTR_ERR(pdata->rtc);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	irq = platform_get_irq(pdev, 0);
 	if (irq < 0) {
 		dev_err(&pdev->dev, "No IRQ resource\n");
@@ -187,6 +194,7 @@ static int xgene_rtc_probe(struct platform_device *pdev)
 
 	device_init_wakeup(&pdev->dev, 1);
 
+<<<<<<< HEAD
 	pdata->rtc = devm_rtc_device_register(&pdev->dev, pdev->name,
 					 &xgene_rtc_ops, THIS_MODULE);
 	if (IS_ERR(pdata->rtc)) {
@@ -196,6 +204,17 @@ static int xgene_rtc_probe(struct platform_device *pdev)
 
 	/* HW does not support update faster than 1 seconds */
 	pdata->rtc->uie_unsupported = 1;
+=======
+	/* HW does not support update faster than 1 seconds */
+	pdata->rtc->uie_unsupported = 1;
+	pdata->rtc->ops = &xgene_rtc_ops;
+
+	ret = rtc_register_device(pdata->rtc);
+	if (ret) {
+		clk_disable_unprepare(pdata->clk);
+		return ret;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }

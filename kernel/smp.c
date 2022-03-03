@@ -19,7 +19,10 @@
 #include <linux/sched.h>
 #include <linux/sched/idle.h>
 #include <linux/hypervisor.h>
+<<<<<<< HEAD
 #include <linux/suspend.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "smpboot.h"
 
@@ -39,9 +42,12 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(struct call_function_data, cfd_data);
 static DEFINE_PER_CPU_SHARED_ALIGNED(struct llist_head, call_single_queue);
 
 static void flush_smp_call_function_queue(bool warn_cpu_offline);
+<<<<<<< HEAD
 /* CPU mask indicating which CPUs to bring online during smp_init() */
 static bool have_boot_cpu_mask;
 static cpumask_var_t boot_cpu_mask;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 int smpcfd_prepare_cpu(unsigned int cpu)
 {
@@ -107,12 +113,20 @@ void __init call_function_init(void)
  * previous function call. For multi-cpu calls its even more interesting
  * as we'll have to ensure no other cpu is observing our csd.
  */
+<<<<<<< HEAD
 static __always_inline void csd_lock_wait(call_single_data_t *csd)
+=======
+static __always_inline void csd_lock_wait(struct __call_single_data *csd)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	smp_cond_load_acquire(&csd->flags, !(VAL & CSD_FLAG_LOCK));
 }
 
+<<<<<<< HEAD
 static __always_inline void csd_lock(call_single_data_t *csd)
+=======
+static __always_inline void csd_lock(struct __call_single_data *csd)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	csd_lock_wait(csd);
 	csd->flags |= CSD_FLAG_LOCK;
@@ -125,7 +139,11 @@ static __always_inline void csd_lock(call_single_data_t *csd)
 	smp_wmb();
 }
 
+<<<<<<< HEAD
 static __always_inline void csd_unlock(call_single_data_t *csd)
+=======
+static __always_inline void csd_unlock(struct __call_single_data *csd)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	WARN_ON(!(csd->flags & CSD_FLAG_LOCK));
 
@@ -142,7 +160,11 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(call_single_data_t, csd_data);
  * for execution on the given CPU. data must already have
  * ->func, ->info, and ->flags set.
  */
+<<<<<<< HEAD
 static int generic_exec_single(int cpu, call_single_data_t *csd,
+=======
+static int generic_exec_single(int cpu, struct __call_single_data *csd,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			       smp_call_func_t func, void *info)
 {
 	if (cpu == smp_processor_id()) {
@@ -327,7 +349,11 @@ EXPORT_SYMBOL(smp_call_function_single);
  * NOTE: Be careful, there is unfortunately no current debugging facility to
  * validate the correctness of this serialization.
  */
+<<<<<<< HEAD
 int smp_call_function_single_async(int cpu, call_single_data_t *csd)
+=======
+int smp_call_function_single_async(int cpu, struct __call_single_data *csd)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int err = 0;
 
@@ -553,6 +579,7 @@ static int __init maxcpus(char *str)
 
 early_param("maxcpus", maxcpus);
 
+<<<<<<< HEAD
 static int __init boot_cpus(char *str)
 {
 	alloc_bootmem_cpumask_var(&boot_cpu_mask);
@@ -566,6 +593,8 @@ static int __init boot_cpus(char *str)
 
 early_param("boot_cpus", boot_cpus);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Setup number of possible processor ids */
 unsigned int nr_cpu_ids __read_mostly = NR_CPUS;
 EXPORT_SYMBOL(nr_cpu_ids);
@@ -576,6 +605,7 @@ void __init setup_nr_cpu_ids(void)
 	nr_cpu_ids = find_last_bit(cpumask_bits(cpu_possible_mask),NR_CPUS) + 1;
 }
 
+<<<<<<< HEAD
 static inline bool boot_cpu(int cpu)
 {
 	if (!have_boot_cpu_mask)
@@ -590,6 +620,8 @@ static inline void free_boot_cpu_mask(void)
 		free_bootmem_cpumask_var(boot_cpu_mask);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Called by boot processor to activate the rest. */
 void __init smp_init(void)
 {
@@ -605,10 +637,16 @@ void __init smp_init(void)
 	for_each_present_cpu(cpu) {
 		if (num_online_cpus() >= setup_max_cpus)
 			break;
+<<<<<<< HEAD
 		if (!cpu_online(cpu) && boot_cpu(cpu))
 			cpu_up(cpu);
 	}
 	free_boot_cpu_mask();
+=======
+		if (!cpu_online(cpu))
+			cpu_up(cpu);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	num_nodes = num_online_nodes();
 	num_cpus  = num_online_cpus();
@@ -771,9 +809,13 @@ void wake_up_all_idle_cpus(void)
 		if (cpu == smp_processor_id())
 			continue;
 
+<<<<<<< HEAD
 		if (s2idle_state == S2IDLE_STATE_ENTER ||
 		    !cpu_isolated(cpu))
 			wake_up_if_idle(cpu);
+=======
+		wake_up_if_idle(cpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	preempt_enable();
 }

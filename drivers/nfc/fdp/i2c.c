@@ -176,6 +176,7 @@ static int fdp_nci_i2c_read(struct fdp_i2c_phy *phy, struct sk_buff **skb)
 		/* Packet that contains a length */
 		if (tmp[0] == 0 && tmp[1] == 0) {
 			phy->next_read_size = (tmp[2] << 8) + tmp[3] + 3;
+<<<<<<< HEAD
 			/*
 			 * Ensure next_read_size does not exceed sizeof(tmp)
 			 * for reading that many bytes during next iteration
@@ -186,6 +187,8 @@ static int fdp_nci_i2c_read(struct fdp_i2c_phy *phy, struct sk_buff **skb)
 				phy->next_read_size = 5;
 				goto flush;
 			}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else {
 			phy->next_read_size = FDP_NCI_I2C_MIN_PAYLOAD;
 
@@ -277,7 +280,11 @@ static void fdp_nci_i2c_read_device_properties(struct device *dev,
 						  *fw_vsc_cfg, len);
 
 		if (r) {
+<<<<<<< HEAD
 			devm_kfree(dev, fw_vsc_cfg);
+=======
+			devm_kfree(dev, *fw_vsc_cfg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto vsc_read_err;
 		}
 	} else {

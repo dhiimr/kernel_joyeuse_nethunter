@@ -65,8 +65,13 @@ static const struct pci_platform_pm_ops mid_pci_platform_pm = {
  * arch/x86/platform/intel-mid/pwr.c.
  */
 static const struct x86_cpu_id lpss_cpu_ids[] = {
+<<<<<<< HEAD
 	ICPU(INTEL_FAM6_ATOM_PENWELL),
 	ICPU(INTEL_FAM6_ATOM_MERRIFIELD),
+=======
+	ICPU(INTEL_FAM6_ATOM_SALTWELL_MID),
+	ICPU(INTEL_FAM6_ATOM_SILVERMONT_MID),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{}
 };
 

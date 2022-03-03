@@ -37,7 +37,11 @@ config SND_OXFW
 	   * Mackie(Loud) Onyx 1640i (former model)
 	   * Mackie(Loud) Onyx Satellite
 	   * Mackie(Loud) Tapco Link.Firewire
+<<<<<<< HEAD
 	   * Mackie(Loud) d.2 pro/d.4 pro
+=======
+	   * Mackie(Loud) d.2 pro/d.4 pro (built-in FireWire card with OXFW971 ASIC)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	   * Mackie(Loud) U.420/U.420d
 	   * TASCAM FireOne
 	   * Stanton Controllers & Systems 1 Deck/Mixer
@@ -83,7 +87,11 @@ config SND_BEBOB
 	  * PreSonus FIREBOX/FIREPOD/FP10/Inspire1394
 	  * BridgeCo RDAudio1/Audio5
 	  * Mackie Onyx 1220/1620/1640 (FireWire I/O Card)
+<<<<<<< HEAD
 	  * Mackie d.2 (FireWire Option)
+=======
+	  * Mackie d.2 (optional FireWire card with DM1000 ASIC)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	  * Stanton FinalScratch 2 (ScratchAmp)
 	  * Tascam IF-FW/DM
 	  * Behringer XENIX UFX 1204/1604
@@ -109,6 +117,10 @@ config SND_BEBOB
 	  * M-Audio Ozonic/NRV10/ProfireLightBridge
 	  * M-Audio FireWire 1814/ProjectMix IO
 	  * Digidesign Mbox 2 Pro
+<<<<<<< HEAD
+=======
+	  * ToneWeal FW66
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
           To compile this driver as a module, choose M here: the module
           will be called snd-bebob.

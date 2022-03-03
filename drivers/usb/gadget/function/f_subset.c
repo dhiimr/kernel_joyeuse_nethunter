@@ -362,7 +362,11 @@ geth_bind(struct usb_configuration *c, struct usb_function *f)
 		fs_subset_out_desc.bEndpointAddress;
 
 	status = usb_assign_descriptors(f, fs_eth_function, hs_eth_function,
+<<<<<<< HEAD
 			ss_eth_function, NULL);
+=======
+			ss_eth_function, ss_eth_function);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (status)
 		goto fail;
 

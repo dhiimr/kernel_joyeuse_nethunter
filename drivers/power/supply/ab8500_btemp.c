@@ -1177,6 +1177,10 @@ static const struct of_device_id ab8500_btemp_match[] = {
 	{ .compatible = "stericsson,ab8500-btemp", },
 	{ },
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(of, ab8500_btemp_match);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct platform_driver ab8500_btemp_driver = {
 	.probe = ab8500_btemp_probe,

@@ -156,6 +156,7 @@ Per-device statistics are exported as various nodes under /sys/block/zram<id>/
 A brief description of exported device attributes. For more details please
 read Documentation/ABI/testing/sysfs-block-zram.
 
+<<<<<<< HEAD
 Name            	access            description
 ----            	------            -----------
 disksize          	RW	show and set the device's disk size
@@ -174,6 +175,22 @@ debug_stat        	RO	this file is used for zram debugging purposes
 backing_dev	  	RW	set up backend storage for zram to write out
 use_dedup		RW	show and set deduplication feature
 idle		  	WO	mark allocated slot as idle
+=======
+Name            access            description
+----            ------            -----------
+disksize          RW    show and set the device's disk size
+initstate         RO    shows the initialization state of the device
+reset             WO    trigger device reset
+mem_used_max      WO    reset the `mem_used_max' counter (see later)
+mem_limit         WO    specifies the maximum amount of memory ZRAM can use
+                        to store the compressed data
+max_comp_streams  RW    the number of possible concurrent compress operations
+comp_algorithm    RW    show and change the compression algorithm
+compact           WO    trigger memory compaction
+debug_stat        RO    this file is used for zram debugging purposes
+backing_dev	  RW	set up backend storage for zram to write out
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 User space is advised to use the following files to read the device statistics.
 
@@ -222,6 +239,7 @@ line of text and contains the following stats separated by whitespace:
  same_pages       the number of same element filled pages written to this disk.
                   No memory is allocated for such pages.
  pages_compacted  the number of pages freed during compaction
+<<<<<<< HEAD
  dup_data_size	  deduplicated data size
  meta_data_size	  the amount of metadata allocated for deduplication feature
  huge_pages	  the number of incompressible pages
@@ -236,6 +254,8 @@ a single line of text and contains the following stats separated by whitespace:
 		Unit: 4K bytes
  bd_writes	the number of writes to backing device
 		Unit: 4K bytes
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 9) Deactivate:
 	swapoff /dev/zram0
@@ -254,6 +274,7 @@ a single line of text and contains the following stats separated by whitespace:
 
 = writeback
 
+<<<<<<< HEAD
 With CONFIG_ZRAM_WRITEBACK, zram can write idle/incompressible page
 to backing storage rather than keeping it in memory.
 To use the feature, admin should set up backing device via
@@ -352,6 +373,13 @@ First line of above example says 300th block is accessed at 75.033841sec
 and the block's state is huge so it is written back to the backing
 storage. It's a debugging feature so anyone shouldn't rely on it to work
 properly.
+=======
+With incompressible pages, there is no memory saving with zram.
+Instead, with CONFIG_ZRAM_WRITEBACK, zram can write incompressible page
+to backing storage rather than keeping it in memory.
+User should set up backing device via /sys/block/zramX/backing_dev
+before disksize setting.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 Nitin Gupta
 ngupta@vflare.org

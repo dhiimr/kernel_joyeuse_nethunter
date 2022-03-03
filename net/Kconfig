@@ -234,8 +234,11 @@ source "net/switchdev/Kconfig"
 source "net/l3mdev/Kconfig"
 source "net/qrtr/Kconfig"
 source "net/ncsi/Kconfig"
+<<<<<<< HEAD
 source "net/rmnet_data/Kconfig"
 source "net/rmnet_usb/Kconfig"
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config RPS
 	bool
@@ -286,7 +289,10 @@ config BPF_JIT
 	bool "enable BPF Just In Time compiler"
 	depends on HAVE_CBPF_JIT || HAVE_EBPF_JIT
 	depends on MODULES
+<<<<<<< HEAD
 	depends on !CFI
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	---help---
 	  Berkeley Packet Filter filtering capabilities are normally handled
 	  by an interpreter. This option allows kernel to generate a native
@@ -322,6 +328,7 @@ config NET_FLOW_LIMIT
 	  with many clients some protection against DoS by a single (spoofed)
 	  flow that greatly exceeds average workload.
 
+<<<<<<< HEAD
 config SOCKEV_NLMCAST
 	bool "Enable SOCKEV Netlink Multicast"
 	default n
@@ -331,6 +338,8 @@ config SOCKEV_NLMCAST
 	  user space entities need to be notified of socket events without
 	  having to poll /proc
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 menu "Network testing"
 
 config NET_PKTGEN

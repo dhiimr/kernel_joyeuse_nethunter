@@ -99,7 +99,11 @@ static struct inode *ufs_nfs_get_inode(struct super_block *sb, u64 ino, u32 gene
 	struct ufs_sb_private_info *uspi = UFS_SB(sb)->s_uspi;
 	struct inode *inode;
 
+<<<<<<< HEAD
 	if (ino < UFS_ROOTINO || ino > uspi->s_ncg * uspi->s_ipg)
+=======
+	if (ino < UFS_ROOTINO || ino > (u64)uspi->s_ncg * uspi->s_ipg)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ERR_PTR(-ESTALE);
 
 	inode = ufs_iget(sb, ino);

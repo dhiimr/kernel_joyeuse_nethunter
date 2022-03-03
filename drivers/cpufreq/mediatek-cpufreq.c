@@ -582,6 +582,10 @@ static const struct of_device_id mtk_cpufreq_machines[] __initconst = {
 
 	{ }
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(of, mtk_cpufreq_machines);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int __init mtk_cpufreq_driver_init(void)
 {

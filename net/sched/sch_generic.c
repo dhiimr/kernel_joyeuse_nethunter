@@ -341,6 +341,10 @@ void __netdev_watchdog_up(struct net_device *dev)
 			dev_hold(dev);
 	}
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(__netdev_watchdog_up);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static void dev_watchdog_up(struct net_device *dev)
 {
@@ -703,7 +707,15 @@ static void qdisc_rcu_free(struct rcu_head *head)
 
 void qdisc_destroy(struct Qdisc *qdisc)
 {
+<<<<<<< HEAD
 	const struct Qdisc_ops  *ops = qdisc->ops;
+=======
+	const struct Qdisc_ops *ops;
+
+	if (!qdisc)
+		return;
+	ops = qdisc->ops;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (qdisc->flags & TCQ_F_BUILTIN ||
 	    !refcount_dec_and_test(&qdisc->refcnt))
@@ -1005,6 +1017,10 @@ void psched_ratecfg_precompute(struct psched_ratecfg *r,
 {
 	memset(r, 0, sizeof(*r));
 	r->overhead = conf->overhead;
+<<<<<<< HEAD
+=======
+	r->mpu = conf->mpu;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	r->rate_bytes_ps = max_t(u64, conf->rate, rate64);
 	r->linklayer = (conf->linklayer & TC_LINKLAYER_MASK);
 	r->mult = 1;

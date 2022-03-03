@@ -194,8 +194,11 @@ static int cryptomgr_schedule_probe(struct crypto_larval *larval)
 	if (IS_ERR(thread))
 		goto err_put_larval;
 
+<<<<<<< HEAD
 	wait_for_completion_interruptible(&larval->completion);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return NOTIFY_STOP;
 
 err_put_larval:

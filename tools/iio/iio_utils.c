@@ -159,9 +159,15 @@ int iioutils_get_type(unsigned *is_signed, unsigned *bytes, unsigned *bits_used,
 			*be = (endianchar == 'b');
 			*bytes = padint / 8;
 			if (*bits_used == 64)
+<<<<<<< HEAD
 				*mask = ~0;
 			else
 				*mask = (1ULL << *bits_used) - 1;
+=======
+				*mask = ~(0ULL);
+			else
+				*mask = (1ULL << *bits_used) - 1ULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			*is_signed = (signchar == 's');
 			if (fclose(sysfsfp)) {

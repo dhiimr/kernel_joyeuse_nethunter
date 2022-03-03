@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #!/bin/bash
+=======
+#!/usr/bin/env bash
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # SPDX-License-Identifier: GPL-2.0
 # Manipulate options in a .config file from the command line
 
@@ -7,6 +11,12 @@ myname=${0##*/}
 # If no prefix forced, use the default CONFIG_
 CONFIG_="${CONFIG_-CONFIG_}"
 
+<<<<<<< HEAD
+=======
+# We use an uncommon delimiter for sed substitutions
+SED_DELIM=$(echo -en "\001")
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 usage() {
 	cat >&2 <<EOL
 Manipulate options in a .config file from the command line.
@@ -83,7 +93,11 @@ txt_subst() {
 	local infile="$3"
 	local tmpfile="$infile.swp"
 
+<<<<<<< HEAD
 	sed -e "s:$before:$after:" "$infile" >"$tmpfile"
+=======
+	sed -e "s$SED_DELIM$before$SED_DELIM$after$SED_DELIM" "$infile" >"$tmpfile"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	# replace original file with the edited one
 	mv "$tmpfile" "$infile"
 }

@@ -282,9 +282,15 @@ static inline u32 netvsc_get_hash(
 		else if (flow.basic.n_proto == htons(ETH_P_IPV6))
 			hash = jhash2((u32 *)&flow.addrs.v6addrs, 8, hashrnd);
 		else
+<<<<<<< HEAD
 			hash = 0;
 
 		skb_set_hash(skb, hash, PKT_HASH_TYPE_L3);
+=======
+			return 0;
+
+		__skb_set_sw_hash(skb, hash, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return hash;
@@ -365,7 +371,11 @@ static u16 netvsc_select_queue(struct net_device *ndev, struct sk_buff *skb,
 	}
 	rcu_read_unlock();
 
+<<<<<<< HEAD
 	while (unlikely(txq >= ndev->real_num_tx_queues))
+=======
+	while (txq >= ndev->real_num_tx_queues)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		txq -= ndev->real_num_tx_queues;
 
 	return txq;
@@ -500,7 +510,11 @@ static int netvsc_vf_xmit(struct net_device *net, struct net_device *vf_netdev,
 	int rc;
 
 	skb->dev = vf_netdev;
+<<<<<<< HEAD
 	skb->queue_mapping = qdisc_skb_cb(skb)->slave_dev_queue_mapping;
+=======
+	skb_record_rx_queue(skb, qdisc_skb_cb(skb)->slave_dev_queue_mapping);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rc = dev_queue_xmit(skb);
 	if (likely(rc == NET_XMIT_SUCCESS || rc == NET_XMIT_CN)) {
@@ -532,12 +546,22 @@ static int netvsc_start_xmit(struct sk_buff *skb, struct net_device *net)
 	u32 hash;
 	struct hv_page_buffer pb[MAX_PAGE_BUFFER_COUNT];
 
+<<<<<<< HEAD
 	/* if VF is present and up then redirect packets
 	 * already called with rcu_read_lock_bh
 	 */
 	vf_netdev = rcu_dereference_bh(net_device_ctx->vf_netdev);
 	if (vf_netdev && netif_running(vf_netdev) &&
 	    !netpoll_tx_running(net))
+=======
+	/* If VF is present and up then redirect packets to it.
+	 * Skip the VF if it is marked down or has no carrier.
+	 * If netpoll is in uses, then VF can not be used either.
+	 */
+	vf_netdev = rcu_dereference_bh(net_device_ctx->vf_netdev);
+	if (vf_netdev && netif_running(vf_netdev) &&
+	    netif_carrier_ok(vf_netdev) && !netpoll_tx_running(net))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return netvsc_vf_xmit(net, vf_netdev, skb);
 
 	/* We will atmost need two pages to describe the rndis
@@ -802,8 +826,12 @@ static struct sk_buff *netvsc_alloc_recv_skb(struct net_device *net,
 	    skb->protocol == htons(ETH_P_IP))
 		netvsc_comp_ipcsum(skb);
 
+<<<<<<< HEAD
 	/* Do L4 checksum offload if enabled and present.
 	 */
+=======
+	/* Do L4 checksum offload if enabled and present. */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (csum_info && (net->features & NETIF_F_RXCSUM)) {
 		if (csum_info->receive.tcp_checksum_succeeded ||
 		    csum_info->receive.udp_checksum_succeeded)
@@ -969,7 +997,11 @@ static int netvsc_attach(struct net_device *ndev,
 	if (netif_running(ndev)) {
 		ret = rndis_filter_open(nvdev);
 		if (ret)
+<<<<<<< HEAD
 			return ret;
+=======
+			goto err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		rdev = nvdev->extension;
 		if (!rdev->link_state)
@@ -977,6 +1009,16 @@ static int netvsc_attach(struct net_device *ndev,
 	}
 
 	return 0;
+<<<<<<< HEAD
+=======
+
+err:
+	netif_device_detach(ndev);
+
+	rndis_filter_device_remove(hdev, nvdev);
+
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int netvsc_set_channels(struct net_device *net,
@@ -1170,12 +1212,24 @@ static void netvsc_get_stats64(struct net_device *net,
 			       struct rtnl_link_stats64 *t)
 {
 	struct net_device_context *ndev_ctx = netdev_priv(net);
+<<<<<<< HEAD
 	struct netvsc_device *nvdev = rcu_dereference_rtnl(ndev_ctx->nvdev);
 	struct netvsc_vf_pcpu_stats vf_tot;
 	int i;
 
 	if (!nvdev)
 		return;
+=======
+	struct netvsc_device *nvdev;
+	struct netvsc_vf_pcpu_stats vf_tot;
+	int i;
+
+	rcu_read_lock();
+
+	nvdev = rcu_dereference(ndev_ctx->nvdev);
+	if (!nvdev)
+		goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	netdev_stats_to_stats64(t, &net->stats);
 
@@ -1214,6 +1268,11 @@ static void netvsc_get_stats64(struct net_device *net,
 		t->rx_packets	+= packets;
 		t->multicast	+= multicast;
 	}
+<<<<<<< HEAD
+=======
+out:
+	rcu_read_unlock();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int netvsc_set_mac_addr(struct net_device *ndev, void *p)
@@ -1516,7 +1575,11 @@ static int netvsc_get_rxfh(struct net_device *dev, u32 *indir, u8 *key,
 	rndis_dev = ndev->extension;
 	if (indir) {
 		for (i = 0; i < ITAB_NUM; i++)
+<<<<<<< HEAD
 			indir[i] = rndis_dev->rx_table[i];
+=======
+			indir[i] = ndc->rx_table[i];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (key)
@@ -1546,7 +1609,11 @@ static int netvsc_set_rxfh(struct net_device *dev, const u32 *indir,
 				return -EINVAL;
 
 		for (i = 0; i < ITAB_NUM; i++)
+<<<<<<< HEAD
 			rndis_dev->rx_table[i] = indir[i];
+=======
+			ndc->rx_table[i] = indir[i];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (!key) {
@@ -1828,6 +1895,15 @@ static rx_handler_result_t netvsc_vf_handle_frame(struct sk_buff **pskb)
 	struct netvsc_vf_pcpu_stats *pcpu_stats
 		 = this_cpu_ptr(ndev_ctx->vf_stats);
 
+<<<<<<< HEAD
+=======
+	skb = skb_share_check(skb, GFP_ATOMIC);
+	if (unlikely(!skb))
+		return RX_HANDLER_CONSUMED;
+
+	*pskb = skb;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	skb->dev = ndev;
 
 	u64_stats_update_begin(&pcpu_stats->syncp);

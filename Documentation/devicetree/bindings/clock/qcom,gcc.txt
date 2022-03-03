@@ -18,6 +18,7 @@ Required properties :
 			"qcom,gcc-msm8994"
 			"qcom,gcc-msm8996"
 			"qcom,gcc-mdm9615"
+<<<<<<< HEAD
 			"qcom,gcc-sm8150"
 			"qcom,gcc-sm8150-v2"
 			"qcom,gcc-sdmshrike"
@@ -30,6 +31,8 @@ Required properties :
 			"qcom,gcc-sa6155"
 			"qcom,gcc-sdxprairie-v2"
 			"qcom,atoll-gcc"
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 - reg : shall contain base register location and length
 - #clock-cells : shall contain 1
@@ -37,7 +40,10 @@ Required properties :
 
 Optional properties :
 - #power-domain-cells : shall contain 1
+<<<<<<< HEAD
 - vdd_<rail>-supply: The logic rail supply.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 - Qualcomm TSENS (thermal sensor device) on some devices can
 be part of GCC and hence the TSENS properties can also be
 part of the GCC/clock-controller node.

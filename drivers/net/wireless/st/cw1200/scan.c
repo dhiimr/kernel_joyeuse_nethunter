@@ -84,8 +84,16 @@ int cw1200_hw_scan(struct ieee80211_hw *hw,
 
 	frame.skb = ieee80211_probereq_get(hw, priv->vif->addr, NULL, 0,
 		req->ie_len);
+<<<<<<< HEAD
 	if (!frame.skb)
 		return -ENOMEM;
+=======
+	if (!frame.skb) {
+		mutex_unlock(&priv->conf_mutex);
+		up(&priv->scan.lock);
+		return -ENOMEM;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (req->ie_len)
 		skb_put_data(frame.skb, req->ie, req->ie_len);

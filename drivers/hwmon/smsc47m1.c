@@ -73,16 +73,31 @@ superio_inb(int reg)
 /* logical device for fans is 0x0A */
 #define superio_select() superio_outb(0x07, 0x0A)
 
+<<<<<<< HEAD
 static inline void
 superio_enter(void)
 {
 	outb(0x55, REG);
+=======
+static inline int
+superio_enter(void)
+{
+	if (!request_muxed_region(REG, 2, DRVNAME))
+		return -EBUSY;
+
+	outb(0x55, REG);
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void
 superio_exit(void)
 {
 	outb(0xAA, REG);
+<<<<<<< HEAD
+=======
+	release_region(REG, 2);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #define SUPERIO_REG_ACT		0x30
@@ -531,8 +546,17 @@ static int __init smsc47m1_find(struct smsc47m1_sio_data *sio_data)
 {
 	u8 val;
 	unsigned short addr;
+<<<<<<< HEAD
 
 	superio_enter();
+=======
+	int err;
+
+	err = superio_enter();
+	if (err)
+		return err;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	val = force_id ? force_id : superio_inb(SUPERIO_REG_DEVID);
 
 	/*
@@ -608,6 +632,7 @@ static int __init smsc47m1_find(struct smsc47m1_sio_data *sio_data)
 static void smsc47m1_restore(const struct smsc47m1_sio_data *sio_data)
 {
 	if ((sio_data->activate & 0x01) == 0) {
+<<<<<<< HEAD
 		superio_enter();
 		superio_select();
 
@@ -615,6 +640,16 @@ static void smsc47m1_restore(const struct smsc47m1_sio_data *sio_data)
 		superio_outb(SUPERIO_REG_ACT, sio_data->activate);
 
 		superio_exit();
+=======
+		if (!superio_enter()) {
+			superio_select();
+			pr_info("Disabling device\n");
+			superio_outb(SUPERIO_REG_ACT, sio_data->activate);
+			superio_exit();
+		} else {
+			pr_warn("Failed to disable device\n");
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 

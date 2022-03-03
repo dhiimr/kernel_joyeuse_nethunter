@@ -266,11 +266,20 @@ static u64 get_sideband_reg_base_addr(void)
 	}
 }
 
+<<<<<<< HEAD
+=======
+#define DNV_MCHBAR_SIZE  0x8000
+#define DNV_SB_PORT_SIZE 0x10000
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int dnv_rd_reg(int port, int off, int op, void *data, size_t sz, char *name)
 {
 	struct pci_dev *pdev;
 	char *base;
 	u64 addr;
+<<<<<<< HEAD
+=======
+	unsigned long size;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (op == 4) {
 		pdev = pci_get_device(PCI_VENDOR_ID_INTEL, 0x1980, NULL);
@@ -285,15 +294,26 @@ static int dnv_rd_reg(int port, int off, int op, void *data, size_t sz, char *na
 			addr = get_mem_ctrl_hub_base_addr();
 			if (!addr)
 				return -ENODEV;
+<<<<<<< HEAD
+=======
+			size = DNV_MCHBAR_SIZE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else {
 			/* MMIO via sideband register base address */
 			addr = get_sideband_reg_base_addr();
 			if (!addr)
 				return -ENODEV;
 			addr += (port << 16);
+<<<<<<< HEAD
 		}
 
 		base = ioremap((resource_size_t)addr, 0x10000);
+=======
+			size = DNV_SB_PORT_SIZE;
+		}
+
+		base = ioremap((resource_size_t)addr, size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!base)
 			return -ENODEV;
 
@@ -1539,7 +1559,11 @@ static struct dunit_ops dnv_ops = {
 
 static const struct x86_cpu_id pnd2_cpuids[] = {
 	{ X86_VENDOR_INTEL, 6, INTEL_FAM6_ATOM_GOLDMONT, 0, (kernel_ulong_t)&apl_ops },
+<<<<<<< HEAD
 	{ X86_VENDOR_INTEL, 6, INTEL_FAM6_ATOM_DENVERTON, 0, (kernel_ulong_t)&dnv_ops },
+=======
+	{ X86_VENDOR_INTEL, 6, INTEL_FAM6_ATOM_GOLDMONT_X, 0, (kernel_ulong_t)&dnv_ops },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ }
 };
 MODULE_DEVICE_TABLE(x86cpu, pnd2_cpuids);

@@ -37,7 +37,11 @@ static u8 *udl_get_edid(struct udl_device *udl)
 		ret = usb_control_msg(udl->udev,
 				      usb_rcvctrlpipe(udl->udev, 0), (0x02),
 				      (0x80 | (0x02 << 5)), i << 8, 0xA1, rbuf, 2,
+<<<<<<< HEAD
 				      HZ);
+=======
+				      1000);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (ret < 1) {
 			DRM_ERROR("Read EDID byte %d failed err %x\n", i, ret);
 			goto error;
@@ -105,7 +109,11 @@ static struct drm_encoder*
 udl_best_single_encoder(struct drm_connector *connector)
 {
 	int enc_id = connector->encoder_ids[0];
+<<<<<<< HEAD
 	return drm_encoder_find(connector->dev, NULL, enc_id);
+=======
+	return drm_encoder_find(connector->dev, enc_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int udl_connector_set_property(struct drm_connector *connector,

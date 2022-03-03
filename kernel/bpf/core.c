@@ -228,6 +228,7 @@ static bool bpf_is_jmp_and_has_target(const struct bpf_insn *insn)
 	       BPF_OP(insn->code) != BPF_EXIT;
 }
 
+<<<<<<< HEAD
 static void bpf_adj_branches(struct bpf_prog *prog, u32 pos, u32 delta)
 {
 	struct bpf_insn *insn = prog->insnsi;
@@ -243,12 +244,62 @@ static void bpf_adj_branches(struct bpf_prog *prog, u32 pos, u32 delta)
 		else if (i > pos + delta && i + insn->off + 1 <= pos + delta)
 			insn->off -= delta;
 	}
+=======
+static int bpf_adj_delta_to_off(struct bpf_insn *insn, u32 pos, u32 delta,
+				u32 curr, const bool probe_pass)
+{
+	const s32 off_min = S16_MIN, off_max = S16_MAX;
+	s32 off = insn->off;
+
+	if (curr < pos && curr + off + 1 > pos)
+		off += delta;
+	else if (curr > pos + delta && curr + off + 1 <= pos + delta)
+		off -= delta;
+	if (off < off_min || off > off_max)
+		return -ERANGE;
+	if (!probe_pass)
+		insn->off = off;
+	return 0;
+}
+
+static int bpf_adj_branches(struct bpf_prog *prog, u32 pos, u32 delta,
+			    const bool probe_pass)
+{
+	u32 i, insn_cnt = prog->len + (probe_pass ? delta : 0);
+	struct bpf_insn *insn = prog->insnsi;
+	int ret = 0;
+
+	for (i = 0; i < insn_cnt; i++, insn++) {
+		/* In the probing pass we still operate on the original,
+		 * unpatched image in order to check overflows before we
+		 * do any other adjustments. Therefore skip the patchlet.
+		 */
+		if (probe_pass && i == pos) {
+			i += delta + 1;
+			insn++;
+		}
+
+		if (!bpf_is_jmp_and_has_target(insn))
+			continue;
+
+		/* Adjust offset of jmps if we cross patch boundaries. */
+		ret = bpf_adj_delta_to_off(insn, pos, delta, i, probe_pass);
+		if (ret)
+			break;
+	}
+
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
 				       const struct bpf_insn *patch, u32 len)
 {
 	u32 insn_adj_cnt, insn_rest, insn_delta = len - 1;
+<<<<<<< HEAD
+=======
+	const u32 cnt_max = S16_MAX;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct bpf_prog *prog_adj;
 
 	/* Since our patchlet doesn't expand the image, we're done. */
@@ -259,6 +310,18 @@ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
 
 	insn_adj_cnt = prog->len + insn_delta;
 
+<<<<<<< HEAD
+=======
+	/* Reject anything that would potentially let the insn->off
+	 * target overflow when we have excessive program expansions.
+	 * We need to probe here before we do any reallocation where
+	 * we afterwards may not fail anymore.
+	 */
+	if (insn_adj_cnt > cnt_max &&
+	    bpf_adj_branches(prog, off, insn_delta, true))
+		return NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Several new instructions need to be inserted. Make room
 	 * for them. Likely, there's no need for a new allocation as
 	 * last page could have large enough tailroom.
@@ -284,12 +347,30 @@ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
 		sizeof(*patch) * insn_rest);
 	memcpy(prog_adj->insnsi + off, patch, sizeof(*patch) * len);
 
+<<<<<<< HEAD
 	bpf_adj_branches(prog_adj, off, insn_delta);
+=======
+	/* We are guaranteed to not fail at this point, otherwise
+	 * the ship has sailed to reverse to the original state. An
+	 * overflow cannot happen at this point.
+	 */
+	BUG_ON(bpf_adj_branches(prog_adj, off, insn_delta, false));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return prog_adj;
 }
 
 #ifdef CONFIG_BPF_JIT
+<<<<<<< HEAD
+=======
+/* All BPF JIT sysctl knobs here. */
+int bpf_jit_enable   __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_ALWAYS_ON);
+int bpf_jit_harden   __read_mostly;
+int bpf_jit_kallsyms __read_mostly;
+long bpf_jit_limit   __read_mostly;
+long bpf_jit_limit_max __read_mostly;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static __always_inline void
 bpf_get_prog_addr_region(const struct bpf_prog *prog,
 			 unsigned long *symbol_start,
@@ -358,8 +439,11 @@ static DEFINE_SPINLOCK(bpf_lock);
 static LIST_HEAD(bpf_kallsyms);
 static struct latch_tree_root bpf_tree __cacheline_aligned;
 
+<<<<<<< HEAD
 int bpf_jit_kallsyms __read_mostly;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void bpf_prog_ksym_node_add(struct bpf_prog_aux *aux)
 {
 	WARN_ON_ONCE(!list_empty(&aux->ksym_lnode));
@@ -486,27 +570,93 @@ int bpf_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static atomic_long_t bpf_jit_current;
+
+/* Can be overridden by an arch's JIT compiler if it has a custom,
+ * dedicated BPF backend memory area, or if neither of the two
+ * below apply.
+ */
+u64 __weak bpf_jit_alloc_exec_limit(void)
+{
+#if defined(MODULES_VADDR)
+	return MODULES_END - MODULES_VADDR;
+#else
+	return VMALLOC_END - VMALLOC_START;
+#endif
+}
+
+static int __init bpf_jit_charge_init(void)
+{
+	/* Only used as heuristic here to derive limit. */
+	bpf_jit_limit_max = bpf_jit_alloc_exec_limit();
+	bpf_jit_limit = min_t(u64, round_up(bpf_jit_limit_max >> 2,
+					    PAGE_SIZE), LONG_MAX);
+	return 0;
+}
+pure_initcall(bpf_jit_charge_init);
+
+static int bpf_jit_charge_modmem(u32 pages)
+{
+	if (atomic_long_add_return(pages, &bpf_jit_current) >
+	    (bpf_jit_limit >> PAGE_SHIFT)) {
+		if (!capable(CAP_SYS_ADMIN)) {
+			atomic_long_sub(pages, &bpf_jit_current);
+			return -EPERM;
+		}
+	}
+
+	return 0;
+}
+
+static void bpf_jit_uncharge_modmem(u32 pages)
+{
+	atomic_long_sub(pages, &bpf_jit_current);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct bpf_binary_header *
 bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
 		     unsigned int alignment,
 		     bpf_jit_fill_hole_t bpf_fill_ill_insns)
 {
 	struct bpf_binary_header *hdr;
+<<<<<<< HEAD
 	unsigned int size, hole, start;
+=======
+	u32 size, hole, start, pages;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Most of BPF filters are really small, but if some of them
 	 * fill a page, allow at least 128 extra bytes to insert a
 	 * random section of illegal instructions.
 	 */
 	size = round_up(proglen + sizeof(*hdr) + 128, PAGE_SIZE);
+<<<<<<< HEAD
 	hdr = module_alloc(size);
 	if (hdr == NULL)
 		return NULL;
+=======
+	pages = size / PAGE_SIZE;
+
+	if (bpf_jit_charge_modmem(pages))
+		return NULL;
+	hdr = module_alloc(size);
+	if (!hdr) {
+		bpf_jit_uncharge_modmem(pages);
+		return NULL;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Fill space with illegal/arch-dep instructions. */
 	bpf_fill_ill_insns(hdr, size);
 
+<<<<<<< HEAD
 	hdr->pages = size / PAGE_SIZE;
+=======
+	hdr->pages = pages;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hole = min_t(unsigned int, size - (proglen + sizeof(*hdr)),
 		     PAGE_SIZE - sizeof(*hdr));
 	start = (get_random_int() % hole) & ~(alignment - 1);
@@ -519,7 +669,14 @@ bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
 
 void bpf_jit_binary_free(struct bpf_binary_header *hdr)
 {
+<<<<<<< HEAD
 	module_memfree(hdr);
+=======
+	u32 pages = hdr->pages;
+
+	module_memfree(hdr);
+	bpf_jit_uncharge_modmem(pages);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* This symbol is only overridden by archs that have different
@@ -540,8 +697,11 @@ void __weak bpf_jit_free(struct bpf_prog *fp)
 	bpf_prog_unlock_free(fp);
 }
 
+<<<<<<< HEAD
 int bpf_jit_harden __read_mostly;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int bpf_jit_blind_insn(const struct bpf_insn *from,
 			      const struct bpf_insn *aux,
 			      struct bpf_insn *to_buff)
@@ -1327,9 +1487,19 @@ EVAL4(PROG_NAME_LIST, 416, 448, 480, 512)
 };
 
 #else
+<<<<<<< HEAD
 static unsigned int __bpf_prog_ret0(const void *ctx,
 				    const struct bpf_insn *insn)
 {
+=======
+static unsigned int __bpf_prog_ret0_warn(const void *ctx,
+					 const struct bpf_insn *insn)
+{
+	/* If this handler ever gets executed, then BPF_JIT_ALWAYS_ON
+	 * is not working properly, so warn about it!
+	 */
+	WARN_ON_ONCE(1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 #endif
@@ -1386,7 +1556,11 @@ struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
 
 	fp->bpf_func = interpreters[(round_up(stack_depth, 32) / 32) - 1];
 #else
+<<<<<<< HEAD
 	fp->bpf_func = __bpf_prog_ret0;
+=======
+	fp->bpf_func = __bpf_prog_ret0_warn;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 	/* eBPF JITs can rewrite the program in case constant

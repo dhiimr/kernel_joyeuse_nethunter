@@ -1114,7 +1114,11 @@
 		};
 
 		gpu: adreno-3xx@4300000 {
+<<<<<<< HEAD
 			compatible = "qcom,adreno-3xx";
+=======
+			compatible = "qcom,adreno-320.2", "qcom,adreno";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			reg = <0x04300000 0x20000>;
 			reg-names = "kgsl_3d0_reg_memory";
 			interrupts = <GIC_SPI 80 0>;
@@ -1129,7 +1133,10 @@
 			    <&mmcc GFX3D_AHB_CLK>,
 			    <&mmcc GFX3D_AXI_CLK>,
 			    <&mmcc MMSS_IMEM_AHB_CLK>;
+<<<<<<< HEAD
 			qcom,chipid = <0x03020002>;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			iommus = <&gfx3d 0
 				  &gfx3d 1
@@ -1228,9 +1235,15 @@
 				<&mmcc DSI1_BYTE_CLK>,
 				<&mmcc DSI_PIXEL_CLK>,
 				<&mmcc DSI1_ESC_CLK>;
+<<<<<<< HEAD
 			clock-names = "iface_clk", "bus_clk", "core_mmss_clk",
 					"src_clk", "byte_clk", "pixel_clk",
 					"core_clk";
+=======
+			clock-names = "iface", "bus", "core_mmss",
+					"src", "byte", "pixel",
+					"core";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			assigned-clocks = <&mmcc DSI1_BYTE_SRC>,
 					<&mmcc DSI1_ESC_SRC>,

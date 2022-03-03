@@ -2355,6 +2355,7 @@ static int alg_test_null(const struct alg_test_desc *desc,
 /* Please keep this list sorted by algorithm name. */
 static const struct alg_test_desc alg_test_descs[] = {
 	{
+<<<<<<< HEAD
 		.alg = "adiantum(xchacha12,aes)",
 		.test = alg_test_skcipher,
 		.suite = {
@@ -2373,6 +2374,8 @@ static const struct alg_test_desc alg_test_descs[] = {
 			}
 		},
 	}, {
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.alg = "ansi_cprng",
 		.test = alg_test_cprng,
 		.suite = {
@@ -3321,12 +3324,15 @@ static const struct alg_test_desc alg_test_descs[] = {
 			.hash = __VECS(michael_mic_tv_template)
 		}
 	}, {
+<<<<<<< HEAD
 		.alg = "nhpoly1305",
 		.test = alg_test_hash,
 		.suite = {
 			.hash = __VECS(nhpoly1305_tv_template)
 		}
 	}, {
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.alg = "ofb(aes)",
 		.test = alg_test_skcipher,
 		.fips_allowed = 1,
@@ -3578,6 +3584,7 @@ static const struct alg_test_desc alg_test_descs[] = {
 			.hash = __VECS(aes_xcbc128_tv_template)
 		}
 	}, {
+<<<<<<< HEAD
 		.alg = "xchacha12",
 		.test = alg_test_skcipher,
 		.suite = {
@@ -3596,6 +3603,8 @@ static const struct alg_test_desc alg_test_descs[] = {
 			}
 		},
 	}, {
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.alg = "xts(aes)",
 		.test = alg_test_skcipher,
 		.fips_allowed = 1,
@@ -3651,6 +3660,7 @@ static const struct alg_test_desc alg_test_descs[] = {
 				.decomp = __VECS(zlib_deflate_decomp_tv_template)
 			}
 		}
+<<<<<<< HEAD
 	}, {
 		.alg = "zstd",
 		.test = alg_test_comp,
@@ -3661,6 +3671,8 @@ static const struct alg_test_desc alg_test_descs[] = {
 				.decomp = __VECS(zstd_decomp_tv_template)
 			}
 		}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 };
 

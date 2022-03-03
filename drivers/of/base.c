@@ -95,6 +95,7 @@ int __weak of_node_to_nid(struct device_node *np)
 }
 #endif
 
+<<<<<<< HEAD
 static struct device_node **phandle_cache;
 static u32 phandle_cache_mask;
 
@@ -154,13 +155,116 @@ static int __init of_free_phandle_cache(void)
 }
 late_initcall_sync(of_free_phandle_cache);
 #endif
+=======
+#ifndef CONFIG_OF_DYNAMIC
+static void of_node_release(struct kobject *kobj)
+{
+	/* Without CONFIG_OF_DYNAMIC, no nodes gets freed */
+}
+#endif /* CONFIG_OF_DYNAMIC */
+
+struct kobj_type of_node_ktype = {
+	.release = of_node_release,
+};
+
+static ssize_t of_node_property_read(struct file *filp, struct kobject *kobj,
+				struct bin_attribute *bin_attr, char *buf,
+				loff_t offset, size_t count)
+{
+	struct property *pp = container_of(bin_attr, struct property, attr);
+	return memory_read_from_buffer(buf, count, &offset, pp->value, pp->length);
+}
+
+/* always return newly allocated name, caller must free after use */
+static const char *safe_name(struct kobject *kobj, const char *orig_name)
+{
+	const char *name = orig_name;
+	struct kernfs_node *kn;
+	int i = 0;
+
+	/* don't be a hero. After 16 tries give up */
+	while (i < 16 && (kn = sysfs_get_dirent(kobj->sd, name))) {
+		sysfs_put(kn);
+		if (name != orig_name)
+			kfree(name);
+		name = kasprintf(GFP_KERNEL, "%s#%i", orig_name, ++i);
+	}
+
+	if (name == orig_name) {
+		name = kstrdup(orig_name, GFP_KERNEL);
+	} else {
+		pr_warn("Duplicate name in %s, renamed to \"%s\"\n",
+			kobject_name(kobj), name);
+	}
+	return name;
+}
+
+int __of_add_property_sysfs(struct device_node *np, struct property *pp)
+{
+	int rc;
+
+	/* Important: Don't leak passwords */
+	bool secure = strncmp(pp->name, "security-", 9) == 0;
+
+	if (!IS_ENABLED(CONFIG_SYSFS))
+		return 0;
+
+	if (!of_kset || !of_node_is_attached(np))
+		return 0;
+
+	sysfs_bin_attr_init(&pp->attr);
+	pp->attr.attr.name = safe_name(&np->kobj, pp->name);
+	pp->attr.attr.mode = secure ? 0400 : 0444;
+	pp->attr.size = secure ? 0 : pp->length;
+	pp->attr.read = of_node_property_read;
+
+	rc = sysfs_create_bin_file(&np->kobj, &pp->attr);
+	WARN(rc, "error adding attribute %s to node %pOF\n", pp->name, np);
+	return rc;
+}
+
+int __of_attach_node_sysfs(struct device_node *np)
+{
+	const char *name;
+	struct kobject *parent;
+	struct property *pp;
+	int rc;
+
+	if (!of_kset)
+		return 0;
+
+	np->kobj.kset = of_kset;
+	if (!np->parent) {
+		/* Nodes without parents are new top level trees */
+		name = safe_name(&of_kset->kobj, "base");
+		parent = NULL;
+	} else {
+		name = safe_name(&np->parent->kobj, kbasename(np->full_name));
+		parent = &np->parent->kobj;
+	}
+	if (!name)
+		return -ENOMEM;
+	rc = kobject_add(&np->kobj, parent, "%s", name);
+	kfree(name);
+	if (rc)
+		return rc;
+
+	for_each_property_of_node(np, pp)
+		__of_add_property_sysfs(np, pp);
+
+	return 0;
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 void __init of_core_init(void)
 {
 	struct device_node *np;
 
+<<<<<<< HEAD
 	of_populate_phandle_cache();
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Create the kset, and register existing nodes */
 	mutex_lock(&of_mutex);
 	of_kset = kset_create_and_add("devicetree", NULL, firmware_kobj);
@@ -378,6 +482,7 @@ struct device_node *of_get_cpu_node(int cpu, unsigned int *thread)
 EXPORT_SYMBOL(of_get_cpu_node);
 
 /**
+<<<<<<< HEAD
  * of_cpu_node_to_id: Get the logical CPU number for a given device_node
  *
  * @cpu_node: Pointer to the device_node for CPU.
@@ -404,6 +509,8 @@ int of_cpu_node_to_id(struct device_node *cpu_node)
 EXPORT_SYMBOL(of_cpu_node_to_id);
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * __of_device_is_compatible() - Check if the node matches given constraints
  * @device: pointer to node
  * @compat: required compatible string, NULL or "" for any match
@@ -1112,14 +1219,20 @@ EXPORT_SYMBOL_GPL(of_modalias_node);
  */
 struct device_node *of_find_node_by_phandle(phandle handle)
 {
+<<<<<<< HEAD
 	struct device_node *np = NULL;
 	unsigned long flags;
 	phandle masked_handle;
+=======
+	struct device_node *np;
+	unsigned long flags;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!handle)
 		return NULL;
 
 	raw_spin_lock_irqsave(&devtree_lock, flags);
+<<<<<<< HEAD
 
 	masked_handle = handle & phandle_cache_mask;
 
@@ -1138,6 +1251,11 @@ struct device_node *of_find_node_by_phandle(phandle handle)
 			}
 	}
 
+=======
+	for_each_of_allnodes(np)
+		if (np->phandle == handle)
+			break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	of_node_get(np);
 	raw_spin_unlock_irqrestore(&devtree_lock, flags);
 	return np;
@@ -1531,6 +1649,25 @@ int __of_remove_property(struct device_node *np, struct property *prop)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+void __of_sysfs_remove_bin_file(struct device_node *np, struct property *prop)
+{
+	sysfs_remove_bin_file(&np->kobj, &prop->attr);
+	kfree(prop->attr.attr.name);
+}
+
+void __of_remove_property_sysfs(struct device_node *np, struct property *prop)
+{
+	if (!IS_ENABLED(CONFIG_SYSFS))
+		return;
+
+	/* at early boot, bail here and defer setup to of_init() */
+	if (of_kset && of_node_is_attached(np))
+		__of_sysfs_remove_bin_file(np, prop);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * of_remove_property - Remove a property from a node.
  *
@@ -1590,6 +1727,24 @@ int __of_update_property(struct device_node *np, struct property *newprop,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+void __of_update_property_sysfs(struct device_node *np, struct property *newprop,
+		struct property *oldprop)
+{
+	if (!IS_ENABLED(CONFIG_SYSFS))
+		return;
+
+	/* At early boot, bail out and defer setup to of_init() */
+	if (!of_kset)
+		return;
+
+	if (oldprop)
+		__of_sysfs_remove_bin_file(np, oldprop);
+	__of_add_property_sysfs(np, newprop);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * of_update_property - Update a property in a node, if the property does
  * not exist, add it.
@@ -1808,7 +1963,11 @@ struct device_node *of_find_next_cache_node(const struct device_node *np)
 	/* OF on pmac has nodes instead of properties named "l2-cache"
 	 * beneath CPU nodes.
 	 */
+<<<<<<< HEAD
 	if (!strcmp(np->type, "cpu"))
+=======
+	if (IS_ENABLED(CONFIG_PPC_PMAC) && !strcmp(np->type, "cpu"))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		for_each_child_of_node(np, child)
 			if (!strcmp(child->type, "cache"))
 				return child;

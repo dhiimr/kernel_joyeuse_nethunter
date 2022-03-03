@@ -1,8 +1,15 @@
 // SPDX-License-Identifier: GPL-2.0
 #include <linux/font.h>
 
+<<<<<<< HEAD
 static const unsigned char fontdata_6x10[] = {
 
+=======
+#define FONTDATAMAX 2560
+
+static const struct font_data fontdata_6x10 = {
+	{ 0, 0, FONTDATAMAX, 0 }, {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* 0 0x00 '^@' */
 	0x00, /* 00000000 */
 	0x00, /* 00000000 */
@@ -3074,14 +3081,22 @@ static const unsigned char fontdata_6x10[] = {
 	0x00, /* 00000000 */
 	0x00, /* 00000000 */
 	0x00, /* 00000000 */
+<<<<<<< HEAD
 
 };
+=======
+} };
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 const struct font_desc font_6x10 = {
 	.idx	= FONT6x10_IDX,
 	.name	= "6x10",
 	.width	= 6,
 	.height	= 10,
+<<<<<<< HEAD
 	.data	= fontdata_6x10,
+=======
+	.data	= fontdata_6x10.data,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.pref	= 0,
 };

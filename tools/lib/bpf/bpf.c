@@ -41,6 +41,11 @@
 #  define __NR_bpf 349
 # elif defined(__s390__)
 #  define __NR_bpf 351
+<<<<<<< HEAD
+=======
+# elif defined(__arc__)
+#  define __NR_bpf 280
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # else
 #  error __NR_bpf not defined. libbpf does not support your arch.
 # endif

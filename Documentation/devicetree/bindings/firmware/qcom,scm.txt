@@ -12,8 +12,11 @@ Required properties:
  * "qcom,scm-msm8690" for MSM8690 platforms
  * "qcom,scm-msm8996" for MSM8996 platforms
  * "qcom,scm" for later processors (MSM8916, APQ8084, MSM8974, etc)
+<<<<<<< HEAD
  * "android,firmware" for firmware image
  * "android,vbmeta" for setting system properties for verified boot.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 - clocks: One to three clocks may be required based on compatible.
  * No clock required for "qcom,scm-msm8996"
  * Only core clock required for "qcom,scm-apq8064", "qcom,scm-msm8660", and "qcom,scm-msm8960"
@@ -30,6 +33,7 @@ Example for MSM8916:
 			clock-names = "core", "bus", "iface";
 		};
 	};
+<<<<<<< HEAD
 
 Example for SM6150:
 
@@ -53,3 +57,5 @@ firmware: firmware {
 			};
 		};
 	};
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

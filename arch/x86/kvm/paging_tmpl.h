@@ -93,8 +93,13 @@ struct guest_walker {
 	gpa_t pte_gpa[PT_MAX_FULL_LEVELS];
 	pt_element_t __user *ptep_user[PT_MAX_FULL_LEVELS];
 	bool pte_writable[PT_MAX_FULL_LEVELS];
+<<<<<<< HEAD
 	unsigned pt_access;
 	unsigned pte_access;
+=======
+	unsigned int pt_access[PT_MAX_FULL_LEVELS];
+	unsigned int pte_access;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	gfn_t gfn;
 	struct x86_exception fault;
 };
@@ -202,7 +207,11 @@ static inline unsigned FNAME(gpte_access)(struct kvm_vcpu *vcpu, u64 gpte)
 static int FNAME(update_accessed_dirty_bits)(struct kvm_vcpu *vcpu,
 					     struct kvm_mmu *mmu,
 					     struct guest_walker *walker,
+<<<<<<< HEAD
 					     int write_fault)
+=======
+					     gpa_t addr, int write_fault)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned level, index;
 	pt_element_t pte, orig_pte;
@@ -227,7 +236,11 @@ static int FNAME(update_accessed_dirty_bits)(struct kvm_vcpu *vcpu,
 				!(pte & PT_GUEST_DIRTY_MASK)) {
 			trace_kvm_mmu_set_dirty_bit(table_gfn, index, sizeof(pte));
 #if PTTYPE == PTTYPE_EPT
+<<<<<<< HEAD
 			if (kvm_arch_write_log_dirty(vcpu))
+=======
+			if (kvm_arch_write_log_dirty(vcpu, addr))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				return -EINVAL;
 #endif
 			pte |= PT_GUEST_DIRTY_MASK;
@@ -388,13 +401,22 @@ retry_walk:
 		}
 
 		walker->ptes[walker->level - 1] = pte;
+<<<<<<< HEAD
+=======
+
+		/* Convert to ACC_*_MASK flags for struct guest_walker.  */
+		walker->pt_access[walker->level - 1] = FNAME(gpte_access)(vcpu, pt_access ^ walk_nx_mask);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} while (!is_last_gpte(mmu, walker->level, pte));
 
 	pte_pkey = FNAME(gpte_pkeys)(vcpu, pte);
 	accessed_dirty = have_ad ? pte_access & PT_GUEST_ACCESSED_MASK : 0;
 
 	/* Convert to ACC_*_MASK flags for struct guest_walker.  */
+<<<<<<< HEAD
 	walker->pt_access = FNAME(gpte_access)(vcpu, pt_access ^ walk_nx_mask);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	walker->pte_access = FNAME(gpte_access)(vcpu, pte_access ^ walk_nx_mask);
 	errcode = permission_fault(vcpu, mmu, walker->pte_access, pte_pkey, access);
 	if (unlikely(errcode))
@@ -424,7 +446,12 @@ retry_walk:
 			(PT_GUEST_DIRTY_SHIFT - PT_GUEST_ACCESSED_SHIFT);
 
 	if (unlikely(!accessed_dirty)) {
+<<<<<<< HEAD
 		ret = FNAME(update_accessed_dirty_bits)(vcpu, mmu, walker, write_fault);
+=======
+		ret = FNAME(update_accessed_dirty_bits)(vcpu, mmu, walker,
+							addr, write_fault);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (unlikely(ret < 0))
 			goto error;
 		else if (ret)
@@ -432,7 +459,12 @@ retry_walk:
 	}
 
 	pgprintk("%s: pte %llx pte_access %x pt_access %x\n",
+<<<<<<< HEAD
 		 __func__, (u64)pte, walker->pte_access, walker->pt_access);
+=======
+		 __func__, (u64)pte, walker->pte_access,
+		 walker->pt_access[walker->level - 1]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 1;
 
 error:
@@ -522,6 +554,10 @@ FNAME(prefetch_gpte)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
 	mmu_set_spte(vcpu, spte, pte_access, 0, PT_PAGE_TABLE_LEVEL, gfn, pfn,
 		     true, true);
 
+<<<<<<< HEAD
+=======
+	kvm_release_pfn_clean(pfn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return true;
 }
 
@@ -595,12 +631,23 @@ static void FNAME(pte_prefetch)(struct kvm_vcpu *vcpu, struct guest_walker *gw,
 static int FNAME(fetch)(struct kvm_vcpu *vcpu, gva_t addr,
 			 struct guest_walker *gw,
 			 int write_fault, int hlevel,
+<<<<<<< HEAD
 			 kvm_pfn_t pfn, bool map_writable, bool prefault)
 {
 	struct kvm_mmu_page *sp = NULL;
 	struct kvm_shadow_walk_iterator it;
 	unsigned direct_access, access = gw->pt_access;
 	int top_level, ret;
+=======
+			 kvm_pfn_t pfn, bool map_writable, bool prefault,
+			 bool lpage_disallowed)
+{
+	struct kvm_mmu_page *sp = NULL;
+	struct kvm_shadow_walk_iterator it;
+	unsigned int direct_access, access;
+	int top_level, ret;
+	gfn_t gfn, base_gfn;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	direct_access = gw->pte_access;
 
@@ -630,6 +677,10 @@ static int FNAME(fetch)(struct kvm_vcpu *vcpu, gva_t addr,
 		sp = NULL;
 		if (!is_shadow_present_pte(*it.sptep)) {
 			table_gfn = gw->table_gfn[it.level - 2];
+<<<<<<< HEAD
+=======
+			access = gw->pt_access[it.level - 2];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			sp = kvm_mmu_get_page(vcpu, table_gfn, addr, it.level-1,
 					      false, access);
 		}
@@ -645,6 +696,7 @@ static int FNAME(fetch)(struct kvm_vcpu *vcpu, gva_t addr,
 			link_shadow_page(vcpu, it.sptep, sp);
 	}
 
+<<<<<<< HEAD
 	for (;
 	     shadow_walk_okay(&it) && it.level > hlevel;
 	     shadow_walk_next(&it)) {
@@ -674,6 +726,50 @@ static int FNAME(fetch)(struct kvm_vcpu *vcpu, gva_t addr,
 
 out_gpte_changed:
 	kvm_release_pfn_clean(pfn);
+=======
+	/*
+	 * FNAME(page_fault) might have clobbered the bottom bits of
+	 * gw->gfn, restore them from the virtual address.
+	 */
+	gfn = gw->gfn | ((addr & PT_LVL_OFFSET_MASK(gw->level)) >> PAGE_SHIFT);
+	base_gfn = gfn;
+
+	trace_kvm_mmu_spte_requested(addr, gw->level, pfn);
+
+	for (; shadow_walk_okay(&it); shadow_walk_next(&it)) {
+		clear_sp_write_flooding_count(it.sptep);
+
+		/*
+		 * We cannot overwrite existing page tables with an NX
+		 * large page, as the leaf could be executable.
+		 */
+		disallowed_hugepage_adjust(it, gfn, &pfn, &hlevel);
+
+		base_gfn = gfn & ~(KVM_PAGES_PER_HPAGE(it.level) - 1);
+		if (it.level == hlevel)
+			break;
+
+		validate_direct_spte(vcpu, it.sptep, direct_access);
+
+		drop_large_spte(vcpu, it.sptep);
+
+		if (!is_shadow_present_pte(*it.sptep)) {
+			sp = kvm_mmu_get_page(vcpu, base_gfn, addr,
+					      it.level - 1, true, direct_access);
+			link_shadow_page(vcpu, it.sptep, sp);
+			if (lpage_disallowed)
+				account_huge_nx_page(vcpu->kvm, sp);
+		}
+	}
+
+	ret = mmu_set_spte(vcpu, it.sptep, gw->pte_access, write_fault,
+			   it.level, base_gfn, pfn, prefault, map_writable);
+	FNAME(pte_prefetch)(vcpu, gw, it.sptep);
+	++vcpu->stat.pf_fixed;
+	return ret;
+
+out_gpte_changed:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return RET_PF_RETRY;
 }
 
@@ -740,9 +836,17 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gva_t addr, u32 error_code,
 	int r;
 	kvm_pfn_t pfn;
 	int level = PT_PAGE_TABLE_LEVEL;
+<<<<<<< HEAD
 	bool force_pt_level = false;
 	unsigned long mmu_seq;
 	bool map_writable, is_self_change_mapping;
+=======
+	unsigned long mmu_seq;
+	bool map_writable, is_self_change_mapping;
+	bool lpage_disallowed = (error_code & PFERR_FETCH_MASK) &&
+				is_nx_huge_page_enabled();
+	bool force_pt_level = lpage_disallowed;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	pgprintk("%s: addr %lx err %x\n", __func__, addr, error_code);
 
@@ -821,6 +925,10 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gva_t addr, u32 error_code,
 			walker.pte_access &= ~ACC_EXEC_MASK;
 	}
 
+<<<<<<< HEAD
+=======
+	r = RET_PF_RETRY;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock(&vcpu->kvm->mmu_lock);
 	if (mmu_notifier_retry(vcpu->kvm, mmu_seq))
 		goto out_unlock;
@@ -829,6 +937,7 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gva_t addr, u32 error_code,
 	if (make_mmu_pages_available(vcpu) < 0)
 		goto out_unlock;
 	if (!force_pt_level)
+<<<<<<< HEAD
 		transparent_hugepage_adjust(vcpu, &walker.gfn, &pfn, &level);
 	r = FNAME(fetch)(vcpu, addr, &walker, write_fault,
 			 level, pfn, map_writable, prefault);
@@ -837,11 +946,21 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gva_t addr, u32 error_code,
 	spin_unlock(&vcpu->kvm->mmu_lock);
 
 	return r;
+=======
+		transparent_hugepage_adjust(vcpu, walker.gfn, &pfn, &level);
+	r = FNAME(fetch)(vcpu, addr, &walker, write_fault,
+			 level, pfn, map_writable, prefault, lpage_disallowed);
+	kvm_mmu_audit(vcpu, AUDIT_POST_PAGE_FAULT);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 out_unlock:
 	spin_unlock(&vcpu->kvm->mmu_lock);
 	kvm_release_pfn_clean(pfn);
+<<<<<<< HEAD
 	return RET_PF_RETRY;
+=======
+	return r;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static gpa_t FNAME(get_level1_sp_gpa)(struct kvm_mmu_page *sp)

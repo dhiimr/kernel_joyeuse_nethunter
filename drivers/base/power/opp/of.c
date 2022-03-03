@@ -402,8 +402,14 @@ static int _of_add_opp_table_v2(struct device *dev, struct device_node *opp_np)
 		}
 	}
 
+<<<<<<< HEAD
 	/* There should be one of more OPP defined */
 	if (WARN_ON(!count)) {
+=======
+	/* There should be one or more OPPs defined */
+	if (!count) {
+		dev_err(dev, "%s: no supported OPPs", __func__);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = -ENOENT;
 		goto put_opp_table;
 	}

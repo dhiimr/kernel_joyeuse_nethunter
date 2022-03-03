@@ -205,6 +205,7 @@ EXPORT_SYMBOL(pci_bus_set_ops);
 static DECLARE_WAIT_QUEUE_HEAD(pci_cfg_wait);
 
 static noinline void pci_wait_cfg(struct pci_dev *dev)
+<<<<<<< HEAD
 {
 	DECLARE_WAITQUEUE(wait, current);
 
@@ -216,6 +217,15 @@ static noinline void pci_wait_cfg(struct pci_dev *dev)
 		raw_spin_lock_irq(&pci_lock);
 	} while (dev->block_cfg_access);
 	__remove_wait_queue(&pci_cfg_wait, &wait);
+=======
+	__must_hold(&pci_lock)
+{
+	do {
+		raw_spin_unlock_irq(&pci_lock);
+		wait_event(pci_cfg_wait, !dev->block_cfg_access);
+		raw_spin_lock_irq(&pci_lock);
+	} while (dev->block_cfg_access);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Returns 0 on success, negative values indicate error. */

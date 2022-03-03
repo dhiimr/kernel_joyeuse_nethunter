@@ -281,7 +281,11 @@ struct rpmsg_endpoint *qcom_wcnss_open_channel(void *wcnss, const char *name, rp
 	struct rpmsg_channel_info chinfo;
 	struct wcnss_ctrl *_wcnss = wcnss;
 
+<<<<<<< HEAD
 	strncpy(chinfo.name, name, sizeof(chinfo.name));
+=======
+	strscpy(chinfo.name, name, sizeof(chinfo.name));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	chinfo.src = RPMSG_ADDR_ANY;
 	chinfo.dst = RPMSG_ADDR_ANY;
 

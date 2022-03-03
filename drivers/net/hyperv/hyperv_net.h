@@ -179,7 +179,10 @@ struct rndis_device {
 
 	u8 hw_mac_adr[ETH_ALEN];
 	u8 rss_key[NETVSC_HASH_KEYLEN];
+<<<<<<< HEAD
 	u16 rx_table[ITAB_NUM];
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 
@@ -741,6 +744,11 @@ struct net_device_context {
 
 	u32 tx_table[VRSS_SEND_TAB_SIZE];
 
+<<<<<<< HEAD
+=======
+	u16 rx_table[ITAB_NUM];
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Ethtool settings */
 	bool udp4_l4_hash;
 	bool udp6_l4_hash;

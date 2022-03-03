@@ -459,6 +459,12 @@ static int tcf_ife_init(struct net *net, struct nlattr *nla,
 	int ret = 0;
 	int err;
 
+<<<<<<< HEAD
+=======
+	if (!nla)
+		return -EINVAL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = nla_parse_nested(tb, TCA_IFE_MAX, nla, ife_policy, NULL);
 	if (err < 0)
 		return err;
@@ -834,7 +840,11 @@ static __net_init int ife_init_net(struct net *net)
 {
 	struct tc_action_net *tn = net_generic(net, ife_net_id);
 
+<<<<<<< HEAD
 	return tc_action_net_init(tn, &act_ife_ops);
+=======
+	return tc_action_net_init(net, tn, &act_ife_ops);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void __net_exit ife_exit_net(struct net *net)

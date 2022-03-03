@@ -277,12 +277,25 @@ int hci_req_sync(struct hci_dev *hdev, int (*req)(struct hci_request *req,
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!test_bit(HCI_UP, &hdev->flags))
 		return -ENETDOWN;
 
 	/* Serialize all requests */
 	hci_req_sync_lock(hdev);
 	ret = __hci_req_sync(hdev, req, opt, timeout, hci_status);
+=======
+	/* Serialize all requests */
+	hci_req_sync_lock(hdev);
+	/* check the state after obtaing the lock to protect the HCI_UP
+	 * against any races from hci_dev_do_close when the controller
+	 * gets removed.
+	 */
+	if (test_bit(HCI_UP, &hdev->flags))
+		ret = __hci_req_sync(hdev, req, opt, timeout, hci_status);
+	else
+		ret = -ENETDOWN;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hci_req_sync_unlock(hdev);
 
 	return ret;
@@ -1095,6 +1108,17 @@ static u8 create_instance_adv_data(struct hci_dev *hdev, u8 instance, u8 *ptr)
 
 	instance_flags = get_adv_instance_flags(hdev, instance);
 
+<<<<<<< HEAD
+=======
+	/* If instance already has the flags set skip adding it once
+	 * again.
+	 */
+	if (adv_instance && eir_get_data(adv_instance->adv_data,
+					 adv_instance->adv_data_len, EIR_FLAGS,
+					 NULL))
+		goto skip_flags;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* The Add Advertising command allows userspace to set both the general
 	 * and limited discoverable flags.
 	 */
@@ -1127,6 +1151,10 @@ static u8 create_instance_adv_data(struct hci_dev *hdev, u8 instance, u8 *ptr)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+skip_flags:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (adv_instance) {
 		memcpy(ptr, adv_instance->adv_data,
 		       adv_instance->adv_data_len);

@@ -139,6 +139,10 @@ V_FUNCTION_BEGIN(__kernel_clock_gettime)
 	 */
 99:
 	li	r0,__NR_clock_gettime
+<<<<<<< HEAD
+=======
+  .cfi_restore lr
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sc
 	blr
   .cfi_endproc
@@ -159,12 +163,23 @@ V_FUNCTION_BEGIN(__kernel_clock_getres)
 	cror	cr0*4+eq,cr0*4+eq,cr1*4+eq
 	bne	cr0,99f
 
+<<<<<<< HEAD
+=======
+	mflr	r12
+  .cfi_register lr,r12
+	bl	__get_datapage@local	/* get data page */
+	lwz	r5, CLOCK_HRTIMER_RES(r3)
+	mtlr	r12
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	li	r3,0
 	cmpli	cr0,r4,0
 	crclr	cr0*4+so
 	beqlr
+<<<<<<< HEAD
 	lis	r5,CLOCK_REALTIME_RES@h
 	ori	r5,r5,CLOCK_REALTIME_RES@l
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	stw	r3,TSPC32_TV_SEC(r4)
 	stw	r5,TSPC32_TV_NSEC(r4)
 	blr

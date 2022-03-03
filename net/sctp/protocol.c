@@ -213,7 +213,12 @@ int sctp_copy_local_addr_list(struct net *net, struct sctp_bind_addr *bp,
 		 * sock as well as the remote peer.
 		 */
 		if (addr->a.sa.sa_family == AF_INET &&
+<<<<<<< HEAD
 		    !(copy_flags & SCTP_ADDR4_PEERSUPP))
+=======
+		    (!(copy_flags & SCTP_ADDR4_ALLOWED) ||
+		     !(copy_flags & SCTP_ADDR4_PEERSUPP)))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			continue;
 		if (addr->a.sa.sa_family == AF_INET6 &&
 		    (!(copy_flags & SCTP_ADDR6_ALLOWED) ||
@@ -253,6 +258,10 @@ static void sctp_v4_from_skb(union sctp_addr *addr, struct sk_buff *skb,
 		sa->sin_port = sh->dest;
 		sa->sin_addr.s_addr = ip_hdr(skb)->daddr;
 	}
+<<<<<<< HEAD
+=======
+	memset(sa->sin_zero, 0, sizeof(sa->sin_zero));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Initialize an sctp_addr from a socket. */
@@ -261,6 +270,10 @@ static void sctp_v4_from_sk(union sctp_addr *addr, struct sock *sk)
 	addr->v4.sin_family = AF_INET;
 	addr->v4.sin_port = 0;
 	addr->v4.sin_addr.s_addr = inet_sk(sk)->inet_rcv_saddr;
+<<<<<<< HEAD
+=======
+	memset(addr->v4.sin_zero, 0, sizeof(addr->v4.sin_zero));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Initialize sk->sk_rcv_saddr from sctp_addr. */
@@ -276,6 +289,7 @@ static void sctp_v4_to_sk_daddr(union sctp_addr *addr, struct sock *sk)
 }
 
 /* Initialize a sctp_addr from an address parameter. */
+<<<<<<< HEAD
 static void sctp_v4_from_addr_param(union sctp_addr *addr,
 				    union sctp_addr_param *param,
 				    __be16 port, int iif)
@@ -283,6 +297,21 @@ static void sctp_v4_from_addr_param(union sctp_addr *addr,
 	addr->v4.sin_family = AF_INET;
 	addr->v4.sin_port = port;
 	addr->v4.sin_addr.s_addr = param->v4.addr.s_addr;
+=======
+static bool sctp_v4_from_addr_param(union sctp_addr *addr,
+				    union sctp_addr_param *param,
+				    __be16 port, int iif)
+{
+	if (ntohs(param->v4.param_hdr.length) < sizeof(struct sctp_ipv4addr_param))
+		return false;
+
+	addr->v4.sin_family = AF_INET;
+	addr->v4.sin_port = port;
+	addr->v4.sin_addr.s_addr = param->v4.addr.s_addr;
+	memset(addr->v4.sin_zero, 0, sizeof(addr->v4.sin_zero));
+
+	return true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Initialize an address parameter from a sctp_addr and return the length
@@ -307,6 +336,10 @@ static void sctp_v4_dst_saddr(union sctp_addr *saddr, struct flowi4 *fl4,
 	saddr->v4.sin_family = AF_INET;
 	saddr->v4.sin_port = port;
 	saddr->v4.sin_addr.s_addr = fl4->saddr;
+<<<<<<< HEAD
+=======
+	memset(saddr->v4.sin_zero, 0, sizeof(saddr->v4.sin_zero));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Compare two addresses exactly. */
@@ -329,6 +362,10 @@ static void sctp_v4_inaddr_any(union sctp_addr *addr, __be16 port)
 	addr->v4.sin_family = AF_INET;
 	addr->v4.sin_addr.s_addr = htonl(INADDR_ANY);
 	addr->v4.sin_port = port;
+<<<<<<< HEAD
+=======
+	memset(addr->v4.sin_zero, 0, sizeof(addr->v4.sin_zero));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Is this a wildcard address? */
@@ -412,7 +449,12 @@ static enum sctp_scope sctp_v4_scope(union sctp_addr *addr)
 		retval = SCTP_SCOPE_LINK;
 	} else if (ipv4_is_private_10(addr->v4.sin_addr.s_addr) ||
 		   ipv4_is_private_172(addr->v4.sin_addr.s_addr) ||
+<<<<<<< HEAD
 		   ipv4_is_private_192(addr->v4.sin_addr.s_addr)) {
+=======
+		   ipv4_is_private_192(addr->v4.sin_addr.s_addr) ||
+		   ipv4_is_test_198(addr->v4.sin_addr.s_addr)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		retval = SCTP_SCOPE_PRIVATE;
 	} else {
 		retval = SCTP_SCOPE_GLOBAL;
@@ -430,14 +472,23 @@ static void sctp_v4_get_dst(struct sctp_transport *t, union sctp_addr *saddr,
 {
 	struct sctp_association *asoc = t->asoc;
 	struct rtable *rt;
+<<<<<<< HEAD
 	struct flowi4 *fl4 = &fl->u.ip4;
+=======
+	struct flowi _fl;
+	struct flowi4 *fl4 = &_fl.u.ip4;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct sctp_bind_addr *bp;
 	struct sctp_sockaddr_entry *laddr;
 	struct dst_entry *dst = NULL;
 	union sctp_addr *daddr = &t->ipaddr;
 	union sctp_addr dst_saddr;
 
+<<<<<<< HEAD
 	memset(fl4, 0x0, sizeof(struct flowi4));
+=======
+	memset(&_fl, 0x0, sizeof(_fl));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	fl4->daddr  = daddr->v4.sin_addr.s_addr;
 	fl4->fl4_dport = daddr->v4.sin_port;
 	fl4->flowi4_proto = IPPROTO_SCTP;
@@ -455,8 +506,16 @@ static void sctp_v4_get_dst(struct sctp_transport *t, union sctp_addr *saddr,
 		 &fl4->saddr);
 
 	rt = ip_route_output_key(sock_net(sk), fl4);
+<<<<<<< HEAD
 	if (!IS_ERR(rt))
 		dst = &rt->dst;
+=======
+	if (!IS_ERR(rt)) {
+		dst = &rt->dst;
+		t->dst = dst;
+		memcpy(fl, &_fl, sizeof(_fl));
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* If there is no association or if a source address is passed, no
 	 * more validation is required.
@@ -519,27 +578,52 @@ static void sctp_v4_get_dst(struct sctp_transport *t, union sctp_addr *saddr,
 		odev = __ip_dev_find(sock_net(sk), laddr->a.v4.sin_addr.s_addr,
 				     false);
 		if (!odev || odev->ifindex != fl4->flowi4_oif) {
+<<<<<<< HEAD
 			if (!dst)
 				dst = &rt->dst;
 			else
 				dst_release(&rt->dst);
+=======
+			if (!dst) {
+				dst = &rt->dst;
+				t->dst = dst;
+				memcpy(fl, &_fl, sizeof(_fl));
+			} else {
+				dst_release(&rt->dst);
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			continue;
 		}
 
 		dst_release(dst);
 		dst = &rt->dst;
+<<<<<<< HEAD
+=======
+		t->dst = dst;
+		memcpy(fl, &_fl, sizeof(_fl));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	}
 
 out_unlock:
 	rcu_read_unlock();
 out:
+<<<<<<< HEAD
 	t->dst = dst;
 	if (dst)
 		pr_debug("rt_dst:%pI4, rt_src:%pI4\n",
 			 &fl4->daddr, &fl4->saddr);
 	else
 		pr_debug("no route\n");
+=======
+	if (dst) {
+		pr_debug("rt_dst:%pI4, rt_src:%pI4\n",
+			 &fl->u.ip4.daddr, &fl->u.ip4.saddr);
+	} else {
+		t->dst = NULL;
+		pr_debug("no route\n");
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* For v4, the source address is cached in the route entry(dst). So no need
@@ -1019,7 +1103,11 @@ static const struct proto_ops inet_seqpacket_ops = {
 	.owner		   = THIS_MODULE,
 	.release	   = inet_release,	/* Needs to be wrapped... */
 	.bind		   = inet_bind,
+<<<<<<< HEAD
 	.connect	   = inet_dgram_connect,
+=======
+	.connect	   = sctp_inet_connect,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.socketpair	   = sock_no_socketpair,
 	.accept		   = inet_accept,
 	.getname	   = inet_getname,	/* Semantics are different.  */
@@ -1344,7 +1432,11 @@ static int __net_init sctp_ctrlsock_init(struct net *net)
 	return status;
 }
 
+<<<<<<< HEAD
 static void __net_init sctp_ctrlsock_exit(struct net *net)
+=======
+static void __net_exit sctp_ctrlsock_exit(struct net *net)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	/* Free the control endpoint.  */
 	inet_ctl_sock_destroy(net->sctp.ctl_sock);

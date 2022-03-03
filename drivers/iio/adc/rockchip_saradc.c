@@ -384,7 +384,11 @@ static int rockchip_saradc_resume(struct device *dev)
 
 	ret = clk_prepare_enable(info->clk);
 	if (ret)
+<<<<<<< HEAD
 		return ret;
+=======
+		clk_disable_unprepare(info->pclk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }

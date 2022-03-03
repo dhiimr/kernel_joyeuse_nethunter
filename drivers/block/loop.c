@@ -414,6 +414,7 @@ out_free_page:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int lo_discard(struct loop_device *lo, struct request *rq, loff_t pos)
 {
 	/*
@@ -426,6 +427,22 @@ static int lo_discard(struct loop_device *lo, struct request *rq, loff_t pos)
 	int mode = FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE;
 	int ret;
 
+=======
+static int lo_fallocate(struct loop_device *lo, struct request *rq, loff_t pos,
+			int mode)
+{
+	/*
+	 * We use fallocate to manipulate the space mappings used by the image
+	 * a.k.a. discard/zerorange. However we do not support this if
+	 * encryption is enabled, because it may give an attacker useful
+	 * information.
+	 */
+	struct file *file = lo->lo_backing_file;
+	int ret;
+
+	mode |= FALLOC_FL_KEEP_SIZE;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if ((!file->f_op->fallocate) || lo->lo_encrypt_key_size) {
 		ret = -EOPNOTSUPP;
 		goto out;
@@ -565,9 +582,23 @@ static int do_req_filebacked(struct loop_device *lo, struct request *rq)
 	switch (req_op(rq)) {
 	case REQ_OP_FLUSH:
 		return lo_req_flush(lo, rq);
+<<<<<<< HEAD
 	case REQ_OP_DISCARD:
 	case REQ_OP_WRITE_ZEROES:
 		return lo_discard(lo, rq, pos);
+=======
+	case REQ_OP_WRITE_ZEROES:
+		/*
+		 * If the caller doesn't want deallocation, call zeroout to
+		 * write zeroes the range.  Otherwise, punch them out.
+		 */
+		return lo_fallocate(lo, rq, pos,
+			(rq->cmd_flags & REQ_NOUNMAP) ?
+				FALLOC_FL_ZERO_RANGE :
+				FALLOC_FL_PUNCH_HOLE);
+	case REQ_OP_DISCARD:
+		return lo_fallocate(lo, rq, pos, FALLOC_FL_PUNCH_HOLE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	case REQ_OP_WRITE:
 		if (lo->transfer)
 			return lo_write_transfer(lo, rq, pos);
@@ -857,7 +888,11 @@ static void loop_unprepare_queue(struct loop_device *lo)
 
 static int loop_kthread_worker_fn(void *worker_ptr)
 {
+<<<<<<< HEAD
 	current->flags |= PF_LESS_THROTTLE;
+=======
+	current->flags |= PF_LESS_THROTTLE | PF_MEMALLOC_NOIO;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return kthread_worker_fn(worker_ptr);
 }
 
@@ -1100,7 +1135,11 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
 	if (lo->lo_offset != info->lo_offset ||
 	    lo->lo_sizelimit != info->lo_sizelimit) {
 		sync_blockdev(lo->lo_device);
+<<<<<<< HEAD
 		kill_bdev(lo->lo_device);
+=======
+		invalidate_bdev(lo->lo_device);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* I/O need to be drained during transfer transition */
@@ -1370,12 +1409,20 @@ static int loop_set_block_size(struct loop_device *lo, unsigned long arg)
 
 	if (lo->lo_queue->limits.logical_block_size != arg) {
 		sync_blockdev(lo->lo_device);
+<<<<<<< HEAD
 		kill_bdev(lo->lo_device);
+=======
+		invalidate_bdev(lo->lo_device);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	blk_mq_freeze_queue(lo->lo_queue);
 
+<<<<<<< HEAD
 	/* kill_bdev should have truncated all the pages */
+=======
+	/* invalidate_bdev should have truncated all the pages */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (lo->lo_queue->limits.logical_block_size != arg &&
 			lo->lo_device->bd_inode->i_mapping->nrpages) {
 		err = -EAGAIN;
@@ -1605,6 +1652,10 @@ static int lo_compat_ioctl(struct block_device *bdev, fmode_t mode,
 		arg = (unsigned long) compat_ptr(arg);
 	case LOOP_SET_FD:
 	case LOOP_CHANGE_FD:
+<<<<<<< HEAD
+=======
+	case LOOP_SET_DIRECT_IO:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		err = lo_ioctl(bdev, mode, cmd, arg);
 		break;
 	default:

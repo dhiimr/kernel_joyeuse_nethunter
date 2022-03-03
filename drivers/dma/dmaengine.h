@@ -168,7 +168,11 @@ dmaengine_desc_get_callback_invoke(struct dma_async_tx_descriptor *tx,
 static inline bool
 dmaengine_desc_callback_valid(struct dmaengine_desc_callback *cb)
 {
+<<<<<<< HEAD
 	return (cb->callback) ? true : false;
+=======
+	return cb->callback || cb->callback_result;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #endif

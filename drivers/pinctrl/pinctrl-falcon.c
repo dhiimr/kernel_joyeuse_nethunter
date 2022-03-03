@@ -438,24 +438,45 @@ static int pinctrl_falcon_probe(struct platform_device *pdev)
 
 	/* load and remap the pad resources of the different banks */
 	for_each_compatible_node(np, NULL, "lantiq,pad-falcon") {
+<<<<<<< HEAD
 		struct platform_device *ppdev = of_find_device_by_node(np);
 		const __be32 *bank = of_get_property(np, "lantiq,bank", NULL);
 		struct resource res;
+=======
+		const __be32 *bank = of_get_property(np, "lantiq,bank", NULL);
+		struct resource res;
+		struct platform_device *ppdev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		u32 avail;
 		int pins;
 
 		if (!of_device_is_available(np))
 			continue;
 
+<<<<<<< HEAD
 		if (!ppdev) {
 			dev_err(&pdev->dev, "failed to find pad pdev\n");
 			continue;
 		}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!bank || *bank >= PORTS)
 			continue;
 		if (of_address_to_resource(np, 0, &res))
 			continue;
+<<<<<<< HEAD
 		falcon_info.clk[*bank] = clk_get(&ppdev->dev, NULL);
+=======
+
+		ppdev = of_find_device_by_node(np);
+		if (!ppdev) {
+			dev_err(&pdev->dev, "failed to find pad pdev\n");
+			continue;
+		}
+
+		falcon_info.clk[*bank] = clk_get(&ppdev->dev, NULL);
+		put_device(&ppdev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (IS_ERR(falcon_info.clk[*bank])) {
 			dev_err(&ppdev->dev, "failed to get clock\n");
 			return PTR_ERR(falcon_info.clk[*bank]);

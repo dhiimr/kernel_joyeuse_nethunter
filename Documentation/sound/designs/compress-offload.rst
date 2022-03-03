@@ -183,11 +183,14 @@ partial drain
   EOF is reached and now DSP can start skipping padding delay. Also next write
   data would belong to next track
 
+<<<<<<< HEAD
 - set_next_track_param
 This routine is called to send to DSP codec specific data of subsequent track
 in gapless before first write.
 
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 Sequence flow for gapless would be:
 - Open
 - Get caps / codec caps
@@ -199,7 +202,10 @@ Sequence flow for gapless would be:
 - Indicate next track data by sending set_next_track
 - Set metadata of the next track
 - then call partial_drain to flush most of buffer in DSP
+<<<<<<< HEAD
 - set codec specific data of subsequent track
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 - Fill data of the next track
 - DSP switches to second track
 

@@ -17,6 +17,10 @@
 #include "string.h"
 #include "stdio.h"
 #include "ops.h"
+<<<<<<< HEAD
+=======
+#include "of.h"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 void dt_fixup_memory(u64 start, u64 size)
 {
@@ -27,21 +31,39 @@ void dt_fixup_memory(u64 start, u64 size)
 	root = finddevice("/");
 	if (getprop(root, "#address-cells", &naddr, sizeof(naddr)) < 0)
 		naddr = 2;
+<<<<<<< HEAD
+=======
+	else
+		naddr = be32_to_cpu(naddr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (naddr < 1 || naddr > 2)
 		fatal("Can't cope with #address-cells == %d in /\n\r", naddr);
 
 	if (getprop(root, "#size-cells", &nsize, sizeof(nsize)) < 0)
 		nsize = 1;
+<<<<<<< HEAD
+=======
+	else
+		nsize = be32_to_cpu(nsize);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (nsize < 1 || nsize > 2)
 		fatal("Can't cope with #size-cells == %d in /\n\r", nsize);
 
 	i = 0;
 	if (naddr == 2)
+<<<<<<< HEAD
 		memreg[i++] = start >> 32;
 	memreg[i++] = start & 0xffffffff;
 	if (nsize == 2)
 		memreg[i++] = size >> 32;
 	memreg[i++] = size & 0xffffffff;
+=======
+		memreg[i++] = cpu_to_be32(start >> 32);
+	memreg[i++] = cpu_to_be32(start & 0xffffffff);
+	if (nsize == 2)
+		memreg[i++] = cpu_to_be32(size >> 32);
+	memreg[i++] = cpu_to_be32(size & 0xffffffff);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	memory = finddevice("/memory");
 	if (! memory) {
@@ -49,9 +71,15 @@ void dt_fixup_memory(u64 start, u64 size)
 		setprop_str(memory, "device_type", "memory");
 	}
 
+<<<<<<< HEAD
 	printf("Memory <- <0x%x", memreg[0]);
 	for (i = 1; i < (naddr + nsize); i++)
 		printf(" 0x%x", memreg[i]);
+=======
+	printf("Memory <- <0x%x", be32_to_cpu(memreg[0]));
+	for (i = 1; i < (naddr + nsize); i++)
+		printf(" 0x%x", be32_to_cpu(memreg[i]));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	printf("> (%ldMB)\n\r", (unsigned long)(size >> 20));
 
 	setprop(memory, "reg", memreg, (naddr + nsize)*sizeof(u32));
@@ -69,10 +97,17 @@ void dt_fixup_cpu_clocks(u32 cpu, u32 tb, u32 bus)
 		printf("CPU bus-frequency <- 0x%x (%dMHz)\n\r", bus, MHZ(bus));
 
 	while ((devp = find_node_by_devtype(devp, "cpu"))) {
+<<<<<<< HEAD
 		setprop_val(devp, "clock-frequency", cpu);
 		setprop_val(devp, "timebase-frequency", tb);
 		if (bus > 0)
 			setprop_val(devp, "bus-frequency", bus);
+=======
+		setprop_val(devp, "clock-frequency", cpu_to_be32(cpu));
+		setprop_val(devp, "timebase-frequency", cpu_to_be32(tb));
+		if (bus > 0)
+			setprop_val(devp, "bus-frequency", cpu_to_be32(bus));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	timebase_period_ns = 1000000000 / tb;
@@ -84,7 +119,11 @@ void dt_fixup_clock(const char *path, u32 freq)
 
 	if (devp) {
 		printf("%s: clock-frequency <- %x (%dMHz)\n\r", path, freq, MHZ(freq));
+<<<<<<< HEAD
 		setprop_val(devp, "clock-frequency", freq);
+=======
+		setprop_val(devp, "clock-frequency", cpu_to_be32(freq));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 
@@ -137,8 +176,17 @@ void dt_get_reg_format(void *node, u32 *naddr, u32 *nsize)
 {
 	if (getprop(node, "#address-cells", naddr, 4) != 4)
 		*naddr = 2;
+<<<<<<< HEAD
 	if (getprop(node, "#size-cells", nsize, 4) != 4)
 		*nsize = 1;
+=======
+	else
+		*naddr = be32_to_cpu(*naddr);
+	if (getprop(node, "#size-cells", nsize, 4) != 4)
+		*nsize = 1;
+	else
+		*nsize = be32_to_cpu(*nsize);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void copy_val(u32 *dest, u32 *src, int naddr)
@@ -167,9 +215,15 @@ static int add_reg(u32 *reg, u32 *add, int naddr)
 	int i, carry = 0;
 
 	for (i = MAX_ADDR_CELLS - 1; i >= MAX_ADDR_CELLS - naddr; i--) {
+<<<<<<< HEAD
 		u64 tmp = (u64)reg[i] + add[i] + carry;
 		carry = tmp >> 32;
 		reg[i] = (u32)tmp;
+=======
+		u64 tmp = (u64)be32_to_cpu(reg[i]) + be32_to_cpu(add[i]) + carry;
+		carry = tmp >> 32;
+		reg[i] = cpu_to_be32((u32)tmp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return !carry;
@@ -184,18 +238,32 @@ static int compare_reg(u32 *reg, u32 *range, u32 *rangesize)
 	u32 end;
 
 	for (i = 0; i < MAX_ADDR_CELLS; i++) {
+<<<<<<< HEAD
 		if (reg[i] < range[i])
 			return 0;
 		if (reg[i] > range[i])
+=======
+		if (be32_to_cpu(reg[i]) < be32_to_cpu(range[i]))
+			return 0;
+		if (be32_to_cpu(reg[i]) > be32_to_cpu(range[i]))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 	}
 
 	for (i = 0; i < MAX_ADDR_CELLS; i++) {
+<<<<<<< HEAD
 		end = range[i] + rangesize[i];
 
 		if (reg[i] < end)
 			break;
 		if (reg[i] > end)
+=======
+		end = be32_to_cpu(range[i]) + be32_to_cpu(rangesize[i]);
+
+		if (be32_to_cpu(reg[i]) < end)
+			break;
+		if (be32_to_cpu(reg[i]) > end)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return 0;
 	}
 
@@ -244,7 +312,10 @@ static int dt_xlate(void *node, int res, int reglen, unsigned long *addr,
 		return 0;
 
 	dt_get_reg_format(parent, &naddr, &nsize);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (nsize > 2)
 		return 0;
 
@@ -256,10 +327,17 @@ static int dt_xlate(void *node, int res, int reglen, unsigned long *addr,
 
 	copy_val(last_addr, prop_buf + offset, naddr);
 
+<<<<<<< HEAD
 	ret_size = prop_buf[offset + naddr];
 	if (nsize == 2) {
 		ret_size <<= 32;
 		ret_size |= prop_buf[offset + naddr + 1];
+=======
+	ret_size = be32_to_cpu(prop_buf[offset + naddr]);
+	if (nsize == 2) {
+		ret_size <<= 32;
+		ret_size |= be32_to_cpu(prop_buf[offset + naddr + 1]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	for (;;) {
@@ -282,7 +360,10 @@ static int dt_xlate(void *node, int res, int reglen, unsigned long *addr,
 
 		offset = find_range(last_addr, prop_buf, prev_naddr,
 		                    naddr, prev_nsize, buflen / 4);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (offset < 0)
 			return 0;
 
@@ -300,8 +381,12 @@ static int dt_xlate(void *node, int res, int reglen, unsigned long *addr,
 	if (naddr > 2)
 		return 0;
 
+<<<<<<< HEAD
 	ret_addr = ((u64)last_addr[2] << 32) | last_addr[3];
 
+=======
+	ret_addr = ((u64)be32_to_cpu(last_addr[2]) << 32) | be32_to_cpu(last_addr[3]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (sizeof(void *) == 4 &&
 	    (ret_addr >= 0x100000000ULL || ret_size > 0x100000000ULL ||
 	     ret_addr + ret_size > 0x100000000ULL))
@@ -354,11 +439,22 @@ int dt_is_compatible(void *node, const char *compat)
 int dt_get_virtual_reg(void *node, void **addr, int nres)
 {
 	unsigned long xaddr;
+<<<<<<< HEAD
 	int n;
 
 	n = getprop(node, "virtual-reg", addr, nres * 4);
 	if (n > 0)
 		return n / 4;
+=======
+	int n, i;
+
+	n = getprop(node, "virtual-reg", addr, nres * 4);
+	if (n > 0) {
+		for (i = 0; i < n/4; i ++)
+			((u32 *)addr)[i] = be32_to_cpu(((u32 *)addr)[i]);
+		return n / 4;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (n = 0; n < nres; n++) {
 		if (!dt_xlate_reg(node, n, &xaddr, NULL))

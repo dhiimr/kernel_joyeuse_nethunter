@@ -985,6 +985,14 @@ static const struct proto_ops ieee802154_dgram_ops = {
 #endif
 };
 
+<<<<<<< HEAD
+=======
+static void ieee802154_sock_destruct(struct sock *sk)
+{
+	skb_queue_purge(&sk->sk_receive_queue);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Create a socket. Initialise the socket, blank the addresses
  * set the state.
  */
@@ -1001,6 +1009,12 @@ static int ieee802154_create(struct net *net, struct socket *sock,
 
 	switch (sock->type) {
 	case SOCK_RAW:
+<<<<<<< HEAD
+=======
+		rc = -EPERM;
+		if (!capable(CAP_NET_RAW))
+			goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		proto = &ieee802154_raw_prot;
 		ops = &ieee802154_raw_ops;
 		break;
@@ -1022,7 +1036,11 @@ static int ieee802154_create(struct net *net, struct socket *sock,
 	sock->ops = ops;
 
 	sock_init_data(sock, sk);
+<<<<<<< HEAD
 	/* FIXME: sk->sk_destruct */
+=======
+	sk->sk_destruct = ieee802154_sock_destruct;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sk->sk_family = PF_IEEE802154;
 
 	/* Checksums on by default */

@@ -1,9 +1,19 @@
+<<<<<<< HEAD
 // SPDX-License-Identifier: GPL-2.0
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * fs/f2fs/node.h
  *
  * Copyright (c) 2012 Samsung Electronics Co., Ltd.
  *             http://www.samsung.com/
+<<<<<<< HEAD
+=======
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 /* start node id of a node block dedicated to the given node id */
 #define	START_NID(nid) (((nid) / NAT_ENTRY_PER_BLOCK) * NAT_ENTRY_PER_BLOCK)
@@ -41,7 +51,10 @@ enum {
 	HAS_FSYNCED_INODE,	/* is the inode fsynced before? */
 	HAS_LAST_FSYNC,		/* has the latest node fsync mark? */
 	IS_DIRTY,		/* this nat entry is dirty? */
+<<<<<<< HEAD
 	IS_PREALLOC,		/* nat entry is preallocated */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /*
@@ -132,18 +145,24 @@ static inline bool excess_cached_nats(struct f2fs_sb_info *sbi)
 	return NM_I(sbi)->nat_cnt >= DEF_NAT_CACHE_THRESHOLD;
 }
 
+<<<<<<< HEAD
 static inline bool excess_dirty_nodes(struct f2fs_sb_info *sbi)
 {
 	return get_pages(sbi, F2FS_DIRTY_NODES) >= sbi->blocks_per_seg * 8;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 enum mem_type {
 	FREE_NIDS,	/* indicates the free nid list */
 	NAT_ENTRIES,	/* indicates the cached nat entry */
 	DIRTY_DENTS,	/* indicates dirty dentry pages */
 	INO_ENTRIES,	/* indicates inode entries */
 	EXTENT_CACHE,	/* indicates extent cache */
+<<<<<<< HEAD
 	INMEM_PAGES,	/* indicates inmemory pages */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	BASE_CHECK,	/* check kernel status */
 };
 
@@ -154,10 +173,25 @@ struct nat_entry_set {
 	unsigned int entry_cnt;		/* the # of nat entries in set */
 };
 
+<<<<<<< HEAD
 struct free_nid {
 	struct list_head list;	/* for free node id list */
 	nid_t nid;		/* node id */
 	int state;		/* in use or not: FREE_NID or PREALLOC_NID */
+=======
+/*
+ * For free nid mangement
+ */
+enum nid_state {
+	NID_NEW,	/* newly added to free nid list */
+	NID_ALLOC	/* it is allocated */
+};
+
+struct free_nid {
+	struct list_head list;	/* for free node id list */
+	nid_t nid;		/* node id */
+	int state;		/* in use or not: NID_NEW or NID_ALLOC */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static inline void next_free_nid(struct f2fs_sb_info *sbi, nid_t *nid)
@@ -166,11 +200,20 @@ static inline void next_free_nid(struct f2fs_sb_info *sbi, nid_t *nid)
 	struct free_nid *fnid;
 
 	spin_lock(&nm_i->nid_list_lock);
+<<<<<<< HEAD
 	if (nm_i->nid_cnt[FREE_NID] <= 0) {
 		spin_unlock(&nm_i->nid_list_lock);
 		return;
 	}
 	fnid = list_first_entry(&nm_i->free_nid_list, struct free_nid, list);
+=======
+	if (nm_i->nid_cnt[FREE_NID_LIST] <= 0) {
+		spin_unlock(&nm_i->nid_list_lock);
+		return;
+	}
+	fnid = list_first_entry(&nm_i->nid_list[FREE_NID_LIST],
+						struct free_nid, list);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	*nid = fnid->nid;
 	spin_unlock(&nm_i->nid_list_lock);
 }
@@ -308,10 +351,13 @@ static inline bool is_recoverable_dnode(struct page *page)
 	struct f2fs_checkpoint *ckpt = F2FS_CKPT(F2FS_P_SB(page));
 	__u64 cp_ver = cur_cp_version(ckpt);
 
+<<<<<<< HEAD
 	/* Don't care crc part, if fsck.f2fs sets it. */
 	if (__is_set_ckpt_flags(ckpt, CP_NOCRC_RECOVERY_FLAG))
 		return (cp_ver << 32) == (cpver_of_node(page) << 32);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (__is_set_ckpt_flags(ckpt, CP_CRC_RECOVERY_FLAG))
 		cp_ver |= (cur_cp_crc(ckpt) << 32);
 
@@ -361,7 +407,11 @@ static inline int set_nid(struct page *p, int off, nid_t nid, bool i)
 {
 	struct f2fs_node *rn = F2FS_NODE(p);
 
+<<<<<<< HEAD
 	f2fs_wait_on_page_writeback(p, NODE, true, true);
+=======
+	f2fs_wait_on_page_writeback(p, NODE, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (i)
 		rn->i.i_nid[off - NODE_DIR1_BLOCK] = cpu_to_le32(nid);
@@ -425,12 +475,20 @@ static inline void clear_inline_node(struct page *page)
 	ClearPageChecked(page);
 }
 
+<<<<<<< HEAD
 static inline void set_cold_node(struct page *page, bool is_dir)
+=======
+static inline void set_cold_node(struct inode *inode, struct page *page)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct f2fs_node *rn = F2FS_NODE(page);
 	unsigned int flag = le32_to_cpu(rn->footer.flag);
 
+<<<<<<< HEAD
 	if (is_dir)
+=======
+	if (S_ISDIR(inode->i_mode))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		flag &= ~(0x1 << COLD_BIT_SHIFT);
 	else
 		flag |= (0x1 << COLD_BIT_SHIFT);
@@ -446,10 +504,13 @@ static inline void set_mark(struct page *page, int mark, int type)
 	else
 		flag &= ~(0x1 << type);
 	rn->footer.flag = cpu_to_le32(flag);
+<<<<<<< HEAD
 
 #ifdef CONFIG_F2FS_CHECK_FS
 	f2fs_inode_chksum_set(F2FS_P_SB(page), page);
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #define set_dentry_mark(page, mark)	set_mark(page, mark, DENT_BIT_SHIFT)
 #define set_fsync_mark(page, mark)	set_mark(page, mark, FSYNC_BIT_SHIFT)

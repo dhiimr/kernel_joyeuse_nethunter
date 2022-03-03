@@ -136,6 +136,11 @@
 
 #define EXCHGID4_FLAG_UPD_CONFIRMED_REC_A	0x40000000
 #define EXCHGID4_FLAG_CONFIRMED_R		0x80000000
+<<<<<<< HEAD
+=======
+
+#define EXCHGID4_FLAG_SUPP_FENCE_OPS		0x00000004
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Since the validity of these bits depends on whether
  * they're set in the argument or response, have separate
@@ -143,6 +148,10 @@
  */
 #define EXCHGID4_FLAG_MASK_A			0x40070103
 #define EXCHGID4_FLAG_MASK_R			0x80070103
+<<<<<<< HEAD
+=======
+#define EXCHGID4_2_FLAG_MASK_R			0x80070107
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define SEQ4_STATUS_CB_PATH_DOWN		0x00000001
 #define SEQ4_STATUS_CB_GSS_CONTEXTS_EXPIRING	0x00000002

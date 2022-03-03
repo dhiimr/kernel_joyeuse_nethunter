@@ -366,8 +366,14 @@ static void tcm_qla2xxx_close_session(struct se_session *se_sess)
 
 	spin_lock_irqsave(&vha->hw->tgt.sess_lock, flags);
 	target_sess_cmd_list_set_waiting(se_sess);
+<<<<<<< HEAD
 	tcm_qla2xxx_put_sess(sess);
 	spin_unlock_irqrestore(&vha->hw->tgt.sess_lock, flags);
+=======
+	spin_unlock_irqrestore(&vha->hw->tgt.sess_lock, flags);
+
+	tcm_qla2xxx_put_sess(sess);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static u32 tcm_qla2xxx_sess_get_index(struct se_session *se_sess)
@@ -391,6 +397,11 @@ static int tcm_qla2xxx_write_pending(struct se_cmd *se_cmd)
 			cmd->se_cmd.transport_state,
 			cmd->se_cmd.t_state,
 			cmd->se_cmd.se_cmd_flags);
+<<<<<<< HEAD
+=======
+		transport_generic_request_failure(&cmd->se_cmd,
+			TCM_CHECK_CONDITION_ABORT_CMD);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 	}
 	cmd->trc_flags |= TRC_XFR_RDY;
@@ -900,6 +911,7 @@ static ssize_t tcm_qla2xxx_tpg_enable_show(struct config_item *item,
 			atomic_read(&tpg->lport_tpg_enabled));
 }
 
+<<<<<<< HEAD
 static void tcm_qla2xxx_depend_tpg(struct work_struct *work)
 {
 	struct tcm_qla2xxx_tpg *base_tpg = container_of(work,
@@ -928,10 +940,19 @@ static void tcm_qla2xxx_undepend_tpg(struct work_struct *work)
 	complete(&base_tpg->tpg_base_comp);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static ssize_t tcm_qla2xxx_tpg_enable_store(struct config_item *item,
 		const char *page, size_t count)
 {
 	struct se_portal_group *se_tpg = to_tpg(item);
+<<<<<<< HEAD
+=======
+	struct se_wwn *se_wwn = se_tpg->se_tpg_wwn;
+	struct tcm_qla2xxx_lport *lport = container_of(se_wwn,
+			struct tcm_qla2xxx_lport, lport_wwn);
+	struct scsi_qla_host *vha = lport->qla_vha;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct tcm_qla2xxx_tpg *tpg = container_of(se_tpg,
 			struct tcm_qla2xxx_tpg, se_tpg);
 	unsigned long op;
@@ -950,11 +971,17 @@ static ssize_t tcm_qla2xxx_tpg_enable_store(struct config_item *item,
 		if (atomic_read(&tpg->lport_tpg_enabled))
 			return -EEXIST;
 
+<<<<<<< HEAD
 		INIT_WORK(&tpg->tpg_base_work, tcm_qla2xxx_depend_tpg);
+=======
+		atomic_set(&tpg->lport_tpg_enabled, 1);
+		qlt_enable_vha(vha);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		if (!atomic_read(&tpg->lport_tpg_enabled))
 			return count;
 
+<<<<<<< HEAD
 		INIT_WORK(&tpg->tpg_base_work, tcm_qla2xxx_undepend_tpg);
 	}
 	init_completion(&tpg->tpg_base_comp);
@@ -968,6 +995,13 @@ static ssize_t tcm_qla2xxx_tpg_enable_store(struct config_item *item,
 		if (atomic_read(&tpg->lport_tpg_enabled))
 			return -EPERM;
 	}
+=======
+		atomic_set(&tpg->lport_tpg_enabled, 0);
+		qlt_stop_phase1(vha->vha_tgt.qla_tgt);
+		qlt_stop_phase2(vha->vha_tgt.qla_tgt);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return count;
 }
 
@@ -1130,6 +1164,10 @@ static ssize_t tcm_qla2xxx_npiv_tpg_enable_store(struct config_item *item,
 
 		atomic_set(&tpg->lport_tpg_enabled, 0);
 		qlt_stop_phase1(vha->vha_tgt.qla_tgt);
+<<<<<<< HEAD
+=======
+		qlt_stop_phase2(vha->vha_tgt.qla_tgt);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return count;

@@ -135,6 +135,10 @@ static struct via_spec *via_new_spec(struct hda_codec *codec)
 		spec->codec_type = VT1708S;
 	spec->gen.indep_hp = 1;
 	spec->gen.keep_eapd_on = 1;
+<<<<<<< HEAD
+=======
+	spec->gen.dac_min_mute = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spec->gen.pcm_playback_hook = via_playback_pcm_hook;
 	spec->gen.add_stereo_mix_input = HDA_HINT_STEREO_MIX_AUTO;
 	codec->power_save_node = 1;

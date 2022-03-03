@@ -83,6 +83,10 @@ struct pf_desc {
 	u32	service;
 	char	*name;
 	char	*auth_domain_name;
+<<<<<<< HEAD
+=======
+	struct auth_domain *domain;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool	datatouch;
 };
 

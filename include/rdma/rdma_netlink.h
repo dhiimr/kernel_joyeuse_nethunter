@@ -24,7 +24,11 @@ enum rdma_nl_flags {
  * constant as well and the compiler checks they are the same.
  */
 #define MODULE_ALIAS_RDMA_NETLINK(_index, _val)                                \
+<<<<<<< HEAD
 	static inline void __chk_##_index(void)                                \
+=======
+	static inline void __maybe_unused __chk_##_index(void)                 \
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{                                                                      \
 		BUILD_BUG_ON(_index != _val);                                  \
 	}                                                                      \

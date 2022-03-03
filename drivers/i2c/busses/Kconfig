@@ -429,12 +429,22 @@ config I2C_BCM_KONA
 	  If you do not need KONA I2C interface, say N.
 
 config I2C_BRCMSTB
+<<<<<<< HEAD
 	tristate "BRCM Settop I2C controller"
 	depends on ARCH_BRCMSTB || BMIPS_GENERIC || COMPILE_TEST
 	default y
 	help
 	  If you say yes to this option, support will be included for the
 	  I2C interface on the Broadcom Settop SoCs.
+=======
+	tristate "BRCM Settop/DSL I2C controller"
+	depends on ARCH_BRCMSTB || BMIPS_GENERIC || ARCH_BCM_63XX || \
+		   COMPILE_TEST
+	default y
+	help
+	  If you say yes to this option, support will be included for the
+	  I2C interface on the Broadcom Settop/DSL SoCs.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	  If you do not need I2C interface, say N.
 
@@ -843,6 +853,7 @@ config I2C_QUP
 	  This driver can also be built as a module.  If so, the module
 	  will be called i2c-qup.
 
+<<<<<<< HEAD
 config I2C_QCOM_GENI
         tristate "Qualcomm Technologies Inc.'s GENI based I2C controller"
         depends on ARCH_QCOM
@@ -853,6 +864,8 @@ config I2C_QCOM_GENI
           This driver can also be built as a module.  If so, the module
           will be called i2c-qcom-geni.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config I2C_RIIC
 	tristate "Renesas RIIC adapter"
 	depends on ARCH_RENESAS || COMPILE_TEST
@@ -1104,6 +1117,10 @@ config I2C_RCAR
 	depends on HAS_DMA
 	depends on ARCH_RENESAS || COMPILE_TEST
 	select I2C_SLAVE
+<<<<<<< HEAD
+=======
+	select RESET_CONTROLLER if ARCH_RCAR_GEN3
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  If you say yes to this option, support will be included for the
 	  R-Car I2C controller.
@@ -1327,6 +1344,7 @@ config I2C_OPAL
 	  This driver can also be built as a module. If so, the module will be
 	  called as i2c-opal.
 
+<<<<<<< HEAD
 config I2C_MSM_V2
         tristate "I2C_MSM_V2"
         depends on ARCH_QCOM
@@ -1338,6 +1356,8 @@ config I2C_MSM_V2
           This driver can also be built as a module.  If so, the module
           will be called i2c-msm-v2.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config I2C_ZX2967
 	tristate "ZTE ZX2967 I2C support"
 	depends on ARCH_ZX
@@ -1347,10 +1367,13 @@ config I2C_ZX2967
 	  This driver can also be built as a module. If so, the module will be
 	  called i2c-zx2967.
 
+<<<<<<< HEAD
 config VIRTIO_I2C
         tristate "VIRTIO_I2C"
         depends on VIRTIO
         help
           If you say yes to this option, the virtio i2c will be supported.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endmenu

@@ -4,8 +4,11 @@
 #include <linux/io.h>
 #include <linux/spinlock.h>
 
+<<<<<<< HEAD
 #define IO_CHECK_ALIGN(v, a) ((((unsigned long)(v)) & ((a) - 1)) == 0)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static DEFINE_RAW_SPINLOCK(__io_lock);
 
 /*
@@ -42,6 +45,7 @@ EXPORT_SYMBOL(atomic_io_modify);
 
 /*
  * Copy data from IO memory space to "real" memory space.
+<<<<<<< HEAD
  */
 void _memcpy_fromio(void *to, const volatile void __iomem *from, size_t count)
 {
@@ -64,12 +68,25 @@ void _memcpy_fromio(void *to, const volatile void __iomem *from, size_t count)
 		from++;
 		to++;
 		count--;
+=======
+ * This needs to be optimized.
+ */
+void _memcpy_fromio(void *to, const volatile void __iomem *from, size_t count)
+{
+	unsigned char *t = to;
+	while (count) {
+		count--;
+		*t = readb(from);
+		t++;
+		from++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 EXPORT_SYMBOL(_memcpy_fromio);
 
 /*
  * Copy data from "real" memory space to IO memory space.
+<<<<<<< HEAD
  */
 void _memcpy_toio(volatile void __iomem *to, const void *from, size_t count)
 {
@@ -94,12 +111,25 @@ void _memcpy_toio(volatile void __iomem *to, const void *from, size_t count)
 		from++;
 		p++;
 		count--;
+=======
+ * This needs to be optimized.
+ */
+void _memcpy_toio(volatile void __iomem *to, const void *from, size_t count)
+{
+	const unsigned char *f = from;
+	while (count) {
+		count--;
+		writeb(*f, to);
+		f++;
+		to++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 EXPORT_SYMBOL(_memcpy_toio);
 
 /*
  * "memset" on IO memory space.
+<<<<<<< HEAD
  */
 void _memset_io(volatile void __iomem *dst, int c, size_t count)
 {
@@ -126,6 +156,16 @@ void _memset_io(volatile void __iomem *dst, int c, size_t count)
 		writeb_relaxed_no_log(c, p);
 		p++;
 		count--;
+=======
+ * This needs to be optimized.
+ */
+void _memset_io(volatile void __iomem *dst, int c, size_t count)
+{
+	while (count) {
+		count--;
+		writeb(c, dst);
+		dst++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 EXPORT_SYMBOL(_memset_io);

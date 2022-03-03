@@ -877,6 +877,11 @@ static int probes_seq_show(struct seq_file *m, void *v)
 	int i;
 
 	seq_putc(m, trace_kprobe_is_return(tk) ? 'r' : 'p');
+<<<<<<< HEAD
+=======
+	if (trace_kprobe_is_return(tk) && tk->rp.maxactive)
+		seq_printf(m, "%d", tk->rp.maxactive);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	seq_printf(m, ":%s/%s", tk->tp.call.class->system,
 			trace_event_name(&tk->tp.call));
 

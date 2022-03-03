@@ -33,8 +33,11 @@
 #include <linux/uuid.h>
 #include <linux/of.h>
 #include <net/addrconf.h>
+<<<<<<< HEAD
 #include <linux/siphash.h>
 #include <linux/compiler.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_BLOCK
 #include <linux/blkdev.h>
 #endif
@@ -48,6 +51,34 @@
 #include <linux/string_helpers.h>
 #include "kstrtox.h"
 
+<<<<<<< HEAD
+=======
+static unsigned long long simple_strntoull(const char *startp, size_t max_chars,
+					   char **endp, unsigned int base)
+{
+	const char *cp;
+	unsigned long long result = 0ULL;
+	size_t prefix_chars;
+	unsigned int rv;
+
+	cp = _parse_integer_fixup_radix(startp, &base);
+	prefix_chars = cp - startp;
+	if (prefix_chars < max_chars) {
+		rv = _parse_integer_limit(cp, base, &result, max_chars - prefix_chars);
+		/* FIXME */
+		cp += (rv & ~KSTRTOX_OVERFLOW);
+	} else {
+		/* Field too short for prefix + digit, skip over without converting */
+		cp = startp + max_chars;
+	}
+
+	if (endp)
+		*endp = (char *)cp;
+
+	return result;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * simple_strtoull - convert a string to an unsigned long long
  * @cp: The start of the string
@@ -58,6 +89,7 @@
  */
 unsigned long long simple_strtoull(const char *cp, char **endp, unsigned int base)
 {
+<<<<<<< HEAD
 	unsigned long long result;
 	unsigned int rv;
 
@@ -70,6 +102,9 @@ unsigned long long simple_strtoull(const char *cp, char **endp, unsigned int bas
 		*endp = (char *)cp;
 
 	return result;
+=======
+	return simple_strntoull(cp, INT_MAX, endp, base);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL(simple_strtoull);
 
@@ -104,6 +139,24 @@ long simple_strtol(const char *cp, char **endp, unsigned int base)
 }
 EXPORT_SYMBOL(simple_strtol);
 
+<<<<<<< HEAD
+=======
+static long long simple_strntoll(const char *cp, size_t max_chars, char **endp,
+				 unsigned int base)
+{
+	/*
+	 * simple_strntoull() safely handles receiving max_chars==0 in the
+	 * case cp[0] == '-' && max_chars == 1.
+	 * If max_chars == 0 we can drop through and pass it to simple_strntoull()
+	 * and the content of *cp is irrelevant.
+	 */
+	if (*cp == '-' && max_chars > 0)
+		return -simple_strntoull(cp + 1, max_chars - 1, endp, base);
+
+	return simple_strntoull(cp, max_chars, endp, base);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * simple_strtoll - convert a string to a signed long long
  * @cp: The start of the string
@@ -114,10 +167,14 @@ EXPORT_SYMBOL(simple_strtol);
  */
 long long simple_strtoll(const char *cp, char **endp, unsigned int base)
 {
+<<<<<<< HEAD
 	if (*cp == '-')
 		return -simple_strtoull(cp + 1, endp, base);
 
 	return simple_strtoull(cp, endp, base);
+=======
+	return simple_strntoll(cp, INT_MAX, endp, base);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL(simple_strtoll);
 
@@ -1345,6 +1402,7 @@ char *uuid_string(char *buf, char *end, const u8 *addr,
 	return string(buf, end, uuid, spec);
 }
 
+<<<<<<< HEAD
 int kptr_restrict __read_mostly;
 
 static noinline_for_stack
@@ -1398,6 +1456,8 @@ char *restricted_pointer(char *buf, char *end, const void *ptr,
 	return number(buf, end, (unsigned long)ptr, spec);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static noinline_for_stack
 char *netdev_bits(char *buf, char *end, const void *addr, const char *fmt)
 {
@@ -1643,6 +1703,7 @@ char *device_node_string(char *buf, char *end, struct device_node *dn,
 	return widen_string(buf, buf - buf_start, end, spec);
 }
 
+<<<<<<< HEAD
 static noinline_for_stack
 char *pointer_string(char *buf, char *end, const void *ptr,
 		     struct printf_spec spec)
@@ -1723,6 +1784,9 @@ static char *ptr_to_id(char *buf, char *end, void *ptr, struct printf_spec spec)
 
 	return number(buf, end, hashval, spec);
 }
+=======
+int kptr_restrict __read_mostly;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Show a '%p' thing.  A kernel extension is that the '%p' is followed
@@ -1829,16 +1893,22 @@ static char *ptr_to_id(char *buf, char *end, void *ptr, struct printf_spec spec)
  *                        c major compatible string
  *                        C full compatible string
  *
+<<<<<<< HEAD
  * - 'x' For printing the address. Equivalent to "%lx".
  *
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * ** Please update also Documentation/printk-formats.txt when making changes **
  *
  * Note: The difference between 'S' and 'F' is that on ia64 and ppc64
  * function pointers are really function descriptors, which contain a
  * pointer to the real address.
+<<<<<<< HEAD
  *
  * Note: The default behaviour (unadorned %p) is to hash the address,
  * rendering it useful as a unique identifier.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 static noinline_for_stack
 char *pointer(const char *fmt, char *buf, char *end, void *ptr,
@@ -1928,7 +1998,51 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
 			return buf;
 		}
 	case 'K':
+<<<<<<< HEAD
 		return restricted_pointer(buf, end, ptr, spec);
+=======
+		switch (kptr_restrict) {
+		case 0:
+			/* Always print %pK values */
+			break;
+		case 1: {
+			const struct cred *cred;
+
+			/*
+			 * kptr_restrict==1 cannot be used in IRQ context
+			 * because its test for CAP_SYSLOG would be meaningless.
+			 */
+			if (in_irq() || in_serving_softirq() || in_nmi()) {
+				if (spec.field_width == -1)
+					spec.field_width = default_width;
+				return string(buf, end, "pK-error", spec);
+			}
+
+			/*
+			 * Only print the real pointer value if the current
+			 * process has CAP_SYSLOG and is running with the
+			 * same credentials it started with. This is because
+			 * access to files is checked at open() time, but %pK
+			 * checks permission at read() time. We don't want to
+			 * leak pointer values if a binary opens a file using
+			 * %pK and then elevates privileges before reading it.
+			 */
+			cred = current_cred();
+			if (!has_capability_noaudit(current, CAP_SYSLOG) ||
+			    !uid_eq(cred->euid, cred->uid) ||
+			    !gid_eq(cred->egid, cred->gid))
+				ptr = NULL;
+			break;
+		}
+		case 2:
+		default:
+			/* Always print 0's for %pK */
+			ptr = NULL;
+			break;
+		}
+		break;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	case 'N':
 		return netdev_bits(buf, end, ptr, fmt);
 	case 'a':
@@ -1953,12 +2067,24 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
 		case 'F':
 			return device_node_string(buf, end, ptr, spec, fmt + 1);
 		}
+<<<<<<< HEAD
 	case 'x':
 		return pointer_string(buf, end, ptr, spec);
 	}
 
 	/* default is to _not_ leak addresses, hash before printing */
 	return ptr_to_id(buf, end, ptr, spec);
+=======
+	}
+	spec.flags |= SMALL;
+	if (spec.field_width == -1) {
+		spec.field_width = default_width;
+		spec.flags |= ZEROPAD;
+	}
+	spec.base = 16;
+
+	return number(buf, end, (unsigned long) ptr, spec);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -3039,6 +3165,7 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
 			break;
 
 		if (is_sign)
+<<<<<<< HEAD
 			val.s = qualifier != 'L' ?
 				simple_strtol(str, &next, base) :
 				simple_strtoll(str, &next, base);
@@ -3058,6 +3185,15 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
 				--next;
 			}
 		}
+=======
+			val.s = simple_strntoll(str,
+						field_width >= 0 ? field_width : INT_MAX,
+						&next, base);
+		else
+			val.u = simple_strntoull(str,
+						 field_width >= 0 ? field_width : INT_MAX,
+						 &next, base);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		switch (qualifier) {
 		case 'H':	/* that's 'hh' in format */

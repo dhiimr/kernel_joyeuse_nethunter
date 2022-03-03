@@ -343,7 +343,11 @@ static unsigned long hpte_find(struct pg_state *st, unsigned long ea, int psize)
 
 	/* Look in secondary table */
 	if (slot == -1)
+<<<<<<< HEAD
 		slot = base_hpte_find(ea, psize, true, &v, &r);
+=======
+		slot = base_hpte_find(ea, psize, false, &v, &r);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* No entry found */
 	if (slot == -1)

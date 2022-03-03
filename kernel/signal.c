@@ -40,8 +40,11 @@
 #include <linux/cn_proc.h>
 #include <linux/compiler.h>
 #include <linux/posix-timers.h>
+<<<<<<< HEAD
 #include <linux/oom.h>
 #include <linux/capability.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/signal.h>
@@ -79,10 +82,25 @@ static int sig_task_ignored(struct task_struct *t, int sig, bool force)
 
 	handler = sig_handler(t, sig);
 
+<<<<<<< HEAD
+=======
+	/* SIGKILL and SIGSTOP may not be sent to the global init */
+	if (unlikely(is_global_init(t) && sig_kernel_only(sig)))
+		return true;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (unlikely(t->signal->flags & SIGNAL_UNKILLABLE) &&
 	    handler == SIG_DFL && !(force && sig_kernel_only(sig)))
 		return 1;
 
+<<<<<<< HEAD
+=======
+	/* Only allow kernel generated signals to this kthread */
+	if (unlikely((t->flags & PF_KTHREAD) &&
+		     (handler == SIG_KTHREAD_KERNEL) && !force))
+		return true;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return sig_handler_ignored(handler, sig);
 }
 
@@ -372,10 +390,15 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int override_rlimi
 {
 	struct sigqueue *q = NULL;
 	struct user_struct *user;
+<<<<<<< HEAD
+=======
+	int sigpending;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Protect access to @t credentials. This can go away when all
 	 * callers hold rcu read lock.
+<<<<<<< HEAD
 	 */
 	rcu_read_lock();
 	user = get_uid(__task_cred(t)->user);
@@ -385,14 +408,34 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int override_rlimi
 	if (override_rlimit ||
 	    atomic_read(&user->sigpending) <=
 			task_rlimit(t, RLIMIT_SIGPENDING)) {
+=======
+	 *
+	 * NOTE! A pending signal will hold on to the user refcount,
+	 * and we get/put the refcount only when the sigpending count
+	 * changes from/to zero.
+	 */
+	rcu_read_lock();
+	user = __task_cred(t)->user;
+	sigpending = atomic_inc_return(&user->sigpending);
+	if (sigpending == 1)
+		get_uid(user);
+	rcu_read_unlock();
+
+	if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		q = kmem_cache_alloc(sigqueue_cachep, flags);
 	} else {
 		print_dropped_signal(sig);
 	}
 
 	if (unlikely(q == NULL)) {
+<<<<<<< HEAD
 		atomic_dec(&user->sigpending);
 		free_uid(user);
+=======
+		if (atomic_dec_and_test(&user->sigpending))
+			free_uid(user);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		INIT_LIST_HEAD(&q->list);
 		q->flags = 0;
@@ -406,8 +449,13 @@ static void __sigqueue_free(struct sigqueue *q)
 {
 	if (q->flags & SIGQUEUE_PREALLOC)
 		return;
+<<<<<<< HEAD
 	atomic_dec(&q->user->sigpending);
 	free_uid(q->user);
+=======
+	if (atomic_dec_and_test(&q->user->sigpending))
+		free_uid(q->user);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kmem_cache_free(sigqueue_cachep, q);
 }
 
@@ -1328,11 +1376,16 @@ int group_send_sig_info(int sig, struct siginfo *info, struct task_struct *p)
 	ret = check_kill_permission(sig, info, p);
 	rcu_read_unlock();
 
+<<<<<<< HEAD
 	if (!ret && sig) {
 		ret = do_send_sig_info(sig, info, p, true);
 		if (capable(CAP_KILL) && sig == SIGKILL)
 			add_to_oom_reaper(p);
 	}
+=======
+	if (!ret && sig)
+		ret = do_send_sig_info(sig, info, p, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }
@@ -1666,7 +1719,11 @@ bool do_notify_parent(struct task_struct *tsk, int sig)
 		 * This is only possible if parent == real_parent.
 		 * Check if it has changed security domain.
 		 */
+<<<<<<< HEAD
 		if (tsk->parent_exec_id != tsk->parent->self_exec_id)
+=======
+		if (tsk->parent_exec_id != READ_ONCE(tsk->parent->self_exec_id))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			sig = SIGCHLD;
 	}
 
@@ -1830,6 +1887,7 @@ static inline int may_ptrace_stop(void)
 }
 
 /*
+<<<<<<< HEAD
  * Return non-zero if there is a SIGKILL that should be waking us up.
  * Called with the siglock held.
  */
@@ -1840,6 +1898,8 @@ static int sigkill_pending(struct task_struct *tsk)
 }
 
 /*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * This must be called with current->sighand->siglock held.
  *
  * This should be the path for all ptrace stops.
@@ -1864,17 +1924,29 @@ static void ptrace_stop(int exit_code, int why, int clear_code, siginfo_t *info)
 		 * calling arch_ptrace_stop, so we must release it now.
 		 * To preserve proper semantics, we must do this before
 		 * any signal bookkeeping like checking group_stop_count.
+<<<<<<< HEAD
 		 * Meanwhile, a SIGKILL could come in before we retake the
 		 * siglock.  That must prevent us from sleeping in TASK_TRACED.
 		 * So after regaining the lock, we must check for SIGKILL.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		 */
 		spin_unlock_irq(&current->sighand->siglock);
 		arch_ptrace_stop(exit_code, info);
 		spin_lock_irq(&current->sighand->siglock);
+<<<<<<< HEAD
 		if (sigkill_pending(current))
 			return;
 	}
 
+=======
+	}
+
+	/*
+	 * schedule() will not sleep if there is a pending signal that
+	 * can awaken the task.
+	 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	set_special_state(TASK_TRACED);
 
 	/*
@@ -2276,6 +2348,11 @@ relock:
 	if (signal_group_exit(signal)) {
 		ksig->info.si_signo = signr = SIGKILL;
 		sigdelset(&current->pending.signal, SIGKILL);
+<<<<<<< HEAD
+=======
+		trace_signal_deliver(SIGKILL, SEND_SIG_NOINFO,
+				&sighand->action[SIGKILL - 1]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		recalc_sigpending();
 		goto fatal;
 	}

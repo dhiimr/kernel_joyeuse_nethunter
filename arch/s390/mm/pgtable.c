@@ -896,6 +896,10 @@ EXPORT_SYMBOL(get_guest_storage_key);
 int pgste_perform_essa(struct mm_struct *mm, unsigned long hva, int orc,
 			unsigned long *oldpte, unsigned long *oldpgste)
 {
+<<<<<<< HEAD
+=======
+	struct vm_area_struct *vma;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long pgstev;
 	spinlock_t *ptl;
 	pgste_t pgste;
@@ -905,6 +909,13 @@ int pgste_perform_essa(struct mm_struct *mm, unsigned long hva, int orc,
 	WARN_ON_ONCE(orc > ESSA_MAX);
 	if (unlikely(orc > ESSA_MAX))
 		return -EINVAL;
+<<<<<<< HEAD
+=======
+
+	vma = find_vma(mm, hva);
+	if (!vma || hva < vma->vm_start || is_vm_hugetlb_page(vma))
+		return -EFAULT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ptep = get_locked_pte(mm, hva, &ptl);
 	if (unlikely(!ptep))
 		return -EFAULT;
@@ -997,10 +1008,20 @@ EXPORT_SYMBOL(pgste_perform_essa);
 int set_pgste_bits(struct mm_struct *mm, unsigned long hva,
 			unsigned long bits, unsigned long value)
 {
+<<<<<<< HEAD
+=======
+	struct vm_area_struct *vma;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spinlock_t *ptl;
 	pgste_t new;
 	pte_t *ptep;
 
+<<<<<<< HEAD
+=======
+	vma = find_vma(mm, hva);
+	if (!vma || hva < vma->vm_start || is_vm_hugetlb_page(vma))
+		return -EFAULT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ptep = get_locked_pte(mm, hva, &ptl);
 	if (unlikely(!ptep))
 		return -EFAULT;
@@ -1025,9 +1046,19 @@ EXPORT_SYMBOL(set_pgste_bits);
  */
 int get_pgste(struct mm_struct *mm, unsigned long hva, unsigned long *pgstep)
 {
+<<<<<<< HEAD
 	spinlock_t *ptl;
 	pte_t *ptep;
 
+=======
+	struct vm_area_struct *vma;
+	spinlock_t *ptl;
+	pte_t *ptep;
+
+	vma = find_vma(mm, hva);
+	if (!vma || hva < vma->vm_start || is_vm_hugetlb_page(vma))
+		return -EFAULT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ptep = get_locked_pte(mm, hva, &ptl);
 	if (unlikely(!ptep))
 		return -EFAULT;

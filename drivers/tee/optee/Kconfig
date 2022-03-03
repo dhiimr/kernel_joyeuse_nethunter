@@ -2,6 +2,10 @@
 config OPTEE
 	tristate "OP-TEE"
 	depends on HAVE_ARM_SMCCC
+<<<<<<< HEAD
+=======
+	depends on MMU
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  This implements the OP-TEE Trusted Execution Environment (TEE)
 	  driver.

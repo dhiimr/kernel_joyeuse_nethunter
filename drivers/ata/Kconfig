@@ -102,7 +102,12 @@ config SATA_AHCI_PLATFORM
 
 config AHCI_BRCM
 	tristate "Broadcom AHCI SATA support"
+<<<<<<< HEAD
 	depends on ARCH_BRCMSTB || BMIPS_GENERIC || ARCH_BCM_NSP
+=======
+	depends on ARCH_BRCMSTB || BMIPS_GENERIC || ARCH_BCM_NSP || \
+		   ARCH_BCM_63XX
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  This option enables support for the AHCI SATA3 controller found on
 	  Broadcom SoC's.

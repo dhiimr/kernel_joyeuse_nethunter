@@ -46,6 +46,7 @@ config USB_SEVSEG
 	  To compile this driver as a module, choose M here: the
 	  module will be called usbsevseg.
 
+<<<<<<< HEAD
 config USB_RIO500
 	tristate "USB Diamond Rio500 support"
 	help
@@ -56,6 +57,8 @@ config USB_RIO500
 	  To compile this driver as a module, choose M here: the
 	  module will be called rio500.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config USB_LEGOTOWER
 	tristate "USB Lego Infrared Tower support"
 	help
@@ -275,6 +278,7 @@ config USB_CHAOSKEY
 
 	  To compile this driver as a module, choose M here: the
 	  module will be called chaoskey.
+<<<<<<< HEAD
 
 config USB_REDRIVER_NB7VPQ904M
 	tristate "USB 3.1 Gen1/Gen2 10Gbps re-driver driver for NB7VPQ904M"
@@ -298,3 +302,5 @@ config USB_QCOM_DIAG_BRIDGE
 	  driver.
 	  To compile this driver as a module, choose M here: the
 	  module will be called diag_bridge.  If unsure, choose N.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

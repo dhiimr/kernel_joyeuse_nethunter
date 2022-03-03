@@ -31,6 +31,7 @@
 #include <linux/linux_logo.h>
 #include <linux/font.h>
 
+<<<<<<< HEAD
 #define FONT_DATA ((unsigned char *)font_vga_8x16.data)
 
 /* borrowed from fbcon.c */
@@ -38,10 +39,19 @@
 #define FNTSIZE(fd)	(((int *)(fd))[-2])
 #define FNTCHARCNT(fd)	(((int *)(fd))[-3])
 #define FONT_EXTRA_WORDS 3
+=======
+#define NEWPORT_LEN	0x10000
+
+#define FONT_DATA ((unsigned char *)font_vga_8x16.data)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static unsigned char *font_data[MAX_NR_CONSOLES];
 
 static struct newport_regs *npregs;
+<<<<<<< HEAD
+=======
+static unsigned long newport_addr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int logo_active;
 static int topscan;
@@ -519,6 +529,10 @@ static int newport_set_font(int unit, struct console_font *op)
 	FNTSIZE(new_data) = size;
 	FNTCHARCNT(new_data) = op->charcount;
 	REFCOUNT(new_data) = 0;	/* usage counter */
+<<<<<<< HEAD
+=======
+	FNTSUM(new_data) = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	p = new_data;
 	for (i = 0; i < op->charcount; i++) {
@@ -673,12 +687,20 @@ static bool newport_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
 	return true;
 }
 
+<<<<<<< HEAD
 static int newport_set_origin(struct vc_data *vc)
+=======
+static int newport_dummy(struct vc_data *c)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static void newport_save_screen(struct vc_data *vc) { }
+=======
+#define DUMMY (void *) newport_dummy
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 const struct consw newport_con = {
 	.owner		  = THIS_MODULE,
@@ -694,14 +716,22 @@ const struct consw newport_con = {
 	.con_blank	  = newport_blank,
 	.con_font_set	  = newport_font_set,
 	.con_font_default = newport_font_default,
+<<<<<<< HEAD
 	.con_set_origin	  = newport_set_origin,
 	.con_save_screen  = newport_save_screen
+=======
+	.con_set_origin	  = DUMMY,
+	.con_save_screen  = DUMMY
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static int newport_probe(struct gio_device *dev,
 			 const struct gio_device_id *id)
 {
+<<<<<<< HEAD
 	unsigned long newport_addr;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err;
 
 	if (!dev->resource.start)
@@ -711,7 +741,11 @@ static int newport_probe(struct gio_device *dev,
 		return -EBUSY; /* we only support one Newport as console */
 
 	newport_addr = dev->resource.start + 0xF0000;
+<<<<<<< HEAD
 	if (!request_mem_region(newport_addr, 0x10000, "Newport"))
+=======
+	if (!request_mem_region(newport_addr, NEWPORT_LEN, "Newport"))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -ENODEV;
 
 	npregs = (struct newport_regs *)/* ioremap cannot fail */
@@ -719,6 +753,14 @@ static int newport_probe(struct gio_device *dev,
 	console_lock();
 	err = do_take_over_console(&newport_con, 0, MAX_NR_CONSOLES - 1, 1);
 	console_unlock();
+<<<<<<< HEAD
+=======
+
+	if (err) {
+		iounmap((void *)npregs);
+		release_mem_region(newport_addr, NEWPORT_LEN);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return err;
 }
 
@@ -726,6 +768,10 @@ static void newport_remove(struct gio_device *dev)
 {
 	give_up_console(&newport_con);
 	iounmap((void *)npregs);
+<<<<<<< HEAD
+=======
+	release_mem_region(newport_addr, NEWPORT_LEN);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct gio_device_id newport_ids[] = {

@@ -132,15 +132,23 @@ nfs_async_iocounter_wait(struct rpc_task *task, struct nfs_lock_context *l_ctx)
 EXPORT_SYMBOL_GPL(nfs_async_iocounter_wait);
 
 /*
+<<<<<<< HEAD
  * nfs_page_group_lock - lock the head of the page group
  * @req - request in group that is to be locked
  *
  * this lock must be held when traversing or modifying the page
  * group list
+=======
+ * nfs_page_set_headlock - set the request PG_HEADLOCK
+ * @req: request that is to be locked
+ *
+ * this lock must be held when modifying req->wb_head
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * return 0 on success, < 0 on error
  */
 int
+<<<<<<< HEAD
 nfs_page_group_lock(struct nfs_page *req)
 {
 	struct nfs_page *head = req->wb_head;
@@ -153,10 +161,21 @@ nfs_page_group_lock(struct nfs_page *req)
 	set_bit(PG_CONTENDED1, &head->wb_flags);
 	smp_mb__after_atomic();
 	return wait_on_bit_lock(&head->wb_flags, PG_HEADLOCK,
+=======
+nfs_page_set_headlock(struct nfs_page *req)
+{
+	if (!test_and_set_bit(PG_HEADLOCK, &req->wb_flags))
+		return 0;
+
+	set_bit(PG_CONTENDED1, &req->wb_flags);
+	smp_mb__after_atomic();
+	return wait_on_bit_lock(&req->wb_flags, PG_HEADLOCK,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				TASK_UNINTERRUPTIBLE);
 }
 
 /*
+<<<<<<< HEAD
  * nfs_page_group_unlock - unlock the head of the page group
  * @req - request in group that is to be unlocked
  */
@@ -173,6 +192,52 @@ nfs_page_group_unlock(struct nfs_page *req)
 	if (!test_bit(PG_CONTENDED1, &head->wb_flags))
 		return;
 	wake_up_bit(&head->wb_flags, PG_HEADLOCK);
+=======
+ * nfs_page_clear_headlock - clear the request PG_HEADLOCK
+ * @req: request that is to be locked
+ */
+void
+nfs_page_clear_headlock(struct nfs_page *req)
+{
+	smp_mb__before_atomic();
+	clear_bit(PG_HEADLOCK, &req->wb_flags);
+	smp_mb__after_atomic();
+	if (!test_bit(PG_CONTENDED1, &req->wb_flags))
+		return;
+	wake_up_bit(&req->wb_flags, PG_HEADLOCK);
+}
+
+/*
+ * nfs_page_group_lock - lock the head of the page group
+ * @req: request in group that is to be locked
+ *
+ * this lock must be held when traversing or modifying the page
+ * group list
+ *
+ * return 0 on success, < 0 on error
+ */
+int
+nfs_page_group_lock(struct nfs_page *req)
+{
+	int ret;
+
+	ret = nfs_page_set_headlock(req);
+	if (ret || req->wb_head == req)
+		return ret;
+	return nfs_page_set_headlock(req->wb_head);
+}
+
+/*
+ * nfs_page_group_unlock - unlock the head of the page group
+ * @req: request in group that is to be unlocked
+ */
+void
+nfs_page_group_unlock(struct nfs_page *req)
+{
+	if (req != req->wb_head)
+		nfs_page_clear_headlock(req->wb_head);
+	nfs_page_clear_headlock(req);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -566,7 +631,11 @@ static void nfs_pgio_rpcsetup(struct nfs_pgio_header *hdr,
 	}
 
 	hdr->res.fattr   = &hdr->fattr;
+<<<<<<< HEAD
 	hdr->res.count   = count;
+=======
+	hdr->res.count   = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hdr->res.eof     = 0;
 	hdr->res.verf    = &hdr->verf;
 	nfs_fattr_init(&hdr->fattr);
@@ -768,8 +837,12 @@ int nfs_generic_pgio(struct nfs_pageio_descriptor *desc,
 	pageused = 0;
 	while (!list_empty(head)) {
 		req = nfs_list_entry(head->next);
+<<<<<<< HEAD
 		nfs_list_remove_request(req);
 		nfs_list_add_request(req, &hdr->pages);
+=======
+		nfs_list_move_request(req, &hdr->pages);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (!last_page || last_page != req->wb_page) {
 			pageused++;
@@ -865,6 +938,7 @@ static void nfs_pageio_setup_mirroring(struct nfs_pageio_descriptor *pgio,
 	pgio->pg_mirror_count = mirror_count;
 }
 
+<<<<<<< HEAD
 /*
  * nfs_pageio_stop_mirroring - stop using mirroring (set mirror count to 1)
  */
@@ -874,6 +948,8 @@ void nfs_pageio_stop_mirroring(struct nfs_pageio_descriptor *pgio)
 	pgio->pg_mirror_idx = 0;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void nfs_pageio_cleanup_mirroring(struct nfs_pageio_descriptor *pgio)
 {
 	pgio->pg_mirror_count = 1;
@@ -961,8 +1037,12 @@ static int nfs_pageio_do_add_request(struct nfs_pageio_descriptor *desc,
 	}
 	if (!nfs_can_coalesce_requests(prev, req, desc))
 		return 0;
+<<<<<<< HEAD
 	nfs_list_remove_request(req);
 	nfs_list_add_request(req, &mirror->pg_list);
+=======
+	nfs_list_move_request(req, &mirror->pg_list);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mirror->pg_count += req->wb_bytes;
 	return 1;
 }
@@ -974,17 +1054,29 @@ static void nfs_pageio_doio(struct nfs_pageio_descriptor *desc)
 {
 	struct nfs_pgio_mirror *mirror = nfs_pgio_current_mirror(desc);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!list_empty(&mirror->pg_list)) {
 		int error = desc->pg_ops->pg_doio(desc);
 		if (error < 0)
 			desc->pg_error = error;
+<<<<<<< HEAD
 		else
 			mirror->pg_bytes_written += mirror->pg_count;
 	}
 	if (list_empty(&mirror->pg_list)) {
 		mirror->pg_count = 0;
 		mirror->pg_base = 0;
+=======
+		if (list_empty(&mirror->pg_list)) {
+			mirror->pg_bytes_written += mirror->pg_count;
+			mirror->pg_count = 0;
+			mirror->pg_base = 0;
+			mirror->pg_recoalesce = 0;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 
@@ -994,9 +1086,14 @@ nfs_pageio_cleanup_request(struct nfs_pageio_descriptor *desc,
 {
 	LIST_HEAD(head);
 
+<<<<<<< HEAD
 	nfs_list_remove_request(req);
 	nfs_list_add_request(req, &head);
 	desc->pg_completion_ops->error_cleanup(&head);
+=======
+	nfs_list_move_request(req, &head);
+	desc->pg_completion_ops->error_cleanup(&head, desc->pg_error);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -1083,7 +1180,10 @@ static int nfs_do_recoalesce(struct nfs_pageio_descriptor *desc)
 
 	do {
 		list_splice_init(&mirror->pg_list, &head);
+<<<<<<< HEAD
 		mirror->pg_bytes_written -= mirror->pg_count;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mirror->pg_count = 0;
 		mirror->pg_base = 0;
 		mirror->pg_recoalesce = 0;
@@ -1132,7 +1232,12 @@ static void nfs_pageio_error_cleanup(struct nfs_pageio_descriptor *desc)
 
 	for (midx = 0; midx < desc->pg_mirror_count; midx++) {
 		mirror = &desc->pg_mirrors[midx];
+<<<<<<< HEAD
 		desc->pg_completion_ops->error_cleanup(&mirror->pg_list);
+=======
+		desc->pg_completion_ops->error_cleanup(&mirror->pg_list,
+				desc->pg_error);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 
@@ -1234,6 +1339,7 @@ static void nfs_pageio_complete_mirror(struct nfs_pageio_descriptor *desc,
 int nfs_pageio_resend(struct nfs_pageio_descriptor *desc,
 		      struct nfs_pgio_header *hdr)
 {
+<<<<<<< HEAD
 	LIST_HEAD(failed);
 
 	desc->pg_io_completion = hdr->io_completion;
@@ -1249,6 +1355,25 @@ int nfs_pageio_resend(struct nfs_pageio_descriptor *desc,
 	if (!list_empty(&failed)) {
 		list_move(&failed, &hdr->pages);
 		return desc->pg_error < 0 ? desc->pg_error : -EIO;
+=======
+	LIST_HEAD(pages);
+
+	desc->pg_io_completion = hdr->io_completion;
+	desc->pg_dreq = hdr->dreq;
+	list_splice_init(&hdr->pages, &pages);
+	while (!list_empty(&pages)) {
+		struct nfs_page *req = nfs_list_entry(pages.next);
+
+		if (!nfs_pageio_add_request(desc, req))
+			break;
+	}
+	nfs_pageio_complete(desc);
+	if (!list_empty(&pages)) {
+		int err = desc->pg_error < 0 ? desc->pg_error : -EIO;
+		hdr->completion_ops->error_cleanup(&pages, err);
+		nfs_set_pgio_error(hdr, err, hdr->io_start);
+		return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return 0;
 }
@@ -1301,6 +1426,17 @@ void nfs_pageio_cond_complete(struct nfs_pageio_descriptor *desc, pgoff_t index)
 	}
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * nfs_pageio_stop_mirroring - stop using mirroring (set mirror count to 1)
+ */
+void nfs_pageio_stop_mirroring(struct nfs_pageio_descriptor *pgio)
+{
+	nfs_pageio_complete(pgio);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int __init nfs_init_nfspagecache(void)
 {
 	nfs_page_cachep = kmem_cache_create("nfs_page",

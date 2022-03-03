@@ -748,7 +748,11 @@ static void __exit virtio_mmio_exit(void)
 	vm_unregister_cmdline_devices();
 }
 
+<<<<<<< HEAD
 arch_initcall(virtio_mmio_init);
+=======
+module_init(virtio_mmio_init);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 module_exit(virtio_mmio_exit);
 
 MODULE_AUTHOR("Pawel Moll <pawel.moll@arm.com>");

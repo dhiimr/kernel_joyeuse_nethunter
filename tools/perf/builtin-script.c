@@ -355,7 +355,11 @@ static int perf_evsel__check_attr(struct perf_evsel *evsel,
 		       "selected. Hence, no address to lookup the source line number.\n");
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	if (PRINT_FIELD(BRSTACKINSN) &&
+=======
+	if (PRINT_FIELD(BRSTACKINSN) && !allow_user_set &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    !(perf_evlist__combined_branch_type(session->evlist) &
 	      PERF_SAMPLE_BRANCH_ANY)) {
 		pr_err("Display of branch stack assembler requested, but non all-branch filter set\n"

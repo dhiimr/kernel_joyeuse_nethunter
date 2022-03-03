@@ -667,10 +667,20 @@ static ssize_t cyc_threshold_store(struct device *dev,
 
 	if (kstrtoul(buf, 16, &val))
 		return -EINVAL;
+<<<<<<< HEAD
 	if (val < drvdata->ccitmin)
 		return -EINVAL;
 
 	config->ccctlr = val & ETM_CYC_THRESHOLD_MASK;
+=======
+
+	/* mask off max threshold before checking min value */
+	val &= ETM_CYC_THRESHOLD_MASK;
+	if (val < drvdata->ccitmin)
+		return -EINVAL;
+
+	config->ccctlr = val;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return size;
 }
 static DEVICE_ATTR_RW(cyc_threshold);
@@ -701,6 +711,7 @@ static ssize_t bb_ctrl_store(struct device *dev,
 		return -EINVAL;
 	if (!drvdata->nr_addr_cmp)
 		return -EINVAL;
+<<<<<<< HEAD
 	/*
 	 * Bit[7:0] selects which address range comparator is used for
 	 * branch broadcast control.
@@ -709,6 +720,18 @@ static ssize_t bb_ctrl_store(struct device *dev,
 		return -EINVAL;
 
 	config->bb_ctrl = val;
+=======
+
+	/*
+	 * Bit[8] controls include(1) / exclude(0), bits[0-7] select
+	 * individual range comparators. If include then at least 1
+	 * range must be selected.
+	 */
+	if ((val & BIT(8)) && (BMVAL(val, 0, 7) == 0))
+		return -EINVAL;
+
+	config->bb_ctrl = val & GENMASK(8, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return size;
 }
 static DEVICE_ATTR_RW(bb_ctrl);
@@ -1341,8 +1364,13 @@ static ssize_t seq_event_store(struct device *dev,
 
 	spin_lock(&drvdata->spinlock);
 	idx = config->seq_idx;
+<<<<<<< HEAD
 	/* RST, bits[7:0] */
 	config->seq_ctrl[idx] = val & 0xFF;
+=======
+	/* Seq control has two masks B[15:8] F[7:0] */
+	config->seq_ctrl[idx] = val & 0xFFFF;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_unlock(&drvdata->spinlock);
 	return size;
 }
@@ -1597,7 +1625,11 @@ static ssize_t res_ctrl_store(struct device *dev,
 	if (idx % 2 != 0)
 		/* PAIRINV, bit[21] */
 		val &= ~BIT(21);
+<<<<<<< HEAD
 	config->res_ctrl[idx] = val;
+=======
+	config->res_ctrl[idx] = val & GENMASK(21, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_unlock(&drvdata->spinlock);
 	return size;
 }
@@ -2073,6 +2105,7 @@ static u32 etmv4_cross_read(const struct device *dev, u32 offset)
 	coresight_simple_func(struct etmv4_drvdata, etmv4_cross_read,	\
 			      name, offset)
 
+<<<<<<< HEAD
 coresight_etm4x_cross_read(trcpdcr, TRCPDCR);
 coresight_etm4x_cross_read(trcpdsr, TRCPDSR);
 coresight_etm4x_cross_read(trclsr, TRCLSR);
@@ -2083,6 +2116,18 @@ coresight_etm4x_cross_read(trcpidr0, TRCPIDR0);
 coresight_etm4x_cross_read(trcpidr1, TRCPIDR1);
 coresight_etm4x_cross_read(trcpidr2, TRCPIDR2);
 coresight_etm4x_cross_read(trcpidr3, TRCPIDR3);
+=======
+coresight_etm4x_reg(trcpdcr, TRCPDCR);
+coresight_etm4x_reg(trcpdsr, TRCPDSR);
+coresight_etm4x_reg(trclsr, TRCLSR);
+coresight_etm4x_reg(trcauthstatus, TRCAUTHSTATUS);
+coresight_etm4x_reg(trcdevid, TRCDEVID);
+coresight_etm4x_reg(trcdevtype, TRCDEVTYPE);
+coresight_etm4x_reg(trcpidr0, TRCPIDR0);
+coresight_etm4x_reg(trcpidr1, TRCPIDR1);
+coresight_etm4x_reg(trcpidr2, TRCPIDR2);
+coresight_etm4x_reg(trcpidr3, TRCPIDR3);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 coresight_etm4x_cross_read(trcoslsr, TRCOSLSR);
 coresight_etm4x_cross_read(trcconfig, TRCCONFIGR);
 coresight_etm4x_cross_read(trctraceid, TRCTRACEIDR);

@@ -265,6 +265,7 @@ static int adv748x_csi2_init_controls(struct adv748x_csi2 *tx)
 
 int adv748x_csi2_init(struct adv748x_state *state, struct adv748x_csi2 *tx)
 {
+<<<<<<< HEAD
 	struct device_node *ep;
 	int ret;
 
@@ -278,6 +279,12 @@ int adv748x_csi2_init(struct adv748x_state *state, struct adv748x_csi2 *tx)
 				is_txa(tx) ? "txa" : "txb");
 		return -ENODEV;
 	}
+=======
+	int ret;
+
+	if (!is_tx_enabled(tx))
+		return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Initialise the virtual channel */
 	adv748x_csi2_set_virtual_channel(tx, 0);
@@ -287,7 +294,11 @@ int adv748x_csi2_init(struct adv748x_state *state, struct adv748x_csi2 *tx)
 			    is_txa(tx) ? "txa" : "txb");
 
 	/* Ensure that matching is based upon the endpoint fwnodes */
+<<<<<<< HEAD
 	tx->sd.fwnode = of_fwnode_handle(ep);
+=======
+	tx->sd.fwnode = of_fwnode_handle(state->endpoints[tx->port]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Register internal ops for incremental subdev registration */
 	tx->sd.internal_ops = &adv748x_csi2_internal_ops;
@@ -320,6 +331,12 @@ err_free_media:
 
 void adv748x_csi2_cleanup(struct adv748x_csi2 *tx)
 {
+<<<<<<< HEAD
+=======
+	if (!is_tx_enabled(tx))
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	v4l2_async_unregister_subdev(&tx->sd);
 	media_entity_cleanup(&tx->sd.entity);
 	v4l2_ctrl_handler_free(&tx->ctrl_hdl);

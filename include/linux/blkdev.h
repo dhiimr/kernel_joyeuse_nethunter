@@ -154,7 +154,10 @@ struct request {
 	unsigned int __data_len;	/* total data len */
 	int tag;
 	sector_t __sector;		/* sector cursor */
+<<<<<<< HEAD
 	u64 __dun;			/* dun for UFS */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	struct bio *bio;
 	struct bio *biotail;
@@ -240,9 +243,12 @@ struct request {
 
 	/* for bidi */
 	struct request *next_rq;
+<<<<<<< HEAD
 
 	ktime_t			lat_hist_io_start;
 	int			lat_hist_enabled;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static inline bool blk_op_is_scsi(unsigned int op)
@@ -347,6 +353,10 @@ struct queue_limits {
 	unsigned int		max_sectors;
 	unsigned int		max_segment_size;
 	unsigned int		physical_block_size;
+<<<<<<< HEAD
+=======
+	unsigned int		logical_block_size;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int		alignment_offset;
 	unsigned int		io_min;
 	unsigned int		io_opt;
@@ -357,7 +367,10 @@ struct queue_limits {
 	unsigned int		discard_granularity;
 	unsigned int		discard_alignment;
 
+<<<<<<< HEAD
 	unsigned short		logical_block_size;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned short		max_segments;
 	unsigned short		max_integrity_segments;
 	unsigned short		max_discard_segments;
@@ -572,7 +585,11 @@ struct request_queue {
 	unsigned int		sg_reserved_size;
 	int			node;
 #ifdef CONFIG_BLK_DEV_IO_TRACE
+<<<<<<< HEAD
 	struct blk_trace	*blk_trace;
+=======
+	struct blk_trace __rcu	*blk_trace;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct mutex		blk_trace_mutex;
 #endif
 	/*
@@ -653,7 +670,10 @@ struct request_queue {
 #define QUEUE_FLAG_REGISTERED  26	/* queue has been registered to a disk */
 #define QUEUE_FLAG_SCSI_PASSTHROUGH 27	/* queue supports SCSI commands */
 #define QUEUE_FLAG_QUIESCED    28	/* queue has been quiesced */
+<<<<<<< HEAD
 #define QUEUE_FLAG_INLINECRYPT 29	/* inline encryption support */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define QUEUE_FLAG_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
 				 (1 << QUEUE_FLAG_STACKABLE)	|	\
@@ -753,8 +773,11 @@ static inline void queue_flag_clear(unsigned int flag, struct request_queue *q)
 #define blk_queue_dax(q)	test_bit(QUEUE_FLAG_DAX, &(q)->queue_flags)
 #define blk_queue_scsi_passthrough(q)	\
 	test_bit(QUEUE_FLAG_SCSI_PASSTHROUGH, &(q)->queue_flags)
+<<<<<<< HEAD
 #define blk_queue_inlinecrypt(q) \
 	test_bit(QUEUE_FLAG_INLINECRYPT, &(q)->queue_flags)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define blk_noretry_request(rq) \
 	((rq)->cmd_flags & (REQ_FAILFAST_DEV|REQ_FAILFAST_TRANSPORT| \
@@ -1023,6 +1046,22 @@ static inline struct request_queue *bdev_get_queue(struct block_device *bdev)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * The basic unit of block I/O is a sector. It is used in a number of contexts
+ * in Linux (blk, bio, genhd). The size of one sector is 512 = 2**9
+ * bytes. Variables of type sector_t represent an offset or size that is a
+ * multiple of 512 bytes. Hence these two constants.
+ */
+#ifndef SECTOR_SHIFT
+#define SECTOR_SHIFT 9
+#endif
+#ifndef SECTOR_SIZE
+#define SECTOR_SIZE (1 << SECTOR_SHIFT)
+#endif
+
+/*
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * blk_rq_pos()			: the current sector
  * blk_rq_bytes()		: bytes left in the entire request
  * blk_rq_cur_bytes()		: bytes left in the current segment
@@ -1035,11 +1074,14 @@ static inline sector_t blk_rq_pos(const struct request *rq)
 	return rq->__sector;
 }
 
+<<<<<<< HEAD
 static inline sector_t blk_rq_dun(const struct request *rq)
 {
 	return rq->__dun;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline unsigned int blk_rq_bytes(const struct request *rq)
 {
 	return rq->__data_len;
@@ -1054,12 +1096,20 @@ extern unsigned int blk_rq_err_bytes(const struct request *rq);
 
 static inline unsigned int blk_rq_sectors(const struct request *rq)
 {
+<<<<<<< HEAD
 	return blk_rq_bytes(rq) >> 9;
+=======
+	return blk_rq_bytes(rq) >> SECTOR_SHIFT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline unsigned int blk_rq_cur_sectors(const struct request *rq)
 {
+<<<<<<< HEAD
 	return blk_rq_cur_bytes(rq) >> 9;
+=======
+	return blk_rq_cur_bytes(rq) >> SECTOR_SHIFT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -1079,7 +1129,12 @@ static inline unsigned int blk_queue_get_max_sectors(struct request_queue *q,
 						     int op)
 {
 	if (unlikely(op == REQ_OP_DISCARD || op == REQ_OP_SECURE_ERASE))
+<<<<<<< HEAD
 		return min(q->limits.max_discard_sectors, UINT_MAX >> 9);
+=======
+		return min(q->limits.max_discard_sectors,
+			   UINT_MAX >> SECTOR_SHIFT);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (unlikely(op == REQ_OP_WRITE_SAME))
 		return q->limits.max_write_same_sectors;
@@ -1190,7 +1245,11 @@ extern void blk_queue_max_write_same_sectors(struct request_queue *q,
 		unsigned int max_write_same_sectors);
 extern void blk_queue_max_write_zeroes_sectors(struct request_queue *q,
 		unsigned int max_write_same_sectors);
+<<<<<<< HEAD
 extern void blk_queue_logical_block_size(struct request_queue *, unsigned short);
+=======
+extern void blk_queue_logical_block_size(struct request_queue *, unsigned int);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void blk_queue_physical_block_size(struct request_queue *, unsigned int);
 extern void blk_queue_alignment_offset(struct request_queue *q,
 				       unsigned int alignment);
@@ -1388,16 +1447,31 @@ extern int blkdev_issue_zeroout(struct block_device *bdev, sector_t sector,
 static inline int sb_issue_discard(struct super_block *sb, sector_t block,
 		sector_t nr_blocks, gfp_t gfp_mask, unsigned long flags)
 {
+<<<<<<< HEAD
 	return blkdev_issue_discard(sb->s_bdev, block << (sb->s_blocksize_bits - 9),
 				    nr_blocks << (sb->s_blocksize_bits - 9),
+=======
+	return blkdev_issue_discard(sb->s_bdev,
+				    block << (sb->s_blocksize_bits -
+					      SECTOR_SHIFT),
+				    nr_blocks << (sb->s_blocksize_bits -
+						  SECTOR_SHIFT),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				    gfp_mask, flags);
 }
 static inline int sb_issue_zeroout(struct super_block *sb, sector_t block,
 		sector_t nr_blocks, gfp_t gfp_mask)
 {
 	return blkdev_issue_zeroout(sb->s_bdev,
+<<<<<<< HEAD
 				    block << (sb->s_blocksize_bits - 9),
 				    nr_blocks << (sb->s_blocksize_bits - 9),
+=======
+				    block << (sb->s_blocksize_bits -
+					      SECTOR_SHIFT),
+				    nr_blocks << (sb->s_blocksize_bits -
+						  SECTOR_SHIFT),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				    gfp_mask, 0);
 }
 
@@ -1448,7 +1522,11 @@ static inline unsigned int queue_max_segment_size(struct request_queue *q)
 	return q->limits.max_segment_size;
 }
 
+<<<<<<< HEAD
 static inline unsigned short queue_logical_block_size(struct request_queue *q)
+=======
+static inline unsigned queue_logical_block_size(struct request_queue *q)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int retval = 512;
 
@@ -1458,7 +1536,11 @@ static inline unsigned short queue_logical_block_size(struct request_queue *q)
 	return retval;
 }
 
+<<<<<<< HEAD
 static inline unsigned short bdev_logical_block_size(struct block_device *bdev)
+=======
+static inline unsigned int bdev_logical_block_size(struct block_device *bdev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return queue_logical_block_size(bdev_get_queue(bdev));
 }
@@ -1504,7 +1586,12 @@ static inline int queue_alignment_offset(struct request_queue *q)
 static inline int queue_limit_alignment_offset(struct queue_limits *lim, sector_t sector)
 {
 	unsigned int granularity = max(lim->physical_block_size, lim->io_min);
+<<<<<<< HEAD
 	unsigned int alignment = sector_div(sector, granularity >> 9) << 9;
+=======
+	unsigned int alignment = sector_div(sector, granularity >> SECTOR_SHIFT)
+		<< SECTOR_SHIFT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return (granularity + lim->alignment_offset - alignment) % granularity;
 }
@@ -1538,8 +1625,13 @@ static inline int queue_limit_discard_alignment(struct queue_limits *lim, sector
 		return 0;
 
 	/* Why are these in bytes, not sectors? */
+<<<<<<< HEAD
 	alignment = lim->discard_alignment >> 9;
 	granularity = lim->discard_granularity >> 9;
+=======
+	alignment = lim->discard_alignment >> SECTOR_SHIFT;
+	granularity = lim->discard_granularity >> SECTOR_SHIFT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!granularity)
 		return 0;
 
@@ -1550,7 +1642,11 @@ static inline int queue_limit_discard_alignment(struct queue_limits *lim, sector
 	offset = (granularity + alignment - offset) % granularity;
 
 	/* Turn it back into bytes, gaah */
+<<<<<<< HEAD
 	return offset << 9;
+=======
+	return offset << SECTOR_SHIFT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline int bdev_discard_alignment(struct block_device *bdev)
@@ -1985,6 +2081,7 @@ extern int __blkdev_driver_ioctl(struct block_device *, fmode_t, unsigned int,
 extern int bdev_read_page(struct block_device *, sector_t, struct page *);
 extern int bdev_write_page(struct block_device *, sector_t, struct page *,
 						struct writeback_control *);
+<<<<<<< HEAD
 
 /*
  * X-axis for IO latency histogram support.
@@ -2058,6 +2155,8 @@ blk_update_latency_hist(struct io_latency_state *s,
 void blk_zero_latency_hist(struct io_latency_state *s);
 ssize_t blk_latency_hist_show(struct io_latency_state *s, char *buf);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else /* CONFIG_BLOCK */
 
 struct block_device;

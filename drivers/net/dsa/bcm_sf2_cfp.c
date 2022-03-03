@@ -130,17 +130,25 @@ static int bcm_sf2_cfp_rule_set(struct dsa_switch *ds, int port,
 	    (fs->m_ext.vlan_etype || fs->m_ext.data[1]))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (fs->location != RX_CLS_LOC_ANY && fs->location >= CFP_NUM_RULES)
+=======
+	if (fs->location != RX_CLS_LOC_ANY &&
+	    fs->location > bcm_sf2_cfp_rule_size(priv))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	if (fs->location != RX_CLS_LOC_ANY &&
 	    test_bit(fs->location, priv->cfp.used))
 		return -EBUSY;
 
+<<<<<<< HEAD
 	if (fs->location != RX_CLS_LOC_ANY &&
 	    fs->location > bcm_sf2_cfp_rule_size(priv))
 		return -EINVAL;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ip_frag = be32_to_cpu(fs->m_ext.data[0]);
 
 	/* We do not support discarding packets, check that the
@@ -333,7 +341,11 @@ static int bcm_sf2_cfp_rule_del(struct bcm_sf2_priv *priv, int port,
 	int ret;
 	u32 reg;
 
+<<<<<<< HEAD
 	if (loc >= CFP_NUM_RULES)
+=======
+	if (loc > bcm_sf2_cfp_rule_size(priv))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	/* Refuse deletion of unused rules, and the default reserved rule */

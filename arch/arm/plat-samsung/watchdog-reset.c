@@ -67,6 +67,10 @@ void samsung_wdt_reset(void)
 #ifdef CONFIG_OF
 static const struct of_device_id s3c2410_wdt_match[] = {
 	{ .compatible = "samsung,s3c2410-wdt" },
+<<<<<<< HEAD
+=======
+	{ .compatible = "samsung,s3c6410-wdt" },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{},
 };
 

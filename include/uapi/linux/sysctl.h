@@ -23,7 +23,11 @@
 #ifndef _UAPI_LINUX_SYSCTL_H
 #define _UAPI_LINUX_SYSCTL_H
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
+=======
+#include <linux/const.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/types.h>
 #include <linux/compiler.h>
 
@@ -153,8 +157,11 @@ enum
 	KERN_NMI_WATCHDOG=75, /* int: enable/disable nmi watchdog */
 	KERN_PANIC_ON_NMI=76, /* int: whether we will panic on an unrecovered */
 	KERN_PANIC_ON_WARN=77, /* int: call panic() in WARN() functions */
+<<<<<<< HEAD
 	KERN_BOOT_REASON=78, /* int: identify reason system was booted */
 	KERN_COLD_BOOT=79, /* int: identify if system cold booted */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 
@@ -483,7 +490,10 @@ enum
 	NET_IPV4_CONF_PROMOTE_SECONDARIES=20,
 	NET_IPV4_CONF_ARP_ACCEPT=21,
 	NET_IPV4_CONF_ARP_NOTIFY=22,
+<<<<<<< HEAD
 	NET_IPV4_CONF_NF_IPV4_DEFRAG_SKIP = 23,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* /proc/sys/net/ipv4/netfilter */

@@ -523,6 +523,12 @@ static int virtio_gpu_get_caps_ioctl(struct drm_device *dev,
 	ret = wait_event_timeout(vgdev->resp_wq,
 				 atomic_read(&cache_ent->is_valid), 5 * HZ);
 
+<<<<<<< HEAD
+=======
+	/* is_valid check must proceed before copy of the cache entry. */
+	smp_rmb();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ptr = cache_ent->caps_cache;
 
 copy_exit:

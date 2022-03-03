@@ -468,12 +468,20 @@ static int brcm_avs_set_pstate(struct private_data *priv, unsigned int pstate)
 	return __issue_avs_command(priv, AVS_CMD_SET_PSTATE, true, args);
 }
 
+<<<<<<< HEAD
 static unsigned long brcm_avs_get_voltage(void __iomem *base)
+=======
+static u32 brcm_avs_get_voltage(void __iomem *base)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return readl(base + AVS_MBOX_VOLTAGE1);
 }
 
+<<<<<<< HEAD
 static unsigned long brcm_avs_get_frequency(void __iomem *base)
+=======
+static u32 brcm_avs_get_frequency(void __iomem *base)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return readl(base + AVS_MBOX_FREQUENCY) * 1000;	/* in kHz */
 }
@@ -762,8 +770,13 @@ static bool brcm_avs_is_firmware_loaded(struct private_data *priv)
 	rc = brcm_avs_get_pmap(priv, NULL);
 	magic = readl(priv->base + AVS_MBOX_MAGIC);
 
+<<<<<<< HEAD
 	return (magic == AVS_FIRMWARE_MAGIC) && (rc != -ENOTSUPP) &&
 		(rc != -EINVAL);
+=======
+	return (magic == AVS_FIRMWARE_MAGIC) && ((rc != -ENOTSUPP) ||
+		(rc != -EINVAL));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static unsigned int brcm_avs_cpufreq_get(unsigned int cpu)
@@ -973,14 +986,22 @@ static ssize_t show_brcm_avs_voltage(struct cpufreq_policy *policy, char *buf)
 {
 	struct private_data *priv = policy->driver_data;
 
+<<<<<<< HEAD
 	return sprintf(buf, "0x%08lx\n", brcm_avs_get_voltage(priv->base));
+=======
+	return sprintf(buf, "0x%08x\n", brcm_avs_get_voltage(priv->base));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static ssize_t show_brcm_avs_frequency(struct cpufreq_policy *policy, char *buf)
 {
 	struct private_data *priv = policy->driver_data;
 
+<<<<<<< HEAD
 	return sprintf(buf, "0x%08lx\n", brcm_avs_get_frequency(priv->base));
+=======
+	return sprintf(buf, "0x%08x\n", brcm_avs_get_frequency(priv->base));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 cpufreq_freq_attr_ro(brcm_avs_pstate);
@@ -1033,8 +1054,12 @@ static int brcm_avs_cpufreq_remove(struct platform_device *pdev)
 	int ret;
 
 	ret = cpufreq_unregister_driver(&brcm_avs_driver);
+<<<<<<< HEAD
 	if (ret)
 		return ret;
+=======
+	WARN_ON(ret);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	brcm_avs_cpufreq_debug_exit(pdev);
 

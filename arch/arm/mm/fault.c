@@ -215,7 +215,11 @@ static inline bool access_error(unsigned int fsr, struct vm_area_struct *vma)
 {
 	unsigned int mask = VM_READ | VM_WRITE | VM_EXEC;
 
+<<<<<<< HEAD
 	if (fsr & FSR_WRITE)
+=======
+	if ((fsr & FSR_WRITE) && !(fsr & FSR_CM))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mask = VM_WRITE;
 	if (fsr & FSR_LNX_PF)
 		mask = VM_EXEC;
@@ -277,15 +281,26 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 		local_irq_enable();
 
 	/*
+<<<<<<< HEAD
 	 * If we're in an interrupt, or have no irqs, or have no user
 	 * context, we must not take the fault..
 	 */
 	if (faulthandler_disabled() || irqs_disabled() || !mm)
+=======
+	 * If we're in an interrupt or have no user
+	 * context, we must not take the fault..
+	 */
+	if (faulthandler_disabled() || !mm)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto no_context;
 
 	if (user_mode(regs))
 		flags |= FAULT_FLAG_USER;
+<<<<<<< HEAD
 	if (fsr & FSR_WRITE)
+=======
+	if ((fsr & FSR_WRITE) && !(fsr & FSR_CM))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		flags |= FAULT_FLAG_WRITE;
 
 	/*

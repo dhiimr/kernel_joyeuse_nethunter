@@ -15,8 +15,11 @@
 #define MAX_INDEX 64
 #define MAX_STARS 38
 
+<<<<<<< HEAD
 char bpf_log_buf[BPF_LOG_BUF_SIZE];
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void stars(char *str, long val, long max, int width)
 {
 	int i;

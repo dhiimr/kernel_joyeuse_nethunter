@@ -121,7 +121,10 @@
 #endif
 #include <net/l3mdev.h>
 
+<<<<<<< HEAD
 int sysctl_reserved_port_bind __read_mostly = 1;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* The inetsw table contains everything that inet_create needs to
  * build a new socket.
@@ -304,7 +307,12 @@ lookup_protocol:
 	}
 
 	err = -EPERM;
+<<<<<<< HEAD
 	if (sock->type == SOCK_RAW && !kern && !capable(CAP_NET_RAW))
+=======
+	if (sock->type == SOCK_RAW && !kern &&
+	    !ns_capable(net->user_ns, CAP_NET_RAW))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out_rcu_unlock;
 
 	sock->ops = answer->ops;
@@ -1268,8 +1276,16 @@ struct sk_buff *inet_gso_segment(struct sk_buff *skb,
 	}
 
 	ops = rcu_dereference(inet_offloads[proto]);
+<<<<<<< HEAD
 	if (likely(ops && ops->callbacks.gso_segment))
 		segs = ops->callbacks.gso_segment(skb, features);
+=======
+	if (likely(ops && ops->callbacks.gso_segment)) {
+		segs = ops->callbacks.gso_segment(skb, features);
+		if (!segs)
+			skb->network_header = skb_mac_header(skb) + nhoff - skb->head;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (IS_ERR_OR_NULL(segs))
 		goto out;
@@ -1358,6 +1374,10 @@ struct sk_buff **inet_gro_receive(struct sk_buff **head, struct sk_buff *skb)
 
 	for (p = *head; p; p = p->next) {
 		struct iphdr *iph2;
+<<<<<<< HEAD
+=======
+		u16 flush_id;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (!NAPI_GRO_CB(p)->same_flow)
 			continue;
@@ -1383,6 +1403,7 @@ struct sk_buff **inet_gro_receive(struct sk_buff **head, struct sk_buff *skb)
 
 		NAPI_GRO_CB(p)->flush |= flush;
 
+<<<<<<< HEAD
 		/* For non-atomic datagrams we need to save the IP ID offset
 		 * to be included later.  If the frame has the DF bit set
 		 * we must ignore the IP ID value as per RFC 6864.
@@ -1400,6 +1421,36 @@ struct sk_buff **inet_gro_receive(struct sk_buff **head, struct sk_buff *skb)
 					    (u16)(id - NAPI_GRO_CB(p)->count);
 	}
 
+=======
+		/* We need to store of the IP ID check to be included later
+		 * when we can verify that this packet does in fact belong
+		 * to a given flow.
+		 */
+		flush_id = (u16)(id - ntohs(iph2->id));
+
+		/* This bit of code makes it much easier for us to identify
+		 * the cases where we are doing atomic vs non-atomic IP ID
+		 * checks.  Specifically an atomic check can return IP ID
+		 * values 0 - 0xFFFF, while a non-atomic check can only
+		 * return 0 or 0xFFFF.
+		 */
+		if (!NAPI_GRO_CB(p)->is_atomic ||
+		    !(iph->frag_off & htons(IP_DF))) {
+			flush_id ^= NAPI_GRO_CB(p)->count;
+			flush_id = flush_id ? 0xFFFF : 0;
+		}
+
+		/* If the previous IP ID value was based on an atomic
+		 * datagram we can overwrite the value and ignore it.
+		 */
+		if (NAPI_GRO_CB(skb)->is_atomic)
+			NAPI_GRO_CB(p)->flush_id = flush_id;
+		else
+			NAPI_GRO_CB(p)->flush_id |= flush_id;
+	}
+
+	NAPI_GRO_CB(skb)->is_atomic = !!(iph->frag_off & htons(IP_DF));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	NAPI_GRO_CB(skb)->flush |= flush;
 	skb_set_network_header(skb, off);
 	/* The above will be needed by the transport layer if there is one
@@ -1871,6 +1922,13 @@ static int __init inet_init(void)
 
 	ip_init();
 
+<<<<<<< HEAD
+=======
+	/* Initialise per-cpu ipv4 mibs */
+	if (init_ipv4_mibs())
+		panic("%s: Cannot init ipv4 mibs\n", __func__);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Setup TCP slab cache for open requests. */
 	tcp_init();
 
@@ -1899,12 +1957,15 @@ static int __init inet_init(void)
 
 	if (init_inet_pernet_ops())
 		pr_crit("%s: Cannot init ipv4 inet pernet ops\n", __func__);
+<<<<<<< HEAD
 	/*
 	 *	Initialise per-cpu ipv4 mibs
 	 */
 
 	if (init_ipv4_mibs())
 		pr_crit("%s: Cannot init ipv4 mibs\n", __func__);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ipv4_proc_init();
 

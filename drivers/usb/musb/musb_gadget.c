@@ -1280,9 +1280,17 @@ static int musb_gadget_queue(struct usb_ep *ep, struct usb_request *req,
 		status = musb_queue_resume_work(musb,
 						musb_ep_restart_resume_work,
 						request);
+<<<<<<< HEAD
 		if (status < 0)
 			dev_err(musb->controller, "%s resume work: %i\n",
 				__func__, status);
+=======
+		if (status < 0) {
+			dev_err(musb->controller, "%s resume work: %i\n",
+				__func__, status);
+			list_del(&request->list);
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 unlock:

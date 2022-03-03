@@ -1,7 +1,11 @@
 /*
  *  Bluetooth supports for Qualcomm Atheros chips
  *
+<<<<<<< HEAD
  *  Copyright (c) 2017 The Linux Foundation. All rights reserved.
+=======
+ *  Copyright (c) 2015 The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License version 2
@@ -27,9 +31,12 @@
 
 #define VERSION "0.1"
 
+<<<<<<< HEAD
 #define MAX_PATCH_FILE_SIZE (100*1024)
 #define MAX_NVM_FILE_SIZE   (10*1024)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int rome_patch_ver_req(struct hci_dev *hdev, u32 *rome_version)
 {
 	struct sk_buff *skb;
@@ -288,6 +295,7 @@ static int rome_download_firmware(struct hci_dev *hdev,
 				  struct rome_config *config)
 {
 	const struct firmware *fw;
+<<<<<<< HEAD
 	u32 type_len, length;
 	struct tlv_type_hdr *tlv;
 	int ret;
@@ -345,6 +353,29 @@ static int rome_download_firmware(struct hci_dev *hdev,
 
 exit:
 	release_firmware(fw);
+=======
+	int ret;
+
+	BT_INFO("%s: ROME Downloading %s", hdev->name, config->fwname);
+
+	ret = request_firmware(&fw, config->fwname, &hdev->dev);
+	if (ret) {
+		BT_ERR("%s: Failed to request file: %s (%d)", hdev->name,
+		       config->fwname, ret);
+		return ret;
+	}
+
+	rome_tlv_check_data(config, fw);
+
+	ret = rome_tlv_download_request(hdev, fw);
+	if (ret) {
+		BT_ERR("%s: Failed to download file: %s (%d)", hdev->name,
+		       config->fwname, ret);
+	}
+
+	release_firmware(fw);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -355,9 +386,14 @@ int qca_set_bdaddr_rome(struct hci_dev *hdev, const bdaddr_t *bdaddr)
 	int err;
 
 	cmd[0] = EDL_NVM_ACCESS_SET_REQ_CMD;
+<<<<<<< HEAD
 	/* Set the TAG ID of 0x02 for NVM set and size of tag */
 	cmd[1] = 0x02;
 	cmd[2] = sizeof(bdaddr_t);
+=======
+	cmd[1] = 0x02; 			/* TAG ID */
+	cmd[2] = sizeof(bdaddr_t);	/* size */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	memcpy(cmd + 3, bdaddr, sizeof(bdaddr_t));
 	skb = __hci_cmd_sync_ev(hdev, EDL_NVM_ACCESS_OPCODE, sizeof(cmd), cmd,
 				HCI_VENDOR_PKT, HCI_INIT_TIMEOUT);
@@ -403,6 +439,12 @@ int qca_uart_setup_rome(struct hci_dev *hdev, uint8_t baudrate)
 		return err;
 	}
 
+<<<<<<< HEAD
+=======
+	/* Give the controller some time to get ready to receive the NVM */
+	msleep(10);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Download NVM configuration */
 	config.type = TLV_TYPE_NVM;
 	snprintf(config.fwname, sizeof(config.fwname), "qca/nvm_%08x.bin",

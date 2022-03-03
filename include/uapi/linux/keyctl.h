@@ -65,7 +65,16 @@
 
 /* keyctl structures */
 struct keyctl_dh_params {
+<<<<<<< HEAD
 	__s32 private;
+=======
+	union {
+#ifndef __cplusplus
+		__s32 private;
+#endif
+		__s32 priv;
+	};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__s32 prime;
 	__s32 base;
 };

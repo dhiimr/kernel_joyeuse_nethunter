@@ -72,6 +72,11 @@
 #define MPHDRLEN	6	/* multilink protocol header length */
 #define MPHDRLEN_SSN	4	/* ditto with short sequence numbers */
 
+<<<<<<< HEAD
+=======
+#define PPP_PROTO_LEN	2
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * An instance of /dev/ppp can be associated with either a ppp
  * interface unit or a ppp channel.  In both cases, file->private_data
@@ -286,7 +291,11 @@ static struct channel *ppp_find_channel(struct ppp_net *pn, int unit);
 static int ppp_connect_channel(struct channel *pch, int unit);
 static int ppp_disconnect_channel(struct channel *pch);
 static void ppp_destroy_channel(struct channel *pch);
+<<<<<<< HEAD
 static int unit_get(struct idr *p, void *ptr);
+=======
+static int unit_get(struct idr *p, void *ptr, int min);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int unit_set(struct idr *p, void *ptr, int n);
 static void unit_put(struct idr *p, int n);
 static void *unit_find(struct idr *p, int n);
@@ -501,6 +510,12 @@ static ssize_t ppp_write(struct file *file, const char __user *buf,
 
 	if (!pf)
 		return -ENXIO;
+<<<<<<< HEAD
+=======
+	/* All PPP packets should start with the 2-byte protocol */
+	if (count < PPP_PROTO_LEN)
+		return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = -ENOMEM;
 	skb = alloc_skb(count + pf->hdrlen, GFP_KERNEL);
 	if (!skb)
@@ -977,9 +992,26 @@ static int ppp_unit_register(struct ppp *ppp, int unit, bool ifname_is_set)
 	mutex_lock(&pn->all_ppp_mutex);
 
 	if (unit < 0) {
+<<<<<<< HEAD
 		ret = unit_get(&pn->units_idr, ppp);
 		if (ret < 0)
 			goto err;
+=======
+		ret = unit_get(&pn->units_idr, ppp, 0);
+		if (ret < 0)
+			goto err;
+		if (!ifname_is_set) {
+			while (1) {
+				snprintf(ppp->dev->name, IFNAMSIZ, "ppp%i", ret);
+				if (!__dev_get_by_name(ppp->ppp_net, ppp->dev->name))
+					break;
+				unit_put(&pn->units_idr, ret);
+				ret = unit_get(&pn->units_idr, ppp, ret + 1);
+				if (ret < 0)
+					goto err;
+			}
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		/* Caller asked for a specific unit number. Fail with -EEXIST
 		 * if unavailable. For backward compatibility, return -EEXIST
@@ -1128,7 +1160,11 @@ static int ppp_nl_newlink(struct net *src_net, struct net_device *dev,
 	 * the PPP unit identifer as suffix (i.e. ppp<unit_id>). This allows
 	 * userspace to infer the device name using to the PPPIOCGUNIT ioctl.
 	 */
+<<<<<<< HEAD
 	if (!tb[IFLA_IFNAME])
+=======
+	if (!tb[IFLA_IFNAME] || !nla_len(tb[IFLA_IFNAME]) || !*(char *)nla_data(tb[IFLA_IFNAME]))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		conf.ifname_is_set = false;
 
 	err = ppp_dev_configure(src_net, dev, &conf);
@@ -1433,6 +1469,11 @@ static void __ppp_xmit_process(struct ppp *ppp, struct sk_buff *skb)
 			netif_wake_queue(ppp->dev);
 		else
 			netif_stop_queue(ppp->dev);
+<<<<<<< HEAD
+=======
+	} else {
+		kfree_skb(skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	ppp_xmit_unlock(ppp);
 }
@@ -1551,7 +1592,11 @@ ppp_send_frame(struct ppp *ppp, struct sk_buff *skb)
 	}
 
 	++ppp->stats64.tx_packets;
+<<<<<<< HEAD
 	ppp->stats64.tx_bytes += skb->len - 2;
+=======
+	ppp->stats64.tx_bytes += skb->len - PPP_PROTO_LEN;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	switch (proto) {
 	case PPP_IP:
@@ -1979,6 +2024,7 @@ ppp_do_recv(struct ppp *ppp, struct sk_buff *skb, struct channel *pch)
 	ppp_recv_unlock(ppp);
 }
 
+<<<<<<< HEAD
 /**
  * __ppp_decompress_proto - Decompress protocol field, slim version.
  * @skb: Socket buffer where protocol field should be decompressed. It must have
@@ -2019,6 +2065,8 @@ static bool ppp_decompress_proto(struct sk_buff *skb)
 	return pskb_may_pull(skb, 2);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void
 ppp_input(struct ppp_channel *chan, struct sk_buff *skb)
 {
@@ -2031,7 +2079,11 @@ ppp_input(struct ppp_channel *chan, struct sk_buff *skb)
 	}
 
 	read_lock_bh(&pch->upl);
+<<<<<<< HEAD
 	if (!ppp_decompress_proto(skb)) {
+=======
+	if (!pskb_may_pull(skb, 2)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kfree_skb(skb);
 		if (pch->ppp) {
 			++pch->ppp->dev->stats.rx_length_errors;
@@ -2128,9 +2180,12 @@ ppp_receive_nonmp_frame(struct ppp *ppp, struct sk_buff *skb)
 	if (ppp->flags & SC_MUST_COMP && ppp->rstate & SC_DC_FERROR)
 		goto err;
 
+<<<<<<< HEAD
 	/* At this point the "Protocol" field MUST be decompressed, either in
 	 * ppp_input(), ppp_decompress_frame() or in ppp_receive_mp_frame().
 	 */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	proto = PPP_PROTO(skb);
 	switch (proto) {
 	case PPP_VJC_COMP:
@@ -2302,9 +2357,12 @@ ppp_decompress_frame(struct ppp *ppp, struct sk_buff *skb)
 		skb_put(skb, len);
 		skb_pull(skb, 2);	/* pull off the A/C bytes */
 
+<<<<<<< HEAD
 		/* Don't call __ppp_decompress_proto() here, but instead rely on
 		 * corresponding algo (mppe/bsd/deflate) to decompress it.
 		 */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		/* Uncompressed frame - pass to decompressor so it
 		   can update its dictionary if necessary. */
@@ -2350,11 +2408,17 @@ ppp_receive_mp_frame(struct ppp *ppp, struct sk_buff *skb, struct channel *pch)
 
 	/*
 	 * Do protocol ID decompression on the first fragment of each packet.
+<<<<<<< HEAD
 	 * We have to do that here, because ppp_receive_nonmp_frame() expects
 	 * decompressed protocol field.
 	 */
 	if (PPP_MP_CB(skb)->BEbits & B)
 		__ppp_decompress_proto(skb);
+=======
+	 */
+	if ((PPP_MP_CB(skb)->BEbits & B) && (skb->data[0] & 1))
+		*(u8 *)skb_push(skb, 1) = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Expand sequence number to 32 bits, making it as close
@@ -3312,9 +3376,15 @@ static int unit_set(struct idr *p, void *ptr, int n)
 }
 
 /* get new free unit number and associate pointer with it */
+<<<<<<< HEAD
 static int unit_get(struct idr *p, void *ptr)
 {
 	return idr_alloc(p, ptr, 0, 0, GFP_KERNEL);
+=======
+static int unit_get(struct idr *p, void *ptr, int min)
+{
+	return idr_alloc(p, ptr, min, 0, GFP_KERNEL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* put unit number back to a pool */

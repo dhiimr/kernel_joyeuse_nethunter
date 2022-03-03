@@ -81,6 +81,7 @@ config PROC_CHILDREN
 
 	  Say Y if you are running any user-space software which takes benefit from
 	  this interface. For example, rkt is such a piece of software.
+<<<<<<< HEAD
 
 config PROC_UID
 	bool "Include /proc/uid/ files"
@@ -88,3 +89,5 @@ config PROC_UID
 	depends on PROC_FS && RT_MUTEXES
 	help
 	Provides aggregated per-uid information under /proc/uid.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

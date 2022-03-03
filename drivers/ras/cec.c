@@ -185,6 +185,7 @@ static void cec_timer_fn(unsigned long data)
  */
 static int __find_elem(struct ce_array *ca, u64 pfn, unsigned int *to)
 {
+<<<<<<< HEAD
 	u64 this_pfn;
 	int min = 0, max = ca->n;
 
@@ -211,6 +212,40 @@ static int __find_elem(struct ce_array *ca, u64 pfn, unsigned int *to)
 	if (this_pfn == pfn)
 		return min;
 
+=======
+	int min = 0, max = ca->n - 1;
+	u64 this_pfn;
+
+	while (min <= max) {
+		int i = (min + max) >> 1;
+
+		this_pfn = PFN(ca->array[i]);
+
+		if (this_pfn < pfn)
+			min = i + 1;
+		else if (this_pfn > pfn)
+			max = i - 1;
+		else if (this_pfn == pfn) {
+			if (to)
+				*to = i;
+
+			return i;
+		}
+	}
+
+	/*
+	 * When the loop terminates without finding @pfn, min has the index of
+	 * the element slot where the new @pfn should be inserted. The loop
+	 * terminates when min > max, which means the min index points to the
+	 * bigger element while the max index to the smaller element, in-between
+	 * which the new @pfn belongs to.
+	 *
+	 * For more details, see exercise 1, Section 6.2.1 in TAOCP, vol. 3.
+	 */
+	if (to)
+		*to = min;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return -ENOKEY;
 }
 
@@ -367,7 +402,13 @@ static int pfn_set(void *data, u64 val)
 {
 	*(u64 *)data = val;
 
+<<<<<<< HEAD
 	return cec_add_elem(val);
+=======
+	cec_add_elem(val);
+
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 DEFINE_DEBUGFS_ATTRIBUTE(pfn_ops, u64_get, pfn_set, "0x%llx\n");

@@ -1093,8 +1093,16 @@ int mlx5e_poll_rx_cq(struct mlx5e_cq *cq, int budget)
 	if (unlikely(!MLX5E_TEST_BIT(rq->state, MLX5E_RQ_STATE_ENABLED)))
 		return 0;
 
+<<<<<<< HEAD
 	if (cq->decmprs_left)
 		work_done += mlx5e_decompress_cqes_cont(rq, cq, 0, budget);
+=======
+	if (cq->decmprs_left) {
+		work_done += mlx5e_decompress_cqes_cont(rq, cq, 0, budget);
+		if (cq->decmprs_left || work_done >= budget)
+			goto out;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cqe = mlx5_cqwq_get_cqe(&cq->wq);
 	if (!cqe) {

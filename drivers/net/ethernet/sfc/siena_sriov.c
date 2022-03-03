@@ -1059,7 +1059,11 @@ void efx_siena_sriov_probe(struct efx_nic *efx)
 		return;
 
 	if (efx_siena_sriov_cmd(efx, false, &efx->vi_scale, &count)) {
+<<<<<<< HEAD
 		netif_info(efx, probe, efx->net_dev, "no SR-IOV VFs probed\n");
+=======
+		pci_info(efx->pci_dev, "no SR-IOV VFs probed\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 	}
 	if (count > 0 && count > max_vfs)

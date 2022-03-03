@@ -22,10 +22,15 @@ int i2c_slave_register(struct i2c_client *client, i2c_slave_cb_t slave_cb)
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!client || !slave_cb) {
 		WARN(1, "insufficient data\n");
 		return -EINVAL;
 	}
+=======
+	if (WARN(IS_ERR_OR_NULL(client) || !slave_cb, "insufficient data\n"))
+		return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!(client->flags & I2C_CLIENT_SLAVE))
 		dev_warn(&client->dev, "%s: client slave flag not set. You might see address collisions\n",
@@ -64,6 +69,12 @@ int i2c_slave_unregister(struct i2c_client *client)
 {
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (IS_ERR_OR_NULL(client))
+		return -EINVAL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!client->adapter->algo->unreg_slave) {
 		dev_err(&client->dev, "%s: not supported by adapter\n", __func__);
 		return -EOPNOTSUPP;

@@ -155,6 +155,11 @@ struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_ext_bus *ebus,
 		return NULL;
 	if (ebus->idx != bus_idx)
 		return NULL;
+<<<<<<< HEAD
+=======
+	if (addr < 0 || addr > 31)
+		return NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	list_for_each_entry(hlink, &ebus->hlink_list, list) {
 		for (i = 0; i < HDA_MAX_CODECS; i++) {

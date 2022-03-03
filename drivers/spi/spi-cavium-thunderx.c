@@ -81,6 +81,10 @@ static int thunderx_spi_probe(struct pci_dev *pdev,
 
 error:
 	clk_disable_unprepare(p->clk);
+<<<<<<< HEAD
+=======
+	pci_release_regions(pdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spi_master_put(master);
 	return ret;
 }
@@ -95,6 +99,10 @@ static void thunderx_spi_remove(struct pci_dev *pdev)
 		return;
 
 	clk_disable_unprepare(p->clk);
+<<<<<<< HEAD
+=======
+	pci_release_regions(pdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Put everything in a known state. */
 	writeq(0, p->register_base + OCTEON_SPI_CFG(p));
 }

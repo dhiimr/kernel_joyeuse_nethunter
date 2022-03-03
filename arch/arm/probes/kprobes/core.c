@@ -669,7 +669,11 @@ static struct undef_hook kprobes_arm_break_hook = {
 
 #endif /* !CONFIG_THUMB2_KERNEL */
 
+<<<<<<< HEAD
 int __init arch_init_kprobes()
+=======
+int __init arch_init_kprobes(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	arm_probes_decode_init();
 #ifdef CONFIG_THUMB2_KERNEL

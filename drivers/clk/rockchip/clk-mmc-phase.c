@@ -59,10 +59,15 @@ static int rockchip_mmc_get_phase(struct clk_hw *hw)
 	u32 delay_num = 0;
 
 	/* See the comment for rockchip_mmc_set_phase below */
+<<<<<<< HEAD
 	if (!rate) {
 		pr_err("%s: invalid clk rate\n", __func__);
 		return -EINVAL;
 	}
+=======
+	if (!rate)
+		return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	raw_value = readl(mmc_clock->reg) >> (mmc_clock->shift);
 

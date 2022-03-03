@@ -67,6 +67,10 @@ static void do_it(unsigned long extraflags)
 	set_eflags(get_eflags() | extraflags);
 	syscall(SYS_getpid);
 	flags = get_eflags();
+<<<<<<< HEAD
+=======
+	set_eflags(X86_EFLAGS_IF | X86_EFLAGS_FIXED);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if ((flags & extraflags) == extraflags) {
 		printf("[OK]\tThe syscall worked and flags are still set\n");
 	} else {

@@ -368,6 +368,10 @@ static int adfs_fill_super(struct super_block *sb, void *data, int silent)
 	struct buffer_head *bh;
 	struct object_info root_obj;
 	unsigned char *b_data;
+<<<<<<< HEAD
+=======
+	unsigned int blocksize;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct adfs_sb_info *asb;
 	struct inode *root;
 	int ret = -EINVAL;
@@ -419,8 +423,15 @@ static int adfs_fill_super(struct super_block *sb, void *data, int silent)
 		goto error_free_bh;
 	}
 
+<<<<<<< HEAD
 	brelse(bh);
 	if (sb_set_blocksize(sb, 1 << dr->log2secsize)) {
+=======
+	blocksize = 1 << dr->log2secsize;
+	brelse(bh);
+
+	if (sb_set_blocksize(sb, blocksize)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		bh = sb_bread(sb, ADFS_DISCRECORD / sb->s_blocksize);
 		if (!bh) {
 			adfs_error(sb, "couldn't read superblock on "

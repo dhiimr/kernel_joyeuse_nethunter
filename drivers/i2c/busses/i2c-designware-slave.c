@@ -206,6 +206,10 @@ static int i2c_dw_unreg_slave(struct i2c_client *slave)
 
 	dev->disable_int(dev);
 	dev->disable(dev);
+<<<<<<< HEAD
+=======
+	synchronize_irq(dev->irq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev->slave = NULL;
 	pm_runtime_put(dev->dev);
 

@@ -96,9 +96,21 @@ static irqreturn_t nspire_keypad_irq(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int nspire_keypad_chip_init(struct nspire_keypad *keypad)
 {
 	unsigned long val = 0, cycles_per_us, delay_cycles, row_delay_cycles;
+=======
+static int nspire_keypad_open(struct input_dev *input)
+{
+	struct nspire_keypad *keypad = input_get_drvdata(input);
+	unsigned long val = 0, cycles_per_us, delay_cycles, row_delay_cycles;
+	int error;
+
+	error = clk_prepare_enable(keypad->clk);
+	if (error)
+		return error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cycles_per_us = (clk_get_rate(keypad->clk) / 1000000);
 	if (cycles_per_us == 0)
@@ -124,6 +136,7 @@ static int nspire_keypad_chip_init(struct nspire_keypad *keypad)
 	keypad->int_mask = 1 << 1;
 	writel(keypad->int_mask, keypad->reg_base + KEYPAD_INTMSK);
 
+<<<<<<< HEAD
 	/* Disable GPIO interrupts to prevent hanging on touchpad */
 	/* Possibly used to detect touchpad events */
 	writel(0, keypad->reg_base + KEYPAD_UNKNOWN_INT);
@@ -148,6 +161,8 @@ static int nspire_keypad_open(struct input_dev *input)
 		return error;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -155,6 +170,14 @@ static void nspire_keypad_close(struct input_dev *input)
 {
 	struct nspire_keypad *keypad = input_get_drvdata(input);
 
+<<<<<<< HEAD
+=======
+	/* Disable interrupts */
+	writel(0, keypad->reg_base + KEYPAD_INTMSK);
+	/* Acknowledge existing interrupts */
+	writel(~0, keypad->reg_base + KEYPAD_INT);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	clk_disable_unprepare(keypad->clk);
 }
 
@@ -215,6 +238,28 @@ static int nspire_keypad_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+=======
+	error = clk_prepare_enable(keypad->clk);
+	if (error) {
+		dev_err(&pdev->dev, "failed to enable clock\n");
+		return error;
+	}
+
+	/* Disable interrupts */
+	writel(0, keypad->reg_base + KEYPAD_INTMSK);
+	/* Acknowledge existing interrupts */
+	writel(~0, keypad->reg_base + KEYPAD_INT);
+
+	/* Disable GPIO interrupts to prevent hanging on touchpad */
+	/* Possibly used to detect touchpad events */
+	writel(0, keypad->reg_base + KEYPAD_UNKNOWN_INT);
+	/* Acknowledge existing GPIO interrupts */
+	writel(~0, keypad->reg_base + KEYPAD_UNKNOWN_INT_STS);
+
+	clk_disable_unprepare(keypad->clk);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	input_set_drvdata(input, keypad);
 
 	input->id.bustype = BUS_HOST;

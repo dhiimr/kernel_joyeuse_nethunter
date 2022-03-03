@@ -115,14 +115,30 @@ static int apci1032_cos_insn_config(struct comedi_device *dev,
 				    unsigned int *data)
 {
 	struct apci1032_private *devpriv = dev->private;
+<<<<<<< HEAD
 	unsigned int shift, oldmask;
+=======
+	unsigned int shift, oldmask, himask, lomask;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	switch (data[0]) {
 	case INSN_CONFIG_DIGITAL_TRIG:
 		if (data[1] != 0)
 			return -EINVAL;
 		shift = data[3];
+<<<<<<< HEAD
 		oldmask = (1U << shift) - 1;
+=======
+		if (shift < 32) {
+			oldmask = (1U << shift) - 1;
+			himask = data[4] << shift;
+			lomask = data[5] << shift;
+		} else {
+			oldmask = 0xffffffffu;
+			himask = 0;
+			lomask = 0;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		switch (data[2]) {
 		case COMEDI_DIGITAL_TRIG_DISABLE:
 			devpriv->ctrl = 0;
@@ -145,8 +161,13 @@ static int apci1032_cos_insn_config(struct comedi_device *dev,
 				devpriv->mode2 &= oldmask;
 			}
 			/* configure specified channels */
+<<<<<<< HEAD
 			devpriv->mode1 |= data[4] << shift;
 			devpriv->mode2 |= data[5] << shift;
+=======
+			devpriv->mode1 |= himask;
+			devpriv->mode2 |= lomask;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		case COMEDI_DIGITAL_TRIG_ENABLE_LEVELS:
 			if (devpriv->ctrl != (APCI1032_CTRL_INT_ENA |
@@ -163,8 +184,13 @@ static int apci1032_cos_insn_config(struct comedi_device *dev,
 				devpriv->mode2 &= oldmask;
 			}
 			/* configure specified channels */
+<<<<<<< HEAD
 			devpriv->mode1 |= data[4] << shift;
 			devpriv->mode2 |= data[5] << shift;
+=======
+			devpriv->mode1 |= himask;
+			devpriv->mode2 |= lomask;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		default:
 			return -EINVAL;
@@ -261,6 +287,10 @@ static irqreturn_t apci1032_interrupt(int irq, void *d)
 	struct apci1032_private *devpriv = dev->private;
 	struct comedi_subdevice *s = dev->read_subdev;
 	unsigned int ctrl;
+<<<<<<< HEAD
+=======
+	unsigned short val;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* check interrupt is from this device */
 	if ((inl(devpriv->amcc_iobase + AMCC_OP_REG_INTCSR) &
@@ -276,7 +306,12 @@ static irqreturn_t apci1032_interrupt(int irq, void *d)
 	outl(ctrl & ~APCI1032_CTRL_INT_ENA, dev->iobase + APCI1032_CTRL_REG);
 
 	s->state = inl(dev->iobase + APCI1032_STATUS_REG) & 0xffff;
+<<<<<<< HEAD
 	comedi_buf_write_samples(s, &s->state, 1);
+=======
+	val = s->state;
+	comedi_buf_write_samples(s, &val, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	comedi_handle_events(dev, s);
 
 	/* enable the interrupt */

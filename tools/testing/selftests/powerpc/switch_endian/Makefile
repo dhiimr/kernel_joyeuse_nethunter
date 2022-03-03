@@ -7,6 +7,10 @@ EXTRA_CLEAN = $(OUTPUT)/*.o $(OUTPUT)/check-reversed.S
 
 include ../../lib.mk
 
+<<<<<<< HEAD
+=======
+$(OUTPUT)/switch_endian_test: ASFLAGS += -I $(OUTPUT)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 $(OUTPUT)/switch_endian_test: $(OUTPUT)/check-reversed.S
 
 $(OUTPUT)/check-reversed.o: $(OUTPUT)/check.o

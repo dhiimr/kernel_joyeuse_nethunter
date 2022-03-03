@@ -571,6 +571,10 @@ void b43legacy_rx(struct b43legacy_wldev *dev,
 	default:
 		b43legacywarn(dev->wl, "Unexpected value for chanstat (0x%X)\n",
 		       chanstat);
+<<<<<<< HEAD
+=======
+		goto drop;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	memcpy(IEEE80211_SKB_RXCB(skb), &status, sizeof(status));

@@ -1973,6 +1973,11 @@ error:
 		kfree(card->mpa_rx.buf);
 		card->mpa_tx.buf_size = 0;
 		card->mpa_rx.buf_size = 0;
+<<<<<<< HEAD
+=======
+		card->mpa_tx.buf = NULL;
+		card->mpa_rx.buf = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return ret;

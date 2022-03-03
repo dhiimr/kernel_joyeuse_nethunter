@@ -522,17 +522,24 @@ static int cpg_mssr_reset(struct reset_controller_dev *rcdev,
 	unsigned int reg = id / 32;
 	unsigned int bit = id % 32;
 	u32 bitmask = BIT(bit);
+<<<<<<< HEAD
 	unsigned long flags;
 	u32 value;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dev_dbg(priv->dev, "reset %u%02u\n", reg, bit);
 
 	/* Reset module */
+<<<<<<< HEAD
 	spin_lock_irqsave(&priv->rmw_lock, flags);
 	value = readl(priv->base + SRCR(reg));
 	value |= bitmask;
 	writel(value, priv->base + SRCR(reg));
 	spin_unlock_irqrestore(&priv->rmw_lock, flags);
+=======
+	writel(bitmask, priv->base + SRCR(reg));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Wait for at least one cycle of the RCLK clock (@ ca. 32 kHz) */
 	udelay(35);
@@ -549,6 +556,7 @@ static int cpg_mssr_assert(struct reset_controller_dev *rcdev, unsigned long id)
 	unsigned int reg = id / 32;
 	unsigned int bit = id % 32;
 	u32 bitmask = BIT(bit);
+<<<<<<< HEAD
 	unsigned long flags;
 	u32 value;
 
@@ -559,6 +567,12 @@ static int cpg_mssr_assert(struct reset_controller_dev *rcdev, unsigned long id)
 	value |= bitmask;
 	writel(value, priv->base + SRCR(reg));
 	spin_unlock_irqrestore(&priv->rmw_lock, flags);
+=======
+
+	dev_dbg(priv->dev, "assert %u%02u\n", reg, bit);
+
+	writel(bitmask, priv->base + SRCR(reg));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 

@@ -328,8 +328,13 @@ struct l2tp_session *l2tp_session_get_by_ifname(const struct net *net,
 }
 EXPORT_SYMBOL_GPL(l2tp_session_get_by_ifname);
 
+<<<<<<< HEAD
 static int l2tp_session_add_to_tunnel(struct l2tp_tunnel *tunnel,
 				      struct l2tp_session *session)
+=======
+int l2tp_session_register(struct l2tp_session *session,
+			  struct l2tp_tunnel *tunnel)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct l2tp_session *session_walk;
 	struct hlist_head *g_head;
@@ -358,8 +363,18 @@ static int l2tp_session_add_to_tunnel(struct l2tp_tunnel *tunnel,
 
 		spin_lock_bh(&pn->l2tp_session_hlist_lock);
 
+<<<<<<< HEAD
 		hlist_for_each_entry(session_walk, g_head, global_hlist)
 			if (session_walk->session_id == session->session_id) {
+=======
+		/* IP encap expects session IDs to be globally unique, while
+		 * UDP encap doesn't.
+		 */
+		hlist_for_each_entry(session_walk, g_head, global_hlist)
+			if (session_walk->session_id == session->session_id &&
+			    (session_walk->tunnel->encap == L2TP_ENCAPTYPE_IP ||
+			     tunnel->encap == L2TP_ENCAPTYPE_IP)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				err = -EEXIST;
 				goto err_tlock_pnlock;
 			}
@@ -377,6 +392,13 @@ static int l2tp_session_add_to_tunnel(struct l2tp_tunnel *tunnel,
 	hlist_add_head(&session->hlist, head);
 	write_unlock_bh(&tunnel->hlist_lock);
 
+<<<<<<< HEAD
+=======
+	/* Ignore management session in session count value */
+	if (session->session_id != 0)
+		atomic_inc(&l2tp_session_count);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 
 err_tlock_pnlock:
@@ -386,6 +408,10 @@ err_tlock:
 
 	return err;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(l2tp_session_register);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Lookup a tunnel by id
  */
@@ -701,7 +727,11 @@ discard:
  */
 void l2tp_recv_common(struct l2tp_session *session, struct sk_buff *skb,
 		      unsigned char *ptr, unsigned char *optr, u16 hdrflags,
+<<<<<<< HEAD
 		      int length)
+=======
+		      int length, int (*payload_hook)(struct sk_buff *skb))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct l2tp_tunnel *tunnel = session->tunnel;
 	int offset;
@@ -822,6 +852,16 @@ void l2tp_recv_common(struct l2tp_session *session, struct sk_buff *skb,
 
 	__skb_pull(skb, offset);
 
+<<<<<<< HEAD
+=======
+	/* If caller wants to process the payload before we queue the
+	 * packet, do so now.
+	 */
+	if (payload_hook)
+		if ((*payload_hook)(skb))
+			goto discard;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Prepare skb for adding to the session's reorder_q.  Hold
 	 * packets for max reorder_timeout or 1 second if not
 	 * reordering.
@@ -881,7 +921,12 @@ EXPORT_SYMBOL_GPL(l2tp_session_queue_purge);
  * Returns 1 if the packet was not a good data packet and could not be
  * forwarded.  All such packets are passed up to userspace to deal with.
  */
+<<<<<<< HEAD
 static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
+=======
+static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb,
+			      int (*payload_hook)(struct sk_buff *skb))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct l2tp_session *session = NULL;
 	unsigned char *ptr, *optr;
@@ -976,10 +1021,19 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
 	}
 
 	if (tunnel->version == L2TP_HDR_VER_3 &&
+<<<<<<< HEAD
 	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr))
 		goto error;
 
 	l2tp_recv_common(session, skb, ptr, optr, hdrflags, length);
+=======
+	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr)) {
+		l2tp_session_dec_refcount(session);
+		goto error;
+	}
+
+	l2tp_recv_common(session, skb, ptr, optr, hdrflags, length, payload_hook);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	l2tp_session_dec_refcount(session);
 
 	return 0;
@@ -1008,7 +1062,11 @@ int l2tp_udp_encap_recv(struct sock *sk, struct sk_buff *skb)
 	l2tp_dbg(tunnel, L2TP_MSG_DATA, "%s: received %d bytes\n",
 		 tunnel->name, skb->len);
 
+<<<<<<< HEAD
 	if (l2tp_udp_recv_core(tunnel, skb))
+=======
+	if (l2tp_udp_recv_core(tunnel, skb, tunnel->recv_payload_hook))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto pass_up_put;
 
 	sock_put(sk);
@@ -1123,6 +1181,10 @@ static int l2tp_xmit_core(struct l2tp_session *session, struct sk_buff *skb,
 
 	/* Queue the packet to IP for output */
 	skb->ignore_df = 1;
+<<<<<<< HEAD
+=======
+	skb_dst_drop(skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #if IS_ENABLED(CONFIG_IPV6)
 	if (l2tp_sk_is_v6(tunnel->sock))
 		error = inet6_csk_xmit(tunnel->sock, skb, NULL);
@@ -1196,10 +1258,13 @@ int l2tp_xmit_skb(struct l2tp_session *session, struct sk_buff *skb, int hdr_len
 		goto out_unlock;
 	}
 
+<<<<<<< HEAD
 	/* Get routing info from the tunnel socket */
 	skb_dst_drop(skb);
 	skb_dst_set(skb, sk_dst_check(sk, 0));
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	inet = inet_sk(sk);
 	fl = &inet->cork.fl;
 	switch (tunnel->encap) {
@@ -1571,6 +1636,11 @@ int l2tp_tunnel_create(struct net *net, int fd, int version, u32 tunnel_id, u32 
 			 tunnel_id, fd);
 		goto err;
 	}
+<<<<<<< HEAD
+=======
+	if (sk->sk_family != PF_INET && sk->sk_family != PF_INET6)
+		goto err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	switch (encap) {
 	case L2TP_ENCAPTYPE_UDP:
 		if (sk->sk_protocol != IPPROTO_UDP) {
@@ -1778,7 +1848,10 @@ EXPORT_SYMBOL_GPL(l2tp_session_set_header_len);
 struct l2tp_session *l2tp_session_create(int priv_size, struct l2tp_tunnel *tunnel, u32 session_id, u32 peer_session_id, struct l2tp_session_cfg *cfg)
 {
 	struct l2tp_session *session;
+<<<<<<< HEAD
 	int err;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	session = kzalloc(sizeof(struct l2tp_session) + priv_size, GFP_KERNEL);
 	if (session != NULL) {
@@ -1835,6 +1908,7 @@ struct l2tp_session *l2tp_session_create(int priv_size, struct l2tp_tunnel *tunn
 
 		refcount_set(&session->ref_count, 1);
 
+<<<<<<< HEAD
 		err = l2tp_session_add_to_tunnel(tunnel, session);
 		if (err) {
 			kfree(session);
@@ -1846,6 +1920,8 @@ struct l2tp_session *l2tp_session_create(int priv_size, struct l2tp_tunnel *tunn
 		if (session->session_id != 0)
 			atomic_inc(&l2tp_session_count);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return session;
 	}
 
@@ -1884,7 +1960,12 @@ static __net_exit void l2tp_exit_net(struct net *net)
 	}
 	rcu_read_unlock_bh();
 
+<<<<<<< HEAD
 	flush_workqueue(l2tp_wq);
+=======
+	if (l2tp_wq)
+		flush_workqueue(l2tp_wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rcu_barrier();
 }
 

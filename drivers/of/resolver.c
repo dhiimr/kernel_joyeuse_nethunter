@@ -22,6 +22,12 @@
 
 #include "of_private.h"
 
+<<<<<<< HEAD
+=======
+/* illegal phandle value (set when unresolved) */
+#define OF_PHANDLE_ILLEGAL	0xdeadbeef
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static phandle live_tree_max_phandle(void)
 {
 	struct device_node *node;

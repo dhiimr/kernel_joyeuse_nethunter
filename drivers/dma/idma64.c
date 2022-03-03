@@ -589,7 +589,11 @@ static int idma64_probe(struct idma64_chip *chip)
 	idma64->dma.directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
 	idma64->dma.residue_granularity = DMA_RESIDUE_GRANULARITY_BURST;
 
+<<<<<<< HEAD
 	idma64->dma.dev = chip->dev;
+=======
+	idma64->dma.dev = chip->sysdev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dma_set_max_seg_size(idma64->dma.dev, IDMA64C_CTLH_BLOCK_TS_MASK);
 
@@ -629,6 +633,10 @@ static int idma64_platform_probe(struct platform_device *pdev)
 {
 	struct idma64_chip *chip;
 	struct device *dev = &pdev->dev;
+<<<<<<< HEAD
+=======
+	struct device *sysdev = dev->parent;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct resource *mem;
 	int ret;
 
@@ -645,11 +653,19 @@ static int idma64_platform_probe(struct platform_device *pdev)
 	if (IS_ERR(chip->regs))
 		return PTR_ERR(chip->regs);
 
+<<<<<<< HEAD
 	ret = dma_coerce_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+=======
+	ret = dma_coerce_mask_and_coherent(sysdev, DMA_BIT_MASK(64));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		return ret;
 
 	chip->dev = dev;
+<<<<<<< HEAD
+=======
+	chip->sysdev = sysdev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = idma64_probe(chip);
 	if (ret)

@@ -35,7 +35,11 @@
 			clocks = <&clks CLK_NONE>;
 		};
 
+<<<<<<< HEAD
 		pxa27x_ohci: usb@4c000000 {
+=======
+		usb0: usb@4c000000 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			compatible = "marvell,pxa-ohci";
 			reg = <0x4c000000 0x10000>;
 			interrupts = <3>;
@@ -71,7 +75,11 @@
 			clocks = <&clks CLK_PWM1>;
 		};
 
+<<<<<<< HEAD
 		pwri2c: i2c@40f000180 {
+=======
+		pwri2c: i2c@40f00180 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			compatible = "mrvl,pxa-i2c";
 			reg = <0x40f00180 0x24>;
 			interrupts = <6>;
@@ -113,6 +121,13 @@
 
 			status = "disabled";
 		};
+<<<<<<< HEAD
+=======
+
+		rtc@40900000 {
+			clocks = <&clks CLK_OSC32k768>;
+		};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	clocks {

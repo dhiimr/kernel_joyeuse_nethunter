@@ -37,7 +37,11 @@ needs_sphinx = '1.3'
 extensions = ['kerneldoc', 'rstFlatTable', 'kernel_include', 'cdomain', 'kfigure']
 
 # The name of the math extension changed on Sphinx 1.4
+<<<<<<< HEAD
 if major == 1 and minor > 3:
+=======
+if (major == 1 and minor > 3) or (major > 1):
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
     extensions.append("sphinx.ext.imgmath")
 else:
     extensions.append("sphinx.ext.pngmath")

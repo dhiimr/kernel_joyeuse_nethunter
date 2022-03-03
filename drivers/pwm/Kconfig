@@ -360,6 +360,7 @@ config PWM_RCAR
 	  To compile this driver as a module, choose M here: the module
 	  will be called pwm-rcar.
 
+<<<<<<< HEAD
 config PWM_QTI_LPG
 	tristate "Qualcomm Technologies, Inc. LPG driver"
 	depends on  MFD_SPMI_PMIC && OF
@@ -370,6 +371,8 @@ config PWM_QTI_LPG
 	  variable duty cycle or in LUT (Look up table) mode to output PWM
 	  signal with a modulated amplitude.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config PWM_RENESAS_TPU
 	tristate "Renesas TPU PWM support"
 	depends on ARCH_RENESAS || COMPILE_TEST

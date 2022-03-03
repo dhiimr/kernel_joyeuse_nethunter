@@ -8,7 +8,11 @@
 
 GCOV_PROFILE	:= n
 
+<<<<<<< HEAD
 LDFLAGS_bootp	:=-p --no-undefined -X \
+=======
+LDFLAGS_bootp	:= --no-undefined -X \
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		 --defsym initrd_phys=$(INITRD_PHYS) \
 		 --defsym params_phys=$(PARAMS_PHYS) -T
 AFLAGS_initrd.o :=-DINITRD=\"$(INITRD)\"

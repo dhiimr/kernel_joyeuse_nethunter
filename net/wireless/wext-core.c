@@ -659,7 +659,12 @@ struct iw_statistics *get_wireless_stats(struct net_device *dev)
 	return NULL;
 }
 
+<<<<<<< HEAD
 static int iw_handler_get_iwstats(struct net_device *		dev,
+=======
+/* noinline to avoid a bogus warning with -O3 */
+static noinline int iw_handler_get_iwstats(struct net_device *	dev,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				  struct iw_request_info *	info,
 				  union iwreq_data *		wrqu,
 				  char *			extra)
@@ -897,8 +902,14 @@ out:
 int call_commit_handler(struct net_device *dev)
 {
 #ifdef CONFIG_WIRELESS_EXT
+<<<<<<< HEAD
 	if ((netif_running(dev)) &&
 	   (dev->wireless_handlers->standard[0] != NULL))
+=======
+	if (netif_running(dev) &&
+	    dev->wireless_handlers &&
+	    dev->wireless_handlers->standard[0])
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* Call the commit handler on the driver */
 		return dev->wireless_handlers->standard[0](dev, NULL,
 							   NULL, NULL);

@@ -188,12 +188,21 @@ DEFINE_EVENT(mm_vmscan_direct_reclaim_end_template, mm_vmscan_memcg_softlimit_re
 
 TRACE_EVENT(mm_shrink_slab_start,
 	TP_PROTO(struct shrinker *shr, struct shrink_control *sc,
+<<<<<<< HEAD
 		long nr_objects_to_shrink, unsigned long cache_items,
 		unsigned long long delta, unsigned long total_scan,
 		int priority),
 
 	TP_ARGS(shr, sc, nr_objects_to_shrink, cache_items, delta, total_scan,
 		priority),
+=======
+		long nr_objects_to_shrink, unsigned long pgs_scanned,
+		unsigned long lru_pgs, unsigned long cache_items,
+		unsigned long long delta, unsigned long total_scan),
+
+	TP_ARGS(shr, sc, nr_objects_to_shrink, pgs_scanned, lru_pgs,
+		cache_items, delta, total_scan),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	TP_STRUCT__entry(
 		__field(struct shrinker *, shr)
@@ -201,10 +210,18 @@ TRACE_EVENT(mm_shrink_slab_start,
 		__field(int, nid)
 		__field(long, nr_objects_to_shrink)
 		__field(gfp_t, gfp_flags)
+<<<<<<< HEAD
 		__field(unsigned long, cache_items)
 		__field(unsigned long long, delta)
 		__field(unsigned long, total_scan)
 		__field(int, priority)
+=======
+		__field(unsigned long, pgs_scanned)
+		__field(unsigned long, lru_pgs)
+		__field(unsigned long, cache_items)
+		__field(unsigned long long, delta)
+		__field(unsigned long, total_scan)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	),
 
 	TP_fast_assign(
@@ -213,6 +230,7 @@ TRACE_EVENT(mm_shrink_slab_start,
 		__entry->nid = sc->nid;
 		__entry->nr_objects_to_shrink = nr_objects_to_shrink;
 		__entry->gfp_flags = sc->gfp_mask;
+<<<<<<< HEAD
 		__entry->cache_items = cache_items;
 		__entry->delta = delta;
 		__entry->total_scan = total_scan;
@@ -220,15 +238,33 @@ TRACE_EVENT(mm_shrink_slab_start,
 	),
 
 	TP_printk("%pF %p: nid: %d objects to shrink %ld gfp_flags %s cache items %ld delta %lld total_scan %ld priority %d",
+=======
+		__entry->pgs_scanned = pgs_scanned;
+		__entry->lru_pgs = lru_pgs;
+		__entry->cache_items = cache_items;
+		__entry->delta = delta;
+		__entry->total_scan = total_scan;
+	),
+
+	TP_printk("%pF %p: nid: %d objects to shrink %ld gfp_flags %s pgs_scanned %ld lru_pgs %ld cache items %ld delta %lld total_scan %ld",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__entry->shrink,
 		__entry->shr,
 		__entry->nid,
 		__entry->nr_objects_to_shrink,
 		show_gfp_flags(__entry->gfp_flags),
+<<<<<<< HEAD
 		__entry->cache_items,
 		__entry->delta,
 		__entry->total_scan,
 		__entry->priority)
+=======
+		__entry->pgs_scanned,
+		__entry->lru_pgs,
+		__entry->cache_items,
+		__entry->delta,
+		__entry->total_scan)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 );
 
 TRACE_EVENT(mm_shrink_slab_end,

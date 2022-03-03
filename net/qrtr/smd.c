@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 /* Copyright (c) 2015, Sony Mobile Communications Inc.
  * Copyright (c) 2013, 2018-2019 The Linux Foundation. All rights reserved.
+=======
+/*
+ * Copyright (c) 2015, Sony Mobile Communications Inc.
+ * Copyright (c) 2013, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -14,7 +20,10 @@
 #include <linux/module.h>
 #include <linux/skbuff.h>
 #include <linux/rpmsg.h>
+<<<<<<< HEAD
 #include <linux/of.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "qrtr.h"
 
@@ -67,8 +76,11 @@ out:
 static int qcom_smd_qrtr_probe(struct rpmsg_device *rpdev)
 {
 	struct qrtr_smd_dev *qdev;
+<<<<<<< HEAD
 	u32 net_id;
 	bool rt;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int rc;
 
 	qdev = devm_kzalloc(&rpdev->dev, sizeof(*qdev), GFP_KERNEL);
@@ -79,6 +91,7 @@ static int qcom_smd_qrtr_probe(struct rpmsg_device *rpdev)
 	qdev->dev = &rpdev->dev;
 	qdev->ep.xmit = qcom_smd_qrtr_send;
 
+<<<<<<< HEAD
 	rc = of_property_read_u32(rpdev->dev.of_node, "qcom,net-id", &net_id);
 	if (rc < 0)
 		net_id = QRTR_EP_NET_ID_AUTO;
@@ -86,6 +99,9 @@ static int qcom_smd_qrtr_probe(struct rpmsg_device *rpdev)
 	rt = of_property_read_bool(rpdev->dev.of_node, "qcom,low-latency");
 
 	rc = qrtr_endpoint_register(&qdev->ep, net_id, rt);
+=======
+	rc = qrtr_endpoint_register(&qdev->ep, QRTR_EP_NID_AUTO);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (rc)
 		return rc;
 

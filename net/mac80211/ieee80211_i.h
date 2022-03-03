@@ -52,12 +52,15 @@ struct ieee80211_local;
 #define IEEE80211_ENCRYPT_HEADROOM 8
 #define IEEE80211_ENCRYPT_TAILROOM 18
 
+<<<<<<< HEAD
 /* IEEE 802.11 (Ch. 9.5 Defragmentation) requires support for concurrent
  * reception of at least three fragmented frames. This limit can be increased
  * by changing this define, at the cost of slower frame reassembly and
  * increased memory use (about 2 kB of RAM per entry). */
 #define IEEE80211_FRAGMENT_MAX 4
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* power level hasn't been configured (or set to automatic) */
 #define IEEE80211_UNSET_POWER_LEVEL	INT_MIN
 
@@ -90,6 +93,7 @@ extern const u8 ieee80211_ac_to_qos_mask[IEEE80211_NUM_ACS];
 
 #define IEEE80211_MAX_NAN_INSTANCE_ID 255
 
+<<<<<<< HEAD
 struct ieee80211_fragment_entry {
 	struct sk_buff_head skb_list;
 	unsigned long first_frag_time;
@@ -102,6 +106,8 @@ struct ieee80211_fragment_entry {
 };
 
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct ieee80211_bss {
 	u32 device_ts_beacon, device_ts_presp;
 
@@ -241,8 +247,20 @@ struct ieee80211_rx_data {
 	 */
 	int security_idx;
 
+<<<<<<< HEAD
 	u32 tkip_iv32;
 	u16 tkip_iv16;
+=======
+	union {
+		struct {
+			u32 iv32;
+			u16 iv16;
+		} tkip;
+		struct {
+			u8 pn[IEEE80211_CCMP_PN_LEN];
+		} ccm_gcm;
+	};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct ieee80211_csa_settings {
@@ -881,9 +899,13 @@ struct ieee80211_sub_if_data {
 
 	char name[IFNAMSIZ];
 
+<<<<<<< HEAD
 	/* Fragment table for host-based reassembly */
 	struct ieee80211_fragment_entry	fragments[IEEE80211_FRAGMENT_MAX];
 	unsigned int fragment_next;
+=======
+	struct ieee80211_fragment_cache frags;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* TID bitmap for NoAck policy */
 	u16 noack_map;
@@ -1047,6 +1069,10 @@ enum queue_stop_reason {
 	IEEE80211_QUEUE_STOP_REASON_FLUSH,
 	IEEE80211_QUEUE_STOP_REASON_TDLS_TEARDOWN,
 	IEEE80211_QUEUE_STOP_REASON_RESERVE_TID,
+<<<<<<< HEAD
+=======
+	IEEE80211_QUEUE_STOP_REASON_IFTYPE_CHANGE,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	IEEE80211_QUEUE_STOP_REASONS,
 };
@@ -1405,7 +1431,11 @@ ieee80211_get_sband(struct ieee80211_sub_if_data *sdata)
 	rcu_read_lock();
 	chanctx_conf = rcu_dereference(sdata->vif.chanctx_conf);
 
+<<<<<<< HEAD
 	if (WARN_ON(!chanctx_conf)) {
+=======
+	if (!chanctx_conf) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rcu_read_unlock();
 		return NULL;
 	}
@@ -2150,6 +2180,12 @@ void ieee80211_tdls_cancel_channel_switch(struct wiphy *wiphy,
 					  const u8 *addr);
 void ieee80211_teardown_tdls_peers(struct ieee80211_sub_if_data *sdata);
 void ieee80211_tdls_chsw_work(struct work_struct *wk);
+<<<<<<< HEAD
+=======
+void ieee80211_tdls_handle_disconnect(struct ieee80211_sub_if_data *sdata,
+				      const u8 *peer, u16 reason);
+const char *ieee80211_get_reason_code_string(u16 reason_code);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 extern const struct ethtool_ops ieee80211_ethtool_ops;
 
@@ -2159,4 +2195,10 @@ extern const struct ethtool_ops ieee80211_ethtool_ops;
 #define debug_noinline
 #endif
 
+<<<<<<< HEAD
+=======
+void ieee80211_init_frag_cache(struct ieee80211_fragment_cache *cache);
+void ieee80211_destroy_frag_cache(struct ieee80211_fragment_cache *cache);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* IEEE80211_I_H */

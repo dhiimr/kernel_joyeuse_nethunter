@@ -67,6 +67,11 @@ do {	save_and_clear_fpu();						\
 } while(0)
 
 void synchronize_user_stack(void);
+<<<<<<< HEAD
 void fault_in_user_windows(void);
+=======
+struct pt_regs;
+void fault_in_user_windows(struct pt_regs *);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif /* __SPARC64_SWITCH_TO_64_H */

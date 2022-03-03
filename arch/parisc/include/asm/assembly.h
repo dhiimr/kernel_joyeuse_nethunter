@@ -59,14 +59,24 @@
 #define LDCW		ldcw,co
 #define BL		b,l
 # ifdef CONFIG_64BIT
+<<<<<<< HEAD
 #  define LEVEL		2.0w
 # else
 #  define LEVEL		2.0
+=======
+#  define PA_ASM_LEVEL	2.0w
+# else
+#  define PA_ASM_LEVEL	2.0
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # endif
 #else
 #define LDCW		ldcw
 #define BL		bl
+<<<<<<< HEAD
 #define LEVEL		1.1
+=======
+#define PA_ASM_LEVEL	1.1
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 #ifdef __ASSEMBLY__

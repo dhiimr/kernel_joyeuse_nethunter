@@ -739,8 +739,16 @@ static int _rtl_usb_receive(struct ieee80211_hw *hw)
 
 		usb_anchor_urb(urb, &rtlusb->rx_submitted);
 		err = usb_submit_urb(urb, GFP_KERNEL);
+<<<<<<< HEAD
 		if (err)
 			goto err_out;
+=======
+		if (err) {
+			usb_unanchor_urb(urb);
+			usb_free_urb(urb);
+			goto err_out;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		usb_free_urb(urb);
 	}
 	return 0;
@@ -910,10 +918,15 @@ static struct urb *_rtl_usb_tx_urb_setup(struct ieee80211_hw *hw,
 
 	WARN_ON(NULL == skb);
 	_urb = usb_alloc_urb(0, GFP_ATOMIC);
+<<<<<<< HEAD
 	if (!_urb) {
 		kfree_skb(skb);
 		return NULL;
 	}
+=======
+	if (!_urb)
+		return NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	_rtl_install_trx_info(rtlusb, skb, ep_num);
 	usb_fill_bulk_urb(_urb, rtlusb->udev, usb_sndbulkpipe(rtlusb->udev,
 			  ep_num), skb->data, skb->len, _rtl_tx_complete, skb);
@@ -927,7 +940,10 @@ static void _rtl_usb_transmit(struct ieee80211_hw *hw, struct sk_buff *skb,
 	struct rtl_usb *rtlusb = rtl_usbdev(rtl_usbpriv(hw));
 	u32 ep_num;
 	struct urb *_urb = NULL;
+<<<<<<< HEAD
 	struct sk_buff *_skb = NULL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	WARN_ON(NULL == rtlusb->usb_tx_aggregate_hdl);
 	if (unlikely(IS_USB_STOP(rtlusb))) {
@@ -936,8 +952,12 @@ static void _rtl_usb_transmit(struct ieee80211_hw *hw, struct sk_buff *skb,
 		return;
 	}
 	ep_num = rtlusb->ep_map.ep_mapping[qnum];
+<<<<<<< HEAD
 	_skb = skb;
 	_urb = _rtl_usb_tx_urb_setup(hw, _skb, ep_num);
+=======
+	_urb = _rtl_usb_tx_urb_setup(hw, skb, ep_num);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (unlikely(!_urb)) {
 		pr_err("Can't allocate urb. Drop skb!\n");
 		kfree_skb(skb);
@@ -1068,8 +1088,15 @@ int rtl_usb_probe(struct usb_interface *intf,
 	rtlpriv->hw = hw;
 	rtlpriv->usb_data = kzalloc(RTL_USB_MAX_RX_COUNT * sizeof(u32),
 				    GFP_KERNEL);
+<<<<<<< HEAD
 	if (!rtlpriv->usb_data)
 		return -ENOMEM;
+=======
+	if (!rtlpriv->usb_data) {
+		ieee80211_free_hw(hw);
+		return -ENOMEM;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* this spin lock must be initialized early */
 	spin_lock_init(&rtlpriv->locks.usb_lock);
@@ -1099,13 +1126,21 @@ int rtl_usb_probe(struct usb_interface *intf,
 	rtlpriv->cfg->ops->read_eeprom_info(hw);
 	err = _rtl_usb_init(hw);
 	if (err)
+<<<<<<< HEAD
 		goto error_out;
+=======
+		goto error_out2;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rtl_usb_init_sw(hw);
 	/* Init mac80211 sw */
 	err = rtl_init_core(hw);
 	if (err) {
 		pr_err("Can't allocate sw for mac80211\n");
+<<<<<<< HEAD
 		goto error_out;
+=======
+		goto error_out2;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	if (rtlpriv->cfg->ops->init_sw_vars(hw)) {
 		pr_err("Can't init_sw_vars\n");
@@ -1126,9 +1161,17 @@ int rtl_usb_probe(struct usb_interface *intf,
 
 error_out:
 	rtl_deinit_core(hw);
+<<<<<<< HEAD
 	_rtl_usb_io_handler_release(hw);
 	usb_put_dev(udev);
 	complete(&rtlpriv->firmware_loading_complete);
+=======
+error_out2:
+	_rtl_usb_io_handler_release(hw);
+	usb_put_dev(udev);
+	complete(&rtlpriv->firmware_loading_complete);
+	kfree(rtlpriv->usb_data);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return -ENODEV;
 }
 EXPORT_SYMBOL(rtl_usb_probe);

@@ -1479,6 +1479,15 @@ u32 pm8001_mpi_msg_consume(struct pm8001_hba_info *pm8001_ha,
 		} else {
 			u32 producer_index;
 			void *pi_virt = circularQ->pi_virt;
+<<<<<<< HEAD
+=======
+			/* spurious interrupt during setup if
+			 * kexec-ing and driver doing a doorbell access
+			 * with the pre-kexec oq interrupt setup
+			 */
+			if (!pi_virt)
+				break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/* Update the producer index from SPC */
 			producer_index = pm8001_read_32(pi_virt);
 			circularQ->producer_index = cpu_to_le32(producer_index);

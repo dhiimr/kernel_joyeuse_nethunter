@@ -42,10 +42,19 @@ static ssize_t kpagecount_read(struct file *file, char __user *buf,
 		return -EINVAL;
 
 	while (count > 0) {
+<<<<<<< HEAD
 		if (pfn_valid(pfn))
 			ppage = pfn_to_page(pfn);
 		else
 			ppage = NULL;
+=======
+		/*
+		 * TODO: ZONE_DEVICE support requires to identify
+		 * memmaps that were actually initialized.
+		 */
+		ppage = pfn_to_online_page(pfn);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!ppage || PageSlab(ppage))
 			pcount = 0;
 		else
@@ -214,10 +223,18 @@ static ssize_t kpageflags_read(struct file *file, char __user *buf,
 		return -EINVAL;
 
 	while (count > 0) {
+<<<<<<< HEAD
 		if (pfn_valid(pfn))
 			ppage = pfn_to_page(pfn);
 		else
 			ppage = NULL;
+=======
+		/*
+		 * TODO: ZONE_DEVICE support requires to identify
+		 * memmaps that were actually initialized.
+		 */
+		ppage = pfn_to_online_page(pfn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (put_user(stable_page_flags(ppage), out)) {
 			ret = -EFAULT;
@@ -259,10 +276,18 @@ static ssize_t kpagecgroup_read(struct file *file, char __user *buf,
 		return -EINVAL;
 
 	while (count > 0) {
+<<<<<<< HEAD
 		if (pfn_valid(pfn))
 			ppage = pfn_to_page(pfn);
 		else
 			ppage = NULL;
+=======
+		/*
+		 * TODO: ZONE_DEVICE support requires to identify
+		 * memmaps that were actually initialized.
+		 */
+		ppage = pfn_to_online_page(pfn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (ppage)
 			ino = page_cgroup_ino(ppage);

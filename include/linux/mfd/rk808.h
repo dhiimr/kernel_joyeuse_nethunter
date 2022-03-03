@@ -443,7 +443,11 @@ enum {
 enum {
 	RK805_ID = 0x8050,
 	RK808_ID = 0x0000,
+<<<<<<< HEAD
 	RK818_ID = 0x8181,
+=======
+	RK818_ID = 0x8180,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct rk808 {

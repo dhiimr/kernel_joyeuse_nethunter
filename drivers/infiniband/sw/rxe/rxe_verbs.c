@@ -1178,7 +1178,11 @@ static ssize_t parent_show(struct device *device,
 	struct rxe_dev *rxe = container_of(device, struct rxe_dev,
 					   ib_dev.dev);
 
+<<<<<<< HEAD
 	return snprintf(buf, 16, "%s\n", rxe_parent_name(rxe, 1));
+=======
+	return scnprintf(buf, PAGE_SIZE, "%s\n", rxe_parent_name(rxe, 1));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static DEVICE_ATTR_RO(parent);

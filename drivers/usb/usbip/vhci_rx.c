@@ -91,19 +91,42 @@ static void vhci_recv_ret_submit(struct vhci_device *vdev,
 	usbip_pack_pdu(pdu, urb, USBIP_RET_SUBMIT, 0);
 
 	/* recv transfer buffer */
+<<<<<<< HEAD
 	if (usbip_recv_xbuff(ud, urb) < 0)
 		return;
 
 	/* recv iso_packet_descriptor */
 	if (usbip_recv_iso(ud, urb) < 0)
 		return;
+=======
+	if (usbip_recv_xbuff(ud, urb) < 0) {
+		urb->status = -EPROTO;
+		goto error;
+	}
+
+	/* recv iso_packet_descriptor */
+	if (usbip_recv_iso(ud, urb) < 0) {
+		urb->status = -EPROTO;
+		goto error;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* restore the padding in iso packets */
 	usbip_pad_iso(ud, urb);
 
+<<<<<<< HEAD
 	if (usbip_dbg_flag_vhci_rx)
 		usbip_dump_urb(urb);
 
+=======
+error:
+	if (usbip_dbg_flag_vhci_rx)
+		usbip_dump_urb(urb);
+
+	if (urb->num_sgs)
+		urb->transfer_flags &= ~URB_DMA_MAP_SG;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	usbip_dbg_vhci_rx("now giveback urb %u\n", pdu->base.seqnum);
 
 	spin_lock_irqsave(&vhci->lock, flags);

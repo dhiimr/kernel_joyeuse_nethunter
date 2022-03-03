@@ -142,17 +142,29 @@ alternative_else_nop_endif
 	// to save/restore them if required.
 	.macro	apply_ssbd, state, targ, tmp1, tmp2
 #ifdef CONFIG_ARM64_SSBD
+<<<<<<< HEAD
 	ldr	\tmp1, =ssbd_state
 	ldr	\tmp1, [\tmp1]
 	cmp	\tmp1, #ARM64_SSBD_KERNEL
 	b.ne	\targ
+=======
+alternative_cb	arm64_enable_wa2_handling
+	b	\targ
+alternative_cb_end
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ldr_this_cpu	\tmp2, arm64_ssbd_callback_required, \tmp1
 	cbz	\tmp2, \targ
 	ldr	\tmp2, [tsk, #TSK_TI_FLAGS]
 	tbnz	\tmp2, #TIF_SSBD, \targ
 	mov	w0, #ARM_SMCCC_ARCH_WORKAROUND_2
 	mov	w1, #\state
+<<<<<<< HEAD
 	smc	#0
+=======
+alternative_cb	arm64_update_smccc_conduit
+	nop					// Patched to SMC/HVC #0
+alternative_cb_end
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 	.endm
 
@@ -602,7 +614,11 @@ el1_undef:
 	enable_dbg
 	mov	x0, sp
 	bl	do_undefinstr
+<<<<<<< HEAD
 	kernel_exit 1
+=======
+	ASM_BUG()
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 el1_dbg:
 	/*
 	 * Debug exception handling
@@ -708,9 +724,15 @@ el0_sync_compat:
 	cmp	x24, #ESR_ELx_EC_UNKNOWN	// unknown exception in EL0
 	b.eq	el0_undef
 	cmp	x24, #ESR_ELx_EC_CP15_32	// CP15 MRC/MCR trap
+<<<<<<< HEAD
 	b.eq	el0_cp15_32_compat
 	cmp	x24, #ESR_ELx_EC_CP15_64	// CP15 MRRC/MCRR trap
 	b.eq	el0_cp15_64_compat
+=======
+	b.eq	el0_undef
+	cmp	x24, #ESR_ELx_EC_CP15_64	// CP15 MRRC/MCRR trap
+	b.eq	el0_undef
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cmp	x24, #ESR_ELx_EC_CP14_MR	// CP14 MRC/MCR trap
 	b.eq	el0_undef
 	cmp	x24, #ESR_ELx_EC_CP14_LS	// CP14 LDC/STC trap
@@ -729,6 +751,7 @@ el0_svc_compat:
 	mov     wsc_nr, #__NR_compat_syscalls
 	b	el0_svc_naked
 
+<<<<<<< HEAD
 el0_cp15_32_compat:
 	/*
 	 * AArch32 CP15 MRC/MCR trap handling
@@ -751,6 +774,8 @@ el0_cp15_64_compat:
 	bl	do_cp15_64_instr_compat
 	b	ret_to_user
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.align	6
 el0_irq_compat:
 	kernel_entry 0, 32

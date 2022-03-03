@@ -9,6 +9,10 @@ menu "Serial drivers"
 
 config SERIAL_EARLYCON
 	bool
+<<<<<<< HEAD
+=======
+	depends on SERIAL_CORE
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  Support for early consoles with the earlycon parameter. This enables
 	  the console before standard serial driver is probed. The console is
@@ -1098,6 +1102,7 @@ config SERIAL_MSM_CONSOLE
 	select SERIAL_CORE_CONSOLE
 	select SERIAL_EARLYCON
 
+<<<<<<< HEAD
 config SERIAL_RX_CONSOLE_ONLY
 	bool "MSM serial rx only console support"
 	depends on SERIAL_MSM=y
@@ -1144,6 +1149,8 @@ config SERIAL_MSM_WITH_HALF_SAMPLING
 	  As earlycon can't have HW version awareness,decision is taken
 	  based on the configuration.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config SERIAL_VT8500
 	bool "VIA VT8500 on-chip serial port support"
 	depends on ARCH_VT8500

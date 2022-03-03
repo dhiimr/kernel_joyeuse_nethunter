@@ -228,7 +228,11 @@
 
 /* PHY Power Management Control */
 #define HV_PM_CTRL		PHY_REG(770, 17)
+<<<<<<< HEAD
 #define HV_PM_CTRL_PLL_STOP_IN_K1_GIGA	0x100
+=======
+#define HV_PM_CTRL_K1_CLK_REQ		0x200
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define HV_PM_CTRL_K1_ENABLE		0x4000
 
 #define I217_PLL_CLOCK_GATE_REG	PHY_REG(772, 28)
@@ -292,8 +296,16 @@
 
 /* Latency Tolerance Reporting */
 #define E1000_LTRV			0x000F8
+<<<<<<< HEAD
 #define E1000_LTRV_SCALE_MAX		5
 #define E1000_LTRV_SCALE_FACTOR		5
+=======
+#define E1000_LTRV_VALUE_MASK		0x000003FF
+#define E1000_LTRV_SCALE_MAX		5
+#define E1000_LTRV_SCALE_FACTOR		5
+#define E1000_LTRV_SCALE_SHIFT		10
+#define E1000_LTRV_SCALE_MASK		0x00001C00
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define E1000_LTRV_REQ_SHIFT		15
 #define E1000_LTRV_NOSNOOP_SHIFT	16
 #define E1000_LTRV_SEND			(1 << 30)

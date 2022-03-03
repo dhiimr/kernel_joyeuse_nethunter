@@ -133,6 +133,7 @@ config DYNAMIC_DEBUG
 	  See Documentation/admin-guide/dynamic-debug-howto.rst for additional
 	  information.
 
+<<<<<<< HEAD
 config DEBUG_MODULE_LOAD_INFO
         bool "Use prints for module info under a debug flag"
 	help
@@ -145,6 +146,8 @@ config DEBUG_MODULE_LOAD_INFO
 	  If unsure, say N.
 
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endmenu # "printk and dmesg options"
 
 menu "Compile-time checks and compiler options"
@@ -290,6 +293,7 @@ config PAGE_OWNER
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 config PAGE_OWNER_ENABLE_DEFAULT
 	bool "Enable Track page owner by default"
 	depends on PAGE_OWNER
@@ -303,6 +307,11 @@ config PAGE_OWNER_ENABLE_DEFAULT
 
 config DEBUG_FS
 	bool "Debug Filesystem"
+=======
+config DEBUG_FS
+	bool "Debug Filesystem"
+	select SRCU
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  debugfs is a virtual file system that kernel developers use to put
 	  debugging files into.  Enable this option to be able to read and
@@ -592,7 +601,11 @@ config DEBUG_KMEMLEAK_EARLY_LOG_SIZE
 	int "Maximum kmemleak early log entries"
 	depends on DEBUG_KMEMLEAK
 	range 200 40000
+<<<<<<< HEAD
 	default 400
+=======
+	default 16000
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  Kmemleak must track all the memory allocations to avoid
 	  reporting false positives. Since memory may be allocated or
@@ -838,7 +851,10 @@ config HARDLOCKUP_DETECTOR
 	depends on HAVE_HARDLOCKUP_DETECTOR_PERF || HAVE_HARDLOCKUP_DETECTOR_ARCH
 	select LOCKUP_DETECTOR
 	select HARDLOCKUP_DETECTOR_PERF if HAVE_HARDLOCKUP_DETECTOR_PERF
+<<<<<<< HEAD
 	select HARDLOCKUP_DETECTOR_ARCH if HAVE_HARDLOCKUP_DETECTOR_ARCH
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  Say Y here to enable the kernel to act as a watchdog to detect
 	  hard lockups.
@@ -890,6 +906,7 @@ config BOOTPARAM_SOFTLOCKUP_PANIC_VALUE
 	default 0 if !BOOTPARAM_SOFTLOCKUP_PANIC
 	default 1 if BOOTPARAM_SOFTLOCKUP_PANIC
 
+<<<<<<< HEAD
 config PANIC_ON_RECURSIVE_FAULT
 	bool "Panic on recursive faults during task exit"
 	help
@@ -901,6 +918,8 @@ config PANIC_ON_RECURSIVE_FAULT
 
 	  Say N if unsure.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config DETECT_HUNG_TASK
 	bool "Detect Hung Tasks"
 	depends on DEBUG_KERNEL
@@ -1009,6 +1028,7 @@ config SCHED_INFO
 	bool
 	default n
 
+<<<<<<< HEAD
 config PANIC_ON_SCHED_BUG
 	bool "Panic on all bugs encountered by the scheduler"
 	help
@@ -1028,6 +1048,8 @@ config PANIC_ON_RT_THROTTLING
 
 	  Say N if unsure.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config SCHEDSTATS
 	bool "Collect scheduler statistics"
 	depends on DEBUG_KERNEL && PROC_FS
@@ -1066,6 +1088,7 @@ config DEBUG_TIMEKEEPING
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 config DEBUG_TASK_STACK_SCAN_OFF
 	bool "Disable kmemleak task stack scan by default"
 	depends on DEBUG_KMEMLEAK
@@ -1075,6 +1098,8 @@ config DEBUG_TASK_STACK_SCAN_OFF
 	  writing to the debugfs entry :
 	  echo "stack=on" > /sys/kernel/debug/kmemleak.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config DEBUG_PREEMPT
 	bool "Debug preemptible kernel"
 	depends on DEBUG_KERNEL && PREEMPT && TRACE_IRQFLAGS_SUPPORT
@@ -1103,6 +1128,7 @@ config DEBUG_SPINLOCK
 	  and certain other kinds of spinlock errors commonly made.  This is
 	  best used in conjunction with the NMI watchdog so that spinlock
 	  deadlocks are also debuggable.
+<<<<<<< HEAD
 choice
         prompt "Perform Action on spinlock bug"
         depends on DEBUG_SPINLOCK
@@ -1125,6 +1151,8 @@ choice
                   information about the system at the time of spin dump in the dmesg.
                   This is mutually exclusive with the above DEBUG_SPINLOCK_BITE_ON_BUG.
 endchoice
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config DEBUG_MUTEXES
 	bool "Mutex debugging: basic checks"
@@ -1215,7 +1243,11 @@ config LOCKDEP
 	bool
 	depends on DEBUG_KERNEL && TRACE_IRQFLAGS_SUPPORT && STACKTRACE_SUPPORT && LOCKDEP_SUPPORT
 	select STACKTRACE
+<<<<<<< HEAD
 	select FRAME_POINTER if !MIPS && !PPC && !ARM_UNWIND && !S390 && !MICROBLAZE && !ARC && !SCORE && !X86
+=======
+	select FRAME_POINTER if !MIPS && !PPC && !ARM && !S390 && !MICROBLAZE && !ARC && !SCORE && !X86
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select KALLSYMS
 	select KALLSYMS_ALL
 
@@ -1366,7 +1398,11 @@ config DEBUG_KOBJECT
 	depends on DEBUG_KERNEL
 	help
 	  If you say Y here, some extra kobject debugging messages will be sent
+<<<<<<< HEAD
 	  to the syslog.
+=======
+	  to the syslog. 
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config DEBUG_KOBJECT_RELEASE
 	bool "kobject release debugging"
@@ -1632,6 +1668,7 @@ config FAIL_MMC_REQUEST
 	  and to test how the mmc host driver handles retries from
 	  the block device.
 
+<<<<<<< HEAD
 config UFS_FAULT_INJECTION
 	bool "Fault-injection capability for UFS IO"
 	select DEBUG_FS
@@ -1646,6 +1683,8 @@ config UFS_FAULT_INJECTION
 	 the UFS controller driver and test how the driver handles
 	 the retries from block/SCSI mid layer.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config FAIL_FUTEX
 	bool "Fault-injection capability for futexes"
 	select DEBUG_FS
@@ -1664,7 +1703,11 @@ config FAULT_INJECTION_STACKTRACE_FILTER
 	depends on FAULT_INJECTION_DEBUG_FS && STACKTRACE_SUPPORT
 	depends on !X86_64
 	select STACKTRACE
+<<<<<<< HEAD
 	select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM_UNWIND && !ARC && !SCORE && !X86
+=======
+	select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !SCORE && !X86
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  Provide stacktrace filter for fault-injection capabilities
 
@@ -1673,7 +1716,11 @@ config LATENCYTOP
 	depends on DEBUG_KERNEL
 	depends on STACKTRACE_SUPPORT
 	depends on PROC_FS
+<<<<<<< HEAD
 	select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM_UNWIND && !ARC && !X86
+=======
+	select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select KALLSYMS
 	select KALLSYMS_ALL
 	select STACKTRACE
@@ -1966,6 +2013,7 @@ config TEST_UDELAY
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 config MEMTEST
 	bool "Memtest"
 	depends on HAVE_MEMBLOCK
@@ -1991,6 +2039,8 @@ config MEMTEST_ENABLE_DEFAULT
 	  Default value is kept as "0" so that it is kept as disabled.
 	  To enable enter any value between 1-17 range.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config TEST_STATIC_KEYS
 	tristate "Test static keys"
 	default n
@@ -2062,6 +2112,7 @@ config BUG_ON_DATA_CORRUPTION
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 config PANIC_ON_DATA_CORRUPTION
 	bool "Cause a Kernel Panic When Data Corruption is detected"
 	help
@@ -2069,6 +2120,8 @@ config PANIC_ON_DATA_CORRUPTION
 	 recoverable data corruption scenarios to system-halting panics,
 	 for easier detection and debug.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 source "samples/Kconfig"
 
 source "lib/Kconfig.kgdb"

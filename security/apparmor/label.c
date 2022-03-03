@@ -1431,7 +1431,11 @@ bool aa_update_label_name(struct aa_ns *ns, struct aa_label *label, gfp_t gfp)
 	if (label->hname || labels_ns(label) != ns)
 		return res;
 
+<<<<<<< HEAD
 	if (aa_label_acntsxprint(&name, ns, label, FLAGS_NONE, gfp) == -1)
+=======
+	if (aa_label_acntsxprint(&name, ns, label, FLAGS_NONE, gfp) < 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return res;
 
 	ls = labels_set(label);
@@ -1463,11 +1467,21 @@ static inline bool use_label_hname(struct aa_ns *ns, struct aa_label *label,
 /* helper macro for snprint routines */
 #define update_for_len(total, len, size, str)	\
 do {					\
+<<<<<<< HEAD
 	AA_BUG(len < 0);		\
 	total += len;			\
 	len = min(len, size);		\
 	size -= len;			\
 	str += len;			\
+=======
+	size_t ulen = len;		\
+					\
+	AA_BUG(len < 0);		\
+	total += ulen;			\
+	ulen = min(ulen, size);		\
+	size -= ulen;			\
+	str += ulen;			\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 } while (0)
 
 /**
@@ -1534,13 +1548,21 @@ static const char *label_modename(struct aa_ns *ns, struct aa_label *label,
 
 	label_for_each(i, label, profile) {
 		if (aa_ns_visible(ns, profile->ns, flags & FLAG_VIEW_SUBNS)) {
+<<<<<<< HEAD
 			if (profile->mode == APPARMOR_UNCONFINED)
+=======
+			count++;
+			if (profile == profile->ns->unconfined)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				/* special case unconfined so stacks with
 				 * unconfined don't report as mixed. ie.
 				 * profile_foo//&:ns1:unconfined (mixed)
 				 */
 				continue;
+<<<<<<< HEAD
 			count++;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (mode == -1)
 				mode = profile->mode;
 			else if (mode != profile->mode)
@@ -1602,7 +1624,11 @@ int aa_label_snxprint(char *str, size_t size, struct aa_ns *ns,
 	struct aa_ns *prev_ns = NULL;
 	struct label_it i;
 	int count = 0, total = 0;
+<<<<<<< HEAD
 	size_t len;
+=======
+	ssize_t len;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	AA_BUG(!str && size != 0);
 	AA_BUG(!label);
@@ -1679,7 +1705,11 @@ int aa_label_asxprint(char **strp, struct aa_ns *ns, struct aa_label *label,
 
 /**
  * aa_label_acntsxprint - allocate a __counted string buffer and print label
+<<<<<<< HEAD
  * @strp: buffer to write to. (MAY BE NULL if @size == 0)
+=======
+ * @strp: buffer to write to.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @ns: namespace profile is being viewed from
  * @label: label to view (NOT NULL)
  * @flags: flags controlling what label info is printed

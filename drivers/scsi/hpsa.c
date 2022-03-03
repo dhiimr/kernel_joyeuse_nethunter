@@ -2266,6 +2266,11 @@ static int handle_ioaccel_mode2_error(struct ctlr_info *h,
 	case IOACCEL2_SERV_RESPONSE_COMPLETE:
 		switch (c2->error_data.status) {
 		case IOACCEL2_STATUS_SR_TASK_COMP_GOOD:
+<<<<<<< HEAD
+=======
+			if (cmd)
+				cmd->result = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		case IOACCEL2_STATUS_SR_TASK_COMP_CHK_COND:
 			cmd->result |= SAM_STAT_CHECK_CONDITION;
@@ -2425,8 +2430,15 @@ static void process_ioaccel2_completion(struct ctlr_info *h,
 
 	/* check for good status */
 	if (likely(c2->error_data.serv_response == 0 &&
+<<<<<<< HEAD
 			c2->error_data.status == 0))
 		return hpsa_cmd_free_and_done(h, c, cmd);
+=======
+			c2->error_data.status == 0)) {
+		cmd->result = 0;
+		return hpsa_cmd_free_and_done(h, c, cmd);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Any RAID offload error results in retry which will use
@@ -4800,7 +4812,11 @@ static int hpsa_scsi_ioaccel2_queue_command(struct ctlr_info *h,
 			curr_sg->reserved[0] = 0;
 			curr_sg->reserved[1] = 0;
 			curr_sg->reserved[2] = 0;
+<<<<<<< HEAD
 			curr_sg->chain_indicator = 0x80;
+=======
+			curr_sg->chain_indicator = IOACCEL2_CHAIN;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			curr_sg = h->ioaccel2_cmd_sg_list[c->cmdindex];
 		}
@@ -4817,6 +4833,14 @@ static int hpsa_scsi_ioaccel2_queue_command(struct ctlr_info *h,
 			curr_sg++;
 		}
 
+<<<<<<< HEAD
+=======
+		/*
+		 * Set the last s/g element bit
+		 */
+		(curr_sg - 1)->chain_indicator = IOACCEL2_LAST_SG;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		switch (cmd->sc_data_direction) {
 		case DMA_TO_DEVICE:
 			cp->direction &= ~IOACCEL2_DIRECTION_MASK;
@@ -5490,6 +5514,15 @@ static int hpsa_scsi_queue_command(struct Scsi_Host *sh, struct scsi_cmnd *cmd)
 	c = cmd_tagged_alloc(h, cmd);
 
 	/*
+<<<<<<< HEAD
+=======
+	 * This is necessary because the SML doesn't zero out this field during
+	 * error recovery.
+	 */
+	cmd->result = 0;
+
+	/*
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * Call alternate submit routine for I/O accelerated commands.
 	 * Retries always go down the normal I/O path.
 	 */
@@ -8534,7 +8567,11 @@ reinit_after_soft_reset:
 	/* hook into SCSI subsystem */
 	rc = hpsa_scsi_add_host(h);
 	if (rc)
+<<<<<<< HEAD
 		goto clean7; /* perf, sg, cmd, irq, shost, pci, lu, aer/h */
+=======
+		goto clean8; /* lastlogicals, perf, sg, cmd, irq, shost, pci, lu, aer/h */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Monitor the controller for firmware lockups */
 	h->heartbeat_sample_interval = HEARTBEAT_SAMPLE_INTERVAL;
@@ -8549,6 +8586,11 @@ reinit_after_soft_reset:
 				HPSA_EVENT_MONITOR_INTERVAL);
 	return 0;
 
+<<<<<<< HEAD
+=======
+clean8: /* lastlogicals, perf, sg, cmd, irq, shost, pci, lu, aer/h */
+	kfree(h->lastlogicals);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 clean7: /* perf, sg, cmd, irq, shost, pci, lu, aer/h */
 	hpsa_free_performant_mode(h);
 	h->access.set_intr_mask(h, HPSA_INTR_OFF);

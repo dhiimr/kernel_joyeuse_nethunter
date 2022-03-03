@@ -2891,8 +2891,15 @@ static int ibmvfc_slave_configure(struct scsi_device *sdev)
 	unsigned long flags = 0;
 
 	spin_lock_irqsave(shost->host_lock, flags);
+<<<<<<< HEAD
 	if (sdev->type == TYPE_DISK)
 		sdev->allow_restart = 1;
+=======
+	if (sdev->type == TYPE_DISK) {
+		sdev->allow_restart = 1;
+		blk_queue_rq_timeout(sdev->request_queue, 120 * HZ);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_unlock_irqrestore(shost->host_lock, flags);
 	return 0;
 }
@@ -4797,6 +4804,10 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
 	if (IS_ERR(vhost->work_thread)) {
 		dev_err(dev, "Couldn't create kernel thread: %ld\n",
 			PTR_ERR(vhost->work_thread));
+<<<<<<< HEAD
+=======
+		rc = PTR_ERR(vhost->work_thread);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto free_host_mem;
 	}
 
@@ -4876,8 +4887,13 @@ static int ibmvfc_remove(struct vio_dev *vdev)
 
 	spin_lock_irqsave(vhost->host->host_lock, flags);
 	ibmvfc_purge_requests(vhost, DID_ERROR);
+<<<<<<< HEAD
 	ibmvfc_free_event_pool(vhost);
 	spin_unlock_irqrestore(vhost->host->host_lock, flags);
+=======
+	spin_unlock_irqrestore(vhost->host->host_lock, flags);
+	ibmvfc_free_event_pool(vhost);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ibmvfc_free_mem(vhost);
 	spin_lock(&ibmvfc_driver_lock);

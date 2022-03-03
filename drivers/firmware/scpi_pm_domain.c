@@ -27,7 +27,10 @@ struct scpi_pm_domain {
 	struct generic_pm_domain genpd;
 	struct scpi_ops *ops;
 	u32 domain;
+<<<<<<< HEAD
 	char name[30];
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /*
@@ -121,8 +124,18 @@ static int scpi_pm_domain_probe(struct platform_device *pdev)
 
 		scpi_pd->domain = i;
 		scpi_pd->ops = scpi_ops;
+<<<<<<< HEAD
 		sprintf(scpi_pd->name, "%s.%d", np->name, i);
 		scpi_pd->genpd.name = scpi_pd->name;
+=======
+		scpi_pd->genpd.name = devm_kasprintf(dev, GFP_KERNEL,
+						     "%s.%d", np->name, i);
+		if (!scpi_pd->genpd.name) {
+			dev_err(dev, "Failed to allocate genpd name:%s.%d\n",
+				np->name, i);
+			continue;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		scpi_pd->genpd.power_off = scpi_pd_power_off;
 		scpi_pd->genpd.power_on = scpi_pd_power_on;
 

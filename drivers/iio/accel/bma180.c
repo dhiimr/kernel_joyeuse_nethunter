@@ -50,7 +50,11 @@ struct bma180_part_info {
 
 	u8 int_reset_reg, int_reset_mask;
 	u8 sleep_reg, sleep_mask;
+<<<<<<< HEAD
 	u8 bw_reg, bw_mask;
+=======
+	u8 bw_reg, bw_mask, bw_offset;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8 scale_reg, scale_mask;
 	u8 power_reg, power_mask, lowpower_val;
 	u8 int_enable_reg, int_enable_mask;
@@ -106,6 +110,10 @@ struct bma180_part_info {
 
 #define BMA250_RANGE_MASK	GENMASK(3, 0) /* Range of accel values */
 #define BMA250_BW_MASK		GENMASK(4, 0) /* Accel bandwidth */
+<<<<<<< HEAD
+=======
+#define BMA250_BW_OFFSET	8
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define BMA250_SUSPEND_MASK	BIT(7) /* chip will sleep */
 #define BMA250_LOWPOWER_MASK	BIT(6)
 #define BMA250_DATA_INTEN_MASK	BIT(4)
@@ -121,7 +129,15 @@ struct bma180_data {
 	int scale;
 	int bw;
 	bool pmode;
+<<<<<<< HEAD
 	u8 buff[16]; /* 3x 16-bit + 8-bit + padding + timestamp */
+=======
+	/* Ensure timestamp is naturally aligned */
+	struct {
+		s16 chan[4];
+		s64 timestamp __aligned(8);
+	} scan;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 enum bma180_chan {
@@ -239,7 +255,12 @@ static int bma180_set_bw(struct bma180_data *data, int val)
 	for (i = 0; i < data->part_info->num_bw; ++i) {
 		if (data->part_info->bw_table[i] == val) {
 			ret = bma180_set_bits(data, data->part_info->bw_reg,
+<<<<<<< HEAD
 				data->part_info->bw_mask, i);
+=======
+				data->part_info->bw_mask,
+				i + data->part_info->bw_offset);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (ret) {
 				dev_err(&data->client->dev,
 					"failed to set bandwidth\n");
@@ -622,6 +643,7 @@ static const struct iio_chan_spec bma250_channels[] = {
 
 static const struct bma180_part_info bma180_part_info[] = {
 	[BMA180] = {
+<<<<<<< HEAD
 		bma180_channels, ARRAY_SIZE(bma180_channels),
 		bma180_scale_table, ARRAY_SIZE(bma180_scale_table),
 		bma180_bw_table, ARRAY_SIZE(bma180_bw_table),
@@ -648,6 +670,55 @@ static const struct bma180_part_info bma180_part_info[] = {
 		BMA250_RESET_REG,
 		bma250_chip_config,
 		bma250_chip_disable,
+=======
+		.channels = bma180_channels,
+		.num_channels = ARRAY_SIZE(bma180_channels),
+		.scale_table = bma180_scale_table,
+		.num_scales = ARRAY_SIZE(bma180_scale_table),
+		.bw_table = bma180_bw_table,
+		.num_bw = ARRAY_SIZE(bma180_bw_table),
+		.int_reset_reg = BMA180_CTRL_REG0,
+		.int_reset_mask = BMA180_RESET_INT,
+		.sleep_reg = BMA180_CTRL_REG0,
+		.sleep_mask = BMA180_SLEEP,
+		.bw_reg = BMA180_BW_TCS,
+		.bw_mask = BMA180_BW,
+		.scale_reg = BMA180_OFFSET_LSB1,
+		.scale_mask = BMA180_RANGE,
+		.power_reg = BMA180_TCO_Z,
+		.power_mask = BMA180_MODE_CONFIG,
+		.lowpower_val = BMA180_LOW_POWER,
+		.int_enable_reg = BMA180_CTRL_REG3,
+		.int_enable_mask = BMA180_NEW_DATA_INT,
+		.softreset_reg = BMA180_RESET,
+		.chip_config = bma180_chip_config,
+		.chip_disable = bma180_chip_disable,
+	},
+	[BMA250] = {
+		.channels = bma250_channels,
+		.num_channels = ARRAY_SIZE(bma250_channels),
+		.scale_table = bma250_scale_table,
+		.num_scales = ARRAY_SIZE(bma250_scale_table),
+		.bw_table = bma250_bw_table,
+		.num_bw = ARRAY_SIZE(bma250_bw_table),
+		.int_reset_reg = BMA250_INT_RESET_REG,
+		.int_reset_mask = BMA250_INT_RESET_MASK,
+		.sleep_reg = BMA250_POWER_REG,
+		.sleep_mask = BMA250_SUSPEND_MASK,
+		.bw_reg = BMA250_BW_REG,
+		.bw_mask = BMA250_BW_MASK,
+		.bw_offset = BMA250_BW_OFFSET,
+		.scale_reg = BMA250_RANGE_REG,
+		.scale_mask = BMA250_RANGE_MASK,
+		.power_reg = BMA250_POWER_REG,
+		.power_mask = BMA250_LOWPOWER_MASK,
+		.lowpower_val = 1,
+		.int_enable_reg = BMA250_INT_ENABLE_REG,
+		.int_enable_mask = BMA250_DATA_INTEN_MASK,
+		.softreset_reg = BMA250_RESET_REG,
+		.chip_config = bma250_chip_config,
+		.chip_disable = bma250_chip_disable,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 };
 
@@ -668,12 +739,20 @@ static irqreturn_t bma180_trigger_handler(int irq, void *p)
 			mutex_unlock(&data->mutex);
 			goto err;
 		}
+<<<<<<< HEAD
 		((s16 *)data->buff)[i++] = ret;
+=======
+		data->scan.chan[i++] = ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	mutex_unlock(&data->mutex);
 
+<<<<<<< HEAD
 	iio_push_to_buffers_with_timestamp(indio_dev, data->buff, time_ns);
+=======
+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan, time_ns);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 err:
 	iio_trigger_notify_done(indio_dev->trig);
 

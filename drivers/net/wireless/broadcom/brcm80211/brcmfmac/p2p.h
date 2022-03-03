@@ -124,6 +124,10 @@ struct afx_hdl {
  * @gon_req_action: about to send go negotiation requets frame.
  * @block_gon_req_tx: drop tx go negotiation requets frame.
  * @p2pdev_dynamically: is p2p device if created by module param or supplicant.
+<<<<<<< HEAD
+=======
+ * @wait_for_offchan_complete: wait for off-channel tx completion event.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 struct brcmf_p2p_info {
 	struct brcmf_cfg80211_info *cfg;
@@ -144,6 +148,10 @@ struct brcmf_p2p_info {
 	bool gon_req_action;
 	bool block_gon_req_tx;
 	bool p2pdev_dynamically;
+<<<<<<< HEAD
+=======
+	bool wait_for_offchan_complete;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 s32 brcmf_p2p_attach(struct brcmf_cfg80211_info *cfg, bool p2pdev_forced);

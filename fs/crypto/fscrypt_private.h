@@ -12,6 +12,7 @@
 #ifndef _FSCRYPT_PRIVATE_H
 #define _FSCRYPT_PRIVATE_H
 
+<<<<<<< HEAD
 #ifndef __FS_HAS_ENCRYPTION
 #define __FS_HAS_ENCRYPTION 1
 #endif
@@ -21,6 +22,22 @@
 
 /* Encryption parameters */
 #define FS_KEY_DERIVATION_NONCE_SIZE	16
+=======
+#include <linux/fscrypt_supp.h>
+#include <crypto/hash.h>
+
+/* Encryption parameters */
+#define FS_IV_SIZE			16
+#define FS_AES_128_ECB_KEY_SIZE		16
+#define FS_AES_128_CBC_KEY_SIZE		16
+#define FS_AES_128_CTS_KEY_SIZE		16
+#define FS_AES_256_GCM_KEY_SIZE		32
+#define FS_AES_256_CBC_KEY_SIZE		32
+#define FS_AES_256_CTS_KEY_SIZE		32
+#define FS_AES_256_XTS_KEY_SIZE		64
+
+#define FS_KEY_DERIVATION_NONCE_SIZE		16
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**
  * Encryption context for inode
@@ -44,6 +61,7 @@ struct fscrypt_context {
 
 #define FS_ENCRYPTION_CONTEXT_FORMAT_V1		1
 
+<<<<<<< HEAD
 /**
  * For encrypted symlinks, the ciphertext length is stored at the beginning
  * of the string in little-endian format.
@@ -91,6 +109,19 @@ struct fscrypt_info {
 	u8 ci_master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
 	u8 ci_nonce[FS_KEY_DERIVATION_NONCE_SIZE];
 	u8 ci_raw_key[FS_MAX_KEY_SIZE];
+=======
+/*
+ * A pointer to this structure is stored in the file system's in-core
+ * representation of an inode.
+ */
+struct fscrypt_info {
+	u8 ci_data_mode;
+	u8 ci_filename_mode;
+	u8 ci_flags;
+	struct crypto_skcipher *ci_ctfm;
+	struct crypto_cipher *ci_essiv_tfm;
+	u8 ci_master_key[FS_KEY_DESCRIPTOR_SIZE];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 typedef enum {
@@ -101,6 +132,7 @@ typedef enum {
 #define FS_CTX_REQUIRES_FREE_ENCRYPT_FL		0x00000001
 #define FS_CTX_HAS_BOUNCE_BUFFER_FL		0x00000002
 
+<<<<<<< HEAD
 static inline bool fscrypt_valid_enc_modes(u32 contents_mode,
 					   u32 filenames_mode)
 {
@@ -131,6 +163,21 @@ static inline bool is_private_data_mode(const struct fscrypt_context *ctx)
 /* crypto.c */
 extern struct kmem_cache *fscrypt_info_cachep;
 extern int fscrypt_initialize(unsigned int cop_flags);
+=======
+struct fscrypt_completion_result {
+	struct completion completion;
+	int res;
+};
+
+#define DECLARE_FS_COMPLETION_RESULT(ecr) \
+	struct fscrypt_completion_result ecr = { \
+		COMPLETION_INITIALIZER_ONSTACK((ecr).completion), 0 }
+
+
+/* crypto.c */
+extern int fscrypt_initialize(unsigned int cop_flags);
+extern struct workqueue_struct *fscrypt_read_workqueue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern int fscrypt_do_page_crypto(const struct inode *inode,
 				  fscrypt_direction_t rw, u64 lblk_num,
 				  struct page *src_page,
@@ -139,6 +186,7 @@ extern int fscrypt_do_page_crypto(const struct inode *inode,
 				  gfp_t gfp_flags);
 extern struct page *fscrypt_alloc_bounce_page(struct fscrypt_ctx *ctx,
 					      gfp_t gfp_flags);
+<<<<<<< HEAD
 extern const struct dentry_operations fscrypt_d_ops;
 
 extern void __printf(3, 4) __cold
@@ -183,6 +231,10 @@ struct fscrypt_mode {
 	bool needs_essiv;
 };
 
+=======
+
+/* keyinfo.c */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void __exit fscrypt_essiv_cleanup(void);
 
 #endif /* _FSCRYPT_PRIVATE_H */

@@ -14,6 +14,7 @@ config ASHMEM
 	  It is, in theory, a good memory allocator for low-memory devices,
 	  because it can discard shared memory units when under memory pressure.
 
+<<<<<<< HEAD
 config ANDROID_VSOC
 	tristate "Android Virtual SoC support"
 	default n
@@ -52,6 +53,10 @@ source "drivers/staging/android/ion/Kconfig"
 
 source "drivers/staging/android/fiq_debugger/Kconfig"
 
+=======
+source "drivers/staging/android/ion/Kconfig"
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif # if ANDROID
 
 endmenu

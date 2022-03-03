@@ -278,6 +278,10 @@ static int lp3943_pwm_probe(struct platform_device *pdev)
 	lp3943_pwm->chip.dev = &pdev->dev;
 	lp3943_pwm->chip.ops = &lp3943_pwm_ops;
 	lp3943_pwm->chip.npwm = LP3943_NUM_PWMS;
+<<<<<<< HEAD
+=======
+	lp3943_pwm->chip.base = -1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	platform_set_drvdata(pdev, lp3943_pwm);
 

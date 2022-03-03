@@ -22,6 +22,16 @@
 #include <keys/big_key-type.h>
 #include <crypto/aead.h>
 
+<<<<<<< HEAD
+=======
+struct big_key_buf {
+	unsigned int		nr_pages;
+	void			*virt;
+	struct scatterlist	*sg;
+	struct page		*pages[];
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Layout of key payload words.
  */
@@ -91,10 +101,16 @@ static DEFINE_MUTEX(big_key_aead_lock);
 /*
  * Encrypt/decrypt big_key data
  */
+<<<<<<< HEAD
 static int big_key_crypt(enum big_key_op op, u8 *data, size_t datalen, u8 *key)
 {
 	int ret;
 	struct scatterlist sgio;
+=======
+static int big_key_crypt(enum big_key_op op, struct big_key_buf *buf, size_t datalen, u8 *key)
+{
+	int ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct aead_request *aead_req;
 	/* We always use a zero nonce. The reason we can get away with this is
 	 * because we're using a different randomly generated key for every
@@ -109,8 +125,12 @@ static int big_key_crypt(enum big_key_op op, u8 *data, size_t datalen, u8 *key)
 		return -ENOMEM;
 
 	memset(zero_nonce, 0, sizeof(zero_nonce));
+<<<<<<< HEAD
 	sg_init_one(&sgio, data, datalen + (op == BIG_KEY_ENC ? ENC_AUTHTAG_SIZE : 0));
 	aead_request_set_crypt(aead_req, &sgio, &sgio, datalen, zero_nonce);
+=======
+	aead_request_set_crypt(aead_req, buf->sg, buf->sg, datalen, zero_nonce);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	aead_request_set_callback(aead_req, CRYPTO_TFM_REQ_MAY_SLEEP, NULL, NULL);
 	aead_request_set_ad(aead_req, 0);
 
@@ -130,10 +150,75 @@ error:
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Free up the buffer.
+ */
+static void big_key_free_buffer(struct big_key_buf *buf)
+{
+	unsigned int i;
+
+	if (buf->virt) {
+		memset(buf->virt, 0, buf->nr_pages * PAGE_SIZE);
+		vunmap(buf->virt);
+	}
+
+	for (i = 0; i < buf->nr_pages; i++)
+		if (buf->pages[i])
+			__free_page(buf->pages[i]);
+
+	kfree(buf);
+}
+
+/*
+ * Allocate a buffer consisting of a set of pages with a virtual mapping
+ * applied over them.
+ */
+static void *big_key_alloc_buffer(size_t len)
+{
+	struct big_key_buf *buf;
+	unsigned int npg = (len + PAGE_SIZE - 1) >> PAGE_SHIFT;
+	unsigned int i, l;
+
+	buf = kzalloc(sizeof(struct big_key_buf) +
+		      sizeof(struct page) * npg +
+		      sizeof(struct scatterlist) * npg,
+		      GFP_KERNEL);
+	if (!buf)
+		return NULL;
+
+	buf->nr_pages = npg;
+	buf->sg = (void *)(buf->pages + npg);
+	sg_init_table(buf->sg, npg);
+
+	for (i = 0; i < buf->nr_pages; i++) {
+		buf->pages[i] = alloc_page(GFP_KERNEL);
+		if (!buf->pages[i])
+			goto nomem;
+
+		l = min_t(size_t, len, PAGE_SIZE);
+		sg_set_page(&buf->sg[i], buf->pages[i], l, 0);
+		len -= l;
+	}
+
+	buf->virt = vmap(buf->pages, buf->nr_pages, VM_MAP, PAGE_KERNEL);
+	if (!buf->virt)
+		goto nomem;
+
+	return buf;
+
+nomem:
+	big_key_free_buffer(buf);
+	return NULL;
+}
+
+/*
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Preparse a big key
  */
 int big_key_preparse(struct key_preparsed_payload *prep)
 {
+<<<<<<< HEAD
 	struct path *path = (struct path *)&prep->payload.data[big_key_path];
 	struct file *file;
 	u8 *enckey;
@@ -145,6 +230,18 @@ int big_key_preparse(struct key_preparsed_payload *prep)
 	ret = -EINVAL;
 	if (datalen <= 0 || datalen > 1024 * 1024 || !prep->data)
 		goto error;
+=======
+	struct big_key_buf *buf;
+	struct path *path = (struct path *)&prep->payload.data[big_key_path];
+	struct file *file;
+	u8 *enckey;
+	ssize_t written;
+	size_t datalen = prep->datalen, enclen = datalen + ENC_AUTHTAG_SIZE;
+	int ret;
+
+	if (datalen <= 0 || datalen > 1024 * 1024 || !prep->data)
+		return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Set an arbitrary quota */
 	prep->quotalen = 16;
@@ -157,6 +254,7 @@ int big_key_preparse(struct key_preparsed_payload *prep)
 		 *
 		 * File content is stored encrypted with randomly generated key.
 		 */
+<<<<<<< HEAD
 		size_t enclen = datalen + ENC_AUTHTAG_SIZE;
 		loff_t pos = 0;
 
@@ -164,6 +262,14 @@ int big_key_preparse(struct key_preparsed_payload *prep)
 		if (!data)
 			return -ENOMEM;
 		memcpy(data, prep->data, datalen);
+=======
+		loff_t pos = 0;
+
+		buf = big_key_alloc_buffer(enclen);
+		if (!buf)
+			return -ENOMEM;
+		memcpy(buf->virt, prep->data, datalen);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* generate random key */
 		enckey = kmalloc(ENC_KEY_SIZE, GFP_KERNEL);
@@ -176,7 +282,11 @@ int big_key_preparse(struct key_preparsed_payload *prep)
 			goto err_enckey;
 
 		/* encrypt aligned data */
+<<<<<<< HEAD
 		ret = big_key_crypt(BIG_KEY_ENC, data, datalen, enckey);
+=======
+		ret = big_key_crypt(BIG_KEY_ENC, buf, datalen, enckey);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (ret)
 			goto err_enckey;
 
@@ -187,7 +297,11 @@ int big_key_preparse(struct key_preparsed_payload *prep)
 			goto err_enckey;
 		}
 
+<<<<<<< HEAD
 		written = kernel_write(file, data, enclen, &pos);
+=======
+		written = kernel_write(file, buf->virt, enclen, &pos);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (written != enclen) {
 			ret = written;
 			if (written >= 0)
@@ -202,7 +316,11 @@ int big_key_preparse(struct key_preparsed_payload *prep)
 		*path = file->f_path;
 		path_get(path);
 		fput(file);
+<<<<<<< HEAD
 		kzfree(data);
+=======
+		big_key_free_buffer(buf);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		/* Just store the data in a buffer */
 		void *data = kmalloc(datalen, GFP_KERNEL);
@@ -220,7 +338,11 @@ err_fput:
 err_enckey:
 	kzfree(enckey);
 error:
+<<<<<<< HEAD
 	kzfree(data);
+=======
+	big_key_free_buffer(buf);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -289,7 +411,11 @@ void big_key_describe(const struct key *key, struct seq_file *m)
  * read the key data
  * - the key's semaphore is read-locked
  */
+<<<<<<< HEAD
 long big_key_read(const struct key *key, char __user *buffer, size_t buflen)
+=======
+long big_key_read(const struct key *key, char *buffer, size_t buflen)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	size_t datalen = (size_t)key->payload.data[big_key_len];
 	long ret;
@@ -298,15 +424,26 @@ long big_key_read(const struct key *key, char __user *buffer, size_t buflen)
 		return datalen;
 
 	if (datalen > BIG_KEY_FILE_THRESHOLD) {
+<<<<<<< HEAD
 		struct path *path = (struct path *)&key->payload.data[big_key_path];
 		struct file *file;
 		u8 *data;
+=======
+		struct big_key_buf *buf;
+		struct path *path = (struct path *)&key->payload.data[big_key_path];
+		struct file *file;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		u8 *enckey = (u8 *)key->payload.data[big_key_data];
 		size_t enclen = datalen + ENC_AUTHTAG_SIZE;
 		loff_t pos = 0;
 
+<<<<<<< HEAD
 		data = kmalloc(enclen, GFP_KERNEL);
 		if (!data)
+=======
+		buf = big_key_alloc_buffer(enclen);
+		if (!buf)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return -ENOMEM;
 
 		file = dentry_open(path, O_RDONLY, current_cred());
@@ -316,31 +453,51 @@ long big_key_read(const struct key *key, char __user *buffer, size_t buflen)
 		}
 
 		/* read file to kernel and decrypt */
+<<<<<<< HEAD
 		ret = kernel_read(file, data, enclen, &pos);
+=======
+		ret = kernel_read(file, buf->virt, enclen, &pos);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (ret >= 0 && ret != enclen) {
 			ret = -EIO;
 			goto err_fput;
 		}
 
+<<<<<<< HEAD
 		ret = big_key_crypt(BIG_KEY_DEC, data, enclen, enckey);
+=======
+		ret = big_key_crypt(BIG_KEY_DEC, buf, enclen, enckey);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (ret)
 			goto err_fput;
 
 		ret = datalen;
 
+<<<<<<< HEAD
 		/* copy decrypted data to user */
 		if (copy_to_user(buffer, data, datalen) != 0)
 			ret = -EFAULT;
+=======
+		/* copy out decrypted data */
+		memcpy(buffer, buf->virt, datalen);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 err_fput:
 		fput(file);
 error:
+<<<<<<< HEAD
 		kzfree(data);
 	} else {
 		ret = datalen;
 		if (copy_to_user(buffer, key->payload.data[big_key_data],
 				 datalen) != 0)
 			ret = -EFAULT;
+=======
+		big_key_free_buffer(buf);
+	} else {
+		ret = datalen;
+		memcpy(buffer, key->payload.data[big_key_data], datalen);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return ret;

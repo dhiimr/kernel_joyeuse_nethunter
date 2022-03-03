@@ -5,6 +5,10 @@ However, if you have problem communicating in English you can also ask the
 Chinese maintainer for help.  Contact the Chinese maintainer, if this
 translation is outdated or there is problem with translation.
 
+<<<<<<< HEAD
+=======
+Chinese maintainer: Liang Xie <xieliang@xiaomi.com>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 ---------------------------------------------------------------------
 Documentation/basic_profiling的中文翻译
 

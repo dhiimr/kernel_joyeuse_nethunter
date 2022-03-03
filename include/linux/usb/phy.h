@@ -15,6 +15,7 @@
 #include <linux/usb.h>
 #include <uapi/linux/usb/charger.h>
 
+<<<<<<< HEAD
 #define ENABLE_DP_MANUAL_PULLUP	BIT(0)
 #define ENABLE_SECONDARY_PHY	BIT(1)
 #define PHY_HOST_MODE		BIT(2)
@@ -28,6 +29,8 @@
 #define PHY_USB_DP_CONCURRENT_MODE	BIT(10)
 #define PHY_WAKEUP_WA_EN	BIT(11)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 enum usb_phy_interface {
 	USBPHY_INTERFACE_MODE_UNKNOWN,
 	USBPHY_INTERFACE_MODE_UTMI,
@@ -50,8 +53,11 @@ enum usb_phy_type {
 	USB_PHY_TYPE_UNDEFINED,
 	USB_PHY_TYPE_USB2,
 	USB_PHY_TYPE_USB3,
+<<<<<<< HEAD
 	USB_PHY_TYPE_USB3_OR_DP,
 	USB_PHY_TYPE_USB3_AND_DP,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* OTG defines lots of enumeration states before device reset */
@@ -62,7 +68,10 @@ enum usb_otg_state {
 	OTG_STATE_B_IDLE,
 	OTG_STATE_B_SRP_INIT,
 	OTG_STATE_B_PERIPHERAL,
+<<<<<<< HEAD
 	OTG_STATE_B_SUSPEND,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* extra dual-role default-b states */
 	OTG_STATE_B_WAIT_ACON,
@@ -165,19 +174,25 @@ struct usb_phy {
 			enum usb_device_speed speed);
 	int	(*notify_disconnect)(struct usb_phy *x,
 			enum usb_device_speed speed);
+<<<<<<< HEAD
 	int	(*link_training)(struct usb_phy *x, bool start);
 	int	(*powerup)(struct usb_phy *x, bool start);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Charger detection method can be implemented if you need to
 	 * manually detect the charger type.
 	 */
 	enum usb_charger_type (*charger_detect)(struct usb_phy *x);
+<<<<<<< HEAD
 
 	/* reset the PHY clocks */
 	int     (*reset)(struct usb_phy *x);
 
 	int	(*drive_dp_pulse)(struct usb_phy *x, unsigned int pulse_width);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -252,6 +267,7 @@ usb_phy_vbus_off(struct usb_phy *x)
 	return x->set_vbus(x, false);
 }
 
+<<<<<<< HEAD
 static inline int
 usb_phy_reset(struct usb_phy *x)
 {
@@ -270,6 +286,8 @@ usb_phy_drive_dp_pulse(struct usb_phy *x, unsigned int pulse_width)
 	return 0;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* for usb host and peripheral controller drivers */
 #if IS_ENABLED(CONFIG_USB_PHY)
 extern struct usb_phy *usb_get_phy(enum usb_phy_type type);
@@ -403,6 +421,7 @@ usb_phy_notify_connect(struct usb_phy *x, enum usb_device_speed speed)
 }
 
 static inline int
+<<<<<<< HEAD
 usb_phy_start_link_training(struct usb_phy *x)
 {
 	if (x && x->link_training)
@@ -439,6 +458,8 @@ usb_phy_powerdown(struct usb_phy *x)
 }
 
 static inline int
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 usb_phy_notify_disconnect(struct usb_phy *x, enum usb_device_speed speed)
 {
 	if (x && x->notify_disconnect)

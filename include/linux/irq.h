@@ -212,6 +212,11 @@ struct irq_data {
  *				  mask. Applies only to affinity managed irqs.
  * IRQD_SINGLE_TARGET		- IRQ allows only a single affinity target
  * IRQD_DEFAULT_TRIGGER_SET	- Expected trigger already been set
+<<<<<<< HEAD
+=======
+ * IRQD_AFFINITY_ON_ACTIVATE	- Affinity is set on activation. Don't call
+ *				  irq_chip::irq_set_affinity() when deactivated.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 enum {
 	IRQD_TRIGGER_MASK		= 0xf,
@@ -233,6 +238,10 @@ enum {
 	IRQD_MANAGED_SHUTDOWN		= (1 << 23),
 	IRQD_SINGLE_TARGET		= (1 << 24),
 	IRQD_DEFAULT_TRIGGER_SET	= (1 << 25),
+<<<<<<< HEAD
+=======
+	IRQD_AFFINITY_ON_ACTIVATE	= (1 << 29),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #define __irqd_to_state(d) ACCESS_PRIVATE((d)->common, state_use_accessors)
@@ -377,6 +386,18 @@ static inline bool irqd_is_managed_and_shutdown(struct irq_data *d)
 	return __irqd_to_state(d) & IRQD_MANAGED_SHUTDOWN;
 }
 
+<<<<<<< HEAD
+=======
+static inline void irqd_set_affinity_on_activate(struct irq_data *d)
+{
+	__irqd_to_state(d) |= IRQD_AFFINITY_ON_ACTIVATE;
+}
+
+static inline bool irqd_affinity_on_activate(struct irq_data *d)
+{
+	return __irqd_to_state(d) & IRQD_AFFINITY_ON_ACTIVATE;
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #undef __irqd_to_state
 
 static inline irq_hw_number_t irqd_to_hwirq(struct irq_data *d)

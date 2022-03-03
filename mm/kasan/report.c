@@ -102,10 +102,13 @@ static const char *get_shadow_bug_type(struct kasan_access_info *info)
 	case KASAN_USE_AFTER_SCOPE:
 		bug_type = "use-after-scope";
 		break;
+<<<<<<< HEAD
 	case KASAN_ALLOCA_LEFT:
 	case KASAN_ALLOCA_RIGHT:
 		bug_type = "alloca-out-of-bounds";
 		break;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return bug_type;
@@ -138,7 +141,11 @@ static void print_error_description(struct kasan_access_info *info)
 
 	pr_err("BUG: KASAN: %s in %pS\n",
 		bug_type, (void *)info->ip);
+<<<<<<< HEAD
 	pr_err("%s of size %zu at addr %px by task %s/%d\n",
+=======
+	pr_err("%s of size %zu at addr %p by task %s/%d\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		info->is_write ? "Write" : "Read", info->access_size,
 		info->access_addr, current->comm, task_pid_nr(current));
 }
@@ -210,7 +217,11 @@ static void describe_object_addr(struct kmem_cache *cache, void *object,
 	const char *rel_type;
 	int rel_bytes;
 
+<<<<<<< HEAD
 	pr_err("The buggy address belongs to the object at %px\n"
+=======
+	pr_err("The buggy address belongs to the object at %p\n"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	       " which belongs to the cache %s of size %d\n",
 		object, cache->name, cache->object_size);
 
@@ -229,7 +240,11 @@ static void describe_object_addr(struct kmem_cache *cache, void *object,
 	}
 
 	pr_err("The buggy address is located %d bytes %s of\n"
+<<<<<<< HEAD
 	       " %d-byte region [%px, %px)\n",
+=======
+	       " %d-byte region [%p, %p)\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rel_bytes, rel_type, cache->object_size, (void *)object_addr,
 		(void *)(object_addr + cache->object_size));
 }
@@ -306,7 +321,11 @@ static void print_shadow_for_address(const void *addr)
 		char shadow_buf[SHADOW_BYTES_PER_ROW];
 
 		snprintf(buffer, sizeof(buffer),
+<<<<<<< HEAD
 			(i == 0) ? ">%px: " : " %px: ", kaddr);
+=======
+			(i == 0) ? ">%p: " : " %p: ", kaddr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/*
 		 * We should not pass a shadow pointer to generic
 		 * function, because generic functions may try to
@@ -326,12 +345,21 @@ static void print_shadow_for_address(const void *addr)
 	}
 }
 
+<<<<<<< HEAD
 void kasan_report_invalid_free(void *object, unsigned long ip)
+=======
+void kasan_report_double_free(struct kmem_cache *cache, void *object,
+				void *ip)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned long flags;
 
 	kasan_start_report(&flags);
+<<<<<<< HEAD
 	pr_err("BUG: KASAN: double-free or invalid-free in %pS\n", (void *)ip);
+=======
+	pr_err("BUG: KASAN: double-free or invalid-free in %pS\n", ip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pr_err("\n");
 	print_address_description(object);
 	pr_err("\n");

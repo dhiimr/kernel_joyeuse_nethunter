@@ -158,12 +158,22 @@ static int tpm_class_shutdown(struct device *dev)
 {
 	struct tpm_chip *chip = container_of(dev, struct tpm_chip, dev);
 
+<<<<<<< HEAD
 	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
 		down_write(&chip->ops_sem);
 		tpm2_shutdown(chip, TPM2_SU_CLEAR);
 		chip->ops = NULL;
 		up_write(&chip->ops_sem);
 	}
+=======
+	down_write(&chip->ops_sem);
+	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
+		tpm2_shutdown(chip, TPM2_SU_CLEAR);
+		chip->ops = NULL;
+	}
+	chip->ops = NULL;
+	up_write(&chip->ops_sem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -246,6 +256,7 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
 	chip->cdev.owner = THIS_MODULE;
 	chip->cdevs.owner = THIS_MODULE;
 
+<<<<<<< HEAD
 	chip->work_space.context_buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
 	if (!chip->work_space.context_buf) {
 		rc = -ENOMEM;
@@ -253,6 +264,10 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
 	}
 	chip->work_space.session_buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
 	if (!chip->work_space.session_buf) {
+=======
+	rc = tpm2_init_space(&chip->work_space, TPM2_SPACE_BUFFER_SIZE);
+	if (rc) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rc = -ENOMEM;
 		goto out;
 	}

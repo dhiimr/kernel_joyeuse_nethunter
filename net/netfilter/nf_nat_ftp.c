@@ -134,7 +134,11 @@ static int __init nf_nat_ftp_init(void)
 }
 
 /* Prior to 2.6.11, we had a ports param.  No longer, but don't break users. */
+<<<<<<< HEAD
 static int warn_set(const char *val, const struct kernel_param *kp)
+=======
+static int warn_set(const char *val, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	printk(KERN_INFO KBUILD_MODNAME
 	       ": kernel >= 2.6.10 only uses 'ports' for conntrack modules\n");

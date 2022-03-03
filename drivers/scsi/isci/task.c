@@ -258,7 +258,11 @@ static int isci_task_execute_tmf(struct isci_host *ihost,
 				 struct isci_tmf *tmf, unsigned long timeout_ms)
 {
 	DECLARE_COMPLETION_ONSTACK(completion);
+<<<<<<< HEAD
 	enum sci_task_status status = SCI_TASK_FAILURE;
+=======
+	enum sci_status status = SCI_FAILURE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct isci_request *ireq;
 	int ret = TMF_RESP_FUNC_FAILED;
 	unsigned long flags;
@@ -301,7 +305,11 @@ static int isci_task_execute_tmf(struct isci_host *ihost,
 	/* start the TMF io. */
 	status = sci_controller_start_task(ihost, idev, ireq);
 
+<<<<<<< HEAD
 	if (status != SCI_TASK_SUCCESS) {
+=======
+	if (status != SCI_SUCCESS) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_dbg(&ihost->pdev->dev,
 			 "%s: start_io failed - status = 0x%x, request = %p\n",
 			 __func__,

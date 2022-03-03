@@ -48,6 +48,7 @@ config NVME_FC
 	  from https://github.com/linux-nvme/nvme-cli.
 
 	  If unsure, say N.
+<<<<<<< HEAD
 
 config NVME_QCOM
         bool "QTI MSM/MDM target support"
@@ -55,3 +56,5 @@ config NVME_QCOM
         depends on ARCH_QCOM
         help
           Enable support for integration with Qualcomm Technologies, Inc. chipsets.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

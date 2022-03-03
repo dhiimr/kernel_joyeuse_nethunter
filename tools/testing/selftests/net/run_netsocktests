@@ -7,7 +7,14 @@ echo "--------------------"
 ./socket
 if [ $? -ne 0 ]; then
 	echo "[FAIL]"
+<<<<<<< HEAD
 else
 	echo "[PASS]"
 fi
 
+=======
+	exit 1
+else
+	echo "[PASS]"
+fi
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

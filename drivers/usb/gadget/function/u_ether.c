@@ -49,9 +49,16 @@
 #define UETH__VERSION	"29-May-2008"
 
 /* Experiments show that both Linux and Windows hosts allow up to 16k
+<<<<<<< HEAD
  * frame sizes. Set the max size to 15k+52 to prevent allocating 32k
  * blocks and still have efficient handling. */
 #define GETHER_MAX_ETH_FRAME_LEN 15412
+=======
+ * frame sizes. Set the max MTU size to 15k+52 to prevent allocating 32k
+ * blocks and still have efficient handling. */
+#define GETHER_MAX_MTU_SIZE 15412
+#define GETHER_MAX_ETH_FRAME_LEN (GETHER_MAX_MTU_SIZE + ETH_HLEN)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct eth_dev {
 	/* lock is held while accessing port_usb
@@ -71,7 +78,10 @@ struct eth_dev {
 	unsigned		qmult;
 
 	unsigned		header_len;
+<<<<<<< HEAD
 	unsigned int		ul_max_pkts_per_xfer;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct sk_buff		*(*wrap)(struct gether *, struct sk_buff *skb);
 	int			(*unwrap)(struct gether *,
 						struct sk_buff *skb,
@@ -98,7 +108,11 @@ struct eth_dev {
 static inline int qlen(struct usb_gadget *gadget, unsigned qmult)
 {
 	if (gadget_is_dualspeed(gadget) && (gadget->speed == USB_SPEED_HIGH ||
+<<<<<<< HEAD
 					    gadget->speed == USB_SPEED_SUPER))
+=======
+					    gadget->speed >= USB_SPEED_SUPER))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return qmult * DEFAULT_QLEN;
 	else
 		return DEFAULT_QLEN;
@@ -191,11 +205,20 @@ rx_submit(struct eth_dev *dev, struct usb_request *req, gfp_t gfp_flags)
 		out = dev->port_usb->out_ep;
 	else
 		out = NULL;
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&dev->lock, flags);
 
 	if (!out)
 		return -ENOTCONN;
 
+=======
+
+	if (!out)
+	{
+		spin_unlock_irqrestore(&dev->lock, flags);
+		return -ENOTCONN;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Padding up to RX_EXTRA handles minor disagreements with host.
 	 * Normally we use the USB "terminate on short read" convention;
@@ -217,6 +240,7 @@ rx_submit(struct eth_dev *dev, struct usb_request *req, gfp_t gfp_flags)
 		size -= size % out->maxpacket;
 	}
 
+<<<<<<< HEAD
 	if (dev->ul_max_pkts_per_xfer)
 		size *= dev->ul_max_pkts_per_xfer;
 
@@ -224,6 +248,12 @@ rx_submit(struct eth_dev *dev, struct usb_request *req, gfp_t gfp_flags)
 		size = max_t(size_t, size, dev->port_usb->fixed_out_len);
 
 	DBG(dev, "%s: size: %d\n", __func__, size);
+=======
+	if (dev->port_usb->is_fixed)
+		size = max_t(size_t, size, dev->port_usb->fixed_out_len);
+	spin_unlock_irqrestore(&dev->lock, flags);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	skb = __netdev_alloc_skb(dev->net, size + NET_IP_ALIGN, gfp_flags);
 	if (skb == NULL) {
 		DBG(dev, "no rx skb\n");
@@ -497,8 +527,14 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 	}
 	spin_unlock_irqrestore(&dev->lock, flags);
 
+<<<<<<< HEAD
 	if (skb && !in) {
 		dev_kfree_skb_any(skb);
+=======
+	if (!in) {
+		if (skb)
+			dev_kfree_skb_any(skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return NETDEV_TX_OK;
 	}
 
@@ -793,7 +829,11 @@ struct eth_dev *gether_setup_name(struct usb_gadget *g,
 
 	/* MTU range: 14 - 15412 */
 	net->min_mtu = ETH_HLEN;
+<<<<<<< HEAD
 	net->max_mtu = GETHER_MAX_ETH_FRAME_LEN;
+=======
+	net->max_mtu = GETHER_MAX_MTU_SIZE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dev->gadget = g;
 	SET_NETDEV_DEV(net, &g->dev);
@@ -853,6 +893,13 @@ struct net_device *gether_setup_name_default(const char *netname)
 	net->ethtool_ops = &ops;
 	SET_NETDEV_DEVTYPE(net, &gadget_type);
 
+<<<<<<< HEAD
+=======
+	/* MTU range: 14 - 15412 */
+	net->min_mtu = ETH_HLEN;
+	net->max_mtu = GETHER_MAX_MTU_SIZE;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return net;
 }
 EXPORT_SYMBOL_GPL(gether_setup_name_default);
@@ -861,19 +908,33 @@ int gether_register_netdev(struct net_device *net)
 {
 	struct eth_dev *dev;
 	struct usb_gadget *g;
+<<<<<<< HEAD
 	struct sockaddr sa;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int status;
 
 	if (!net->dev.parent)
 		return -EINVAL;
 	dev = netdev_priv(net);
 	g = dev->gadget;
+<<<<<<< HEAD
+=======
+
+	memcpy(net->dev_addr, dev->dev_mac, ETH_ALEN);
+	net->addr_assign_type = NET_ADDR_RANDOM;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	status = register_netdev(net);
 	if (status < 0) {
 		dev_dbg(&g->dev, "register_netdev failed, %d\n", status);
 		return status;
 	} else {
 		INFO(dev, "HOST MAC %pM\n", dev->host_mac);
+<<<<<<< HEAD
+=======
+		INFO(dev, "MAC %pM\n", dev->dev_mac);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* two kinds of host-initiated state changes:
 		 *  - iff DATA transfer is active, carrier is "on"
@@ -881,6 +942,7 @@ int gether_register_netdev(struct net_device *net)
 		 */
 		netif_carrier_off(net);
 	}
+<<<<<<< HEAD
 	sa.sa_family = net->type;
 	memcpy(sa.sa_data, dev->dev_mac, ETH_ALEN);
 	rtnl_lock();
@@ -890,6 +952,8 @@ int gether_register_netdev(struct net_device *net)
 		pr_warn("cannot set self ethernet address: %d\n", status);
 	else
 		INFO(dev, "MAC %pM\n", dev->dev_mac);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return status;
 }
@@ -1084,7 +1148,10 @@ struct net_device *gether_connect(struct gether *link)
 		dev->header_len = link->header_len;
 		dev->unwrap = link->unwrap;
 		dev->wrap = link->wrap;
+<<<<<<< HEAD
 		dev->ul_max_pkts_per_xfer = link->ul_max_pkts_per_xfer;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		spin_lock(&dev->lock);
 		dev->port_usb = link;

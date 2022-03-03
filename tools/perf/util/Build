@@ -10,6 +10,10 @@ libperf-y += evlist.o
 libperf-y += evsel.o
 libperf-y += evsel_fprintf.o
 libperf-y += find_bit.o
+<<<<<<< HEAD
+=======
+libperf-y += get_current_dir_name.o
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 libperf-y += kallsyms.o
 libperf-y += levenshtein.o
 libperf-y += llvm-utils.o

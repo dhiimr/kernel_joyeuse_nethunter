@@ -35,6 +35,7 @@
 
 void signalfd_cleanup(struct sighand_struct *sighand)
 {
+<<<<<<< HEAD
 	wait_queue_head_t *wqh = &sighand->signalfd_wqh;
 	/*
 	 * The lockless check can race with remove_wait_queue() in progress,
@@ -46,6 +47,9 @@ void signalfd_cleanup(struct sighand_struct *sighand)
 
 	/* wait_queue_entry_t->func(POLLFREE) should do remove_wait_queue() */
 	wake_up_poll(wqh, POLLHUP | POLLFREE);
+=======
+	wake_up_pollfree(&sighand->signalfd_wqh);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 struct signalfd_ctx {

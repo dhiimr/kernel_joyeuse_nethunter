@@ -12,6 +12,7 @@
 #define _ASM_X86_FPU_API_H
 
 /*
+<<<<<<< HEAD
  * Careful: __kernel_fpu_begin/end() must be called with preempt disabled
  * and they don't touch the preempt state on their own.
  * If you enable preemption after __kernel_fpu_begin(), preempt notifier
@@ -23,6 +24,14 @@
  */
 extern void __kernel_fpu_begin(void);
 extern void __kernel_fpu_end(void);
+=======
+ * Use kernel_fpu_begin/end() if you intend to use FPU in kernel context. It
+ * disables preemption so be careful if you intend to use it for long periods
+ * of time.
+ * If you intend to use the FPU in softirq you need to check first with
+ * irq_fpu_usable() if it is possible.
+ */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void kernel_fpu_begin(void);
 extern void kernel_fpu_end(void);
 extern bool irq_fpu_usable(void);

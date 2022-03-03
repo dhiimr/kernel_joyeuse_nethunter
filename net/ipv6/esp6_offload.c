@@ -121,9 +121,22 @@ static void esp6_gso_encap(struct xfrm_state *x, struct sk_buff *skb)
 	struct ip_esp_hdr *esph;
 	struct ipv6hdr *iph = ipv6_hdr(skb);
 	struct xfrm_offload *xo = xfrm_offload(skb);
+<<<<<<< HEAD
 	int proto = iph->nexthdr;
 
 	skb_push(skb, -skb_network_offset(skb));
+=======
+	u8 proto = iph->nexthdr;
+
+	skb_push(skb, -skb_network_offset(skb));
+
+	if (x->outer_mode->encap == XFRM_MODE_TRANSPORT) {
+		__be16 frag;
+
+		ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &proto, &frag);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	esph = ip_esp_hdr(skb);
 	*skb_mac_header(skb) = IPPROTO_ESP;
 

@@ -687,6 +687,10 @@ static struct clk_divider gxbb_sar_adc_clk_div = {
 		.ops = &clk_divider_ops,
 		.parent_names = (const char *[]){ "sar_adc_clk_sel" },
 		.num_parents = 1,
+<<<<<<< HEAD
+=======
+		.flags = CLK_SET_RATE_PARENT,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 };
 

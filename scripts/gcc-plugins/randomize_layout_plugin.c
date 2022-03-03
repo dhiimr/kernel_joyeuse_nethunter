@@ -443,6 +443,7 @@ static int is_pure_ops_struct(const_tree node)
 		if (node == fieldtype)
 			continue;
 
+<<<<<<< HEAD
 		if (!is_fptr(fieldtype))
 			return 0;
 
@@ -450,6 +451,15 @@ static int is_pure_ops_struct(const_tree node)
 			continue;
 
 		if (!is_pure_ops_struct(fieldtype))
+=======
+		if (code == RECORD_TYPE || code == UNION_TYPE) {
+			if (!is_pure_ops_struct(fieldtype))
+				return 0;
+			continue;
+		}
+
+		if (!is_fptr(fieldtype))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return 0;
 	}
 

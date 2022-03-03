@@ -155,16 +155,27 @@
 		#size-cells = <1>;
 		ranges;
 
+<<<<<<< HEAD
 		vic: intc@10140000 {
+=======
+		vic: interrupt-controller@10140000 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			compatible = "arm,versatile-vic";
 			interrupt-controller;
 			#interrupt-cells = <1>;
 			reg = <0x10140000 0x1000>;
+<<<<<<< HEAD
 			clear-mask = <0xffffffff>;
 			valid-mask = <0xffffffff>;
 		};
 
 		sic: intc@10003000 {
+=======
+			valid-mask = <0xffffffff>;
+		};
+
+		sic: interrupt-controller@10003000 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			compatible = "arm,versatile-sic";
 			interrupt-controller;
 			#interrupt-cells = <1>;
@@ -304,7 +315,11 @@
 			clock-names = "apb_pclk";
 		};
 
+<<<<<<< HEAD
 		ssp@101f4000 {
+=======
+		spi@101f4000 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			compatible = "arm,pl022", "arm,primecell";
 			reg = <0x101f4000 0x1000>;
 			interrupts = <11>;

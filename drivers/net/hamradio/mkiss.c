@@ -783,10 +783,17 @@ static void mkiss_close(struct tty_struct *tty)
 {
 	struct mkiss *ax;
 
+<<<<<<< HEAD
 	write_lock_bh(&disc_data_lock);
 	ax = tty->disc_data;
 	tty->disc_data = NULL;
 	write_unlock_bh(&disc_data_lock);
+=======
+	write_lock_irq(&disc_data_lock);
+	ax = tty->disc_data;
+	tty->disc_data = NULL;
+	write_unlock_irq(&disc_data_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!ax)
 		return;
@@ -803,13 +810,23 @@ static void mkiss_close(struct tty_struct *tty)
 	 */
 	netif_stop_queue(ax->dev);
 
+<<<<<<< HEAD
 	/* Free all AX25 frame buffers. */
+=======
+	unregister_netdev(ax->dev);
+
+	/* Free all AX25 frame buffers after unreg. */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(ax->rbuff);
 	kfree(ax->xbuff);
 
 	ax->tty = NULL;
 
+<<<<<<< HEAD
 	unregister_netdev(ax->dev);
+=======
+	free_netdev(ax->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Perform I/O control on an active ax25 channel. */

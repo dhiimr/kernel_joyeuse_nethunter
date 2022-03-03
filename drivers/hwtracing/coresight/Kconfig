@@ -24,7 +24,10 @@ config CORESIGHT_LINKS_AND_SINKS
 config CORESIGHT_LINK_AND_SINK_TMC
 	bool "Coresight generic TMC driver"
 	depends on CORESIGHT_LINKS_AND_SINKS
+<<<<<<< HEAD
 	select CORESIGHT_CSR
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  This enables support for the Trace Memory Controller driver.
 	  Depending on its configuration the device can act as a link (embedded
@@ -63,6 +66,10 @@ config CORESIGHT_SOURCE_ETM3X
 
 config CORESIGHT_SOURCE_ETM4X
 	bool "CoreSight Embedded Trace Macrocell 4.x driver"
+<<<<<<< HEAD
+=======
+	depends on ARM64
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select CORESIGHT_LINKS_AND_SINKS
 	help
 	  This driver provides support for the ETM4.x tracer module, tracing the
@@ -83,7 +90,10 @@ config CORESIGHT_STM
 	depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
 	select CORESIGHT_LINKS_AND_SINKS
 	select STM
+<<<<<<< HEAD
 	select CORESIGHT_OST
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  This driver provides support for hardware assisted software
 	  instrumentation based tracing. This is primarily used for
@@ -104,6 +114,7 @@ config CORESIGHT_CPU_DEBUG
 	  properly, please refer Documentation/trace/coresight-cpu-debug.txt
 	  for detailed description and the example for usage.
 
+<<<<<<< HEAD
 config CORESIGHT_CTI
 	bool "CoreSight Cross Trigger Interface driver"
 	help
@@ -206,4 +217,6 @@ config CORESIGHT_EVENT
           and performing CoreSight actions like aborting trace on their
           occurrence. These events can be controlled by using module
           parameters.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif

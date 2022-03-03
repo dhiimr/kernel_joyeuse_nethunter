@@ -286,7 +286,11 @@ int vmw_present_ioctl(struct drm_device *dev, void *data,
 
 	drm_modeset_lock_all(dev);
 
+<<<<<<< HEAD
 	fb = drm_framebuffer_lookup(dev, file_priv, arg->fb_id);
+=======
+	fb = drm_framebuffer_lookup(dev, arg->fb_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!fb) {
 		DRM_ERROR("Invalid framebuffer id.\n");
 		ret = -ENOENT;
@@ -369,7 +373,11 @@ int vmw_present_readback_ioctl(struct drm_device *dev, void *data,
 
 	drm_modeset_lock_all(dev);
 
+<<<<<<< HEAD
 	fb = drm_framebuffer_lookup(dev, file_priv, arg->fb_id);
+=======
+	fb = drm_framebuffer_lookup(dev, arg->fb_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!fb) {
 		DRM_ERROR("Invalid framebuffer id.\n");
 		ret = -ENOENT;

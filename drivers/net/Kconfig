@@ -212,8 +212,13 @@ config GENEVE
 
 config GTP
 	tristate "GPRS Tunneling Protocol datapath (GTP-U)"
+<<<<<<< HEAD
 	depends on INET && NET_UDP_TUNNEL
 	select NET_IP_TUNNEL
+=======
+	depends on INET
+	select NET_UDP_TUNNEL
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	---help---
 	  This allows one to create gtp virtual interfaces that provide
 	  the GPRS Tunneling Protocol datapath (GTP-U). This tunneling protocol
@@ -263,6 +268,7 @@ config NTB_NETDEV
 	tristate "Virtual Ethernet over NTB Transport"
 	depends on NTB_TRANSPORT
 
+<<<<<<< HEAD
 config RMNET_IPLO
 	tristate "RMNET IPLO driver"
 	---help---
@@ -273,6 +279,8 @@ config RMNET_IPLO
 	   a physical device which uses rmnet_data. rmnet_iplo will
 	   loopback any data which is sent to it.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config RIONET
 	tristate "RapidIO Ethernet over messaging driver support"
 	depends on RAPIDIO

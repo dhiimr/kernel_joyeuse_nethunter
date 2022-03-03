@@ -2,7 +2,10 @@
  * Functions for working with the Flattened Device Tree data format
  *
  * Copyright 2009 Benjamin Herrenschmidt, IBM Corp
+<<<<<<< HEAD
  * Copyright (C) 2020 XiaoMi, Inc.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * benh@kernel.crashing.org
  *
  * This program is free software; you can redistribute it and/or
@@ -83,6 +86,7 @@ void of_fdt_limit_memory(int limit)
 }
 
 /**
+<<<<<<< HEAD
  * of_fdt_get_ddrtype - Return the type of ddr (4/5) on the current device
  *
  * On match, returns a non-zero positive value which matches the ddr type.
@@ -109,6 +113,8 @@ int of_fdt_get_ddrtype(void)
 }
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * of_fdt_is_compatible - Return true if given node from the given blob has
  * compat in its compatible list
  * @blob: A device tree blob
@@ -604,6 +610,7 @@ void *initial_boot_params;
 
 static u32 of_fdt_crc32;
 
+<<<<<<< HEAD
 /*
  * Reserve memory via command line if needed.
  */
@@ -650,6 +657,8 @@ static int __init early_memory_reserve(char *p)
 }
 early_param("memrsv", early_memory_reserve);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * res_mem_reserve_reg() - reserve all memory described in 'reg' property
  */
@@ -680,11 +689,19 @@ static int __init __reserved_mem_reserve_reg(unsigned long node,
 
 		if (size &&
 		    early_init_dt_reserve_memory_arch(base, size, nomap) == 0)
+<<<<<<< HEAD
 			pr_debug("Reserved memory: reserved region for node '%s': base %pa, size %ld MiB\n",
 				uname, &base, (unsigned long)size / SZ_1M);
 		else
 			pr_info("Reserved memory: failed to reserve memory for node '%s': base %pa, size %ld MiB\n",
 				uname, &base, (unsigned long)size / SZ_1M);
+=======
+			pr_debug("Reserved memory: reserved region for node '%s': base %pa, size %lu MiB\n",
+				uname, &base, (unsigned long)(size / SZ_1M));
+		else
+			pr_info("Reserved memory: failed to reserve memory for node '%s': base %pa, size %lu MiB\n",
+				uname, &base, (unsigned long)(size / SZ_1M));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		len -= t_len;
 		if (first) {
@@ -997,6 +1014,7 @@ const void * __init of_flat_dt_match_machine(const void *default_match,
 	return best_data;
 }
 
+<<<<<<< HEAD
 void __init early_init_dt_check_for_powerup_reason(unsigned long node)
 {
 	unsigned long pu_reason;
@@ -1014,6 +1032,8 @@ void __init early_init_dt_check_for_powerup_reason(unsigned long node)
 	pr_debug("Powerup reason %d\n", (int)pu_reason);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_BLK_DEV_INITRD
 #ifndef __early_init_dt_declare_initrd
 static void __early_init_dt_declare_initrd(unsigned long start,
@@ -1202,6 +1222,7 @@ int __init early_init_dt_scan_memory(unsigned long node, const char *uname,
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * Convert configs to something easy to use in C code
  */
@@ -1235,11 +1256,23 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
 	pr_debug("search \"chosen\", depth: %d, uname: %s\n", depth, uname);
 
 	if (depth != 1 || !cmdline ||
+=======
+int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+				     int depth, void *data)
+{
+	int l;
+	const char *p;
+
+	pr_debug("search \"chosen\", depth: %d, uname: %s\n", depth, uname);
+
+	if (depth != 1 || !data ||
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    (strcmp(uname, "chosen") != 0 && strcmp(uname, "chosen@0") != 0))
 		return 0;
 
 	early_init_dt_check_for_initrd(node);
 
+<<<<<<< HEAD
 	/* Put CONFIG_CMDLINE in if forced or if data had nothing in it to start */
 	if (overwrite_incoming_cmdline || !cmdline[0])
 		strlcpy(cmdline, config_cmdline, COMMAND_LINE_SIZE);
@@ -1266,6 +1299,33 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
 	pr_debug("Command line is: %s\n", (char*)data);
 
 	early_init_dt_check_for_powerup_reason(node);
+=======
+	/* Retrieve command line */
+	p = of_get_flat_dt_prop(node, "bootargs", &l);
+	if (p != NULL && l > 0)
+		strlcpy(data, p, min((int)l, COMMAND_LINE_SIZE));
+
+	/*
+	 * CONFIG_CMDLINE is meant to be a default in case nothing else
+	 * managed to set the command line, unless CONFIG_CMDLINE_FORCE
+	 * is set in which case we override whatever was found earlier.
+	 */
+#ifdef CONFIG_CMDLINE
+#if defined(CONFIG_CMDLINE_EXTEND)
+	strlcat(data, " ", COMMAND_LINE_SIZE);
+	strlcat(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+#elif defined(CONFIG_CMDLINE_FORCE)
+	strlcpy(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+#else
+	/* No arguments from boot loader, use kernel's  cmdl*/
+	if (!((char *)data)[0])
+		strlcpy(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+#endif
+#endif /* CONFIG_CMDLINE */
+
+	pr_debug("Command line is: %s\n", (char*)data);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* break now */
 	return 1;
 }

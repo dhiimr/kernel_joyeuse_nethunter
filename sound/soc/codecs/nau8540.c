@@ -548,7 +548,11 @@ static int nau8540_calc_fll_param(unsigned int fll_in,
 	fvco_max = 0;
 	fvco_sel = ARRAY_SIZE(mclk_src_scaling);
 	for (i = 0; i < ARRAY_SIZE(mclk_src_scaling); i++) {
+<<<<<<< HEAD
 		fvco = 256 * fs * 2 * mclk_src_scaling[i].param;
+=======
+		fvco = 256ULL * fs * 2 * mclk_src_scaling[i].param;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (fvco > NAU_FVCO_MIN && fvco < NAU_FVCO_MAX &&
 			fvco_max < fvco) {
 			fvco_max = fvco;

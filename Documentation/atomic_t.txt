@@ -177,6 +177,12 @@ These helper barriers exist because architectures have varying implicit
 ordering on their SMP atomic primitives. For example our TSO architectures
 provide full ordered atomics and these barriers are no-ops.
 
+<<<<<<< HEAD
+=======
+NOTE: when the atomic RmW ops are fully ordered, they should also imply a
+compiler barrier.
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 Thus:
 
   atomic_fetch_add();

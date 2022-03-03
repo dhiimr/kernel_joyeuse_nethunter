@@ -88,7 +88,11 @@ static int read_poll_timeout(void __iomem *addr, u32 mask)
 		if (readl_relaxed(addr) & mask)
 			return 0;
 
+<<<<<<< HEAD
 		 usleep_range(DELAY_INTERVAL_US, DELAY_INTERVAL_US + 50);
+=======
+		usleep_range(DELAY_INTERVAL_US, DELAY_INTERVAL_US + 50);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} while (!time_after(jiffies, timeout));
 
 	return (readl_relaxed(addr) & mask) ? 0 : -ETIMEDOUT;

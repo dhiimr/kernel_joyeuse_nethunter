@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2012-2016 Qualcomm Atheros, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,9 +21,12 @@
 #ifndef WIL6210_TXRX_H
 #define WIL6210_TXRX_H
 
+<<<<<<< HEAD
 #include "wil6210.h"
 #include "txrx_edma.h"
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define BUF_SW_OWNED    (1)
 #define BUF_HW_OWNED    (0)
 
@@ -32,13 +38,27 @@
 
 /* Tx/Rx path */
 
+<<<<<<< HEAD
 static inline dma_addr_t wil_desc_addr(struct wil_ring_dma_addr *addr)
+=======
+/* Common representation of physical address in Vring */
+struct vring_dma_addr {
+	__le32 addr_low;
+	__le16 addr_high;
+} __packed;
+
+static inline dma_addr_t wil_desc_addr(struct vring_dma_addr *addr)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return le32_to_cpu(addr->addr_low) |
 			   ((u64)le16_to_cpu(addr->addr_high) << 32);
 }
 
+<<<<<<< HEAD
 static inline void wil_desc_addr_set(struct wil_ring_dma_addr *addr,
+=======
+static inline void wil_desc_addr_set(struct vring_dma_addr *addr,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				     dma_addr_t pa)
 {
 	addr->addr_low = cpu_to_le32(lower_32_bits(pa));
@@ -61,9 +81,13 @@ static inline void wil_desc_addr_set(struct wil_ring_dma_addr *addr,
  * [dword 1]
  * bit  0.. 3 : pkt_mode:4
  * bit      4 : pkt_mode_en:1
+<<<<<<< HEAD
  * bit      5 : mac_id_en:1
  * bit   6..7 : mac_id:2
  * bit  8..14 : reserved0:7
+=======
+ * bit  5..14 : reserved0:10
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * bit     15 : ack_policy_en:1
  * bit 16..19 : dst_index:4
  * bit     20 : dst_index_en:1
@@ -132,6 +156,7 @@ struct vring_tx_mac {
 #define MAC_CFG_DESC_TX_1_PKT_MODE_EN_LEN 1
 #define MAC_CFG_DESC_TX_1_PKT_MODE_EN_MSK 0x10
 
+<<<<<<< HEAD
 #define MAC_CFG_DESC_TX_1_MAC_ID_EN_POS 5
 #define MAC_CFG_DESC_TX_1_MAC_ID_EN_LEN 1
 #define MAC_CFG_DESC_TX_1_MAC_ID_EN_MSK 0x20
@@ -140,6 +165,8 @@ struct vring_tx_mac {
 #define MAC_CFG_DESC_TX_1_MAC_ID_LEN 2
 #define MAC_CFG_DESC_TX_1_MAC_ID_MSK 0xc0
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define MAC_CFG_DESC_TX_1_ACK_POLICY_EN_POS 15
 #define MAC_CFG_DESC_TX_1_ACK_POLICY_EN_LEN 1
 #define MAC_CFG_DESC_TX_1_ACK_POLICY_EN_MSK 0x8000
@@ -291,7 +318,11 @@ struct vring_tx_mac {
  */
 struct vring_tx_dma {
 	u32 d0;
+<<<<<<< HEAD
 	struct wil_ring_dma_addr addr;
+=======
+	struct vring_dma_addr addr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8  ip_length;
 	u8  b11;       /* 0..6: mac_length; 7:ip_version */
 	u8  error;     /* 0..2: err; 3..7: reserved; */
@@ -312,7 +343,11 @@ enum {
  * bit  0.. 3 : tid:4 The QoS (b3-0) TID Field
  * bit  4.. 6 : cid:3 The Source index that  was found during parsing the TA.
  *		This field is used to define the source of the packet
+<<<<<<< HEAD
  * bit      7 : MAC_id_valid:1, 1 if MAC virtual number is valid.
+=======
+ * bit      7 : reserved:1
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * bit  8.. 9 : mid:2 The MAC virtual number
  * bit 10..11 : frame_type:2 : The FC (b3-2) - MPDU Type
  *		(management, data, control and extension)
@@ -403,7 +438,10 @@ struct vring_rx_mac {
 #define RX_DMA_D0_CMD_DMA_EOP	BIT(8)
 #define RX_DMA_D0_CMD_DMA_RT	BIT(9)  /* always 1 */
 #define RX_DMA_D0_CMD_DMA_IT	BIT(10) /* interrupt */
+<<<<<<< HEAD
 #define RX_MAC_D0_MAC_ID_VALID	BIT(7)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Error field */
 #define RX_DMA_ERROR_FCS	BIT(0)
@@ -425,7 +463,11 @@ struct vring_rx_mac {
 
 struct vring_rx_dma {
 	u32 d0;
+<<<<<<< HEAD
 	struct wil_ring_dma_addr addr;
+=======
+	struct vring_dma_addr addr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8  ip_length;
 	u8  b11;
 	u8  error;
@@ -438,16 +480,20 @@ struct vring_tx_desc {
 	struct vring_tx_dma dma;
 } __packed;
 
+<<<<<<< HEAD
 union wil_tx_desc {
 	struct vring_tx_desc legacy;
 	struct wil_tx_enhanced_desc enhanced;
 } __packed;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct vring_rx_desc {
 	struct vring_rx_mac mac;
 	struct vring_rx_dma dma;
 } __packed;
 
+<<<<<<< HEAD
 union wil_rx_desc {
 	struct vring_rx_desc legacy;
 	struct wil_rx_enhanced_desc enhanced;
@@ -456,6 +502,11 @@ union wil_rx_desc {
 union wil_ring_desc {
 	union wil_tx_desc tx;
 	union wil_rx_desc rx;
+=======
+union vring_desc {
+	struct vring_tx_desc tx;
+	struct vring_rx_desc rx;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 } __packed;
 
 static inline int wil_rxdesc_tid(struct vring_rx_desc *d)
@@ -470,8 +521,12 @@ static inline int wil_rxdesc_cid(struct vring_rx_desc *d)
 
 static inline int wil_rxdesc_mid(struct vring_rx_desc *d)
 {
+<<<<<<< HEAD
 	return (d->mac.d0 & RX_MAC_D0_MAC_ID_VALID) ?
 		WIL_GET_BITS(d->mac.d0, 8, 9) : 0;
+=======
+	return WIL_GET_BITS(d->mac.d0, 8, 9);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline int wil_rxdesc_ftype(struct vring_rx_desc *d)
@@ -500,11 +555,14 @@ static inline int wil_rxdesc_ext_subtype(struct vring_rx_desc *d)
 	return WIL_GET_BITS(d->mac.d0, 28, 31);
 }
 
+<<<<<<< HEAD
 static inline int wil_rxdesc_retry(struct vring_rx_desc *d)
 {
 	return WIL_GET_BITS(d->mac.d0, 31, 31);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline int wil_rxdesc_key_id(struct vring_rx_desc *d)
 {
 	return WIL_GET_BITS(d->mac.d1, 4, 5);
@@ -540,6 +598,7 @@ static inline struct vring_rx_desc *wil_skb_rxdesc(struct sk_buff *skb)
 	return (void *)skb->cb;
 }
 
+<<<<<<< HEAD
 static inline int wil_ring_is_empty(struct wil_ring *ring)
 {
 	return ring->swhead == ring->swtail;
@@ -614,13 +673,21 @@ void wil_netif_rx_any(struct sk_buff *skb, struct net_device *ndev);
 void wil_rx_reorder(struct wil6210_priv *wil, struct sk_buff *skb);
 void wil_rx_bar(struct wil6210_priv *wil, struct wil6210_vif *vif,
 		u8 cid, u8 tid, u16 seq);
+=======
+void wil_netif_rx_any(struct sk_buff *skb, struct net_device *ndev);
+void wil_rx_reorder(struct wil6210_priv *wil, struct sk_buff *skb);
+void wil_rx_bar(struct wil6210_priv *wil, u8 cid, u8 tid, u16 seq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct wil_tid_ampdu_rx *wil_tid_ampdu_rx_alloc(struct wil6210_priv *wil,
 						int size, u16 ssn);
 void wil_tid_ampdu_rx_free(struct wil6210_priv *wil,
 			   struct wil_tid_ampdu_rx *r);
+<<<<<<< HEAD
 void wil_tx_data_init(struct wil_ring_tx_data *txdata);
 void wil_init_txrx_ops_legacy_dma(struct wil6210_priv *wil);
 void wil_tx_latency_calc(struct wil6210_priv *wil, struct sk_buff *skb,
 			 struct wil_sta_info *sta);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif /* WIL6210_TXRX_H */

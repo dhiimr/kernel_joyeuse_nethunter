@@ -127,10 +127,17 @@ void q40_mksound(unsigned int hz, unsigned int ticks)
 	sound_ticks = ticks << 1;
 }
 
+<<<<<<< HEAD
 static irq_handler_t q40_timer_routine;
 
 static irqreturn_t q40_timer_int (int irq, void * dev)
 {
+=======
+static irqreturn_t q40_timer_int(int irq, void *dev_id)
+{
+	irq_handler_t timer_routine = dev_id;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ql_ticks = ql_ticks ? 0 : 1;
 	if (sound_ticks) {
 		unsigned char sval=(sound_ticks & 1) ? 128-SVOL : 128+SVOL;
@@ -139,8 +146,18 @@ static irqreturn_t q40_timer_int (int irq, void * dev)
 		*DAC_RIGHT=sval;
 	}
 
+<<<<<<< HEAD
 	if (!ql_ticks)
 		q40_timer_routine(irq, dev);
+=======
+	if (!ql_ticks) {
+		unsigned long flags;
+
+		local_irq_save(flags);
+		timer_routine(0, NULL);
+		local_irq_restore(flags);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return IRQ_HANDLED;
 }
 
@@ -148,11 +165,17 @@ void q40_sched_init (irq_handler_t timer_routine)
 {
 	int timer_irq;
 
+<<<<<<< HEAD
 	q40_timer_routine = timer_routine;
 	timer_irq = Q40_IRQ_FRAME;
 
 	if (request_irq(timer_irq, q40_timer_int, 0,
 				"timer", q40_timer_int))
+=======
+	timer_irq = Q40_IRQ_FRAME;
+
+	if (request_irq(timer_irq, q40_timer_int, 0, "timer", timer_routine))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		panic("Couldn't register timer int");
 
 	master_outb(-1, FRAME_CLEAR_REG);

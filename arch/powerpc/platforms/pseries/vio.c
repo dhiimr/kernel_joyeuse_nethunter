@@ -1195,6 +1195,11 @@ static struct iommu_table *vio_build_iommu_table(struct vio_dev *dev)
 	if (tbl == NULL)
 		return NULL;
 
+<<<<<<< HEAD
+=======
+	kref_init(&tbl->it_kref);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	of_parse_dma_window(dev->dev.of_node, dma_window,
 			    &tbl->it_index, &offset, &size);
 

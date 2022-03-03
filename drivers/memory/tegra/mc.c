@@ -72,7 +72,11 @@ static int tegra_mc_setup_latency_allowance(struct tegra_mc *mc)
 	u32 value;
 
 	/* compute the number of MC clock cycles per tick */
+<<<<<<< HEAD
 	tick = mc->tick * clk_get_rate(mc->clk);
+=======
+	tick = (unsigned long long)mc->tick * clk_get_rate(mc->clk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	do_div(tick, NSEC_PER_SEC);
 
 	value = readl(mc->regs + MC_EMEM_ARB_CFG);

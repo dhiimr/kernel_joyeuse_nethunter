@@ -205,6 +205,10 @@ void __init exynos_firmware_init(void)
 		return;
 
 	addr = of_get_address(nd, 0, NULL, NULL);
+<<<<<<< HEAD
+=======
+	of_node_put(nd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!addr) {
 		pr_err("%s: No address specified.\n", __func__);
 		return;

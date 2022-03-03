@@ -301,14 +301,22 @@ static int __init imx_suspend_alloc_ocram(
 	if (!ocram_pool) {
 		pr_warn("%s: ocram pool unavailable!\n", __func__);
 		ret = -ENODEV;
+<<<<<<< HEAD
 		goto put_node;
+=======
+		goto put_device;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ocram_base = gen_pool_alloc(ocram_pool, size);
 	if (!ocram_base) {
 		pr_warn("%s: unable to alloc ocram!\n", __func__);
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto put_node;
+=======
+		goto put_device;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	phys = gen_pool_virt_to_phys(ocram_pool, ocram_base);
@@ -318,6 +326,11 @@ static int __init imx_suspend_alloc_ocram(
 	if (virt_out)
 		*virt_out = virt;
 
+<<<<<<< HEAD
+=======
+put_device:
+	put_device(&pdev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 put_node:
 	of_node_put(node);
 

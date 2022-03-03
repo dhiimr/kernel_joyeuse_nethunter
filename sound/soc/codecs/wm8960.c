@@ -710,7 +710,17 @@ int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
 	best_freq_out = -EINVAL;
 	*sysclk_idx = *dac_idx = *bclk_idx = -1;
 
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
+=======
+	/*
+	 * From Datasheet, the PLL performs best when f2 is between
+	 * 90MHz and 100MHz, the desired sysclk output is 11.2896MHz
+	 * or 12.288MHz, then sysclkdiv = 2 is the best choice.
+	 * So search sysclk_divs from 2 to 1 other than from 1 to 2.
+	 */
+	for (i = ARRAY_SIZE(sysclk_divs) - 1; i >= 0; --i) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (sysclk_divs[i] == -1)
 			continue;
 		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {

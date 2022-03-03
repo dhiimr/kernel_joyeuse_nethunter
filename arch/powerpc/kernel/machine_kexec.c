@@ -113,11 +113,20 @@ void machine_kexec(struct kimage *image)
 
 void __init reserve_crashkernel(void)
 {
+<<<<<<< HEAD
 	unsigned long long crash_size, crash_base;
 	int ret;
 
 	/* use common parsing */
 	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
+=======
+	unsigned long long crash_size, crash_base, total_mem_sz;
+	int ret;
+
+	total_mem_sz = memory_limit ? memory_limit : memblock_phys_mem_size();
+	/* use common parsing */
+	ret = parse_crashkernel(boot_command_line, total_mem_sz,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			&crash_size, &crash_base);
 	if (ret == 0 && crash_size > 0) {
 		crashk_res.start = crash_base;
@@ -176,6 +185,10 @@ void __init reserve_crashkernel(void)
 	/* Crash kernel trumps memory limit */
 	if (memory_limit && memory_limit <= crashk_res.end) {
 		memory_limit = crashk_res.end + 1;
+<<<<<<< HEAD
+=======
+		total_mem_sz = memory_limit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		printk("Adjusted memory limit for crashkernel, now 0x%llx\n",
 		       memory_limit);
 	}
@@ -184,7 +197,11 @@ void __init reserve_crashkernel(void)
 			"for crashkernel (System RAM: %ldMB)\n",
 			(unsigned long)(crash_size >> 20),
 			(unsigned long)(crashk_res.start >> 20),
+<<<<<<< HEAD
 			(unsigned long)(memblock_phys_mem_size() >> 20));
+=======
+			(unsigned long)(total_mem_sz >> 20));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!memblock_is_region_memory(crashk_res.start, crash_size) ||
 	    memblock_reserve(crashk_res.start, crash_size)) {

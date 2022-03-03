@@ -69,22 +69,42 @@ static struct __coeff lm25066_coeff[6][PSC_NUM_CLASSES + 2] = {
 	[lm25056] = {
 		[PSC_VOLTAGE_IN] = {
 			.m = 16296,
+<<<<<<< HEAD
+=======
+			.b = 1343,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_CURRENT_IN] = {
 			.m = 13797,
+<<<<<<< HEAD
+=======
+			.b = -1833,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_CURRENT_IN_L] = {
 			.m = 6726,
+<<<<<<< HEAD
+=======
+			.b = -537,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_POWER] = {
 			.m = 5501,
+<<<<<<< HEAD
+=======
+			.b = -2908,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -3,
 		},
 		[PSC_POWER_L] = {
 			.m = 26882,
+<<<<<<< HEAD
+=======
+			.b = -5646,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -4,
 		},
 		[PSC_TEMPERATURE] = {
@@ -96,26 +116,50 @@ static struct __coeff lm25066_coeff[6][PSC_NUM_CLASSES + 2] = {
 	[lm25066] = {
 		[PSC_VOLTAGE_IN] = {
 			.m = 22070,
+<<<<<<< HEAD
+=======
+			.b = -1800,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_VOLTAGE_OUT] = {
 			.m = 22070,
+<<<<<<< HEAD
+=======
+			.b = -1800,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_CURRENT_IN] = {
 			.m = 13661,
+<<<<<<< HEAD
+=======
+			.b = -5200,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_CURRENT_IN_L] = {
 			.m = 6852,
+<<<<<<< HEAD
+=======
+			.b = -3100,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_POWER] = {
 			.m = 736,
+<<<<<<< HEAD
+=======
+			.b = -3300,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_POWER_L] = {
 			.m = 369,
+<<<<<<< HEAD
+=======
+			.b = -1900,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_TEMPERATURE] = {
@@ -155,26 +199,50 @@ static struct __coeff lm25066_coeff[6][PSC_NUM_CLASSES + 2] = {
 	[lm5064] = {
 		[PSC_VOLTAGE_IN] = {
 			.m = 4611,
+<<<<<<< HEAD
+=======
+			.b = -642,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_VOLTAGE_OUT] = {
 			.m = 4621,
+<<<<<<< HEAD
+=======
+			.b = 423,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_CURRENT_IN] = {
 			.m = 10742,
+<<<<<<< HEAD
+=======
+			.b = 1552,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_CURRENT_IN_L] = {
 			.m = 5456,
+<<<<<<< HEAD
+=======
+			.b = 2118,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_POWER] = {
 			.m = 1204,
+<<<<<<< HEAD
+=======
+			.b = 8524,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -3,
 		},
 		[PSC_POWER_L] = {
 			.m = 612,
+<<<<<<< HEAD
+=======
+			.b = 11202,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -3,
 		},
 		[PSC_TEMPERATURE] = {
@@ -184,26 +252,50 @@ static struct __coeff lm25066_coeff[6][PSC_NUM_CLASSES + 2] = {
 	[lm5066] = {
 		[PSC_VOLTAGE_IN] = {
 			.m = 4587,
+<<<<<<< HEAD
+=======
+			.b = -1200,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_VOLTAGE_OUT] = {
 			.m = 4587,
+<<<<<<< HEAD
+=======
+			.b = -2400,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_CURRENT_IN] = {
 			.m = 10753,
+<<<<<<< HEAD
+=======
+			.b = -1200,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_CURRENT_IN_L] = {
 			.m = 5405,
+<<<<<<< HEAD
+=======
+			.b = -600,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -2,
 		},
 		[PSC_POWER] = {
 			.m = 1204,
+<<<<<<< HEAD
+=======
+			.b = -6000,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -3,
 		},
 		[PSC_POWER_L] = {
 			.m = 605,
+<<<<<<< HEAD
+=======
+			.b = -8000,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.R = -3,
 		},
 		[PSC_TEMPERATURE] = {

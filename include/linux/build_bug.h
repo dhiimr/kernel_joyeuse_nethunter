@@ -82,4 +82,12 @@
 
 #endif	/* __CHECKER__ */
 
+<<<<<<< HEAD
+=======
+#ifdef __GENKSYMS__
+/* genksyms gets confused by _Static_assert */
+#define _Static_assert(expr, ...)
+#endif
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif	/* _LINUX_BUILD_BUG_H */

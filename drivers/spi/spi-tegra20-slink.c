@@ -761,6 +761,10 @@ static int tegra_slink_setup(struct spi_device *spi)
 
 	ret = pm_runtime_get_sync(tspi->dev);
 	if (ret < 0) {
+<<<<<<< HEAD
+=======
+		pm_runtime_put_noidle(tspi->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_err(tspi->dev, "pm runtime failed, e = %d\n", ret);
 		return ret;
 	}
@@ -1078,7 +1082,11 @@ static int tegra_slink_probe(struct platform_device *pdev)
 	ret = clk_enable(tspi->clk);
 	if (ret < 0) {
 		dev_err(&pdev->dev, "Clock enable failed %d\n", ret);
+<<<<<<< HEAD
 		goto exit_free_master;
+=======
+		goto exit_clk_unprepare;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	spi_irq = platform_get_irq(pdev, 0);
@@ -1151,6 +1159,11 @@ exit_free_irq:
 	free_irq(spi_irq, tspi);
 exit_clk_disable:
 	clk_disable(tspi->clk);
+<<<<<<< HEAD
+=======
+exit_clk_unprepare:
+	clk_unprepare(tspi->clk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 exit_free_master:
 	spi_master_put(master);
 	return ret;
@@ -1164,6 +1177,10 @@ static int tegra_slink_remove(struct platform_device *pdev)
 	free_irq(tspi->irq, tspi);
 
 	clk_disable(tspi->clk);
+<<<<<<< HEAD
+=======
+	clk_unprepare(tspi->clk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (tspi->tx_dma_chan)
 		tegra_slink_deinit_dma_param(tspi, false);
@@ -1194,6 +1211,10 @@ static int tegra_slink_resume(struct device *dev)
 
 	ret = pm_runtime_get_sync(dev);
 	if (ret < 0) {
+<<<<<<< HEAD
+=======
+		pm_runtime_put_noidle(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_err(dev, "pm runtime failed, e = %d\n", ret);
 		return ret;
 	}
@@ -1205,7 +1226,11 @@ static int tegra_slink_resume(struct device *dev)
 }
 #endif
 
+<<<<<<< HEAD
 static int tegra_slink_runtime_suspend(struct device *dev)
+=======
+static int __maybe_unused tegra_slink_runtime_suspend(struct device *dev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct spi_master *master = dev_get_drvdata(dev);
 	struct tegra_slink_data *tspi = spi_master_get_devdata(master);
@@ -1217,7 +1242,11 @@ static int tegra_slink_runtime_suspend(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int tegra_slink_runtime_resume(struct device *dev)
+=======
+static int __maybe_unused tegra_slink_runtime_resume(struct device *dev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct spi_master *master = dev_get_drvdata(dev);
 	struct tegra_slink_data *tspi = spi_master_get_devdata(master);

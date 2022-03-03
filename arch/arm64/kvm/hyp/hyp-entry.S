@@ -25,6 +25,33 @@
 #include <asm/kvm_asm.h>
 #include <asm/kvm_mmu.h>
 
+<<<<<<< HEAD
+=======
+.macro save_caller_saved_regs_vect
+	stp	x0, x1,   [sp, #-16]!
+	stp	x2, x3,   [sp, #-16]!
+	stp	x4, x5,   [sp, #-16]!
+	stp	x6, x7,   [sp, #-16]!
+	stp	x8, x9,   [sp, #-16]!
+	stp	x10, x11, [sp, #-16]!
+	stp	x12, x13, [sp, #-16]!
+	stp	x14, x15, [sp, #-16]!
+	stp	x16, x17, [sp, #-16]!
+.endm
+
+.macro restore_caller_saved_regs_vect
+	ldp	x16, x17, [sp], #16
+	ldp	x14, x15, [sp], #16
+	ldp	x12, x13, [sp], #16
+	ldp	x10, x11, [sp], #16
+	ldp	x8, x9,   [sp], #16
+	ldp	x6, x7,   [sp], #16
+	ldp	x4, x5,   [sp], #16
+	ldp	x2, x3,   [sp], #16
+	ldp	x0, x1,   [sp], #16
+.endm
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.text
 	.pushsection	.hyp.text, "ax"
 
@@ -183,6 +210,7 @@ el1_error:
 	mov	x0, #ARM_EXCEPTION_EL1_SERROR
 	b	__guest_exit
 
+<<<<<<< HEAD
 el2_error:
 	/*
 	 * Only two possibilities:
@@ -203,6 +231,26 @@ el2_error:
 	ccmp	x0, x1, #4, ne
 	b.ne	__hyp_panic
 	mov	x0, #(1 << ARM_EXIT_WITH_SERROR_BIT)
+=======
+el2_sync:
+	save_caller_saved_regs_vect
+	stp     x29, x30, [sp, #-16]!
+	bl	kvm_unexpected_el2_exception
+	ldp     x29, x30, [sp], #16
+	restore_caller_saved_regs_vect
+
+	eret
+
+el2_error:
+	save_caller_saved_regs_vect
+	stp     x29, x30, [sp, #-16]!
+
+	bl	kvm_unexpected_el2_exception
+
+	ldp     x29, x30, [sp], #16
+	restore_caller_saved_regs_vect
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	eret
 
 ENTRY(__hyp_do_panic)
@@ -231,7 +279,10 @@ ENDPROC(\label)
 	invalid_vector	el2t_irq_invalid
 	invalid_vector	el2t_fiq_invalid
 	invalid_vector	el2t_error_invalid
+<<<<<<< HEAD
 	invalid_vector	el2h_sync_invalid
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	invalid_vector	el2h_irq_invalid
 	invalid_vector	el2h_fiq_invalid
 	invalid_vector	el1_sync_invalid
@@ -248,7 +299,11 @@ ENTRY(__kvm_hyp_vector)
 	ventry	el2t_fiq_invalid		// FIQ EL2t
 	ventry	el2t_error_invalid		// Error EL2t
 
+<<<<<<< HEAD
 	ventry	el2h_sync_invalid		// Synchronous EL2h
+=======
+	ventry	el2_sync			// Synchronous EL2h
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ventry	el2h_irq_invalid		// IRQ EL2h
 	ventry	el2h_fiq_invalid		// FIQ EL2h
 	ventry	el2_error			// Error EL2h

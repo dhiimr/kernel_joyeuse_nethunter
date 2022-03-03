@@ -175,6 +175,10 @@ struct ubifs_scan_leb *ubifs_start_scan(const struct ubifs_info *c, int lnum,
 void ubifs_end_scan(const struct ubifs_info *c, struct ubifs_scan_leb *sleb,
 		    int lnum, int offs)
 {
+<<<<<<< HEAD
+=======
+	lnum = lnum;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dbg_scan("stop scanning LEB %d at offset %d", lnum, offs);
 	ubifs_assert(offs % c->min_io_size == 0);
 

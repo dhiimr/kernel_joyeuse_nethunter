@@ -638,9 +638,16 @@ static int vmd_enable_domain(struct vmd_dev *vmd)
 
 	vmd->irq_domain = pci_msi_create_irq_domain(fn, &vmd_msi_domain_info,
 						    x86_vector_domain);
+<<<<<<< HEAD
 	irq_domain_free_fwnode(fn);
 	if (!vmd->irq_domain)
 		return -ENODEV;
+=======
+	if (!vmd->irq_domain) {
+		irq_domain_free_fwnode(fn);
+		return -ENODEV;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	pci_add_resource(&resources, &vmd->resources[0]);
 	pci_add_resource(&resources, &vmd->resources[1]);
@@ -650,6 +657,10 @@ static int vmd_enable_domain(struct vmd_dev *vmd)
 	if (!vmd->bus) {
 		pci_free_resource_list(&resources);
 		irq_domain_remove(vmd->irq_domain);
+<<<<<<< HEAD
+=======
+		irq_domain_free_fwnode(fn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -ENODEV;
 	}
 
@@ -752,14 +763,25 @@ static void vmd_cleanup_srcu(struct vmd_dev *vmd)
 static void vmd_remove(struct pci_dev *dev)
 {
 	struct vmd_dev *vmd = pci_get_drvdata(dev);
+<<<<<<< HEAD
 
 	vmd_detach_resources(vmd);
+=======
+	struct fwnode_handle *fn = vmd->irq_domain->fwnode;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sysfs_remove_link(&vmd->dev->dev.kobj, "domain");
 	pci_stop_root_bus(vmd->bus);
 	pci_remove_root_bus(vmd->bus);
 	vmd_cleanup_srcu(vmd);
 	vmd_teardown_dma_ops(vmd);
+<<<<<<< HEAD
 	irq_domain_remove(vmd->irq_domain);
+=======
+	vmd_detach_resources(vmd);
+	irq_domain_remove(vmd->irq_domain);
+	irq_domain_free_fwnode(fn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #ifdef CONFIG_PM_SLEEP

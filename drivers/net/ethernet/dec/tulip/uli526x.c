@@ -1819,8 +1819,13 @@ static int __init uli526x_init_module(void)
 	if (cr6set)
 		uli526x_cr6_user_set = cr6set;
 
+<<<<<<< HEAD
  	switch (mode) {
    	case ULI526X_10MHF:
+=======
+	switch (mode) {
+	case ULI526X_10MHF:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	case ULI526X_100MHF:
 	case ULI526X_10MFD:
 	case ULI526X_100MFD:

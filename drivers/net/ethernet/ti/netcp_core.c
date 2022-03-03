@@ -1364,9 +1364,15 @@ int netcp_txpipe_open(struct netcp_tx_pipe *tx_pipe)
 	tx_pipe->dma_queue = knav_queue_open(name, tx_pipe->dma_queue_id,
 					     KNAV_QUEUE_SHARED);
 	if (IS_ERR(tx_pipe->dma_queue)) {
+<<<<<<< HEAD
 		dev_err(dev, "Could not open DMA queue for channel \"%s\": %d\n",
 			name, ret);
 		ret = PTR_ERR(tx_pipe->dma_queue);
+=======
+		ret = PTR_ERR(tx_pipe->dma_queue);
+		dev_err(dev, "Could not open DMA queue for channel \"%s\": %d\n",
+			name, ret);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto err;
 	}
 

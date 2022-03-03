@@ -3539,6 +3539,19 @@ static int em_cwd(struct x86_emulate_ctxt *ctxt)
 	return X86EMUL_CONTINUE;
 }
 
+<<<<<<< HEAD
+=======
+static int em_rdpid(struct x86_emulate_ctxt *ctxt)
+{
+	u64 tsc_aux = 0;
+
+	if (ctxt->ops->get_msr(ctxt, MSR_TSC_AUX, &tsc_aux))
+		return emulate_ud(ctxt);
+	ctxt->dst.val = tsc_aux;
+	return X86EMUL_CONTINUE;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int em_rdtsc(struct x86_emulate_ctxt *ctxt)
 {
 	u64 tsc = 0;
@@ -3939,6 +3952,15 @@ static int em_clflush(struct x86_emulate_ctxt *ctxt)
 	return X86EMUL_CONTINUE;
 }
 
+<<<<<<< HEAD
+=======
+static int em_clflushopt(struct x86_emulate_ctxt *ctxt)
+{
+	/* emulating clflushopt regardless of cpuid */
+	return X86EMUL_CONTINUE;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int em_movsxd(struct x86_emulate_ctxt *ctxt)
 {
 	ctxt->dst.val = (s32) ctxt->src.val;
@@ -4431,10 +4453,27 @@ static const struct opcode group8[] = {
 	F(DstMem | SrcImmByte | Lock | PageTable,	em_btc),
 };
 
+<<<<<<< HEAD
 static const struct group_dual group9 = { {
 	N, I(DstMem64 | Lock | PageTable, em_cmpxchg8b), N, N, N, N, N, N,
 }, {
 	N, N, N, N, N, N, N, N,
+=======
+/*
+ * The "memory" destination is actually always a register, since we come
+ * from the register case of group9.
+ */
+static const struct gprefix pfx_0f_c7_7 = {
+	N, N, N, II(DstMem | ModRM | Op3264 | EmulateOnUD, em_rdpid, rdtscp),
+};
+
+
+static const struct group_dual group9 = { {
+	N, I(DstMem64 | Lock | PageTable, em_cmpxchg8b), N, N, N, N, N, N,
+}, {
+	N, N, N, N, N, N, N,
+	GP(0, &pfx_0f_c7_7),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 } };
 
 static const struct opcode group11[] = {
@@ -4443,7 +4482,11 @@ static const struct opcode group11[] = {
 };
 
 static const struct gprefix pfx_0f_ae_7 = {
+<<<<<<< HEAD
 	I(SrcMem | ByteOp, em_clflush), N, N, N,
+=======
+	I(SrcMem | ByteOp, em_clflush), I(SrcMem | ByteOp, em_clflushopt), N, N,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const struct group_dual group15 = { {
@@ -5042,6 +5085,10 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
 	ctxt->fetch.ptr = ctxt->fetch.data;
 	ctxt->fetch.end = ctxt->fetch.data + insn_len;
 	ctxt->opcode_len = 1;
+<<<<<<< HEAD
+=======
+	ctxt->intercept = x86_intercept_none;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (insn_len > 0)
 		memcpy(ctxt->fetch.data, insn, insn_len);
 	else {
@@ -5094,6 +5141,7 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
 				ctxt->ad_bytes = def_ad_bytes ^ 6;
 			break;
 		case 0x26:	/* ES override */
+<<<<<<< HEAD
 		case 0x2e:	/* CS override */
 		case 0x36:	/* SS override */
 		case 0x3e:	/* DS override */
@@ -5104,6 +5152,30 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
 		case 0x65:	/* GS override */
 			has_seg_override = true;
 			ctxt->seg_override = ctxt->b & 7;
+=======
+			has_seg_override = true;
+			ctxt->seg_override = VCPU_SREG_ES;
+			break;
+		case 0x2e:	/* CS override */
+			has_seg_override = true;
+			ctxt->seg_override = VCPU_SREG_CS;
+			break;
+		case 0x36:	/* SS override */
+			has_seg_override = true;
+			ctxt->seg_override = VCPU_SREG_SS;
+			break;
+		case 0x3e:	/* DS override */
+			has_seg_override = true;
+			ctxt->seg_override = VCPU_SREG_DS;
+			break;
+		case 0x64:	/* FS override */
+			has_seg_override = true;
+			ctxt->seg_override = VCPU_SREG_FS;
+			break;
+		case 0x65:	/* GS override */
+			has_seg_override = true;
+			ctxt->seg_override = VCPU_SREG_GS;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		case 0x40 ... 0x4f: /* REX */
 			if (mode != X86EMUL_MODE_PROT64)
@@ -5187,10 +5259,22 @@ done_prefixes:
 			}
 			break;
 		case Escape:
+<<<<<<< HEAD
 			if (ctxt->modrm > 0xbf)
 				opcode = opcode.u.esc->high[ctxt->modrm - 0xc0];
 			else
 				opcode = opcode.u.esc->op[(ctxt->modrm >> 3) & 7];
+=======
+			if (ctxt->modrm > 0xbf) {
+				size_t size = ARRAY_SIZE(opcode.u.esc->high);
+				u32 index = array_index_nospec(
+					ctxt->modrm - 0xc0, size);
+
+				opcode = opcode.u.esc->high[index];
+			} else {
+				opcode = opcode.u.esc->op[(ctxt->modrm >> 3) & 7];
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		case InstrDual:
 			if ((ctxt->modrm >> 6) == 3)
@@ -5298,6 +5382,11 @@ done_prefixes:
 					ctxt->memopp->addr.mem.ea + ctxt->_eip);
 
 done:
+<<<<<<< HEAD
+=======
+	if (rc == X86EMUL_PROPAGATE_FAULT)
+		ctxt->have_exception = true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return (rc != X86EMUL_CONTINUE) ? EMULATION_FAILED : EMULATION_OK;
 }
 

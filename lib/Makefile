@@ -17,10 +17,28 @@ KCOV_INSTRUMENT_list_debug.o := n
 KCOV_INSTRUMENT_debugobjects.o := n
 KCOV_INSTRUMENT_dynamic_debug.o := n
 
+<<<<<<< HEAD
 lib-y := ctype.o string.o vsprintf.o cmdline.o \
 	 rbtree.o radix-tree.o dump_stack.o timerqueue.o\
 	 idr.o int_sqrt.o extable.o \
 	 sha1.o chacha.o irq_regs.o argv_split.o \
+=======
+# Early boot use of cmdline, don't instrument it
+ifdef CONFIG_AMD_MEM_ENCRYPT
+KASAN_SANITIZE_string.o := n
+
+ifdef CONFIG_FUNCTION_TRACER
+CFLAGS_REMOVE_string.o = -pg
+endif
+
+CFLAGS_string.o := $(call cc-option, -fno-stack-protector)
+endif
+
+lib-y := ctype.o string.o vsprintf.o cmdline.o \
+	 rbtree.o radix-tree.o dump_stack.o timerqueue.o\
+	 idr.o int_sqrt.o extable.o \
+	 sha1.o chacha20.o irq_regs.o argv_split.o \
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 flex_proportions.o ratelimit.o show_mem.o \
 	 is_single_threaded.o plist.o decompress.o kobject_uevent.o \
 	 earlycpio.o seq_buf.o siphash.o \
@@ -34,7 +52,10 @@ lib-$(CONFIG_DMA_VIRT_OPS) += dma-virt.o
 lib-y	+= kobject.o klist.o
 obj-y	+= lockref.o
 
+<<<<<<< HEAD
 KASAN_SANITIZE_find_bit.o := n
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-y += bcd.o div64.o sort.o parser.o debug_locks.o random32.o \
 	 bust_spinlocks.o kasprintf.o bitmap.o scatterlist.o \
 	 gcd.o lcm.o list_sort.o uuid.o flex_array.o iov_iter.o clz_ctz.o \
@@ -246,6 +267,11 @@ obj-$(CONFIG_UCS2_STRING) += ucs2_string.o
 obj-$(CONFIG_UBSAN) += ubsan.o
 
 UBSAN_SANITIZE_ubsan.o := n
+<<<<<<< HEAD
+=======
+KASAN_SANITIZE_ubsan.o := n
+CFLAGS_ubsan.o := $(call cc-option, -fno-stack-protector) $(DISABLE_STACKLEAK_PLUGIN)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 obj-$(CONFIG_SBITMAP) += sbitmap.o
 

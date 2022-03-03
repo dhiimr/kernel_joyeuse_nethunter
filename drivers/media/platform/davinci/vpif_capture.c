@@ -1489,8 +1489,11 @@ probe_out:
 		/* Unregister video device */
 		video_unregister_device(&ch->video_dev);
 	}
+<<<<<<< HEAD
 	kfree(vpif_obj.sd);
 	v4l2_device_unregister(&vpif_obj.v4l2_dev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return err;
 }

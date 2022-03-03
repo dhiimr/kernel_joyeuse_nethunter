@@ -29,14 +29,20 @@ static inline struct dma_coherent_mem *dev_get_coherent_memory(struct device *de
 	return NULL;
 }
 
+<<<<<<< HEAD
 dma_addr_t dma_get_device_base(struct device *dev,
 			       struct dma_coherent_mem *mem)
+=======
+static inline dma_addr_t dma_get_device_base(struct device *dev,
+					     struct dma_coherent_mem * mem)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (mem->use_dev_dma_pfn_offset)
 		return (mem->pfn_base - dev->dma_pfn_offset) << PAGE_SHIFT;
 	else
 		return mem->device_base;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(dma_get_device_base);
 
 unsigned long dma_get_size(struct dma_coherent_mem *mem)
@@ -44,6 +50,8 @@ unsigned long dma_get_size(struct dma_coherent_mem *mem)
 	return mem->size << PAGE_SHIFT;
 }
 EXPORT_SYMBOL(dma_get_size);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int dma_init_coherent_memory(
 	phys_addr_t phys_addr, dma_addr_t device_addr, size_t size, int flags,

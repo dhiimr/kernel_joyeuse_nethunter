@@ -31,7 +31,11 @@ u8 rtl818x_ioread8_idx(struct rtl8187_priv *priv,
 	usb_control_msg(priv->udev, usb_rcvctrlpipe(priv->udev, 0),
 			RTL8187_REQ_GET_REG, RTL8187_REQT_READ,
 			(unsigned long)addr, idx & 0x03,
+<<<<<<< HEAD
 			&priv->io_dmabuf->bits8, sizeof(val), HZ / 2);
+=======
+			&priv->io_dmabuf->bits8, sizeof(val), 500);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	val = priv->io_dmabuf->bits8;
 	mutex_unlock(&priv->io_mutex);
@@ -48,7 +52,11 @@ u16 rtl818x_ioread16_idx(struct rtl8187_priv *priv,
 	usb_control_msg(priv->udev, usb_rcvctrlpipe(priv->udev, 0),
 			RTL8187_REQ_GET_REG, RTL8187_REQT_READ,
 			(unsigned long)addr, idx & 0x03,
+<<<<<<< HEAD
 			&priv->io_dmabuf->bits16, sizeof(val), HZ / 2);
+=======
+			&priv->io_dmabuf->bits16, sizeof(val), 500);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	val = priv->io_dmabuf->bits16;
 	mutex_unlock(&priv->io_mutex);
@@ -65,7 +73,11 @@ u32 rtl818x_ioread32_idx(struct rtl8187_priv *priv,
 	usb_control_msg(priv->udev, usb_rcvctrlpipe(priv->udev, 0),
 			RTL8187_REQ_GET_REG, RTL8187_REQT_READ,
 			(unsigned long)addr, idx & 0x03,
+<<<<<<< HEAD
 			&priv->io_dmabuf->bits32, sizeof(val), HZ / 2);
+=======
+			&priv->io_dmabuf->bits32, sizeof(val), 500);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	val = priv->io_dmabuf->bits32;
 	mutex_unlock(&priv->io_mutex);
@@ -82,7 +94,11 @@ void rtl818x_iowrite8_idx(struct rtl8187_priv *priv,
 	usb_control_msg(priv->udev, usb_sndctrlpipe(priv->udev, 0),
 			RTL8187_REQ_SET_REG, RTL8187_REQT_WRITE,
 			(unsigned long)addr, idx & 0x03,
+<<<<<<< HEAD
 			&priv->io_dmabuf->bits8, sizeof(val), HZ / 2);
+=======
+			&priv->io_dmabuf->bits8, sizeof(val), 500);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_unlock(&priv->io_mutex);
 }
@@ -96,7 +112,11 @@ void rtl818x_iowrite16_idx(struct rtl8187_priv *priv,
 	usb_control_msg(priv->udev, usb_sndctrlpipe(priv->udev, 0),
 			RTL8187_REQ_SET_REG, RTL8187_REQT_WRITE,
 			(unsigned long)addr, idx & 0x03,
+<<<<<<< HEAD
 			&priv->io_dmabuf->bits16, sizeof(val), HZ / 2);
+=======
+			&priv->io_dmabuf->bits16, sizeof(val), 500);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_unlock(&priv->io_mutex);
 }
@@ -110,7 +130,11 @@ void rtl818x_iowrite32_idx(struct rtl8187_priv *priv,
 	usb_control_msg(priv->udev, usb_sndctrlpipe(priv->udev, 0),
 			RTL8187_REQ_SET_REG, RTL8187_REQT_WRITE,
 			(unsigned long)addr, idx & 0x03,
+<<<<<<< HEAD
 			&priv->io_dmabuf->bits32, sizeof(val), HZ / 2);
+=======
+			&priv->io_dmabuf->bits32, sizeof(val), 500);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_unlock(&priv->io_mutex);
 }
@@ -186,7 +210,11 @@ static void rtl8225_write_8051(struct ieee80211_hw *dev, u8 addr, __le16 data)
 	usb_control_msg(priv->udev, usb_sndctrlpipe(priv->udev, 0),
 			RTL8187_REQ_SET_REG, RTL8187_REQT_WRITE,
 			addr, 0x8225, &priv->io_dmabuf->bits16, sizeof(data),
+<<<<<<< HEAD
 			HZ / 2);
+=======
+			500);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_unlock(&priv->io_mutex);
 

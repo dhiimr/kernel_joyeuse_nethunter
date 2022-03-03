@@ -67,7 +67,10 @@
 /* SSIR defines */
 #define	PTP_SSIR_SSINC_MASK		0xff
 #define	GMAC4_PTP_SSIR_SSINC_SHIFT	16
+<<<<<<< HEAD
 #define	PTP_SSIR_SNSINC_MASK		0xff
 #define	GMAC4_PTP_SSIR_SNSINC_SHIFT	8
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif	/* __STMMAC_PTP_H__ */

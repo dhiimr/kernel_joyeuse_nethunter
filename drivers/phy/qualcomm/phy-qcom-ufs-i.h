@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2013-2016, Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2013-2015, Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -77,7 +81,10 @@ struct ufs_qcom_phy_vreg {
 	int min_uV;
 	int max_uV;
 	bool enabled;
+<<<<<<< HEAD
 	bool is_always_on;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct ufs_qcom_phy {
@@ -91,16 +98,22 @@ struct ufs_qcom_phy {
 	struct clk *ref_clk_src;
 	struct clk *ref_clk_parent;
 	struct clk *ref_clk;
+<<<<<<< HEAD
 	struct clk *ref_aux_clk;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool is_ref_clk_enabled;
 	bool is_dev_ref_clk_enabled;
 	struct ufs_qcom_phy_vreg vdda_pll;
 	struct ufs_qcom_phy_vreg vdda_phy;
 	struct ufs_qcom_phy_vreg vddp_ref_clk;
+<<<<<<< HEAD
 
 	/* Number of lanes available (1 or 2) for Rx/Tx */
 	u32 lanes_per_direction;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int quirks;
 
 	/*
@@ -112,6 +125,7 @@ struct ufs_qcom_phy {
 	*/
 	#define UFS_QCOM_PHY_QUIRK_HIBERN8_EXIT_AFTER_PHY_PWR_COLLAPSE	BIT(0)
 
+<<<<<<< HEAD
 	/*
 	 * On some UFS PHY HW revisions, UFS PHY power up calibration sequence
 	 * cannot have SVS mode configuration otherwise calibration result
@@ -129,6 +143,8 @@ struct ufs_qcom_phy {
 	 */
 	#define UFS_QCOM_PHY_QUIRK_VCO_MANUAL_TUNING    BIT(2)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8 host_ctrl_rev_major;
 	u16 host_ctrl_rev_minor;
 	u16 host_ctrl_rev_step;
@@ -138,7 +154,10 @@ struct ufs_qcom_phy {
 	int cached_regs_table_size;
 	bool is_powered_on;
 	struct ufs_qcom_phy_specific_ops *phy_spec_ops;
+<<<<<<< HEAD
 	u32 vco_tune1_mode1;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -150,6 +169,7 @@ struct ufs_qcom_phy {
  * @is_physical_coding_sublayer_ready: pointer to a function that
  * checks pcs readiness. returns 0 for success and non-zero for error.
  * @set_tx_lane_enable: pointer to a function that enable tx lanes
+<<<<<<< HEAD
  * @ctrl_rx_linecfg: pointer to a function that controls the Host Rx LineCfg
  * state.
  * @power_control: pointer to a function that controls analog rail of phy
@@ -168,6 +188,17 @@ struct ufs_qcom_phy_specific_ops {
 	void (*power_control)(struct ufs_qcom_phy *phy, bool val);
 	int (*configure_lpm)(struct ufs_qcom_phy *phy, bool enable);
 	void (*dbg_register_dump)(struct ufs_qcom_phy *phy);
+=======
+ * @power_control: pointer to a function that controls analog rail of phy
+ * and writes to QSERDES_RX_SIGDET_CNTRL attribute
+ */
+struct ufs_qcom_phy_specific_ops {
+	int (*calibrate_phy)(struct ufs_qcom_phy *phy, bool is_rate_B);
+	void (*start_serdes)(struct ufs_qcom_phy *phy);
+	int (*is_physical_coding_sublayer_ready)(struct ufs_qcom_phy *phy);
+	void (*set_tx_lane_enable)(struct ufs_qcom_phy *phy, u32 val);
+	void (*power_control)(struct ufs_qcom_phy *phy, bool val);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct ufs_qcom_phy *get_ufs_qcom_phy(struct phy *generic_phy);
@@ -185,9 +216,12 @@ int ufs_qcom_phy_calibrate(struct ufs_qcom_phy *ufs_qcom_phy,
 			struct ufs_qcom_phy_calibration *tbl_A, int tbl_size_A,
 			struct ufs_qcom_phy_calibration *tbl_B, int tbl_size_B,
 			bool is_rate_B);
+<<<<<<< HEAD
 void ufs_qcom_phy_write_tbl(struct ufs_qcom_phy *ufs_qcom_phy,
 				struct ufs_qcom_phy_calibration *tbl,
 				int tbl_size);
 void ufs_qcom_phy_dump_regs(struct ufs_qcom_phy *phy,
 			    int offset, int len, char *prefix);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif

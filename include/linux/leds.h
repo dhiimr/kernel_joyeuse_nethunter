@@ -50,7 +50,10 @@ struct led_classdev {
 #define LED_PANIC_INDICATOR	(1 << 20)
 #define LED_BRIGHT_HW_CHANGED	(1 << 21)
 #define LED_RETAIN_AT_SHUTDOWN	(1 << 22)
+<<<<<<< HEAD
 #define LED_KEEP_TRIGGER	(1 << 23)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* set_brightness_work / blink_timer flags, atomic, private. */
 	unsigned long		work_flags;

@@ -213,6 +213,10 @@
  * @slave_config: dma slave channel runtime config pointer
  * @phys_addr: SPDIFRX registers physical base address
  * @lock: synchronization enabling lock
+<<<<<<< HEAD
+=======
+ * @irq_lock: prevent race condition with IRQ on stream state
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @cs: channel status buffer
  * @ub: user data buffer
  * @irq: SPDIFRX interrupt line
@@ -233,6 +237,10 @@ struct stm32_spdifrx_data {
 	struct dma_slave_config slave_config;
 	dma_addr_t phys_addr;
 	spinlock_t lock;  /* Sync enabling lock */
+<<<<<<< HEAD
+=======
+	spinlock_t irq_lock; /* Prevent race condition on stream state */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned char cs[SPDIFRX_CS_BYTES_NB];
 	unsigned char ub[SPDIFRX_UB_BYTES_NB];
 	int irq;
@@ -313,6 +321,10 @@ static void stm32_spdifrx_dma_ctrl_stop(struct stm32_spdifrx_data *spdifrx)
 static int stm32_spdifrx_start_sync(struct stm32_spdifrx_data *spdifrx)
 {
 	int cr, cr_mask, imr, ret;
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Enable IRQs */
 	imr = SPDIFRX_IMR_IFEIE | SPDIFRX_IMR_SYNCDIE | SPDIFRX_IMR_PERRIE;
@@ -320,7 +332,11 @@ static int stm32_spdifrx_start_sync(struct stm32_spdifrx_data *spdifrx)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	spin_lock(&spdifrx->lock);
+=======
+	spin_lock_irqsave(&spdifrx->lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	spdifrx->refcount++;
 
@@ -353,7 +369,11 @@ static int stm32_spdifrx_start_sync(struct stm32_spdifrx_data *spdifrx)
 				"Failed to start synchronization\n");
 	}
 
+<<<<<<< HEAD
 	spin_unlock(&spdifrx->lock);
+=======
+	spin_unlock_irqrestore(&spdifrx->lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }
@@ -361,11 +381,20 @@ static int stm32_spdifrx_start_sync(struct stm32_spdifrx_data *spdifrx)
 static void stm32_spdifrx_stop(struct stm32_spdifrx_data *spdifrx)
 {
 	int cr, cr_mask, reg;
+<<<<<<< HEAD
 
 	spin_lock(&spdifrx->lock);
 
 	if (--spdifrx->refcount) {
 		spin_unlock(&spdifrx->lock);
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&spdifrx->lock, flags);
+
+	if (--spdifrx->refcount) {
+		spin_unlock_irqrestore(&spdifrx->lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 	}
 
@@ -384,7 +413,11 @@ static void stm32_spdifrx_stop(struct stm32_spdifrx_data *spdifrx)
 	regmap_read(spdifrx->regmap, STM32_SPDIFRX_DR, &reg);
 	regmap_read(spdifrx->regmap, STM32_SPDIFRX_CSR, &reg);
 
+<<<<<<< HEAD
 	spin_unlock(&spdifrx->lock);
+=======
+	spin_unlock_irqrestore(&spdifrx->lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int stm32_spdifrx_dma_ctrl_register(struct device *dev,
@@ -644,7 +677,10 @@ static const struct regmap_config stm32_h7_spdifrx_regmap_conf = {
 static irqreturn_t stm32_spdifrx_isr(int irq, void *devid)
 {
 	struct stm32_spdifrx_data *spdifrx = (struct stm32_spdifrx_data *)devid;
+<<<<<<< HEAD
 	struct snd_pcm_substream *substream = spdifrx->substream;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct platform_device *pdev = spdifrx->pdev;
 	unsigned int cr, mask, sr, imr;
 	unsigned int flags;
@@ -712,14 +748,29 @@ static irqreturn_t stm32_spdifrx_isr(int irq, void *devid)
 		regmap_update_bits(spdifrx->regmap, STM32_SPDIFRX_CR,
 				   SPDIFRX_CR_SPDIFEN_MASK, cr);
 
+<<<<<<< HEAD
 		if (substream)
 			snd_pcm_stop(substream, SNDRV_PCM_STATE_DISCONNECTED);
+=======
+		spin_lock(&spdifrx->irq_lock);
+		if (spdifrx->substream)
+			snd_pcm_stop(spdifrx->substream,
+				     SNDRV_PCM_STATE_DISCONNECTED);
+		spin_unlock(&spdifrx->irq_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		return IRQ_HANDLED;
 	}
 
+<<<<<<< HEAD
 	if (err_xrun && substream)
 		snd_pcm_stop_xrun(substream);
+=======
+	spin_lock(&spdifrx->irq_lock);
+	if (err_xrun && spdifrx->substream)
+		snd_pcm_stop_xrun(spdifrx->substream);
+	spin_unlock(&spdifrx->irq_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return IRQ_HANDLED;
 }
@@ -728,9 +779,18 @@ static int stm32_spdifrx_startup(struct snd_pcm_substream *substream,
 				 struct snd_soc_dai *cpu_dai)
 {
 	struct stm32_spdifrx_data *spdifrx = snd_soc_dai_get_drvdata(cpu_dai);
+<<<<<<< HEAD
 	int ret;
 
 	spdifrx->substream = substream;
+=======
+	unsigned long flags;
+	int ret;
+
+	spin_lock_irqsave(&spdifrx->irq_lock, flags);
+	spdifrx->substream = substream;
+	spin_unlock_irqrestore(&spdifrx->irq_lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = clk_prepare_enable(spdifrx->kclk);
 	if (ret)
@@ -802,8 +862,17 @@ static void stm32_spdifrx_shutdown(struct snd_pcm_substream *substream,
 				   struct snd_soc_dai *cpu_dai)
 {
 	struct stm32_spdifrx_data *spdifrx = snd_soc_dai_get_drvdata(cpu_dai);
+<<<<<<< HEAD
 
 	spdifrx->substream = NULL;
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&spdifrx->irq_lock, flags);
+	spdifrx->substream = NULL;
+	spin_unlock_irqrestore(&spdifrx->irq_lock, flags);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	clk_disable_unprepare(spdifrx->kclk);
 }
 
@@ -908,6 +977,10 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
 	spdifrx->pdev = pdev;
 	init_completion(&spdifrx->cs_completion);
 	spin_lock_init(&spdifrx->lock);
+<<<<<<< HEAD
+=======
+	spin_lock_init(&spdifrx->irq_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	platform_set_drvdata(pdev, spdifrx);
 

@@ -131,7 +131,11 @@ static int nft_symhash_init(const struct nft_ctx *ctx,
 	priv->dreg = nft_parse_register(tb[NFTA_HASH_DREG]);
 
 	priv->modulus = ntohl(nla_get_be32(tb[NFTA_HASH_MODULUS]));
+<<<<<<< HEAD
 	if (priv->modulus <= 1)
+=======
+	if (priv->modulus < 1)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -ERANGE;
 
 	if (priv->offset + priv->modulus - 1 < priv->offset)

@@ -46,7 +46,11 @@ EXPORT_SYMBOL_GPL(ahci_platform_ops);
  * RETURNS:
  * 0 on success otherwise a negative error code
  */
+<<<<<<< HEAD
 static int ahci_platform_enable_phys(struct ahci_host_priv *hpriv)
+=======
+int ahci_platform_enable_phys(struct ahci_host_priv *hpriv)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int rc, i;
 
@@ -71,6 +75,10 @@ disable_phys:
 	}
 	return rc;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(ahci_platform_enable_phys);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**
  * ahci_platform_disable_phys - Disable PHYs
@@ -78,7 +86,11 @@ disable_phys:
  *
  * This function disables all PHYs found in hpriv->phys.
  */
+<<<<<<< HEAD
 static void ahci_platform_disable_phys(struct ahci_host_priv *hpriv)
+=======
+void ahci_platform_disable_phys(struct ahci_host_priv *hpriv)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int i;
 
@@ -87,6 +99,10 @@ static void ahci_platform_disable_phys(struct ahci_host_priv *hpriv)
 		phy_exit(hpriv->phys[i]);
 	}
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(ahci_platform_disable_phys);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**
  * ahci_platform_enable_clks - Enable platform clocks
@@ -300,6 +316,12 @@ static int ahci_platform_get_phy(struct ahci_host_priv *hpriv, u32 port,
 		hpriv->phys[port] = NULL;
 		rc = 0;
 		break;
+<<<<<<< HEAD
+=======
+	case -EPROBE_DEFER:
+		/* Do not complain yet */
+		break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	default:
 		dev_err(dev,
@@ -513,11 +535,20 @@ int ahci_platform_init_host(struct platform_device *pdev,
 	int i, irq, n_ports, rc;
 
 	irq = platform_get_irq(pdev, 0);
+<<<<<<< HEAD
 	if (irq <= 0) {
+=======
+	if (irq < 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (irq != -EPROBE_DEFER)
 			dev_err(dev, "no irq\n");
 		return irq;
 	}
+<<<<<<< HEAD
+=======
+	if (!irq)
+		return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	hpriv->irq = irq;
 

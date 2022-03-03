@@ -91,6 +91,17 @@ Values :
 	0 - disable JIT kallsyms export (default value)
 	1 - enable JIT kallsyms export for privileged users only
 
+<<<<<<< HEAD
+=======
+bpf_jit_limit
+-------------
+
+This enforces a global limit for memory allocations to the BPF JIT
+compiler in order to reject unprivileged JIT requests once it has
+been surpassed. bpf_jit_limit contains the value of the global limit
+in bytes.
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 dev_weight
 --------------
 

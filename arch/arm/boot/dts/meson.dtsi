@@ -86,14 +86,22 @@
 			};
 
 			uart_A: serial@84c0 {
+<<<<<<< HEAD
 				compatible = "amlogic,meson6-uart", "amlogic,meson-uart";
+=======
+				compatible = "amlogic,meson6-uart";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				reg = <0x84c0 0x18>;
 				interrupts = <GIC_SPI 26 IRQ_TYPE_EDGE_RISING>;
 				status = "disabled";
 			};
 
 			uart_B: serial@84dc {
+<<<<<<< HEAD
 				compatible = "amlogic,meson6-uart", "amlogic,meson-uart";
+=======
+				compatible = "amlogic,meson6-uart";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				reg = <0x84dc 0x18>;
 				interrupts = <GIC_SPI 75 IRQ_TYPE_EDGE_RISING>;
 				status = "disabled";
@@ -131,7 +139,11 @@
 			};
 
 			uart_C: serial@8700 {
+<<<<<<< HEAD
 				compatible = "amlogic,meson6-uart", "amlogic,meson-uart";
+=======
+				compatible = "amlogic,meson6-uart";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				reg = <0x8700 0x18>;
 				interrupts = <GIC_SPI 93 IRQ_TYPE_EDGE_RISING>;
 				status = "disabled";
@@ -196,7 +208,11 @@
 			};
 
 			uart_AO: serial@4c0 {
+<<<<<<< HEAD
 				compatible = "amlogic,meson6-uart", "amlogic,meson-ao-uart", "amlogic,meson-uart";
+=======
+				compatible = "amlogic,meson6-uart", "amlogic,meson-ao-uart";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				reg = <0x4c0 0x18>;
 				interrupts = <GIC_SPI 90 IRQ_TYPE_EDGE_RISING>;
 				status = "disabled";

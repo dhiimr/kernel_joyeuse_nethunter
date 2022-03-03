@@ -38,6 +38,11 @@
  *	closed and -EBUSY when sending data is not permitted in this state or
  *	LLC has send an I pdu with p bit set to 1 and is waiting for it's
  *	response.
+<<<<<<< HEAD
+=======
+ *
+ *	This function always consumes a reference to the skb.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 int llc_build_and_send_pkt(struct sock *sk, struct sk_buff *skb)
 {
@@ -46,20 +51,35 @@ int llc_build_and_send_pkt(struct sock *sk, struct sk_buff *skb)
 	struct llc_sock *llc = llc_sk(sk);
 
 	if (unlikely(llc->state == LLC_CONN_STATE_ADM))
+<<<<<<< HEAD
 		goto out;
+=======
+		goto out_free;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rc = -EBUSY;
 	if (unlikely(llc_data_accept_state(llc->state) || /* data_conn_refuse */
 		     llc->p_flag)) {
 		llc->failed_data_req = 1;
+<<<<<<< HEAD
 		goto out;
+=======
+		goto out_free;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	ev = llc_conn_ev(skb);
 	ev->type      = LLC_CONN_EV_TYPE_PRIM;
 	ev->prim      = LLC_DATA_PRIM;
 	ev->prim_type = LLC_PRIM_TYPE_REQ;
 	skb->dev      = llc->dev;
+<<<<<<< HEAD
 	rc = llc_conn_state_process(sk, skb);
 out:
+=======
+	return llc_conn_state_process(sk, skb);
+
+out_free:
+	kfree_skb(skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return rc;
 }
 

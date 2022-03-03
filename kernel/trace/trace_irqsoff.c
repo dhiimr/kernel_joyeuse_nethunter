@@ -13,6 +13,7 @@
 #include <linux/uaccess.h>
 #include <linux/module.h>
 #include <linux/ftrace.h>
+<<<<<<< HEAD
 #include <linux/sched/clock.h>
 #include <linux/sched/sysctl.h>
 
@@ -22,6 +23,11 @@
 #include <trace/events/preemptirq.h>
 
 #if defined(CONFIG_IRQSOFF_TRACER) || defined(CONFIG_PREEMPT_TRACER)
+=======
+
+#include "trace.h"
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct trace_array		*irqsoff_trace __read_mostly;
 static int				tracer_enabled __read_mostly;
 
@@ -210,6 +216,11 @@ static void irqsoff_graph_return(struct ftrace_graph_ret *trace)
 	unsigned long flags;
 	int pc;
 
+<<<<<<< HEAD
+=======
+	ftrace_graph_addr_finish(trace);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!func_prolog_dec(tr, &data, &flags))
 		return;
 
@@ -468,6 +479,7 @@ void time_hardirqs_off(unsigned long a0, unsigned long a1)
 
 #else /* !CONFIG_PROVE_LOCKING */
 
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPTIRQ_EVENTS
 /*
  * irqsoff stack tracing threshold in ns.
@@ -482,10 +494,28 @@ struct irqsoff_store {
 
 DEFINE_PER_CPU(struct irqsoff_store, the_irqsoff);
 #endif /* CONFIG_PREEMPTIRQ_EVENTS */
+=======
+/*
+ * Stubs:
+ */
+
+void trace_softirqs_on(unsigned long ip)
+{
+}
+
+void trace_softirqs_off(unsigned long ip)
+{
+}
+
+inline void print_irqtrace_events(struct task_struct *curr)
+{
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * We are only interested in hardirq on/off events:
  */
+<<<<<<< HEAD
 static inline void tracer_hardirqs_on(void)
 {
 #ifdef CONFIG_PREEMPTIRQ_EVENTS
@@ -520,28 +550,63 @@ static inline void tracer_hardirqs_off(void)
 }
 
 static inline void tracer_hardirqs_on_caller(unsigned long caller_addr)
+=======
+void trace_hardirqs_on(void)
+{
+	if (!preempt_trace() && irq_trace())
+		stop_critical_timing(CALLER_ADDR0, CALLER_ADDR1);
+}
+EXPORT_SYMBOL(trace_hardirqs_on);
+
+void trace_hardirqs_off(void)
+{
+	if (!preempt_trace() && irq_trace())
+		start_critical_timing(CALLER_ADDR0, CALLER_ADDR1);
+}
+EXPORT_SYMBOL(trace_hardirqs_off);
+
+__visible void trace_hardirqs_on_caller(unsigned long caller_addr)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (!preempt_trace() && irq_trace())
 		stop_critical_timing(CALLER_ADDR0, caller_addr);
 }
+<<<<<<< HEAD
 
 static inline void tracer_hardirqs_off_caller(unsigned long caller_addr)
+=======
+EXPORT_SYMBOL(trace_hardirqs_on_caller);
+
+__visible void trace_hardirqs_off_caller(unsigned long caller_addr)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (!preempt_trace() && irq_trace())
 		start_critical_timing(CALLER_ADDR0, caller_addr);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(trace_hardirqs_off_caller);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif /* CONFIG_PROVE_LOCKING */
 #endif /*  CONFIG_IRQSOFF_TRACER */
 
 #ifdef CONFIG_PREEMPT_TRACER
+<<<<<<< HEAD
 static inline void tracer_preempt_on(unsigned long a0, unsigned long a1)
+=======
+void trace_preempt_on(unsigned long a0, unsigned long a1)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (preempt_trace() && !irq_trace())
 		stop_critical_timing(a0, a1);
 }
 
+<<<<<<< HEAD
 static inline void tracer_preempt_off(unsigned long a0, unsigned long a1)
+=======
+void trace_preempt_off(unsigned long a0, unsigned long a1)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (preempt_trace() && !irq_trace())
 		start_critical_timing(a0, a1);
@@ -803,6 +868,7 @@ __init static int init_irqsoff_tracer(void)
 	return 0;
 }
 core_initcall(init_irqsoff_tracer);
+<<<<<<< HEAD
 #endif /* IRQSOFF_TRACER || PREEMPTOFF_TRACER */
 
 #ifndef CONFIG_IRQSOFF_TRACER
@@ -900,3 +966,5 @@ void trace_preempt_off(unsigned long a0, unsigned long a1)
 	tracer_preempt_off(a0, a1);
 }
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

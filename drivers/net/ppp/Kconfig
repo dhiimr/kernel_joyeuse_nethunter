@@ -149,6 +149,7 @@ config PPPOL2TP
 	  tunnels. L2TP is replacing PPTP for VPN uses.
 if TTY
 
+<<<<<<< HEAD
 config PPPOLAC
 	tristate "PPP on L2TP Access Concentrator"
 	depends on PPP && INET
@@ -166,6 +167,8 @@ config PPPOPNS
 	  networks. This driver handles PPTP data packets between a RAW socket
 	  and a PPP channel. It is fairly simple and easy to use.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config PPP_ASYNC
 	tristate "PPP support for async serial ports"
 	depends on PPP

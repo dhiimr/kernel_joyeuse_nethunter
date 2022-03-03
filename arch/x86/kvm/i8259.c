@@ -460,10 +460,21 @@ static int picdev_write(struct kvm_pic *s,
 	switch (addr) {
 	case 0x20:
 	case 0x21:
+<<<<<<< HEAD
 	case 0xa0:
 	case 0xa1:
 		pic_lock(s);
 		pic_ioport_write(&s->pics[addr >> 7], addr, data);
+=======
+		pic_lock(s);
+		pic_ioport_write(&s->pics[0], addr, data);
+		pic_unlock(s);
+		break;
+	case 0xa0:
+	case 0xa1:
+		pic_lock(s);
+		pic_ioport_write(&s->pics[1], addr, data);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pic_unlock(s);
 		break;
 	case 0x4d0:

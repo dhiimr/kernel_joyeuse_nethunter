@@ -46,6 +46,10 @@ struct uas_dev_info {
 	struct scsi_cmnd *cmnd[MAX_CMNDS];
 	spinlock_t lock;
 	struct work_struct work;
+<<<<<<< HEAD
+=======
+	struct work_struct scan_work;      /* for async scanning */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 enum {
@@ -81,6 +85,22 @@ static void uas_free_streams(struct uas_dev_info *devinfo);
 static void uas_log_cmd_state(struct scsi_cmnd *cmnd, const char *prefix,
 				int status);
 
+<<<<<<< HEAD
+=======
+/*
+ * This driver needs its own workqueue, as we need to control memory allocation.
+ *
+ * In the course of error handling and power management uas_wait_for_pending_cmnds()
+ * needs to flush pending work items. In these contexts we cannot allocate memory
+ * by doing block IO as we would deadlock. For the same reason we cannot wait
+ * for anything allocating memory not heeding these constraints.
+ *
+ * So we have to control all work items that can be on the workqueue we flush.
+ * Hence we cannot share a queue and need our own.
+ */
+static struct workqueue_struct *workqueue;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void uas_do_work(struct work_struct *work)
 {
 	struct uas_dev_info *devinfo =
@@ -109,12 +129,30 @@ static void uas_do_work(struct work_struct *work)
 		if (!err)
 			cmdinfo->state &= ~IS_IN_WORK_LIST;
 		else
+<<<<<<< HEAD
 			schedule_work(&devinfo->work);
+=======
+			queue_work(workqueue, &devinfo->work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 out:
 	spin_unlock_irqrestore(&devinfo->lock, flags);
 }
 
+<<<<<<< HEAD
+=======
+static void uas_scan_work(struct work_struct *work)
+{
+	struct uas_dev_info *devinfo =
+		container_of(work, struct uas_dev_info, scan_work);
+	struct Scsi_Host *shost = usb_get_intfdata(devinfo->intf);
+
+	dev_dbg(&devinfo->intf->dev, "starting scan\n");
+	scsi_scan_host(shost);
+	dev_dbg(&devinfo->intf->dev, "scan complete\n");
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void uas_add_work(struct uas_cmd_info *cmdinfo)
 {
 	struct scsi_pointer *scp = (void *)cmdinfo;
@@ -123,7 +161,11 @@ static void uas_add_work(struct uas_cmd_info *cmdinfo)
 
 	lockdep_assert_held(&devinfo->lock);
 	cmdinfo->state |= IS_IN_WORK_LIST;
+<<<<<<< HEAD
 	schedule_work(&devinfo->work);
+=======
+	queue_work(workqueue, &devinfo->work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void uas_zap_pending(struct uas_dev_info *devinfo, int result)
@@ -179,6 +221,12 @@ static void uas_log_cmd_state(struct scsi_cmnd *cmnd, const char *prefix,
 	struct uas_cmd_info *ci = (void *)&cmnd->SCp;
 	struct uas_cmd_info *cmdinfo = (void *)&cmnd->SCp;
 
+<<<<<<< HEAD
+=======
+	if (status == -ENODEV) /* too late */
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	scmd_printk(KERN_INFO, cmnd,
 		    "%s %d uas-tag %d inflight:%s%s%s%s%s%s%s%s%s%s%s%s ",
 		    prefix, status, cmdinfo->uas_tag,
@@ -642,8 +690,12 @@ static int uas_queuecommand_lck(struct scsi_cmnd *cmnd,
 	if (devinfo->resetting) {
 		cmnd->result = DID_ERROR << 16;
 		cmnd->scsi_done(cmnd);
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&devinfo->lock, flags);
 		return 0;
+=======
+		goto zombie;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Find a free uas-tag */
@@ -678,6 +730,19 @@ static int uas_queuecommand_lck(struct scsi_cmnd *cmnd,
 		cmdinfo->state &= ~(SUBMIT_DATA_IN_URB | SUBMIT_DATA_OUT_URB);
 
 	err = uas_submit_urbs(cmnd, devinfo);
+<<<<<<< HEAD
+=======
+	/*
+	 * in case of fatal errors the SCSI layer is peculiar
+	 * a command that has finished is a success for the purpose
+	 * of queueing, no matter how fatal the error
+	 */
+	if (err == -ENODEV) {
+		cmnd->result = DID_ERROR << 16;
+		cmnd->scsi_done(cmnd);
+		goto zombie;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (err) {
 		/* If we did nothing, give up now */
 		if (cmdinfo->state & SUBMIT_STATUS_URB) {
@@ -688,6 +753,10 @@ static int uas_queuecommand_lck(struct scsi_cmnd *cmnd,
 	}
 
 	devinfo->cmnd[idx] = cmnd;
+<<<<<<< HEAD
+=======
+zombie:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_unlock_irqrestore(&devinfo->lock, flags);
 	return 0;
 }
@@ -800,6 +869,7 @@ static int uas_slave_alloc(struct scsi_device *sdev)
 	sdev->hostdata = devinfo;
 
 	/*
+<<<<<<< HEAD
 	 * USB has unusual DMA-alignment requirements: Although the
 	 * starting address of each scatter-gather element doesn't matter,
 	 * the length of each element except the last must be divisible
@@ -814,6 +884,11 @@ static int uas_slave_alloc(struct scsi_device *sdev)
 	 * But it doesn't suffice for Wireless USB, where Bulk maxpacket
 	 * values can be as large as 2048.  To make that work properly
 	 * will require changes to the block layer.
+=======
+	 * The protocol has no requirements on alignment in the strict sense.
+	 * Controllers may or may not have alignment restrictions.
+	 * As this is not exported, we use an extremely conservative guess.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 */
 	blk_queue_update_dma_alignment(sdev->request_queue, (512 - 1));
 
@@ -843,6 +918,16 @@ static int uas_slave_configure(struct scsi_device *sdev)
 		sdev->wce_default_on = 1;
 	}
 
+<<<<<<< HEAD
+=======
+	/* Some disks cannot handle READ_CAPACITY_16 */
+	if (devinfo->flags & US_FL_NO_READ_CAPACITY_16)
+		sdev->no_read_capacity_16 = 1;
+
+	/* Some disks cannot handle WRITE_SAME */
+	if (devinfo->flags & US_FL_NO_SAME)
+		sdev->no_write_same = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Some disks return the total number of blocks in response
 	 * to READ CAPACITY rather than the highest block number.
@@ -852,6 +937,15 @@ static int uas_slave_configure(struct scsi_device *sdev)
 		sdev->fix_capacity = 1;
 
 	/*
+<<<<<<< HEAD
+=======
+	 * in some cases we have to guess
+	 */
+	if (devinfo->flags & US_FL_CAPACITY_HEURISTICS)
+		sdev->guess_capacity = 1;
+
+	/*
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * Some devices don't like MODE SENSE with page=0x3f,
 	 * which is the command used for checking if a device
 	 * is write-protected.  Now that we tell the sd driver
@@ -990,6 +1084,10 @@ static int uas_probe(struct usb_interface *intf, const struct usb_device_id *id)
 	init_usb_anchor(&devinfo->data_urbs);
 	spin_lock_init(&devinfo->lock);
 	INIT_WORK(&devinfo->work, uas_do_work);
+<<<<<<< HEAD
+=======
+	INIT_WORK(&devinfo->scan_work, uas_scan_work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	result = uas_configure_endpoints(devinfo);
 	if (result)
@@ -1006,7 +1104,13 @@ static int uas_probe(struct usb_interface *intf, const struct usb_device_id *id)
 	if (result)
 		goto free_streams;
 
+<<<<<<< HEAD
 	scsi_scan_host(shost);
+=======
+	/* Submit the delayed_work for SCSI-device scanning */
+	schedule_work(&devinfo->scan_work);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return result;
 
 free_streams:
@@ -1174,6 +1278,15 @@ static void uas_disconnect(struct usb_interface *intf)
 	usb_kill_anchored_urbs(&devinfo->data_urbs);
 	uas_zap_pending(devinfo, DID_NO_CONNECT);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Prevent SCSI scanning (if it hasn't started yet)
+	 * or wait for the SCSI-scanning routine to stop.
+	 */
+	cancel_work_sync(&devinfo->scan_work);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	scsi_remove_host(shost);
 	uas_free_streams(devinfo);
 	scsi_host_put(shost);
@@ -1213,7 +1326,35 @@ static struct usb_driver uas_driver = {
 	.id_table = uas_usb_ids,
 };
 
+<<<<<<< HEAD
 module_usb_driver(uas_driver);
+=======
+static int __init uas_init(void)
+{
+	int rv;
+
+	workqueue = alloc_workqueue("uas", WQ_MEM_RECLAIM, 0);
+	if (!workqueue)
+		return -ENOMEM;
+
+	rv = usb_register(&uas_driver);
+	if (rv) {
+		destroy_workqueue(workqueue);
+		return -ENOMEM;
+	}
+
+	return 0;
+}
+
+static void __exit uas_exit(void)
+{
+	usb_deregister(&uas_driver);
+	destroy_workqueue(workqueue);
+}
+
+module_init(uas_init);
+module_exit(uas_exit);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR(

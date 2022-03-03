@@ -177,7 +177,11 @@ static const char * const s5k4ecgx_supply_names[] = {
 
 enum s5k4ecgx_gpio_id {
 	STBY,
+<<<<<<< HEAD
 	RST,
+=======
+	RSET,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	GPIO_NUM,
 };
 
@@ -482,7 +486,11 @@ static int __s5k4ecgx_power_on(struct s5k4ecgx *priv)
 	if (s5k4ecgx_gpio_set_value(priv, STBY, priv->gpio[STBY].level))
 		usleep_range(30, 50);
 
+<<<<<<< HEAD
 	if (s5k4ecgx_gpio_set_value(priv, RST, priv->gpio[RST].level))
+=======
+	if (s5k4ecgx_gpio_set_value(priv, RSET, priv->gpio[RSET].level))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		usleep_range(30, 50);
 
 	return 0;
@@ -490,7 +498,11 @@ static int __s5k4ecgx_power_on(struct s5k4ecgx *priv)
 
 static int __s5k4ecgx_power_off(struct s5k4ecgx *priv)
 {
+<<<<<<< HEAD
 	if (s5k4ecgx_gpio_set_value(priv, RST, !priv->gpio[RST].level))
+=======
+	if (s5k4ecgx_gpio_set_value(priv, RSET, !priv->gpio[RSET].level))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		usleep_range(30, 50);
 
 	if (s5k4ecgx_gpio_set_value(priv, STBY, !priv->gpio[STBY].level))
@@ -878,7 +890,11 @@ static int s5k4ecgx_config_gpios(struct s5k4ecgx *priv,
 	int ret;
 
 	priv->gpio[STBY].gpio = -EINVAL;
+<<<<<<< HEAD
 	priv->gpio[RST].gpio  = -EINVAL;
+=======
+	priv->gpio[RSET].gpio  = -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = s5k4ecgx_config_gpio(gpio->gpio, gpio->level, "S5K4ECGX_STBY");
 
@@ -897,7 +913,11 @@ static int s5k4ecgx_config_gpios(struct s5k4ecgx *priv,
 		s5k4ecgx_free_gpios(priv);
 		return ret;
 	}
+<<<<<<< HEAD
 	priv->gpio[RST] = *gpio;
+=======
+	priv->gpio[RSET] = *gpio;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (gpio_is_valid(gpio->gpio))
 		gpio_set_value(gpio->gpio, 0);
 

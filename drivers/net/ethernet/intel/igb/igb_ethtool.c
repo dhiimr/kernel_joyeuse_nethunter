@@ -163,7 +163,12 @@ static int igb_get_link_ksettings(struct net_device *netdev,
 	u32 speed;
 	u32 supported, advertising;
 
+<<<<<<< HEAD
 	status = rd32(E1000_STATUS);
+=======
+	status = pm_runtime_suspended(&adapter->pdev->dev) ?
+		 0 : rd32(E1000_STATUS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (hw->phy.media_type == e1000_media_type_copper) {
 
 		supported = (SUPPORTED_10baseT_Half |
@@ -201,7 +206,11 @@ static int igb_get_link_ksettings(struct net_device *netdev,
 				advertising &= ~ADVERTISED_1000baseKX_Full;
 			}
 		}
+<<<<<<< HEAD
 		if (eth_flags->e100_base_fx) {
+=======
+		if (eth_flags->e100_base_fx || eth_flags->e100_base_lx) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			supported |= SUPPORTED_100baseT_Full;
 			advertising |= ADVERTISED_100baseT_Full;
 		}

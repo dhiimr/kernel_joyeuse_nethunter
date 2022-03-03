@@ -34,6 +34,10 @@
 #include <linux/kref.h>
 #include <linux/list.h>
 #include <linux/lockdep.h>
+<<<<<<< HEAD
+=======
+#include <linux/mutex.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/netdevice.h>
 #include <linux/netlink.h>
 #include <linux/pkt_sched.h>
@@ -149,7 +153,11 @@ static void batadv_iv_ogm_orig_free(struct batadv_orig_node *orig_node)
  * Return: 0 on success, a negative error code otherwise.
  */
 static int batadv_iv_ogm_orig_add_if(struct batadv_orig_node *orig_node,
+<<<<<<< HEAD
 				     int max_if_num)
+=======
+				     unsigned int max_if_num)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	void *data_ptr;
 	size_t old_size;
@@ -193,7 +201,12 @@ unlock:
  */
 static void
 batadv_iv_ogm_drop_bcast_own_entry(struct batadv_orig_node *orig_node,
+<<<<<<< HEAD
 				   int max_if_num, int del_if_num)
+=======
+				   unsigned int max_if_num,
+				   unsigned int del_if_num)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	size_t chunk_size;
 	size_t if_offset;
@@ -231,7 +244,12 @@ batadv_iv_ogm_drop_bcast_own_entry(struct batadv_orig_node *orig_node,
  */
 static void
 batadv_iv_ogm_drop_bcast_own_sum_entry(struct batadv_orig_node *orig_node,
+<<<<<<< HEAD
 				       int max_if_num, int del_if_num)
+=======
+				       unsigned int max_if_num,
+				       unsigned int del_if_num)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	size_t if_offset;
 	void *data_ptr;
@@ -268,7 +286,12 @@ batadv_iv_ogm_drop_bcast_own_sum_entry(struct batadv_orig_node *orig_node,
  * Return: 0 on success, a negative error code otherwise.
  */
 static int batadv_iv_ogm_orig_del_if(struct batadv_orig_node *orig_node,
+<<<<<<< HEAD
 				     int max_if_num, int del_if_num)
+=======
+				     unsigned int max_if_num,
+				     unsigned int del_if_num)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	spin_lock_bh(&orig_node->bat_iv.ogm_cnt_lock);
 
@@ -302,7 +325,12 @@ static struct batadv_orig_node *
 batadv_iv_ogm_orig_get(struct batadv_priv *bat_priv, const u8 *addr)
 {
 	struct batadv_orig_node *orig_node;
+<<<<<<< HEAD
 	int size, hash_added;
+=======
+	int hash_added;
+	size_t size;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	orig_node = batadv_orig_hash_find(bat_priv, addr);
 	if (orig_node)
@@ -366,14 +394,26 @@ static int batadv_iv_ogm_iface_enable(struct batadv_hard_iface *hard_iface)
 	unsigned char *ogm_buff;
 	u32 random_seqno;
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&hard_iface->bat_iv.ogm_buff_mutex);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* randomize initial seqno to avoid collision */
 	get_random_bytes(&random_seqno, sizeof(random_seqno));
 	atomic_set(&hard_iface->bat_iv.ogm_seqno, random_seqno);
 
 	hard_iface->bat_iv.ogm_buff_len = BATADV_OGM_HLEN;
 	ogm_buff = kmalloc(hard_iface->bat_iv.ogm_buff_len, GFP_ATOMIC);
+<<<<<<< HEAD
 	if (!ogm_buff)
 		return -ENOMEM;
+=======
+	if (!ogm_buff) {
+		mutex_unlock(&hard_iface->bat_iv.ogm_buff_mutex);
+		return -ENOMEM;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	hard_iface->bat_iv.ogm_buff = ogm_buff;
 
@@ -385,35 +425,83 @@ static int batadv_iv_ogm_iface_enable(struct batadv_hard_iface *hard_iface)
 	batadv_ogm_packet->reserved = 0;
 	batadv_ogm_packet->tq = BATADV_TQ_MAX_VALUE;
 
+<<<<<<< HEAD
+=======
+	mutex_unlock(&hard_iface->bat_iv.ogm_buff_mutex);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
 static void batadv_iv_ogm_iface_disable(struct batadv_hard_iface *hard_iface)
 {
+<<<<<<< HEAD
 	kfree(hard_iface->bat_iv.ogm_buff);
 	hard_iface->bat_iv.ogm_buff = NULL;
+=======
+	mutex_lock(&hard_iface->bat_iv.ogm_buff_mutex);
+
+	kfree(hard_iface->bat_iv.ogm_buff);
+	hard_iface->bat_iv.ogm_buff = NULL;
+
+	mutex_unlock(&hard_iface->bat_iv.ogm_buff_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void batadv_iv_ogm_iface_update_mac(struct batadv_hard_iface *hard_iface)
 {
 	struct batadv_ogm_packet *batadv_ogm_packet;
+<<<<<<< HEAD
 	unsigned char *ogm_buff = hard_iface->bat_iv.ogm_buff;
 
 	batadv_ogm_packet = (struct batadv_ogm_packet *)ogm_buff;
+=======
+	void *ogm_buff;
+
+	mutex_lock(&hard_iface->bat_iv.ogm_buff_mutex);
+
+	ogm_buff = hard_iface->bat_iv.ogm_buff;
+	if (!ogm_buff)
+		goto unlock;
+
+	batadv_ogm_packet = ogm_buff;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ether_addr_copy(batadv_ogm_packet->orig,
 			hard_iface->net_dev->dev_addr);
 	ether_addr_copy(batadv_ogm_packet->prev_sender,
 			hard_iface->net_dev->dev_addr);
+<<<<<<< HEAD
+=======
+
+unlock:
+	mutex_unlock(&hard_iface->bat_iv.ogm_buff_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void
 batadv_iv_ogm_primary_iface_set(struct batadv_hard_iface *hard_iface)
 {
 	struct batadv_ogm_packet *batadv_ogm_packet;
+<<<<<<< HEAD
 	unsigned char *ogm_buff = hard_iface->bat_iv.ogm_buff;
 
 	batadv_ogm_packet = (struct batadv_ogm_packet *)ogm_buff;
 	batadv_ogm_packet->ttl = BATADV_TTL;
+=======
+	void *ogm_buff;
+
+	mutex_lock(&hard_iface->bat_iv.ogm_buff_mutex);
+
+	ogm_buff = hard_iface->bat_iv.ogm_buff;
+	if (!ogm_buff)
+		goto unlock;
+
+	batadv_ogm_packet = ogm_buff;
+	batadv_ogm_packet->ttl = BATADV_TTL;
+
+unlock:
+	mutex_unlock(&hard_iface->bat_iv.ogm_buff_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* when do we schedule our own ogm to be sent */
@@ -450,6 +538,7 @@ static u8 batadv_hop_penalty(u8 tq, const struct batadv_priv *bat_priv)
  * batadv_iv_ogm_aggr_packet - checks if there is another OGM attached
  * @buff_pos: current position in the skb
  * @packet_len: total length of the skb
+<<<<<<< HEAD
  * @tvlv_len: tvlv length of the previously considered OGM
  *
  * Return: true if there is enough space for another OGM, false otherwise.
@@ -461,6 +550,25 @@ static bool batadv_iv_ogm_aggr_packet(int buff_pos, int packet_len,
 
 	next_buff_pos += buff_pos + BATADV_OGM_HLEN;
 	next_buff_pos += ntohs(tvlv_len);
+=======
+ * @ogm_packet: potential OGM in buffer
+ *
+ * Return: true if there is enough space for another OGM, false otherwise.
+ */
+static bool
+batadv_iv_ogm_aggr_packet(int buff_pos, int packet_len,
+			  const struct batadv_ogm_packet *ogm_packet)
+{
+	int next_buff_pos = 0;
+
+	/* check if there is enough space for the header */
+	next_buff_pos += buff_pos + sizeof(*ogm_packet);
+	if (next_buff_pos > packet_len)
+		return false;
+
+	/* check if there is enough space for the optional TVLV */
+	next_buff_pos += ntohs(ogm_packet->tvlv_len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return (next_buff_pos <= packet_len) &&
 	       (next_buff_pos <= BATADV_MAX_AGGREGATION_BYTES);
@@ -488,7 +596,11 @@ static void batadv_iv_ogm_send_to_if(struct batadv_forw_packet *forw_packet,
 
 	/* adjust all flags and log packets */
 	while (batadv_iv_ogm_aggr_packet(buff_pos, forw_packet->packet_len,
+<<<<<<< HEAD
 					 batadv_ogm_packet->tvlv_len)) {
+=======
+					 batadv_ogm_packet)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* we might have aggregated direct link packets with an
 		 * ordinary base packet
 		 */
@@ -546,8 +658,15 @@ static void batadv_iv_ogm_emit(struct batadv_forw_packet *forw_packet)
 	if (WARN_ON(!forw_packet->if_outgoing))
 		return;
 
+<<<<<<< HEAD
 	if (WARN_ON(forw_packet->if_outgoing->soft_iface != soft_iface))
 		return;
+=======
+	if (forw_packet->if_outgoing->soft_iface != soft_iface) {
+		pr_warn("%s: soft interface switch for queued OGM\n", __func__);
+		return;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (forw_packet->if_incoming->if_status != BATADV_IF_ACTIVE)
 		return;
@@ -884,7 +1003,11 @@ batadv_iv_ogm_slide_own_bcast_window(struct batadv_hard_iface *hard_iface)
 	u32 i;
 	size_t word_index;
 	u8 *w;
+<<<<<<< HEAD
 	int if_num;
+=======
+	unsigned int if_num;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (i = 0; i < hash->size; i++) {
 		head = &hash->table[i];
@@ -905,7 +1028,15 @@ batadv_iv_ogm_slide_own_bcast_window(struct batadv_hard_iface *hard_iface)
 	}
 }
 
+<<<<<<< HEAD
 static void batadv_iv_ogm_schedule(struct batadv_hard_iface *hard_iface)
+=======
+/**
+ * batadv_iv_ogm_schedule_buff() - schedule submission of hardif ogm buffer
+ * @hard_iface: interface whose ogm buffer should be transmitted
+ */
+static void batadv_iv_ogm_schedule_buff(struct batadv_hard_iface *hard_iface)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct batadv_priv *bat_priv = netdev_priv(hard_iface->soft_iface);
 	unsigned char **ogm_buff = &hard_iface->bat_iv.ogm_buff;
@@ -916,8 +1047,15 @@ static void batadv_iv_ogm_schedule(struct batadv_hard_iface *hard_iface)
 	u16 tvlv_len = 0;
 	unsigned long send_time;
 
+<<<<<<< HEAD
 	if ((hard_iface->if_status == BATADV_IF_NOT_IN_USE) ||
 	    (hard_iface->if_status == BATADV_IF_TO_BE_REMOVED))
+=======
+	lockdep_assert_held(&hard_iface->bat_iv.ogm_buff_mutex);
+
+	/* interface already disabled by batadv_iv_ogm_iface_disable */
+	if (!*ogm_buff)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 
 	/* the interface gets activated here to avoid race conditions between
@@ -986,6 +1124,20 @@ out:
 		batadv_hardif_put(primary_if);
 }
 
+<<<<<<< HEAD
+=======
+static void batadv_iv_ogm_schedule(struct batadv_hard_iface *hard_iface)
+{
+	if (hard_iface->if_status == BATADV_IF_NOT_IN_USE ||
+	    hard_iface->if_status == BATADV_IF_TO_BE_REMOVED)
+		return;
+
+	mutex_lock(&hard_iface->bat_iv.ogm_buff_mutex);
+	batadv_iv_ogm_schedule_buff(hard_iface);
+	mutex_unlock(&hard_iface->bat_iv.ogm_buff_mutex);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * batadv_iv_ogm_orig_update - use OGM to update corresponding data in an
  *  originator
@@ -1014,7 +1166,11 @@ batadv_iv_ogm_orig_update(struct batadv_priv *bat_priv,
 	struct batadv_neigh_node *tmp_neigh_node = NULL;
 	struct batadv_neigh_node *router = NULL;
 	struct batadv_orig_node *orig_node_tmp;
+<<<<<<< HEAD
 	int if_num;
+=======
+	unsigned int if_num;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8 sum_orig, sum_neigh;
 	u8 *neigh_addr;
 	u8 tq_avg;
@@ -1173,7 +1329,11 @@ static bool batadv_iv_ogm_calc_tq(struct batadv_orig_node *orig_node,
 	u8 total_count;
 	u8 orig_eq_count, neigh_rq_count, neigh_rq_inv, tq_own;
 	unsigned int neigh_rq_inv_cube, neigh_rq_max_cube;
+<<<<<<< HEAD
 	int if_num;
+=======
+	unsigned int if_num;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int tq_asym_penalty, inv_asym_penalty;
 	unsigned int combined_tq;
 	unsigned int tq_iface_penalty;
@@ -1214,7 +1374,11 @@ static bool batadv_iv_ogm_calc_tq(struct batadv_orig_node *orig_node,
 	orig_node->last_seen = jiffies;
 
 	/* find packet count of corresponding one hop neighbor */
+<<<<<<< HEAD
 	spin_lock_bh(&orig_node->bat_iv.ogm_cnt_lock);
+=======
+	spin_lock_bh(&orig_neigh_node->bat_iv.ogm_cnt_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if_num = if_incoming->if_num;
 	orig_eq_count = orig_neigh_node->bat_iv.bcast_own_sum[if_num];
 	neigh_ifinfo = batadv_neigh_ifinfo_new(neigh_node, if_outgoing);
@@ -1224,7 +1388,11 @@ static bool batadv_iv_ogm_calc_tq(struct batadv_orig_node *orig_node,
 	} else {
 		neigh_rq_count = 0;
 	}
+<<<<<<< HEAD
 	spin_unlock_bh(&orig_node->bat_iv.ogm_cnt_lock);
+=======
+	spin_unlock_bh(&orig_neigh_node->bat_iv.ogm_cnt_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* pay attention to not get a value bigger than 100 % */
 	if (orig_eq_count > neigh_rq_count)
@@ -1692,9 +1860,15 @@ static void batadv_iv_ogm_process(const struct sk_buff *skb, int ogm_offset,
 
 	if (is_my_orig) {
 		unsigned long *word;
+<<<<<<< HEAD
 		int offset;
 		s32 bit_pos;
 		s16 if_num;
+=======
+		size_t offset;
+		s32 bit_pos;
+		unsigned int if_num;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		u8 *weight;
 
 		orig_neigh_node = batadv_iv_ogm_orig_get(bat_priv,
@@ -1838,7 +2012,11 @@ static int batadv_iv_ogm_receive(struct sk_buff *skb,
 
 	/* unpack the aggregated packets and process them one by one */
 	while (batadv_iv_ogm_aggr_packet(ogm_offset, skb_headlen(skb),
+<<<<<<< HEAD
 					 ogm_packet->tvlv_len)) {
+=======
+					 ogm_packet)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		batadv_iv_ogm_process(skb, ogm_offset, if_incoming);
 
 		ogm_offset += BATADV_OGM_HLEN;
@@ -2471,7 +2649,11 @@ batadv_iv_ogm_neigh_is_sob(struct batadv_neigh_node *neigh1,
 	return ret;
 }
 
+<<<<<<< HEAD
 static void batadv_iv_iface_activate(struct batadv_hard_iface *hard_iface)
+=======
+static void batadv_iv_iface_enabled(struct batadv_hard_iface *hard_iface)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	/* begin scheduling originator messages on that interface */
 	batadv_iv_ogm_schedule(hard_iface);
@@ -2811,8 +2993,13 @@ unlock:
 static struct batadv_algo_ops batadv_batman_iv __read_mostly = {
 	.name = "BATMAN_IV",
 	.iface = {
+<<<<<<< HEAD
 		.activate = batadv_iv_iface_activate,
 		.enable = batadv_iv_ogm_iface_enable,
+=======
+		.enable = batadv_iv_ogm_iface_enable,
+		.enabled = batadv_iv_iface_enabled,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.disable = batadv_iv_ogm_iface_disable,
 		.update_mac = batadv_iv_ogm_iface_update_mac,
 		.primary_set = batadv_iv_ogm_primary_iface_set,

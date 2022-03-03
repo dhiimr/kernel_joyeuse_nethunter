@@ -123,6 +123,15 @@ unsigned long vgic_mmio_read_pending(struct kvm_vcpu *vcpu,
 	return value;
 }
 
+<<<<<<< HEAD
+=======
+static bool is_vgic_v2_sgi(struct kvm_vcpu *vcpu, struct vgic_irq *irq)
+{
+	return (vgic_irq_is_sgi(irq->intid) &&
+		vcpu->kvm->arch.vgic.vgic_model == KVM_DEV_TYPE_ARM_VGIC_V2);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void vgic_mmio_write_spending(struct kvm_vcpu *vcpu,
 			      gpa_t addr, unsigned int len,
 			      unsigned long val)
@@ -133,6 +142,15 @@ void vgic_mmio_write_spending(struct kvm_vcpu *vcpu,
 	for_each_set_bit(i, &val, len * 8) {
 		struct vgic_irq *irq = vgic_get_irq(vcpu->kvm, vcpu, intid + i);
 
+<<<<<<< HEAD
+=======
+		/* GICD_ISPENDR0 SGI bits are WI */
+		if (is_vgic_v2_sgi(vcpu, irq)) {
+			vgic_put_irq(vcpu->kvm, irq);
+			continue;
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		spin_lock(&irq->irq_lock);
 		irq->pending_latch = true;
 
@@ -151,6 +169,15 @@ void vgic_mmio_write_cpending(struct kvm_vcpu *vcpu,
 	for_each_set_bit(i, &val, len * 8) {
 		struct vgic_irq *irq = vgic_get_irq(vcpu->kvm, vcpu, intid + i);
 
+<<<<<<< HEAD
+=======
+		/* GICD_ICPENDR0 SGI bits are WI */
+		if (is_vgic_v2_sgi(vcpu, irq)) {
+			vgic_put_irq(vcpu->kvm, irq);
+			continue;
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		spin_lock(&irq->irq_lock);
 
 		irq->pending_latch = false;
@@ -242,7 +269,11 @@ static void vgic_mmio_change_active(struct kvm_vcpu *vcpu, struct vgic_irq *irq,
 static void vgic_change_active_prepare(struct kvm_vcpu *vcpu, u32 intid)
 {
 	if (vcpu->kvm->arch.vgic.vgic_model == KVM_DEV_TYPE_ARM_VGIC_V3 ||
+<<<<<<< HEAD
 	    intid > VGIC_NR_PRIVATE_IRQS)
+=======
+	    intid >= VGIC_NR_PRIVATE_IRQS)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kvm_arm_halt_guest(vcpu->kvm);
 }
 
@@ -250,7 +281,11 @@ static void vgic_change_active_prepare(struct kvm_vcpu *vcpu, u32 intid)
 static void vgic_change_active_finish(struct kvm_vcpu *vcpu, u32 intid)
 {
 	if (vcpu->kvm->arch.vgic.vgic_model == KVM_DEV_TYPE_ARM_VGIC_V3 ||
+<<<<<<< HEAD
 	    intid > VGIC_NR_PRIVATE_IRQS)
+=======
+	    intid >= VGIC_NR_PRIVATE_IRQS)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kvm_arm_resume_guest(vcpu->kvm);
 }
 

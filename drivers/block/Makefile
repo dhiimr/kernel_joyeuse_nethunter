@@ -41,8 +41,11 @@ obj-$(CONFIG_ZRAM) += zram/
 
 skd-y		:= skd_main.o
 swim_mod-y	:= swim.o swim_asm.o
+<<<<<<< HEAD
 
 obj-$(CONFIG_VSERVICES_BLOCK_SERVER)     += vs_block_server.o
 CFLAGS_vs_block_server.o += -Werror
 obj-$(CONFIG_VSERVICES_BLOCK_CLIENT)     += vs_block_client.o
 CFLAGS_vs_block_client.o += -Werror
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

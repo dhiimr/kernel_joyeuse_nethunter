@@ -2,6 +2,7 @@
 #ifndef __UAPI_CORESIGHT_STM_H_
 #define __UAPI_CORESIGHT_STM_H_
 
+<<<<<<< HEAD
 #define STM_FLAG_NONE          0x00
 #define STM_FLAG_TIMESTAMPED   0x08
 #define STM_FLAG_GUARANTEED    0x80
@@ -14,6 +15,13 @@
 #define        OST_ENTITY_DIAG                 0xEE
 #define        OST_ENTITY_QVIEW                0xFE
 #define        OST_ENTITY_MAX                  0xFF
+=======
+#include <linux/const.h>
+
+#define STM_FLAG_TIMESTAMPED   _BITUL(3)
+#define STM_FLAG_GUARANTEED    _BITUL(7)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * The CoreSight STM supports guaranteed and invariant timing
  * transactions.  Guaranteed transactions are guaranteed to be

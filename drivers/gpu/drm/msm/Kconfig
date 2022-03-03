@@ -3,7 +3,11 @@ config DRM_MSM
 	tristate "MSM DRM"
 	depends on DRM
 	depends on ARCH_QCOM || (ARM && COMPILE_TEST)
+<<<<<<< HEAD
 	depends on OF
+=======
+	depends on OF && COMMON_CLK
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	depends on MMU
 	select QCOM_MDT_LOADER if ARCH_QCOM
 	select REGULATOR
@@ -14,8 +18,12 @@ config DRM_MSM
 	select QCOM_SCM
 	select SND_SOC_HDMI_CODEC if SND_SOC
 	select SYNC_FILE
+<<<<<<< HEAD
 	select MSM_EXT_DISPLAY
 	select PM_GENERIC_DOMAINS
+=======
+	select PM_OPP
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	default y
 	help
 	  DRM/KMS driver for MSM/snapdragon.
@@ -32,6 +40,7 @@ config DRM_MSM_REGISTER_LOGGING
 config DRM_MSM_HDMI_HDCP
 	bool "Enable HDMI HDCP support in MSM DRM driver"
 	depends on DRM_MSM && QCOM_SCM
+<<<<<<< HEAD
 	default n
 	help
 	  Compile in support for logging register reads/writes in a format
@@ -48,17 +57,27 @@ config DRM_MSM_HDMI
 	  driver. HDMI external display support is enabled
 	  through this config option. It can be primary or
 	  secondary display on device.
+=======
+	default y
+	help
+	  Choose this option to enable HDCP state machine
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config DRM_MSM_DSI
 	bool "Enable DSI support in MSM DRM driver"
 	depends on DRM_MSM
 	select DRM_PANEL
 	select DRM_MIPI_DSI
+<<<<<<< HEAD
 	default n
+=======
+	default y
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  Choose this option if you have a need for MIPI DSI connector
 	  support.
 
+<<<<<<< HEAD
 config DRM_MSM_DSI_STAGING
 	bool "Enable new DSI driver support in MSM DRM driver"
 	depends on DRM_MSM
@@ -81,6 +100,8 @@ config DSI_PARSER
 	  panel configurations. Also, this module provides a set of APIs
 	  which can be used to get the parsed data.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config DRM_MSM_DSI_PLL
 	bool "Enable DSI PLL driver in MSM DRM"
 	depends on DRM_MSM_DSI && COMMON_CLK
@@ -111,6 +132,7 @@ config DRM_MSM_DSI_28NM_8960_PHY
 	  Choose this option if the 28nm DSI PHY 8960 variant is used on the
 	  platform.
 
+<<<<<<< HEAD
 config DRM_MSM_MDP5
 	tristate "MSM MDP5 DRM driver"
 	depends on DRM_MSM
@@ -172,12 +194,15 @@ config DRM_SDE_SHP
 	  Each logical plane will appear as different
 	  planes and report back to user.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config DRM_MSM_DSI_14NM_PHY
 	bool "Enable DSI 14nm PHY driver in MSM DRM (used by MSM8996/APQ8096)"
 	depends on DRM_MSM_DSI
 	default y
 	help
 	  Choose this option if DSI PHY on 8996 is used on the platform.
+<<<<<<< HEAD
 
 config DRM_SDE_EVTLOG_DEBUG
 	bool "Enable event logging in MSM DRM"
@@ -198,3 +223,5 @@ config DRM_SDE_RSC
 	  avoids the display core power collapse. A client can also register
 	  for display core power collapse events on rsc.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

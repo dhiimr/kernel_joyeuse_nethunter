@@ -1098,6 +1098,7 @@ static int bond_option_arp_validate_set(struct bonding *bond,
 {
 	netdev_dbg(bond->dev, "Setting arp_validate to %s (%llu)\n",
 		   newval->string, newval->value);
+<<<<<<< HEAD
 
 	if (bond->dev->flags & IFF_UP) {
 		if (!newval->value)
@@ -1105,6 +1106,8 @@ static int bond_option_arp_validate_set(struct bonding *bond,
 		else if (bond->params.arp_interval)
 			bond->recv_probe = bond_arp_rcv;
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bond->params.arp_validate = newval->value;
 
 	return 0;
@@ -1450,7 +1453,11 @@ static int bond_option_ad_actor_system_set(struct bonding *bond,
 		mac = (u8 *)&newval->value;
 	}
 
+<<<<<<< HEAD
 	if (!is_valid_ether_addr(mac))
+=======
+	if (is_multicast_ether_addr(mac))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto err;
 
 	netdev_dbg(bond->dev, "Setting ad_actor_system to %pM\n", mac);

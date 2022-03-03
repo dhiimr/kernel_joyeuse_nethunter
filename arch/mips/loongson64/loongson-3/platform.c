@@ -31,6 +31,12 @@ static int __init loongson3_platform_init(void)
 			continue;
 
 		pdev = kzalloc(sizeof(struct platform_device), GFP_KERNEL);
+<<<<<<< HEAD
+=======
+		if (!pdev)
+			return -ENOMEM;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pdev->name = loongson_sysconf.sensors[i].name;
 		pdev->id = loongson_sysconf.sensors[i].id;
 		pdev->dev.platform_data = &loongson_sysconf.sensors[i];

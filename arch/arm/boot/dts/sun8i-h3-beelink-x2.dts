@@ -79,6 +79,11 @@
 	wifi_pwrseq: wifi_pwrseq {
 		compatible = "mmc-pwrseq-simple";
 		reset-gpios = <&r_pio 0 7 GPIO_ACTIVE_LOW>; /* PL7 */
+<<<<<<< HEAD
+=======
+		clocks = <&rtc 1>;
+		clock-names = "ext_clock";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	sound_spdif {
@@ -128,6 +133,11 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&mmc1_pins_a>;
 	vmmc-supply = <&reg_vcc3v3>;
+<<<<<<< HEAD
+=======
+	vqmmc-supply = <&reg_vcc3v3>;
+	mmc-pwrseq = <&wifi_pwrseq>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bus-width = <4>;
 	non-removable;
 	status = "okay";

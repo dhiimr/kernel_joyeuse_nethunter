@@ -175,9 +175,14 @@ static int stp_master_alloc(struct stm_device *stm, unsigned int idx)
 {
 	struct stp_master *master;
 	size_t size;
+<<<<<<< HEAD
 	unsigned long align = sizeof(unsigned long);
 
 	size = ALIGN(stm->data->sw_nchannels, align) / align;
+=======
+
+	size = ALIGN(stm->data->sw_nchannels, 8) / 8;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	size += sizeof(struct stp_master);
 	master = kzalloc(size, GFP_ATOMIC);
 	if (!master)
@@ -440,6 +445,7 @@ static ssize_t notrace stm_write(struct stm_data *data, unsigned int master,
 	size_t pos;
 	ssize_t sz;
 
+<<<<<<< HEAD
 	if (data->ost_configured()) {
 		pos = data->ost_packet(data, count, buf);
 	} else {
@@ -455,6 +461,20 @@ static ssize_t notrace stm_write(struct stm_data *data, unsigned int master,
 		&nil);
 
 	}
+=======
+	for (pos = 0, p = buf; count > pos; pos += sz, p += sz) {
+		sz = min_t(unsigned int, count - pos, 8);
+		sz = data->packet(data, master, channel, STP_PACKET_DATA, flags,
+				  sz, p);
+		flags = 0;
+
+		if (sz < 0)
+			break;
+	}
+
+	data->packet(data, master, channel, STP_PACKET_FLAG, 0, 0, &nil);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return pos;
 }
 
@@ -1111,7 +1131,10 @@ int stm_source_register_device(struct device *parent,
 
 err:
 	put_device(&src->dev);
+<<<<<<< HEAD
 	kfree(src);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return err;
 }

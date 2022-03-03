@@ -267,6 +267,13 @@ struct mlx4_en_page_cache {
 	} buf[MLX4_EN_CACHE_SIZE];
 };
 
+<<<<<<< HEAD
+=======
+enum {
+	MLX4_EN_TX_RING_STATE_RECOVERING,
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct mlx4_en_priv;
 
 struct mlx4_en_tx_ring {
@@ -313,6 +320,10 @@ struct mlx4_en_tx_ring {
 	 * Only queue_stopped might be used if BQL is not properly working.
 	 */
 	unsigned long		queue_stopped;
+<<<<<<< HEAD
+=======
+	unsigned long		state;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct mlx4_hwq_resources sp_wqres;
 	struct mlx4_qp		sp_qp;
 	struct mlx4_qp_context	sp_context;
@@ -525,6 +536,13 @@ struct mlx4_en_stats_bitmap {
 	struct mutex mutex; /* for mutual access to stats bitmap */
 };
 
+<<<<<<< HEAD
+=======
+enum {
+	MLX4_EN_STATE_FLAG_RESTARTING,
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct mlx4_en_priv {
 	struct mlx4_en_dev *mdev;
 	struct mlx4_en_port_profile *prof;
@@ -590,7 +608,11 @@ struct mlx4_en_priv {
 	struct mlx4_en_cq *rx_cq[MAX_RX_RINGS];
 	struct mlx4_qp drop_qp;
 	struct work_struct rx_mode_task;
+<<<<<<< HEAD
 	struct work_struct watchdog_task;
+=======
+	struct work_struct restart_task;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct work_struct linkstate_task;
 	struct delayed_work stats_task;
 	struct delayed_work service_task;
@@ -637,6 +659,10 @@ struct mlx4_en_priv {
 	u32 pflags;
 	u8 rss_key[MLX4_EN_RSS_KEY_SIZE];
 	u8 rss_hash_fn;
+<<<<<<< HEAD
+=======
+	unsigned long state;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 enum mlx4_en_wol {
@@ -779,6 +805,10 @@ void mlx4_en_ptp_overflow_check(struct mlx4_en_dev *mdev);
 #define DEV_FEATURE_CHANGED(dev, new_features, feature) \
 	((dev->features & feature) ^ (new_features & feature))
 
+<<<<<<< HEAD
+=======
+int mlx4_en_moderation_update(struct mlx4_en_priv *priv);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int mlx4_en_reset_config(struct net_device *dev,
 			 struct hwtstamp_config ts_config,
 			 netdev_features_t new_features);

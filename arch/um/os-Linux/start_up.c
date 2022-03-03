@@ -336,7 +336,11 @@ void __init os_early_checks(void)
 	check_tmpexec();
 
 	pid = start_ptraced_child();
+<<<<<<< HEAD
 	if (init_registers(pid))
+=======
+	if (init_pid_registers(pid))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		fatal("Failed to initialize default registers");
 	stop_ptraced_child(pid, 1, 1);
 }

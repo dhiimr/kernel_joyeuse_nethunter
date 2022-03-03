@@ -23,7 +23,11 @@ int smp_call_function_single(int cpu, void (*func) (void *info), void *info,
 }
 EXPORT_SYMBOL(smp_call_function_single);
 
+<<<<<<< HEAD
 int smp_call_function_single_async(int cpu, call_single_data_t *csd)
+=======
+int smp_call_function_single_async(int cpu, struct __call_single_data *csd)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned long flags;
 

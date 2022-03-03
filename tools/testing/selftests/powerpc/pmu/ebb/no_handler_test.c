@@ -50,8 +50,11 @@ static int no_handler_test(void)
 
 	event_close(&event);
 
+<<<<<<< HEAD
 	dump_ebb_state();
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* The real test is that we never took an EBB at 0x0 */
 
 	return 0;

@@ -45,8 +45,13 @@
 #define PCI171X_RANGE_UNI	BIT(4)
 #define PCI171X_RANGE_GAIN(x)	(((x) & 0x7) << 0)
 #define PCI171X_MUX_REG		0x04	/* W:   A/D multiplexor control */
+<<<<<<< HEAD
 #define PCI171X_MUX_CHANH(x)	(((x) & 0xf) << 8)
 #define PCI171X_MUX_CHANL(x)	(((x) & 0xf) << 0)
+=======
+#define PCI171X_MUX_CHANH(x)	(((x) & 0xff) << 8)
+#define PCI171X_MUX_CHANL(x)	(((x) & 0xff) << 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define PCI171X_MUX_CHAN(x)	(PCI171X_MUX_CHANH(x) | PCI171X_MUX_CHANL(x))
 #define PCI171X_STATUS_REG	0x06	/* R:   status register */
 #define PCI171X_STATUS_IRQ	BIT(11)	/* 1=IRQ occurred */
@@ -299,11 +304,19 @@ static int pci1710_ai_eoc(struct comedi_device *dev,
 static int pci1710_ai_read_sample(struct comedi_device *dev,
 				  struct comedi_subdevice *s,
 				  unsigned int cur_chan,
+<<<<<<< HEAD
 				  unsigned int *val)
 {
 	const struct boardtype *board = dev->board_ptr;
 	struct pci1710_private *devpriv = dev->private;
 	unsigned int sample;
+=======
+				  unsigned short *val)
+{
+	const struct boardtype *board = dev->board_ptr;
+	struct pci1710_private *devpriv = dev->private;
+	unsigned short sample;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int chan;
 
 	sample = inw(dev->iobase + PCI171X_AD_DATA_REG);
@@ -344,7 +357,11 @@ static int pci1710_ai_insn_read(struct comedi_device *dev,
 	pci1710_ai_setup_chanlist(dev, s, &insn->chanspec, 1, 1);
 
 	for (i = 0; i < insn->n; i++) {
+<<<<<<< HEAD
 		unsigned int val;
+=======
+		unsigned short val;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* start conversion */
 		outw(0, dev->iobase + PCI171X_SOFTTRG_REG);
@@ -394,7 +411,11 @@ static void pci1710_handle_every_sample(struct comedi_device *dev,
 {
 	struct comedi_cmd *cmd = &s->async->cmd;
 	unsigned int status;
+<<<<<<< HEAD
 	unsigned int val;
+=======
+	unsigned short val;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 
 	status = inw(dev->iobase + PCI171X_STATUS_REG);
@@ -454,7 +475,11 @@ static void pci1710_handle_fifo(struct comedi_device *dev,
 	}
 
 	for (i = 0; i < devpriv->max_samples; i++) {
+<<<<<<< HEAD
 		unsigned int val;
+=======
+		unsigned short val;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		int ret;
 
 		ret = pci1710_ai_read_sample(dev, s, s->async->cur_chan, &val);

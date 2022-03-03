@@ -177,7 +177,11 @@ static void tegra_sdhci_reset(struct sdhci_host *host, u8 mask)
 			misc_ctrl |= SDHCI_MISC_CTRL_ENABLE_DDR50;
 		if (soc_data->nvquirks & NVQUIRK_ENABLE_SDR104)
 			misc_ctrl |= SDHCI_MISC_CTRL_ENABLE_SDR104;
+<<<<<<< HEAD
 		if (soc_data->nvquirks & SDHCI_MISC_CTRL_ENABLE_SDR50)
+=======
+		if (soc_data->nvquirks & NVQUIRK_ENABLE_SDR50)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			clk_ctrl |= SDHCI_CLOCK_CTRL_SDR50_TUNING_OVERRIDE;
 	}
 

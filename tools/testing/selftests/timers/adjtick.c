@@ -136,6 +136,10 @@ int check_tick_adj(long tickval)
 
 	eppm = get_ppm_drift();
 	printf("%lld usec, %lld ppm", systick + (systick * eppm / MILLION), eppm);
+<<<<<<< HEAD
+=======
+	fflush(stdout);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	tx1.modes = 0;
 	adjtimex(&tx1);

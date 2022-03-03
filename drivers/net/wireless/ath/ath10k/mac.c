@@ -17,6 +17,10 @@
 
 #include "mac.h"
 
+<<<<<<< HEAD
+=======
+#include <net/cfg80211.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <net/mac80211.h>
 #include <linux/etherdevice.h>
 #include <linux/acpi.h>
@@ -954,7 +958,11 @@ static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
 	if (time_left == 0)
 		return -ETIMEDOUT;
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return ar->last_wmi_vdev_start_status;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
@@ -989,7 +997,11 @@ static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
 	arg.channel.min_power = 0;
 	arg.channel.max_power = channel->max_power * 2;
 	arg.channel.max_reg_power = channel->max_reg_power * 2;
+<<<<<<< HEAD
 	arg.channel.max_antenna_gain = channel->max_antenna_gain * 2;
+=======
+	arg.channel.max_antenna_gain = channel->max_antenna_gain;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	reinit_completion(&ar->vdev_setup_done);
 
@@ -1431,7 +1443,11 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif,
 	arg.channel.min_power = 0;
 	arg.channel.max_power = chandef->chan->max_power * 2;
 	arg.channel.max_reg_power = chandef->chan->max_reg_power * 2;
+<<<<<<< HEAD
 	arg.channel.max_antenna_gain = chandef->chan->max_antenna_gain * 2;
+=======
+	arg.channel.max_antenna_gain = chandef->chan->max_antenna_gain;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
 		arg.ssid = arvif->u.ap.ssid;
@@ -1611,6 +1627,13 @@ static int ath10k_mac_setup_prb_tmpl(struct ath10k_vif *arvif)
 	if (arvif->vdev_type != WMI_VDEV_TYPE_AP)
 		return 0;
 
+<<<<<<< HEAD
+=======
+	 /* For mesh, probe response and beacon share the same template */
+	if (ieee80211_vif_is_mesh(vif))
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	prb = ieee80211_proberesp_get(hw, vif);
 	if (!prb) {
 		ath10k_warn(ar, "failed to get probe resp template from mac80211\n");
@@ -3086,7 +3109,11 @@ static int ath10k_update_channel_list(struct ath10k *ar)
 			ch->min_power = 0;
 			ch->max_power = channel->max_power * 2;
 			ch->max_reg_power = channel->max_reg_power * 2;
+<<<<<<< HEAD
 			ch->max_antenna_gain = channel->max_antenna_gain * 2;
+=======
+			ch->max_antenna_gain = channel->max_antenna_gain;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ch->reg_class_id = 0; /* FIXME */
 
 			/* FIXME: why use only legacy modes, why not any
@@ -3540,6 +3567,7 @@ bool ath10k_mac_tx_frm_has_freq(struct ath10k *ar)
 static int ath10k_mac_tx_wmi_mgmt(struct ath10k *ar, struct sk_buff *skb)
 {
 	struct sk_buff_head *q = &ar->wmi_mgmt_tx_queue;
+<<<<<<< HEAD
 	int ret = 0;
 
 	spin_lock_bh(&ar->data_lock);
@@ -3557,6 +3585,18 @@ unlock:
 	spin_unlock_bh(&ar->data_lock);
 
 	return ret;
+=======
+
+	if (skb_queue_len_lockless(q) >= ATH10K_MAX_NUM_MGMT_PENDING) {
+		ath10k_warn(ar, "wmi mgmt tx queue is full\n");
+		return -ENOSPC;
+	}
+
+	skb_queue_tail(q, skb);
+	ieee80211_queue_work(ar->hw, &ar->wmi_mgmt_tx_work);
+
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static enum ath10k_mac_tx_path
@@ -3622,7 +3662,11 @@ static int ath10k_mac_tx(struct ath10k *ar,
 			 struct ieee80211_vif *vif,
 			 enum ath10k_hw_txrx_mode txmode,
 			 enum ath10k_mac_tx_path txpath,
+<<<<<<< HEAD
 			 struct sk_buff *skb)
+=======
+			 struct sk_buff *skb, bool noque_offchan)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct ieee80211_hw *hw = ar->hw;
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
@@ -3650,10 +3694,17 @@ static int ath10k_mac_tx(struct ath10k *ar,
 		}
 	}
 
+<<<<<<< HEAD
 	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
 		if (!ath10k_mac_tx_frm_has_freq(ar)) {
 			ath10k_dbg(ar, ATH10K_DBG_MAC, "queued offchannel skb %pK\n",
 				   skb);
+=======
+	if (!noque_offchan && info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
+		if (!ath10k_mac_tx_frm_has_freq(ar)) {
+			ath10k_dbg(ar, ATH10K_DBG_MAC, "mac queued offchannel skb %pK len %d\n",
+				   skb, skb->len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			skb_queue_tail(&ar->offchan_tx_queue, skb);
 			ieee80211_queue_work(hw, &ar->offchan_tx_work);
@@ -3715,8 +3766,13 @@ void ath10k_offchan_tx_work(struct work_struct *work)
 
 		mutex_lock(&ar->conf_mutex);
 
+<<<<<<< HEAD
 		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac offchannel skb %pK\n",
 			   skb);
+=======
+		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac offchannel skb %pK len %d\n",
+			   skb, skb->len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		hdr = (struct ieee80211_hdr *)skb->data;
 		peer_addr = ieee80211_get_DA(hdr);
@@ -3762,7 +3818,11 @@ void ath10k_offchan_tx_work(struct work_struct *work)
 		txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
 		txpath = ath10k_mac_tx_h_get_txpath(ar, skb, txmode);
 
+<<<<<<< HEAD
 		ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb);
+=======
+		ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (ret) {
 			ath10k_warn(ar, "failed to transmit offchannel frame: %d\n",
 				    ret);
@@ -3772,8 +3832,13 @@ void ath10k_offchan_tx_work(struct work_struct *work)
 		time_left =
 		wait_for_completion_timeout(&ar->offchan_tx_completed, 3 * HZ);
 		if (time_left == 0)
+<<<<<<< HEAD
 			ath10k_warn(ar, "timed out waiting for offchannel skb %pK\n",
 				    skb);
+=======
+			ath10k_warn(ar, "timed out waiting for offchannel skb %pK, len: %d\n",
+				    skb, skb->len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (!peer && tmp_peer_created) {
 			ret = ath10k_peer_delete(ar, vdev_id, peer_addr);
@@ -3952,7 +4017,11 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
 		spin_unlock_bh(&ar->htt.tx_lock);
 	}
 
+<<<<<<< HEAD
 	ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb);
+=======
+	ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (unlikely(ret)) {
 		ath10k_warn(ar, "failed to push frame: %d\n", ret);
 
@@ -4234,7 +4303,11 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
 		spin_unlock_bh(&ar->htt.tx_lock);
 	}
 
+<<<<<<< HEAD
 	ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb);
+=======
+	ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret) {
 		ath10k_warn(ar, "failed to transmit frame: %d\n", ret);
 		if (is_htt) {
@@ -5063,6 +5136,10 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
 
 	if (arvif->nohwcrypt &&
 	    !test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
+<<<<<<< HEAD
+=======
+		ret = -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ath10k_warn(ar, "cryptmode module param needed for sw crypto\n");
 		goto err;
 	}
@@ -6713,7 +6790,11 @@ ath10k_mac_update_bss_chan_survey(struct ath10k *ar,
 				  struct ieee80211_channel *channel)
 {
 	int ret;
+<<<<<<< HEAD
 	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ_CLEAR;
+=======
+	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	lockdep_assert_held(&ar->conf_mutex);
 
@@ -8170,6 +8251,10 @@ int ath10k_mac_register(struct ath10k *ar)
 		ar->hw->wiphy->bands[NL80211_BAND_5GHZ] = band;
 	}
 
+<<<<<<< HEAD
+=======
+	wiphy_read_of_freq_limits(ar->hw->wiphy);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ath10k_mac_setup_ht_vht_cap(ar);
 
 	ar->hw->wiphy->interface_modes =

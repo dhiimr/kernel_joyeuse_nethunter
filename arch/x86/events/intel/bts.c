@@ -71,9 +71,23 @@ struct bts_buffer {
 
 static struct pmu bts_pmu;
 
+<<<<<<< HEAD
 static size_t buf_size(struct page *page)
 {
 	return 1 << (PAGE_SHIFT + page_private(page));
+=======
+static int buf_nr_pages(struct page *page)
+{
+	if (!PagePrivate(page))
+		return 1;
+
+	return 1 << page_private(page);
+}
+
+static size_t buf_size(struct page *page)
+{
+	return buf_nr_pages(page) * PAGE_SIZE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void *
@@ -89,9 +103,13 @@ bts_buffer_setup_aux(int cpu, void **pages, int nr_pages, bool overwrite)
 	/* count all the high order buffers */
 	for (pg = 0, nbuf = 0; pg < nr_pages;) {
 		page = virt_to_page(pages[pg]);
+<<<<<<< HEAD
 		if (WARN_ON_ONCE(!PagePrivate(page) && nr_pages > 1))
 			return NULL;
 		pg += 1 << page_private(page);
+=======
+		pg += buf_nr_pages(page);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		nbuf++;
 	}
 
@@ -115,7 +133,11 @@ bts_buffer_setup_aux(int cpu, void **pages, int nr_pages, bool overwrite)
 		unsigned int __nr_pages;
 
 		page = virt_to_page(pages[pg]);
+<<<<<<< HEAD
 		__nr_pages = PagePrivate(page) ? 1 << page_private(page) : 1;
+=======
+		__nr_pages = buf_nr_pages(page);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		buf->buf[nbuf].page = page;
 		buf->buf[nbuf].offset = offset;
 		buf->buf[nbuf].displacement = (pad ? BTS_RECORD_SIZE - pad : 0);

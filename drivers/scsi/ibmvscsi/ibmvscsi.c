@@ -429,6 +429,11 @@ static int ibmvscsi_reenable_crq_queue(struct crq_queue *queue,
 	int rc = 0;
 	struct vio_dev *vdev = to_vio_dev(hostdata->dev);
 
+<<<<<<< HEAD
+=======
+	set_adapter_info(hostdata);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Re-enable the CRQ */
 	do {
 		if (rc)
@@ -2299,16 +2304,23 @@ static int ibmvscsi_probe(struct vio_dev *vdev, const struct vio_device_id *id)
 static int ibmvscsi_remove(struct vio_dev *vdev)
 {
 	struct ibmvscsi_host_data *hostdata = dev_get_drvdata(&vdev->dev);
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	srp_remove_host(hostdata->host);
 	scsi_remove_host(hostdata->host);
 
 	purge_requests(hostdata, DID_ERROR);
+<<<<<<< HEAD
 
 	spin_lock_irqsave(hostdata->host->host_lock, flags);
 	release_event_pool(&hostdata->pool, hostdata);
 	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
+=======
+	release_event_pool(&hostdata->pool, hostdata);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ibmvscsi_release_crq_queue(&hostdata->queue, hostdata,
 					max_events);

@@ -26,7 +26,11 @@ Example (for ARM-based BeagleBone with NPC100 NFC controller on I2C2):
 		clock-frequency = <100000>;
 
 		interrupt-parent = <&gpio1>;
+<<<<<<< HEAD
 		interrupts = <29 GPIO_ACTIVE_HIGH>;
+=======
+		interrupts = <29 IRQ_TYPE_LEVEL_HIGH>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		enable-gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
 		firmware-gpios = <&gpio0 31 GPIO_ACTIVE_HIGH>;

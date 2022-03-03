@@ -59,6 +59,11 @@
 #include "adf_transport_access_macros.h"
 #include "adf_transport_internal.h"
 
+<<<<<<< HEAD
+=======
+#define ADF_MAX_NUM_VFS	32
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int adf_enable_msix(struct adf_accel_dev *accel_dev)
 {
 	struct adf_accel_pci *pci_dev_info = &accel_dev->accel_pci_dev;
@@ -111,7 +116,11 @@ static irqreturn_t adf_msix_isr_ae(int irq, void *dev_ptr)
 		struct adf_bar *pmisc =
 			&GET_BARS(accel_dev)[hw_data->get_misc_bar_id(hw_data)];
 		void __iomem *pmisc_bar_addr = pmisc->virt_addr;
+<<<<<<< HEAD
 		u32 vf_mask;
+=======
+		unsigned long vf_mask;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* Get the interrupt sources triggered by VFs */
 		vf_mask = ((ADF_CSR_RD(pmisc_bar_addr, ADF_ERRSOU5) &
@@ -132,8 +141,12 @@ static irqreturn_t adf_msix_isr_ae(int irq, void *dev_ptr)
 			 * unless the VF is malicious and is attempting to
 			 * flood the host OS with VF2PF interrupts.
 			 */
+<<<<<<< HEAD
 			for_each_set_bit(i, (const unsigned long *)&vf_mask,
 					 (sizeof(vf_mask) * BITS_PER_BYTE)) {
+=======
+			for_each_set_bit(i, &vf_mask, ADF_MAX_NUM_VFS) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				vf_info = accel_dev->pf.vf_info + i;
 
 				if (!__ratelimit(&vf_info->vf2pf_ratelimit)) {
@@ -330,6 +343,7 @@ int adf_isr_resource_alloc(struct adf_accel_dev *accel_dev)
 
 	ret = adf_isr_alloc_msix_entry_table(accel_dev);
 	if (ret)
+<<<<<<< HEAD
 		return ret;
 	if (adf_enable_msix(accel_dev))
 		goto err_out;
@@ -344,5 +358,34 @@ int adf_isr_resource_alloc(struct adf_accel_dev *accel_dev)
 err_out:
 	adf_isr_resource_free(accel_dev);
 	return -EFAULT;
+=======
+		goto err_out;
+
+	ret = adf_enable_msix(accel_dev);
+	if (ret)
+		goto err_free_msix_table;
+
+	ret = adf_setup_bh(accel_dev);
+	if (ret)
+		goto err_disable_msix;
+
+	ret = adf_request_irqs(accel_dev);
+	if (ret)
+		goto err_cleanup_bh;
+
+	return 0;
+
+err_cleanup_bh:
+	adf_cleanup_bh(accel_dev);
+
+err_disable_msix:
+	adf_disable_msix(&accel_dev->accel_pci_dev);
+
+err_free_msix_table:
+	adf_isr_free_msix_entry_table(accel_dev);
+
+err_out:
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(adf_isr_resource_alloc);

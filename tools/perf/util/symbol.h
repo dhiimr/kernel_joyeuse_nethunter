@@ -351,6 +351,10 @@ const char *arch__normalize_symbol_name(const char *name);
 #define SYMBOL_A 0
 #define SYMBOL_B 1
 
+<<<<<<< HEAD
+=======
+void arch__symbols__fixup_end(struct symbol *p, struct symbol *c);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int arch__compare_symbol_names(const char *namea, const char *nameb);
 int arch__compare_symbol_names_n(const char *namea, const char *nameb,
 				 unsigned int n);

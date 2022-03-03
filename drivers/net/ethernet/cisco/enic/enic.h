@@ -168,6 +168,10 @@ struct enic {
 	u16 num_vfs;
 #endif
 	spinlock_t enic_api_lock;
+<<<<<<< HEAD
+=======
+	bool enic_api_busy;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct enic_port_profile *pp;
 
 	/* work queue cache line section */

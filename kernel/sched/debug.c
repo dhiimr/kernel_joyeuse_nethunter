@@ -267,6 +267,7 @@ set_table_entry(struct ctl_table *entry,
 }
 
 static struct ctl_table *
+<<<<<<< HEAD
 sd_alloc_ctl_energy_table(struct sched_group_energy *sge)
 {
 	struct ctl_table *table = sd_alloc_ctl_entry(5);
@@ -321,6 +322,11 @@ sd_alloc_ctl_domain_table(struct sched_domain *sd)
 	}
 
 	table = sd_alloc_ctl_entry(nr_entries);
+=======
+sd_alloc_ctl_domain_table(struct sched_domain *sd)
+{
+	struct ctl_table *table = sd_alloc_ctl_entry(14);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (table == NULL)
 		return NULL;
@@ -353,6 +359,7 @@ sd_alloc_ctl_domain_table(struct sched_domain *sd)
 		sizeof(long), 0644, proc_doulongvec_minmax, false);
 	set_table_entry(&table[12], "name", sd->name,
 		CORENAME_MAX_SIZE, 0444, proc_dostring, false);
+<<<<<<< HEAD
 	sg = sd->groups;
 	if (sg->sge) {
 		char buf[32];
@@ -366,6 +373,9 @@ sd_alloc_ctl_domain_table(struct sched_domain *sd)
 		} while (entry++, i++, sg = sg->next, sg != sd->groups);
 	}
 	/* &table[nr_entries-1] is terminator */
+=======
+	/* &table[13] is terminator */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return table;
 }
@@ -631,8 +641,11 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
 			cfs_rq->runnable_load_avg);
 	SEQ_printf(m, "  .%-30s: %lu\n", "util_avg",
 			cfs_rq->avg.util_avg);
+<<<<<<< HEAD
 	SEQ_printf(m, "  .%-30s: %u\n", "util_est_enqueued",
 			cfs_rq->avg.util_est.enqueued);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	SEQ_printf(m, "  .%-30s: %ld\n", "removed_load_avg",
 			atomic_long_read(&cfs_rq->removed_load_avg));
 	SEQ_printf(m, "  .%-30s: %ld\n", "removed_util_avg",
@@ -750,6 +763,7 @@ do {									\
 	P(cpu_load[2]);
 	P(cpu_load[3]);
 	P(cpu_load[4]);
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 	P(cpu_capacity);
 #endif
@@ -765,6 +779,8 @@ do {									\
 	SEQ_printf(m, "  .%-30s: %llu\n", "walt_stats.cumulative_runnable_avg",
 			rq->walt_stats.cumulative_runnable_avg_scaled);
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #undef P
 #undef PN
 
@@ -843,6 +859,7 @@ static void sched_debug_header(struct seq_file *m)
 	PN(sysctl_sched_wakeup_granularity);
 	P(sysctl_sched_child_runs_first);
 	P(sysctl_sched_features);
+<<<<<<< HEAD
 #ifdef CONFIG_SCHED_WALT
 	P(sched_init_task_load_windows);
 	P(min_capacity);
@@ -850,6 +867,8 @@ static void sched_debug_header(struct seq_file *m)
 	P(sched_ravg_window);
 	P(sched_load_granule);
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #undef PN
 #undef P
 
@@ -1070,9 +1089,12 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
 		P_SCHEDSTAT(se.statistics.nr_wakeups_passive);
 		P_SCHEDSTAT(se.statistics.nr_wakeups_idle);
 
+<<<<<<< HEAD
 #ifdef CONFIG_SCHED_WALT
 		P(ravg.demand);
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		avg_atom = p->se.sum_exec_runtime;
 		if (nr_switches)
 			avg_atom = div64_ul(avg_atom, nr_switches);
@@ -1104,8 +1126,11 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
 	P(se.avg.load_avg);
 	P(se.avg.util_avg);
 	P(se.avg.last_update_time);
+<<<<<<< HEAD
 	P(se.avg.util_est.ewma);
 	P(se.avg.util_est.enqueued);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 	P(policy);
 	P(prio);

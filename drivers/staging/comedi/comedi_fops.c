@@ -2603,8 +2603,15 @@ static int comedi_open(struct inode *inode, struct file *file)
 	}
 
 	cfp = kzalloc(sizeof(*cfp), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!cfp)
 		return -ENOMEM;
+=======
+	if (!cfp) {
+		comedi_dev_put(dev);
+		return -ENOMEM;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cfp->dev = dev;
 

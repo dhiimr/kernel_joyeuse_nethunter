@@ -65,8 +65,12 @@ config CROSS_COMPILE
 
 config COMPILE_TEST
 	bool "Compile also drivers which will not load"
+<<<<<<< HEAD
 	depends on !UML
 	default n
+=======
+	depends on HAS_IOMEM
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  Some drivers can be compiled on a different platform than they are
 	  intended to be run on. Despite they cannot be loaded there (or even
@@ -312,13 +316,19 @@ config AUDIT
 	help
 	  Enable auditing infrastructure that can be used with another
 	  kernel subsystem, such as SELinux (which requires this for
+<<<<<<< HEAD
 	  logging of avc messages output). Does not do system-call
 	  auditing without CONFIG_AUDITSYSCALL.
+=======
+	  logging of avc messages output).  System call auditing is included
+	  on architectures which support it.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config HAVE_ARCH_AUDITSYSCALL
 	bool
 
 config AUDITSYSCALL
+<<<<<<< HEAD
 	bool "Enable system-call auditing support"
 	depends on AUDIT && HAVE_ARCH_AUDITSYSCALL
 	default y if SECURITY_SELINUX
@@ -326,6 +336,10 @@ config AUDITSYSCALL
 	  Enable low-overhead system-call auditing infrastructure that
 	  can be used independently or with another kernel subsystem,
 	  such as SELinux.
+=======
+	def_bool y
+	depends on AUDIT && HAVE_ARCH_AUDITSYSCALL
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config AUDIT_WATCH
 	def_bool y
@@ -405,6 +419,7 @@ config IRQ_TIME_ACCOUNTING
 
 	  If in doubt, say N here.
 
+<<<<<<< HEAD
 config SCHED_WALT
         bool "Support window based load tracking"
         depends on SMP
@@ -414,6 +429,8 @@ config SCHED_WALT
 	used to guide task placement as well as task frequency requirements
 	for cpufreq governors.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config BSD_PROCESS_ACCT
 	bool "BSD Process Accounting"
 	depends on MULTIUSER
@@ -484,6 +501,7 @@ config TASK_IO_ACCOUNTING
 
 	  Say N if unsure.
 
+<<<<<<< HEAD
 config PSI
 	bool "Pressure stall information tracking"
 	help
@@ -523,6 +541,8 @@ config PSI_DEFAULT_DISABLED
 
 	  Say N if unsure.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endmenu # "CPU/Task time and stats accounting"
 
 source "kernel/rcu/Kconfig"
@@ -553,7 +573,12 @@ config IKCONFIG_PROC
 
 config LOG_BUF_SHIFT
 	int "Kernel log buffer size (16 => 64KB, 17 => 128KB)"
+<<<<<<< HEAD
 	range 12 25
+=======
+	range 12 25 if !H8300
+	range 12 19 if H8300
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	default 17
 	depends on PRINTK
 	help
@@ -570,6 +595,7 @@ config LOG_BUF_SHIFT
 		     13 =>  8 KB
 		     12 =>  4 KB
 
+<<<<<<< HEAD
 config CONSOLE_FLUSH_ON_HOTPLUG
 	bool "Enable console flush configurable in hot plug code path"
 	depends on HOTPLUG_CPU
@@ -580,6 +606,8 @@ config CONSOLE_FLUSH_ON_HOTPLUG
 	increases. So make console flush configurable in hot plug path
 	and default disabled to help in cpu hot plug latencies.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config LOG_CPU_MAX_BUF_SHIFT
 	int "CPU kernel log buffer size contribution (13 => 8 KB, 17 => 128KB)"
 	depends on SMP
@@ -649,6 +677,7 @@ config HAVE_UNSTABLE_SCHED_CLOCK
 config GENERIC_SCHED_CLOCK
 	bool
 
+<<<<<<< HEAD
 menu "FAIR Scheuler tunables"
 
 choice
@@ -684,6 +713,8 @@ endchoice
 
 endmenu # FAIR Scheduler tunables"
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #
 # For architectures that want to enable the support for NUMA-affine scheduler
 # balancing logic:
@@ -974,6 +1005,7 @@ config SOCK_CGROUP_DATA
 
 endif # CGROUPS
 
+<<<<<<< HEAD
 config SCHED_CORE_CTL
 	bool "QTI Core Control"
 	depends on SMP
@@ -984,6 +1016,8 @@ config SCHED_CORE_CTL
 
 	  If unsure, say N here.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config CHECKPOINT_RESTORE
 	bool "Checkpoint/restore support" if EXPERT
 	select PROC_CHILDREN
@@ -1067,6 +1101,7 @@ config SCHED_AUTOGROUP
 	  desktop applications.  Task group autogeneration is currently based
 	  upon task session.
 
+<<<<<<< HEAD
 config SCHED_TUNE
 	bool "Boosting for CFS tasks (EXPERIMENTAL)"
 	depends on SMP
@@ -1100,6 +1135,8 @@ config DEFAULT_USE_ENERGY_AWARE
 
 	  Say N if unsure.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config SYSFS_DEPRECATED
 	bool "Enable deprecated sysfs features to support old userspace tools"
 	depends on SYSFS
@@ -1519,6 +1556,19 @@ config ADVISE_SYSCALLS
 	  applications use these syscalls, you can disable this option to save
 	  space.
 
+<<<<<<< HEAD
+=======
+config BPF_UNPRIV_DEFAULT_OFF
+	bool "Disable unprivileged BPF by default"
+	depends on BPF_SYSCALL
+	help
+	  Disables unprivileged BPF by default by setting the corresponding
+	  /proc/sys/kernel/unprivileged_bpf_disabled knob to 2. An admin can
+	  still reenable it by setting it to 0 later on, or permanently
+	  disable it by setting it to 1 (from which no other transition to
+	  0 is possible anymore).
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config USERFAULTFD
 	bool "Enable userfaultfd() system call"
 	select ANON_INODES
@@ -1606,6 +1656,7 @@ config PERF_EVENTS
 
 	  Say Y if unsure.
 
+<<<<<<< HEAD
 config PERF_USER_SHARE
 	bool "Perf event sharing with user-space"
 	help
@@ -1616,6 +1667,8 @@ config PERF_USER_SHARE
 	  Say N if unsure.
 
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config DEBUG_PERF_USE_VMALLOC
 	default n
 	bool "Debug: use vmalloc to back perf mmap() buffers"
@@ -2038,7 +2091,11 @@ endif # MODULES
 
 config MODULES_TREE_LOOKUP
 	def_bool y
+<<<<<<< HEAD
 	depends on PERF_EVENTS || TRACING || CFI_CLANG
+=======
+	depends on PERF_EVENTS || TRACING
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config INIT_ALL_POSSIBLE
 	bool

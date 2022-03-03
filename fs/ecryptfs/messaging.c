@@ -397,6 +397,10 @@ int __init ecryptfs_init_messaging(void)
 					* ecryptfs_message_buf_len),
 				       GFP_KERNEL);
 	if (!ecryptfs_msg_ctx_arr) {
+<<<<<<< HEAD
+=======
+		kfree(ecryptfs_daemon_hash);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rc = -ENOMEM;
 		printk(KERN_ERR "%s: Failed to allocate memory\n", __func__);
 		goto out;

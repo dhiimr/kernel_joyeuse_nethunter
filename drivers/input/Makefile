@@ -27,8 +27,13 @@ obj-$(CONFIG_INPUT_TOUCHSCREEN)	+= touchscreen/
 obj-$(CONFIG_INPUT_MISC)	+= misc/
 
 obj-$(CONFIG_INPUT_APMPOWER)	+= apm-power.o
+<<<<<<< HEAD
 obj-$(CONFIG_INPUT_KEYRESET)	+= keyreset.o
 obj-$(CONFIG_INPUT_KEYCOMBO)	+= keycombo.o
 
 obj-$(CONFIG_RMI4_CORE)		+= rmi4/
 obj-$(CONFIG_INPUT_FINGERPRINT)	+= fingerprint/
+=======
+
+obj-$(CONFIG_RMI4_CORE)		+= rmi4/
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

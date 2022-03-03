@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2014-2015,2017 Qualcomm Atheros, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -23,8 +26,11 @@
 MODULE_FIRMWARE(WIL_FW_NAME_DEFAULT);
 MODULE_FIRMWARE(WIL_FW_NAME_SPARROW_PLUS);
 MODULE_FIRMWARE(WIL_BOARD_FILE_NAME);
+<<<<<<< HEAD
 MODULE_FIRMWARE(WIL_FW_NAME_TALYN);
 MODULE_FIRMWARE(WIL_BRD_NAME_TALYN);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static
 void wil_memset_toio_32(volatile void __iomem *dst, u32 val,

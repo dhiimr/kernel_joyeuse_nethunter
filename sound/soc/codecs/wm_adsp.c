@@ -1169,8 +1169,12 @@ static unsigned int wmfw_convert_flags(unsigned int in, unsigned int len)
 	}
 
 	if (in) {
+<<<<<<< HEAD
 		if (in & WMFW_CTL_FLAG_READABLE)
 			out |= rd;
+=======
+		out |= rd;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (in & WMFW_CTL_FLAG_WRITEABLE)
 			out |= wr;
 		if (in & WMFW_CTL_FLAG_VOLATILE)
@@ -1392,7 +1396,11 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
 	ctl_work = kzalloc(sizeof(*ctl_work), GFP_KERNEL);
 	if (!ctl_work) {
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto err_ctl_cache;
+=======
+		goto err_list_del;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ctl_work->dsp = dsp;
@@ -1402,7 +1410,12 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
 
 	return 0;
 
+<<<<<<< HEAD
 err_ctl_cache:
+=======
+err_list_del:
+	list_del(&ctl->list);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(ctl->cache);
 err_ctl_name:
 	kfree(ctl->name);
@@ -3711,11 +3724,20 @@ irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
 	struct regmap *regmap = dsp->regmap;
 	int ret = 0;
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&dsp->pwr_lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = regmap_read(regmap, dsp->base + ADSP2_LOCK_REGION_CTRL, &val);
 	if (ret) {
 		adsp_err(dsp,
 			"Failed to read Region Lock Ctrl register: %d\n", ret);
+<<<<<<< HEAD
 		return IRQ_HANDLED;
+=======
+		goto error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (val & ADSP2_WDT_TIMEOUT_STS_MASK) {
@@ -3734,7 +3756,11 @@ irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
 			adsp_err(dsp,
 				 "Failed to read Bus Err Addr register: %d\n",
 				 ret);
+<<<<<<< HEAD
 			return IRQ_HANDLED;
+=======
+			goto error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		adsp_err(dsp, "bus error address = 0x%x\n",
@@ -3747,7 +3773,11 @@ irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
 			adsp_err(dsp,
 				 "Failed to read Pmem Xmem Err Addr register: %d\n",
 				 ret);
+<<<<<<< HEAD
 			return IRQ_HANDLED;
+=======
+			goto error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		adsp_err(dsp, "xmem error address = 0x%x\n",
@@ -3760,6 +3790,12 @@ irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
 	regmap_update_bits(regmap, dsp->base + ADSP2_LOCK_REGION_CTRL,
 			   ADSP2_CTRL_ERR_EINT, ADSP2_CTRL_ERR_EINT);
 
+<<<<<<< HEAD
+=======
+error:
+	mutex_unlock(&dsp->pwr_lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return IRQ_HANDLED;
 }
 EXPORT_SYMBOL_GPL(wm_adsp2_bus_error);

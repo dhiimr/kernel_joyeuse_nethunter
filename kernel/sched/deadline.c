@@ -16,13 +16,19 @@
  *                    Fabio Checconi <fchecconi@gmail.com>
  */
 #include "sched.h"
+<<<<<<< HEAD
 #include "walt.h"
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <linux/slab.h>
 #include <uapi/linux/sched/types.h>
 
+<<<<<<< HEAD
 #include "walt.h"
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct dl_bandwidth def_dl_bandwidth;
 
 static inline struct task_struct *dl_task_of(struct sched_dl_entity *dl_se)
@@ -1292,7 +1298,10 @@ void inc_dl_tasks(struct sched_dl_entity *dl_se, struct dl_rq *dl_rq)
 	WARN_ON(!dl_prio(prio));
 	dl_rq->dl_nr_running++;
 	add_nr_running(rq_of_dl_rq(dl_rq), 1);
+<<<<<<< HEAD
 	walt_inc_cumulative_runnable_avg(rq_of_dl_rq(dl_rq), dl_task_of(dl_se));
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	inc_dl_deadline(dl_rq, deadline);
 	inc_dl_migration(dl_se, dl_rq);
@@ -1307,7 +1316,10 @@ void dec_dl_tasks(struct sched_dl_entity *dl_se, struct dl_rq *dl_rq)
 	WARN_ON(!dl_rq->dl_nr_running);
 	dl_rq->dl_nr_running--;
 	sub_nr_running(rq_of_dl_rq(dl_rq), 1);
+<<<<<<< HEAD
 	walt_dec_cumulative_runnable_avg(rq_of_dl_rq(dl_rq), dl_task_of(dl_se));
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dec_dl_deadline(dl_rq, dl_se->deadline);
 	dec_dl_migration(dl_se, dl_rq);
@@ -1513,8 +1525,12 @@ static void yield_task_dl(struct rq *rq)
 static int find_later_rq(struct task_struct *task);
 
 static int
+<<<<<<< HEAD
 select_task_rq_dl(struct task_struct *p, int cpu, int sd_flag, int flags,
 		  int sibling_count_hint)
+=======
+select_task_rq_dl(struct task_struct *p, int cpu, int sd_flag, int flags)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct task_struct *curr;
 	struct rq *rq;
@@ -2026,9 +2042,13 @@ retry:
 	deactivate_task(rq, next_task, 0);
 	sub_running_bw(next_task->dl.dl_bw, &rq->dl);
 	sub_rq_bw(next_task->dl.dl_bw, &rq->dl);
+<<<<<<< HEAD
 	next_task->on_rq = TASK_ON_RQ_MIGRATING;
 	set_task_cpu(next_task, later_rq->cpu);
 	next_task->on_rq = TASK_ON_RQ_QUEUED;
+=======
+	set_task_cpu(next_task, later_rq->cpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	add_rq_bw(next_task->dl.dl_bw, &later_rq->dl);
 	add_running_bw(next_task->dl.dl_bw, &later_rq->dl);
 	activate_task(later_rq, next_task, 0);
@@ -2120,9 +2140,13 @@ static void pull_dl_task(struct rq *this_rq)
 			deactivate_task(src_rq, p, 0);
 			sub_running_bw(p->dl.dl_bw, &src_rq->dl);
 			sub_rq_bw(p->dl.dl_bw, &src_rq->dl);
+<<<<<<< HEAD
 			p->on_rq = TASK_ON_RQ_MIGRATING;
 			set_task_cpu(p, this_cpu);
 			p->on_rq = TASK_ON_RQ_QUEUED;
+=======
+			set_task_cpu(p, this_cpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			add_rq_bw(p->dl.dl_bw, &this_rq->dl);
 			add_running_bw(p->dl.dl_bw, &this_rq->dl);
 			activate_task(this_rq, p, 0);
@@ -2347,9 +2371,12 @@ const struct sched_class dl_sched_class = {
 	.switched_to		= switched_to_dl,
 
 	.update_curr		= update_curr_dl,
+<<<<<<< HEAD
 #ifdef CONFIG_SCHED_WALT
 	.fixup_walt_sched_stats	= fixup_walt_sched_stats_common,
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 int sched_dl_global_validate(void)
@@ -2358,7 +2385,11 @@ int sched_dl_global_validate(void)
 	u64 period = global_rt_period();
 	u64 new_bw = to_ratio(period, runtime);
 	struct dl_bw *dl_b;
+<<<<<<< HEAD
 	int cpu, ret = 0;
+=======
+	int cpu, cpus, ret = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long flags;
 
 	/*
@@ -2373,9 +2404,16 @@ int sched_dl_global_validate(void)
 	for_each_possible_cpu(cpu) {
 		rcu_read_lock_sched();
 		dl_b = dl_bw_of(cpu);
+<<<<<<< HEAD
 
 		raw_spin_lock_irqsave(&dl_b->lock, flags);
 		if (new_bw < dl_b->total_bw)
+=======
+		cpus = dl_bw_cpus(cpu);
+
+		raw_spin_lock_irqsave(&dl_b->lock, flags);
+		if (new_bw * cpus < dl_b->total_bw)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ret = -EBUSY;
 		raw_spin_unlock_irqrestore(&dl_b->lock, flags);
 

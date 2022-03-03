@@ -768,8 +768,15 @@ static int _init_clkctrl_providers(void)
 
 	for_each_matching_node(np, ti_clkctrl_match_table) {
 		ret = _setup_clkctrl_provider(np);
+<<<<<<< HEAD
 		if (ret)
 			break;
+=======
+		if (ret) {
+			of_node_put(np);
+			break;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return ret;
@@ -2530,7 +2537,11 @@ static void _setup_iclk_autoidle(struct omap_hwmod *oh)
  */
 static int _setup_reset(struct omap_hwmod *oh)
 {
+<<<<<<< HEAD
 	int r;
+=======
+	int r = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (oh->_state != _HWMOD_STATE_INITIALIZED)
 		return -EINVAL;

@@ -160,6 +160,21 @@ void clk_deactivate(struct clk *clk)
 }
 EXPORT_SYMBOL(clk_deactivate);
 
+<<<<<<< HEAD
+=======
+struct clk *clk_get_parent(struct clk *clk)
+{
+	return NULL;
+}
+EXPORT_SYMBOL(clk_get_parent);
+
+int clk_set_parent(struct clk *clk, struct clk *parent)
+{
+	return 0;
+}
+EXPORT_SYMBOL(clk_set_parent);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline u32 get_counter_resolution(void)
 {
 	u32 res;

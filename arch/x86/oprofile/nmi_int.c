@@ -592,7 +592,11 @@ enum __force_cpu_type {
 
 static int force_cpu_type;
 
+<<<<<<< HEAD
 static int set_cpu_type(const char *str, const struct kernel_param *kp)
+=======
+static int set_cpu_type(const char *str, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (!strcmp(str, "timer")) {
 		force_cpu_type = timer;

@@ -26,9 +26,12 @@
 
 #include "drm_crtc_internal.h"
 
+<<<<<<< HEAD
 #define MAX_BLOB_PROP_SIZE	(PAGE_SIZE * 30)
 #define MAX_BLOB_PROP_COUNT	250
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * DOC: overview
  *
@@ -453,7 +456,11 @@ int drm_mode_getproperty_ioctl(struct drm_device *dev,
 	if (!drm_core_check_feature(dev, DRIVER_MODESET))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	property = drm_property_find(dev, file_priv, out_resp->prop_id);
+=======
+	property = drm_property_find(dev, out_resp->prop_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!property)
 		return -ENOENT;
 
@@ -543,8 +550,12 @@ drm_property_create_blob(struct drm_device *dev, size_t length,
 	struct drm_property_blob *blob;
 	int ret;
 
+<<<<<<< HEAD
 	if (!length || length > MAX_BLOB_PROP_SIZE -
 				sizeof(struct drm_property_blob))
+=======
+	if (!length || length > INT_MAX - sizeof(struct drm_property_blob))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ERR_PTR(-EINVAL);
 
 	blob = kvzalloc(sizeof(struct drm_property_blob)+length, GFP_KERNEL);
@@ -638,7 +649,11 @@ struct drm_property_blob *drm_property_lookup_blob(struct drm_device *dev,
 	struct drm_mode_object *obj;
 	struct drm_property_blob *blob = NULL;
 
+<<<<<<< HEAD
 	obj = __drm_mode_object_find(dev, NULL, id, DRM_MODE_OBJECT_BLOB);
+=======
+	obj = __drm_mode_object_find(dev, id, DRM_MODE_OBJECT_BLOB);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (obj)
 		blob = obj_to_blob(obj);
 	return blob;
@@ -769,19 +784,27 @@ int drm_mode_createblob_ioctl(struct drm_device *dev,
 			      void *data, struct drm_file *file_priv)
 {
 	struct drm_mode_create_blob *out_resp = data;
+<<<<<<< HEAD
 	struct drm_property_blob *blob, *bt;
 	int ret = 0;
 	u32 count = 0;
+=======
+	struct drm_property_blob *blob;
+	int ret = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!drm_core_check_feature(dev, DRIVER_MODESET))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	list_for_each_entry(bt, &file_priv->blobs, head_file)
 		count++;
 
 	if (count >= MAX_BLOB_PROP_COUNT)
 		return -EINVAL;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	blob = drm_property_create_blob(dev, out_resp->length, NULL);
 	if (IS_ERR(blob))
 		return PTR_ERR(blob);
@@ -908,7 +931,11 @@ bool drm_property_change_valid_get(struct drm_property *property,
 		if (value == 0)
 			return true;
 
+<<<<<<< HEAD
 		*ref = __drm_mode_object_find(property->dev, NULL, value,
+=======
+		*ref = __drm_mode_object_find(property->dev, value,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					      property->values[0]);
 		return *ref != NULL;
 	}

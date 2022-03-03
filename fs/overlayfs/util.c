@@ -41,6 +41,7 @@ const struct cred *ovl_override_creds(struct super_block *sb)
 {
 	struct ovl_fs *ofs = sb->s_fs_info;
 
+<<<<<<< HEAD
 	if (!ofs->config.override_creds)
 		return NULL;
 	return override_creds(ofs->creator_cred);
@@ -58,6 +59,11 @@ ssize_t ovl_vfs_getxattr(struct dentry *dentry, const char *name, void *buf,
 	return __vfs_getxattr(dentry, d_inode(dentry), name, buf, size);
 }
 
+=======
+	return override_creds(ofs->creator_cred);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct super_block *ovl_same_sb(struct super_block *sb)
 {
 	struct ovl_fs *ofs = sb->s_fs_info;
@@ -345,13 +351,21 @@ void ovl_copy_up_end(struct dentry *dentry)
 
 bool ovl_check_dir_xattr(struct dentry *dentry, const char *name)
 {
+<<<<<<< HEAD
 	ssize_t res;
+=======
+	int res;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	char val;
 
 	if (!d_is_dir(dentry))
 		return false;
 
+<<<<<<< HEAD
 	res = ovl_vfs_getxattr(dentry, name, &val, 1);
+=======
+	res = vfs_getxattr(dentry, name, &val, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (res == 1 && val == 'y')
 		return true;
 
@@ -549,7 +563,11 @@ int ovl_nlink_start(struct dentry *dentry, bool *locked)
 	 * value relative to the upper inode nlink in an upper inode xattr.
 	 */
 	err = ovl_set_nlink_upper(dentry);
+<<<<<<< HEAD
 	ovl_revert_creds(old_cred);
+=======
+	revert_creds(old_cred);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 out:
 	if (err)
@@ -569,7 +587,11 @@ void ovl_nlink_end(struct dentry *dentry, bool locked)
 
 			old_cred = ovl_override_creds(dentry->d_sb);
 			ovl_cleanup_index(dentry);
+<<<<<<< HEAD
 			ovl_revert_creds(old_cred);
+=======
+			revert_creds(old_cred);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		mutex_unlock(&OVL_I(d_inode(dentry))->lock);

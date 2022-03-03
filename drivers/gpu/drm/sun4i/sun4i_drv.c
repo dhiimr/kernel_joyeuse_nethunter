@@ -96,6 +96,11 @@ static int sun4i_drv_bind(struct device *dev)
 		ret = -ENOMEM;
 		goto free_drm;
 	}
+<<<<<<< HEAD
+=======
+
+	dev_set_drvdata(dev, drm);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	drm->dev_private = drv;
 	INIT_LIST_HEAD(&drv->engine_list);
 	INIT_LIST_HEAD(&drv->tcon_list);

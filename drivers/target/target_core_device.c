@@ -85,7 +85,11 @@ transport_lookup_cmd_lun(struct se_cmd *se_cmd, u64 unpacked_lun)
 			goto out_unlock;
 		}
 
+<<<<<<< HEAD
 		se_cmd->se_lun = rcu_dereference(deve->se_lun);
+=======
+		se_cmd->se_lun = se_lun;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		se_cmd->pr_res_key = deve->pr_res_key;
 		se_cmd->orig_fe_lun = unpacked_lun;
 		se_cmd->se_cmd_flags |= SCF_SE_LUN_CMD;
@@ -176,7 +180,11 @@ int transport_lookup_tmr_lun(struct se_cmd *se_cmd, u64 unpacked_lun)
 			goto out_unlock;
 		}
 
+<<<<<<< HEAD
 		se_cmd->se_lun = rcu_dereference(deve->se_lun);
+=======
+		se_cmd->se_lun = se_lun;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		se_cmd->pr_res_key = deve->pr_res_key;
 		se_cmd->orig_fe_lun = unpacked_lun;
 		se_cmd->se_cmd_flags |= SCF_SE_LUN_CMD;
@@ -791,6 +799,11 @@ struct se_device *target_alloc_device(struct se_hba *hba, const char *name)
 	INIT_LIST_HEAD(&dev->t10_alua.lba_map_list);
 	spin_lock_init(&dev->t10_alua.lba_map_lock);
 
+<<<<<<< HEAD
+=======
+	INIT_WORK(&dev->delayed_cmd_work, target_do_delayed_work);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev->t10_wwn.t10_dev = dev;
 	dev->t10_alua.t10_dev = dev;
 
@@ -1152,6 +1165,7 @@ passthrough_parse_cdb(struct se_cmd *cmd,
 	unsigned int size;
 
 	/*
+<<<<<<< HEAD
 	 * Clear a lun set in the cdb if the initiator talking to use spoke
 	 * and old standards version, as we can't assume the underlying device
 	 * won't choke up on it.
@@ -1173,6 +1187,8 @@ passthrough_parse_cdb(struct se_cmd *cmd,
 	}
 
 	/*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * For REPORT LUNS we always need to emulate the response, for everything
 	 * else, pass it up.
 	 */

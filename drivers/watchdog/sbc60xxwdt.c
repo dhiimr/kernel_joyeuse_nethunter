@@ -152,7 +152,11 @@ static void wdt_startup(void)
 static void wdt_turnoff(void)
 {
 	/* Stop the timer */
+<<<<<<< HEAD
 	del_timer(&timer);
+=======
+	del_timer_sync(&timer);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	inb_p(wdt_stop);
 	pr_info("Watchdog timer is now disabled...\n");
 }

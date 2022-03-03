@@ -104,6 +104,10 @@ int test__task_exit(struct test *test __maybe_unused, int subtest __maybe_unused
 	if (perf_evlist__mmap(evlist, 128, true) < 0) {
 		pr_debug("failed to mmap events: %d (%s)\n", errno,
 			 str_error_r(errno, sbuf, sizeof(sbuf)));
+<<<<<<< HEAD
+=======
+		err = -1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out_delete_evlist;
 	}
 

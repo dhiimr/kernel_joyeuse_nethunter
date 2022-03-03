@@ -121,7 +121,12 @@ static inline void cxgbi_device_destroy(struct cxgbi_device *cdev)
 		"cdev 0x%p, p# %u.\n", cdev, cdev->nports);
 	cxgbi_hbas_remove(cdev);
 	cxgbi_device_portmap_cleanup(cdev);
+<<<<<<< HEAD
 	cxgbi_ppm_release(cdev->cdev2ppm(cdev));
+=======
+	if (cdev->cdev2ppm)
+		cxgbi_ppm_release(cdev->cdev2ppm(cdev));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (cdev->pmap.max_connect)
 		cxgbi_free_big_mem(cdev->pmap.port_csk);
 	kfree(cdev);
@@ -338,7 +343,11 @@ void cxgbi_hbas_remove(struct cxgbi_device *cdev)
 EXPORT_SYMBOL_GPL(cxgbi_hbas_remove);
 
 int cxgbi_hbas_add(struct cxgbi_device *cdev, u64 max_lun,
+<<<<<<< HEAD
 		unsigned int max_id, struct scsi_host_template *sht,
+=======
+		unsigned int max_conns, struct scsi_host_template *sht,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct scsi_transport_template *stt)
 {
 	struct cxgbi_hba *chba;
@@ -358,7 +367,11 @@ int cxgbi_hbas_add(struct cxgbi_device *cdev, u64 max_lun,
 
 		shost->transportt = stt;
 		shost->max_lun = max_lun;
+<<<<<<< HEAD
 		shost->max_id = max_id;
+=======
+		shost->max_id = max_conns - 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		shost->max_channel = 0;
 		shost->max_cmd_len = 16;
 
@@ -640,6 +653,13 @@ cxgbi_check_route(struct sockaddr *dst_addr, int ifindex)
 
 	if (ndev->flags & IFF_LOOPBACK) {
 		ndev = ip_dev_find(&init_net, daddr->sin_addr.s_addr);
+<<<<<<< HEAD
+=======
+		if (!ndev) {
+			err = -ENETUNREACH;
+			goto rel_neigh;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mtu = ndev->mtu;
 		pr_info("rt dev %s, loopback -> %s, mtu %u.\n",
 			n->dev->name, ndev->name, mtu);

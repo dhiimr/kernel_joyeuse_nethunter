@@ -543,6 +543,10 @@ static int uvcg_control_class_allow_link(struct config_item *src,
 unlock:
 	mutex_unlock(&opts->lock);
 out:
+<<<<<<< HEAD
+=======
+	config_item_put(header);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(su_mutex);
 	return ret;
 }
@@ -578,6 +582,10 @@ static void uvcg_control_class_drop_link(struct config_item *src,
 unlock:
 	mutex_unlock(&opts->lock);
 out:
+<<<<<<< HEAD
+=======
+	config_item_put(header);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(su_mutex);
 }
 
@@ -763,6 +771,10 @@ static int uvcg_streaming_header_allow_link(struct config_item *src,
 	format_ptr->fmt = target_fmt;
 	list_add_tail(&format_ptr->entry, &src_hdr->formats);
 	++src_hdr->num_fmt;
+<<<<<<< HEAD
+=======
+	++target_fmt->linked;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 out:
 	mutex_unlock(&opts->lock);
@@ -800,6 +812,11 @@ static void uvcg_streaming_header_drop_link(struct config_item *src,
 			break;
 		}
 
+<<<<<<< HEAD
+=======
+	--target_fmt->linked;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	mutex_unlock(&opts->lock);
 	mutex_unlock(su_mutex);
@@ -2037,6 +2054,10 @@ static int uvcg_streaming_class_allow_link(struct config_item *src,
 unlock:
 	mutex_unlock(&opts->lock);
 out:
+<<<<<<< HEAD
+=======
+	config_item_put(header);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(su_mutex);
 	return ret;
 }
@@ -2077,6 +2098,10 @@ static void uvcg_streaming_class_drop_link(struct config_item *src,
 unlock:
 	mutex_unlock(&opts->lock);
 out:
+<<<<<<< HEAD
+=======
+	config_item_put(header);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(su_mutex);
 }
 

@@ -827,8 +827,13 @@ static int imx6_pcie_probe(struct platform_device *pdev)
 
 	imx6_pcie->vpcie = devm_regulator_get_optional(&pdev->dev, "vpcie");
 	if (IS_ERR(imx6_pcie->vpcie)) {
+<<<<<<< HEAD
 		if (PTR_ERR(imx6_pcie->vpcie) == -EPROBE_DEFER)
 			return -EPROBE_DEFER;
+=======
+		if (PTR_ERR(imx6_pcie->vpcie) != -ENODEV)
+			return PTR_ERR(imx6_pcie->vpcie);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		imx6_pcie->vpcie = NULL;
 	}
 

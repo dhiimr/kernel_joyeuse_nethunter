@@ -22,7 +22,11 @@
 	__HEAD
 
 ENTRY(startup)
+<<<<<<< HEAD
 	 .level LEVEL
+=======
+	 .level PA_ASM_LEVEL
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define PSW_W_SM	0x200
 #define PSW_W_BIT       36
@@ -63,7 +67,11 @@ $bss_loop:
 	load32	BOOTADDR(decompress_kernel),%r3
 
 #ifdef CONFIG_64BIT
+<<<<<<< HEAD
 	.level LEVEL
+=======
+	.level PA_ASM_LEVEL
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ssm	PSW_W_SM, %r0		/* set W-bit */
 	depdi	0, 31, 32, %r3
 #endif
@@ -72,7 +80,11 @@ $bss_loop:
 
 startup_continue:
 #ifdef CONFIG_64BIT
+<<<<<<< HEAD
 	.level LEVEL
+=======
+	.level PA_ASM_LEVEL
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rsm	PSW_W_SM, %r0		/* clear W-bit */
 #endif
 

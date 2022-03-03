@@ -390,7 +390,11 @@ mISDNInit(void)
 	err = mISDN_inittimer(&debug);
 	if (err)
 		goto error2;
+<<<<<<< HEAD
 	err = l1_init(&debug);
+=======
+	err = Isdnl1_Init(&debug);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (err)
 		goto error3;
 	err = Isdnl2_Init(&debug);
@@ -404,7 +408,11 @@ mISDNInit(void)
 error5:
 	Isdnl2_cleanup();
 error4:
+<<<<<<< HEAD
 	l1_cleanup();
+=======
+	Isdnl1_cleanup();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 error3:
 	mISDN_timer_cleanup();
 error2:
@@ -417,7 +425,11 @@ static void mISDN_cleanup(void)
 {
 	misdn_sock_cleanup();
 	Isdnl2_cleanup();
+<<<<<<< HEAD
 	l1_cleanup();
+=======
+	Isdnl1_cleanup();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mISDN_timer_cleanup();
 	class_unregister(&mISDN_class);
 

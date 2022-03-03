@@ -429,6 +429,10 @@ static int alps_input_configured(struct hid_device *hdev, struct hid_input *hi)
 		ret = input_register_device(data->input2);
 		if (ret) {
 			input_free_device(input2);
+<<<<<<< HEAD
+=======
+			ret = -ENOENT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto exit;
 		}
 	}

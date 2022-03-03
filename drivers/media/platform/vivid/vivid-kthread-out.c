@@ -147,7 +147,15 @@ static int vivid_thread_vid_out(void *data)
 		if (kthread_should_stop())
 			break;
 
+<<<<<<< HEAD
 		mutex_lock(&dev->mutex);
+=======
+		if (!mutex_trylock(&dev->mutex)) {
+			schedule_timeout_uninterruptible(1);
+			continue;
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cur_jiffies = jiffies;
 		if (dev->out_seq_resync) {
 			dev->jiffies_vid_out = cur_jiffies;
@@ -301,8 +309,13 @@ void vivid_stop_generating_vid_out(struct vivid_dev *dev, bool *pstreaming)
 
 	/* shutdown control thread */
 	vivid_grab_controls(dev, false);
+<<<<<<< HEAD
 	mutex_unlock(&dev->mutex);
 	kthread_stop(dev->kthread_vid_out);
 	dev->kthread_vid_out = NULL;
 	mutex_lock(&dev->mutex);
+=======
+	kthread_stop(dev->kthread_vid_out);
+	dev->kthread_vid_out = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }

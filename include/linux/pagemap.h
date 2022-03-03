@@ -243,7 +243,11 @@ static inline gfp_t readahead_gfp_mask(struct address_space *x)
 				  __GFP_COLD | __GFP_NORETRY | __GFP_NOWARN;
 }
 
+<<<<<<< HEAD
 typedef int filler_t(struct file *, struct page *);
+=======
+typedef int filler_t(void *, struct page *);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 pgoff_t page_cache_next_hole(struct address_space *mapping,
 			     pgoff_t index, unsigned long max_scan);
@@ -256,7 +260,10 @@ pgoff_t page_cache_prev_hole(struct address_space *mapping,
 #define FGP_WRITE		0x00000008
 #define FGP_NOFS		0x00000010
 #define FGP_NOWAIT		0x00000020
+<<<<<<< HEAD
 #define FGP_FOR_MMAP		0x00000040
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct page *pagecache_get_page(struct address_space *mapping, pgoff_t offset,
 		int fgp_flags, gfp_t cache_gfp_mask);
@@ -367,6 +374,7 @@ static inline unsigned find_get_pages(struct address_space *mapping,
 }
 unsigned find_get_pages_contig(struct address_space *mapping, pgoff_t start,
 			       unsigned int nr_pages, struct page **pages);
+<<<<<<< HEAD
 unsigned find_get_pages_range_tag(struct address_space *mapping, pgoff_t *index,
 			pgoff_t end, int tag, unsigned int nr_pages,
 			struct page **pages);
@@ -377,6 +385,10 @@ static inline unsigned find_get_pages_tag(struct address_space *mapping,
 	return find_get_pages_range_tag(mapping, index, (pgoff_t)-1, tag,
 					nr_pages, pages);
 }
+=======
+unsigned find_get_pages_tag(struct address_space *mapping, pgoff_t *index,
+			int tag, unsigned int nr_pages, struct page **pages);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 unsigned find_get_entries_tag(struct address_space *mapping, pgoff_t start,
 			int tag, unsigned int nr_entries,
 			struct page **entries, pgoff_t *indices);
@@ -403,12 +415,20 @@ extern int read_cache_pages(struct address_space *mapping,
 static inline struct page *read_mapping_page(struct address_space *mapping,
 				pgoff_t index, void *data)
 {
+<<<<<<< HEAD
 	filler_t *filler = mapping->a_ops->readpage;
+=======
+	filler_t *filler = (filler_t *)mapping->a_ops->readpage;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return read_cache_page(mapping, index, filler, data);
 }
 
 /*
+<<<<<<< HEAD
  * Get index of the page with in radix-tree
+=======
+ * Get index of the page within radix-tree (but not for hugetlb pages).
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * (TODO: remove once hugetlb pages will have ->index in PAGE_SIZE)
  */
 static inline pgoff_t page_to_index(struct page *page)
@@ -427,6 +447,7 @@ static inline pgoff_t page_to_index(struct page *page)
 	return pgoff;
 }
 
+<<<<<<< HEAD
 /*
  * Get the offset in PAGE_SIZE.
  * (TODO: hugepage should have ->index in PAGE_SIZE)
@@ -436,6 +457,18 @@ static inline pgoff_t page_to_pgoff(struct page *page)
 	if (unlikely(PageHeadHuge(page)))
 		return page->index << compound_order(page);
 
+=======
+extern pgoff_t hugetlb_basepage_index(struct page *page);
+
+/*
+ * Get the offset in PAGE_SIZE (even for hugetlb pages).
+ * (TODO: hugetlb pages should have ->index in PAGE_SIZE)
+ */
+static inline pgoff_t page_to_pgoff(struct page *page)
+{
+	if (unlikely(PageHuge(page)))
+		return hugetlb_basepage_index(page);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return page_to_index(page);
 }
 
@@ -461,8 +494,13 @@ static inline pgoff_t linear_page_index(struct vm_area_struct *vma,
 	pgoff_t pgoff;
 	if (unlikely(is_vm_hugetlb_page(vma)))
 		return linear_hugepage_index(vma, address);
+<<<<<<< HEAD
 	pgoff = (address - READ_ONCE(vma->vm_start)) >> PAGE_SHIFT;
 	pgoff += READ_ONCE(vma->vm_pgoff);
+=======
+	pgoff = (address - vma->vm_start) >> PAGE_SHIFT;
+	pgoff += vma->vm_pgoff;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return pgoff;
 }
 

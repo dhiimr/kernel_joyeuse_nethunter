@@ -418,7 +418,11 @@ void sctp_generate_proto_unreach_event(unsigned long data)
 		/* Try again later.  */
 		if (!mod_timer(&transport->proto_unreach_timer,
 				jiffies + (HZ/20)))
+<<<<<<< HEAD
 			sctp_association_hold(asoc);
+=======
+			sctp_transport_hold(transport);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out_unlock;
 	}
 
@@ -434,7 +438,11 @@ void sctp_generate_proto_unreach_event(unsigned long data)
 
 out_unlock:
 	bh_unlock_sock(sk);
+<<<<<<< HEAD
 	sctp_association_put(asoc);
+=======
+	sctp_transport_put(transport);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
  /* Handle the timeout of the RE-CONFIG timer. */
@@ -541,8 +549,13 @@ static void sctp_do_8_2_transport_strike(struct sctp_cmd_seq *commands,
 	 */
 	if (net->sctp.pf_enable &&
 	   (transport->state == SCTP_ACTIVE) &&
+<<<<<<< HEAD
 	   (asoc->pf_retrans < transport->pathmaxrxt) &&
 	   (transport->error_count > asoc->pf_retrans)) {
+=======
+	   (transport->error_count < transport->pathmaxrxt) &&
+	   (transport->error_count > transport->pf_retrans)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		sctp_assoc_control_transport(asoc, transport,
 					     SCTP_TRANSPORT_PF,
@@ -878,6 +891,14 @@ static void sctp_cmd_new_state(struct sctp_cmd_seq *cmds,
 						asoc->rto_initial;
 	}
 
+<<<<<<< HEAD
+=======
+	if (sctp_state(asoc, ESTABLISHED)) {
+		kfree(asoc->peer.cookie);
+		asoc->peer.cookie = NULL;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (sctp_state(asoc, ESTABLISHED) ||
 	    sctp_state(asoc, CLOSED) ||
 	    sctp_state(asoc, SHUTDOWN_RECEIVED)) {
@@ -1354,8 +1375,15 @@ static int sctp_cmd_interpreter(enum sctp_event event_type,
 			/* Generate an INIT ACK chunk.  */
 			new_obj = sctp_make_init_ack(asoc, chunk, GFP_ATOMIC,
 						     0);
+<<<<<<< HEAD
 			if (!new_obj)
 				goto nomem;
+=======
+			if (!new_obj) {
+				error = -ENOMEM;
+				break;
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			sctp_add_cmd_sf(commands, SCTP_CMD_REPLY,
 					SCTP_CHUNK(new_obj));
@@ -1377,7 +1405,12 @@ static int sctp_cmd_interpreter(enum sctp_event event_type,
 			if (!new_obj) {
 				if (cmd->obj.chunk)
 					sctp_chunk_free(cmd->obj.chunk);
+<<<<<<< HEAD
 				goto nomem;
+=======
+				error = -ENOMEM;
+				break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 			sctp_add_cmd_sf(commands, SCTP_CMD_REPLY,
 					SCTP_CHUNK(new_obj));
@@ -1424,8 +1457,15 @@ static int sctp_cmd_interpreter(enum sctp_event event_type,
 
 			/* Generate a SHUTDOWN chunk.  */
 			new_obj = sctp_make_shutdown(asoc, chunk);
+<<<<<<< HEAD
 			if (!new_obj)
 				goto nomem;
+=======
+			if (!new_obj) {
+				error = -ENOMEM;
+				break;
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			sctp_add_cmd_sf(commands, SCTP_CMD_REPLY,
 					SCTP_CHUNK(new_obj));
 			break;
@@ -1581,12 +1621,20 @@ static int sctp_cmd_interpreter(enum sctp_event event_type,
 			break;
 
 		case SCTP_CMD_INIT_FAILED:
+<<<<<<< HEAD
 			sctp_cmd_init_failed(commands, asoc, cmd->obj.u32);
+=======
+			sctp_cmd_init_failed(commands, asoc, cmd->obj.u16);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 
 		case SCTP_CMD_ASSOC_FAILED:
 			sctp_cmd_assoc_failed(commands, asoc, event_type,
+<<<<<<< HEAD
 					      subtype, chunk, cmd->obj.u32);
+=======
+					      subtype, chunk, cmd->obj.u16);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 
 		case SCTP_CMD_INIT_COUNTER_INC:
@@ -1755,11 +1803,25 @@ static int sctp_cmd_interpreter(enum sctp_event event_type,
 			break;
 		}
 
+<<<<<<< HEAD
 		if (error)
 			break;
 	}
 
 out:
+=======
+		if (error) {
+			cmd = sctp_next_cmd(commands);
+			while (cmd) {
+				if (cmd->verb == SCTP_CMD_REPLY)
+					sctp_chunk_free(cmd->obj.chunk);
+				cmd = sctp_next_cmd(commands);
+			}
+			break;
+		}
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* If this is in response to a received chunk, wait until
 	 * we are done with the packet to open the queue so that we don't
 	 * send multiple packets in response to a single request.
@@ -1774,8 +1836,11 @@ out:
 		sp->data_ready_signalled = 0;
 
 	return error;
+<<<<<<< HEAD
 nomem:
 	error = -ENOMEM;
 	goto out;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 

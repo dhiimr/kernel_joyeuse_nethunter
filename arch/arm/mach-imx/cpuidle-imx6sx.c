@@ -15,6 +15,10 @@
 
 #include "common.h"
 #include "cpuidle.h"
+<<<<<<< HEAD
+=======
+#include "hardware.h"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int imx6sx_idle_finish(unsigned long val)
 {
@@ -108,7 +112,11 @@ int __init imx6sx_cpuidle_init(void)
 	 * except for power up sw2iso which need to be
 	 * larger than LDO ramp up time.
 	 */
+<<<<<<< HEAD
 	imx_gpc_set_arm_power_up_timing(0xf, 1);
+=======
+	imx_gpc_set_arm_power_up_timing(cpu_is_imx6sx() ? 0xf : 0x2, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	imx_gpc_set_arm_power_down_timing(1, 1);
 
 	return cpuidle_register(&imx6sx_cpuidle_driver, NULL);

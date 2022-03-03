@@ -236,7 +236,11 @@
  *
  *	Called when the device receives a TIOCGICOUNT ioctl. Passed a kernel
  *	structure to complete. This method is optional and will only be called
+<<<<<<< HEAD
  *	if provided (otherwise EINVAL will be returned).
+=======
+ *	if provided (otherwise ENOTTY will be returned).
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 
 #include <linux/export.h>

@@ -61,6 +61,10 @@ struct ib_client_data {
 };
 
 struct workqueue_struct *ib_comp_wq;
+<<<<<<< HEAD
+=======
+struct workqueue_struct *ib_comp_unbound_wq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct workqueue_struct *ib_wq;
 EXPORT_SYMBOL_GPL(ib_wq);
 
@@ -598,8 +602,13 @@ void ib_unregister_device(struct ib_device *device)
 	}
 	up_read(&lists_rwsem);
 
+<<<<<<< HEAD
 	ib_device_unregister_rdmacg(device);
 	ib_device_unregister_sysfs(device);
+=======
+	ib_device_unregister_sysfs(device);
+	ib_device_unregister_rdmacg(device);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_unlock(&device_mutex);
 
@@ -1074,7 +1083,12 @@ int ib_find_gid(struct ib_device *device, union ib_gid *gid,
 		for (i = 0; i < device->port_immutable[port].gid_tbl_len; ++i) {
 			ret = ib_query_gid(device, port, i, &tmp_gid, NULL);
 			if (ret)
+<<<<<<< HEAD
 				return ret;
+=======
+				continue;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (!memcmp(&tmp_gid, gid, sizeof *gid)) {
 				*port_num = port;
 				if (index)
@@ -1202,10 +1216,26 @@ static int __init ib_core_init(void)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	ret = class_register(&ib_class);
 	if (ret) {
 		pr_warn("Couldn't create InfiniBand device class\n");
 		goto err_comp;
+=======
+	ib_comp_unbound_wq =
+		alloc_workqueue("ib-comp-unb-wq",
+				WQ_UNBOUND | WQ_HIGHPRI | WQ_MEM_RECLAIM |
+				WQ_SYSFS, WQ_UNBOUND_MAX_ACTIVE);
+	if (!ib_comp_unbound_wq) {
+		ret = -ENOMEM;
+		goto err_comp;
+	}
+
+	ret = class_register(&ib_class);
+	if (ret) {
+		pr_warn("Couldn't create InfiniBand device class\n");
+		goto err_comp_unbound;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ret = rdma_nl_init();
@@ -1254,6 +1284,11 @@ err_ibnl:
 	rdma_nl_exit();
 err_sysfs:
 	class_unregister(&ib_class);
+<<<<<<< HEAD
+=======
+err_comp_unbound:
+	destroy_workqueue(ib_comp_unbound_wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 err_comp:
 	destroy_workqueue(ib_comp_wq);
 err:
@@ -1272,6 +1307,10 @@ static void __exit ib_core_cleanup(void)
 	addr_cleanup();
 	rdma_nl_exit();
 	class_unregister(&ib_class);
+<<<<<<< HEAD
+=======
+	destroy_workqueue(ib_comp_unbound_wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	destroy_workqueue(ib_comp_wq);
 	/* Make sure that any pending umem accounting work is done. */
 	destroy_workqueue(ib_wq);

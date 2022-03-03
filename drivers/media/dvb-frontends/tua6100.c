@@ -75,8 +75,13 @@ static int tua6100_set_params(struct dvb_frontend *fe)
 	struct i2c_msg msg1 = { .addr = priv->i2c_address, .flags = 0, .buf = reg1, .len = 4 };
 	struct i2c_msg msg2 = { .addr = priv->i2c_address, .flags = 0, .buf = reg2, .len = 3 };
 
+<<<<<<< HEAD
 #define _R 4
 #define _P 32
+=======
+#define _R_VAL 4
+#define _P_VAL 32
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define _ri 4000000
 
 	// setup register 0
@@ -91,14 +96,23 @@ static int tua6100_set_params(struct dvb_frontend *fe)
 	else
 		reg1[1] = 0x0c;
 
+<<<<<<< HEAD
 	if (_P == 64)
+=======
+	if (_P_VAL == 64)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		reg1[1] |= 0x40;
 	if (c->frequency >= 1525000)
 		reg1[1] |= 0x80;
 
 	// register 2
+<<<<<<< HEAD
 	reg2[1] = (_R >> 8) & 0x03;
 	reg2[2] = _R;
+=======
+	reg2[1] = (_R_VAL >> 8) & 0x03;
+	reg2[2] = _R_VAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (c->frequency < 1455000)
 		reg2[1] |= 0x1c;
 	else if (c->frequency < 1630000)
@@ -110,6 +124,7 @@ static int tua6100_set_params(struct dvb_frontend *fe)
 	 * The N divisor ratio (note: c->frequency is in kHz, but we
 	 * need it in Hz)
 	 */
+<<<<<<< HEAD
 	prediv = (c->frequency * _R) / (_ri / 1000);
 	div = prediv / _P;
 	reg1[1] |= (div >> 9) & 0x03;
@@ -122,6 +137,20 @@ static int tua6100_set_params(struct dvb_frontend *fe)
 
 #undef _R
 #undef _P
+=======
+	prediv = (c->frequency * _R_VAL) / (_ri / 1000);
+	div = prediv / _P_VAL;
+	reg1[1] |= (div >> 9) & 0x03;
+	reg1[2] = div >> 1;
+	reg1[3] = (div << 7);
+	priv->frequency = ((div * _P_VAL) * (_ri / 1000)) / _R_VAL;
+
+	// Finally, calculate and store the value for A
+	reg1[3] |= (prediv - (div*_P_VAL)) & 0x7f;
+
+#undef _R_VAL
+#undef _P_VAL
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #undef _ri
 
 	if (fe->ops.i2c_gate_ctrl)

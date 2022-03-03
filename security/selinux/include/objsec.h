@@ -26,9 +26,14 @@
 #include <linux/in.h>
 #include <linux/spinlock.h>
 #include <net/net_namespace.h>
+<<<<<<< HEAD
 //#include "flask.h"
 //#include "avc.h"
 #include "security.h"
+=======
+#include "flask.h"
+#include "avc.h"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct task_security_struct {
 	u32 osid;		/* SID prior to last execve */
@@ -65,8 +70,11 @@ struct inode_security_struct {
 	u32 sid;		/* SID of this object */
 	u16 sclass;		/* security class of this object */
 	unsigned char initialized;	/* initialization flag */
+<<<<<<< HEAD
 	u32 tag;		/* Per-File-Encryption tag */
 	void *pfk_data;		/* Per-File-Key data from ecryptfs */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spinlock_t lock;
 };
 
@@ -153,10 +161,13 @@ struct pkey_security_struct {
 	u32	sid;	/* SID of pkey */
 };
 
+<<<<<<< HEAD
 struct bpf_security_struct {
 	u32 sid;  /*SID of bpf obj creater*/
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern unsigned int selinux_checkreqprot;
 
 #endif /* _SELINUX_OBJSEC_H_ */

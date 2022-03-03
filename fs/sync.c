@@ -9,7 +9,11 @@
 #include <linux/slab.h>
 #include <linux/export.h>
 #include <linux/namei.h>
+<<<<<<< HEAD
 #include <linux/sched/xacct.h>
+=======
+#include <linux/sched.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/writeback.h>
 #include <linux/syscalls.h>
 #include <linux/linkage.h>
@@ -219,7 +223,10 @@ static int do_fsync(unsigned int fd, int datasync)
 	if (f.file) {
 		ret = vfs_fsync(f.file, datasync);
 		fdput(f);
+<<<<<<< HEAD
 		inc_syscfs(current);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return ret;
 }

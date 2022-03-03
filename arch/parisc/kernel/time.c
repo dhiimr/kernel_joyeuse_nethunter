@@ -245,6 +245,7 @@ void __init time_init(void)
 static int __init init_cr16_clocksource(void)
 {
 	/*
+<<<<<<< HEAD
 	 * The cr16 interval timers are not syncronized across CPUs on
 	 * different sockets, so mark them unstable and lower rating on
 	 * multi-socket SMP systems.
@@ -266,6 +267,15 @@ static int __init init_cr16_clocksource(void)
 			clocksource_cr16.rating = 0;
 			break;
 		}
+=======
+	 * The cr16 interval timers are not syncronized across CPUs, even if
+	 * they share the same socket.
+	 */
+	if (num_online_cpus() > 1 && !running_on_qemu) {
+		clocksource_cr16.name = "cr16_unstable";
+		clocksource_cr16.flags = CLOCK_SOURCE_UNSTABLE;
+		clocksource_cr16.rating = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* XXX: We may want to mark sched_clock stable here if cr16 clocks are

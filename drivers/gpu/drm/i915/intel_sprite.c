@@ -1118,7 +1118,11 @@ int intel_sprite_set_colorkey(struct drm_device *dev, void *data,
 	    set->flags & I915_SET_COLORKEY_DESTINATION)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	plane = drm_plane_find(dev, file_priv, set->plane_id);
+=======
+	plane = drm_plane_find(dev, set->plane_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!plane || plane->type != DRM_PLANE_TYPE_OVERLAY)
 		return -ENOENT;
 

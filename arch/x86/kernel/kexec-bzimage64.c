@@ -211,8 +211,12 @@ setup_boot_parameters(struct kimage *image, struct boot_params *params,
 	params->hdr.hardware_subarch = boot_params.hdr.hardware_subarch;
 
 	/* Copying screen_info will do? */
+<<<<<<< HEAD
 	memcpy(&params->screen_info, &boot_params.screen_info,
 				sizeof(struct screen_info));
+=======
+	memcpy(&params->screen_info, &screen_info, sizeof(struct screen_info));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Fill in memsize later */
 	params->screen_info.ext_mem_k = 0;

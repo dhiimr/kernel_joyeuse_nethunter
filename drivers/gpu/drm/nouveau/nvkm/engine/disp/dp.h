@@ -32,6 +32,10 @@ struct nvkm_dp {
 
 int nvkm_dp_new(struct nvkm_disp *, int index, struct dcb_output *,
 		struct nvkm_outp **);
+<<<<<<< HEAD
+=======
+void nvkm_dp_disable(struct nvkm_outp *, struct nvkm_ior *);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* DPCD Receiver Capabilities */
 #define DPCD_RC00_DPCD_REV                                              0x00000

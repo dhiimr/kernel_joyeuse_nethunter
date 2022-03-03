@@ -23,7 +23,10 @@
 #include <linux/timer.h>
 #include <linux/spinlock.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <linux/debugfs.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "demux.h"
 
@@ -41,8 +44,11 @@
 
 #define MAX_PID 0x1fff
 
+<<<<<<< HEAD
 #define TIMESTAMP_LEN	4
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define SPEED_PKTS_INTERVAL 50000
 
 struct dvb_demux_filter {
@@ -63,6 +69,7 @@ struct dvb_demux_filter {
 
 #define DMX_FEED_ENTRY(pos) list_entry(pos, struct dvb_demux_feed, list_head)
 
+<<<<<<< HEAD
 
 struct dmx_index_entry {
 	struct dmx_index_event_info event;
@@ -149,6 +156,8 @@ struct dvb_dmx_video_patterns_results {
 	} info[DVB_DMX_MAX_FOUND_PATTERNS];
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct dvb_demux_feed {
 	union {
 		struct dmx_ts_feed ts;
@@ -160,21 +169,27 @@ struct dvb_demux_feed {
 		dmx_section_cb sec;
 	} cb;
 
+<<<<<<< HEAD
 	union {
 		dmx_ts_data_ready_cb ts;
 		dmx_section_data_ready_cb sec;
 	} data_ready_cb;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct dvb_demux *demux;
 	void *priv;
 	int type;
 	int state;
 	u16 pid;
+<<<<<<< HEAD
 	u8 *buffer;
 	int buffer_size;
 	enum dmx_tsp_format_t tsp_out_format;
 	struct dmx_secure_mode secure_mode;
 	struct dmx_cipher_operations cipher_ops;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ktime_t timeout;
 	struct dvb_demux_filter *filter;
@@ -183,6 +198,7 @@ struct dvb_demux_feed {
 	enum dmx_ts_pes pes_type;
 
 	int cc;
+<<<<<<< HEAD
 	int first_cc;
 	int pusi_seen;		/* prevents feeding of garbage from previous section */
 
@@ -211,6 +227,14 @@ const struct dvb_dmx_video_patterns *patterns[DVB_DMX_MAX_SEARCH_PATTERN_NUM];
 
 	enum dmx_video_codec video_codec;
 	struct dmx_indexing_params idx_params;
+=======
+	int pusi_seen;		/* prevents feeding of garbage from previous section */
+
+	u16 peslen;
+
+	struct list_head list_head;
+	unsigned int index;	/* a unique index for each feed (can be used as hardware pid filter index) */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct dvb_demux {
@@ -222,6 +246,7 @@ struct dvb_demux {
 	int (*stop_feed)(struct dvb_demux_feed *feed);
 	int (*write_to_decoder)(struct dvb_demux_feed *feed,
 				 const u8 *buf, size_t len);
+<<<<<<< HEAD
 	int (*decoder_fullness_init)(struct dvb_demux_feed *feed);
 	int (*decoder_fullness_wait)(struct dvb_demux_feed *feed,
 				 size_t required_space);
@@ -232,10 +257,13 @@ struct dvb_demux {
 				int cookie);
 	int (*set_cipher_op)(struct dvb_demux_feed *feed,
 				struct dmx_cipher_operations *cipher_ops);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 (*check_crc32)(struct dvb_demux_feed *feed,
 			    const u8 *buf, size_t len);
 	void (*memcopy)(struct dvb_demux_feed *feed, u8 *dst,
 			 const u8 *src, size_t len);
+<<<<<<< HEAD
 	int (*oob_command)(struct dvb_demux_feed *feed,
 		struct dmx_oob_command *cmd);
 	void (*convert_ts)(struct dvb_demux_feed *feed,
@@ -243,6 +271,8 @@ struct dvb_demux {
 			 u64 *timestampIn27Mhz);
 	int (*set_indexing)(struct dvb_demux_feed *feed);
 	int (*flush_decoder_buffer)(struct dvb_demux_feed *feed, size_t length);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	int users;
 #define MAX_DVB_DEMUX_USERS 10
@@ -268,6 +298,7 @@ struct dvb_demux {
 
 	ktime_t speed_last_time; /* for TS speed check */
 	uint32_t speed_pkts_cnt; /* for TS speed check */
+<<<<<<< HEAD
 
 	enum dmx_tsp_format_t tsp_format;
 	size_t ts_packet_size;
@@ -291,12 +322,17 @@ struct dvb_demux {
 
 	u32 total_process_time;
 	u32 total_crc_time;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 int dvb_dmx_init(struct dvb_demux *dvbdemux);
 void dvb_dmx_release(struct dvb_demux *dvbdemux);
+<<<<<<< HEAD
 int dvb_dmx_swfilter_section_packet(struct dvb_demux_feed *feed, const u8 *buf,
 	int should_lock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void dvb_dmx_swfilter_packets(struct dvb_demux *dvbdmx, const u8 *buf,
 			      size_t count);
 void dvb_dmx_swfilter(struct dvb_demux *demux, const u8 *buf, size_t count);
@@ -304,6 +340,7 @@ void dvb_dmx_swfilter_204(struct dvb_demux *demux, const u8 *buf,
 			  size_t count);
 void dvb_dmx_swfilter_raw(struct dvb_demux *demux, const u8 *buf,
 			  size_t count);
+<<<<<<< HEAD
 void dvb_dmx_swfilter_format(
 			struct dvb_demux *demux, const u8 *buf,
 			size_t count,
@@ -415,5 +452,7 @@ static inline u16 ts_pid(const u8 *buf)
 	return ((buf[1] & 0x1f) << 8) + buf[2];
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif /* _DVB_DEMUX_H_ */

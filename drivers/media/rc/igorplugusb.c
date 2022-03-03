@@ -73,9 +73,17 @@ static void igorplugusb_irdata(struct igorplugusb *ir, unsigned len)
 	if (start >= len) {
 		dev_err(ir->dev, "receive overflow invalid: %u", overflow);
 	} else {
+<<<<<<< HEAD
 		if (overflow > 0)
 			dev_warn(ir->dev, "receive overflow, at least %u lost",
 								overflow);
+=======
+		if (overflow > 0) {
+			dev_warn(ir->dev, "receive overflow, at least %u lost",
+								overflow);
+			ir_raw_event_reset(ir->rc);
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		do {
 			rawir.duration = ir->buf_in[i] * 85333;

@@ -356,6 +356,10 @@ static void tegra_gpio_irq_shutdown(struct irq_data *d)
 	struct tegra_gpio_info *tgi = bank->tgi;
 	unsigned int gpio = d->hwirq;
 
+<<<<<<< HEAD
+=======
+	tegra_gpio_irq_mask(d);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	gpiochip_unlock_as_irq(&tgi->gc, gpio);
 }
 

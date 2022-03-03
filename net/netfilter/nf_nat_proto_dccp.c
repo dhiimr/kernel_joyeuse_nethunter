@@ -18,8 +18,11 @@
 #include <net/netfilter/nf_nat_l3proto.h>
 #include <net/netfilter/nf_nat_l4proto.h>
 
+<<<<<<< HEAD
 static u_int16_t dccp_port_rover;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void
 dccp_unique_tuple(const struct nf_nat_l3proto *l3proto,
 		  struct nf_conntrack_tuple *tuple,
@@ -27,8 +30,12 @@ dccp_unique_tuple(const struct nf_nat_l3proto *l3proto,
 		  enum nf_nat_manip_type maniptype,
 		  const struct nf_conn *ct)
 {
+<<<<<<< HEAD
 	nf_nat_l4proto_unique_tuple(l3proto, tuple, range, maniptype, ct,
 				    &dccp_port_rover);
+=======
+	nf_nat_l4proto_unique_tuple(l3proto, tuple, range, maniptype, ct);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static bool

@@ -531,6 +531,7 @@ static void hfa384x_usb_defer(struct work_struct *data)
  */
 void hfa384x_create(struct hfa384x *hw, struct usb_device *usb)
 {
+<<<<<<< HEAD
 	memset(hw, 0, sizeof(*hw));
 	hw->usb = usb;
 
@@ -538,6 +539,10 @@ void hfa384x_create(struct hfa384x *hw, struct usb_device *usb)
 	hw->endp_in = usb_rcvbulkpipe(usb, 1);
 	hw->endp_out = usb_sndbulkpipe(usb, 2);
 
+=======
+	hw->usb = usb;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Set up the waitq */
 	init_waitqueue_head(&hw->cmdq);
 
@@ -3119,7 +3124,13 @@ static void hfa384x_usbin_callback(struct urb *urb)
 		break;
 	}
 
+<<<<<<< HEAD
 	urb_status = urb->status;
+=======
+	/* Save values from the RX URB before reposting overwrites it. */
+	urb_status = urb->status;
+	usbin = (union hfa384x_usbin *)urb->transfer_buffer;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (action != ABORT) {
 		/* Repost the RX URB */
@@ -3136,7 +3147,10 @@ static void hfa384x_usbin_callback(struct urb *urb)
 	/* Note: the check of the sw_support field, the type field doesn't
 	 *       have bit 12 set like the docs suggest.
 	 */
+<<<<<<< HEAD
 	usbin = (union hfa384x_usbin *)urb->transfer_buffer;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	type = le16_to_cpu(usbin->type);
 	if (HFA384x_USB_ISRXFRM(type)) {
 		if (action == HANDLE) {
@@ -3494,6 +3508,11 @@ static void hfa384x_int_rxmonitor(struct wlandevice *wlandev,
 	     WLAN_HDR_A4_LEN + WLAN_DATA_MAXLEN + WLAN_CRC_LEN)) {
 		pr_debug("overlen frm: len=%zd\n",
 			 skblen - sizeof(struct p80211_caphdr));
+<<<<<<< HEAD
+=======
+
+		return;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	skb = dev_alloc_skb(skblen);
@@ -3906,6 +3925,7 @@ static void hfa384x_usb_throttlefn(unsigned long data)
 
 	spin_lock_irqsave(&hw->ctlxq.lock, flags);
 
+<<<<<<< HEAD
 	/*
 	 * We need to check BOTH the RX and the TX throttle controls,
 	 * so we use the bitwise OR instead of the logical OR.
@@ -3918,6 +3938,20 @@ static void hfa384x_usb_throttlefn(unsigned long data)
 	      !test_and_set_bit(WORK_TX_RESUME, &hw->usb_flags))
 	    )) {
 		schedule_work(&hw->usb_work);
+=======
+	pr_debug("flags=0x%lx\n", hw->usb_flags);
+	if (!hw->wlandev->hwremoved) {
+		bool rx_throttle = test_and_clear_bit(THROTTLE_RX, &hw->usb_flags) &&
+				   !test_and_set_bit(WORK_RX_RESUME, &hw->usb_flags);
+		bool tx_throttle = test_and_clear_bit(THROTTLE_TX, &hw->usb_flags) &&
+				   !test_and_set_bit(WORK_TX_RESUME, &hw->usb_flags);
+		/*
+		 * We need to check BOTH the RX and the TX throttle controls,
+		 * so we use the bitwise OR instead of the logical OR.
+		 */
+		if (rx_throttle | tx_throttle)
+			schedule_work(&hw->usb_work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	spin_unlock_irqrestore(&hw->ctlxq.lock, flags);

@@ -135,8 +135,14 @@ int amdgpu_fence_emit(struct amdgpu_ring *ring, struct dma_fence **f)
 {
 	struct amdgpu_device *adev = ring->adev;
 	struct amdgpu_fence *fence;
+<<<<<<< HEAD
 	struct dma_fence *old, **ptr;
 	uint32_t seq;
+=======
+	struct dma_fence __rcu **ptr;
+	uint32_t seq;
+	int r;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	fence = kmem_cache_alloc(amdgpu_fence_slab, GFP_KERNEL);
 	if (fence == NULL)
@@ -152,6 +158,7 @@ int amdgpu_fence_emit(struct amdgpu_ring *ring, struct dma_fence **f)
 			       seq, AMDGPU_FENCE_FLAG_INT);
 
 	ptr = &ring->fence_drv.fences[seq & ring->fence_drv.num_fences_mask];
+<<<<<<< HEAD
 	/* This function can't be called concurrently anyway, otherwise
 	 * emitting the fence would mess up the hardware ring buffer.
 	 */
@@ -161,6 +168,26 @@ int amdgpu_fence_emit(struct amdgpu_ring *ring, struct dma_fence **f)
 		dma_fence_wait(old, false);
 	}
 
+=======
+	if (unlikely(rcu_dereference_protected(*ptr, 1))) {
+		struct dma_fence *old;
+
+		rcu_read_lock();
+		old = dma_fence_get_rcu_safe(ptr);
+		rcu_read_unlock();
+
+		if (old) {
+			r = dma_fence_wait(old, false);
+			dma_fence_put(old);
+			if (r)
+				return r;
+		}
+	}
+
+	/* This function can't be called concurrently anyway, otherwise
+	 * emitting the fence would mess up the hardware ring buffer.
+	 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rcu_assign_pointer(*ptr, dma_fence_get(&fence->base));
 
 	*f = &fence->base;

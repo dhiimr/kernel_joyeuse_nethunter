@@ -533,6 +533,11 @@ static struct sh_eth_cpu_data r7s72100_data = {
 			  EESR_TDE,
 	.fdr_value	= 0x0000070f,
 
+<<<<<<< HEAD
+=======
+	.trscer_err_mask = DESC_I_RINT8 | DESC_I_RINT5,
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.no_psr		= 1,
 	.apr		= 1,
 	.mpr		= 1,
@@ -935,6 +940,12 @@ static struct sh_eth_cpu_data sh771x_data = {
 			  EESIPR_CEEFIP | EESIPR_CELFIP |
 			  EESIPR_RRFIP | EESIPR_RTLFIP | EESIPR_RTSFIP |
 			  EESIPR_PREIP | EESIPR_CERFIP,
+<<<<<<< HEAD
+=======
+
+	.trscer_err_mask = DESC_I_RINT8,
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.tsu		= 1,
 	.dual_port	= 1,
 };
@@ -1458,6 +1469,13 @@ static void sh_eth_dev_exit(struct net_device *ndev)
 	sh_eth_get_stats(ndev);
 	sh_eth_reset(ndev);
 
+<<<<<<< HEAD
+=======
+	/* Set the RMII mode again if required */
+	if (mdp->cd->rmiimode)
+		sh_eth_write(ndev, 0x1, RMIIMODE);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Set MAC address again */
 	update_mac_address(ndev);
 }
@@ -2188,7 +2206,11 @@ static void sh_eth_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
 {
 	switch (stringset) {
 	case ETH_SS_STATS:
+<<<<<<< HEAD
 		memcpy(data, *sh_eth_gstrings_stats,
+=======
+		memcpy(data, sh_eth_gstrings_stats,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		       sizeof(sh_eth_gstrings_stats));
 		break;
 	}
@@ -2433,6 +2455,10 @@ static int sh_eth_start_xmit(struct sk_buff *skb, struct net_device *ndev)
 	else
 		txdesc->status |= cpu_to_le32(TD_TACT);
 
+<<<<<<< HEAD
+=======
+	wmb(); /* cur_tx must be incremented after TACT bit was set */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mdp->cur_tx++;
 
 	if (!(sh_eth_read(ndev, EDTRR) & sh_eth_get_edtrr_trns(mdp)))
@@ -2513,10 +2539,17 @@ static int sh_eth_close(struct net_device *ndev)
 	/* Free all the skbuffs in the Rx queue and the DMA buffer. */
 	sh_eth_ring_free(ndev);
 
+<<<<<<< HEAD
 	pm_runtime_put_sync(&mdp->pdev->dev);
 
 	mdp->is_opened = 0;
 
+=======
+	mdp->is_opened = 0;
+
+	pm_runtime_put(&mdp->pdev->dev);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -3042,12 +3075,23 @@ static struct sh_eth_plat_data *sh_eth_parse_dt(struct device *dev)
 	struct device_node *np = dev->of_node;
 	struct sh_eth_plat_data *pdata;
 	const char *mac_addr;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
 	if (!pdata)
 		return NULL;
 
+<<<<<<< HEAD
 	pdata->phy_interface = of_get_phy_mode(np);
+=======
+	ret = of_get_phy_mode(np);
+	if (ret < 0)
+		return NULL;
+	pdata->phy_interface = ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mac_addr = of_get_mac_address(np);
 	if (mac_addr)

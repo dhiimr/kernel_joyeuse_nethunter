@@ -150,6 +150,10 @@ static int __qdio_allocate_qs(struct qdio_q **irq_ptr_qs, int nr_queues)
 			return -ENOMEM;
 		}
 		irq_ptr_qs[i] = q;
+<<<<<<< HEAD
+=======
+		INIT_LIST_HEAD(&q->entry);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return 0;
 }
@@ -178,6 +182,10 @@ static void setup_queues_misc(struct qdio_q *q, struct qdio_irq *irq_ptr,
 	q->mask = 1 << (31 - i);
 	q->nr = i;
 	q->handler = handler;
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&q->entry);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void setup_storage_lists(struct qdio_q *q, struct qdio_irq *irq_ptr,
@@ -477,7 +485,10 @@ int qdio_setup_irq(struct qdio_initialize *init_data)
 	setup_queues(irq_ptr, init_data);
 
 	setup_qib(irq_ptr, init_data);
+<<<<<<< HEAD
 	qdio_setup_thinint(irq_ptr);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	set_impl_params(irq_ptr, init_data->qib_param_field_format,
 			init_data->qib_param_field,
 			init_data->input_slib_elements,

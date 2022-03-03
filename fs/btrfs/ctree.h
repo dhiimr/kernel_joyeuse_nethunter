@@ -869,6 +869,7 @@ struct btrfs_fs_info {
 	struct list_head delayed_iputs;
 	struct mutex cleaner_delayed_iput_mutex;
 
+<<<<<<< HEAD
 	/* this protects tree_mod_seq_list */
 	spinlock_t tree_mod_seq_lock;
 	atomic64_t tree_mod_seq;
@@ -877,6 +878,14 @@ struct btrfs_fs_info {
 	/* this protects tree_mod_log */
 	rwlock_t tree_mod_log_lock;
 	struct rb_root tree_mod_log;
+=======
+	atomic64_t tree_mod_seq;
+
+	/* this protects tree_mod_log and tree_mod_seq_list */
+	rwlock_t tree_mod_log_lock;
+	struct rb_root tree_mod_log;
+	struct list_head tree_mod_seq_list;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	atomic_t nr_async_submits;
 	atomic_t async_submit_draining;
@@ -1259,6 +1268,10 @@ struct btrfs_root {
 	int send_in_progress;
 	struct btrfs_subvolume_writers *subv_writers;
 	atomic_t will_be_snapshotted;
+<<<<<<< HEAD
+=======
+	atomic_t snapshot_force_cow;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* For qgroup metadata space reserve */
 	atomic64_t qgroup_meta_rsv;
@@ -2408,6 +2421,7 @@ static inline u32 btrfs_file_extent_inline_item_len(
 	return btrfs_item_size(eb, e) - BTRFS_FILE_EXTENT_INLINE_DATA_START;
 }
 
+<<<<<<< HEAD
 /* this returns the number of file bytes represented by the inline item.
  * If an item is compressed, this is the uncompressed size
  */
@@ -2434,6 +2448,8 @@ static inline u32 btrfs_file_extent_inline_len(const struct extent_buffer *eb,
 }
 
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* btrfs_dev_stats_item */
 static inline u64 btrfs_dev_stats_value(const struct extent_buffer *eb,
 					const struct btrfs_dev_stats_item *ptr,
@@ -3290,6 +3306,11 @@ ssize_t btrfs_listxattr(struct dentry *dentry, char *buffer, size_t size);
 int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
 			unsigned long new_flags);
 int btrfs_sync_fs(struct super_block *sb, int wait);
+<<<<<<< HEAD
+=======
+char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
+					  u64 subvol_objectid);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static inline __printf(2, 3)
 void btrfs_no_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)

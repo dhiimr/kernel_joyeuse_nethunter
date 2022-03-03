@@ -1668,8 +1668,15 @@ vt6655_probe(struct pci_dev *pcid, const struct pci_device_id *ent)
 
 	priv->hw->max_signal = 100;
 
+<<<<<<< HEAD
 	if (vnt_init(priv))
 		return -ENODEV;
+=======
+	if (vnt_init(priv)) {
+		device_free_info(priv);
+		return -ENODEV;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	device_print_info(priv);
 	pci_set_drvdata(pcid, priv);

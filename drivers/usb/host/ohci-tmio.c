@@ -199,9 +199,18 @@ static int ohci_hcd_tmio_drv_probe(struct platform_device *dev)
 	if (usb_disabled())
 		return -ENODEV;
 
+<<<<<<< HEAD
 	if (!cell)
 		return -EINVAL;
 
+=======
+	if (!cell || !regs || !config || !sram)
+		return -EINVAL;
+
+	if (irq < 0)
+		return irq;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hcd = usb_create_hcd(&ohci_tmio_hc_driver, &dev->dev, dev_name(&dev->dev));
 	if (!hcd) {
 		ret = -ENOMEM;

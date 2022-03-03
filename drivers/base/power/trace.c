@@ -11,6 +11,10 @@
 #include <linux/export.h>
 #include <linux/rtc.h>
 #include <linux/suspend.h>
+<<<<<<< HEAD
+=======
+#include <linux/init.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <linux/mc146818rtc.h>
 
@@ -165,6 +169,12 @@ void generate_pm_trace(const void *tracedata, unsigned int user)
 	const char *file = *(const char **)(tracedata + 2);
 	unsigned int user_hash_value, file_hash_value;
 
+<<<<<<< HEAD
+=======
+	if (!x86_platform.legacy.rtc)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	user_hash_value = user % USERHASH;
 	file_hash_value = hash_string(lineno, file, FILEHASH);
 	set_magic_time(user_hash_value, file_hash_value, dev_hash_value);
@@ -267,6 +277,12 @@ static struct notifier_block pm_trace_nb = {
 
 static int early_resume_init(void)
 {
+<<<<<<< HEAD
+=======
+	if (!x86_platform.legacy.rtc)
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hash_value_early_read = read_magic_time();
 	register_pm_notifier(&pm_trace_nb);
 	return 0;
@@ -277,6 +293,12 @@ static int late_resume_init(void)
 	unsigned int val = hash_value_early_read;
 	unsigned int user, file, dev;
 
+<<<<<<< HEAD
+=======
+	if (!x86_platform.legacy.rtc)
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	user = val % USERHASH;
 	val = val / USERHASH;
 	file = val % FILEHASH;

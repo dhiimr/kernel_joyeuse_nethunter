@@ -14,6 +14,7 @@ config QRTR
 
 if QRTR
 
+<<<<<<< HEAD
 config QRTR_NODE_ID
 	int "QRTR Local Node ID"
 	default 1
@@ -25,6 +26,8 @@ config QRTR_NODE_ID
 	  but the name service application is not priveleged enough to use
 	  netlink sockets.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config QRTR_SMD
 	tristate "SMD IPC Router channels"
 	depends on RPMSG || (COMPILE_TEST && RPMSG=n)
@@ -32,6 +35,7 @@ config QRTR_SMD
 	  Say Y here to support SMD based ipcrouter channels.  SMD is the
 	  most common transport for IPC Router.
 
+<<<<<<< HEAD
 config QRTR_MHI
 	tristate "MHI IPC Router channels"
 	depends on MHI_BUS || (COMPILE_TEST && MHI_BUS=n)
@@ -60,4 +64,6 @@ config QRTR_MHI_DEV
 	  connections.  This driver enables QRTR to run on the modem device
 	  side.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif # QRTR

@@ -23,6 +23,11 @@
 
 static const char sni_82596_string[] = "snirm_82596";
 
+<<<<<<< HEAD
+=======
+#define LIB82596_DMA_ATTR	0
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define DMA_WBACK(priv, addr, len)     do { } while (0)
 #define DMA_INV(priv, addr, len)       do { } while (0)
 #define DMA_WBACK_INV(priv, addr, len) do { } while (0)
@@ -120,9 +125,16 @@ static int sni_82596_probe(struct platform_device *dev)
 	netdevice->dev_addr[5] = readb(eth_addr + 0x06);
 	iounmap(eth_addr);
 
+<<<<<<< HEAD
 	if (!netdevice->irq) {
 		printk(KERN_ERR "%s: IRQ not found for i82596 at 0x%lx\n",
 			__FILE__, netdevice->base_addr);
+=======
+	if (netdevice->irq < 0) {
+		printk(KERN_ERR "%s: IRQ not found for i82596 at 0x%lx\n",
+			__FILE__, netdevice->base_addr);
+		retval = netdevice->irq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto probe_failed;
 	}
 
@@ -151,7 +163,11 @@ static int sni_82596_driver_remove(struct platform_device *pdev)
 
 	unregister_netdev(dev);
 	dma_free_attrs(dev->dev.parent, sizeof(struct i596_private), lp->dma,
+<<<<<<< HEAD
 		       lp->dma_addr, DMA_ATTR_NON_CONSISTENT);
+=======
+		       lp->dma_addr, LIB82596_DMA_ATTR);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	iounmap(lp->ca);
 	iounmap(lp->mpu_port);
 	free_netdev (dev);

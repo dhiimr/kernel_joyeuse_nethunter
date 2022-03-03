@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2015, 2017-2019, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -17,17 +21,21 @@
 #include <linux/clk-provider.h>
 #include "clk-regmap.h"
 
+<<<<<<< HEAD
 struct pll_vco_data {
 	unsigned long freq;
 	u8 post_div_val;
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct pll_vco {
 	unsigned long min_freq;
 	unsigned long max_freq;
 	u32 val;
 };
 
+<<<<<<< HEAD
 enum pll_type {
 	ALPHA_PLL,
 	TRION_PLL,
@@ -45,10 +53,17 @@ enum pll_type {
  * @inited: flag that's set when the PLL is initialized
  * @vco_table: array of VCO settings
  * @vco_data: array of VCO data settings like post div
+=======
+/**
+ * struct clk_alpha_pll - phase locked loop (PLL)
+ * @offset: base address of registers
+ * @vco_table: array of VCO settings
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @clkr: regmap clock handle
  */
 struct clk_alpha_pll {
 	u32 offset;
+<<<<<<< HEAD
 	struct alpha_pll_config *config;
 	bool inited;
 
@@ -88,30 +103,50 @@ struct clk_alpha_pll {
 enum postdiv_type {
 	POSTDIV_EVEN,
 	POSTDIV_ODD,
+=======
+
+	const struct pll_vco *vco_table;
+	size_t num_vco;
+#define SUPPORTS_OFFLINE_REQ	BIT(0)
+#define SUPPORTS_16BIT_ALPHA	BIT(1)
+#define SUPPORTS_FSM_MODE	BIT(2)
+	u8 flags;
+
+	struct clk_regmap clkr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
  * struct clk_alpha_pll_postdiv - phase locked loop (PLL) post-divider
  * @offset: base address of registers
  * @width: width of post-divider
+<<<<<<< HEAD
  * @post_div_shift: shift to differentiate between odd and even post-divider
  * @post_div_table: table with PLL odd and even post-divider settings
  * @num_post_div: Number of PLL post-divider settings
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @clkr: regmap clock handle
  */
 struct clk_alpha_pll_postdiv {
 	u32 offset;
 	u8 width;
+<<<<<<< HEAD
 	int post_div_shift;
 	const struct clk_div_table *post_div_table;
 	size_t num_post_div;
 	struct clk_regmap clkr;
 	enum pll_type type;
 	enum postdiv_type postdiv;
+=======
+
+	struct clk_regmap clkr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct alpha_pll_config {
 	u32 l;
+<<<<<<< HEAD
 	u32 frac;
 	u32 alpha;
 	u32 alpha_u;
@@ -126,6 +161,11 @@ struct alpha_pll_config {
 	u32 test_ctl_hi_val;
 	u32 test_ctl_hi_mask;
 	u32 test_ctl_hi1_val;
+=======
+	u32 alpha;
+	u32 config_ctl_val;
+	u32 config_ctl_hi_val;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 main_output_mask;
 	u32 aux_output_mask;
 	u32 aux2_output_mask;
@@ -136,12 +176,16 @@ struct alpha_pll_config {
 	u32 post_div_mask;
 	u32 vco_val;
 	u32 vco_mask;
+<<<<<<< HEAD
 	u32 alpha_en_mask;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 extern const struct clk_ops clk_alpha_pll_ops;
 extern const struct clk_ops clk_alpha_pll_hwfsm_ops;
 extern const struct clk_ops clk_alpha_pll_postdiv_ops;
+<<<<<<< HEAD
 extern const struct clk_ops clk_trion_pll_ops;
 extern const struct clk_ops clk_trion_fixed_pll_ops;
 extern const struct clk_ops clk_trion_pll_postdiv_ops;
@@ -168,4 +212,10 @@ int clk_agera_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
 				const struct alpha_pll_config *config);
 int clk_lucid_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
 				const struct alpha_pll_config *config);
+=======
+
+void clk_alpha_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
+			     const struct alpha_pll_config *config);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif

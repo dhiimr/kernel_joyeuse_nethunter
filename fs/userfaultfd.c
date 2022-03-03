@@ -662,11 +662,16 @@ int dup_userfaultfd(struct vm_area_struct *vma, struct list_head *fcs)
 
 	octx = vma->vm_userfaultfd_ctx.ctx;
 	if (!octx || !(octx->features & UFFD_FEATURE_EVENT_FORK)) {
+<<<<<<< HEAD
 		vm_write_begin(vma);
 		vma->vm_userfaultfd_ctx = NULL_VM_UFFD_CTX;
 		WRITE_ONCE(vma->vm_flags,
 			   vma->vm_flags & ~(VM_UFFD_WP | VM_UFFD_MISSING));
 		vm_write_end(vma);
+=======
+		vma->vm_userfaultfd_ctx = NULL_VM_UFFD_CTX;
+		vma->vm_flags &= ~(VM_UFFD_WP | VM_UFFD_MISSING);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 	}
 
@@ -857,6 +862,10 @@ static int userfaultfd_release(struct inode *inode, struct file *file)
 	/* len == 0 means wake all */
 	struct userfaultfd_wake_range range = { .len = 0, };
 	unsigned long new_flags;
+<<<<<<< HEAD
+=======
+	bool still_valid;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ACCESS_ONCE(ctx->released) = true;
 
@@ -872,8 +881,12 @@ static int userfaultfd_release(struct inode *inode, struct file *file)
 	 * taking the mmap_sem for writing.
 	 */
 	down_write(&mm->mmap_sem);
+<<<<<<< HEAD
 	if (!mmget_still_valid(mm))
 		goto skip_mm;
+=======
+	still_valid = mmget_still_valid(mm);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	prev = NULL;
 	for (vma = mm->mmap; vma; vma = vma->vm_next) {
 		cond_resched();
@@ -884,6 +897,7 @@ static int userfaultfd_release(struct inode *inode, struct file *file)
 			continue;
 		}
 		new_flags = vma->vm_flags & ~(VM_UFFD_MISSING | VM_UFFD_WP);
+<<<<<<< HEAD
 		prev = vma_merge(mm, prev, vma->vm_start, vma->vm_end,
 				 new_flags, vma->anon_vma,
 				 vma->vm_file, vma->vm_pgoff,
@@ -900,6 +914,22 @@ static int userfaultfd_release(struct inode *inode, struct file *file)
 		vm_write_end(vma);
 	}
 skip_mm:
+=======
+		if (still_valid) {
+			prev = vma_merge(mm, prev, vma->vm_start, vma->vm_end,
+					 new_flags, vma->anon_vma,
+					 vma->vm_file, vma->vm_pgoff,
+					 vma_policy(vma),
+					 NULL_VM_UFFD_CTX);
+			if (prev)
+				vma = prev;
+			else
+				prev = vma;
+		}
+		vma->vm_flags = new_flags;
+		vma->vm_userfaultfd_ctx = NULL_VM_UFFD_CTX;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	up_write(&mm->mmap_sem);
 	mmput(mm);
 wakeup:
@@ -1451,8 +1481,12 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
 		prev = vma_merge(mm, prev, start, vma_end, new_flags,
 				 vma->anon_vma, vma->vm_file, vma->vm_pgoff,
 				 vma_policy(vma),
+<<<<<<< HEAD
 				 ((struct vm_userfaultfd_ctx){ ctx }),
 				 vma_get_anon_name(vma));
+=======
+				 ((struct vm_userfaultfd_ctx){ ctx }));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (prev) {
 			vma = prev;
 			goto next;
@@ -1473,10 +1507,15 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
 		 * the next vma was merged into the current one and
 		 * the current one has not been updated yet.
 		 */
+<<<<<<< HEAD
 		vm_write_begin(vma);
 		WRITE_ONCE(vma->vm_flags, new_flags);
 		vma->vm_userfaultfd_ctx.ctx = ctx;
 		vm_write_end(vma);
+=======
+		vma->vm_flags = new_flags;
+		vma->vm_userfaultfd_ctx.ctx = ctx;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	skip:
 		prev = vma;
@@ -1616,8 +1655,12 @@ static int userfaultfd_unregister(struct userfaultfd_ctx *ctx,
 		prev = vma_merge(mm, prev, start, vma_end, new_flags,
 				 vma->anon_vma, vma->vm_file, vma->vm_pgoff,
 				 vma_policy(vma),
+<<<<<<< HEAD
 				 NULL_VM_UFFD_CTX,
 				 vma_get_anon_name(vma));
+=======
+				 NULL_VM_UFFD_CTX);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (prev) {
 			vma = prev;
 			goto next;
@@ -1638,10 +1681,15 @@ static int userfaultfd_unregister(struct userfaultfd_ctx *ctx,
 		 * the next vma was merged into the current one and
 		 * the current one has not been updated yet.
 		 */
+<<<<<<< HEAD
 		vm_write_begin(vma);
 		WRITE_ONCE(vma->vm_flags, new_flags);
 		vma->vm_userfaultfd_ctx = NULL_VM_UFFD_CTX;
 		vm_write_end(vma);
+=======
+		vma->vm_flags = new_flags;
+		vma->vm_userfaultfd_ctx = NULL_VM_UFFD_CTX;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	skip:
 		prev = vma;
@@ -1818,6 +1866,7 @@ static int userfaultfd_api(struct userfaultfd_ctx *ctx,
 	if (copy_from_user(&uffdio_api, buf, sizeof(uffdio_api)))
 		goto out;
 	features = uffdio_api.features;
+<<<<<<< HEAD
 	if (uffdio_api.api != UFFD_API || (features & ~UFFD_API_FEATURES)) {
 		memset(&uffdio_api, 0, sizeof(uffdio_api));
 		if (copy_to_user(buf, &uffdio_api, sizeof(uffdio_api)))
@@ -1825,6 +1874,14 @@ static int userfaultfd_api(struct userfaultfd_ctx *ctx,
 		ret = -EINVAL;
 		goto out;
 	}
+=======
+	ret = -EINVAL;
+	if (uffdio_api.api != UFFD_API || (features & ~UFFD_API_FEATURES))
+		goto err_out;
+	ret = -EPERM;
+	if ((features & UFFD_FEATURE_EVENT_FORK) && !capable(CAP_SYS_PTRACE))
+		goto err_out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* report all available features and ioctls to userland */
 	uffdio_api.features = UFFD_API_FEATURES;
 	uffdio_api.ioctls = UFFD_API_IOCTLS;
@@ -1837,6 +1894,14 @@ static int userfaultfd_api(struct userfaultfd_ctx *ctx,
 	ret = 0;
 out:
 	return ret;
+<<<<<<< HEAD
+=======
+err_out:
+	memset(&uffdio_api, 0, sizeof(uffdio_api));
+	if (copy_to_user(buf, &uffdio_api, sizeof(uffdio_api)))
+		ret = -EFAULT;
+	goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static long userfaultfd_ioctl(struct file *file, unsigned cmd,

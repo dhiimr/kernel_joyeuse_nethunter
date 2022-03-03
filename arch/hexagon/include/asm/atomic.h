@@ -105,7 +105,11 @@ static inline void atomic_##op(int i, atomic_t *v)			\
 		"1:	%0 = memw_locked(%1);\n"			\
 		"	%0 = "#op "(%0,%2);\n"				\
 		"	memw_locked(%1,P3)=%0;\n"			\
+<<<<<<< HEAD
 		"	if !P3 jump 1b;\n"				\
+=======
+		"	if (!P3) jump 1b;\n"				\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		: "=&r" (output)					\
 		: "r" (&v->counter), "r" (i)				\
 		: "memory", "p3"					\
@@ -121,7 +125,11 @@ static inline int atomic_##op##_return(int i, atomic_t *v)		\
 		"1:	%0 = memw_locked(%1);\n"			\
 		"	%0 = "#op "(%0,%2);\n"				\
 		"	memw_locked(%1,P3)=%0;\n"			\
+<<<<<<< HEAD
 		"	if !P3 jump 1b;\n"				\
+=======
+		"	if (!P3) jump 1b;\n"				\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		: "=&r" (output)					\
 		: "r" (&v->counter), "r" (i)				\
 		: "memory", "p3"					\
@@ -138,7 +146,11 @@ static inline int atomic_fetch_##op(int i, atomic_t *v)			\
 		"1:	%0 = memw_locked(%2);\n"			\
 		"	%1 = "#op "(%0,%3);\n"				\
 		"	memw_locked(%2,P3)=%1;\n"			\
+<<<<<<< HEAD
 		"	if !P3 jump 1b;\n"				\
+=======
+		"	if (!P3) jump 1b;\n"				\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		: "=&r" (output), "=&r" (val)				\
 		: "r" (&v->counter), "r" (i)				\
 		: "memory", "p3"					\
@@ -187,7 +199,11 @@ static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 		"	}"
 		"	memw_locked(%2, p3) = %1;"
 		"	{"
+<<<<<<< HEAD
 		"		if !p3 jump 1b;"
+=======
+		"		if (!p3) jump 1b;"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		"	}"
 		"2:"
 		: "=&r" (__oldval), "=&r" (tmp)

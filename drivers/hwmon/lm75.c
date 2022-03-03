@@ -165,7 +165,11 @@ static int lm75_write(struct device *dev, enum hwmon_sensor_types type,
 	temp = DIV_ROUND_CLOSEST(temp  << (resolution - 8),
 				 1000) << (16 - resolution);
 
+<<<<<<< HEAD
 	return regmap_write(data->regmap, reg, temp);
+=======
+	return regmap_write(data->regmap, reg, (u16)temp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static umode_t lm75_is_visible(const void *data, enum hwmon_sensor_types type,

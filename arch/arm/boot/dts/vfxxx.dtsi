@@ -527,7 +527,11 @@
 			};
 
 			ocotp: ocotp@400a5000 {
+<<<<<<< HEAD
 				compatible = "fsl,vf610-ocotp";
+=======
+				compatible = "fsl,vf610-ocotp", "syscon";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				reg = <0x400a5000 0x1000>;
 				clocks = <&clks VF610_CLK_OCOTP>;
 			};

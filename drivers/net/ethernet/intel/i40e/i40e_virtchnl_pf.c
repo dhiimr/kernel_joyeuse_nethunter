@@ -189,7 +189,11 @@ static inline bool i40e_vc_isvalid_vsi_id(struct i40e_vf *vf, u16 vsi_id)
  * check for the valid queue id
  **/
 static inline bool i40e_vc_isvalid_queue_id(struct i40e_vf *vf, u16 vsi_id,
+<<<<<<< HEAD
 					    u8 qid)
+=======
+					    u16 qid)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct i40e_pf *pf = vf->pf;
 	struct i40e_vsi *vsi = i40e_find_vsi_from_id(pf, vsi_id);
@@ -204,7 +208,11 @@ static inline bool i40e_vc_isvalid_queue_id(struct i40e_vf *vf, u16 vsi_id,
  *
  * check for the valid vector id
  **/
+<<<<<<< HEAD
 static inline bool i40e_vc_isvalid_vector_id(struct i40e_vf *vf, u8 vector_id)
+=======
+static inline bool i40e_vc_isvalid_vector_id(struct i40e_vf *vf, u32 vector_id)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct i40e_pf *pf = vf->pf;
 
@@ -418,11 +426,35 @@ static int i40e_config_iwarp_qvlist(struct i40e_vf *vf,
 	u32 v_idx, i, reg_idx, reg;
 	u32 next_q_idx, next_q_type;
 	u32 msix_vf, size;
+<<<<<<< HEAD
+=======
+	int ret = 0;
+
+	msix_vf = pf->hw.func_caps.num_msix_vectors_vf;
+
+	if (qvlist_info->num_vectors > msix_vf) {
+		dev_warn(&pf->pdev->dev,
+			 "Incorrect number of iwarp vectors %u. Maximum %u allowed.\n",
+			 qvlist_info->num_vectors,
+			 msix_vf);
+		ret = -EINVAL;
+		goto err_out;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	size = sizeof(struct virtchnl_iwarp_qvlist_info) +
 	       (sizeof(struct virtchnl_iwarp_qv_info) *
 						(qvlist_info->num_vectors - 1));
+<<<<<<< HEAD
 	vf->qvlist_info = kzalloc(size, GFP_KERNEL);
+=======
+	kfree(vf->qvlist_info);
+	vf->qvlist_info = kzalloc(size, GFP_KERNEL);
+	if (!vf->qvlist_info) {
+		ret = -ENOMEM;
+		goto err_out;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	vf->qvlist_info->num_vectors = qvlist_info->num_vectors;
 
 	msix_vf = pf->hw.func_caps.num_msix_vectors_vf;
@@ -433,8 +465,15 @@ static int i40e_config_iwarp_qvlist(struct i40e_vf *vf,
 		v_idx = qv_info->v_idx;
 
 		/* Validate vector id belongs to this vf */
+<<<<<<< HEAD
 		if (!i40e_vc_isvalid_vector_id(vf, v_idx))
 			goto err;
+=======
+		if (!i40e_vc_isvalid_vector_id(vf, v_idx)) {
+			ret = -EINVAL;
+			goto err_free;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		vf->qvlist_info->qv_info[i] = *qv_info;
 
@@ -476,10 +515,18 @@ static int i40e_config_iwarp_qvlist(struct i40e_vf *vf,
 	}
 
 	return 0;
+<<<<<<< HEAD
 err:
 	kfree(vf->qvlist_info);
 	vf->qvlist_info = NULL;
 	return -EINVAL;
+=======
+err_free:
+	kfree(vf->qvlist_info);
+	vf->qvlist_info = NULL;
+err_out:
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -2029,8 +2076,15 @@ error_param:
 				      (u8 *)&stats, sizeof(stats));
 }
 
+<<<<<<< HEAD
 /* If the VF is not trusted restrict the number of MAC/VLAN it can program */
 #define I40E_VC_MAX_MAC_ADDR_PER_VF 12
+=======
+/* If the VF is not trusted restrict the number of MAC/VLAN it can program
+ * MAC filters: 16 for multicast, 1 for MAC, 1 for broadcast
+ */
+#define I40E_VC_MAX_MAC_ADDR_PER_VF (16 + 1 + 1)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define I40E_VC_MAX_VLAN_PER_VF 8
 
 /**
@@ -2175,6 +2229,19 @@ static int i40e_vc_del_mac_addr_msg(struct i40e_vf *vf, u8 *msg, u16 msglen)
 			ret = I40E_ERR_INVALID_MAC_ADDR;
 			goto error_param;
 		}
+<<<<<<< HEAD
+=======
+
+		if (vf->pf_set_mac &&
+		    ether_addr_equal(al->list[i].addr,
+				     vf->default_lan_addr.addr)) {
+			dev_err(&pf->pdev->dev,
+				"MAC addr %pM has been set by PF, cannot delete it for VF %d, reset VF to change MAC addr\n",
+				vf->default_lan_addr.addr, vf->vf_id);
+			ret = I40E_ERR_PARAM;
+			goto error_param;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	vsi = pf->vsi[vf->lan_vsi_idx];
 
@@ -3189,7 +3256,11 @@ int i40e_ndo_set_vf_link_state(struct net_device *netdev, int vf_id, int link)
 		vf->link_forced = true;
 		vf->link_up = true;
 		pfe.event_data.link_event.link_status = true;
+<<<<<<< HEAD
 		pfe.event_data.link_event.link_speed = I40E_LINK_SPEED_40GB;
+=======
+		pfe.event_data.link_event.link_speed = VIRTCHNL_LINK_SPEED_40GB;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	case IFLA_VF_LINK_STATE_DISABLE:
 		vf->link_forced = true;

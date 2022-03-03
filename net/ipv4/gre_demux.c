@@ -60,7 +60,13 @@ int gre_del_protocol(const struct gre_protocol *proto, u8 version)
 }
 EXPORT_SYMBOL_GPL(gre_del_protocol);
 
+<<<<<<< HEAD
 /* Fills in tpi and returns header length to be pulled. */
+=======
+/* Fills in tpi and returns header length to be pulled.
+ * Note that caller must use pskb_may_pull() before pulling GRE header.
+ */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int gre_parse_header(struct sk_buff *skb, struct tnl_ptk_info *tpi,
 		     bool *csum_err, __be16 proto, int nhs)
 {
@@ -86,13 +92,23 @@ int gre_parse_header(struct sk_buff *skb, struct tnl_ptk_info *tpi,
 
 	options = (__be32 *)(greh + 1);
 	if (greh->flags & GRE_CSUM) {
+<<<<<<< HEAD
 		if (skb_checksum_simple_validate(skb)) {
+=======
+		if (!skb_checksum_simple_validate(skb)) {
+			skb_checksum_try_convert(skb, IPPROTO_GRE, 0,
+						 null_compute_pseudo);
+		} else if (csum_err) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			*csum_err = true;
 			return -EINVAL;
 		}
 
+<<<<<<< HEAD
 		skb_checksum_try_convert(skb, IPPROTO_GRE, 0,
 					 null_compute_pseudo);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		options++;
 	}
 
@@ -113,8 +129,19 @@ int gre_parse_header(struct sk_buff *skb, struct tnl_ptk_info *tpi,
 	 * - When dealing with WCCPv2, Skip extra 4 bytes in GRE header
 	 */
 	if (greh->flags == 0 && tpi->proto == htons(ETH_P_WCCP)) {
+<<<<<<< HEAD
 		tpi->proto = proto;
 		if ((*(u8 *)options & 0xF0) != 0x40)
+=======
+		u8 _val, *val;
+
+		val = skb_header_pointer(skb, nhs + hdr_len,
+					 sizeof(_val), &_val);
+		if (!val)
+			return -EINVAL;
+		tpi->proto = proto;
+		if ((*val & 0xF0) != 0x40)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			hdr_len += 4;
 	}
 	tpi->hdr_len = hdr_len;

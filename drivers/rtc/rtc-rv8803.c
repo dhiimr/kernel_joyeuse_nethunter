@@ -622,7 +622,11 @@ MODULE_DEVICE_TABLE(i2c, rv8803_id);
 static const struct of_device_id rv8803_of_match[] = {
 	{
 		.compatible = "microcrystal,rv8803",
+<<<<<<< HEAD
 		.data = (void *)rx_8900
+=======
+		.data = (void *)rv_8803
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	{
 		.compatible = "epson,rx8900",

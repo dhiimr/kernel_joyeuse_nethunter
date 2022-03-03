@@ -255,6 +255,11 @@ extern struct acpi_bit_register_info
 
 ACPI_GLOBAL(u8, acpi_gbl_sleep_type_a);
 ACPI_GLOBAL(u8, acpi_gbl_sleep_type_b);
+<<<<<<< HEAD
+=======
+ACPI_GLOBAL(u8, acpi_gbl_sleep_type_a_s0);
+ACPI_GLOBAL(u8, acpi_gbl_sleep_type_b_s0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*****************************************************************************
  *

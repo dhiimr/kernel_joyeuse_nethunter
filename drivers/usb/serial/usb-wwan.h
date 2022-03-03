@@ -36,6 +36,10 @@ struct usb_wwan_intf_private {
 	spinlock_t susp_lock;
 	unsigned int suspended:1;
 	unsigned int use_send_setup:1;
+<<<<<<< HEAD
+=======
+	unsigned int use_zlp:1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int in_flight;
 	unsigned int open_ports;
 	void *private;

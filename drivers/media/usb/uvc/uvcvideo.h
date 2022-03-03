@@ -167,7 +167,11 @@
 /* Maximum status buffer size in bytes of interrupt URB. */
 #define UVC_MAX_STATUS_SIZE	16
 
+<<<<<<< HEAD
 #define UVC_CTRL_CONTROL_TIMEOUT	500
+=======
+#define UVC_CTRL_CONTROL_TIMEOUT	5000
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define UVC_CTRL_STREAMING_TIMEOUT	5000
 
 /* Maximum allowed number of control mappings per device */

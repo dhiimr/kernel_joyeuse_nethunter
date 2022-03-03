@@ -1170,11 +1170,16 @@
  *
  * @binder_set_context_mgr:
  *	Check whether @mgr is allowed to be the binder context manager.
+<<<<<<< HEAD
  *	@mgr contains the task_struct for the task being registered.
+=======
+ *	@mgr contains the struct cred for the current binder process.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *	Return 0 if permission is granted.
  * @binder_transaction:
  *	Check whether @from is allowed to invoke a binder transaction call
  *	to @to.
+<<<<<<< HEAD
  *	@from contains the task_struct for the sending task.
  *	@to contains the task_struct for the receiving task.
  * @binder_transfer_binder:
@@ -1186,6 +1191,19 @@
  *	@from contains the task_struct for the sending task.
  *	@file contains the struct file being transferred.
  *	@to contains the task_struct for the receiving task.
+=======
+ *	@from contains the struct cred for the sending process.
+ *	@to contains the struct cred for the receiving process.
+ * @binder_transfer_binder:
+ *	Check whether @from is allowed to transfer a binder reference to @to.
+ *	@from contains the struct cred for the sending process.
+ *	@to contains the struct cred for the receiving process.
+ * @binder_transfer_file:
+ *	Check whether @from is allowed to transfer @file to @to.
+ *	@from contains the struct cred for the sending process.
+ *	@file contains the struct file being transferred.
+ *	@to contains the struct cred for the receiving process.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * @ptrace_access_check:
  *	Check permission before allowing the current process to trace the
@@ -1351,6 +1369,7 @@
  *	@inode we wish to get the security context of.
  *	@ctx is a pointer in which to place the allocated security context.
  *	@ctxlen points to the place to put the length of @ctx.
+<<<<<<< HEAD
  *
  * Security hooks for using the eBPF maps and programs functionalities through
  * eBPF syscalls.
@@ -1394,6 +1413,17 @@ union security_list_options {
 					struct task_struct *to);
 	int (*binder_transfer_file)(struct task_struct *from,
 					struct task_struct *to,
+=======
+ */
+union security_list_options {
+	int (*binder_set_context_mgr)(const struct cred *mgr);
+	int (*binder_transaction)(const struct cred *from,
+					const struct cred *to);
+	int (*binder_transfer_binder)(const struct cred *from,
+					const struct cred *to);
+	int (*binder_transfer_file)(const struct cred *from,
+					const struct cred *to,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					struct file *file);
 
 	int (*ptrace_access_check)(struct task_struct *child,
@@ -1475,8 +1505,11 @@ union security_list_options {
 					size_t *len);
 	int (*inode_create)(struct inode *dir, struct dentry *dentry,
 				umode_t mode);
+<<<<<<< HEAD
 	int (*inode_post_create)(struct inode *dir, struct dentry *dentry,
 				umode_t mode);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int (*inode_link)(struct dentry *old_dentry, struct inode *dir,
 				struct dentry *new_dentry);
 	int (*inode_unlink)(struct inode *dir, struct dentry *dentry);
@@ -1718,6 +1751,7 @@ union security_list_options {
 				struct audit_context *actx);
 	void (*audit_rule_free)(void *lsmrule);
 #endif /* CONFIG_AUDIT */
+<<<<<<< HEAD
 
 #ifdef CONFIG_BPF_SYSCALL
 	int (*bpf)(int cmd, union bpf_attr *attr,
@@ -1729,6 +1763,8 @@ union security_list_options {
 	int (*bpf_prog_alloc_security)(struct bpf_prog_aux *aux);
 	void (*bpf_prog_free_security)(struct bpf_prog_aux *aux);
 #endif /* CONFIG_BPF_SYSCALL */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct security_hook_heads {
@@ -1782,7 +1818,10 @@ struct security_hook_heads {
 	struct list_head inode_free_security;
 	struct list_head inode_init_security;
 	struct list_head inode_create;
+<<<<<<< HEAD
 	struct list_head inode_post_create;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct list_head inode_link;
 	struct list_head inode_unlink;
 	struct list_head inode_symlink;
@@ -1949,6 +1988,7 @@ struct security_hook_heads {
 	struct list_head audit_rule_match;
 	struct list_head audit_rule_free;
 #endif /* CONFIG_AUDIT */
+<<<<<<< HEAD
 #ifdef CONFIG_BPF_SYSCALL
 	struct list_head bpf;
 	struct list_head bpf_map;
@@ -1958,6 +1998,8 @@ struct security_hook_heads {
 	struct list_head bpf_prog_alloc_security;
 	struct list_head bpf_prog_free_security;
 #endif /* CONFIG_BPF_SYSCALL */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 } __randomize_layout;
 
 /*

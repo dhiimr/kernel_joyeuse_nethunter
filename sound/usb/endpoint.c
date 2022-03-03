@@ -357,7 +357,11 @@ static void queue_pending_output_urbs(struct snd_usb_endpoint *ep)
 		err = usb_submit_urb(ctx->urb, GFP_ATOMIC);
 		if (err < 0)
 			usb_audio_err(ep->chip,
+<<<<<<< HEAD
 				"Unable to submit urb #%d: %d (urb %pK)\n",
+=======
+				"Unable to submit urb #%d: %d (urb %p)\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				ctx->index, err, ctx->urb);
 		else
 			set_bit(ctx->index, &ep->active_mask);
@@ -403,6 +407,12 @@ static void snd_complete_urb(struct urb *urb)
 		}
 
 		prepare_outbound_urb(ep, ctx);
+<<<<<<< HEAD
+=======
+		/* can be stopped during prepare callback */
+		if (unlikely(!test_bit(EP_FLAG_RUNNING, &ep->flags)))
+			goto exit_clear;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		retire_inbound_urb(ep, ctx);
 		/* can be stopped during retire callback */
@@ -462,7 +472,11 @@ struct snd_usb_endpoint *snd_usb_add_endpoint(struct snd_usb_audio *chip,
 		    ep->iface == alts->desc.bInterfaceNumber &&
 		    ep->altsetting == alts->desc.bAlternateSetting) {
 			usb_audio_dbg(ep->chip,
+<<<<<<< HEAD
 				      "Re-using EP %x in iface %d,%d @%pK\n",
+=======
+				      "Re-using EP %x in iface %d,%d @%p\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					ep_num, ep->iface, ep->altsetting, ep);
 			goto __exit_unlock;
 		}

@@ -694,12 +694,30 @@ static ssize_t bm_register_write(struct file *file, const char __user *buffer,
 	struct super_block *sb = file_inode(file)->i_sb;
 	struct dentry *root = sb->s_root, *dentry;
 	int err = 0;
+<<<<<<< HEAD
+=======
+	struct file *f = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	e = create_entry(buffer, count);
 
 	if (IS_ERR(e))
 		return PTR_ERR(e);
 
+<<<<<<< HEAD
+=======
+	if (e->flags & MISC_FMT_OPEN_FILE) {
+		f = open_exec(e->interpreter);
+		if (IS_ERR(f)) {
+			pr_notice("register: failed to install interpreter file %s\n",
+				 e->interpreter);
+			kfree(e);
+			return PTR_ERR(f);
+		}
+		e->interp_file = f;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	inode_lock(d_inode(root));
 	dentry = lookup_one_len(e->name, root, strlen(e->name));
 	err = PTR_ERR(dentry);
@@ -723,6 +741,7 @@ static ssize_t bm_register_write(struct file *file, const char __user *buffer,
 		goto out2;
 	}
 
+<<<<<<< HEAD
 	if (e->flags & MISC_FMT_OPEN_FILE) {
 		struct file *f;
 
@@ -738,6 +757,8 @@ static ssize_t bm_register_write(struct file *file, const char __user *buffer,
 		e->interp_file = f;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	e->dentry = dget(dentry);
 	inode->i_private = e;
 	inode->i_fop = &bm_entry_operations;
@@ -754,6 +775,11 @@ out:
 	inode_unlock(d_inode(root));
 
 	if (err) {
+<<<<<<< HEAD
+=======
+		if (f)
+			filp_close(f, NULL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kfree(e);
 		return err;
 	}

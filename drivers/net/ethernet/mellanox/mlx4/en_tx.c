@@ -343,7 +343,11 @@ u32 mlx4_en_recycle_tx_desc(struct mlx4_en_priv *priv,
 		.dma = tx_info->map0_dma,
 	};
 
+<<<<<<< HEAD
 	if (!mlx4_en_rx_recycle(ring->recycle_ring, &frame)) {
+=======
+	if (!napi_mode || !mlx4_en_rx_recycle(ring->recycle_ring, &frame)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dma_unmap_page(priv->ddev, tx_info->map0_dma,
 			       PAGE_SIZE, priv->dma_dir);
 		put_page(tx_info->page);
@@ -385,6 +389,38 @@ int mlx4_en_free_tx_buf(struct net_device *dev, struct mlx4_en_tx_ring *ring)
 	return cnt;
 }
 
+<<<<<<< HEAD
+=======
+static void mlx4_en_handle_err_cqe(struct mlx4_en_priv *priv, struct mlx4_err_cqe *err_cqe,
+				   u16 cqe_index, struct mlx4_en_tx_ring *ring)
+{
+	struct mlx4_en_dev *mdev = priv->mdev;
+	struct mlx4_en_tx_info *tx_info;
+	struct mlx4_en_tx_desc *tx_desc;
+	u16 wqe_index;
+	int desc_size;
+
+	en_err(priv, "CQE error - cqn 0x%x, ci 0x%x, vendor syndrome: 0x%x syndrome: 0x%x\n",
+	       ring->sp_cqn, cqe_index, err_cqe->vendor_err_syndrome, err_cqe->syndrome);
+	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1, err_cqe, sizeof(*err_cqe),
+		       false);
+
+	wqe_index = be16_to_cpu(err_cqe->wqe_index) & ring->size_mask;
+	tx_info = &ring->tx_info[wqe_index];
+	desc_size = tx_info->nr_txbb << LOG_TXBB_SIZE;
+	en_err(priv, "Related WQE - qpn 0x%x, wqe index 0x%x, wqe size 0x%x\n", ring->qpn,
+	       wqe_index, desc_size);
+	tx_desc = ring->buf + (wqe_index << LOG_TXBB_SIZE);
+	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1, tx_desc, desc_size, false);
+
+	if (test_and_set_bit(MLX4_EN_STATE_FLAG_RESTARTING, &priv->state))
+		return;
+
+	en_err(priv, "Scheduling port restart\n");
+	queue_work(mdev->workqueue, &priv->restart_task);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 bool mlx4_en_process_tx_cq(struct net_device *dev,
 			   struct mlx4_en_cq *cq, int napi_budget)
 {
@@ -431,6 +467,7 @@ bool mlx4_en_process_tx_cq(struct net_device *dev,
 		dma_rmb();
 
 		if (unlikely((cqe->owner_sr_opcode & MLX4_CQE_OPCODE_MASK) ==
+<<<<<<< HEAD
 			     MLX4_CQE_OPCODE_ERROR)) {
 			struct mlx4_err_cqe *cqe_err = (struct mlx4_err_cqe *)cqe;
 
@@ -438,6 +475,12 @@ bool mlx4_en_process_tx_cq(struct net_device *dev,
 			       cqe_err->vendor_err_syndrome,
 			       cqe_err->syndrome);
 		}
+=======
+			     MLX4_CQE_OPCODE_ERROR))
+			if (!test_and_set_bit(MLX4_EN_TX_RING_STATE_RECOVERING, &ring->state))
+				mlx4_en_handle_err_cqe(priv, (struct mlx4_err_cqe *)cqe, index,
+						       ring);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* Skip over last polled CQE */
 		new_index = be16_to_cpu(cqe->wqe_index) & size_mask;
@@ -835,6 +878,10 @@ netdev_tx_t mlx4_en_xmit(struct sk_buff *skb, struct net_device *dev)
 	struct mlx4_en_tx_desc *tx_desc;
 	struct mlx4_wqe_data_seg *data;
 	struct mlx4_en_tx_info *tx_info;
+<<<<<<< HEAD
+=======
+	u32 __maybe_unused ring_cons;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int tx_ind;
 	int nr_txbb;
 	int desc_size;
@@ -848,7 +895,10 @@ netdev_tx_t mlx4_en_xmit(struct sk_buff *skb, struct net_device *dev)
 	bool stop_queue;
 	bool inline_ok;
 	u8 data_offset;
+<<<<<<< HEAD
 	u32 ring_cons;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool bf_ok;
 
 	tx_ind = skb_get_queue_mapping(skb);

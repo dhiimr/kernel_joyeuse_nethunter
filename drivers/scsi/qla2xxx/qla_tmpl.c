@@ -897,7 +897,12 @@ qla27xx_template_checksum(void *p, ulong size)
 static inline int
 qla27xx_verify_template_checksum(struct qla27xx_fwdt_template *tmp)
 {
+<<<<<<< HEAD
 	return qla27xx_template_checksum(tmp, tmp->template_size) == 0;
+=======
+	return qla27xx_template_checksum(tmp,
+		le32_to_cpu(tmp->template_size)) == 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline int
@@ -913,7 +918,11 @@ qla27xx_execute_fwdt_template(struct scsi_qla_host *vha)
 	ulong len;
 
 	if (qla27xx_fwdt_template_valid(tmp)) {
+<<<<<<< HEAD
 		len = tmp->template_size;
+=======
+		len = le32_to_cpu(tmp->template_size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		tmp = memcpy(vha->hw->fw_dump, tmp, len);
 		ql27xx_edit_template(vha, tmp);
 		qla27xx_walk_template(vha, tmp, tmp, &len);
@@ -929,7 +938,11 @@ qla27xx_fwdt_calculate_dump_size(struct scsi_qla_host *vha)
 	ulong len = 0;
 
 	if (qla27xx_fwdt_template_valid(tmp)) {
+<<<<<<< HEAD
 		len = tmp->template_size;
+=======
+		len = le32_to_cpu(tmp->template_size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		qla27xx_walk_template(vha, tmp, NULL, &len);
 	}
 
@@ -941,7 +954,11 @@ qla27xx_fwdt_template_size(void *p)
 {
 	struct qla27xx_fwdt_template *tmp = p;
 
+<<<<<<< HEAD
 	return tmp->template_size;
+=======
+	return le32_to_cpu(tmp->template_size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 ulong

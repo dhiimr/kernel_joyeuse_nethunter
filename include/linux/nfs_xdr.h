@@ -1520,7 +1520,11 @@ struct nfs_commit_data {
 };
 
 struct nfs_pgio_completion_ops {
+<<<<<<< HEAD
 	void	(*error_cleanup)(struct list_head *head);
+=======
+	void	(*error_cleanup)(struct list_head *head, int);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	void	(*init_hdr)(struct nfs_pgio_header *hdr);
 	void	(*completion)(struct nfs_pgio_header *hdr);
 	void	(*reschedule_io)(struct nfs_pgio_header *hdr);

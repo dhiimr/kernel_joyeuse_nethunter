@@ -73,7 +73,11 @@ Example:
 			};
 		};
 
+<<<<<<< HEAD
 		port@10 {
+=======
+		port@a {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			reg = <10>;
 
 			adv7482_txa: endpoint {
@@ -83,7 +87,11 @@ Example:
 			};
 		};
 
+<<<<<<< HEAD
 		port@11 {
+=======
+		port@b {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			reg = <11>;
 
 			adv7482_txb: endpoint {

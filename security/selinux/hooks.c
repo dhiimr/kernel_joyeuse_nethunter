@@ -85,7 +85,10 @@
 #include <linux/export.h>
 #include <linux/msg.h>
 #include <linux/shm.h>
+<<<<<<< HEAD
 #include <linux/bpf.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "avc.h"
 #include "objsec.h"
@@ -102,7 +105,11 @@
 static atomic_t selinux_secmark_refcount = ATOMIC_INIT(0);
 
 #ifdef CONFIG_SECURITY_SELINUX_DEVELOP
+<<<<<<< HEAD
 int selinux_enforcing __rticdata;
+=======
+int selinux_enforcing;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int __init enforcing_setup(char *str)
 {
@@ -1570,7 +1577,11 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
 			 * inode_doinit with a dentry, before these inodes could
 			 * be used again by userspace.
 			 */
+<<<<<<< HEAD
 			goto out;
+=======
+			goto out_invalid;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		len = INITCONTEXTLEN;
@@ -1679,7 +1690,11 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
 			 * could be used again by userspace.
 			 */
 			if (!dentry)
+<<<<<<< HEAD
 				goto out;
+=======
+				goto out_invalid;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			rc = selinux_genfs_get_sid(dentry, sclass,
 						   sbsec->flags, &sid);
 			dput(dentry);
@@ -1692,11 +1707,18 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
 out:
 	spin_lock(&isec->lock);
 	if (isec->initialized == LABEL_PENDING) {
+<<<<<<< HEAD
 		if (!sid || rc) {
 			isec->initialized = LABEL_INVALID;
 			goto out_unlock;
 		}
 
+=======
+		if (rc) {
+			isec->initialized = LABEL_INVALID;
+			goto out_unlock;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		isec->initialized = LABEL_INITIALIZED;
 		isec->sid = sid;
 	}
@@ -1704,6 +1726,18 @@ out:
 out_unlock:
 	spin_unlock(&isec->lock);
 	return rc;
+<<<<<<< HEAD
+=======
+
+out_invalid:
+	spin_lock(&isec->lock);
+	if (isec->initialized == LABEL_PENDING) {
+		isec->initialized = LABEL_INVALID;
+		isec->sid = sid;
+	}
+	spin_unlock(&isec->lock);
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Convert a Linux signal to an access vector. */
@@ -1840,10 +1874,13 @@ static inline int file_path_has_perm(const struct cred *cred,
 	return inode_has_perm(cred, file_inode(file), av, &ad);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_BPF_SYSCALL
 static int bpf_fd_pass(struct file *file, u32 sid);
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Check whether a task can use an open file descriptor to
    access an inode in a given way.  Check access to the
    descriptor itself, and then use dentry_has_perm to
@@ -1874,12 +1911,15 @@ static int file_has_perm(const struct cred *cred,
 			goto out;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_BPF_SYSCALL
 	rc = bpf_fd_pass(file, cred_sid(cred));
 	if (rc)
 		return rc;
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* av is zero if only checking access to the descriptor. */
 	rc = 0;
 	if (av)
@@ -2139,6 +2179,7 @@ static inline u32 open_file_to_av(struct file *file)
 
 /* Hook functions begin here. */
 
+<<<<<<< HEAD
 static int selinux_binder_set_context_mgr(struct task_struct *mgr)
 {
 	u32 mysid = current_sid();
@@ -2154,6 +2195,20 @@ static int selinux_binder_transaction(struct task_struct *from,
 	u32 mysid = current_sid();
 	u32 fromsid = task_sid(from);
 	u32 tosid = task_sid(to);
+=======
+static int selinux_binder_set_context_mgr(const struct cred *mgr)
+{
+	return avc_has_perm(current_sid(), cred_sid(mgr), SECCLASS_BINDER,
+			    BINDER__SET_CONTEXT_MGR, NULL);
+}
+
+static int selinux_binder_transaction(const struct cred *from,
+				      const struct cred *to)
+{
+	u32 mysid = current_sid();
+	u32 fromsid = cred_sid(from);
+	u32 tosid = cred_sid(to);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int rc;
 
 	if (mysid != fromsid) {
@@ -2167,6 +2222,7 @@ static int selinux_binder_transaction(struct task_struct *from,
 			    NULL);
 }
 
+<<<<<<< HEAD
 static int selinux_binder_transfer_binder(struct task_struct *from,
 					  struct task_struct *to)
 {
@@ -2182,6 +2238,21 @@ static int selinux_binder_transfer_file(struct task_struct *from,
 					struct file *file)
 {
 	u32 sid = task_sid(to);
+=======
+static int selinux_binder_transfer_binder(const struct cred *from,
+					  const struct cred *to)
+{
+	return avc_has_perm(cred_sid(from), cred_sid(to),
+			    SECCLASS_BINDER, BINDER__TRANSFER,
+			    NULL);
+}
+
+static int selinux_binder_transfer_file(const struct cred *from,
+					const struct cred *to,
+					struct file *file)
+{
+	u32 sid = cred_sid(to);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct file_security_struct *fsec = file->f_security;
 	struct dentry *dentry = file->f_path.dentry;
 	struct inode_security_struct *isec;
@@ -2200,12 +2271,15 @@ static int selinux_binder_transfer_file(struct task_struct *from,
 			return rc;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_BPF_SYSCALL
 	rc = bpf_fd_pass(file, sid);
 	if (rc)
 		return rc;
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
 		return 0;
 
@@ -5138,6 +5212,7 @@ static int selinux_tun_dev_open(void *security)
 
 static int selinux_nlmsg_perm(struct sock *sk, struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	int err = 0;
 	u32 perm;
 	struct nlmsghdr *nlh;
@@ -5171,6 +5246,61 @@ static int selinux_nlmsg_perm(struct sock *sk, struct sk_buff *skb)
 	err = sock_has_perm(sk, perm);
 out:
 	return err;
+=======
+	int rc = 0;
+	unsigned int msg_len;
+	unsigned int data_len = skb->len;
+	unsigned char *data = skb->data;
+	struct nlmsghdr *nlh;
+	struct sk_security_struct *sksec = sk->sk_security;
+	u16 sclass = sksec->sclass;
+	u32 perm;
+
+	while (data_len >= nlmsg_total_size(0)) {
+		nlh = (struct nlmsghdr *)data;
+
+		/* NOTE: the nlmsg_len field isn't reliably set by some netlink
+		 *       users which means we can't reject skb's with bogus
+		 *       length fields; our solution is to follow what
+		 *       netlink_rcv_skb() does and simply skip processing at
+		 *       messages with length fields that are clearly junk
+		 */
+		if (nlh->nlmsg_len < NLMSG_HDRLEN || nlh->nlmsg_len > data_len)
+			return 0;
+
+		rc = selinux_nlmsg_lookup(sclass, nlh->nlmsg_type, &perm);
+		if (rc == 0) {
+			rc = sock_has_perm(sk, perm);
+			if (rc)
+				return rc;
+		} else if (rc == -EINVAL) {
+			/* -EINVAL is a missing msg/perm mapping */
+			pr_warn_ratelimited("SELinux: unrecognized netlink"
+				" message: protocol=%hu nlmsg_type=%hu sclass=%s"
+				" pid=%d comm=%s\n",
+				sk->sk_protocol, nlh->nlmsg_type,
+				secclass_map[sclass - 1].name,
+				task_pid_nr(current), current->comm);
+			if (selinux_enforcing && !security_get_allow_unknown())
+				return rc;
+			rc = 0;
+		} else if (rc == -ENOENT) {
+			/* -ENOENT is a missing socket/class mapping, ignore */
+			rc = 0;
+		} else {
+			return rc;
+		}
+
+		/* move to the next message after applying netlink padding */
+		msg_len = NLMSG_ALIGN(nlh->nlmsg_len);
+		if (msg_len >= data_len)
+			return 0;
+		data_len -= msg_len;
+		data += msg_len;
+	}
+
+	return rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #ifdef CONFIG_NETFILTER
@@ -5315,7 +5445,11 @@ static unsigned int selinux_ip_postroute_compat(struct sk_buff *skb,
 	struct common_audit_data ad;
 	struct lsm_network_audit net = {0,};
 	char *addrp;
+<<<<<<< HEAD
 	u8 proto;
+=======
+	u8 proto = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (sk == NULL)
 		return NF_ACCEPT;
@@ -6301,6 +6435,7 @@ static void selinux_ib_free_security(void *ib_sec)
 }
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_BPF_SYSCALL
 static int selinux_bpf(int cmd, union bpf_attr *attr,
 				     unsigned int size)
@@ -6434,6 +6569,8 @@ static void selinux_bpf_prog_free(struct bpf_prog_aux *aux)
 }
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
 	LSM_HOOK_INIT(binder_set_context_mgr, selinux_binder_set_context_mgr),
 	LSM_HOOK_INIT(binder_transaction, selinux_binder_transaction),
@@ -6653,6 +6790,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
 	LSM_HOOK_INIT(audit_rule_match, selinux_audit_rule_match),
 	LSM_HOOK_INIT(audit_rule_free, selinux_audit_rule_free),
 #endif
+<<<<<<< HEAD
 
 #ifdef CONFIG_BPF_SYSCALL
 	LSM_HOOK_INIT(bpf, selinux_bpf),
@@ -6663,6 +6801,8 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
 	LSM_HOOK_INIT(bpf_map_free_security, selinux_bpf_map_free),
 	LSM_HOOK_INIT(bpf_prog_free_security, selinux_bpf_prog_free),
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static __init int selinux_init(void)

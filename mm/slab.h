@@ -146,7 +146,11 @@ static inline unsigned long kmem_cache_flags(unsigned long object_size,
 #define SLAB_CACHE_FLAGS (SLAB_NOLEAKTRACE | SLAB_RECLAIM_ACCOUNT | \
 			  SLAB_TEMPORARY | SLAB_ACCOUNT)
 #else
+<<<<<<< HEAD
 #define SLAB_CACHE_FLAGS (0)
+=======
+#define SLAB_CACHE_FLAGS (SLAB_NOLEAKTRACE)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 /* Common flags available with current configuration */

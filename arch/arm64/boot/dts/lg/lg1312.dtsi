@@ -168,14 +168,22 @@
 			clock-names = "apb_pclk";
 			status="disabled";
 		};
+<<<<<<< HEAD
 		spi0: ssp@fe800000 {
+=======
+		spi0: spi@fe800000 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			compatible = "arm,pl022", "arm,primecell";
 			reg = <0x0 0xfe800000 0x1000>;
 			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&clk_bus>;
 			clock-names = "apb_pclk";
 		};
+<<<<<<< HEAD
 		spi1: ssp@fe900000 {
+=======
+		spi1: spi@fe900000 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			compatible = "arm,pl022", "arm,primecell";
 			reg = <0x0 0xfe900000 0x1000>;
 			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;

@@ -17,7 +17,10 @@
 #include <linux/interrupt.h>
 #include <linux/types.h>
 #include <linux/input.h>
+<<<<<<< HEAD
 #include <linux/input/mt.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
@@ -25,8 +28,11 @@
 #include <linux/io.h>
 #include <linux/acpi.h>
 
+<<<<<<< HEAD
 #define GOLDFISH_MAX_FINGERS 5
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 enum {
 	REG_READ        = 0x00,
 	REG_SET_PAGE    = 0x00,
@@ -55,6 +61,7 @@ static irqreturn_t events_interrupt(int irq, void *dev_id)
 	value = __raw_readl(edev->addr + REG_READ);
 
 	input_event(edev->input, type, code, value);
+<<<<<<< HEAD
 	// Send an extra (EV_SYN, SYN_REPORT, 0x0) event
 	// if a key was pressed. Some keyboard device
         // drivers may only send the EV_KEY event and
@@ -70,6 +77,9 @@ static irqreturn_t events_interrupt(int irq, void *dev_id)
 	if (type == EV_KEY) {
 		input_sync(edev->input);
 	}
+=======
+	input_sync(edev->input);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return IRQ_HANDLED;
 }
 
@@ -171,6 +181,7 @@ static int events_probe(struct platform_device *pdev)
 
 	input_dev->name = edev->name;
 	input_dev->id.bustype = BUS_HOST;
+<<<<<<< HEAD
 	// Set the Goldfish Device to be multi-touch.
 	// In the Ranchu kernel, there is multi-touch-specific
 	// code for handling ABS_MT_SLOT events.
@@ -180,6 +191,8 @@ static int events_probe(struct platform_device *pdev)
         // events when we touch the screen in more than one place,
         // preventing multi-touch with more than one finger from working.
 	input_mt_init_slots(input_dev, GOLDFISH_MAX_FINGERS, 0);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	events_import_bits(edev, input_dev->evbit, EV_SYN, EV_MAX);
 	events_import_bits(edev, input_dev->keybit, EV_KEY, KEY_MAX);

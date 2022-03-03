@@ -1,10 +1,20 @@
+<<<<<<< HEAD
 // SPDX-License-Identifier: GPL-2.0
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * f2fs sysfs interface
  *
  * Copyright (c) 2012 Samsung Electronics Co., Ltd.
  *             http://www.samsung.com/
  * Copyright (c) 2017 Chao Yu <chao@kernel.org>
+<<<<<<< HEAD
+=======
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 #include <linux/compiler.h>
 #include <linux/proc_fs.h>
@@ -28,7 +38,11 @@ enum {
 	FAULT_INFO_RATE,	/* struct f2fs_fault_info */
 	FAULT_INFO_TYPE,	/* struct f2fs_fault_info */
 #endif
+<<<<<<< HEAD
 	RESERVED_BLOCKS,	/* struct f2fs_sb_info */
+=======
+	RESERVED_BLOCKS,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct f2fs_attr {
@@ -56,11 +70,16 @@ static unsigned char *__struct_ptr(struct f2fs_sb_info *sbi, int struct_type)
 #ifdef CONFIG_F2FS_FAULT_INJECTION
 	else if (struct_type == FAULT_INFO_RATE ||
 					struct_type == FAULT_INFO_TYPE)
+<<<<<<< HEAD
 		return (unsigned char *)&F2FS_OPTION(sbi).fault_info;
+=======
+		return (unsigned char *)&sbi->fault_info;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 	return NULL;
 }
 
+<<<<<<< HEAD
 static ssize_t dirty_segments_show(struct f2fs_attr *a,
 		struct f2fs_sb_info *sbi, char *buf)
 {
@@ -68,6 +87,8 @@ static ssize_t dirty_segments_show(struct f2fs_attr *a,
 		(unsigned long long)(dirty_segments(sbi)));
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
 		struct f2fs_sb_info *sbi, char *buf)
 {
@@ -90,6 +111,7 @@ static ssize_t features_show(struct f2fs_attr *a,
 	if (!sb->s_bdev->bd_part)
 		return snprintf(buf, PAGE_SIZE, "0\n");
 
+<<<<<<< HEAD
 	if (f2fs_sb_has_encrypt(sbi))
 		len += snprintf(buf, PAGE_SIZE - len, "%s",
 						"encryption");
@@ -120,16 +142,36 @@ static ssize_t features_show(struct f2fs_attr *a,
 	if (f2fs_sb_has_sb_chksum(sbi))
 		len += snprintf(buf + len, PAGE_SIZE - len, "%s%s",
 				len ? ", " : "", "sb_checksum");
+=======
+	if (f2fs_sb_has_crypto(sb))
+		len += snprintf(buf, PAGE_SIZE - len, "%s",
+						"encryption");
+	if (f2fs_sb_mounted_blkzoned(sb))
+		len += snprintf(buf + len, PAGE_SIZE - len, "%s%s",
+				len ? ", " : "", "blkzoned");
+	if (f2fs_sb_has_extra_attr(sb))
+		len += snprintf(buf + len, PAGE_SIZE - len, "%s%s",
+				len ? ", " : "", "extra_attr");
+	if (f2fs_sb_has_project_quota(sb))
+		len += snprintf(buf + len, PAGE_SIZE - len, "%s%s",
+				len ? ", " : "", "projquota");
+	if (f2fs_sb_has_inode_chksum(sb))
+		len += snprintf(buf + len, PAGE_SIZE - len, "%s%s",
+				len ? ", " : "", "inode_checksum");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	len += snprintf(buf + len, PAGE_SIZE - len, "\n");
 	return len;
 }
 
+<<<<<<< HEAD
 static ssize_t current_reserved_blocks_show(struct f2fs_attr *a,
 					struct f2fs_sb_info *sbi, char *buf)
 {
 	return snprintf(buf, PAGE_SIZE, "%u\n", sbi->current_reserved_blocks);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
 			struct f2fs_sb_info *sbi, char *buf)
 {
@@ -140,6 +182,7 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
 	if (!ptr)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (!strcmp(a->attr.name, "extension_list")) {
 		__u8 (*extlist)[F2FS_EXTENSION_LEN] =
 					sbi->raw_super->extension_list;
@@ -161,12 +204,18 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
 		return len;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ui = (unsigned int *)(ptr + a->offset);
 
 	return snprintf(buf, PAGE_SIZE, "%u\n", *ui);
 }
 
+<<<<<<< HEAD
 static ssize_t __sbi_store(struct f2fs_attr *a,
+=======
+static ssize_t f2fs_sbi_store(struct f2fs_attr *a,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			struct f2fs_sb_info *sbi,
 			const char *buf, size_t count)
 {
@@ -179,6 +228,7 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
 	if (!ptr)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (!strcmp(a->attr.name, "extension_list")) {
 		const char *name = strim((char *)buf);
 		bool set = true, hot;
@@ -214,6 +264,8 @@ out:
 		return ret ? ret : count;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ui = (unsigned int *)(ptr + a->offset);
 
 	ret = kstrtoul(skip_spaces(buf), 0, &t);
@@ -222,6 +274,7 @@ out:
 #ifdef CONFIG_F2FS_FAULT_INJECTION
 	if (a->struct_type == FAULT_INFO_TYPE && t >= (1 << FAULT_MAX))
 		return -EINVAL;
+<<<<<<< HEAD
 	if (a->struct_type == FAULT_INFO_RATE && t >= UINT_MAX)
 		return -EINVAL;
 #endif
@@ -229,21 +282,38 @@ out:
 		spin_lock(&sbi->stat_lock);
 		if (t > (unsigned long)(sbi->user_block_count -
 				F2FS_OPTION(sbi).root_reserved_blocks)) {
+=======
+#endif
+	if (a->struct_type == RESERVED_BLOCKS) {
+		spin_lock(&sbi->stat_lock);
+		if ((unsigned long)sbi->total_valid_block_count + t >
+				(unsigned long)sbi->user_block_count) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			spin_unlock(&sbi->stat_lock);
 			return -EINVAL;
 		}
 		*ui = t;
+<<<<<<< HEAD
 		sbi->current_reserved_blocks = min(sbi->reserved_blocks,
 				sbi->user_block_count - valid_user_blocks(sbi));
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		spin_unlock(&sbi->stat_lock);
 		return count;
 	}
 
 	if (!strcmp(a->attr.name, "discard_granularity")) {
+<<<<<<< HEAD
+=======
+		struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
+		int i;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (t == 0 || t > MAX_PLIST_NUM)
 			return -EINVAL;
 		if (t == *ui)
 			return count;
+<<<<<<< HEAD
 		*ui = t;
 		return count;
 	}
@@ -310,6 +380,33 @@ static ssize_t f2fs_sbi_store(struct f2fs_attr *a,
 		up_read(&sbi->sb->s_umount);
 
 	return ret;
+=======
+
+		mutex_lock(&dcc->cmd_lock);
+		for (i = 0; i < MAX_PLIST_NUM; i++) {
+			if (i >= t - 1)
+				dcc->pend_list_tag[i] |= P_ACTIVE;
+			else
+				dcc->pend_list_tag[i] &= (~P_ACTIVE);
+		}
+		mutex_unlock(&dcc->cmd_lock);
+
+		*ui = t;
+		return count;
+	}
+
+	*ui = t;
+
+	if (!strcmp(a->attr.name, "iostat_enable") && *ui == 0)
+		f2fs_reset_iostat(sbi);
+	if (!strcmp(a->attr.name, "gc_urgent") && t == 1 && sbi->gc_thread) {
+		sbi->gc_thread->gc_wake = 1;
+		wake_up_interruptible_all(&sbi->gc_thread->gc_wait_queue_head);
+		wake_up_discard_thread(sbi, true);
+	}
+
+	return count;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static ssize_t f2fs_attr_show(struct kobject *kobj,
@@ -346,11 +443,14 @@ enum feat_id {
 	FEAT_EXTRA_ATTR,
 	FEAT_PROJECT_QUOTA,
 	FEAT_INODE_CHECKSUM,
+<<<<<<< HEAD
 	FEAT_FLEXIBLE_INLINE_XATTR,
 	FEAT_QUOTA_INO,
 	FEAT_INODE_CRTIME,
 	FEAT_LOST_FOUND,
 	FEAT_SB_CHECKSUM,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static ssize_t f2fs_feature_show(struct f2fs_attr *a,
@@ -363,11 +463,14 @@ static ssize_t f2fs_feature_show(struct f2fs_attr *a,
 	case FEAT_EXTRA_ATTR:
 	case FEAT_PROJECT_QUOTA:
 	case FEAT_INODE_CHECKSUM:
+<<<<<<< HEAD
 	case FEAT_FLEXIBLE_INLINE_XATTR:
 	case FEAT_QUOTA_INO:
 	case FEAT_INODE_CRTIME:
 	case FEAT_LOST_FOUND:
 	case FEAT_SB_CHECKSUM:
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return snprintf(buf, PAGE_SIZE, "supported\n");
 	}
 	return 0;
@@ -402,8 +505,13 @@ F2FS_RW_ATTR(GC_THREAD, f2fs_gc_kthread, gc_urgent_sleep_time,
 F2FS_RW_ATTR(GC_THREAD, f2fs_gc_kthread, gc_min_sleep_time, min_sleep_time);
 F2FS_RW_ATTR(GC_THREAD, f2fs_gc_kthread, gc_max_sleep_time, max_sleep_time);
 F2FS_RW_ATTR(GC_THREAD, f2fs_gc_kthread, gc_no_gc_sleep_time, no_gc_sleep_time);
+<<<<<<< HEAD
 F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_idle, gc_mode);
 F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_urgent, gc_mode);
+=======
+F2FS_RW_ATTR(GC_THREAD, f2fs_gc_kthread, gc_idle, gc_idle);
+F2FS_RW_ATTR(GC_THREAD, f2fs_gc_kthread, gc_urgent, gc_urgent);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 F2FS_RW_ATTR(SM_INFO, f2fs_sm_info, reclaim_segments, rec_prefree_segments);
 F2FS_RW_ATTR(DCC_INFO, discard_cmd_control, max_small_discards, max_discards);
 F2FS_RW_ATTR(DCC_INFO, discard_cmd_control, discard_granularity, discard_granularity);
@@ -412,13 +520,18 @@ F2FS_RW_ATTR(SM_INFO, f2fs_sm_info, batched_trim_sections, trim_sections);
 F2FS_RW_ATTR(SM_INFO, f2fs_sm_info, ipu_policy, ipu_policy);
 F2FS_RW_ATTR(SM_INFO, f2fs_sm_info, min_ipu_util, min_ipu_util);
 F2FS_RW_ATTR(SM_INFO, f2fs_sm_info, min_fsync_blocks, min_fsync_blocks);
+<<<<<<< HEAD
 F2FS_RW_ATTR(SM_INFO, f2fs_sm_info, min_seq_blocks, min_seq_blocks);
 F2FS_RW_ATTR(SM_INFO, f2fs_sm_info, min_hot_blocks, min_hot_blocks);
 F2FS_RW_ATTR(SM_INFO, f2fs_sm_info, min_ssr_sections, min_ssr_sections);
+=======
+F2FS_RW_ATTR(SM_INFO, f2fs_sm_info, min_hot_blocks, min_hot_blocks);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 F2FS_RW_ATTR(NM_INFO, f2fs_nm_info, ram_thresh, ram_thresh);
 F2FS_RW_ATTR(NM_INFO, f2fs_nm_info, ra_nid_pages, ra_nid_pages);
 F2FS_RW_ATTR(NM_INFO, f2fs_nm_info, dirty_nats_ratio, dirty_nats_ratio);
 F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, max_victim_search, max_victim_search);
+<<<<<<< HEAD
 F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, migration_granularity, migration_granularity);
 F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, dir_level, dir_level);
 F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, cp_interval, interval_time[CP_TIME]);
@@ -432,14 +545,25 @@ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, iostat_enable, iostat_enable);
 F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, readdir_ra, readdir_ra);
 F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_pin_file_thresh, gc_pin_file_threshold);
 F2FS_RW_ATTR(F2FS_SBI, f2fs_super_block, extension_list, extension_list);
+=======
+F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, dir_level, dir_level);
+F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, cp_interval, interval_time[CP_TIME]);
+F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, idle_interval, interval_time[REQ_TIME]);
+F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, iostat_enable, iostat_enable);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_F2FS_FAULT_INJECTION
 F2FS_RW_ATTR(FAULT_INFO_RATE, f2fs_fault_info, inject_rate, inject_rate);
 F2FS_RW_ATTR(FAULT_INFO_TYPE, f2fs_fault_info, inject_type, inject_type);
 #endif
+<<<<<<< HEAD
 F2FS_GENERAL_RO_ATTR(dirty_segments);
 F2FS_GENERAL_RO_ATTR(lifetime_write_kbytes);
 F2FS_GENERAL_RO_ATTR(features);
 F2FS_GENERAL_RO_ATTR(current_reserved_blocks);
+=======
+F2FS_GENERAL_RO_ATTR(lifetime_write_kbytes);
+F2FS_GENERAL_RO_ATTR(features);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_F2FS_FS_ENCRYPTION
 F2FS_FEATURE_RO_ATTR(encryption, FEAT_CRYPTO);
@@ -451,11 +575,14 @@ F2FS_FEATURE_RO_ATTR(atomic_write, FEAT_ATOMIC_WRITE);
 F2FS_FEATURE_RO_ATTR(extra_attr, FEAT_EXTRA_ATTR);
 F2FS_FEATURE_RO_ATTR(project_quota, FEAT_PROJECT_QUOTA);
 F2FS_FEATURE_RO_ATTR(inode_checksum, FEAT_INODE_CHECKSUM);
+<<<<<<< HEAD
 F2FS_FEATURE_RO_ATTR(flexible_inline_xattr, FEAT_FLEXIBLE_INLINE_XATTR);
 F2FS_FEATURE_RO_ATTR(quota_ino, FEAT_QUOTA_INO);
 F2FS_FEATURE_RO_ATTR(inode_crtime, FEAT_INODE_CRTIME);
 F2FS_FEATURE_RO_ATTR(lost_found, FEAT_LOST_FOUND);
 F2FS_FEATURE_RO_ATTR(sb_checksum, FEAT_SB_CHECKSUM);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define ATTR_LIST(name) (&f2fs_attr_##name.attr)
 static struct attribute *f2fs_attrs[] = {
@@ -472,17 +599,23 @@ static struct attribute *f2fs_attrs[] = {
 	ATTR_LIST(ipu_policy),
 	ATTR_LIST(min_ipu_util),
 	ATTR_LIST(min_fsync_blocks),
+<<<<<<< HEAD
 	ATTR_LIST(min_seq_blocks),
 	ATTR_LIST(min_hot_blocks),
 	ATTR_LIST(min_ssr_sections),
 	ATTR_LIST(max_victim_search),
 	ATTR_LIST(migration_granularity),
+=======
+	ATTR_LIST(min_hot_blocks),
+	ATTR_LIST(max_victim_search),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ATTR_LIST(dir_level),
 	ATTR_LIST(ram_thresh),
 	ATTR_LIST(ra_nid_pages),
 	ATTR_LIST(dirty_nats_ratio),
 	ATTR_LIST(cp_interval),
 	ATTR_LIST(idle_interval),
+<<<<<<< HEAD
 	ATTR_LIST(discard_idle_interval),
 	ATTR_LIST(gc_idle_interval),
 	ATTR_LIST(umount_discard_timeout),
@@ -490,15 +623,24 @@ static struct attribute *f2fs_attrs[] = {
 	ATTR_LIST(readdir_ra),
 	ATTR_LIST(gc_pin_file_thresh),
 	ATTR_LIST(extension_list),
+=======
+	ATTR_LIST(iostat_enable),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_F2FS_FAULT_INJECTION
 	ATTR_LIST(inject_rate),
 	ATTR_LIST(inject_type),
 #endif
+<<<<<<< HEAD
 	ATTR_LIST(dirty_segments),
 	ATTR_LIST(lifetime_write_kbytes),
 	ATTR_LIST(features),
 	ATTR_LIST(reserved_blocks),
 	ATTR_LIST(current_reserved_blocks),
+=======
+	ATTR_LIST(lifetime_write_kbytes),
+	ATTR_LIST(features),
+	ATTR_LIST(reserved_blocks),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	NULL,
 };
 
@@ -513,11 +655,14 @@ static struct attribute *f2fs_feat_attrs[] = {
 	ATTR_LIST(extra_attr),
 	ATTR_LIST(project_quota),
 	ATTR_LIST(inode_checksum),
+<<<<<<< HEAD
 	ATTR_LIST(flexible_inline_xattr),
 	ATTR_LIST(quota_ino),
 	ATTR_LIST(inode_crtime),
 	ATTR_LIST(lost_found),
 	ATTR_LIST(sb_checksum),
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	NULL,
 };
 
@@ -645,6 +790,7 @@ static int __maybe_unused iostat_info_seq_show(struct seq_file *seq,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __maybe_unused victim_bits_seq_show(struct seq_file *seq,
 						void *offset)
 {
@@ -667,6 +813,8 @@ static int __maybe_unused victim_bits_seq_show(struct seq_file *seq,
 	return 0;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define F2FS_PROC_FILE_DEF(_name)					\
 static int _name##_open_fs(struct inode *inode, struct file *file)	\
 {									\
@@ -683,7 +831,10 @@ static const struct file_operations f2fs_seq_##_name##_fops = {		\
 F2FS_PROC_FILE_DEF(segment_info);
 F2FS_PROC_FILE_DEF(segment_bits);
 F2FS_PROC_FILE_DEF(iostat_info);
+<<<<<<< HEAD
 F2FS_PROC_FILE_DEF(victim_bits);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 int __init f2fs_init_sysfs(void)
 {
@@ -697,10 +848,19 @@ int __init f2fs_init_sysfs(void)
 
 	ret = kobject_init_and_add(&f2fs_feat, &f2fs_feat_ktype,
 				   NULL, "features");
+<<<<<<< HEAD
 	if (ret)
 		kset_unregister(&f2fs_kset);
 	else
 		f2fs_proc_root = proc_mkdir("fs/f2fs", NULL);
+=======
+	if (ret) {
+		kobject_put(&f2fs_feat);
+		kset_unregister(&f2fs_kset);
+	} else {
+		f2fs_proc_root = proc_mkdir("fs/f2fs", NULL);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -721,8 +881,16 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
 	init_completion(&sbi->s_kobj_unregister);
 	err = kobject_init_and_add(&sbi->s_kobj, &f2fs_sb_ktype, NULL,
 				"%s", sb->s_id);
+<<<<<<< HEAD
 	if (err)
 		return err;
+=======
+	if (err) {
+		kobject_put(&sbi->s_kobj);
+		wait_for_completion(&sbi->s_kobj_unregister);
+		return err;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (f2fs_proc_root)
 		sbi->s_proc = proc_mkdir(sb->s_id, f2fs_proc_root);
@@ -734,8 +902,11 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
 				 &f2fs_seq_segment_bits_fops, sb);
 		proc_create_data("iostat_info", S_IRUGO, sbi->s_proc,
 				&f2fs_seq_iostat_info_fops, sb);
+<<<<<<< HEAD
 		proc_create_data("victim_bits", S_IRUGO, sbi->s_proc,
 				&f2fs_seq_victim_bits_fops, sb);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return 0;
 }
@@ -746,8 +917,16 @@ void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi)
 		remove_proc_entry("iostat_info", sbi->s_proc);
 		remove_proc_entry("segment_info", sbi->s_proc);
 		remove_proc_entry("segment_bits", sbi->s_proc);
+<<<<<<< HEAD
 		remove_proc_entry("victim_bits", sbi->s_proc);
 		remove_proc_entry(sbi->sb->s_id, f2fs_proc_root);
 	}
 	kobject_del(&sbi->s_kobj);
+=======
+		remove_proc_entry(sbi->sb->s_id, f2fs_proc_root);
+	}
+	kobject_del(&sbi->s_kobj);
+	kobject_put(&sbi->s_kobj);
+	wait_for_completion(&sbi->s_kobj_unregister);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }

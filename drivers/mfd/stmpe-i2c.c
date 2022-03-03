@@ -109,7 +109,11 @@ static const struct i2c_device_id stmpe_i2c_id[] = {
 	{ "stmpe2403", STMPE2403 },
 	{ }
 };
+<<<<<<< HEAD
 MODULE_DEVICE_TABLE(i2c, stmpe_id);
+=======
+MODULE_DEVICE_TABLE(i2c, stmpe_i2c_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct i2c_driver stmpe_i2c_driver = {
 	.driver = {

@@ -486,6 +486,10 @@ void cipso_v4_doi_free(struct cipso_v4_doi *doi_def)
 		kfree(doi_def->map.std->lvl.local);
 		kfree(doi_def->map.std->cat.cipso);
 		kfree(doi_def->map.std->cat.local);
+<<<<<<< HEAD
+=======
+		kfree(doi_def->map.std);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	}
 	kfree(doi_def);
@@ -533,6 +537,7 @@ int cipso_v4_doi_remove(u32 doi, struct netlbl_audit *audit_info)
 		ret_val = -ENOENT;
 		goto doi_remove_return;
 	}
+<<<<<<< HEAD
 	if (!refcount_dec_and_test(&doi_def->refcount)) {
 		spin_unlock(&cipso_v4_doi_list_lock);
 		ret_val = -EBUSY;
@@ -543,6 +548,12 @@ int cipso_v4_doi_remove(u32 doi, struct netlbl_audit *audit_info)
 
 	cipso_v4_cache_invalidate();
 	call_rcu(&doi_def->rcu, cipso_v4_doi_free_rcu);
+=======
+	list_del_rcu(&doi_def->list);
+	spin_unlock(&cipso_v4_doi_list_lock);
+
+	cipso_v4_doi_putdef(doi_def);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret_val = 0;
 
 doi_remove_return:
@@ -599,9 +610,12 @@ void cipso_v4_doi_putdef(struct cipso_v4_doi *doi_def)
 
 	if (!refcount_dec_and_test(&doi_def->refcount))
 		return;
+<<<<<<< HEAD
 	spin_lock(&cipso_v4_doi_list_lock);
 	list_del_rcu(&doi_def->list);
 	spin_unlock(&cipso_v4_doi_list_lock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cipso_v4_cache_invalidate();
 	call_rcu(&doi_def->rcu, cipso_v4_doi_free_rcu);
@@ -1272,7 +1286,12 @@ static int cipso_v4_parsetag_rbm(const struct cipso_v4_doi *doi_def,
 			return ret_val;
 		}
 
+<<<<<<< HEAD
 		secattr->flags |= NETLBL_SECATTR_MLS_CAT;
+=======
+		if (secattr->attr.mls.cat)
+			secattr->flags |= NETLBL_SECATTR_MLS_CAT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return 0;
@@ -1453,7 +1472,12 @@ static int cipso_v4_parsetag_rng(const struct cipso_v4_doi *doi_def,
 			return ret_val;
 		}
 
+<<<<<<< HEAD
 		secattr->flags |= NETLBL_SECATTR_MLS_CAT;
+=======
+		if (secattr->attr.mls.cat)
+			secattr->flags |= NETLBL_SECATTR_MLS_CAT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return 0;
@@ -1738,6 +1762,10 @@ void cipso_v4_error(struct sk_buff *skb, int error, u32 gateway)
 {
 	unsigned char optbuf[sizeof(struct ip_options) + 40];
 	struct ip_options *opt = (struct ip_options *)optbuf;
+<<<<<<< HEAD
+=======
+	int res;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (ip_hdr(skb)->protocol == IPPROTO_ICMP || error != -EACCES)
 		return;
@@ -1749,7 +1777,15 @@ void cipso_v4_error(struct sk_buff *skb, int error, u32 gateway)
 
 	memset(opt, 0, sizeof(struct ip_options));
 	opt->optlen = ip_hdr(skb)->ihl*4 - sizeof(struct iphdr);
+<<<<<<< HEAD
 	if (__ip_options_compile(dev_net(skb->dev), opt, skb, NULL))
+=======
+	rcu_read_lock();
+	res = __ip_options_compile(dev_net(skb->dev), opt, skb, NULL);
+	rcu_read_unlock();
+
+	if (res)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 
 	if (gateway)

@@ -185,6 +185,10 @@ config INIT_LCD
 config MEMORY_RESERVE
 	int "Memory reservation (MiB)"
 	depends on (UCSIMM || UCDIMM)
+<<<<<<< HEAD
+=======
+	default 0
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  Reserve certain memory regions on 68x328 based boards.
 

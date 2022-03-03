@@ -49,8 +49,13 @@
 		sd_reg: regulator@2 {
 			compatible = "regulator-fixed";
 			regulator-name = "sd_reg";
+<<<<<<< HEAD
 			regulator-min-microvolt = <1800000>;
 			regulator-max-microvolt = <1800000>;
+=======
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			gpio = <&gpio 5 5 0>;
 			enable-active-high;
 		};

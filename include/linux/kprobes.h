@@ -193,6 +193,11 @@ struct kretprobe {
 	raw_spinlock_t lock;
 };
 
+<<<<<<< HEAD
+=======
+#define KRETPROBE_MAX_DATA_SIZE	4096
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct kretprobe_instance {
 	struct hlist_node hlist;
 	struct kretprobe *rp;
@@ -385,6 +390,13 @@ static inline struct kprobe_ctlblk *get_kprobe_ctlblk(void)
 	return this_cpu_ptr(&kprobe_ctlblk);
 }
 
+<<<<<<< HEAD
+=======
+extern struct kprobe kprobe_busy;
+void kprobe_busy_begin(void);
+void kprobe_busy_end(void);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 kprobe_opcode_t *kprobe_lookup_name(const char *name, unsigned int offset);
 int register_kprobe(struct kprobe *p);
 void unregister_kprobe(struct kprobe *p);

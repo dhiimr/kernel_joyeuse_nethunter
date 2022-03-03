@@ -21,7 +21,11 @@ struct cpuidle_monitor cpuidle_sysfs_monitor;
 
 static unsigned long long **previous_count;
 static unsigned long long **current_count;
+<<<<<<< HEAD
 struct timespec start_time;
+=======
+static struct timespec start_time;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static unsigned long long timediff;
 
 static int cpuidle_get_count_percent(unsigned int id, double *percent,

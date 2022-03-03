@@ -2317,7 +2317,12 @@ static int mv_udc_probe(struct platform_device *pdev)
 	return 0;
 
 err_create_workqueue:
+<<<<<<< HEAD
 	destroy_workqueue(udc->qwork);
+=======
+	if (udc->qwork)
+		destroy_workqueue(udc->qwork);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 err_destroy_dma:
 	dma_pool_destroy(udc->dtd_pool);
 err_free_dma:

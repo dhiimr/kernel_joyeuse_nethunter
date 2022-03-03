@@ -2165,8 +2165,11 @@ static int tty_fasync(int fd, struct file *filp, int on)
  *	Locking:
  *		Called functions take tty_ldiscs_lock
  *		current->signal->tty check is safe without locks
+<<<<<<< HEAD
  *
  *	FIXME: may race normal receive processing
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 
 static int tiocsti(struct tty_struct *tty, char __user *p)
@@ -2182,8 +2185,15 @@ static int tiocsti(struct tty_struct *tty, char __user *p)
 	ld = tty_ldisc_ref_wait(tty);
 	if (!ld)
 		return -EIO;
+<<<<<<< HEAD
 	if (ld->ops->receive_buf)
 		ld->ops->receive_buf(tty, &ch, &mbz, 1);
+=======
+	tty_buffer_lock_exclusive(tty->port);
+	if (ld->ops->receive_buf)
+		ld->ops->receive_buf(tty, &ch, &mbz, 1);
+	tty_buffer_unlock_exclusive(tty->port);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tty_ldisc_deref(ld);
 	return 0;
 }
@@ -2424,14 +2434,22 @@ out:
  *	@p: pointer to result
  *
  *	Obtain the modem status bits from the tty driver if the feature
+<<<<<<< HEAD
  *	is supported. Return -EINVAL if it is not available.
+=======
+ *	is supported. Return -ENOTTY if it is not available.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  *	Locking: none (up to the driver)
  */
 
 static int tty_tiocmget(struct tty_struct *tty, int __user *p)
 {
+<<<<<<< HEAD
 	int retval = -EINVAL;
+=======
+	int retval = -ENOTTY;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (tty->ops->tiocmget) {
 		retval = tty->ops->tiocmget(tty);
@@ -2449,7 +2467,11 @@ static int tty_tiocmget(struct tty_struct *tty, int __user *p)
  *	@p: pointer to desired bits
  *
  *	Set the modem status bits from the tty driver if the feature
+<<<<<<< HEAD
  *	is supported. Return -EINVAL if it is not available.
+=======
+ *	is supported. Return -ENOTTY if it is not available.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  *	Locking: none (up to the driver)
  */
@@ -2461,7 +2483,11 @@ static int tty_tiocmset(struct tty_struct *tty, unsigned int cmd,
 	unsigned int set, clear, val;
 
 	if (tty->ops->tiocmset == NULL)
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		return -ENOTTY;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	retval = get_user(val, p);
 	if (retval)
@@ -2739,10 +2765,21 @@ void __do_SAK(struct tty_struct *tty)
 	struct task_struct *g, *p;
 	struct pid *session;
 	int		i;
+<<<<<<< HEAD
 
 	if (!tty)
 		return;
 	session = tty->session;
+=======
+	unsigned long flags;
+
+	if (!tty)
+		return;
+
+	spin_lock_irqsave(&tty->ctrl_lock, flags);
+	session = get_pid(tty->session);
+	spin_unlock_irqrestore(&tty->ctrl_lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	tty_ldisc_flush(tty);
 
@@ -2774,6 +2811,10 @@ void __do_SAK(struct tty_struct *tty)
 		task_unlock(p);
 	} while_each_thread(g, p);
 	read_unlock(&tasklist_lock);
+<<<<<<< HEAD
+=======
+	put_pid(session);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 }
 

@@ -343,7 +343,11 @@
 	s2mps13-pmic@66 {
 		compatible = "samsung,s2mps13-pmic";
 		interrupt-parent = <&gpa0>;
+<<<<<<< HEAD
 		interrupts = <7 IRQ_TYPE_NONE>;
+=======
+		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		reg = <0x66>;
 		samsung,s2mps11-wrstbi-ground;
 

@@ -32,7 +32,11 @@ static int llc_stat_ev_rx_null_dsap_xid_c(struct sk_buff *skb)
 	return LLC_PDU_IS_CMD(pdu) &&			/* command PDU */
 	       LLC_PDU_TYPE_IS_U(pdu) &&		/* U type PDU */
 	       LLC_U_PDU_CMD(pdu) == LLC_1_PDU_CMD_XID &&
+<<<<<<< HEAD
 	       !pdu->dsap ? 0 : 1;			/* NULL DSAP value */
+=======
+	       !pdu->dsap;				/* NULL DSAP value */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int llc_stat_ev_rx_null_dsap_test_c(struct sk_buff *skb)
@@ -42,7 +46,11 @@ static int llc_stat_ev_rx_null_dsap_test_c(struct sk_buff *skb)
 	return LLC_PDU_IS_CMD(pdu) &&			/* command PDU */
 	       LLC_PDU_TYPE_IS_U(pdu) &&		/* U type PDU */
 	       LLC_U_PDU_CMD(pdu) == LLC_1_PDU_CMD_TEST &&
+<<<<<<< HEAD
 	       !pdu->dsap ? 0 : 1;			/* NULL DSAP */
+=======
+	       !pdu->dsap;				/* NULL DSAP */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int llc_station_ac_send_xid_r(struct sk_buff *skb)

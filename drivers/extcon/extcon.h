@@ -48,7 +48,10 @@ struct extcon_dev {
 	struct device dev;
 	struct raw_notifier_head nh_all;
 	struct raw_notifier_head *nh;
+<<<<<<< HEAD
 	struct blocking_notifier_head *bnh;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct list_head entry;
 	int max_supported;
 	spinlock_t lock;	/* could be called by irq handler */

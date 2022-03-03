@@ -228,7 +228,11 @@ static int acpi_memory_enable_device(struct acpi_memory_device *mem_device)
 		if (node < 0)
 			node = memory_add_physaddr_to_nid(info->start_addr);
 
+<<<<<<< HEAD
 		result = add_memory(node, info->start_addr, info->length);
+=======
+		result = __add_memory(node, info->start_addr, info->length);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/*
 		 * If the memory block has been used by the kernel, add_memory()

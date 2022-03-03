@@ -1288,7 +1288,11 @@ int drm_mode_getconnector(struct drm_device *dev, void *data,
 
 	memset(&u_mode, 0, sizeof(struct drm_mode_modeinfo));
 
+<<<<<<< HEAD
 	connector = drm_connector_lookup(dev, file_priv, out_resp->connector_id);
+=======
+	connector = drm_connector_lookup(dev, out_resp->connector_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!connector)
 		return -ENOENT;
 

@@ -392,6 +392,7 @@ static int ath10k_sdio_mbox_rx_process_packet(struct ath10k *ar,
 	struct ath10k_htc_hdr *htc_hdr = (struct ath10k_htc_hdr *)skb->data;
 	bool trailer_present = htc_hdr->flags & ATH10K_HTC_FLAG_TRAILER_PRESENT;
 	enum ath10k_htc_ep_id eid;
+<<<<<<< HEAD
 	u16 payload_len;
 	u8 *trailer;
 	int ret;
@@ -402,6 +403,13 @@ static int ath10k_sdio_mbox_rx_process_packet(struct ath10k *ar,
 	if (trailer_present) {
 		trailer = skb->data + sizeof(*htc_hdr) +
 			  payload_len - htc_hdr->trailer_len;
+=======
+	u8 *trailer;
+	int ret;
+
+	if (trailer_present) {
+		trailer = skb->data + skb->len - htc_hdr->trailer_len;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		eid = pipe_id_to_eid(htc_hdr->eid);
 
@@ -566,6 +574,13 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
 				    le16_to_cpu(htc_hdr->len),
 				    ATH10K_HTC_MBOX_MAX_PAYLOAD_LENGTH);
 			ret = -ENOMEM;
+<<<<<<< HEAD
+=======
+
+			queue_work(ar->workqueue, &ar->restart_work);
+			ath10k_warn(ar, "exceeds length, start recovery\n");
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto err;
 		}
 
@@ -610,6 +625,13 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
 						    full_len,
 						    last_in_bundle,
 						    last_in_bundle);
+<<<<<<< HEAD
+=======
+		if (ret) {
+			ath10k_warn(ar, "alloc_rx_pkt error %d\n", ret);
+			goto err;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ar_sdio->n_rx_pkts = i;
@@ -631,13 +653,40 @@ static int ath10k_sdio_mbox_rx_packet(struct ath10k *ar,
 {
 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
 	struct sk_buff *skb = pkt->skb;
+<<<<<<< HEAD
+=======
+	struct ath10k_htc_hdr *htc_hdr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 
 	ret = ath10k_sdio_readsb(ar, ar_sdio->mbox_info.htc_addr,
 				 skb->data, pkt->alloc_len);
+<<<<<<< HEAD
 	pkt->status = ret;
 	if (!ret)
 		skb_put(skb, pkt->act_len);
+=======
+	if (ret)
+		goto out;
+
+	/* Update actual length. The original length may be incorrect,
+	 * as the FW will bundle multiple packets as long as their sizes
+	 * fit within the same aligned length (pkt->alloc_len).
+	 */
+	htc_hdr = (struct ath10k_htc_hdr *)skb->data;
+	pkt->act_len = le16_to_cpu(htc_hdr->len) + sizeof(*htc_hdr);
+	if (pkt->act_len > pkt->alloc_len) {
+		ath10k_warn(ar, "rx packet too large (%zu > %zu)\n",
+			    pkt->act_len, pkt->alloc_len);
+		ret = -EMSGSIZE;
+		goto out;
+	}
+
+	skb_put(skb, pkt->act_len);
+
+out:
+	pkt->status = ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }
@@ -1547,11 +1596,20 @@ static int ath10k_sdio_hif_diag_read(struct ath10k *ar, u32 address, void *buf,
 				     size_t buf_len)
 {
 	int ret;
+<<<<<<< HEAD
+=======
+	void *mem;
+
+	mem = kzalloc(buf_len, GFP_KERNEL);
+	if (!mem)
+		return -ENOMEM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* set window register to start read cycle */
 	ret = ath10k_sdio_write32(ar, MBOX_WINDOW_READ_ADDR_ADDRESS, address);
 	if (ret) {
 		ath10k_warn(ar, "failed to set mbox window read address: %d", ret);
+<<<<<<< HEAD
 		return ret;
 	}
 
@@ -1564,6 +1622,25 @@ static int ath10k_sdio_hif_diag_read(struct ath10k *ar, u32 address, void *buf,
 	}
 
 	return 0;
+=======
+		goto out;
+	}
+
+	/* read the data */
+	ret = ath10k_sdio_read(ar, MBOX_WINDOW_DATA_ADDRESS, mem, buf_len);
+	if (ret) {
+		ath10k_warn(ar, "failed to read from mbox window data address: %d\n",
+			    ret);
+		goto out;
+	}
+
+	memcpy(buf, mem, buf_len);
+
+out:
+	kfree(mem);
+
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int ath10k_sdio_hif_diag_read32(struct ath10k *ar, u32 address,
@@ -2072,6 +2149,12 @@ static void ath10k_sdio_remove(struct sdio_func *func)
 	cancel_work_sync(&ar_sdio->wr_async_work);
 	ath10k_core_unregister(ar);
 	ath10k_core_destroy(ar);
+<<<<<<< HEAD
+=======
+
+	flush_workqueue(ar_sdio->workqueue);
+	destroy_workqueue(ar_sdio->workqueue);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct sdio_device_id ath10k_sdio_devices[] = {

@@ -6,6 +6,11 @@
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
+=======
+#include <asm/nospec-branch.h>
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Provide __cpuidle; we can't safely include <linux/cpu.h> */
 #define __cpuidle __attribute__((__section__(".cpuidle.text")))
 
@@ -54,11 +59,19 @@ static inline void native_irq_enable(void)
 
 static inline __cpuidle void native_safe_halt(void)
 {
+<<<<<<< HEAD
+=======
+	mds_idle_clear_cpu_buffers();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	asm volatile("sti; hlt": : :"memory");
 }
 
 static inline __cpuidle void native_halt(void)
 {
+<<<<<<< HEAD
+=======
+	mds_idle_clear_cpu_buffers();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	asm volatile("hlt": : :"memory");
 }
 

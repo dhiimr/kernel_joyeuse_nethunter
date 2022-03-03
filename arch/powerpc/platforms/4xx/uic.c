@@ -158,6 +158,10 @@ static int uic_set_irq_type(struct irq_data *d, unsigned int flow_type)
 
 	mtdcr(uic->dcrbase + UIC_PR, pr);
 	mtdcr(uic->dcrbase + UIC_TR, tr);
+<<<<<<< HEAD
+=======
+	mtdcr(uic->dcrbase + UIC_SR, ~mask);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	raw_spin_unlock_irqrestore(&uic->lock, flags);
 

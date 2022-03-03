@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2013, 2017-2018 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2013, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -16,6 +20,7 @@
 #include <linux/err.h>
 #include <linux/delay.h>
 #include <linux/export.h>
+<<<<<<< HEAD
 #include <linux/clk.h>
 #include <linux/clk-provider.h>
 #include <linux/regmap.h>
@@ -25,6 +30,12 @@
 #include "clk-regmap.h"
 #include "common.h"
 #include "clk-debug.h"
+=======
+#include <linux/clk-provider.h>
+#include <linux/regmap.h>
+
+#include "clk-branch.h"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static bool clk_branch_in_hwcg_mode(const struct clk_branch *br)
 {
@@ -80,6 +91,7 @@ static int clk_branch_wait(const struct clk_branch *br, bool enabling,
 		bool (check_halt)(const struct clk_branch *, bool))
 {
 	bool voted = br->halt_check & BRANCH_VOTED;
+<<<<<<< HEAD
 	const struct clk_hw *hw = &br->clkr.hw;
 	const char *name = clk_hw_get_name(hw);
 
@@ -88,6 +100,12 @@ static int clk_branch_wait(const struct clk_branch *br, bool enabling,
 	 * clock is in hardware gated mode
 	 */
 	if (br->halt_check == BRANCH_HALT_SKIP || clk_branch_in_hwcg_mode(br))
+=======
+	const char *name = clk_hw_get_name(&br->clkr.hw);
+
+	/* Skip checking halt bit if the clock is in hardware gated mode */
+	if (clk_branch_in_hwcg_mode(br))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 
 	if (br->halt_check == BRANCH_HALT_DELAY || (!enabling && voted)) {
@@ -95,17 +113,26 @@ static int clk_branch_wait(const struct clk_branch *br, bool enabling,
 	} else if (br->halt_check == BRANCH_HALT_ENABLE ||
 		   br->halt_check == BRANCH_HALT ||
 		   (enabling && voted)) {
+<<<<<<< HEAD
 		int count = 500;
+=======
+		int count = 200;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		while (count-- > 0) {
 			if (check_halt(br, enabling))
 				return 0;
 			udelay(1);
 		}
+<<<<<<< HEAD
 
 		WARN_CLK(hw->core, name, 1, "status stuck at 'o%s'",
 						enabling ? "ff" : "n");
 
+=======
+		WARN(1, "%s status stuck at 'o%s'", name,
+				enabling ? "ff" : "n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EBUSY;
 	}
 	return 0;
@@ -125,12 +152,15 @@ static int clk_branch_toggle(struct clk_hw *hw, bool en,
 		clk_disable_regmap(hw);
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Make sure enable/disable request goes through before waiting
 	 * for CLK_OFF status to get updated.
 	 */
 	mb();
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return clk_branch_wait(br, en, check_halt);
 }
 
@@ -139,6 +169,7 @@ static int clk_branch_enable(struct clk_hw *hw)
 	return clk_branch_toggle(hw, true, clk_branch_check_halt);
 }
 
+<<<<<<< HEAD
 static int clk_cbcr_set_flags(struct regmap *regmap, unsigned int reg,
 				unsigned long flags)
 {
@@ -180,11 +211,14 @@ static int clk_cbcr_set_flags(struct regmap *regmap, unsigned int reg,
 	return 0;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void clk_branch_disable(struct clk_hw *hw)
 {
 	clk_branch_toggle(hw, false, clk_branch_check_halt);
 }
 
+<<<<<<< HEAD
 static int clk_branch_set_flags(struct clk_hw *hw, unsigned int flags)
 {
 	struct clk_branch *br = to_clk_branch(hw);
@@ -192,10 +226,13 @@ static int clk_branch_set_flags(struct clk_hw *hw, unsigned int flags)
 	return clk_cbcr_set_flags(br->clkr.regmap, br->halt_reg, flags);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 const struct clk_ops clk_branch_ops = {
 	.enable = clk_branch_enable,
 	.disable = clk_branch_disable,
 	.is_enabled = clk_is_enabled_regmap,
+<<<<<<< HEAD
 	.set_flags = clk_branch_set_flags,
 	.bus_vote = clk_debug_bus_vote,
 };
@@ -268,11 +305,17 @@ static unsigned long clk_branch2_recalc_rate(struct clk_hw *hw,
 	return to_clk_branch(hw)->rate;
 }
 
+=======
+};
+EXPORT_SYMBOL_GPL(clk_branch_ops);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int clk_branch2_enable(struct clk_hw *hw)
 {
 	return clk_branch_toggle(hw, true, clk_branch2_check_halt);
 }
 
+<<<<<<< HEAD
 static int clk_branch2_prepare(struct clk_hw *hw)
 {
 	struct clk_branch *branch;
@@ -311,11 +354,14 @@ exit:
 	return ret;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void clk_branch2_disable(struct clk_hw *hw)
 {
 	clk_branch_toggle(hw, false, clk_branch2_check_halt);
 }
 
+<<<<<<< HEAD
 static void clk_branch2_unprepare(struct clk_hw *hw)
 {
 	struct clk_branch *branch;
@@ -519,10 +565,22 @@ const struct clk_ops clk_gate2_ops = {
 };
 EXPORT_SYMBOL_GPL(clk_gate2_ops);
 
+=======
+const struct clk_ops clk_branch2_ops = {
+	.enable = clk_branch2_enable,
+	.disable = clk_branch2_disable,
+	.is_enabled = clk_is_enabled_regmap,
+};
+EXPORT_SYMBOL_GPL(clk_branch2_ops);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 const struct clk_ops clk_branch_simple_ops = {
 	.enable = clk_enable_regmap,
 	.disable = clk_disable_regmap,
 	.is_enabled = clk_is_enabled_regmap,
+<<<<<<< HEAD
 	.bus_vote = clk_debug_bus_vote,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 EXPORT_SYMBOL_GPL(clk_branch_simple_ops);

@@ -99,10 +99,13 @@ extern "C" {
 #define  DRM_MODE_FLAG_PIC_AR_16_9 \
 			(DRM_MODE_PICTURE_ASPECT_16_9<<19)
 
+<<<<<<< HEAD
 #define  DRM_MODE_FLAG_SUPPORTS_RGB		(1<<23)
 #define  DRM_MODE_FLAG_SUPPORTS_YUV		(1<<24)
 #define  DRM_MODE_FLAG_SEAMLESS			(1<<31)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* DPMS flags */
 /* bit compatible with the xorg definitions. */
 #define DRM_MODE_DPMS_ON	0
@@ -443,7 +446,10 @@ struct drm_mode_fb_cmd {
 
 #define DRM_MODE_FB_INTERLACED	(1<<0) /* for interlaced framebuffers */
 #define DRM_MODE_FB_MODIFIERS	(1<<1) /* enables ->modifer[] */
+<<<<<<< HEAD
 #define DRM_MODE_FB_SECURE	(1<<2) /* for secure framebuffers */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct drm_mode_fb_cmd2 {
 	__u32 fb_id;
@@ -787,6 +793,7 @@ struct drm_mode_destroy_blob {
 	__u32 blob_id;
 };
 
+<<<<<<< HEAD
 /**
  * Lease mode resources, creating another drm_master.
  */
@@ -853,6 +860,8 @@ struct drm_mode_revoke_lease {
 	__u32 lessee_id;
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #if defined(__cplusplus)
 }
 #endif

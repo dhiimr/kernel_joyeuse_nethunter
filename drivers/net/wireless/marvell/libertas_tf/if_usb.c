@@ -234,6 +234,10 @@ static int if_usb_probe(struct usb_interface *intf,
 
 dealloc:
 	if_usb_free(cardp);
+<<<<<<< HEAD
+=======
+	kfree(cardp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 error:
 lbtf_deb_leave(LBTF_DEB_MAIN);
 	return -ENOMEM;
@@ -258,6 +262,10 @@ static void if_usb_disconnect(struct usb_interface *intf)
 
 	/* Unlink and free urb */
 	if_usb_free(cardp);
+<<<<<<< HEAD
+=======
+	kfree(cardp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	usb_set_intfdata(intf, NULL);
 	usb_put_dev(interface_to_usbdev(intf));

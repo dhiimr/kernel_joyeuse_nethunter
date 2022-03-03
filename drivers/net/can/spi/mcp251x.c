@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * CAN bus driver for Microchip 251x CAN Controller with SPI Interface
+=======
+ * CAN bus driver for Microchip 251x/25625 CAN Controller with SPI Interface
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * MCP2510 support and bug fixes by Christian Pellegrin
  * <chripell@evolware.org>
@@ -41,7 +45,11 @@
  * static struct spi_board_info spi_board_info[] = {
  *         {
  *                 .modalias = "mcp2510",
+<<<<<<< HEAD
  *			// or "mcp2515" depending on your controller
+=======
+ *			// "mcp2515" or "mcp25625" depending on your controller
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *                 .platform_data = &mcp251x_info,
  *                 .irq = IRQ_EINT13,
  *                 .max_speed_hz = 2*1000*1000,
@@ -238,6 +246,10 @@ static const struct can_bittiming_const mcp251x_bittiming_const = {
 enum mcp251x_model {
 	CAN_MCP251X_MCP2510	= 0x2510,
 	CAN_MCP251X_MCP2515	= 0x2515,
+<<<<<<< HEAD
+=======
+	CAN_MCP251X_MCP25625	= 0x25625,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct mcp251x_priv {
@@ -280,7 +292,10 @@ static inline int mcp251x_is_##_model(struct spi_device *spi) \
 }
 
 MCP251X_IS(2510);
+<<<<<<< HEAD
 MCP251X_IS(2515);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static void mcp251x_clean(struct net_device *net)
 {
@@ -627,7 +642,11 @@ static int mcp251x_setup(struct net_device *net, struct mcp251x_priv *priv,
 static int mcp251x_hw_reset(struct spi_device *spi)
 {
 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
+<<<<<<< HEAD
 	u8 reg;
+=======
+	unsigned long timeout;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 
 	/* Wait for oscillator startup timer after power up */
@@ -640,11 +659,28 @@ static int mcp251x_hw_reset(struct spi_device *spi)
 
 	/* Wait for oscillator startup timer after reset */
 	mdelay(MCP251X_OST_DELAY_MS);
+<<<<<<< HEAD
 	
 	reg = mcp251x_read_reg(spi, CANSTAT);
 	if ((reg & CANCTRL_REQOP_MASK) != CANCTRL_REQOP_CONF)
 		return -ENODEV;
 
+=======
+
+	/* Wait for reset to finish */
+	timeout = jiffies + HZ;
+	while ((mcp251x_read_reg(spi, CANSTAT) & CANCTRL_REQOP_MASK) !=
+	       CANCTRL_REQOP_CONF) {
+		usleep_range(MCP251X_OST_DELAY_MS * 1000,
+			     MCP251X_OST_DELAY_MS * 1000 * 2);
+
+		if (time_after(jiffies, timeout)) {
+			dev_err(&spi->dev,
+				"MCP251x didn't enter in conf mode after reset\n");
+			return -EBUSY;
+		}
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -821,9 +857,14 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
 		/* receive buffer 0 */
 		if (intf & CANINTF_RX0IF) {
 			mcp251x_hw_rx(spi, 0);
+<<<<<<< HEAD
 			/*
 			 * Free one buffer ASAP
 			 * (The MCP2515 does this automatically.)
+=======
+			/* Free one buffer ASAP
+			 * (The MCP2515/25625 does this automatically.)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			 */
 			if (mcp251x_is_2510(spi))
 				mcp251x_write_bits(spi, CANINTF, CANINTF_RX0IF, 0x00);
@@ -832,7 +873,11 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
 		/* receive buffer 1 */
 		if (intf & CANINTF_RX1IF) {
 			mcp251x_hw_rx(spi, 1);
+<<<<<<< HEAD
 			/* the MCP2515 does this automatically */
+=======
+			/* The MCP2515/25625 does this automatically. */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (mcp251x_is_2510(spi))
 				clear_intf |= CANINTF_RX1IF;
 		}
@@ -1007,6 +1052,13 @@ static const struct of_device_id mcp251x_of_match[] = {
 		.compatible	= "microchip,mcp2515",
 		.data		= (void *)CAN_MCP251X_MCP2515,
 	},
+<<<<<<< HEAD
+=======
+	{
+		.compatible	= "microchip,mcp25625",
+		.data		= (void *)CAN_MCP251X_MCP25625,
+	},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ }
 };
 MODULE_DEVICE_TABLE(of, mcp251x_of_match);
@@ -1020,6 +1072,13 @@ static const struct spi_device_id mcp251x_id_table[] = {
 		.name		= "mcp2515",
 		.driver_data	= (kernel_ulong_t)CAN_MCP251X_MCP2515,
 	},
+<<<<<<< HEAD
+=======
+	{
+		.name		= "mcp25625",
+		.driver_data	= (kernel_ulong_t)CAN_MCP251X_MCP25625,
+	},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ }
 };
 MODULE_DEVICE_TABLE(spi, mcp251x_id_table);
@@ -1260,5 +1319,9 @@ module_spi_driver(mcp251x_can_driver);
 
 MODULE_AUTHOR("Chris Elston <celston@katalix.com>, "
 	      "Christian Pellegrin <chripell@evolware.org>");
+<<<<<<< HEAD
 MODULE_DESCRIPTION("Microchip 251x CAN driver");
+=======
+MODULE_DESCRIPTION("Microchip 251x/25625 CAN driver");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 MODULE_LICENSE("GPL v2");

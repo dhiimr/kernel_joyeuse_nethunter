@@ -252,7 +252,11 @@ static inline struct eth_hash_t *alloc_hash_table(u16 size)
 	struct eth_hash_t *hash;
 
 	/* Allocate address hash table */
+<<<<<<< HEAD
 	hash = kmalloc_array(size, sizeof(struct eth_hash_t *), GFP_KERNEL);
+=======
+	hash = kmalloc(sizeof(*hash), GFP_KERNEL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!hash)
 		return NULL;
 

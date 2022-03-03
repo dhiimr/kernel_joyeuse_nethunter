@@ -66,7 +66,11 @@ void ib_copy_ah_attr_to_user(struct ib_device *device,
 	struct rdma_ah_attr *src = ah_attr;
 	struct rdma_ah_attr conv_ah;
 
+<<<<<<< HEAD
 	memset(&dst->grh.reserved, 0, sizeof(dst->grh.reserved));
+=======
+	memset(&dst->grh, 0, sizeof(dst->grh));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if ((ah_attr->type == RDMA_AH_ATTR_TYPE_OPA) &&
 	    (rdma_ah_get_dlid(ah_attr) >=

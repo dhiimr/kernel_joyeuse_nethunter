@@ -678,8 +678,12 @@ static void bbr_update_bw(struct sock *sk, const struct rate_sample *rs)
 	 * bandwidth sample. Delivered is in packets and interval_us in uS and
 	 * ratio will be <<1 for most connections. So delivered is first scaled.
 	 */
+<<<<<<< HEAD
 	bw = (u64)rs->delivered * BW_UNIT;
 	do_div(bw, rs->interval_us);
+=======
+	bw = div64_long((u64)rs->delivered * BW_UNIT, rs->interval_us);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* If this sample is application-limited, it is likely to have a very
 	 * low delivered count that represents application behavior rather than
@@ -770,7 +774,11 @@ static void bbr_update_min_rtt(struct sock *sk, const struct rate_sample *rs)
 	filter_expired = after(tcp_jiffies32,
 			       bbr->min_rtt_stamp + bbr_min_rtt_win_sec * HZ);
 	if (rs->rtt_us >= 0 &&
+<<<<<<< HEAD
 	    (rs->rtt_us <= bbr->min_rtt_us || filter_expired)) {
+=======
+	    (rs->rtt_us < bbr->min_rtt_us || filter_expired)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		bbr->min_rtt_us = rs->rtt_us;
 		bbr->min_rtt_stamp = tcp_jiffies32;
 	}
@@ -841,7 +849,11 @@ static void bbr_init(struct sock *sk)
 	bbr->prior_cwnd = 0;
 	bbr->tso_segs_goal = 0;	 /* default segs per skb until first ACK */
 	bbr->rtt_cnt = 0;
+<<<<<<< HEAD
 	bbr->next_rtt_delivered = 0;
+=======
+	bbr->next_rtt_delivered = tp->delivered;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bbr->prev_ca_state = TCP_CA_Open;
 	bbr->packet_conservation = 0;
 

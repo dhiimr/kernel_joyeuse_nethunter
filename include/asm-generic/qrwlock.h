@@ -26,17 +26,42 @@
 
 /*
  * Writer states & reader shift and bias.
+<<<<<<< HEAD
  */
 #define	_QW_WAITING	0x100		/* A writer is waiting	   */
 #define	_QW_LOCKED	0x0ff		/* A writer holds the lock */
 #define	_QW_WMASK	0x1ff		/* Writer mask		   */
 #define	_QR_SHIFT	9		/* Reader count shift	   */
+=======
+ *
+ *       | +0 | +1 | +2 | +3 |
+ *   ----+----+----+----+----+
+ *    LE | 78 | 56 | 34 | 12 | 0x12345678
+ *   ----+----+----+----+----+
+ *       | wr |      rd      |
+ *       +----+----+----+----+
+ *
+ *   ----+----+----+----+----+
+ *    BE | 12 | 34 | 56 | 78 | 0x12345678
+ *   ----+----+----+----+----+
+ *       |      rd      | wr |
+ *       +----+----+----+----+
+ */
+#define	_QW_WAITING	1		/* A writer is waiting	   */
+#define	_QW_LOCKED	0xff		/* A writer holds the lock */
+#define	_QW_WMASK	0xff		/* Writer mask		   */
+#define	_QR_SHIFT	8		/* Reader count shift	   */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define _QR_BIAS	(1U << _QR_SHIFT)
 
 /*
  * External function declarations
  */
+<<<<<<< HEAD
 extern void queued_read_lock_slowpath(struct qrwlock *lock);
+=======
+extern void queued_read_lock_slowpath(struct qrwlock *lock, u32 cnts);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void queued_write_lock_slowpath(struct qrwlock *lock);
 
 /**
@@ -105,7 +130,11 @@ static inline void queued_read_lock(struct qrwlock *lock)
 		return;
 
 	/* The slowpath will decrement the reader count, if necessary. */
+<<<<<<< HEAD
 	queued_read_lock_slowpath(lock);
+=======
+	queued_read_lock_slowpath(lock, cnts);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -134,12 +163,29 @@ static inline void queued_read_unlock(struct qrwlock *lock)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * __qrwlock_write_byte - retrieve the write byte address of a queue rwlock
+ * @lock : Pointer to queue rwlock structure
+ * Return: the write byte address of a queue rwlock
+ */
+static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
+{
+	return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
+}
+
+/**
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * queued_write_unlock - release write lock of a queue rwlock
  * @lock : Pointer to queue rwlock structure
  */
 static inline void queued_write_unlock(struct qrwlock *lock)
 {
+<<<<<<< HEAD
 	smp_store_release(&lock->wlocked, 0);
+=======
+	smp_store_release(__qrwlock_write_byte(lock), 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*

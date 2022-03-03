@@ -247,6 +247,10 @@ struct mc13xxx_platform_data {
 #define MC13XXX_ADC0_TSMOD0		(1 << 12)
 #define MC13XXX_ADC0_TSMOD1		(1 << 13)
 #define MC13XXX_ADC0_TSMOD2		(1 << 14)
+<<<<<<< HEAD
+=======
+#define MC13XXX_ADC0_CHRGRAWDIV		(1 << 15)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define MC13XXX_ADC0_ADINC1		(1 << 16)
 #define MC13XXX_ADC0_ADINC2		(1 << 17)
 

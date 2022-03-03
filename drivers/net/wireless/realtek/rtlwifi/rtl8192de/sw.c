@@ -237,6 +237,10 @@ static struct rtl_hal_ops rtl8192de_hal_ops = {
 	.led_control = rtl92de_led_control,
 	.set_desc = rtl92de_set_desc,
 	.get_desc = rtl92de_get_desc,
+<<<<<<< HEAD
+=======
+	.is_tx_desc_closed = rtl92de_is_tx_desc_closed,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.tx_polling = rtl92de_tx_polling,
 	.enable_hw_sec = rtl92de_enable_hw_security_config,
 	.set_key = rtl92de_set_key,

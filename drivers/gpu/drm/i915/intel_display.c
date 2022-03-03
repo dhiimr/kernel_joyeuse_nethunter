@@ -13533,7 +13533,11 @@ int intel_get_pipe_from_crtc_id(struct drm_device *dev, void *data,
 	struct drm_crtc *drmmode_crtc;
 	struct intel_crtc *crtc;
 
+<<<<<<< HEAD
 	drmmode_crtc = drm_crtc_find(dev, file, pipe_from_crtc_id->crtc_id);
+=======
+	drmmode_crtc = drm_crtc_find(dev, pipe_from_crtc_id->crtc_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!drmmode_crtc)
 		return -ENOENT;
 

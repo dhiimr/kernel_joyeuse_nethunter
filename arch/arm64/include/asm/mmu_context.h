@@ -34,6 +34,7 @@
 #include <asm/pgtable.h>
 #include <asm/sysreg.h>
 #include <asm/tlbflush.h>
+<<<<<<< HEAD
 #include <linux/msm_rtb.h>
 
 static inline void contextidr_thread_switch(struct task_struct *next)
@@ -47,6 +48,16 @@ static inline void contextidr_thread_switch(struct task_struct *next)
 	isb();
 
 
+=======
+
+static inline void contextidr_thread_switch(struct task_struct *next)
+{
+	if (!IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR))
+		return;
+
+	write_sysreg(task_pid_nr(next), contextidr_el1);
+	isb();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -137,7 +148,11 @@ static inline void cpu_install_idmap(void)
  * Atomically replaces the active TTBR1_EL1 PGD with a new VA-compatible PGD,
  * avoiding the possibility of conflicting TLB entries being allocated.
  */
+<<<<<<< HEAD
 static inline void __nocfi cpu_replace_ttbr1(pgd_t *pgd)
+=======
+static inline void cpu_replace_ttbr1(pgd_t *pgd)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	typedef void (ttbr_replace_func)(phys_addr_t);
 	extern ttbr_replace_func idmap_cpu_replace_ttbr1;

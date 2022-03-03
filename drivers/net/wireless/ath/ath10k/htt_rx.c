@@ -100,6 +100,17 @@ static int __ath10k_htt_rx_ring_fill_n(struct ath10k_htt *htt, int num)
 	BUILD_BUG_ON(HTT_RX_RING_FILL_LEVEL >= HTT_RX_RING_SIZE / 2);
 
 	idx = __le32_to_cpu(*htt->rx_ring.alloc_idx.vaddr);
+<<<<<<< HEAD
+=======
+
+	if (idx < 0 || idx >= htt->rx_ring.size) {
+		ath10k_err(htt->ar, "rx ring index is not valid, firmware malfunctioning?\n");
+		idx &= htt->rx_ring.size_mask;
+		ret = -ENOMEM;
+		goto fail;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	while (num > 0) {
 		skb = dev_alloc_skb(HTT_RX_BUF_SIZE + HTT_RX_DESC_ALIGN);
 		if (!skb) {
@@ -605,6 +616,31 @@ struct amsdu_subframe_hdr {
 
 #define GROUP_ID_IS_SU_MIMO(x) ((x) == 0 || (x) == 63)
 
+<<<<<<< HEAD
+=======
+static inline u8 ath10k_bw_to_mac80211_bw(u8 bw)
+{
+	u8 ret = 0;
+
+	switch (bw) {
+	case 0:
+		ret = RATE_INFO_BW_20;
+		break;
+	case 1:
+		ret = RATE_INFO_BW_40;
+		break;
+	case 2:
+		ret = RATE_INFO_BW_80;
+		break;
+	case 3:
+		ret = RATE_INFO_BW_160;
+		break;
+	}
+
+	return ret;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void ath10k_htt_rx_h_rates(struct ath10k *ar,
 				  struct ieee80211_rx_status *status,
 				  struct htt_rx_desc *rxd)
@@ -614,6 +650,10 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
 	u8 preamble = 0;
 	u8 group_id;
 	u32 info1, info2, info3;
+<<<<<<< HEAD
+=======
+	u32 stbc, nsts_su;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	info1 = __le32_to_cpu(rxd->ppdu_start.info1);
 	info2 = __le32_to_cpu(rxd->ppdu_start.info2);
@@ -658,11 +698,23 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
 		 */
 		bw = info2 & 3;
 		sgi = info3 & 1;
+<<<<<<< HEAD
+=======
+		stbc = (info2 >> 3) & 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		group_id = (info2 >> 4) & 0x3F;
 
 		if (GROUP_ID_IS_SU_MIMO(group_id)) {
 			mcs = (info3 >> 4) & 0x0F;
+<<<<<<< HEAD
 			nss = ((info2 >> 10) & 0x07) + 1;
+=======
+			nsts_su = ((info2 >> 10) & 0x07);
+			if (stbc)
+				nss = (nsts_su >> 2) + 1;
+			else
+				nss = (nsts_su + 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else {
 			/* Hardware doesn't decode VHT-SIG-B into Rx descriptor
 			 * so it's impossible to decode MCS. Also since
@@ -707,6 +759,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
 		if (sgi)
 			status->enc_flags |= RX_ENC_FLAG_SHORT_GI;
 
+<<<<<<< HEAD
 		switch (bw) {
 		/* 20MHZ */
 		case 0:
@@ -724,6 +777,9 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
 			break;
 		}
 
+=======
+		status->bw = ath10k_bw_to_mac80211_bw(bw);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		status->encoding = RX_ENC_VHT;
 		break;
 	default:
@@ -1591,14 +1647,72 @@ static void ath10k_htt_rx_h_unchain(struct ath10k *ar,
 	ath10k_unchain_msdu(amsdu);
 }
 
+<<<<<<< HEAD
+=======
+static bool ath10k_htt_rx_validate_amsdu(struct ath10k *ar,
+					 struct sk_buff_head *amsdu)
+{
+	u8 *subframe_hdr;
+	struct sk_buff *first;
+	bool is_first, is_last;
+	struct htt_rx_desc *rxd;
+	struct ieee80211_hdr *hdr;
+	size_t hdr_len, crypto_len;
+	enum htt_rx_mpdu_encrypt_type enctype;
+	int bytes_aligned = ar->hw_params.decap_align_bytes;
+
+	first = skb_peek(amsdu);
+
+	rxd = (void *)first->data - sizeof(*rxd);
+	hdr = (void *)rxd->rx_hdr_status;
+
+	is_first = !!(rxd->msdu_end.common.info0 &
+		      __cpu_to_le32(RX_MSDU_END_INFO0_FIRST_MSDU));
+	is_last = !!(rxd->msdu_end.common.info0 &
+		     __cpu_to_le32(RX_MSDU_END_INFO0_LAST_MSDU));
+
+	/* Return in case of non-aggregated msdu */
+	if (is_first && is_last)
+		return true;
+
+	/* First msdu flag is not set for the first msdu of the list */
+	if (!is_first)
+		return false;
+
+	enctype = MS(__le32_to_cpu(rxd->mpdu_start.info0),
+		     RX_MPDU_START_INFO0_ENCRYPT_TYPE);
+
+	hdr_len = ieee80211_hdrlen(hdr->frame_control);
+	crypto_len = ath10k_htt_rx_crypto_param_len(ar, enctype);
+
+	subframe_hdr = (u8 *)hdr + round_up(hdr_len, bytes_aligned) +
+		       crypto_len;
+
+	/* Validate if the amsdu has a proper first subframe.
+	 * There are chances a single msdu can be received as amsdu when
+	 * the unauthenticated amsdu flag of a QoS header
+	 * gets flipped in non-SPP AMSDU's, in such cases the first
+	 * subframe has llc/snap header in place of a valid da.
+	 * return false if the da matches rfc1042 pattern
+	 */
+	if (ether_addr_equal(subframe_hdr, rfc1042_header))
+		return false;
+
+	return true;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static bool ath10k_htt_rx_amsdu_allowed(struct ath10k *ar,
 					struct sk_buff_head *amsdu,
 					struct ieee80211_rx_status *rx_status)
 {
+<<<<<<< HEAD
 	/* FIXME: It might be a good idea to do some fuzzy-testing to drop
 	 * invalid/dangerous frames.
 	 */
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!rx_status->freq) {
 		ath10k_dbg(ar, ATH10K_DBG_HTT, "no channel configured; ignoring frame(s)!\n");
 		return false;
@@ -1609,6 +1723,14 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k *ar,
 		return false;
 	}
 
+<<<<<<< HEAD
+=======
+	if (!ath10k_htt_rx_validate_amsdu(ar, amsdu)) {
+		ath10k_dbg(ar, ATH10K_DBG_HTT, "invalid amsdu received\n");
+		return false;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return true;
 }
 
@@ -2369,7 +2491,11 @@ ath10k_update_per_peer_tx_stats(struct ath10k *ar,
 		arsta->txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
 
 	arsta->txrate.nss = txrate.nss;
+<<<<<<< HEAD
 	arsta->txrate.bw = txrate.bw + RATE_INFO_BW_20;
+=======
+	arsta->txrate.bw = ath10k_bw_to_mac80211_bw(txrate.bw);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void ath10k_htt_fetch_peer_stats(struct ath10k *ar,

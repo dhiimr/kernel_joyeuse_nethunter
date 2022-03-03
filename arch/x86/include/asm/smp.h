@@ -175,6 +175,7 @@ static inline int wbinvd_on_all_cpus(void)
 extern unsigned disabled_cpus;
 
 #ifdef CONFIG_X86_LOCAL_APIC
+<<<<<<< HEAD
 
 #ifndef CONFIG_X86_64
 static inline int logical_smp_processor_id(void)
@@ -185,6 +186,8 @@ static inline int logical_smp_processor_id(void)
 
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern int hard_smp_processor_id(void);
 
 #else /* CONFIG_X86_LOCAL_APIC */

@@ -321,12 +321,19 @@ static int max8997_muic_handle_usb(struct max8997_muic_info *info,
 {
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (usb_type == MAX8997_USB_HOST) {
 		ret = max8997_muic_set_path(info, info->path_usb, attached);
 		if (ret < 0) {
 			dev_err(info->dev, "failed to update muic register\n");
 			return ret;
 		}
+=======
+	ret = max8997_muic_set_path(info, info->path_usb, attached);
+	if (ret < 0) {
+		dev_err(info->dev, "failed to update muic register\n");
+		return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	switch (usb_type) {
@@ -785,3 +792,7 @@ module_platform_driver(max8997_muic_driver);
 MODULE_DESCRIPTION("Maxim MAX8997 Extcon driver");
 MODULE_AUTHOR("Donggeun Kim <dg77.kim@samsung.com>");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:max8997-muic");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

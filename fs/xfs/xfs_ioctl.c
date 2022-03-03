@@ -715,7 +715,12 @@ xfs_ioc_space(
 		flags |= XFS_PREALLOC_CLEAR;
 		if (bf->l_start > XFS_ISIZE(ip)) {
 			error = xfs_alloc_file_space(ip, XFS_ISIZE(ip),
+<<<<<<< HEAD
 					bf->l_start - XFS_ISIZE(ip), 0);
+=======
+					bf->l_start - XFS_ISIZE(ip),
+					XFS_BMAPI_PREALLOC);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (error)
 				goto out_unlock;
 		}

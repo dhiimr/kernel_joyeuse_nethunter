@@ -138,7 +138,11 @@ function_trace_call(unsigned long ip, unsigned long parent_ip,
 	pc = preempt_count();
 	preempt_disable_notrace();
 
+<<<<<<< HEAD
 	bit = trace_test_and_set_recursion(TRACE_FTRACE_START, TRACE_FTRACE_MAX);
+=======
+	bit = trace_test_and_set_recursion(TRACE_FTRACE_START);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (bit < 0)
 		goto out;
 

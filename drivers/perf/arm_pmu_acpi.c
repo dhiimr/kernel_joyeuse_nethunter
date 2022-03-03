@@ -25,8 +25,11 @@ static int arm_pmu_acpi_register_irq(int cpu)
 	int gsi, trigger;
 
 	gicc = acpi_cpu_get_madt_gicc(cpu);
+<<<<<<< HEAD
 	if (WARN_ON(!gicc))
 		return -EINVAL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	gsi = gicc->performance_interrupt;
 
@@ -65,11 +68,18 @@ static void arm_pmu_acpi_unregister_irq(int cpu)
 	int gsi;
 
 	gicc = acpi_cpu_get_madt_gicc(cpu);
+<<<<<<< HEAD
 	if (!gicc)
 		return;
 
 	gsi = gicc->performance_interrupt;
 	acpi_unregister_gsi(gsi);
+=======
+
+	gsi = gicc->performance_interrupt;
+	if (gsi)
+		acpi_unregister_gsi(gsi);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int arm_pmu_acpi_parse_irqs(void)

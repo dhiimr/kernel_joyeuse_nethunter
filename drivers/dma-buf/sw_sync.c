@@ -141,6 +141,7 @@ static void timeline_fence_release(struct dma_fence *fence)
 {
 	struct sync_pt *pt = dma_fence_to_sync_pt(fence);
 	struct sync_timeline *parent = dma_fence_parent(fence);
+<<<<<<< HEAD
 
 	if (!list_empty(&pt->link)) {
 		unsigned long flags;
@@ -152,6 +153,16 @@ static void timeline_fence_release(struct dma_fence *fence)
 		}
 		spin_unlock_irqrestore(fence->lock, flags);
 	}
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(fence->lock, flags);
+	if (!list_empty(&pt->link)) {
+		list_del(&pt->link);
+		rb_erase(&pt->node, &parent->pt_tree);
+	}
+	spin_unlock_irqrestore(fence->lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	sync_timeline_put(parent);
 	dma_fence_free(fence);
@@ -275,7 +286,12 @@ static struct sync_pt *sync_pt_create(struct sync_timeline *obj,
 				p = &parent->rb_left;
 			} else {
 				if (dma_fence_get_rcu(&other->base)) {
+<<<<<<< HEAD
 					dma_fence_put(&pt->base);
+=======
+					sync_timeline_put(obj);
+					kfree(pt);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					pt = other;
 					goto unlock;
 				}

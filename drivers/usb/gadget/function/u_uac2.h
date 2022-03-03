@@ -22,7 +22,11 @@
 #define UAC2_DEF_PSRATE 48000
 #define UAC2_DEF_PSSIZE 2
 #define UAC2_DEF_CCHMASK 0x3
+<<<<<<< HEAD
 #define UAC2_DEF_CSRATE 44100
+=======
+#define UAC2_DEF_CSRATE 64000
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define UAC2_DEF_CSSIZE 2
 #define UAC2_DEF_REQ_NUM 2
 

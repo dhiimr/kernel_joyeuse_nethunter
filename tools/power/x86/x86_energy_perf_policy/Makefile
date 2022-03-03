@@ -9,7 +9,11 @@ ifeq ("$(origin O)", "command line")
 endif
 
 x86_energy_perf_policy : x86_energy_perf_policy.c
+<<<<<<< HEAD
 CFLAGS +=	-Wall
+=======
+CFLAGS +=	-Wall -I../../../include
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 CFLAGS +=	-DMSRHEADER='"../../../../arch/x86/include/asm/msr-index.h"'
 
 %: %.c

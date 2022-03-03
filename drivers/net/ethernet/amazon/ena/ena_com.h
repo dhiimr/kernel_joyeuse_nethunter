@@ -42,6 +42,10 @@
 #include <linux/spinlock.h>
 #include <linux/types.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
+=======
+#include <linux/netdevice.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "ena_common_defs.h"
 #include "ena_admin_defs.h"
@@ -631,6 +635,17 @@ int ena_com_rss_init(struct ena_com_dev *ena_dev, u16 log_size);
  */
 void ena_com_rss_destroy(struct ena_com_dev *ena_dev);
 
+<<<<<<< HEAD
+=======
+/* ena_com_get_current_hash_function - Get RSS hash function
+ * @ena_dev: ENA communication layer struct
+ *
+ * Return the current hash function.
+ * @return: 0 or one of the ena_admin_hash_functions values.
+ */
+int ena_com_get_current_hash_function(struct ena_com_dev *ena_dev);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* ena_com_fill_hash_function - Fill RSS hash function
  * @ena_dev: ENA communication layer struct
  * @func: The hash function (Toeplitz or crc)

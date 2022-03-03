@@ -894,11 +894,25 @@ EXPORT_SYMBOL_GPL(of_dma_get_range);
  * @np:	device node
  *
  * It returns true if "dma-coherent" property was found
+<<<<<<< HEAD
  * for this device in DT.
  */
 bool of_dma_is_coherent(struct device_node *np)
 {
 	struct device_node *node = of_node_get(np);
+=======
+ * for this device in the DT, or if DMA is coherent by
+ * default for OF devices on the current platform.
+ */
+bool of_dma_is_coherent(struct device_node *np)
+{
+	struct device_node *node;
+
+	if (IS_ENABLED(CONFIG_OF_DMA_DEFAULT_COHERENT))
+		return true;
+
+	node = of_node_get(np);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	while (node) {
 		if (of_property_read_bool(node, "dma-coherent")) {

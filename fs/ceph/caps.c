@@ -929,12 +929,33 @@ void __ceph_remove_cap(struct ceph_cap *cap, bool queue_release)
 {
 	struct ceph_mds_session *session = cap->session;
 	struct ceph_inode_info *ci = cap->ci;
+<<<<<<< HEAD
 	struct ceph_mds_client *mdsc =
 		ceph_sb_to_client(ci->vfs_inode.i_sb)->mdsc;
 	int removed = 0;
 
 	dout("__ceph_remove_cap %p from %p\n", cap, &ci->vfs_inode);
 
+=======
+	struct ceph_mds_client *mdsc;
+	int removed = 0;
+
+	/* 'ci' being NULL means the remove have already occurred */
+	if (!ci) {
+		dout("%s: cap inode is NULL\n", __func__);
+		return;
+	}
+
+	dout("__ceph_remove_cap %p from %p\n", cap, &ci->vfs_inode);
+
+	mdsc = ceph_inode_to_client(&ci->vfs_inode)->mdsc;
+
+	/* remove from inode's cap rbtree, and clear auth cap */
+	rb_erase(&cap->ci_node, &ci->i_caps);
+	if (ci->i_auth_cap == cap)
+		ci->i_auth_cap = NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* remove from session list */
 	spin_lock(&session->s_cap_lock);
 	if (session->s_cap_iterator == cap) {
@@ -970,11 +991,14 @@ void __ceph_remove_cap(struct ceph_cap *cap, bool queue_release)
 
 	spin_unlock(&session->s_cap_lock);
 
+<<<<<<< HEAD
 	/* remove from inode list */
 	rb_erase(&cap->ci_node, &ci->i_caps);
 	if (ci->i_auth_cap == cap)
 		ci->i_auth_cap = NULL;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (removed)
 		ceph_put_cap(mdsc, cap);
 
@@ -1119,20 +1143,34 @@ static int send_cap_msg(struct cap_msg_args *arg)
 }
 
 /*
+<<<<<<< HEAD
  * Queue cap releases when an inode is dropped from our cache.  Since
  * inode is about to be destroyed, there is no need for i_ceph_lock.
+=======
+ * Queue cap releases when an inode is dropped from our cache.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 void ceph_queue_caps_release(struct inode *inode)
 {
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	struct rb_node *p;
 
+<<<<<<< HEAD
+=======
+	/* lock i_ceph_lock, because ceph_d_revalidate(..., LOOKUP_RCU)
+	 * may call __ceph_caps_issued_mask() on a freeing inode. */
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	p = rb_first(&ci->i_caps);
 	while (p) {
 		struct ceph_cap *cap = rb_entry(p, struct ceph_cap, ci_node);
 		p = rb_next(p);
 		__ceph_remove_cap(cap, true);
 	}
+<<<<<<< HEAD
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -1159,6 +1197,10 @@ static int __send_cap(struct ceph_mds_client *mdsc, struct ceph_cap *cap,
 {
 	struct ceph_inode_info *ci = cap->ci;
 	struct inode *inode = &ci->vfs_inode;
+<<<<<<< HEAD
+=======
+	struct ceph_buffer *old_blob = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct cap_msg_args arg;
 	int held, revoking, dropping;
 	int wake = 0;
@@ -1224,7 +1266,11 @@ static int __send_cap(struct ceph_mds_client *mdsc, struct ceph_cap *cap,
 	ci->i_requested_max_size = arg.max_size;
 
 	if (flushing & CEPH_CAP_XATTR_EXCL) {
+<<<<<<< HEAD
 		__ceph_build_xattrs_blob(ci);
+=======
+		old_blob = __ceph_build_xattrs_blob(ci);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		arg.xattr_version = ci->i_xattrs.version;
 		arg.xattr_buf = ci->i_xattrs.blob;
 	} else {
@@ -1259,6 +1305,11 @@ static int __send_cap(struct ceph_mds_client *mdsc, struct ceph_cap *cap,
 
 	spin_unlock(&ci->i_ceph_lock);
 
+<<<<<<< HEAD
+=======
+	ceph_buffer_put(old_blob);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = send_cap_msg(&arg);
 	if (ret < 0) {
 		dout("error sending cap msg, must requeue %p\n", inode);
@@ -1644,11 +1695,20 @@ static int __mark_caps_flushing(struct inode *inode,
  * try to invalidate mapping pages without blocking.
  */
 static int try_nonblocking_invalidate(struct inode *inode)
+<<<<<<< HEAD
+=======
+	__releases(ci->i_ceph_lock)
+	__acquires(ci->i_ceph_lock)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	u32 invalidating_gen = ci->i_rdcache_gen;
 
 	spin_unlock(&ci->i_ceph_lock);
+<<<<<<< HEAD
+=======
+	ceph_fscache_invalidate(inode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	invalidate_mapping_pages(&inode->i_data, 0, -1);
 	spin_lock(&ci->i_ceph_lock);
 
@@ -1857,8 +1917,17 @@ retry_locked:
 		}
 
 		/* want more caps from mds? */
+<<<<<<< HEAD
 		if (want & ~(cap->mds_wanted | cap->issued))
 			goto ack;
+=======
+		if (want & ~cap->mds_wanted) {
+			if (want & ~(cap->mds_wanted | cap->issued))
+				goto ack;
+			if (!__cap_is_valid(cap))
+				goto ack;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* things we might delay */
 		if ((cap->issued & ~retain) == 0 &&
@@ -1896,12 +1965,31 @@ ack:
 			if (mutex_trylock(&session->s_mutex) == 0) {
 				dout("inverting session/ino locks on %p\n",
 				     session);
+<<<<<<< HEAD
+=======
+				session = ceph_get_mds_session(session);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				spin_unlock(&ci->i_ceph_lock);
 				if (took_snap_rwsem) {
 					up_read(&mdsc->snap_rwsem);
 					took_snap_rwsem = 0;
 				}
+<<<<<<< HEAD
 				mutex_lock(&session->s_mutex);
+=======
+				if (session) {
+					mutex_lock(&session->s_mutex);
+					ceph_put_mds_session(session);
+				} else {
+					/*
+					 * Because we take the reference while
+					 * holding the i_ceph_lock, it should
+					 * never be NULL. Throw a warning if it
+					 * ever is.
+					 */
+					WARN_ON_ONCE(true);
+				}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				goto retry;
 			}
 		}
@@ -3492,6 +3580,10 @@ retry:
 		WARN_ON(1);
 		tsession = NULL;
 		target = -1;
+<<<<<<< HEAD
+=======
+		mutex_lock(&session->s_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	goto retry;
 

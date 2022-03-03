@@ -1039,6 +1039,7 @@ void smp_fetch_global_pmu(void)
  * are flush_tlb_*() routines, and these run after flush_cache_*()
  * which performs the flushw.
  *
+<<<<<<< HEAD
  * The SMP TLB coherency scheme we use works as follows:
  *
  * 1) mm->cpu_vm_mask is a bit mask of which cpus an address
@@ -1071,6 +1072,11 @@ void smp_fetch_global_pmu(void)
  *    The performance gain from "optimizing" away the cross call for threads is
  *    questionable (in theory the big win for threads is the massive sharing of
  *    address space state across processors).
+=======
+ * mm->cpu_vm_mask is a bit mask of which cpus an address
+ * space has (potentially) executed on, this is the heuristic
+ * we use to limit cross calls.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 
 /* This currently is only used by the hugetlb arch pre-fault
@@ -1080,18 +1086,26 @@ void smp_fetch_global_pmu(void)
 void smp_flush_tlb_mm(struct mm_struct *mm)
 {
 	u32 ctx = CTX_HWBITS(mm->context);
+<<<<<<< HEAD
 	int cpu = get_cpu();
 
 	if (atomic_read(&mm->mm_users) == 1) {
 		cpumask_copy(mm_cpumask(mm), cpumask_of(cpu));
 		goto local_flush_and_out;
 	}
+=======
+
+	get_cpu();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	smp_cross_call_masked(&xcall_flush_tlb_mm,
 			      ctx, 0, 0,
 			      mm_cpumask(mm));
 
+<<<<<<< HEAD
 local_flush_and_out:
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__flush_tlb_mm(ctx, SECONDARY_CONTEXT);
 
 	put_cpu();
@@ -1114,17 +1128,27 @@ void smp_flush_tlb_pending(struct mm_struct *mm, unsigned long nr, unsigned long
 {
 	u32 ctx = CTX_HWBITS(mm->context);
 	struct tlb_pending_info info;
+<<<<<<< HEAD
 	int cpu = get_cpu();
+=======
+
+	get_cpu();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	info.ctx = ctx;
 	info.nr = nr;
 	info.vaddrs = vaddrs;
 
+<<<<<<< HEAD
 	if (mm == current->mm && atomic_read(&mm->mm_users) == 1)
 		cpumask_copy(mm_cpumask(mm), cpumask_of(cpu));
 	else
 		smp_call_function_many(mm_cpumask(mm), tlb_pending_func,
 				       &info, 1);
+=======
+	smp_call_function_many(mm_cpumask(mm), tlb_pending_func,
+			       &info, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	__flush_tlb_pending(ctx, nr, vaddrs);
 
@@ -1134,6 +1158,7 @@ void smp_flush_tlb_pending(struct mm_struct *mm, unsigned long nr, unsigned long
 void smp_flush_tlb_page(struct mm_struct *mm, unsigned long vaddr)
 {
 	unsigned long context = CTX_HWBITS(mm->context);
+<<<<<<< HEAD
 	int cpu = get_cpu();
 
 	if (mm == current->mm && atomic_read(&mm->mm_users) == 1)
@@ -1142,6 +1167,15 @@ void smp_flush_tlb_page(struct mm_struct *mm, unsigned long vaddr)
 		smp_cross_call_masked(&xcall_flush_tlb_page,
 				      context, vaddr, 0,
 				      mm_cpumask(mm));
+=======
+
+	get_cpu();
+
+	smp_cross_call_masked(&xcall_flush_tlb_page,
+			      context, vaddr, 0,
+			      mm_cpumask(mm));
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__flush_tlb_page(context, vaddr);
 
 	put_cpu();

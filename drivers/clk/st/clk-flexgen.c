@@ -373,6 +373,10 @@ static void __init st_of_flexgen_setup(struct device_node *np)
 			break;
 		}
 
+<<<<<<< HEAD
+=======
+		flex_flags &= ~CLK_IS_CRITICAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		of_clk_detect_critical(np, i, &flex_flags);
 
 		/*

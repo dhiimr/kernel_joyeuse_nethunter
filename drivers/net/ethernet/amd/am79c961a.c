@@ -440,7 +440,11 @@ static void am79c961_timeout(struct net_device *dev)
 /*
  * Transmit a packet
  */
+<<<<<<< HEAD
 static int
+=======
+static netdev_tx_t
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 am79c961_sendpacket(struct sk_buff *skb, struct net_device *dev)
 {
 	struct dev_priv *priv = netdev_priv(dev);

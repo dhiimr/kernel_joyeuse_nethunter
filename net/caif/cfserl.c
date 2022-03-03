@@ -31,6 +31,14 @@ static int cfserl_transmit(struct cflayer *layr, struct cfpkt *pkt);
 static void cfserl_ctrlcmd(struct cflayer *layr, enum caif_ctrlcmd ctrl,
 			   int phyid);
 
+<<<<<<< HEAD
+=======
+void cfserl_release(struct cflayer *layer)
+{
+	kfree(layer);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct cflayer *cfserl_create(int instance, bool use_stx)
 {
 	struct cfserl *this = kzalloc(sizeof(struct cfserl), GFP_ATOMIC);

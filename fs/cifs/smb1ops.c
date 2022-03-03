@@ -181,6 +181,12 @@ cifs_get_next_mid(struct TCP_Server_Info *server)
 	/* we do not want to loop forever */
 	last_mid = cur_mid;
 	cur_mid++;
+<<<<<<< HEAD
+=======
+	/* avoid 0xFFFF MID */
+	if (cur_mid == 0xffff)
+		cur_mid++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * This nested loop looks more expensive than it is.
@@ -376,12 +382,19 @@ coalesce_t2(char *second_buf, struct smb_hdr *target_hdr)
 
 static void
 cifs_downgrade_oplock(struct TCP_Server_Info *server,
+<<<<<<< HEAD
 			struct cifsInodeInfo *cinode, bool set_level2)
 {
 	if (set_level2)
 		cifs_set_oplock_level(cinode, OPLOCK_READ);
 	else
 		cifs_set_oplock_level(cinode, 0);
+=======
+		      struct cifsInodeInfo *cinode, __u32 oplock,
+		      unsigned int epoch, bool *purge_cache)
+{
+	cifs_set_oplock_level(cinode, oplock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static bool

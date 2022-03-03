@@ -31,6 +31,10 @@
 #include <linux/of.h>
 #include <linux/module.h>
 #include <linux/pm_runtime.h>
+<<<<<<< HEAD
+=======
+#include <linux/iopoll.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define CDNS_UART_TTY_NAME	"ttyPS"
 #define CDNS_UART_NAME		"xuartps"
@@ -39,6 +43,10 @@
 #define CDNS_UART_NR_PORTS	2
 #define CDNS_UART_FIFO_SIZE	64	/* FIFO size */
 #define CDNS_UART_REGISTER_SPACE	0x1000
+<<<<<<< HEAD
+=======
+#define TX_TIMEOUT		500000
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Rx Trigger level */
 static int rx_trigger_level = 56;
@@ -593,9 +601,16 @@ static void cdns_uart_start_tx(struct uart_port *port)
 	if (uart_circ_empty(&port->state->xmit))
 		return;
 
+<<<<<<< HEAD
 	cdns_uart_handle_tx(port);
 
 	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
+=======
+	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
+
+	cdns_uart_handle_tx(port);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Enable the TX Empty interrupt */
 	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IER);
 }
@@ -685,18 +700,35 @@ static void cdns_uart_set_termios(struct uart_port *port,
 	unsigned int cval = 0;
 	unsigned int baud, minbaud, maxbaud;
 	unsigned long flags;
+<<<<<<< HEAD
 	unsigned int ctrl_reg, mode_reg;
 
 	spin_lock_irqsave(&port->lock, flags);
+=======
+	unsigned int ctrl_reg, mode_reg, val;
+	int err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Wait for the transmit FIFO to empty before making changes */
 	if (!(readl(port->membase + CDNS_UART_CR) &
 				CDNS_UART_CR_TX_DIS)) {
+<<<<<<< HEAD
 		while (!(readl(port->membase + CDNS_UART_SR) &
 				CDNS_UART_SR_TXEMPTY)) {
 			cpu_relax();
 		}
 	}
+=======
+		err = readl_poll_timeout(port->membase + CDNS_UART_SR,
+					 val, (val & CDNS_UART_SR_TXEMPTY),
+					 1000, TX_TIMEOUT);
+		if (err) {
+			dev_err(port->dev, "timed out waiting for tx empty");
+			return;
+		}
+	}
+	spin_lock_irqsave(&port->lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Disable the TX and RX to set baud rate */
 	ctrl_reg = readl(port->membase + CDNS_UART_CR);
@@ -1277,6 +1309,10 @@ static int cdns_uart_console_setup(struct console *co, char *options)
 	int bits = 8;
 	int parity = 'n';
 	int flow = 'n';
+<<<<<<< HEAD
+=======
+	unsigned long time_out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (co->index < 0 || co->index >= CDNS_UART_NR_PORTS)
 		return -EINVAL;
@@ -1290,6 +1326,16 @@ static int cdns_uart_console_setup(struct console *co, char *options)
 	if (options)
 		uart_parse_options(options, &baud, &parity, &bits, &flow);
 
+<<<<<<< HEAD
+=======
+	/* Wait for tx_empty before setting up the console */
+	time_out = jiffies + usecs_to_jiffies(TX_TIMEOUT);
+
+	while (time_before(jiffies, time_out) &&
+	       cdns_uart_tx_empty(port) != TIOCSER_TEMT)
+		cpu_relax();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return uart_set_options(port, co, baud, parity, bits, flow);
 }
 
@@ -1342,6 +1388,7 @@ static struct uart_driver cdns_uart_uart_driver = {
 static int cdns_uart_suspend(struct device *device)
 {
 	struct uart_port *port = dev_get_drvdata(device);
+<<<<<<< HEAD
 	struct tty_struct *tty;
 	struct device *tty_dev;
 	int may_wake = 0;
@@ -1360,6 +1407,13 @@ static int cdns_uart_suspend(struct device *device)
 	 */
 	uart_suspend_port(&cdns_uart_uart_driver, port);
 	if (!(console_suspend_enabled && !may_wake)) {
+=======
+	int may_wake;
+
+	may_wake = device_may_wakeup(device);
+
+	if (console_suspend_enabled && may_wake) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		unsigned long flags = 0;
 
 		spin_lock_irqsave(&port->lock, flags);
@@ -1374,7 +1428,15 @@ static int cdns_uart_suspend(struct device *device)
 		spin_unlock_irqrestore(&port->lock, flags);
 	}
 
+<<<<<<< HEAD
 	return 0;
+=======
+	/*
+	 * Call the API provided in serial_core.c file which handles
+	 * the suspend.
+	 */
+	return uart_suspend_port(&cdns_uart_uart_driver, port);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -1388,6 +1450,7 @@ static int cdns_uart_resume(struct device *device)
 	struct uart_port *port = dev_get_drvdata(device);
 	unsigned long flags = 0;
 	u32 ctrl_reg;
+<<<<<<< HEAD
 	struct tty_struct *tty;
 	struct device *tty_dev;
 	int may_wake = 0;
@@ -1399,6 +1462,11 @@ static int cdns_uart_resume(struct device *device)
 		may_wake = device_may_wakeup(tty_dev);
 		tty_kref_put(tty);
 	}
+=======
+	int may_wake;
+
+	may_wake = device_may_wakeup(device);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (console_suspend_enabled && !may_wake) {
 		struct cdns_uart *cdns_uart = port->private_data;

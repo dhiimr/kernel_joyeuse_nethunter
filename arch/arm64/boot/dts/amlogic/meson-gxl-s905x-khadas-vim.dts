@@ -33,11 +33,17 @@
 
 	gpio-keys-polled {
 		compatible = "gpio-keys-polled";
+<<<<<<< HEAD
 		#address-cells = <1>;
 		#size-cells = <0>;
 		poll-interval = <100>;
 
 		button@0 {
+=======
+		poll-interval = <100>;
+
+		power-button {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			label = "power";
 			linux,code = <KEY_POWER>;
 			gpios = <&gpio_ao GPIOAO_2 GPIO_ACTIVE_LOW>;
@@ -112,7 +118,11 @@
 	linux,rc-map-name = "rc-geekbox";
 };
 
+<<<<<<< HEAD
 &pinctrl_aobus {
+=======
+&gpio_ao {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	gpio-line-names = "UART TX",
 			  "UART RX",
 			  "Power Key In",
@@ -125,7 +135,11 @@
 			  "SYS LED";
 };
 
+<<<<<<< HEAD
 &pinctrl_periphs {
+=======
+&gpio {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	gpio-line-names = /* Bank GPIOZ */
 			  "", "", "", "", "", "", "",
 			  "", "", "", "", "", "", "",

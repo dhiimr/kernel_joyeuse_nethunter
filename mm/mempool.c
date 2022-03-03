@@ -103,10 +103,17 @@ static inline void poison_element(mempool_t *pool, void *element)
 }
 #endif /* CONFIG_DEBUG_SLAB || CONFIG_SLUB_DEBUG_ON */
 
+<<<<<<< HEAD
 static __always_inline void kasan_poison_element(mempool_t *pool, void *element)
 {
 	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
 		kasan_poison_kfree(element, _RET_IP_);
+=======
+static void kasan_poison_element(mempool_t *pool, void *element)
+{
+	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
+		kasan_poison_kfree(element);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (pool->alloc == mempool_alloc_pages)
 		kasan_free_pages(element, (unsigned long)pool->pool_data);
 }
@@ -119,7 +126,11 @@ static void kasan_unpoison_element(mempool_t *pool, void *element, gfp_t flags)
 		kasan_alloc_pages(element, (unsigned long)pool->pool_data);
 }
 
+<<<<<<< HEAD
 static __always_inline void add_element(mempool_t *pool, void *element)
+=======
+static void add_element(mempool_t *pool, void *element)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	BUG_ON(pool->curr_nr >= pool->min_nr);
 	poison_element(pool, element);

@@ -159,11 +159,25 @@ static ssize_t size_show(struct device *dev,
 }
 static DEVICE_ATTR_RO(size);
 
+<<<<<<< HEAD
+=======
+static ssize_t log_zero_flags_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	return sprintf(buf, "Y\n");
+}
+static DEVICE_ATTR_RO(log_zero_flags);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct attribute *nd_btt_attributes[] = {
 	&dev_attr_sector_size.attr,
 	&dev_attr_namespace.attr,
 	&dev_attr_uuid.attr,
 	&dev_attr_size.attr,
+<<<<<<< HEAD
+=======
+	&dev_attr_log_zero_flags.attr,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	NULL,
 };
 
@@ -190,6 +204,7 @@ static struct device *__nd_btt_create(struct nd_region *nd_region,
 		return NULL;
 
 	nd_btt->id = ida_simple_get(&nd_region->btt_ida, 0, 0, GFP_KERNEL);
+<<<<<<< HEAD
 	if (nd_btt->id < 0) {
 		kfree(nd_btt);
 		return NULL;
@@ -198,6 +213,17 @@ static struct device *__nd_btt_create(struct nd_region *nd_region,
 	nd_btt->lbasize = lbasize;
 	if (uuid)
 		uuid = kmemdup(uuid, 16, GFP_KERNEL);
+=======
+	if (nd_btt->id < 0)
+		goto out_nd_btt;
+
+	nd_btt->lbasize = lbasize;
+	if (uuid) {
+		uuid = kmemdup(uuid, 16, GFP_KERNEL);
+		if (!uuid)
+			goto out_put_id;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	nd_btt->uuid = uuid;
 	dev = &nd_btt->dev;
 	dev_set_name(dev, "btt%d.%d", nd_region->id, nd_btt->id);
@@ -212,6 +238,16 @@ static struct device *__nd_btt_create(struct nd_region *nd_region,
 		return NULL;
 	}
 	return dev;
+<<<<<<< HEAD
+=======
+
+out_put_id:
+	ida_simple_remove(&nd_region->btt_ida, nd_btt->id);
+
+out_nd_btt:
+	kfree(nd_btt);
+	return NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 struct device *nd_btt_create(struct nd_region *nd_region)

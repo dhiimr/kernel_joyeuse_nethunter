@@ -706,7 +706,11 @@
 			};
 		};
 
+<<<<<<< HEAD
 		L2: l2-cache@fffef000 {
+=======
+		L2: cache-controller@fffef000 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			compatible = "arm,pl310-cache";
 			reg = <0xfffef000 0x1000>;
 			interrupts = <0 38 0x04>;

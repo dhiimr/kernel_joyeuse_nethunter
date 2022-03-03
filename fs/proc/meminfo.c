@@ -132,7 +132,11 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
 	show_val_kb(m, "Committed_AS:   ", committed);
 	seq_printf(m, "VmallocTotal:   %8lu kB\n",
 		   (unsigned long)VMALLOC_TOTAL >> 10);
+<<<<<<< HEAD
 	show_val_kb(m, "VmallocUsed:    ", vmalloc_nr_pages());
+=======
+	show_val_kb(m, "VmallocUsed:    ", 0ul);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	show_val_kb(m, "VmallocChunk:   ", 0ul);
 
 #ifdef CONFIG_MEMORY_FAILURE

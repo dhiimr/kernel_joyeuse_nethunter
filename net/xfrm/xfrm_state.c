@@ -449,6 +449,11 @@ static void xfrm_state_gc_destroy(struct xfrm_state *x)
 		x->type->destructor(x);
 		xfrm_put_type(x->type);
 	}
+<<<<<<< HEAD
+=======
+	if (x->xfrag.page)
+		put_page(x->xfrag.page);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	xfrm_dev_state_free(x);
 	security_xfrm_state_free(x);
 	kfree(x);
@@ -735,10 +740,16 @@ restart:
 	}
 out:
 	spin_unlock_bh(&net->xfrm.xfrm_state_lock);
+<<<<<<< HEAD
 	if (cnt) {
 		err = 0;
 		xfrm_policy_cache_flush();
 	}
+=======
+	if (cnt)
+		err = 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return err;
 }
 EXPORT_SYMBOL(xfrm_state_flush);
@@ -908,7 +919,12 @@ static void xfrm_state_look_at(struct xfrm_policy *pol, struct xfrm_state *x,
 	 */
 	if (x->km.state == XFRM_STATE_VALID) {
 		if ((x->sel.family &&
+<<<<<<< HEAD
 		     !xfrm_selector_match(&x->sel, fl, x->sel.family)) ||
+=======
+		     (x->sel.family != family ||
+		      !xfrm_selector_match(&x->sel, fl, family))) ||
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    !security_xfrm_state_pol_flow_match(x, pol, fl))
 			return;
 
@@ -921,7 +937,13 @@ static void xfrm_state_look_at(struct xfrm_policy *pol, struct xfrm_state *x,
 		*acq_in_progress = 1;
 	} else if (x->km.state == XFRM_STATE_ERROR ||
 		   x->km.state == XFRM_STATE_EXPIRED) {
+<<<<<<< HEAD
 		if (xfrm_selector_match(&x->sel, fl, x->sel.family) &&
+=======
+		if ((!x->sel.family ||
+		     (x->sel.family == family &&
+		      xfrm_selector_match(&x->sel, fl, family))) &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    security_xfrm_state_pol_flow_match(x, pol, fl))
 			*error = -ESRCH;
 	}
@@ -931,7 +953,11 @@ struct xfrm_state *
 xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
 		const struct flowi *fl, struct xfrm_tmpl *tmpl,
 		struct xfrm_policy *pol, int *err,
+<<<<<<< HEAD
 		unsigned short family, u32 if_id)
+=======
+		unsigned short family)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	static xfrm_address_t saddr_wildcard = { };
 	struct net *net = xp_net(pol);
@@ -955,13 +981,20 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
 		if (x->props.family == encap_family &&
 		    x->props.reqid == tmpl->reqid &&
 		    (mark & x->mark.m) == x->mark.v &&
+<<<<<<< HEAD
 		    x->if_id == if_id &&
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    !(x->props.flags & XFRM_STATE_WILDRECV) &&
 		    xfrm_state_addr_check(x, daddr, saddr, encap_family) &&
 		    tmpl->mode == x->props.mode &&
 		    tmpl->id.proto == x->id.proto &&
 		    (tmpl->id.spi == x->id.spi || !tmpl->id.spi))
+<<<<<<< HEAD
 			xfrm_state_look_at(pol, x, fl, encap_family,
+=======
+			xfrm_state_look_at(pol, x, fl, family,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					   &best, &acquire_in_progress, &error);
 	}
 	if (best || acquire_in_progress)
@@ -972,13 +1005,20 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
 		if (x->props.family == encap_family &&
 		    x->props.reqid == tmpl->reqid &&
 		    (mark & x->mark.m) == x->mark.v &&
+<<<<<<< HEAD
 		    x->if_id == if_id &&
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    !(x->props.flags & XFRM_STATE_WILDRECV) &&
 		    xfrm_addr_equal(&x->id.daddr, daddr, encap_family) &&
 		    tmpl->mode == x->props.mode &&
 		    tmpl->id.proto == x->id.proto &&
 		    (tmpl->id.spi == x->id.spi || !tmpl->id.spi))
+<<<<<<< HEAD
 			xfrm_state_look_at(pol, x, fl, encap_family,
+=======
+			xfrm_state_look_at(pol, x, fl, family,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					   &best, &acquire_in_progress, &error);
 	}
 
@@ -1012,7 +1052,10 @@ found:
 		 * to current session. */
 		xfrm_init_tempstate(x, fl, tmpl, daddr, saddr, family);
 		memcpy(&x->mark, &pol->mark, sizeof(x->mark));
+<<<<<<< HEAD
 		x->if_id = if_id;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		error = security_xfrm_state_alloc_acquire(x, pol->security, fl->flowi_secid);
 		if (error) {
@@ -1070,7 +1113,11 @@ out:
 }
 
 struct xfrm_state *
+<<<<<<< HEAD
 xfrm_stateonly_find(struct net *net, u32 mark, u32 if_id,
+=======
+xfrm_stateonly_find(struct net *net, u32 mark,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    xfrm_address_t *daddr, xfrm_address_t *saddr,
 		    unsigned short family, u8 mode, u8 proto, u32 reqid)
 {
@@ -1083,7 +1130,10 @@ xfrm_stateonly_find(struct net *net, u32 mark, u32 if_id,
 		if (x->props.family == family &&
 		    x->props.reqid == reqid &&
 		    (mark & x->mark.m) == x->mark.v &&
+<<<<<<< HEAD
 		    x->if_id == if_id &&
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    !(x->props.flags & XFRM_STATE_WILDRECV) &&
 		    xfrm_state_addr_check(x, daddr, saddr, family) &&
 		    mode == x->props.mode &&
@@ -1164,13 +1214,19 @@ static void __xfrm_state_bump_genids(struct xfrm_state *xnew)
 	struct xfrm_state *x;
 	unsigned int h;
 	u32 mark = xnew->mark.v & xnew->mark.m;
+<<<<<<< HEAD
 	u32 if_id = xnew->if_id;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	h = xfrm_dst_hash(net, &xnew->id.daddr, &xnew->props.saddr, reqid, family);
 	hlist_for_each_entry(x, net->xfrm.state_bydst+h, bydst) {
 		if (x->props.family	== family &&
 		    x->props.reqid	== reqid &&
+<<<<<<< HEAD
 		    x->if_id		== if_id &&
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    (mark & x->mark.m) == x->mark.v &&
 		    xfrm_addr_equal(&x->id.daddr, &xnew->id.daddr, family) &&
 		    xfrm_addr_equal(&x->props.saddr, &xnew->props.saddr, family))
@@ -1193,7 +1249,11 @@ EXPORT_SYMBOL(xfrm_state_insert);
 static struct xfrm_state *__find_acq_core(struct net *net,
 					  const struct xfrm_mark *m,
 					  unsigned short family, u8 mode,
+<<<<<<< HEAD
 					  u32 reqid, u32 if_id, u8 proto,
+=======
+					  u32 reqid, u8 proto,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					  const xfrm_address_t *daddr,
 					  const xfrm_address_t *saddr,
 					  int create)
@@ -1248,7 +1308,10 @@ static struct xfrm_state *__find_acq_core(struct net *net,
 		x->props.family = family;
 		x->props.mode = mode;
 		x->props.reqid = reqid;
+<<<<<<< HEAD
 		x->if_id = if_id;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		x->mark.v = m->v;
 		x->mark.m = m->m;
 		x->lft.hard_add_expires_seconds = net->xfrm.sysctl_acq_expires;
@@ -1303,7 +1366,11 @@ int xfrm_state_add(struct xfrm_state *x)
 
 	if (use_spi && !x1)
 		x1 = __find_acq_core(net, &x->mark, family, x->props.mode,
+<<<<<<< HEAD
 				     x->props.reqid, x->if_id, x->id.proto,
+=======
+				     x->props.reqid, x->id.proto,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				     &x->id.daddr, &x->props.saddr, 0);
 
 	__xfrm_state_bump_genids(x);
@@ -1326,6 +1393,33 @@ out:
 EXPORT_SYMBOL(xfrm_state_add);
 
 #ifdef CONFIG_XFRM_MIGRATE
+<<<<<<< HEAD
+=======
+static inline int clone_security(struct xfrm_state *x, struct xfrm_sec_ctx *security)
+{
+	struct xfrm_user_sec_ctx *uctx;
+	int size = sizeof(*uctx) + security->ctx_len;
+	int err;
+
+	uctx = kmalloc(size, GFP_KERNEL);
+	if (!uctx)
+		return -ENOMEM;
+
+	uctx->exttype = XFRMA_SEC_CTX;
+	uctx->len = size;
+	uctx->ctx_doi = security->ctx_doi;
+	uctx->ctx_alg = security->ctx_alg;
+	uctx->ctx_len = security->ctx_len;
+	memcpy(uctx + 1, security->ctx_str, security->ctx_len);
+	err = security_xfrm_state_alloc(x, uctx);
+	kfree(uctx);
+	if (err)
+		return err;
+
+	return 0;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct xfrm_state *xfrm_state_clone(struct xfrm_state *orig,
 					   struct xfrm_encap_tmpl *encap)
 {
@@ -1382,6 +1476,13 @@ static struct xfrm_state *xfrm_state_clone(struct xfrm_state *orig,
 			goto error;
 	}
 
+<<<<<<< HEAD
+=======
+	if (orig->security)
+		if (clone_security(x, orig->security))
+			goto error;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (orig->coaddr) {
 		x->coaddr = kmemdup(orig->coaddr, sizeof(*x->coaddr),
 				    GFP_KERNEL);
@@ -1402,11 +1503,18 @@ static struct xfrm_state *xfrm_state_clone(struct xfrm_state *orig,
 	x->props.flags = orig->props.flags;
 	x->props.extra_flags = orig->props.extra_flags;
 
+<<<<<<< HEAD
 	x->if_id = orig->if_id;
 	x->tfcpad = orig->tfcpad;
 	x->replay_maxdiff = orig->replay_maxdiff;
 	x->replay_maxage = orig->replay_maxage;
 	x->curlft.add_time = orig->curlft.add_time;
+=======
+	x->tfcpad = orig->tfcpad;
+	x->replay_maxdiff = orig->replay_maxdiff;
+	x->replay_maxage = orig->replay_maxage;
+	memcpy(&x->curlft, &orig->curlft, sizeof(x->curlft));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	x->km.state = orig->km.state;
 	x->km.seq = orig->km.seq;
 	x->replay = orig->replay;
@@ -1558,6 +1666,7 @@ out:
 		if (x1->curlft.use_time)
 			xfrm_state_check_expire(x1);
 
+<<<<<<< HEAD
 		if (x->props.smark.m || x->props.smark.v || x->if_id) {
 			spin_lock_bh(&net->xfrm.xfrm_state_lock);
 
@@ -1571,6 +1680,8 @@ out:
 			spin_unlock_bh(&net->xfrm.xfrm_state_lock);
 		}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		err = 0;
 		x->km.state = XFRM_STATE_DEAD;
 		__xfrm_state_put(x);
@@ -1634,13 +1745,21 @@ EXPORT_SYMBOL(xfrm_state_lookup_byaddr);
 
 struct xfrm_state *
 xfrm_find_acq(struct net *net, const struct xfrm_mark *mark, u8 mode, u32 reqid,
+<<<<<<< HEAD
 	      u32 if_id, u8 proto, const xfrm_address_t *daddr,
+=======
+	      u8 proto, const xfrm_address_t *daddr,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	      const xfrm_address_t *saddr, int create, unsigned short family)
 {
 	struct xfrm_state *x;
 
 	spin_lock_bh(&net->xfrm.xfrm_state_lock);
+<<<<<<< HEAD
 	x = __find_acq_core(net, mark, family, mode, reqid, if_id, proto, daddr, saddr, create);
+=======
+	x = __find_acq_core(net, mark, family, mode, reqid, proto, daddr, saddr, create);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_unlock_bh(&net->xfrm.xfrm_state_lock);
 
 	return x;
@@ -1772,6 +1891,10 @@ int xfrm_alloc_spi(struct xfrm_state *x, u32 low, u32 high)
 	int err = -ENOENT;
 	__be32 minspi = htonl(low);
 	__be32 maxspi = htonl(high);
+<<<<<<< HEAD
+=======
+	__be32 newspi = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 mark = x->mark.v & x->mark.m;
 
 	spin_lock_bh(&x->lock);
@@ -1790,21 +1913,35 @@ int xfrm_alloc_spi(struct xfrm_state *x, u32 low, u32 high)
 			xfrm_state_put(x0);
 			goto unlock;
 		}
+<<<<<<< HEAD
 		x->id.spi = minspi;
+=======
+		newspi = minspi;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		u32 spi = 0;
 		for (h = 0; h < high-low+1; h++) {
 			spi = low + prandom_u32()%(high-low+1);
 			x0 = xfrm_state_lookup(net, mark, &x->id.daddr, htonl(spi), x->id.proto, x->props.family);
 			if (x0 == NULL) {
+<<<<<<< HEAD
 				x->id.spi = htonl(spi);
+=======
+				newspi = htonl(spi);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				break;
 			}
 			xfrm_state_put(x0);
 		}
 	}
+<<<<<<< HEAD
 	if (x->id.spi) {
 		spin_lock_bh(&net->xfrm.xfrm_state_lock);
+=======
+	if (newspi) {
+		spin_lock_bh(&net->xfrm.xfrm_state_lock);
+		x->id.spi = newspi;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		h = xfrm_spi_hash(net, &x->id.daddr, x->id.spi, x->id.proto, x->props.family);
 		hlist_add_head_rcu(&x->byspi, net->xfrm.state_byspi + h);
 		spin_unlock_bh(&net->xfrm.xfrm_state_lock);
@@ -2352,7 +2489,11 @@ void xfrm_state_fini(struct net *net)
 	unsigned int sz;
 
 	flush_work(&net->xfrm.state_hash_work);
+<<<<<<< HEAD
 	xfrm_state_flush(net, IPSEC_PROTO_ANY, false);
+=======
+	xfrm_state_flush(net, 0, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	flush_work(&xfrm_state_gc_work);
 
 	WARN_ON(!list_empty(&net->xfrm.state_all));

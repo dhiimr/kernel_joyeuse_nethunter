@@ -222,6 +222,13 @@ void acpi_ns_detach_object(struct acpi_namespace_node *node)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	if (obj_desc->common.type == ACPI_TYPE_REGION) {
+		acpi_ut_remove_address_range(obj_desc->region.space_id, node);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Clear the Node entry in all cases */
 
 	node->object = NULL;

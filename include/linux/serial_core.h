@@ -66,7 +66,10 @@ struct uart_ops {
 	void		(*set_ldisc)(struct uart_port *, struct ktermios *);
 	void		(*pm)(struct uart_port *, unsigned int state,
 			      unsigned int oldstate);
+<<<<<<< HEAD
 	void		(*wake_peer)(struct uart_port *);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Return a string describing the type of the port
@@ -167,6 +170,10 @@ struct uart_port {
 	struct console		*cons;			/* struct console, if any */
 #if defined(CONFIG_SERIAL_CORE_CONSOLE) || defined(SUPPORT_SYSRQ)
 	unsigned long		sysrq;			/* sysrq timeout */
+<<<<<<< HEAD
+=======
+	unsigned int		sysrq_ch;		/* char for sysrq */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 	/* flags must be updated while holding port mutex */
@@ -475,8 +482,47 @@ uart_handle_sysrq_char(struct uart_port *port, unsigned int ch)
 	}
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define uart_handle_sysrq_char(port,ch) ({ (void)port; 0; })
+=======
+static inline int
+uart_prepare_sysrq_char(struct uart_port *port, unsigned int ch)
+{
+	if (port->sysrq) {
+		if (ch && time_before(jiffies, port->sysrq)) {
+			port->sysrq_ch = ch;
+			port->sysrq = 0;
+			return 1;
+		}
+		port->sysrq = 0;
+	}
+	return 0;
+}
+static inline void
+uart_unlock_and_check_sysrq(struct uart_port *port, unsigned long irqflags)
+{
+	int sysrq_ch;
+
+	sysrq_ch = port->sysrq_ch;
+	port->sysrq_ch = 0;
+
+	spin_unlock_irqrestore(&port->lock, irqflags);
+
+	if (sysrq_ch)
+		handle_sysrq(sysrq_ch);
+}
+#else
+static inline int
+uart_handle_sysrq_char(struct uart_port *port, unsigned int ch) { return 0; }
+static inline int
+uart_prepare_sysrq_char(struct uart_port *port, unsigned int ch) { return 0; }
+static inline void
+uart_unlock_and_check_sysrq(struct uart_port *port, unsigned long irqflags)
+{
+	spin_unlock_irqrestore(&port->lock, irqflags);
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 /*

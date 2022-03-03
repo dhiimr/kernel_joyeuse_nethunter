@@ -247,7 +247,11 @@ static int __maybe_unused csi2_dphy_wait_ulp(struct csi2_dev *csi2)
 }
 
 /* Waits for low-power LP-11 state on data and clock lanes. */
+<<<<<<< HEAD
 static int csi2_dphy_wait_stopstate(struct csi2_dev *csi2)
+=======
+static void csi2_dphy_wait_stopstate(struct csi2_dev *csi2)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u32 mask, reg;
 	int ret;
@@ -258,11 +262,17 @@ static int csi2_dphy_wait_stopstate(struct csi2_dev *csi2)
 	ret = readl_poll_timeout(csi2->base + CSI2_PHY_STATE, reg,
 				 (reg & mask) == mask, 0, 500000);
 	if (ret) {
+<<<<<<< HEAD
 		v4l2_err(&csi2->sd, "LP-11 timeout, phy_state = 0x%08x\n", reg);
 		return ret;
 	}
 
 	return 0;
+=======
+		v4l2_warn(&csi2->sd, "LP-11 wait timeout, likely a sensor driver bug, expect capture failures.\n");
+		v4l2_warn(&csi2->sd, "phy_state = 0x%08x\n", reg);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Wait for active clock on the clock lane. */
@@ -320,9 +330,13 @@ static int csi2_start(struct csi2_dev *csi2)
 	csi2_enable(csi2, true);
 
 	/* Step 5 */
+<<<<<<< HEAD
 	ret = csi2_dphy_wait_stopstate(csi2);
 	if (ret)
 		goto err_assert_reset;
+=======
+	csi2_dphy_wait_stopstate(csi2);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Step 6 */
 	ret = v4l2_subdev_call(csi2->src_sd, video, s_stream, 1);

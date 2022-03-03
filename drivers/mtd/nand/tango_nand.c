@@ -619,7 +619,11 @@ static int tango_nand_remove(struct platform_device *pdev)
 
 	for (cs = 0; cs < MAX_CS; ++cs) {
 		if (nfc->chips[cs])
+<<<<<<< HEAD
 			nand_release(nand_to_mtd(&nfc->chips[cs]->nand_chip));
+=======
+			nand_release(&nfc->chips[cs]->nand_chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return 0;

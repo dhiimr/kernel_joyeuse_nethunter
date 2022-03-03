@@ -567,11 +567,19 @@ static enum dma_status jz4780_dma_tx_status(struct dma_chan *chan,
 	enum dma_status status;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	status = dma_cookie_status(chan, cookie, txstate);
 	if ((status == DMA_COMPLETE) || (txstate == NULL))
 		return status;
 
 	spin_lock_irqsave(&jzchan->vchan.lock, flags);
+=======
+	spin_lock_irqsave(&jzchan->vchan.lock, flags);
+
+	status = dma_cookie_status(chan, cookie, txstate);
+	if ((status == DMA_COMPLETE) || (txstate == NULL))
+		goto out_unlock_irqrestore;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	vdesc = vchan_find_desc(&jzchan->vchan, cookie);
 	if (vdesc) {
@@ -580,7 +588,11 @@ static enum dma_status jz4780_dma_tx_status(struct dma_chan *chan,
 					to_jz4780_dma_desc(vdesc), 0);
 	} else if (cookie == jzchan->desc->vdesc.tx.cookie) {
 		txstate->residue = jz4780_dma_desc_residue(jzchan, jzchan->desc,
+<<<<<<< HEAD
 			  (jzchan->curr_hwdesc + 1) % jzchan->desc->count);
+=======
+					jzchan->curr_hwdesc + 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else
 		txstate->residue = 0;
 
@@ -588,6 +600,10 @@ static enum dma_status jz4780_dma_tx_status(struct dma_chan *chan,
 	    && jzchan->desc->status & (JZ_DMA_DCS_AR | JZ_DMA_DCS_HLT))
 		status = DMA_ERROR;
 
+<<<<<<< HEAD
+=======
+out_unlock_irqrestore:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_unlock_irqrestore(&jzchan->vchan.lock, flags);
 	return status;
 }

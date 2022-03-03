@@ -1719,8 +1719,12 @@ void rt_mutex_init_proxy_locked(struct rt_mutex *lock,
  * possible because it belongs to the pi_state which is about to be freed
  * and it is not longer visible to other tasks.
  */
+<<<<<<< HEAD
 void rt_mutex_proxy_unlock(struct rt_mutex *lock,
 			   struct task_struct *proxy_owner)
+=======
+void rt_mutex_proxy_unlock(struct rt_mutex *lock)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	debug_rt_mutex_proxy_unlock(lock);
 	rt_mutex_set_owner(lock, NULL);

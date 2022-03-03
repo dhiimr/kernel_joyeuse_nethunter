@@ -96,9 +96,12 @@ config ARM64_RELOC_TEST
 	depends on m
 	tristate "Relocation testing module"
 
+<<<<<<< HEAD
 config ARM64_STRICT_BREAK_BEFORE_MAKE
 	bool "Enforce strict break-before-make on page table updates "
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 source "drivers/hwtracing/coresight/Kconfig"
 
 endmenu

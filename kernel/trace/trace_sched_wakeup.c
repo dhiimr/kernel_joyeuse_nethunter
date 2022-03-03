@@ -270,6 +270,11 @@ static void wakeup_graph_return(struct ftrace_graph_ret *trace)
 	unsigned long flags;
 	int pc;
 
+<<<<<<< HEAD
+=======
+	ftrace_graph_addr_finish(trace);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!func_prolog_preempt_disable(tr, &data, &pc))
 		return;
 
@@ -638,7 +643,11 @@ static void start_wakeup_tracer(struct trace_array *tr)
 	if (ret) {
 		pr_info("wakeup trace: Couldn't activate tracepoint"
 			" probe to kernel_sched_migrate_task\n");
+<<<<<<< HEAD
 		return;
+=======
+		goto fail_deprobe_sched_switch;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	wakeup_reset(tr);
@@ -656,6 +665,11 @@ static void start_wakeup_tracer(struct trace_array *tr)
 		printk(KERN_ERR "failed to start wakeup tracer\n");
 
 	return;
+<<<<<<< HEAD
+=======
+fail_deprobe_sched_switch:
+	unregister_trace_sched_switch(probe_wakeup_sched_switch, NULL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 fail_deprobe_wake_new:
 	unregister_trace_sched_wakeup_new(probe_wakeup, NULL);
 fail_deprobe:

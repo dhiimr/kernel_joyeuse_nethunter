@@ -29,5 +29,8 @@ obj-y				+= meson/
 obj-$(CONFIG_GOOGLE_FIRMWARE)	+= google/
 obj-$(CONFIG_EFI)		+= efi/
 obj-$(CONFIG_UEFI_CPER)		+= efi/
+<<<<<<< HEAD
 obj-$(CONFIG_MSM_TZ_LOG)       += qcom/
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-y				+= tegra/

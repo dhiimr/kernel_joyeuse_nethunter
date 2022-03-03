@@ -1450,6 +1450,12 @@ static int pxac_vb2_prepare(struct vb2_buffer *vb)
 	struct pxa_camera_dev *pcdev = vb2_get_drv_priv(vb->vb2_queue);
 	struct pxa_buffer *buf = vb2_to_pxa_buffer(vb);
 	int ret = 0;
+<<<<<<< HEAD
+=======
+#ifdef DEBUG
+	int i;
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	switch (pcdev->channels) {
 	case 1:
@@ -2374,7 +2380,11 @@ static int pxa_camera_probe(struct platform_device *pdev)
 	pcdev->res = res;
 
 	pcdev->pdata = pdev->dev.platform_data;
+<<<<<<< HEAD
 	if (&pdev->dev.of_node && !pcdev->pdata) {
+=======
+	if (pdev->dev.of_node && !pcdev->pdata) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		err = pxa_camera_pdata_from_dt(&pdev->dev, pcdev, &pcdev->asd);
 	} else {
 		pcdev->platform_flags = pcdev->pdata->flags;

@@ -289,6 +289,7 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 
+<<<<<<< HEAD
 			pd_hevc@RK3328_PD_HEVC {
 				reg = <RK3328_PD_HEVC>;
 			};
@@ -296,6 +297,15 @@
 				reg = <RK3328_PD_VIDEO>;
 			};
 			pd_vpu@RK3328_PD_VPU {
+=======
+			power-domain@RK3328_PD_HEVC {
+				reg = <RK3328_PD_HEVC>;
+			};
+			power-domain@RK3328_PD_VIDEO {
+				reg = <RK3328_PD_VIDEO>;
+			};
+			power-domain@RK3328_PD_VPU {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				reg = <RK3328_PD_VPU>;
 			};
 		};
@@ -685,6 +695,10 @@
 			 <&cru SCLK_SDMMC_DRV>, <&cru SCLK_SDMMC_SAMPLE>;
 		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
 		fifo-depth = <0x100>;
+<<<<<<< HEAD
+=======
+		max-frequency = <150000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		status = "disabled";
 	};
 
@@ -696,6 +710,10 @@
 			 <&cru SCLK_SDIO_DRV>, <&cru SCLK_SDIO_SAMPLE>;
 		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
 		fifo-depth = <0x100>;
+<<<<<<< HEAD
+=======
+		max-frequency = <150000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		status = "disabled";
 	};
 
@@ -707,6 +725,10 @@
 			 <&cru SCLK_EMMC_DRV>, <&cru SCLK_EMMC_SAMPLE>;
 		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
 		fifo-depth = <0x100>;
+<<<<<<< HEAD
+=======
+		max-frequency = <150000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		status = "disabled";
 	};
 
@@ -1059,8 +1081,13 @@
 
 		uart0 {
 			uart0_xfer: uart0-xfer {
+<<<<<<< HEAD
 				rockchip,pins = <1 RK_PB1 1 &pcfg_pull_up>,
 						<1 RK_PB0 1 &pcfg_pull_none>;
+=======
+				rockchip,pins = <1 RK_PB1 1 &pcfg_pull_none>,
+						<1 RK_PB0 1 &pcfg_pull_up>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			};
 
 			uart0_cts: uart0-cts {
@@ -1078,8 +1105,13 @@
 
 		uart1 {
 			uart1_xfer: uart1-xfer {
+<<<<<<< HEAD
 				rockchip,pins = <3 RK_PA4 4 &pcfg_pull_up>,
 						<3 RK_PA6 4 &pcfg_pull_none>;
+=======
+				rockchip,pins = <3 RK_PA4 4 &pcfg_pull_none>,
+						<3 RK_PA6 4 &pcfg_pull_up>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			};
 
 			uart1_cts: uart1-cts {
@@ -1097,15 +1129,25 @@
 
 		uart2-0 {
 			uart2m0_xfer: uart2m0-xfer {
+<<<<<<< HEAD
 				rockchip,pins = <1 RK_PA0 2 &pcfg_pull_up>,
 						<1 RK_PA1 2 &pcfg_pull_none>;
+=======
+				rockchip,pins = <1 RK_PA0 2 &pcfg_pull_none>,
+						<1 RK_PA1 2 &pcfg_pull_up>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			};
 		};
 
 		uart2-1 {
 			uart2m1_xfer: uart2m1-xfer {
+<<<<<<< HEAD
 				rockchip,pins = <2 RK_PA0 1 &pcfg_pull_up>,
 						<2 RK_PA1 1 &pcfg_pull_none>;
+=======
+				rockchip,pins = <2 RK_PA0 1 &pcfg_pull_none>,
+						<2 RK_PA1 1 &pcfg_pull_up>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			};
 		};
 

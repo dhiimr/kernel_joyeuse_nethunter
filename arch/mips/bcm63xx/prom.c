@@ -84,7 +84,11 @@ void __init prom_init(void)
 		 * Here we will start up CPU1 in the background and ask it to
 		 * reconfigure itself then go back to sleep.
 		 */
+<<<<<<< HEAD
 		memcpy((void *)0xa0000200, &bmips_smp_movevec, 0x20);
+=======
+		memcpy((void *)0xa0000200, bmips_smp_movevec, 0x20);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__sync();
 		set_c0_cause(C_SW0);
 		cpumask_set_cpu(1, &bmips_booted_mask);

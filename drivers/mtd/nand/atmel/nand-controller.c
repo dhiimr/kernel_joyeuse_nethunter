@@ -1888,7 +1888,11 @@ static int atmel_nand_controller_add_nands(struct atmel_nand_controller *nc)
 
 	ret = of_property_read_u32(np, "#size-cells", &val);
 	if (ret) {
+<<<<<<< HEAD
 		dev_err(dev, "missing #address-cells property\n");
+=======
+		dev_err(dev, "missing #size-cells property\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ret;
 	}
 

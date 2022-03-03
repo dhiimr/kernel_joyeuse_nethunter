@@ -10,7 +10,10 @@ subdir-$(CONFIG_SECURITY_TOMOYO)        += tomoyo
 subdir-$(CONFIG_SECURITY_APPARMOR)	+= apparmor
 subdir-$(CONFIG_SECURITY_YAMA)		+= yama
 subdir-$(CONFIG_SECURITY_LOADPIN)	+= loadpin
+<<<<<<< HEAD
 subdir-$(CONFIG_ARCH_QCOM)		+= pfe
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 # always enable default capabilities
 obj-y					+= commoncap.o
@@ -27,7 +30,10 @@ obj-$(CONFIG_SECURITY_APPARMOR)		+= apparmor/
 obj-$(CONFIG_SECURITY_YAMA)		+= yama/
 obj-$(CONFIG_SECURITY_LOADPIN)		+= loadpin/
 obj-$(CONFIG_CGROUP_DEVICE)		+= device_cgroup.o
+<<<<<<< HEAD
 obj-$(CONFIG_ARCH_QCOM)			+= pfe/
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 # Object integrity file lists
 subdir-$(CONFIG_INTEGRITY)		+= integrity

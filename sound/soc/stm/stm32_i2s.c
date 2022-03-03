@@ -246,8 +246,13 @@ static irqreturn_t stm32_i2s_isr(int irq, void *devid)
 		return IRQ_NONE;
 	}
 
+<<<<<<< HEAD
 	regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
 			   I2S_IFCR_MASK, flags);
+=======
+	regmap_write_bits(i2s->regmap, STM32_I2S_IFCR_REG,
+			  I2S_IFCR_MASK, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (flags & I2S_SR_OVR) {
 		dev_dbg(&pdev->dev, "Overrun\n");
@@ -276,7 +281,10 @@ static bool stm32_i2s_readable_reg(struct device *dev, unsigned int reg)
 	case STM32_I2S_CFG2_REG:
 	case STM32_I2S_IER_REG:
 	case STM32_I2S_SR_REG:
+<<<<<<< HEAD
 	case STM32_I2S_IFCR_REG:
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	case STM32_I2S_TXDR_REG:
 	case STM32_I2S_RXDR_REG:
 	case STM32_I2S_CGFR_REG:
@@ -488,7 +496,11 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
 {
 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
 	int format = params_width(params);
+<<<<<<< HEAD
 	u32 cfgr, cfgr_mask, cfg1, cfg1_mask;
+=======
+	u32 cfgr, cfgr_mask, cfg1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int fthlv;
 	int ret;
 
@@ -501,7 +513,11 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
 	switch (format) {
 	case 16:
 		cfgr = I2S_CGFR_DATLEN_SET(I2S_I2SMOD_DATLEN_16);
+<<<<<<< HEAD
 		cfgr_mask = I2S_CGFR_DATLEN_MASK;
+=======
+		cfgr_mask = I2S_CGFR_DATLEN_MASK | I2S_CGFR_CHLEN;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	case 32:
 		cfgr = I2S_CGFR_DATLEN_SET(I2S_I2SMOD_DATLEN_32) |
@@ -529,6 +545,7 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	cfg1 = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
 	cfg1_mask = cfg1;
 
@@ -538,6 +555,13 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
 
 	return regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
 				  cfg1_mask, cfg1);
+=======
+	fthlv = STM32_I2S_FIFO_SIZE * I2S_FIFO_TH_ONE_QUARTER / 4;
+	cfg1 = I2S_CFG1_FTHVL_SET(fthlv - 1);
+
+	return regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
+				  I2S_CFG1_FTHVL_MASK, cfg1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int stm32_i2s_startup(struct snd_pcm_substream *substream,
@@ -551,8 +575,13 @@ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
 	i2s->refcount++;
 	spin_unlock(&i2s->lock_fd);
 
+<<<<<<< HEAD
 	return regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
 				  I2S_IFCR_MASK, I2S_IFCR_MASK);
+=======
+	return regmap_write_bits(i2s->regmap, STM32_I2S_IFCR_REG,
+				 I2S_IFCR_MASK, I2S_IFCR_MASK);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int stm32_i2s_hw_params(struct snd_pcm_substream *substream,
@@ -589,6 +618,13 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
 		/* Enable i2s */
 		dev_dbg(cpu_dai->dev, "start I2S\n");
 
+<<<<<<< HEAD
+=======
+		cfg1_mask = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
+		regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
+				   cfg1_mask, cfg1_mask);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = regmap_update_bits(i2s->regmap, STM32_I2S_CR1_REG,
 					 I2S_CR1_SPE, I2S_CR1_SPE);
 		if (ret < 0) {
@@ -603,8 +639,13 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
 			return ret;
 		}
 
+<<<<<<< HEAD
 		regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
 				   I2S_IFCR_MASK, I2S_IFCR_MASK);
+=======
+		regmap_write_bits(i2s->regmap, STM32_I2S_IFCR_REG,
+				  I2S_IFCR_MASK, I2S_IFCR_MASK);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (playback_flg) {
 			ier = I2S_IER_UDRIE;

@@ -37,6 +37,10 @@ data_page_branch:
 	mtlr	r0
 	addi	r3, r3, __kernel_datapage_offset-data_page_branch
 	lwz	r0,0(r3)
+<<<<<<< HEAD
+=======
+  .cfi_restore lr
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	add	r3,r0,r3
 	blr
   .cfi_endproc

@@ -632,8 +632,13 @@ static void ftmac100_tx_complete(struct ftmac100 *priv)
 		;
 }
 
+<<<<<<< HEAD
 static int ftmac100_xmit(struct ftmac100 *priv, struct sk_buff *skb,
 			 dma_addr_t map)
+=======
+static netdev_tx_t ftmac100_xmit(struct ftmac100 *priv, struct sk_buff *skb,
+				 dma_addr_t map)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct net_device *netdev = priv->netdev;
 	struct ftmac100_txdes *txdes;
@@ -1013,7 +1018,12 @@ static int ftmac100_stop(struct net_device *netdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ftmac100_hard_start_xmit(struct sk_buff *skb, struct net_device *netdev)
+=======
+static netdev_tx_t
+ftmac100_hard_start_xmit(struct sk_buff *skb, struct net_device *netdev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct ftmac100 *priv = netdev_priv(netdev);
 	dma_addr_t map;

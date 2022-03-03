@@ -37,6 +37,7 @@ config RPMSG_QCOM_GLINK_SMEM
 	  which provides support for using the GLINK communication protocol
 	  over SMEM.
 
+<<<<<<< HEAD
 config RPMSG_QCOM_GLINK_SPSS
 	tristate "Qualcomm SPSS Glink driver"
 	select RPMSG_QCOM_GLINK_NATIVE
@@ -59,6 +60,8 @@ config RPMSG_QCOM_GLINK_SPI
 	  data to the appropriate SPI bus wire format and allows for GLINK
 	  communication with remote subsystems that are external to the SoC.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config RPMSG_QCOM_SMD
 	tristate "Qualcomm Shared Memory Driver (SMD)"
 	depends on QCOM_SMEM
@@ -73,6 +76,7 @@ config RPMSG_VIRTIO
 	select RPMSG
 	select VIRTIO
 
+<<<<<<< HEAD
 config MSM_RPM_SMD
 	bool "RPM driver using SMD protocol"
 	help
@@ -82,4 +86,6 @@ config MSM_RPM_SMD
 	  the MSM_MPM config that programs the MPM module to monitor interrupts
 	  during sleep modes.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endmenu

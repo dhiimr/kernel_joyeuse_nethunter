@@ -784,8 +784,12 @@ next_slot:
 				btrfs_file_extent_num_bytes(leaf, fi);
 		} else if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
 			extent_end = key.offset +
+<<<<<<< HEAD
 				btrfs_file_extent_inline_len(leaf,
 						     path->slots[0], fi);
+=======
+				btrfs_file_extent_ram_bytes(leaf, fi);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else {
 			/* can't happen */
 			BUG();
@@ -1101,7 +1105,11 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
 	int del_nr = 0;
 	int del_slot = 0;
 	int recow;
+<<<<<<< HEAD
 	int ret;
+=======
+	int ret = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u64 ino = btrfs_ino(inode);
 
 	path = btrfs_alloc_path();
@@ -1321,7 +1329,11 @@ again:
 	}
 out:
 	btrfs_free_path(path);
+<<<<<<< HEAD
 	return 0;
+=======
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -1625,6 +1637,10 @@ static noinline ssize_t __btrfs_buffered_write(struct file *file,
 			break;
 		}
 
+<<<<<<< HEAD
+=======
+		only_release_metadata = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		sector_offset = pos & (fs_info->sectorsize - 1);
 		reserve_bytes = round_up(write_bytes + sector_offset,
 				fs_info->sectorsize);
@@ -1778,7 +1794,10 @@ again:
 			set_extent_bit(&BTRFS_I(inode)->io_tree, lockstart,
 				       lockend, EXTENT_NORESERVE, NULL,
 				       NULL, GFP_NOFS);
+<<<<<<< HEAD
 			only_release_metadata = false;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		btrfs_drop_pages(pages, num_pages);
@@ -1882,7 +1901,11 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
 	bool sync = (file->f_flags & O_DSYNC) || IS_SYNC(file->f_mapping->host);
 	ssize_t err;
 	loff_t pos;
+<<<<<<< HEAD
 	size_t count = iov_iter_count(from);
+=======
+	size_t count;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	loff_t oldsize;
 	int clean_page = 0;
 
@@ -1890,9 +1913,16 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
 	    (iocb->ki_flags & IOCB_NOWAIT))
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
 	if (!inode_trylock(inode)) {
 		if (iocb->ki_flags & IOCB_NOWAIT)
 			return -EAGAIN;
+=======
+	if (iocb->ki_flags & IOCB_NOWAIT) {
+		if (!inode_trylock(inode))
+			return -EAGAIN;
+	} else {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		inode_lock(inode);
 	}
 
@@ -1903,6 +1933,10 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
 	}
 
 	pos = iocb->ki_pos;
+<<<<<<< HEAD
+=======
+	count = iov_iter_count(from);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (iocb->ki_flags & IOCB_NOWAIT) {
 		/*
 		 * We will allocate space in case nodatacow is not set,
@@ -2059,6 +2093,21 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
 	u64 len;
 
 	/*
+<<<<<<< HEAD
+=======
+	 * If the inode needs a full sync, make sure we use a full range to
+	 * avoid log tree corruption, due to hole detection racing with ordered
+	 * extent completion for adjacent ranges, and assertion failures during
+	 * hole detection.
+	 */
+	if (test_bit(BTRFS_INODE_NEEDS_FULL_SYNC,
+		     &BTRFS_I(inode)->runtime_flags)) {
+		start = 0;
+		end = LLONG_MAX;
+	}
+
+	/*
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * The range length can be represented by u64, we have to do the typecasts
 	 * to avoid signed overflow if it's [0, LLONG_MAX] eg. from fsync()
 	 */
@@ -2089,6 +2138,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
 	atomic_inc(&root->log_batch);
 	full_sync = test_bit(BTRFS_INODE_NEEDS_FULL_SYNC,
 			     &BTRFS_I(inode)->runtime_flags);
+<<<<<<< HEAD
 	/*
 	 * We might have have had more pages made dirty after calling
 	 * start_ordered_ops and before acquiring the inode's i_mutex.
@@ -2136,6 +2186,14 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
 		 */
 		ret = start_ordered_ops(inode, start, end);
 	}
+=======
+
+	/*
+	 * We have to do this here to avoid the priority inversion of waiting on
+	 * IO of a lower priority task while holding a transaciton open.
+	 */
+	ret = btrfs_wait_ordered_range(inode, start, len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret) {
 		up_write(&BTRFS_I(inode)->dio_sem);
 		inode_unlock(inode);
@@ -2270,6 +2328,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
 				goto out;
 			}
 		}
+<<<<<<< HEAD
 		if (!full_sync) {
 			ret = btrfs_wait_ordered_range(inode, start, len);
 			if (ret) {
@@ -2277,6 +2336,8 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
 				goto out;
 			}
 		}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = btrfs_commit_transaction(trans);
 	} else {
 		ret = btrfs_end_transaction(trans);
@@ -2772,6 +2833,14 @@ out_only_mutex:
 		 * for detecting, at fsync time, if the inode isn't yet in the
 		 * log tree or it's there but not up to date.
 		 */
+<<<<<<< HEAD
+=======
+		struct timespec now = current_time(inode);
+
+		inode_inc_iversion(inode);
+		inode->i_mtime = now;
+		inode->i_ctime = now;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		trans = btrfs_start_transaction(root, 1);
 		if (IS_ERR(trans)) {
 			err = PTR_ERR(trans);
@@ -2964,6 +3033,10 @@ static long btrfs_fallocate(struct file *file, int mode,
 			ret = btrfs_qgroup_reserve_data(inode, &data_reserved,
 					cur_offset, last_byte - cur_offset);
 			if (ret < 0) {
+<<<<<<< HEAD
+=======
+				cur_offset = last_byte;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				free_extent_map(em);
 				break;
 			}
@@ -3034,7 +3107,11 @@ out:
 	/* Let go of our reservation. */
 	if (ret != 0)
 		btrfs_free_reserved_data_space(inode, data_reserved,
+<<<<<<< HEAD
 				alloc_start, alloc_end - cur_offset);
+=======
+				cur_offset, alloc_end - cur_offset);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	extent_changeset_free(data_reserved);
 	return ret;
 }

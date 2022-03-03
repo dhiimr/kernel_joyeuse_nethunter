@@ -849,4 +849,8 @@ static int __init ingenic_pinctrl_drv_register(void)
 {
 	return platform_driver_register(&ingenic_pinctrl_driver);
 }
+<<<<<<< HEAD
 postcore_initcall(ingenic_pinctrl_drv_register);
+=======
+subsys_initcall(ingenic_pinctrl_drv_register);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

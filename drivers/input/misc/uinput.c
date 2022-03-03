@@ -43,8 +43,11 @@
 #include <linux/input/mt.h>
 #include "../input-compat.h"
 
+<<<<<<< HEAD
 static DEFINE_MUTEX(uinput_glb_mutex);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int uinput_dev_event(struct input_dev *dev,
 			    unsigned int type, unsigned int code, int value)
 {
@@ -678,6 +681,7 @@ static unsigned int uinput_poll(struct file *file, poll_table *wait)
 static int uinput_release(struct inode *inode, struct file *file)
 {
 	struct uinput_device *udev = file->private_data;
+<<<<<<< HEAD
 	int retval;
 
 	retval = mutex_lock_interruptible(&uinput_glb_mutex);
@@ -690,6 +694,12 @@ static int uinput_release(struct inode *inode, struct file *file)
 
 	mutex_unlock(&uinput_glb_mutex);
 
+=======
+
+	uinput_destroy_device(udev);
+	kfree(udev);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -820,7 +830,11 @@ static long uinput_ioctl_handler(struct file *file, unsigned int cmd,
 				 unsigned long arg, void __user *p)
 {
 	int			retval;
+<<<<<<< HEAD
 	struct uinput_device	*udev;
+=======
+	struct uinput_device	*udev = file->private_data;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct uinput_ff_upload ff_up;
 	struct uinput_ff_erase  ff_erase;
 	struct uinput_request   *req;
@@ -828,6 +842,7 @@ static long uinput_ioctl_handler(struct file *file, unsigned int cmd,
 	const char		*name;
 	unsigned int		size;
 
+<<<<<<< HEAD
 	retval = mutex_lock_interruptible(&uinput_glb_mutex);
 	if (retval)
 		return retval;
@@ -841,6 +856,11 @@ static long uinput_ioctl_handler(struct file *file, unsigned int cmd,
 	retval = mutex_lock_interruptible(&udev->mutex);
 	if (retval)
 		goto unlock_glb_mutex;
+=======
+	retval = mutex_lock_interruptible(&udev->mutex);
+	if (retval)
+		return retval;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!udev->dev) {
 		retval = uinput_allocate_device(udev);
@@ -1020,12 +1040,17 @@ static long uinput_ioctl_handler(struct file *file, unsigned int cmd,
 	}
 
 	retval = -EINVAL;
+<<<<<<< HEAD
 
  out:
 	mutex_unlock(&udev->mutex);
 
  unlock_glb_mutex:
 	mutex_unlock(&uinput_glb_mutex);
+=======
+ out:
+	mutex_unlock(&udev->mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return retval;
 }
 
@@ -1036,13 +1061,40 @@ static long uinput_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
 #ifdef CONFIG_COMPAT
 
+<<<<<<< HEAD
 #define UI_SET_PHYS_COMPAT	_IOW(UINPUT_IOCTL_BASE, 108, compat_uptr_t)
+=======
+/*
+ * These IOCTLs change their size and thus their numbers between
+ * 32 and 64 bits.
+ */
+#define UI_SET_PHYS_COMPAT		\
+	_IOW(UINPUT_IOCTL_BASE, 108, compat_uptr_t)
+#define UI_BEGIN_FF_UPLOAD_COMPAT	\
+	_IOWR(UINPUT_IOCTL_BASE, 200, struct uinput_ff_upload_compat)
+#define UI_END_FF_UPLOAD_COMPAT		\
+	_IOW(UINPUT_IOCTL_BASE, 201, struct uinput_ff_upload_compat)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static long uinput_compat_ioctl(struct file *file,
 				unsigned int cmd, unsigned long arg)
 {
+<<<<<<< HEAD
 	if (cmd == UI_SET_PHYS_COMPAT)
 		cmd = UI_SET_PHYS;
+=======
+	switch (cmd) {
+	case UI_SET_PHYS_COMPAT:
+		cmd = UI_SET_PHYS;
+		break;
+	case UI_BEGIN_FF_UPLOAD_COMPAT:
+		cmd = UI_BEGIN_FF_UPLOAD;
+		break;
+	case UI_END_FF_UPLOAD_COMPAT:
+		cmd = UI_END_FF_UPLOAD;
+		break;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return uinput_ioctl_handler(file, cmd, arg, compat_ptr(arg));
 }

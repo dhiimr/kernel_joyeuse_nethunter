@@ -124,9 +124,12 @@ extern void dvb_ringbuffer_flush_spinlock_wakeup(struct dvb_ringbuffer *rbuf);
  */
 #define DVB_RINGBUFFER_PEEK(rbuf, offs)	\
 			((rbuf)->data[((rbuf)->pread + (offs)) % (rbuf)->size])
+<<<<<<< HEAD
 #define DVB_RINGBUFFER_PUSH(rbuf, num)	\
 			((rbuf)->pwrite = (((rbuf)->pwrite+(num))%(rbuf)->size))
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**
  * DVB_RINGBUFFER_SKIP - advance read ptr by @num bytes
@@ -277,6 +280,7 @@ extern void dvb_ringbuffer_pkt_dispose(struct dvb_ringbuffer *rbuf, size_t idx);
  *          in bytes.
  * returns Packet index (if >=0), or -1 if no packets available.
  */
+<<<<<<< HEAD
 extern ssize_t dvb_ringbuffer_pkt_next(struct dvb_ringbuffer *rbuf, size_t idx,
 				       size_t *pktlen);
 
@@ -307,5 +311,9 @@ extern ssize_t dvb_ringbuffer_pkt_start(struct dvb_ringbuffer *rbuf,
  */
 extern int dvb_ringbuffer_pkt_close(struct dvb_ringbuffer *rbuf, ssize_t idx);
 
+=======
+extern ssize_t dvb_ringbuffer_pkt_next(struct dvb_ringbuffer *rbuf,
+				       size_t idx, size_t *pktlen);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif /* _DVB_RINGBUFFER_H_ */

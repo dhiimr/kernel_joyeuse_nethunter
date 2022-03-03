@@ -43,8 +43,11 @@
 #include "blk-mq-sched.h"
 #include "blk-wbt.h"
 
+<<<<<<< HEAD
 #include <linux/math64.h>
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_DEBUG_FS
 struct dentry *blk_debugfs_root;
 #endif
@@ -341,7 +344,10 @@ void blk_sync_queue(struct request_queue *q)
 		struct blk_mq_hw_ctx *hctx;
 		int i;
 
+<<<<<<< HEAD
 		cancel_delayed_work_sync(&q->requeue_work);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		queue_for_each_hw_ctx(q, hctx, i)
 			cancel_delayed_work_sync(&hctx->run_work);
 	} else {
@@ -377,9 +383,13 @@ inline void __blk_run_queue_uncond(struct request_queue *q)
 	 * can wait until all these request_fn calls have finished.
 	 */
 	q->request_fn_active++;
+<<<<<<< HEAD
 	preempt_disable();
 	q->request_fn(q);
 	preempt_enable();
+=======
+	q->request_fn(q);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	q->request_fn_active--;
 }
 EXPORT_SYMBOL_GPL(__blk_run_queue_uncond);
@@ -857,6 +867,11 @@ struct request_queue *blk_alloc_queue_node(gfp_t gfp_mask, int node_id)
 
 	q->backing_dev_info->ra_pages =
 			(VM_MAX_READAHEAD * 1024) / PAGE_SIZE;
+<<<<<<< HEAD
+=======
+	q->backing_dev_info->io_pages =
+			(VM_MAX_READAHEAD * 1024) / PAGE_SIZE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
 	q->backing_dev_info->name = "block";
 	q->node = node_id;
@@ -1433,9 +1448,12 @@ static struct request *blk_old_get_request(struct request_queue *q,
 	/* q->queue_lock is unlocked at this point */
 	rq->__data_len = 0;
 	rq->__sector = (sector_t) -1;
+<<<<<<< HEAD
 #ifdef CONFIG_PFK
 	rq->__dun = 0;
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rq->bio = rq->biotail = NULL;
 	return rq;
 }
@@ -1659,9 +1677,12 @@ bool bio_attempt_front_merge(struct request_queue *q, struct request *req,
 	bio->bi_next = req->bio;
 	req->bio = bio;
 
+<<<<<<< HEAD
 #ifdef CONFIG_PFK
 	req->__dun = bio->bi_iter.bi_dun;
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	req->__sector = bio->bi_iter.bi_sector;
 	req->__data_len += bio->bi_iter.bi_size;
 	req->ioprio = ioprio_best(req->ioprio, bio_prio(bio));
@@ -1811,9 +1832,12 @@ void blk_init_request_from_bio(struct request *req, struct bio *bio)
 	else
 		req->ioprio = IOPRIO_PRIO_VALUE(IOPRIO_CLASS_NONE, 0);
 	req->write_hint = bio->bi_write_hint;
+<<<<<<< HEAD
 #ifdef CONFIG_PFK
 	req->__dun = bio->bi_iter.bi_dun;
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	blk_rq_bio_prep(req->q, req, bio);
 }
 EXPORT_SYMBOL_GPL(blk_init_request_from_bio);
@@ -2014,8 +2038,12 @@ static inline int blk_partition_remap(struct bio *bio)
 		trace_block_bio_remap(bio->bi_disk->queue, bio, part_devt(p),
 				bio->bi_iter.bi_sector - p->start_sect);
 	} else {
+<<<<<<< HEAD
 		printk_ratelimited("%s: fail for partition %d\n",
 			__func__, bio->bi_partno);
+=======
+		printk("%s: fail for partition %d\n", __func__, bio->bi_partno);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = -EIO;
 	}
 	rcu_read_unlock();
@@ -2067,7 +2095,11 @@ generic_make_request_checks(struct bio *bio)
 
 	q = bio->bi_disk->queue;
 	if (unlikely(!q)) {
+<<<<<<< HEAD
 		printk_ratelimited(KERN_ERR
+=======
+		printk(KERN_ERR
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		       "generic_make_request: Trying to access "
 			"nonexistent block-device %s (%Lu)\n",
 			bio_devname(bio, b), (long long)bio->bi_iter.bi_sector);
@@ -2646,8 +2678,12 @@ struct request *blk_peek_request(struct request_queue *q)
 			__blk_end_request_all(rq, ret == BLKPREP_INVALID ?
 					BLK_STS_TARGET : BLK_STS_IOERR);
 		} else {
+<<<<<<< HEAD
 			printk_ratelimited(KERN_ERR "%s: bad return=%d\n",
 				__func__, ret);
+=======
+			printk(KERN_ERR "%s: bad return=%d\n", __func__, ret);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		}
 	}
@@ -2801,6 +2837,7 @@ bool blk_update_request(struct request *req, blk_status_t error,
 	req->__data_len -= total_bytes;
 
 	/* update sector only for requests with clear definition of sector */
+<<<<<<< HEAD
 	if (!blk_rq_is_passthrough(req)) {
 		req->__sector += total_bytes >> 9;
 #ifdef CONFIG_PFK
@@ -2808,6 +2845,10 @@ bool blk_update_request(struct request *req, blk_status_t error,
 			req->__dun += total_bytes >> 12;
 #endif
 	}
+=======
+	if (!blk_rq_is_passthrough(req))
+		req->__sector += total_bytes >> 9;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* mixed attributes always follow the first bio */
 	if (req->rq_flags & RQF_MIXED_MERGE) {
@@ -3170,9 +3211,12 @@ static void __blk_rq_prep_clone(struct request *dst, struct request *src)
 {
 	dst->cpu = src->cpu;
 	dst->__sector = blk_rq_pos(src);
+<<<<<<< HEAD
 #ifdef CONFIG_PFK
 	dst->__dun = blk_rq_dun(src);
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dst->__data_len = blk_rq_bytes(src);
 	if (src->rq_flags & RQF_SPECIAL_PAYLOAD) {
 		dst->rq_flags |= RQF_SPECIAL_PAYLOAD;
@@ -3672,6 +3716,7 @@ int __init blk_dev_init(void)
 
 	return 0;
 }
+<<<<<<< HEAD
 
 /*
  * Blk IO latency support. We want this to be as cheap as possible, so doing
@@ -3754,3 +3799,5 @@ blk_latency_hist_show(struct io_latency_state *s, char *buf)
 	return bytes_written;
 }
 EXPORT_SYMBOL(blk_latency_hist_show);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

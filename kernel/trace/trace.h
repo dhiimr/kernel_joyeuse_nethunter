@@ -459,6 +459,7 @@ struct tracer {
  *  When function tracing occurs, the following steps are made:
  *   If arch does not support a ftrace feature:
  *    call internal function (uses INTERNAL bits) which calls...
+<<<<<<< HEAD
  *   If callback is registered to the "global" list, the list
  *    function is called and recursion checks the GLOBAL bits.
  *    then this function calls...
@@ -476,6 +477,10 @@ struct tracer {
  * bit is set that is higher than the MAX bit of the current
  * check, then we know that the check was made by the previous
  * caller, and we can skip the current check.
+=======
+ *   The function callback, which can use the FTRACE bits to
+ *    check for recursion.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 enum {
 	TRACE_BUFFER_BIT,
@@ -488,12 +493,22 @@ enum {
 	TRACE_FTRACE_NMI_BIT,
 	TRACE_FTRACE_IRQ_BIT,
 	TRACE_FTRACE_SIRQ_BIT,
+<<<<<<< HEAD
 
 	/* INTERNAL_BITs must be greater than FTRACE_BITs */
+=======
+	TRACE_FTRACE_TRANSITION_BIT,
+
+	/* Internal use recursion bits */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	TRACE_INTERNAL_BIT,
 	TRACE_INTERNAL_NMI_BIT,
 	TRACE_INTERNAL_IRQ_BIT,
 	TRACE_INTERNAL_SIRQ_BIT,
+<<<<<<< HEAD
+=======
+	TRACE_INTERNAL_TRANSITION_BIT,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	TRACE_BRANCH_BIT,
 /*
@@ -504,12 +519,38 @@ enum {
  * can only be modified by current, we can reuse trace_recursion.
  */
 	TRACE_IRQ_BIT,
+<<<<<<< HEAD
+=======
+
+	/* Set if the function is in the set_graph_function file */
+	TRACE_GRAPH_BIT,
+
+	/*
+	 * In the very unlikely case that an interrupt came in
+	 * at a start of graph tracing, and we want to trace
+	 * the function in that interrupt, the depth can be greater
+	 * than zero, because of the preempted start of a previous
+	 * trace. In an even more unlikely case, depth could be 2
+	 * if a softirq interrupted the start of graph tracing,
+	 * followed by an interrupt preempting a start of graph
+	 * tracing in the softirq, and depth can even be 3
+	 * if an NMI came in at the start of an interrupt function
+	 * that preempted a softirq start of a function that
+	 * preempted normal context!!!! Luckily, it can't be
+	 * greater than 3, so the next two bits are a mask
+	 * of what the depth is when we set TRACE_GRAPH_BIT
+	 */
+
+	TRACE_GRAPH_DEPTH_START_BIT,
+	TRACE_GRAPH_DEPTH_END_BIT,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #define trace_recursion_set(bit)	do { (current)->trace_recursion |= (1<<(bit)); } while (0)
 #define trace_recursion_clear(bit)	do { (current)->trace_recursion &= ~(1<<(bit)); } while (0)
 #define trace_recursion_test(bit)	((current)->trace_recursion & (1<<(bit)))
 
+<<<<<<< HEAD
 #define TRACE_CONTEXT_BITS	4
 
 #define TRACE_FTRACE_START	TRACE_FTRACE_BIT
@@ -519,6 +560,33 @@ enum {
 #define TRACE_LIST_MAX		((1 << (TRACE_LIST_START + TRACE_CONTEXT_BITS)) - 1)
 
 #define TRACE_CONTEXT_MASK	TRACE_LIST_MAX
+=======
+#define trace_recursion_depth() \
+	(((current)->trace_recursion >> TRACE_GRAPH_DEPTH_START_BIT) & 3)
+#define trace_recursion_set_depth(depth) \
+	do {								\
+		current->trace_recursion &=				\
+			~(3 << TRACE_GRAPH_DEPTH_START_BIT);		\
+		current->trace_recursion |=				\
+			((depth) & 3) << TRACE_GRAPH_DEPTH_START_BIT;	\
+	} while (0)
+
+#define TRACE_CONTEXT_BITS	4
+
+#define TRACE_FTRACE_START	TRACE_FTRACE_BIT
+
+#define TRACE_LIST_START	TRACE_INTERNAL_BIT
+
+#define TRACE_CONTEXT_MASK	((1 << (TRACE_LIST_START + TRACE_CONTEXT_BITS)) - 1)
+
+enum {
+	TRACE_CTX_NMI,
+	TRACE_CTX_IRQ,
+	TRACE_CTX_SOFTIRQ,
+	TRACE_CTX_NORMAL,
+	TRACE_CTX_TRANSITION,
+};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static __always_inline int trace_get_context_bit(void)
 {
@@ -526,6 +594,7 @@ static __always_inline int trace_get_context_bit(void)
 
 	if (in_interrupt()) {
 		if (in_nmi())
+<<<<<<< HEAD
 			bit = 0;
 
 		else if (in_irq())
@@ -534,15 +603,30 @@ static __always_inline int trace_get_context_bit(void)
 			bit = 2;
 	} else
 		bit = 3;
+=======
+			bit = TRACE_CTX_NMI;
+
+		else if (in_irq())
+			bit = TRACE_CTX_IRQ;
+		else
+			bit = TRACE_CTX_SOFTIRQ;
+	} else
+		bit = TRACE_CTX_NORMAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return bit;
 }
 
+<<<<<<< HEAD
 static __always_inline int trace_test_and_set_recursion(int start, int max)
+=======
+static __always_inline int trace_test_and_set_recursion(int start)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned int val = current->trace_recursion;
 	int bit;
 
+<<<<<<< HEAD
 	/* A previous recursion check was made */
 	if ((val & TRACE_CONTEXT_MASK) > max)
 		return 0;
@@ -550,6 +634,21 @@ static __always_inline int trace_test_and_set_recursion(int start, int max)
 	bit = trace_get_context_bit() + start;
 	if (unlikely(val & (1 << bit)))
 		return -1;
+=======
+	bit = trace_get_context_bit() + start;
+	if (unlikely(val & (1 << bit))) {
+		/*
+		 * It could be that preempt_count has not been updated during
+		 * a switch between contexts. Allow for a single recursion.
+		 */
+		bit = start + TRACE_CTX_TRANSITION;
+		if (trace_recursion_test(bit))
+			return -1;
+		trace_recursion_set(bit);
+		barrier();
+		return bit;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	val |= 1 << bit;
 	current->trace_recursion = val;
@@ -562,9 +661,12 @@ static __always_inline void trace_clear_recursion(int bit)
 {
 	unsigned int val = current->trace_recursion;
 
+<<<<<<< HEAD
 	if (!bit)
 		return;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bit = 1 << bit;
 	val &= ~bit;
 
@@ -687,13 +789,23 @@ void update_max_tr_single(struct trace_array *tr,
 #endif /* CONFIG_TRACER_MAX_TRACE */
 
 #ifdef CONFIG_STACKTRACE
+<<<<<<< HEAD
 void ftrace_trace_userstack(struct ring_buffer *buffer, unsigned long flags,
+=======
+void ftrace_trace_userstack(struct trace_array *tr,
+			    struct ring_buffer *buffer, unsigned long flags,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			    int pc);
 
 void __trace_stack(struct trace_array *tr, unsigned long flags, int skip,
 		   int pc);
 #else
+<<<<<<< HEAD
 static inline void ftrace_trace_userstack(struct ring_buffer *buffer,
+=======
+static inline void ftrace_trace_userstack(struct trace_array *tr,
+					  struct ring_buffer *buffer,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					  unsigned long flags, int pc)
 {
 }
@@ -836,6 +948,7 @@ extern void __trace_graph_return(struct trace_array *tr,
 				 unsigned long flags, int pc);
 
 #ifdef CONFIG_DYNAMIC_FTRACE
+<<<<<<< HEAD
 extern struct ftrace_hash *ftrace_graph_hash;
 extern struct ftrace_hash *ftrace_graph_notrace_hash;
 
@@ -846,11 +959,45 @@ static inline int ftrace_graph_addr(unsigned long addr)
 	preempt_disable_notrace();
 
 	if (ftrace_hash_empty(ftrace_graph_hash)) {
+=======
+extern struct ftrace_hash __rcu *ftrace_graph_hash;
+extern struct ftrace_hash __rcu *ftrace_graph_notrace_hash;
+
+static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
+{
+	unsigned long addr = trace->func;
+	int ret = 0;
+	struct ftrace_hash *hash;
+
+	preempt_disable_notrace();
+
+	/*
+	 * Have to open code "rcu_dereference_sched()" because the
+	 * function graph tracer can be called when RCU is not
+	 * "watching".
+	 * Protected with schedule_on_each_cpu(ftrace_sync)
+	 */
+	hash = rcu_dereference_protected(ftrace_graph_hash, !preemptible());
+
+	if (ftrace_hash_empty(hash)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = 1;
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (ftrace_lookup_ip(ftrace_graph_hash, addr)) {
+=======
+	if (ftrace_lookup_ip(hash, addr)) {
+
+		/*
+		 * This needs to be cleared on the return functions
+		 * when the depth is zero.
+		 */
+		trace_recursion_set(TRACE_GRAPH_BIT);
+		trace_recursion_set_depth(trace->depth);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/*
 		 * If no irqs are to be traced, but a set_graph_function
 		 * is set, and called by an interrupt handler, we still
@@ -868,6 +1015,7 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static inline int ftrace_graph_notrace_addr(unsigned long addr)
 {
 	int ret = 0;
@@ -875,13 +1023,43 @@ static inline int ftrace_graph_notrace_addr(unsigned long addr)
 	preempt_disable_notrace();
 
 	if (ftrace_lookup_ip(ftrace_graph_notrace_hash, addr))
+=======
+static inline void ftrace_graph_addr_finish(struct ftrace_graph_ret *trace)
+{
+	if (trace_recursion_test(TRACE_GRAPH_BIT) &&
+	    trace->depth == trace_recursion_depth())
+		trace_recursion_clear(TRACE_GRAPH_BIT);
+}
+
+static inline int ftrace_graph_notrace_addr(unsigned long addr)
+{
+	int ret = 0;
+	struct ftrace_hash *notrace_hash;
+
+	preempt_disable_notrace();
+
+	/*
+	 * Have to open code "rcu_dereference_sched()" because the
+	 * function graph tracer can be called when RCU is not
+	 * "watching".
+	 * Protected with schedule_on_each_cpu(ftrace_sync)
+	 */
+	notrace_hash = rcu_dereference_protected(ftrace_graph_notrace_hash,
+						 !preemptible());
+
+	if (ftrace_lookup_ip(notrace_hash, addr))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = 1;
 
 	preempt_enable_notrace();
 	return ret;
 }
 #else
+<<<<<<< HEAD
 static inline int ftrace_graph_addr(unsigned long addr)
+=======
+static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return 1;
 }
@@ -890,6 +1068,11 @@ static inline int ftrace_graph_notrace_addr(unsigned long addr)
 {
 	return 0;
 }
+<<<<<<< HEAD
+=======
+static inline void ftrace_graph_addr_finish(struct ftrace_graph_ret *trace)
+{ }
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* CONFIG_DYNAMIC_FTRACE */
 
 extern unsigned int fgraph_max_depth;
@@ -897,7 +1080,12 @@ extern unsigned int fgraph_max_depth;
 static inline bool ftrace_graph_ignore_func(struct ftrace_graph_ent *trace)
 {
 	/* trace it when it is-nested-in or is a function enabled. */
+<<<<<<< HEAD
 	return !(trace->depth || ftrace_graph_addr(trace->func)) ||
+=======
+	return !(trace_recursion_test(TRACE_GRAPH_BIT) ||
+		 ftrace_graph_addr(trace)) ||
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		(trace->depth < 0) ||
 		(fgraph_max_depth && trace->depth >= fgraph_max_depth);
 }
@@ -1295,6 +1483,7 @@ __event_trigger_test_discard(struct trace_event_file *file,
 	if (eflags & EVENT_FILE_FL_TRIGGER_COND)
 		*tt = event_triggers_call(file, entry);
 
+<<<<<<< HEAD
 	if (test_bit(EVENT_FILE_FL_SOFT_DISABLED_BIT, &file->flags) ||
 	    (unlikely(file->flags & EVENT_FILE_FL_FILTERED) &&
 	     !filter_match_preds(file->filter, entry))) {
@@ -1303,6 +1492,28 @@ __event_trigger_test_discard(struct trace_event_file *file,
 	}
 
 	return false;
+=======
+	if (likely(!(file->flags & (EVENT_FILE_FL_SOFT_DISABLED |
+				    EVENT_FILE_FL_FILTERED |
+				    EVENT_FILE_FL_PID_FILTER))))
+		return false;
+
+	if (file->flags & EVENT_FILE_FL_SOFT_DISABLED)
+		goto discard;
+
+	if (file->flags & EVENT_FILE_FL_FILTERED &&
+	    !filter_match_preds(file->filter, entry))
+		goto discard;
+
+	if ((file->flags & EVENT_FILE_FL_PID_FILTER) &&
+	    trace_event_ignore_this_pid(file))
+		goto discard;
+
+	return false;
+ discard:
+	__trace_event_discard_commit(buffer, event);
+	return true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -1313,7 +1524,10 @@ __event_trigger_test_discard(struct trace_event_file *file,
  * @entry: The event itself
  * @irq_flags: The state of the interrupts at the start of the event
  * @pc: The state of the preempt count at the start of the event.
+<<<<<<< HEAD
  * @len: The length of the payload data required for stm logging.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This is a helper function to handle triggers that require data
  * from the event itself. It also tests the event against filters and
@@ -1323,6 +1537,7 @@ static inline void
 event_trigger_unlock_commit(struct trace_event_file *file,
 			    struct ring_buffer *buffer,
 			    struct ring_buffer_event *event,
+<<<<<<< HEAD
 			    void *entry, unsigned long irq_flags, int pc,
 			    unsigned long len)
 {
@@ -1334,6 +1549,14 @@ event_trigger_unlock_commit(struct trace_event_file *file,
 
 		trace_buffer_unlock_commit(file->tr, buffer, event, irq_flags, pc);
 	}
+=======
+			    void *entry, unsigned long irq_flags, int pc)
+{
+	enum event_trigger_type tt = ETT_NONE;
+
+	if (!__event_trigger_test_discard(file, buffer, event, entry, &tt))
+		trace_buffer_unlock_commit(file->tr, buffer, event, irq_flags, pc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (tt)
 		event_triggers_post_call(file, tt, entry);
@@ -1826,4 +2049,25 @@ static inline int tracing_alloc_snapshot_instance(struct trace_array *tr)
 
 extern struct trace_iterator *tracepoint_print_iter;
 
+<<<<<<< HEAD
+=======
+/*
+ * Reset the state of the trace_iterator so that it can read consumed data.
+ * Normally, the trace_iterator is used for reading the data when it is not
+ * consumed, and must retain state.
+ */
+static __always_inline void trace_iterator_reset(struct trace_iterator *iter)
+{
+	const size_t offset = offsetof(struct trace_iterator, seq);
+
+	/*
+	 * Keep gcc from complaining about overwriting more than just one
+	 * member in the structure.
+	 */
+	memset((char *)iter + offset, 0, sizeof(struct trace_iterator) - offset);
+
+	iter->pos = -1;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _LINUX_KERNEL_TRACE_H */

@@ -122,8 +122,13 @@ static int udc_plat_probe(struct platform_device *pdev)
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	udc->virt_addr = devm_ioremap_resource(dev, res);
+<<<<<<< HEAD
 	if (IS_ERR(udc->regs))
 		return PTR_ERR(udc->regs);
+=======
+	if (IS_ERR(udc->virt_addr))
+		return PTR_ERR(udc->virt_addr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* udc csr registers base */
 	udc->csr = udc->virt_addr + UDC_CSR_ADDR;

@@ -138,7 +138,11 @@ do {							\
       _FP_FRAC_ADDI_##wc(X, _FP_WORK_ROUND);		\
 } while (0)
 
+<<<<<<< HEAD
 #define _FP_ROUND_ZERO(wc, X)		0
+=======
+#define _FP_ROUND_ZERO(wc, X)		(void)0
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define _FP_ROUND_PINF(wc, X)				\
 do {							\

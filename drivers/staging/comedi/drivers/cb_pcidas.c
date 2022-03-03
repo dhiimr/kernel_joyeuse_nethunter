@@ -1290,7 +1290,11 @@ static int cb_pcidas_auto_attach(struct comedi_device *dev,
 	     devpriv->amcc + AMCC_OP_REG_INTCSR);
 
 	ret = request_irq(pcidev->irq, cb_pcidas_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
 			  dev->board_name, dev);
+=======
+			  "cb_pcidas", dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret) {
 		dev_dbg(dev->class_dev, "unable to allocate irq %d\n",
 			pcidev->irq);
@@ -1351,6 +1355,10 @@ static int cb_pcidas_auto_attach(struct comedi_device *dev,
 		if (dev->irq && board->has_ao_fifo) {
 			dev->write_subdev = s;
 			s->subdev_flags	|= SDF_CMD_WRITE;
+<<<<<<< HEAD
+=======
+			s->len_chanlist	= s->n_chan;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			s->do_cmdtest	= cb_pcidas_ao_cmdtest;
 			s->do_cmd	= cb_pcidas_ao_cmd;
 			s->cancel	= cb_pcidas_ao_cancel;

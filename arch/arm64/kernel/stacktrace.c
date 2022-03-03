@@ -18,11 +18,18 @@
 #include <linux/kernel.h>
 #include <linux/export.h>
 #include <linux/ftrace.h>
+<<<<<<< HEAD
+=======
+#include <linux/kprobes.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/sched.h>
 #include <linux/sched/debug.h>
 #include <linux/sched/task_stack.h>
 #include <linux/stacktrace.h>
+<<<<<<< HEAD
 #include <linux/kasan.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <asm/irq.h>
 #include <asm/stack_pointer.h>
@@ -54,10 +61,15 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
 	if (!on_accessible_stack(tsk, fp))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	kasan_disable_current();
 	frame->fp = READ_ONCE_NOCHECK(*(unsigned long *)(fp));
 	frame->pc = READ_ONCE_NOCHECK(*(unsigned long *)(fp + 8));
 	kasan_enable_current();
+=======
+	frame->fp = READ_ONCE_NOCHECK(*(unsigned long *)(fp));
+	frame->pc = READ_ONCE_NOCHECK(*(unsigned long *)(fp + 8));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_FUNCTION_GRAPH_TRACER
 	if (tsk->ret_stack &&
@@ -88,6 +100,10 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
 
 	return 0;
 }
+<<<<<<< HEAD
+=======
+NOKPROBE_SYMBOL(unwind_frame);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
 		     int (*fn)(struct stackframe *, void *), void *data)
@@ -102,6 +118,10 @@ void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
 			break;
 	}
 }
+<<<<<<< HEAD
+=======
+NOKPROBE_SYMBOL(walk_stackframe);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_STACKTRACE
 struct stack_trace_data {

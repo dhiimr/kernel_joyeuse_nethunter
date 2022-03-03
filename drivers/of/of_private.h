@@ -35,6 +35,15 @@ extern struct mutex of_mutex;
 extern struct list_head aliases_lookup;
 extern struct kset *of_kset;
 
+<<<<<<< HEAD
+=======
+
+static inline struct device_node *kobj_to_device_node(struct kobject *kobj)
+{
+	return container_of(kobj, struct device_node, kobj);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #if defined(CONFIG_OF_DYNAMIC)
 extern int of_property_notify(int action, struct device_node *np,
 			      struct property *prop, struct property *old_prop);
@@ -49,6 +58,7 @@ static inline int of_property_notify(int action, struct device_node *np,
 }
 #endif /* CONFIG_OF_DYNAMIC */
 
+<<<<<<< HEAD
 #if defined(CONFIG_OF_KOBJ)
 int of_node_is_attached(struct device_node *node);
 int __of_add_property_sysfs(struct device_node *np, struct property *pp);
@@ -72,6 +82,8 @@ static inline int __of_attach_node_sysfs(struct device_node *np)
 static inline void __of_detach_node_sysfs(struct device_node *np) {}
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #if defined(CONFIG_OF_UNITTEST) && defined(CONFIG_OF_OVERLAY)
 extern void __init unittest_unflatten_overlay_base(void);
 #else
@@ -117,9 +129,12 @@ extern void __of_detach_node_sysfs(struct device_node *np);
 extern void __of_sysfs_remove_bin_file(struct device_node *np,
 				       struct property *prop);
 
+<<<<<<< HEAD
 /* illegal phandle value (set when unresolved) */
 #define OF_PHANDLE_ILLEGAL	0xdeadbeef
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* iterators for transactions, used for overlays */
 /* forward iterator */
 #define for_each_transaction_entry(_oft, _te) \

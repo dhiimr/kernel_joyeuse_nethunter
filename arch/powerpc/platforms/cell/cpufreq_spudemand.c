@@ -49,7 +49,11 @@ static int calc_freq(struct spu_gov_info_struct *info)
 	cpu = info->policy->cpu;
 	busy_spus = atomic_read(&cbe_spu_info[cpu_to_node(cpu)].busy_spus);
 
+<<<<<<< HEAD
 	info->busy_spus = calc_load(info->busy_spus, EXP, busy_spus * FIXED_1);
+=======
+	CALC_LOAD(info->busy_spus, EXP, busy_spus * FIXED_1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pr_debug("cpu %d: busy_spus=%d, info->busy_spus=%ld\n",
 			cpu, busy_spus, info->busy_spus);
 

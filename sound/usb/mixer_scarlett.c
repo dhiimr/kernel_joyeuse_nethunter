@@ -287,8 +287,12 @@ static int scarlett_ctl_switch_put(struct snd_kcontrol *kctl,
 
 static int scarlett_ctl_resume(struct usb_mixer_elem_list *list)
 {
+<<<<<<< HEAD
 	struct usb_mixer_elem_info *elem =
 		container_of(list, struct usb_mixer_elem_info, head);
+=======
+	struct usb_mixer_elem_info *elem = mixer_elem_list_to_info(list);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int i;
 
 	for (i = 0; i < elem->channels; i++)
@@ -447,8 +451,12 @@ static int scarlett_ctl_enum_put(struct snd_kcontrol *kctl,
 
 static int scarlett_ctl_enum_resume(struct usb_mixer_elem_list *list)
 {
+<<<<<<< HEAD
 	struct usb_mixer_elem_info *elem =
 		container_of(list, struct usb_mixer_elem_info, head);
+=======
+	struct usb_mixer_elem_info *elem = mixer_elem_list_to_info(list);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (elem->cached)
 		snd_usb_set_cur_mix_value(elem, 0, 0, *elem->cache_val);

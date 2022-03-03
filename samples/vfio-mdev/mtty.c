@@ -171,7 +171,11 @@ static struct mdev_state *find_mdev_state_by_uuid(uuid_le uuid)
 	return NULL;
 }
 
+<<<<<<< HEAD
 void dump_buffer(char *buf, uint32_t count)
+=======
+void dump_buffer(u8 *buf, uint32_t count)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 #if defined(DEBUG)
 	int i;
@@ -250,7 +254,11 @@ static void mtty_create_config_space(struct mdev_state *mdev_state)
 }
 
 static void handle_pci_cfg_write(struct mdev_state *mdev_state, u16 offset,
+<<<<<<< HEAD
 				 char *buf, u32 count)
+=======
+				 u8 *buf, u32 count)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u32 cfg_addr, bar_mask, bar_index = 0;
 
@@ -304,7 +312,11 @@ static void handle_pci_cfg_write(struct mdev_state *mdev_state, u16 offset,
 }
 
 static void handle_bar_write(unsigned int index, struct mdev_state *mdev_state,
+<<<<<<< HEAD
 				u16 offset, char *buf, u32 count)
+=======
+				u16 offset, u8 *buf, u32 count)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u8 data = *buf;
 
@@ -475,7 +487,11 @@ static void handle_bar_write(unsigned int index, struct mdev_state *mdev_state,
 }
 
 static void handle_bar_read(unsigned int index, struct mdev_state *mdev_state,
+<<<<<<< HEAD
 			    u16 offset, char *buf, u32 count)
+=======
+			    u16 offset, u8 *buf, u32 count)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	/* Handle read requests by guest */
 	switch (offset) {
@@ -650,7 +666,11 @@ static void mdev_read_base(struct mdev_state *mdev_state)
 	}
 }
 
+<<<<<<< HEAD
 static ssize_t mdev_access(struct mdev_device *mdev, char *buf, size_t count,
+=======
+static ssize_t mdev_access(struct mdev_device *mdev, u8 *buf, size_t count,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			   loff_t pos, bool is_write)
 {
 	struct mdev_state *mdev_state;
@@ -698,7 +718,11 @@ static ssize_t mdev_access(struct mdev_device *mdev, char *buf, size_t count,
 #if defined(DEBUG_REGS)
 			pr_info("%s: BAR%d  WR @0x%llx %s val:0x%02x dlab:%d\n",
 				__func__, index, offset, wr_reg[offset],
+<<<<<<< HEAD
 				(u8)*buf, mdev_state->s[index].dlab);
+=======
+				*buf, mdev_state->s[index].dlab);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 			handle_bar_write(index, mdev_state, offset, buf, count);
 		} else {
@@ -708,7 +732,11 @@ static ssize_t mdev_access(struct mdev_device *mdev, char *buf, size_t count,
 #if defined(DEBUG_REGS)
 			pr_info("%s: BAR%d  RD @0x%llx %s val:0x%02x dlab:%d\n",
 				__func__, index, offset, rd_reg[offset],
+<<<<<<< HEAD
 				(u8)*buf, mdev_state->s[index].dlab);
+=======
+				*buf, mdev_state->s[index].dlab);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 		}
 		break;
@@ -827,7 +855,11 @@ ssize_t mtty_read(struct mdev_device *mdev, char __user *buf, size_t count,
 		if (count >= 4 && !(*ppos % 4)) {
 			u32 val;
 
+<<<<<<< HEAD
 			ret =  mdev_access(mdev, (char *)&val, sizeof(val),
+=======
+			ret =  mdev_access(mdev, (u8 *)&val, sizeof(val),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					   *ppos, false);
 			if (ret <= 0)
 				goto read_err;
@@ -839,7 +871,11 @@ ssize_t mtty_read(struct mdev_device *mdev, char __user *buf, size_t count,
 		} else if (count >= 2 && !(*ppos % 2)) {
 			u16 val;
 
+<<<<<<< HEAD
 			ret = mdev_access(mdev, (char *)&val, sizeof(val),
+=======
+			ret = mdev_access(mdev, (u8 *)&val, sizeof(val),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					  *ppos, false);
 			if (ret <= 0)
 				goto read_err;
@@ -851,7 +887,11 @@ ssize_t mtty_read(struct mdev_device *mdev, char __user *buf, size_t count,
 		} else {
 			u8 val;
 
+<<<<<<< HEAD
 			ret = mdev_access(mdev, (char *)&val, sizeof(val),
+=======
+			ret = mdev_access(mdev, (u8 *)&val, sizeof(val),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					  *ppos, false);
 			if (ret <= 0)
 				goto read_err;
@@ -889,7 +929,11 @@ ssize_t mtty_write(struct mdev_device *mdev, const char __user *buf,
 			if (copy_from_user(&val, buf, sizeof(val)))
 				goto write_err;
 
+<<<<<<< HEAD
 			ret = mdev_access(mdev, (char *)&val, sizeof(val),
+=======
+			ret = mdev_access(mdev, (u8 *)&val, sizeof(val),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					  *ppos, true);
 			if (ret <= 0)
 				goto write_err;
@@ -901,7 +945,11 @@ ssize_t mtty_write(struct mdev_device *mdev, const char __user *buf,
 			if (copy_from_user(&val, buf, sizeof(val)))
 				goto write_err;
 
+<<<<<<< HEAD
 			ret = mdev_access(mdev, (char *)&val, sizeof(val),
+=======
+			ret = mdev_access(mdev, (u8 *)&val, sizeof(val),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					  *ppos, true);
 			if (ret <= 0)
 				goto write_err;
@@ -913,7 +961,11 @@ ssize_t mtty_write(struct mdev_device *mdev, const char __user *buf,
 			if (copy_from_user(&val, buf, sizeof(val)))
 				goto write_err;
 
+<<<<<<< HEAD
 			ret = mdev_access(mdev, (char *)&val, sizeof(val),
+=======
+			ret = mdev_access(mdev, (u8 *)&val, sizeof(val),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					  *ppos, true);
 			if (ret <= 0)
 				goto write_err;

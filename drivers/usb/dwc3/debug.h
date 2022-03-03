@@ -20,6 +20,7 @@
 #define __DWC3_DEBUG_H
 
 #include "core.h"
+<<<<<<< HEAD
 #include <linux/ipc_logging.h>
 
 /*
@@ -59,6 +60,9 @@
 #define dbg_log_string(fmt, ...) \
 	ipc_log_string(dwc->dwc_ipc_log_ctxt,\
 			"%s: " fmt, __func__, ##__VA_ARGS__)
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * dwc3_gadget_ep_cmd_string - returns endpoint command string
  * @cmd: command code
@@ -163,6 +167,38 @@ dwc3_gadget_link_string(enum dwc3_link_state link_state)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * dwc3_gadget_hs_link_string - returns highspeed and below link name
+ * @link_state: link state code
+ */
+static inline const char *
+dwc3_gadget_hs_link_string(enum dwc3_link_state link_state)
+{
+	switch (link_state) {
+	case DWC3_LINK_STATE_U0:
+		return "On";
+	case DWC3_LINK_STATE_U2:
+		return "Sleep";
+	case DWC3_LINK_STATE_U3:
+		return "Suspend";
+	case DWC3_LINK_STATE_SS_DIS:
+		return "Disconnected";
+	case DWC3_LINK_STATE_RX_DET:
+		return "Early Suspend";
+	case DWC3_LINK_STATE_RECOV:
+		return "Recovery";
+	case DWC3_LINK_STATE_RESET:
+		return "Reset";
+	case DWC3_LINK_STATE_RESUME:
+		return "Resume";
+	default:
+		return "UNKNOWN link state\n";
+	}
+}
+
+/**
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * dwc3_trb_type_string - returns TRB type as a string
  * @type: the type of the TRB
  */
@@ -643,6 +679,7 @@ static inline const char *dwc3_gadget_generic_cmd_status_string(int status)
 	}
 }
 
+<<<<<<< HEAD
 void dwc3_dbg_print(struct dwc3 *dwc, u8 ep_num,
 		const char *name, int status, const char *extra);
 void dwc3_dbg_done(struct dwc3 *dwc, u8 ep_num,
@@ -663,6 +700,8 @@ void dwc3_dbg_dma_map(struct dwc3 *dwc, u8 ep_num,
 			struct dwc3_request *req);
 void dwc3_dbg_dma_unmap(struct dwc3 *dwc, u8 ep_num,
 			struct dwc3_request *req);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_DEBUG_FS
 extern void dwc3_debugfs_init(struct dwc3 *);

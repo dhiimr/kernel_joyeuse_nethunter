@@ -212,6 +212,10 @@ static int cnl_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
 				"dsp boot timeout, status=%#x error=%#x\n",
 				sst_dsp_shim_read(ctx, CNL_ADSP_FW_STATUS),
 				sst_dsp_shim_read(ctx, CNL_ADSP_ERROR_CODE));
+<<<<<<< HEAD
+=======
+			ret = -ETIMEDOUT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto err;
 		}
 	} else {

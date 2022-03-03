@@ -238,12 +238,20 @@ static int adf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (ret)
 		goto out_err_free_reg;
 
+<<<<<<< HEAD
 	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = adf_dev_init(accel_dev);
 	if (ret)
 		goto out_err_dev_shutdown;
 
+<<<<<<< HEAD
+=======
+	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = adf_dev_start(accel_dev);
 	if (ret)
 		goto out_err_dev_stop;

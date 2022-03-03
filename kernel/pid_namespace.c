@@ -55,7 +55,11 @@ static struct kmem_cache *create_pid_cachep(int nr_ids)
 	snprintf(pcache->name, sizeof(pcache->name), "pid_%d", nr_ids);
 	cachep = kmem_cache_create(pcache->name,
 			sizeof(struct pid) + (nr_ids - 1) * sizeof(struct upid),
+<<<<<<< HEAD
 			0, SLAB_HWCACHE_ALIGN, NULL);
+=======
+			0, SLAB_HWCACHE_ALIGN | SLAB_ACCOUNT, NULL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (cachep == NULL)
 		goto err_cachep;
 
@@ -351,7 +355,11 @@ int reboot_pid_ns(struct pid_namespace *pid_ns, int cmd)
 	}
 
 	read_lock(&tasklist_lock);
+<<<<<<< HEAD
 	force_sig(SIGKILL, pid_ns->child_reaper);
+=======
+	send_sig(SIGKILL, pid_ns->child_reaper, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	read_unlock(&tasklist_lock);
 
 	do_exit(0);

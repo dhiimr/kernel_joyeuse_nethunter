@@ -71,7 +71,11 @@
  */
 #define FIELD_FIT(_mask, _val)						\
 	({								\
+<<<<<<< HEAD
 		__BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_FIT: ");	\
+=======
+		__BF_FIELD_CHECK(_mask, 0ULL, 0ULL, "FIELD_FIT: ");	\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		!((((typeof(_mask))_val) << __bf_shf(_mask)) & ~(_mask)); \
 	})
 

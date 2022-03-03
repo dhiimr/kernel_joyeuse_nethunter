@@ -567,8 +567,18 @@ void e1000_reinit_locked(struct e1000_adapter *adapter)
 	WARN_ON(in_interrupt());
 	while (test_and_set_bit(__E1000_RESETTING, &adapter->flags))
 		msleep(1);
+<<<<<<< HEAD
 	e1000_down(adapter);
 	e1000_up(adapter);
+=======
+
+	/* only run the task if not already down */
+	if (!test_bit(__E1000_DOWN, &adapter->flags)) {
+		e1000_down(adapter);
+		e1000_up(adapter);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	clear_bit(__E1000_RESETTING, &adapter->flags);
 }
 
@@ -1458,10 +1468,22 @@ int e1000_close(struct net_device *netdev)
 	struct e1000_hw *hw = &adapter->hw;
 	int count = E1000_CHECK_RESET_COUNT;
 
+<<<<<<< HEAD
 	while (test_bit(__E1000_RESETTING, &adapter->flags) && count--)
 		usleep_range(10000, 20000);
 
 	WARN_ON(test_bit(__E1000_RESETTING, &adapter->flags));
+=======
+	while (test_and_set_bit(__E1000_RESETTING, &adapter->flags) && count--)
+		usleep_range(10000, 20000);
+
+	WARN_ON(count < 0);
+
+	/* signal that we're down so that the reset task will no longer run */
+	set_bit(__E1000_DOWN, &adapter->flags);
+	clear_bit(__E1000_RESETTING, &adapter->flags);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	e1000_down(adapter);
 	e1000_power_down_phy(adapter);
 	e1000_free_irq(adapter);
@@ -3169,8 +3191,14 @@ static netdev_tx_t e1000_xmit_frame(struct sk_buff *skb,
 		hdr_len = skb_transport_offset(skb) + tcp_hdrlen(skb);
 		if (skb->data_len && hdr_len == len) {
 			switch (hw->mac_type) {
+<<<<<<< HEAD
 				unsigned int pull_size;
 			case e1000_82544:
+=======
+			case e1000_82544: {
+				unsigned int pull_size;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				/* Make sure we have room to chop off 4 bytes,
 				 * and that the end alignment will work out to
 				 * this hardware's requirements
@@ -3191,6 +3219,10 @@ static netdev_tx_t e1000_xmit_frame(struct sk_buff *skb,
 				}
 				len = skb_headlen(skb);
 				break;
+<<<<<<< HEAD
+=======
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			default:
 				/* do nothing */
 				break;

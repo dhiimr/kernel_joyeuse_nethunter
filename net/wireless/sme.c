@@ -51,6 +51,7 @@ struct cfg80211_conn {
 	bool auto_auth, prev_bssid_valid;
 };
 
+<<<<<<< HEAD
 static bool cfg80211_is_all_countryie_ignore(void)
 {
 	struct cfg80211_registered_device *rdev;
@@ -74,6 +75,8 @@ out:
 	return is_all_countryie_ignore;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void cfg80211_sme_free(struct wireless_dev *wdev)
 {
 	if (!wdev->conn)
@@ -553,7 +556,11 @@ static int cfg80211_sme_connect(struct wireless_dev *wdev,
 		cfg80211_sme_free(wdev);
 	}
 
+<<<<<<< HEAD
 	if (WARN_ON(wdev->conn))
+=======
+	if (wdev->conn)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINPROGRESS;
 
 	wdev->conn = kzalloc(sizeof(*wdev->conn), GFP_KERNEL);
@@ -665,11 +672,22 @@ static bool cfg80211_is_all_idle(void)
 	 * All devices must be idle as otherwise if you are actively
 	 * scanning some new beacon hints could be learned and would
 	 * count as new regulatory hints.
+<<<<<<< HEAD
+=======
+	 * Also if there is any other active beaconing interface we
+	 * need not issue a disconnect hint and reset any info such
+	 * as chan dfs state, etc.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 */
 	list_for_each_entry(rdev, &cfg80211_rdev_list, list) {
 		list_for_each_entry(wdev, &rdev->wiphy.wdev_list, list) {
 			wdev_lock(wdev);
+<<<<<<< HEAD
 			if (wdev->conn || wdev->current_bss)
+=======
+			if (wdev->conn || wdev->current_bss ||
+			    cfg80211_beaconing_iface_active(wdev))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				is_all_idle = false;
 			wdev_unlock(wdev);
 		}
@@ -681,13 +699,21 @@ static bool cfg80211_is_all_idle(void)
 static void disconnect_work(struct work_struct *work)
 {
 	rtnl_lock();
+<<<<<<< HEAD
 	if (cfg80211_is_all_idle() &&
 	    !cfg80211_is_all_countryie_ignore())
+=======
+	if (cfg80211_is_all_idle())
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		regulatory_hint_disconnect();
 	rtnl_unlock();
 }
 
+<<<<<<< HEAD
 static DECLARE_WORK(cfg80211_disconnect_work, disconnect_work);
+=======
+DECLARE_WORK(cfg80211_disconnect_work, disconnect_work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 
 /*

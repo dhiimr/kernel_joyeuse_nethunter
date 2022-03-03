@@ -78,7 +78,11 @@ static int chap_check_algorithm(const char *a_str)
 		if (!token)
 			goto out;
 
+<<<<<<< HEAD
 		if (!strncmp(token, "5", 1)) {
+=======
+		if (!strcmp(token, "5")) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			pr_debug("Selected MD5 Algorithm\n");
 			kfree(orig);
 			return CHAP_DIGEST_MD5;
@@ -89,6 +93,15 @@ out:
 	return CHAP_DIGEST_UNKNOWN;
 }
 
+<<<<<<< HEAD
+=======
+static void chap_close(struct iscsi_conn *conn)
+{
+	kfree(conn->auth_protocol);
+	conn->auth_protocol = NULL;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct iscsi_chap *chap_server_open(
 	struct iscsi_conn *conn,
 	struct iscsi_node_auth *auth,
@@ -126,7 +139,11 @@ static struct iscsi_chap *chap_server_open(
 	case CHAP_DIGEST_UNKNOWN:
 	default:
 		pr_err("Unsupported CHAP_A value\n");
+<<<<<<< HEAD
 		kfree(conn->auth_protocol);
+=======
+		chap_close(conn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return NULL;
 	}
 
@@ -141,19 +158,26 @@ static struct iscsi_chap *chap_server_open(
 	 * Generate Challenge.
 	 */
 	if (chap_gen_challenge(conn, 1, aic_str, aic_len) < 0) {
+<<<<<<< HEAD
 		kfree(conn->auth_protocol);
+=======
+		chap_close(conn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return NULL;
 	}
 
 	return chap;
 }
 
+<<<<<<< HEAD
 static void chap_close(struct iscsi_conn *conn)
 {
 	kfree(conn->auth_protocol);
 	conn->auth_protocol = NULL;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int chap_server_compute_md5(
 	struct iscsi_conn *conn,
 	struct iscsi_node_auth *auth,

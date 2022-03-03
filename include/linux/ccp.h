@@ -173,6 +173,11 @@ struct ccp_aes_engine {
 	enum ccp_aes_mode mode;
 	enum ccp_aes_action action;
 
+<<<<<<< HEAD
+=======
+	u32 authsize;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct scatterlist *key;
 	u32 key_len;		/* In bytes */
 

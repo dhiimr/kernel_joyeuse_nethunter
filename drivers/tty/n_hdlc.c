@@ -614,7 +614,11 @@ static ssize_t n_hdlc_tty_read(struct tty_struct *tty, struct file *file,
 		}
 			
 		/* no data */
+<<<<<<< HEAD
 		if (file->f_flags & O_NONBLOCK) {
+=======
+		if (tty_io_nonblock(tty, file)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ret = -EAGAIN;
 			break;
 		}
@@ -681,7 +685,11 @@ static ssize_t n_hdlc_tty_write(struct tty_struct *tty, struct file *file,
 		if (tbuf)
 			break;
 
+<<<<<<< HEAD
 		if (file->f_flags & O_NONBLOCK) {
+=======
+		if (tty_io_nonblock(tty, file)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			error = -EAGAIN;
 			break;
 		}
@@ -969,6 +977,14 @@ static int __init n_hdlc_init(void)
 	
 }	/* end of init_module() */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SPARC
+#undef __exitdata
+#define __exitdata
+#endif
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const char hdlc_unregister_ok[] __exitdata =
 	KERN_INFO "N_HDLC: line discipline unregistered\n";
 static const char hdlc_unregister_fail[] __exitdata =

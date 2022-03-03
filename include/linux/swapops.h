@@ -377,7 +377,12 @@ static inline void num_poisoned_pages_inc(void)
 }
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_MEMORY_FAILURE) || defined(CONFIG_MIGRATION)
+=======
+#if defined(CONFIG_MEMORY_FAILURE) || defined(CONFIG_MIGRATION) || \
+    defined(CONFIG_DEVICE_PRIVATE)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline int non_swap_entry(swp_entry_t entry)
 {
 	return swp_type(entry) >= MAX_SWAPFILES;

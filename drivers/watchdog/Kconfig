@@ -495,7 +495,11 @@ config SUNXI_WATCHDOG
 
 config COH901327_WATCHDOG
 	bool "ST-Ericsson COH 901 327 watchdog"
+<<<<<<< HEAD
 	depends on ARCH_U300 || (ARM && COMPILE_TEST)
+=======
+	depends on ARCH_U300 || (ARM && COMMON_CLK && COMPILE_TEST)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	default y if MACH_U300
 	select WATCHDOG_CORE
 	help
@@ -563,6 +567,10 @@ config MAX63XX_WATCHDOG
 config MAX77620_WATCHDOG
 	tristate "Maxim Max77620 Watchdog Timer"
 	depends on MFD_MAX77620 || COMPILE_TEST
+<<<<<<< HEAD
+=======
+	select WATCHDOG_CORE
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	 This is the driver for the Max77620 watchdog timer.
 	 Say 'Y' here to enable the watchdog timer support for
@@ -619,6 +627,10 @@ config MOXART_WDT
 
 config SIRFSOC_WATCHDOG
 	tristate "SiRFSOC watchdog"
+<<<<<<< HEAD
+=======
+	depends on HAS_IOMEM
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	depends on ARCH_SIRF || COMPILE_TEST
 	select WATCHDOG_CORE
 	default y
@@ -1497,7 +1509,11 @@ config SIBYTE_WDOG
 
 config AR7_WDT
 	tristate "TI AR7 Watchdog Timer"
+<<<<<<< HEAD
 	depends on AR7 || (MIPS && COMPILE_TEST)
+=======
+	depends on AR7 || (MIPS && 32BIT && COMPILE_TEST)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  Hardware driver for the TI AR7 Watchdog Timer.
 
@@ -1941,6 +1957,10 @@ comment "Watchdog Pretimeout Governors"
 
 config WATCHDOG_PRETIMEOUT_GOV
 	bool "Enable watchdog pretimeout governors"
+<<<<<<< HEAD
+=======
+	depends on WATCHDOG_CORE
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  The option allows to select watchdog pretimeout governors.
 

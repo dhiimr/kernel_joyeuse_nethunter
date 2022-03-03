@@ -49,7 +49,14 @@ extern int memcmp(const void *cs, const void *ct, size_t count);
 #endif
 
 #ifdef CONFIG_KERNEL_XZ
+<<<<<<< HEAD
 #define memmove memmove
+=======
+/* Prevent KASAN override of string helpers in decompressor */
+#undef memmove
+#define memmove memmove
+#undef memcpy
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define memcpy memcpy
 #include "../../../../lib/decompress_unxz.c"
 #endif

@@ -167,11 +167,14 @@ struct nf_nat_sip_hooks {
 };
 extern const struct nf_nat_sip_hooks *nf_nat_sip_hooks;
 
+<<<<<<< HEAD
 extern void (*nf_nat_sip_seq_adjust_hook)
 			(struct sk_buff *skb,
 			unsigned int protoff,
 			s16 off);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int ct_sip_parse_request(const struct nf_conn *ct, const char *dptr,
 			 unsigned int datalen, unsigned int *matchoff,
 			 unsigned int *matchlen, union nf_inet_addr *addr,

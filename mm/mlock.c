@@ -439,9 +439,13 @@ static unsigned long __munlock_pagevec_fill(struct pagevec *pvec,
 void munlock_vma_pages_range(struct vm_area_struct *vma,
 			     unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	vm_write_begin(vma);
 	WRITE_ONCE(vma->vm_flags, vma->vm_flags & VM_LOCKED_CLEAR_MASK);
 	vm_write_end(vma);
+=======
+	vma->vm_flags &= VM_LOCKED_CLEAR_MASK;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	while (start < end) {
 		struct page *page;
@@ -530,7 +534,11 @@ static int mlock_fixup(struct vm_area_struct *vma, struct vm_area_struct **prev,
 	pgoff = vma->vm_pgoff + ((start - vma->vm_start) >> PAGE_SHIFT);
 	*prev = vma_merge(mm, *prev, start, end, newflags, vma->anon_vma,
 			  vma->vm_file, pgoff, vma_policy(vma),
+<<<<<<< HEAD
 			  vma->vm_userfaultfd_ctx, vma_get_anon_name(vma));
+=======
+			  vma->vm_userfaultfd_ctx);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (*prev) {
 		vma = *prev;
 		goto success;
@@ -564,11 +572,18 @@ success:
 	 * It's okay if try_to_unmap_one unmaps a page just after we
 	 * set VM_LOCKED, populate_vma_page_range will bring it back.
 	 */
+<<<<<<< HEAD
 	if (lock) {
 		vm_write_begin(vma);
 		WRITE_ONCE(vma->vm_flags, newflags);
 		vm_write_end(vma);
 	} else
+=======
+
+	if (lock)
+		vma->vm_flags = newflags;
+	else
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		munlock_vma_pages_range(vma, start, end);
 
 out:
@@ -632,11 +647,19 @@ static int apply_vma_lock_flags(unsigned long start, size_t len,
  * is also counted.
  * Return value: previously mlocked page counts
  */
+<<<<<<< HEAD
 static int count_mm_mlocked_page_nr(struct mm_struct *mm,
 		unsigned long start, size_t len)
 {
 	struct vm_area_struct *vma;
 	int count = 0;
+=======
+static unsigned long count_mm_mlocked_page_nr(struct mm_struct *mm,
+		unsigned long start, size_t len)
+{
+	struct vm_area_struct *vma;
+	unsigned long count = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (mm == NULL)
 		mm = current->mm;

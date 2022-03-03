@@ -740,7 +740,11 @@ static int mtk_i2c_probe(struct platform_device *pdev)
 		return PTR_ERR(i2c->pdmabase);
 
 	irq = platform_get_irq(pdev, 0);
+<<<<<<< HEAD
 	if (irq <= 0)
+=======
+	if (irq < 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return irq;
 
 	init_completion(&i2c->msg_complete);

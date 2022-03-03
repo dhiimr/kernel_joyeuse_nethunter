@@ -284,6 +284,12 @@ struct smi_info {
 	 */
 	bool irq_enable_broken;
 
+<<<<<<< HEAD
+=======
+	/* Is the driver in maintenance mode? */
+	bool in_maintenance_mode;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Did we get an attention that we did not handle?
 	 */
@@ -1094,11 +1100,28 @@ static int ipmi_thread(void *data)
 		spin_unlock_irqrestore(&(smi_info->si_lock), flags);
 		busy_wait = ipmi_thread_busy_wait(smi_result, smi_info,
 						  &busy_until);
+<<<<<<< HEAD
 		if (smi_result == SI_SM_CALL_WITHOUT_DELAY)
 			; /* do nothing */
 		else if (smi_result == SI_SM_CALL_WITH_DELAY && busy_wait)
 			schedule();
 		else if (smi_result == SI_SM_IDLE) {
+=======
+		if (smi_result == SI_SM_CALL_WITHOUT_DELAY) {
+			; /* do nothing */
+		} else if (smi_result == SI_SM_CALL_WITH_DELAY && busy_wait) {
+			/*
+			 * In maintenance mode we run as fast as
+			 * possible to allow firmware updates to
+			 * complete as fast as possible, but normally
+			 * don't bang on the scheduler.
+			 */
+			if (smi_info->in_maintenance_mode)
+				schedule();
+			else
+				usleep_range(100, 200);
+		} else if (smi_result == SI_SM_IDLE) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (atomic_read(&smi_info->need_watch)) {
 				schedule_timeout_interruptible(100);
 			} else {
@@ -1106,8 +1129,14 @@ static int ipmi_thread(void *data)
 				__set_current_state(TASK_INTERRUPTIBLE);
 				schedule();
 			}
+<<<<<<< HEAD
 		} else
 			schedule_timeout_interruptible(1);
+=======
+		} else {
+			schedule_timeout_interruptible(1);
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return 0;
 }
@@ -1286,6 +1315,10 @@ static void set_maintenance_mode(void *send_info, bool enable)
 
 	if (!enable)
 		atomic_set(&smi_info->req_events, 0);
+<<<<<<< HEAD
+=======
+	smi_info->in_maintenance_mode = enable;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct ipmi_smi_handlers handlers = {
@@ -1345,7 +1378,11 @@ static unsigned int num_slave_addrs;
 #define IPMI_MEM_ADDR_SPACE 1
 static const char * const addr_space_to_str[] = { "i/o", "mem" };
 
+<<<<<<< HEAD
 static int hotmod_handler(const char *val, const struct kernel_param *kp);
+=======
+static int hotmod_handler(const char *val, struct kernel_param *kp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 module_param_call(hotmod, hotmod_handler, NULL, NULL, 0200);
 MODULE_PARM_DESC(hotmod, "Add and remove interfaces.  See"
@@ -1811,7 +1848,11 @@ static struct smi_info *smi_info_alloc(void)
 	return info;
 }
 
+<<<<<<< HEAD
 static int hotmod_handler(const char *val, const struct kernel_param *kp)
+=======
+static int hotmod_handler(const char *val, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	char *str = kstrdup(val, GFP_KERNEL);
 	int  rv;

@@ -20,6 +20,7 @@
 
 #include <linux/iommu.h>
 
+<<<<<<< HEAD
 struct msm_mmu;
 
 enum msm_mmu_domain_type {
@@ -30,10 +31,13 @@ enum msm_mmu_domain_type {
 	MSM_SMMU_DOMAIN_MAX,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct msm_mmu_funcs {
 	int (*attach)(struct msm_mmu *mmu, const char * const *names, int cnt);
 	void (*detach)(struct msm_mmu *mmu, const char * const *names, int cnt);
 	int (*map)(struct msm_mmu *mmu, uint64_t iova, struct sg_table *sgt,
+<<<<<<< HEAD
 			unsigned int len, int prot);
 	int (*unmap)(struct msm_mmu *mmu, uint64_t iova, struct sg_table *sgt,
 			unsigned int len);
@@ -54,6 +58,12 @@ struct msm_mmu_funcs {
 	int (*one_to_one_unmap)(struct msm_mmu *mmu, uint32_t dest_address,
 					uint32_t size);
 	struct device *(*get_dev)(struct msm_mmu *mmu);
+=======
+			unsigned len, int prot);
+	int (*unmap)(struct msm_mmu *mmu, uint64_t iova, struct sg_table *sgt,
+			unsigned len);
+	void (*destroy)(struct msm_mmu *mmu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct msm_mmu {
@@ -71,8 +81,12 @@ static inline void msm_mmu_init(struct msm_mmu *mmu, struct device *dev,
 }
 
 struct msm_mmu *msm_iommu_new(struct device *dev, struct iommu_domain *domain);
+<<<<<<< HEAD
 struct msm_mmu *msm_smmu_new(struct device *dev,
 	enum msm_mmu_domain_type domain);
+=======
+struct msm_mmu *msm_gpummu_new(struct device *dev, struct msm_gpu *gpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static inline void msm_mmu_set_fault_handler(struct msm_mmu *mmu, void *arg,
 		int (*handler)(void *arg, unsigned long iova, int flags))
@@ -81,8 +95,11 @@ static inline void msm_mmu_set_fault_handler(struct msm_mmu *mmu, void *arg,
 	mmu->handler = handler;
 }
 
+<<<<<<< HEAD
 /* SDE smmu driver initialize and cleanup functions */
 int __init msm_smmu_driver_init(void);
 void __exit msm_smmu_driver_cleanup(void);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* __MSM_MMU_H__ */

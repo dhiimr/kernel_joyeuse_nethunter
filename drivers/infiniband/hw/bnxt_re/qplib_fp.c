@@ -2024,6 +2024,7 @@ static int bnxt_qplib_cq_process_req(struct bnxt_qplib_cq *cq,
 			bnxt_qplib_mark_qp_error(qp);
 			bnxt_qplib_unlock_buddy_cq(qp, cq);
 		} else {
+<<<<<<< HEAD
 			if (swq->flags & SQ_SEND_FLAGS_SIGNAL_COMP) {
 				/* Before we complete, do WA 9060 */
 				if (do_wa9060(qp, cq, cq_cons, sw_sq_cons,
@@ -2031,6 +2032,15 @@ static int bnxt_qplib_cq_process_req(struct bnxt_qplib_cq *cq,
 					*lib_qp = qp;
 					goto out;
 				}
+=======
+			/* Before we complete, do WA 9060 */
+			if (do_wa9060(qp, cq, cq_cons, sw_sq_cons,
+				      cqe_sq_cons)) {
+				*lib_qp = qp;
+				goto out;
+			}
+			if (swq->flags & SQ_SEND_FLAGS_SIGNAL_COMP) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				cqe->status = CQ_REQ_STATUS_OK;
 				cqe++;
 				(*budget)--;

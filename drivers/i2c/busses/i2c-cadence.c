@@ -382,10 +382,15 @@ static void cdns_i2c_mrecv(struct cdns_i2c *id)
 	 * Check for the message size against FIFO depth and set the
 	 * 'hold bus' bit if it is greater than FIFO depth.
 	 */
+<<<<<<< HEAD
 	if ((id->recv_count > CDNS_I2C_FIFO_DEPTH)  || id->bus_hold_flag)
 		ctrl_reg |= CDNS_I2C_CR_HOLD;
 	else
 		ctrl_reg = ctrl_reg & ~CDNS_I2C_CR_HOLD;
+=======
+	if (id->recv_count > CDNS_I2C_FIFO_DEPTH)
+		ctrl_reg |= CDNS_I2C_CR_HOLD;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cdns_i2c_writereg(ctrl_reg, CDNS_I2C_CR_OFFSET);
 
@@ -442,11 +447,16 @@ static void cdns_i2c_msend(struct cdns_i2c *id)
 	 * Check for the message size against FIFO depth and set the
 	 * 'hold bus' bit if it is greater than FIFO depth.
 	 */
+<<<<<<< HEAD
 	if ((id->send_count > CDNS_I2C_FIFO_DEPTH) || id->bus_hold_flag)
 		ctrl_reg |= CDNS_I2C_CR_HOLD;
 	else
 		ctrl_reg = ctrl_reg & ~CDNS_I2C_CR_HOLD;
 
+=======
+	if (id->send_count > CDNS_I2C_FIFO_DEPTH)
+		ctrl_reg |= CDNS_I2C_CR_HOLD;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cdns_i2c_writereg(ctrl_reg, CDNS_I2C_CR_OFFSET);
 
 	/* Clear the interrupts in interrupt status register. */
@@ -911,7 +921,14 @@ static int cdns_i2c_probe(struct platform_device *pdev)
 	if (IS_ERR(id->membase))
 		return PTR_ERR(id->membase);
 
+<<<<<<< HEAD
 	id->irq = platform_get_irq(pdev, 0);
+=======
+	ret = platform_get_irq(pdev, 0);
+	if (ret < 0)
+		return ret;
+	id->irq = ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	id->adap.owner = THIS_MODULE;
 	id->adap.dev.of_node = pdev->dev.of_node;

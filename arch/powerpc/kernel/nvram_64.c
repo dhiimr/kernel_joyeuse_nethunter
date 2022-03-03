@@ -566,8 +566,11 @@ static int nvram_pstore_init(void)
 	nvram_pstore_info.buf = oops_data;
 	nvram_pstore_info.bufsize = oops_data_sz;
 
+<<<<<<< HEAD
 	spin_lock_init(&nvram_pstore_info.buf_lock);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rc = pstore_register(&nvram_pstore_info);
 	if (rc && (rc != -EPERM))
 		/* Print error only when pstore.backend == nvram */

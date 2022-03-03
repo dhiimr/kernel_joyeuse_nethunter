@@ -166,6 +166,10 @@ struct dwc2_hsotg_req;
  * @lock: State lock to protect contents of endpoint.
  * @dir_in: Set to true if this endpoint is of the IN direction, which
  *          means that it is sending data to the Host.
+<<<<<<< HEAD
+=======
+ * @map_dir: Set to the value of dir_in when the DMA buffer is mapped.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @index: The index for the endpoint registers.
  * @mc: Multi Count - number of transactions per microframe
  * @interval - Interval for periodic endpoints, in frames or microframes.
@@ -214,6 +218,10 @@ struct dwc2_hsotg_ep {
 	unsigned short		fifo_index;
 
 	unsigned char           dir_in;
+<<<<<<< HEAD
+=======
+	unsigned char           map_dir;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned char           index;
 	unsigned char           mc;
 	u16                     interval;

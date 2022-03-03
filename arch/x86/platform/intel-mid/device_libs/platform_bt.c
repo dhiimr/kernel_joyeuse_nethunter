@@ -68,7 +68,11 @@ static struct bt_sfi_data tng_bt_sfi_data __initdata = {
 	{ X86_VENDOR_INTEL, 6, model, X86_FEATURE_ANY, (kernel_ulong_t)&ddata }
 
 static const struct x86_cpu_id bt_sfi_cpu_ids[] = {
+<<<<<<< HEAD
 	ICPU(INTEL_FAM6_ATOM_MERRIFIELD, tng_bt_sfi_data),
+=======
+	ICPU(INTEL_FAM6_ATOM_SILVERMONT_MID, tng_bt_sfi_data),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{}
 };
 

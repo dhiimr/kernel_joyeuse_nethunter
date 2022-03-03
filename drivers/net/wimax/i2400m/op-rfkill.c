@@ -101,7 +101,11 @@ int i2400m_op_rfkill_sw_toggle(struct wimax_dev *wimax_dev,
 	if (cmd == NULL)
 		goto error_alloc;
 	cmd->hdr.type = cpu_to_le16(I2400M_MT_CMD_RF_CONTROL);
+<<<<<<< HEAD
 	cmd->hdr.length = sizeof(cmd->sw_rf);
+=======
+	cmd->hdr.length = cpu_to_le16(sizeof(cmd->sw_rf));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cmd->hdr.version = cpu_to_le16(I2400M_L3L4_VERSION);
 	cmd->sw_rf.hdr.type = cpu_to_le16(I2400M_TLV_RF_OPERATION);
 	cmd->sw_rf.hdr.length = cpu_to_le16(sizeof(cmd->sw_rf.status));
@@ -147,6 +151,10 @@ error_msg_to_dev:
 error_alloc:
 	d_fnend(4, dev, "(wimax_dev %p state %d) = %d\n",
 		wimax_dev, state, result);
+<<<<<<< HEAD
+=======
+	kfree(cmd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return result;
 }
 

@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2016-2019, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Copyright (C) 2013 Red Hat
  * Author: Rob Clark <robdclark@gmail.com>
  *
@@ -33,9 +36,13 @@
 #include <linux/types.h>
 #include <linux/of_graph.h>
 #include <linux/of_device.h>
+<<<<<<< HEAD
 #include <linux/sde_io_util.h>
 #include <asm/sizes.h>
 #include <linux/kthread.h>
+=======
+#include <asm/sizes.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <drm/drmP.h>
 #include <drm/drm_atomic.h>
@@ -46,12 +53,15 @@
 #include <drm/msm_drm.h>
 #include <drm/drm_gem.h>
 
+<<<<<<< HEAD
 #include "sde_power_handle.h"
 
 #define GET_MAJOR_REV(rev)		((rev) >> 28)
 #define GET_MINOR_REV(rev)		(((rev) >> 16) & 0xFFF)
 #define GET_STEP_REV(rev)		((rev) & 0xFFFF)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct msm_kms;
 struct msm_gpu;
 struct msm_mmu;
@@ -64,6 +74,7 @@ struct msm_fence_cb;
 struct msm_gem_address_space;
 struct msm_gem_vma;
 
+<<<<<<< HEAD
 #define NUM_DOMAINS    4    /* one for KMS, then one per gpu core (?) */
 #define MAX_CRTCS      16
 #define MAX_PLANES     20
@@ -567,6 +578,27 @@ struct msm_drm_thread {
 	struct task_struct *thread;
 	unsigned int crtc_id;
 	struct kthread_worker worker;
+=======
+struct msm_file_private {
+	/* currently we don't do anything useful with this.. but when
+	 * per-context address spaces are supported we'd keep track of
+	 * the context's page-tables here.
+	 */
+	int dummy;
+};
+
+enum msm_mdp_plane_property {
+	PLANE_PROP_ZPOS,
+	PLANE_PROP_ALPHA,
+	PLANE_PROP_PREMULTIPLIED,
+	PLANE_PROP_MAX_NUM
+};
+
+struct msm_vblank_ctrl {
+	struct work_struct work;
+	struct list_head event_list;
+	spinlock_t lock;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct msm_drm_private {
@@ -575,9 +607,12 @@ struct msm_drm_private {
 
 	struct msm_kms *kms;
 
+<<<<<<< HEAD
 	struct sde_power_handle phandle;
 	struct sde_power_client *pclient;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* subordinate devices, if present: */
 	struct platform_device *gpu_pdev;
 
@@ -611,6 +646,7 @@ struct msm_drm_private {
 	struct list_head inactive_list;
 
 	struct workqueue_struct *wq;
+<<<<<<< HEAD
 
 	/* crtcs pending async atomic updates: */
 	uint32_t pending_crtcs;
@@ -645,6 +681,31 @@ struct msm_drm_private {
 
 	/* Color processing properties for the crtc */
 	struct drm_property **cp_property;
+=======
+	struct workqueue_struct *atomic_wq;
+
+	/* crtcs pending async atomic updates: */
+	uint32_t pending_crtcs;
+	wait_queue_head_t pending_crtcs_event;
+
+	unsigned int num_planes;
+	struct drm_plane *planes[16];
+
+	unsigned int num_crtcs;
+	struct drm_crtc *crtcs[8];
+
+	unsigned int num_encoders;
+	struct drm_encoder *encoders[8];
+
+	unsigned int num_bridges;
+	struct drm_bridge *bridges[8];
+
+	unsigned int num_connectors;
+	struct drm_connector *connectors[8];
+
+	/* Properties */
+	struct drm_property *plane_property[PLANE_PROP_MAX_NUM];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* VRAM carveout, used when no IOMMU: */
 	struct {
@@ -660,11 +721,17 @@ struct msm_drm_private {
 	struct notifier_block vmap_notifier;
 	struct shrinker shrinker;
 
+<<<<<<< HEAD
+=======
+	struct msm_vblank_ctrl vblank_ctrl;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* task holding struct_mutex.. currently only used in submit path
 	 * to detect and reject faults from copy_from_user() for submit
 	 * ioctl.
 	 */
 	struct task_struct *struct_mutex_task;
+<<<<<<< HEAD
 
 	/* list of clients waiting for events */
 	struct list_head client_event_list;
@@ -683,10 +750,15 @@ struct msm_drm_private {
 #define ddev_to_msm_kms(D) ((D) && (D)->dev_private ? \
 		((struct msm_drm_private *)((D)->dev_private))->kms : NULL)
 
+=======
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct msm_format {
 	uint32_t pixel_format;
 };
 
+<<<<<<< HEAD
 /* callback from wq once fence has passed: */
 struct msm_fence_cb {
 	struct work_struct work;
@@ -701,6 +773,10 @@ void __msm_fence_worker(struct work_struct *work);
 		(_cb)->func = _func;                         \
 	} while (0)
 
+=======
+int msm_atomic_check(struct drm_device *dev,
+		     struct drm_atomic_state *state);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int msm_atomic_commit(struct drm_device *dev,
 		struct drm_atomic_state *state, bool nonblock);
 struct drm_atomic_state *msm_atomic_state_alloc(struct drm_device *dev);
@@ -708,6 +784,7 @@ void msm_atomic_state_clear(struct drm_atomic_state *state);
 void msm_atomic_state_free(struct drm_atomic_state *state);
 
 void msm_gem_unmap_vma(struct msm_gem_address_space *aspace,
+<<<<<<< HEAD
 		struct msm_gem_vma *vma, struct sg_table *sgt,
 		unsigned int flags);
 int msm_gem_map_vma(struct msm_gem_address_space *aspace,
@@ -715,6 +792,11 @@ int msm_gem_map_vma(struct msm_gem_address_space *aspace,
 		unsigned int flags);
 
 struct device *msm_gem_get_aspace_device(struct msm_gem_address_space *aspace);
+=======
+		struct msm_gem_vma *vma, struct sg_table *sgt);
+int msm_gem_map_vma(struct msm_gem_address_space *aspace,
+		struct msm_gem_vma *vma, struct sg_table *sgt, int npages);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 void msm_gem_address_space_put(struct msm_gem_address_space *aspace);
 
@@ -722,6 +804,7 @@ struct msm_gem_address_space *
 msm_gem_address_space_create(struct device *dev, struct iommu_domain *domain,
 		const char *name);
 
+<<<<<<< HEAD
 /* For SDE  display */
 struct msm_gem_address_space *
 msm_gem_smmu_address_space_create(struct drm_device *dev, struct msm_mmu *mmu,
@@ -777,6 +860,8 @@ int msm_gem_address_space_unregister_cb(
 		void (*cb)(void *, bool),
 		void *cb_data);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void msm_gem_submit_free(struct msm_gem_submit *submit);
 int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
 		struct drm_file *file);
@@ -784,7 +869,10 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
 void msm_gem_shrinker_init(struct drm_device *dev);
 void msm_gem_shrinker_cleanup(struct drm_device *dev);
 
+<<<<<<< HEAD
 void msm_gem_sync(struct drm_gem_object *obj);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int msm_gem_mmap_obj(struct drm_gem_object *obj,
 			struct vm_area_struct *vma);
 int msm_gem_mmap(struct file *filp, struct vm_area_struct *vma);
@@ -798,7 +886,10 @@ struct page **msm_gem_get_pages(struct drm_gem_object *obj);
 void msm_gem_put_pages(struct drm_gem_object *obj);
 void msm_gem_put_iova(struct drm_gem_object *obj,
 		struct msm_gem_address_space *aspace);
+<<<<<<< HEAD
 dma_addr_t msm_gem_get_dma_addr(struct drm_gem_object *obj);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int msm_gem_dumb_create(struct drm_file *file, struct drm_device *dev,
 		struct drm_mode_create_dumb *args);
 int msm_gem_dumb_map_offset(struct drm_file *file, struct drm_device *dev,
@@ -812,8 +903,11 @@ struct drm_gem_object *msm_gem_prime_import_sg_table(struct drm_device *dev,
 		struct dma_buf_attachment *attach, struct sg_table *sg);
 int msm_gem_prime_pin(struct drm_gem_object *obj);
 void msm_gem_prime_unpin(struct drm_gem_object *obj);
+<<<<<<< HEAD
 struct drm_gem_object *msm_gem_prime_import(struct drm_device *dev,
 					    struct dma_buf *dma_buf);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void *msm_gem_get_vaddr(struct drm_gem_object *obj);
 void msm_gem_put_vaddr(struct drm_gem_object *obj);
 int msm_gem_madvise(struct drm_gem_object *obj, unsigned madv);
@@ -839,22 +933,31 @@ void *msm_gem_kernel_new_locked(struct drm_device *dev, uint32_t size,
 		struct drm_gem_object **bo, uint64_t *iova);
 struct drm_gem_object *msm_gem_import(struct drm_device *dev,
 		struct dma_buf *dmabuf, struct sg_table *sgt);
+<<<<<<< HEAD
 int msm_gem_delayed_import(struct drm_gem_object *obj);
 
 void msm_framebuffer_set_kmap(struct drm_framebuffer *fb, bool enable);
 void msm_framebuffer_set_keepattrs(struct drm_framebuffer *fb, bool enable);
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int msm_framebuffer_prepare(struct drm_framebuffer *fb,
 		struct msm_gem_address_space *aspace);
 void msm_framebuffer_cleanup(struct drm_framebuffer *fb,
 		struct msm_gem_address_space *aspace);
 uint32_t msm_framebuffer_iova(struct drm_framebuffer *fb,
 		struct msm_gem_address_space *aspace, int plane);
+<<<<<<< HEAD
 uint32_t msm_framebuffer_phys(struct drm_framebuffer *fb, int plane);
 struct drm_gem_object *msm_framebuffer_bo(struct drm_framebuffer *fb, int plane);
 const struct msm_format *msm_framebuffer_format(struct drm_framebuffer *fb);
 struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
 		const struct drm_mode_fb_cmd2 *mode_cmd,
 		struct drm_gem_object **bos);
+=======
+struct drm_gem_object *msm_framebuffer_bo(struct drm_framebuffer *fb, int plane);
+const struct msm_format *msm_framebuffer_format(struct drm_framebuffer *fb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct drm_framebuffer *msm_framebuffer_create(struct drm_device *dev,
 		struct drm_file *file, const struct drm_mode_fb_cmd2 *mode_cmd);
 struct drm_framebuffer * msm_alloc_stolen_fb(struct drm_device *dev,
@@ -864,11 +967,15 @@ struct drm_fb_helper *msm_fbdev_init(struct drm_device *dev);
 void msm_fbdev_free(struct drm_device *dev);
 
 struct hdmi;
+<<<<<<< HEAD
 #ifdef CONFIG_DRM_MSM_HDMI
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int msm_hdmi_modeset_init(struct hdmi *hdmi, struct drm_device *dev,
 		struct drm_encoder *encoder);
 void __init msm_hdmi_register(void);
 void __exit msm_hdmi_unregister(void);
+<<<<<<< HEAD
 #else
 static inline void __init msm_hdmi_register(void)
 {
@@ -880,10 +987,15 @@ static inline void __exit msm_hdmi_unregister(void)
 
 struct msm_edp;
 #ifdef CONFIG_DRM_MSM_EDP
+=======
+
+struct msm_edp;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void __init msm_edp_register(void);
 void __exit msm_edp_unregister(void);
 int msm_edp_modeset_init(struct msm_edp *edp, struct drm_device *dev,
 		struct drm_encoder *encoder);
+<<<<<<< HEAD
 #else
 static inline void __init msm_edp_register(void)
 {
@@ -904,6 +1016,10 @@ struct msm_dsi;
  */
 void msm_mode_object_event_notify(struct drm_mode_object *obj,
 		struct drm_device *dev, struct drm_event *event, u8 *payload);
+=======
+
+struct msm_dsi;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_DRM_MSM_DSI
 void __init msm_dsi_register(void);
 void __exit msm_dsi_unregister(void);
@@ -947,8 +1063,11 @@ static inline void msm_perf_debugfs_cleanup(struct msm_drm_private *priv) {}
 struct clk *msm_clk_get(struct platform_device *pdev, const char *name);
 void __iomem *msm_ioremap(struct platform_device *pdev, const char *name,
 		const char *dbgname);
+<<<<<<< HEAD
 unsigned long msm_iomap_size(struct platform_device *pdev, const char *name);
 void msm_iounmap(struct platform_device *dev, void __iomem *addr);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void msm_writel(u32 data, void __iomem *addr);
 u32 msm_readl(const void __iomem *addr);
 

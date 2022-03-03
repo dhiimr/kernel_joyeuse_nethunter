@@ -178,7 +178,11 @@ check_acpi_dev(acpi_handle handle, u32 lvl, void *context, void **rv)
 		return AE_OK;
 
 	if (acpi_match_device_ids(dev, ids) == 0)
+<<<<<<< HEAD
 		if (acpi_create_platform_device(dev, NULL))
+=======
+		if (!IS_ERR_OR_NULL(acpi_create_platform_device(dev, NULL)))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			dev_info(&dev->dev,
 				 "intel-vbtn: created platform device\n");
 

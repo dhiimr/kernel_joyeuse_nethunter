@@ -71,12 +71,15 @@ static inline int remove_proc_subtree(const char *name, struct proc_dir_entry *p
 
 #endif /* CONFIG_PROC_FS */
 
+<<<<<<< HEAD
 #ifdef CONFIG_PROC_UID
 extern void proc_register_uid(kuid_t uid);
 #else
 static inline void proc_register_uid(kuid_t uid) {}
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct net;
 
 static inline struct proc_dir_entry *proc_net_mkdir(

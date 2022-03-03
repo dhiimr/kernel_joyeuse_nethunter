@@ -1118,6 +1118,11 @@ void sd_int_dpc(struct adapter *padapter)
 				} else {
 					rtw_c2h_wk_cmd(padapter, (u8 *)c2h_evt);
 				}
+<<<<<<< HEAD
+=======
+			} else {
+				kfree(c2h_evt);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 		} else {
 			/* Error handling for malloc fail */

@@ -56,6 +56,11 @@ struct mtk_drm_private {
 	} commit;
 
 	struct drm_atomic_state *suspend_state;
+<<<<<<< HEAD
+=======
+
+	bool dma_parms_allocated;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 extern struct platform_driver mtk_ddp_driver;

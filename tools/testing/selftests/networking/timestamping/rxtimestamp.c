@@ -114,6 +114,10 @@ static struct option long_options[] = {
 	{ "tcp", no_argument, 0, 't' },
 	{ "udp", no_argument, 0, 'u' },
 	{ "ip", no_argument, 0, 'i' },
+<<<<<<< HEAD
+=======
+	{ NULL, 0, NULL, 0 },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static int next_port = 19999;
@@ -327,8 +331,12 @@ int main(int argc, char **argv)
 	bool all_tests = true;
 	int arg_index = 0;
 	int failures = 0;
+<<<<<<< HEAD
 	int s, t;
 	char opt;
+=======
+	int s, t, opt;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	while ((opt = getopt_long(argc, argv, "", long_options,
 				  &arg_index)) != -1) {

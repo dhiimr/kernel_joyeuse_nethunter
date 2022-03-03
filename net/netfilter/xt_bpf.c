@@ -62,7 +62,11 @@ static int __bpf_mt_check_path(const char *path, struct bpf_prog **ret)
 		return -EINVAL;
 
 	set_fs(KERNEL_DS);
+<<<<<<< HEAD
 	fd = bpf_obj_get_user(path, 0);
+=======
+	fd = bpf_obj_get_user(path);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	set_fs(oldfs);
 	if (fd < 0)
 		return fd;

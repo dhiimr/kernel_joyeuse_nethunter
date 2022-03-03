@@ -14,7 +14,10 @@
 
 #include <linux/mm.h>
 #include <linux/cpu.h>
+<<<<<<< HEAD
 #include <linux/device.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/nmi.h>
 #include <linux/init.h>
 #include <linux/module.h>
@@ -165,6 +168,11 @@ static void lockup_detector_update_enable(void)
 
 #ifdef CONFIG_SOFTLOCKUP_DETECTOR
 
+<<<<<<< HEAD
+=======
+#define SOFTLOCKUP_RESET	ULONG_MAX
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Global variables, exported for sysctl */
 unsigned int __read_mostly softlockup_panic =
 			CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE;
@@ -175,7 +183,10 @@ static u64 __read_mostly sample_period;
 static DEFINE_PER_CPU(unsigned long, watchdog_touch_ts);
 static DEFINE_PER_CPU(struct task_struct *, softlockup_watchdog);
 static DEFINE_PER_CPU(struct hrtimer, watchdog_hrtimer);
+<<<<<<< HEAD
 static DEFINE_PER_CPU(unsigned int, watchdog_en);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static DEFINE_PER_CPU(bool, softlockup_touch_sync);
 static DEFINE_PER_CPU(bool, soft_watchdog_warn);
 static DEFINE_PER_CPU(unsigned long, hrtimer_interrupts);
@@ -273,7 +284,11 @@ notrace void touch_softlockup_watchdog_sched(void)
 	 * Preemption can be enabled.  It doesn't matter which CPU's timestamp
 	 * gets zeroed here, so use the raw_ operation.
 	 */
+<<<<<<< HEAD
 	raw_cpu_write(watchdog_touch_ts, 0);
+=======
+	raw_cpu_write(watchdog_touch_ts, SOFTLOCKUP_RESET);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 notrace void touch_softlockup_watchdog(void)
@@ -297,14 +312,22 @@ void touch_all_softlockup_watchdogs(void)
 	 * the softlockup check.
 	 */
 	for_each_cpu(cpu, &watchdog_allowed_mask)
+<<<<<<< HEAD
 		per_cpu(watchdog_touch_ts, cpu) = 0;
+=======
+		per_cpu(watchdog_touch_ts, cpu) = SOFTLOCKUP_RESET;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	wq_watchdog_touch(-1);
 }
 
 void touch_softlockup_watchdog_sync(void)
 {
 	__this_cpu_write(softlockup_touch_sync, true);
+<<<<<<< HEAD
 	__this_cpu_write(watchdog_touch_ts, 0);
+=======
+	__this_cpu_write(watchdog_touch_ts, SOFTLOCKUP_RESET);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int is_softlockup(unsigned long touch_ts)
@@ -356,7 +379,11 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
 	/* .. and repeat */
 	hrtimer_forward_now(hrtimer, ns_to_ktime(sample_period));
 
+<<<<<<< HEAD
 	if (touch_ts == 0) {
+=======
+	if (touch_ts == SOFTLOCKUP_RESET) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (unlikely(__this_cpu_read(softlockup_touch_sync))) {
 			/*
 			 * If the time stamp was touched atomically
@@ -456,6 +483,7 @@ static void watchdog_set_prio(unsigned int policy, unsigned int prio)
 	sched_setscheduler(current, policy, &param);
 }
 
+<<<<<<< HEAD
 void watchdog_enable(unsigned int cpu)
 {
 	struct hrtimer *hrtimer = this_cpu_ptr(&watchdog_hrtimer);
@@ -463,6 +491,11 @@ void watchdog_enable(unsigned int cpu)
 
 	if (*enabled)
 		return;
+=======
+static void watchdog_enable(unsigned int cpu)
+{
+	struct hrtimer *hrtimer = this_cpu_ptr(&watchdog_hrtimer);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Start the timer first to prevent the NMI watchdog triggering
@@ -480,6 +513,7 @@ void watchdog_enable(unsigned int cpu)
 		watchdog_nmi_enable(cpu);
 
 	watchdog_set_prio(SCHED_FIFO, MAX_RT_PRIO - 1);
+<<<<<<< HEAD
 
 	/*
 	 * Need to ensure above operations are observed by other CPUs before
@@ -498,6 +532,13 @@ void watchdog_disable(unsigned int cpu)
 
 	if (!*enabled)
 		return;
+=======
+}
+
+static void watchdog_disable(unsigned int cpu)
+{
+	struct hrtimer *hrtimer = this_cpu_ptr(&watchdog_hrtimer);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	watchdog_set_prio(SCHED_NORMAL, 0);
 	/*
@@ -507,6 +548,7 @@ void watchdog_disable(unsigned int cpu)
 	 */
 	watchdog_nmi_disable(cpu);
 	hrtimer_cancel(hrtimer);
+<<<<<<< HEAD
 
 	/*
 	 * No need for barrier here since disabling the watchdog is
@@ -518,6 +560,8 @@ void watchdog_disable(unsigned int cpu)
 bool watchdog_configured(unsigned int cpu)
 {
 	return *per_cpu_ptr(&watchdog_en, cpu);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void watchdog_cleanup(unsigned int cpu, bool online)

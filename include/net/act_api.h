@@ -14,6 +14,10 @@
 struct tcf_idrinfo {
 	spinlock_t	lock;
 	struct idr	action_idr;
+<<<<<<< HEAD
+=======
+	struct net	*net;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct tc_action_ops;
@@ -68,7 +72,12 @@ static inline void tcf_tm_dump(struct tcf_t *dtm, const struct tcf_t *stm)
 {
 	dtm->install = jiffies_to_clock_t(jiffies - stm->install);
 	dtm->lastuse = jiffies_to_clock_t(jiffies - stm->lastuse);
+<<<<<<< HEAD
 	dtm->firstuse = jiffies_to_clock_t(jiffies - stm->firstuse);
+=======
+	dtm->firstuse = stm->firstuse ?
+		jiffies_to_clock_t(jiffies - stm->firstuse) : 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dtm->expires = jiffies_to_clock_t(stm->expires);
 }
 
@@ -104,7 +113,11 @@ struct tc_action_net {
 };
 
 static inline
+<<<<<<< HEAD
 int tc_action_net_init(struct tc_action_net *tn,
+=======
+int tc_action_net_init(struct net *net, struct tc_action_net *tn,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		       const struct tc_action_ops *ops)
 {
 	int err = 0;
@@ -113,6 +126,10 @@ int tc_action_net_init(struct tc_action_net *tn,
 	if (!tn->idrinfo)
 		return -ENOMEM;
 	tn->ops = ops;
+<<<<<<< HEAD
+=======
+	tn->idrinfo->net = net;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_init(&tn->idrinfo->lock);
 	idr_init(&tn->idrinfo->action_idr);
 	return err;

@@ -66,7 +66,15 @@ TRACE_EVENT(xen_mc_callback,
 	    TP_PROTO(xen_mc_callback_fn_t fn, void *data),
 	    TP_ARGS(fn, data),
 	    TP_STRUCT__entry(
+<<<<<<< HEAD
 		    __field(xen_mc_callback_fn_t, fn)
+=======
+		    /*
+		     * Use field_struct to avoid is_signed_type()
+		     * comparison of a function pointer.
+		     */
+		    __field_struct(xen_mc_callback_fn_t, fn)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    __field(void *, data)
 		    ),
 	    TP_fast_assign(

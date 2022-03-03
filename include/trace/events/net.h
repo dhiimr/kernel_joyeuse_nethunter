@@ -58,7 +58,11 @@ TRACE_EVENT(net_dev_start_xmit,
 		__entry->gso_type = skb_shinfo(skb)->gso_type;
 	),
 
+<<<<<<< HEAD
 	TP_printk("dev=%s queue_mapping=%u skbaddr=%pK vlan_tagged=%d vlan_proto=0x%04x vlan_tci=0x%04x protocol=0x%04x ip_summed=%d len=%u data_len=%u network_offset=%d transport_offset_valid=%d transport_offset=%d tx_flags=%d gso_size=%d gso_segs=%d gso_type=%#x",
+=======
+	TP_printk("dev=%s queue_mapping=%u skbaddr=%p vlan_tagged=%d vlan_proto=0x%04x vlan_tci=0x%04x protocol=0x%04x ip_summed=%d len=%u data_len=%u network_offset=%d transport_offset_valid=%d transport_offset=%d tx_flags=%d gso_size=%d gso_segs=%d gso_type=%#x",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		  __get_str(name), __entry->queue_mapping, __entry->skbaddr,
 		  __entry->vlan_tagged, __entry->vlan_proto, __entry->vlan_tci,
 		  __entry->protocol, __entry->ip_summed, __entry->len,
@@ -91,7 +95,11 @@ TRACE_EVENT(net_dev_xmit,
 		__assign_str(name, dev->name);
 	),
 
+<<<<<<< HEAD
 	TP_printk("dev=%s skbaddr=%pK len=%u rc=%d",
+=======
+	TP_printk("dev=%s skbaddr=%p len=%u rc=%d",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__get_str(name), __entry->skbaddr, __entry->len, __entry->rc)
 );
 
@@ -113,7 +121,11 @@ DECLARE_EVENT_CLASS(net_dev_template,
 		__assign_str(name, skb->dev->name);
 	),
 
+<<<<<<< HEAD
 	TP_printk("dev=%s skbaddr=%pK len=%u",
+=======
+	TP_printk("dev=%s skbaddr=%p len=%u",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__get_str(name), __entry->skbaddr, __entry->len)
 )
 
@@ -124,6 +136,16 @@ DEFINE_EVENT(net_dev_template, net_dev_queue,
 	TP_ARGS(skb)
 );
 
+<<<<<<< HEAD
+=======
+DEFINE_EVENT(net_dev_template, netif_receive_skb,
+
+	TP_PROTO(struct sk_buff *skb),
+
+	TP_ARGS(skb)
+);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 DEFINE_EVENT(net_dev_template, netif_rx,
 
 	TP_PROTO(struct sk_buff *skb),
@@ -185,7 +207,11 @@ DECLARE_EVENT_CLASS(net_dev_rx_verbose_template,
 		__entry->gso_type = skb_shinfo(skb)->gso_type;
 	),
 
+<<<<<<< HEAD
 	TP_printk("dev=%s napi_id=%#x queue_mapping=%u skbaddr=%pK vlan_tagged=%d vlan_proto=0x%04x vlan_tci=0x%04x protocol=0x%04x ip_summed=%d hash=0x%08x l4_hash=%d len=%u data_len=%u truesize=%u mac_header_valid=%d mac_header=%d nr_frags=%d gso_size=%d gso_type=%#x",
+=======
+	TP_printk("dev=%s napi_id=%#x queue_mapping=%u skbaddr=%p vlan_tagged=%d vlan_proto=0x%04x vlan_tci=0x%04x protocol=0x%04x ip_summed=%d hash=0x%08x l4_hash=%d len=%u data_len=%u truesize=%u mac_header_valid=%d mac_header=%d nr_frags=%d gso_size=%d gso_type=%#x",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		  __get_str(name), __entry->napi_id, __entry->queue_mapping,
 		  __entry->skbaddr, __entry->vlan_tagged, __entry->vlan_proto,
 		  __entry->vlan_tci, __entry->protocol, __entry->ip_summed,
@@ -209,6 +235,7 @@ DEFINE_EVENT(net_dev_rx_verbose_template, napi_gro_receive_entry,
 	TP_ARGS(skb)
 );
 
+<<<<<<< HEAD
 DEFINE_EVENT(net_dev_rx_verbose_template, netif_receive_skb,
 
 	TP_PROTO(const struct sk_buff *skb),
@@ -216,6 +243,8 @@ DEFINE_EVENT(net_dev_rx_verbose_template, netif_receive_skb,
 	TP_ARGS(skb)
 );
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 DEFINE_EVENT(net_dev_rx_verbose_template, netif_receive_skb_entry,
 
 	TP_PROTO(const struct sk_buff *skb),

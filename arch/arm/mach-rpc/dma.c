@@ -131,7 +131,11 @@ static irqreturn_t iomd_dma_handle(int irq, void *dev_id)
 	} while (1);
 
 	idma->state = ~DMA_ST_AB;
+<<<<<<< HEAD
 	disable_irq(irq);
+=======
+	disable_irq_nosync(irq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return IRQ_HANDLED;
 }
@@ -174,6 +178,12 @@ static void iomd_enable_dma(unsigned int chan, dma_t *dma)
 				DMA_FROM_DEVICE : DMA_TO_DEVICE);
 		}
 
+<<<<<<< HEAD
+=======
+		idma->dma_addr = idma->dma.sg->dma_address;
+		idma->dma_len = idma->dma.sg->length;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		iomd_writeb(DMA_CR_C, dma_base + CR);
 		idma->state = DMA_ST_AB;
 	}

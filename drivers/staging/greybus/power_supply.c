@@ -521,7 +521,11 @@ static int gb_power_supply_prop_descriptors_get(struct gb_power_supply *gbpsy)
 
 	op = gb_operation_create(connection,
 				 GB_POWER_SUPPLY_TYPE_GET_PROP_DESCRIPTORS,
+<<<<<<< HEAD
 				 sizeof(req), sizeof(*resp) + props_count *
+=======
+				 sizeof(*req), sizeof(*resp) + props_count *
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				 sizeof(struct gb_power_supply_props_desc),
 				 GFP_KERNEL);
 	if (!op)

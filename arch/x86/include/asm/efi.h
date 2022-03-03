@@ -82,8 +82,12 @@ struct efi_scratch {
 #define arch_efi_call_virt_setup()					\
 ({									\
 	efi_sync_low_kernel_mappings();					\
+<<<<<<< HEAD
 	preempt_disable();						\
 	__kernel_fpu_begin();						\
+=======
+	kernel_fpu_begin();						\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	firmware_restrict_branch_speculation_start();			\
 									\
 	if (efi_scratch.use_pgd) {					\
@@ -104,8 +108,12 @@ struct efi_scratch {
 	}								\
 									\
 	firmware_restrict_branch_speculation_end();			\
+<<<<<<< HEAD
 	__kernel_fpu_end();						\
 	preempt_enable();						\
+=======
+	kernel_fpu_end();						\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 })
 
 extern void __iomem *__init efi_ioremap(unsigned long addr, unsigned long size,

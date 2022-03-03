@@ -126,6 +126,11 @@ static int rxe_init_device_param(struct rxe_dev *rxe)
 	rxe->attr.max_fast_reg_page_list_len	= RXE_MAX_FMR_PAGE_LIST_LEN;
 	rxe->attr.max_pkeys			= RXE_MAX_PKEYS;
 	rxe->attr.local_ca_ack_delay		= RXE_LOCAL_CA_ACK_DELAY;
+<<<<<<< HEAD
+=======
+	addrconf_addr_eui48((unsigned char *)&rxe->attr.sys_image_guid,
+			rxe->ndev->dev_addr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rxe->max_ucontext			= RXE_MAX_UCONTEXT;
 
@@ -170,9 +175,12 @@ static int rxe_init_ports(struct rxe_dev *rxe)
 
 	rxe_init_port_param(port);
 
+<<<<<<< HEAD
 	if (!port->attr.pkey_tbl_len || !port->attr.gid_tbl_len)
 		return -EINVAL;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	port->pkey_tbl = kcalloc(port->attr.pkey_tbl_len,
 			sizeof(*port->pkey_tbl), GFP_KERNEL);
 

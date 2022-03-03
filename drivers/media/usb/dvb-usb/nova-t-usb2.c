@@ -133,7 +133,11 @@ ret:
 
 static int nova_t_read_mac_address (struct dvb_usb_device *d, u8 mac[6])
 {
+<<<<<<< HEAD
 	int i;
+=======
+	int i, ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8 b;
 
 	mac[0] = 0x00;
@@ -142,7 +146,13 @@ static int nova_t_read_mac_address (struct dvb_usb_device *d, u8 mac[6])
 
 	/* this is a complete guess, but works for my box */
 	for (i = 136; i < 139; i++) {
+<<<<<<< HEAD
 		dibusb_read_eeprom_byte(d,i, &b);
+=======
+		ret = dibusb_read_eeprom_byte(d, i, &b);
+		if (ret)
+			return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		mac[5 - (i - 136)] = b;
 	}

@@ -31,8 +31,13 @@
 
 /* Interrupt Status Registers */
 #define BXTWC_IRQLVL1		0x4E02
+<<<<<<< HEAD
 #define BXTWC_PWRBTNIRQ		0x4E03
 
+=======
+
+#define BXTWC_PWRBTNIRQ		0x4E03
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define BXTWC_THRM0IRQ		0x4E04
 #define BXTWC_THRM1IRQ		0x4E05
 #define BXTWC_THRM2IRQ		0x4E06
@@ -47,10 +52,16 @@
 
 /* Interrupt MASK Registers */
 #define BXTWC_MIRQLVL1		0x4E0E
+<<<<<<< HEAD
 #define BXTWC_MPWRTNIRQ		0x4E0F
 
 #define BXTWC_MIRQLVL1_MCHGR	BIT(5)
 
+=======
+#define BXTWC_MIRQLVL1_MCHGR	BIT(5)
+
+#define BXTWC_MPWRBTNIRQ	0x4E0F
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define BXTWC_MTHRM0IRQ		0x4E12
 #define BXTWC_MTHRM1IRQ		0x4E13
 #define BXTWC_MTHRM2IRQ		0x4E14
@@ -66,9 +77,13 @@
 /* Whiskey Cove PMIC share same ACPI ID between different platforms */
 #define BROXTON_PMIC_WC_HRV	4
 
+<<<<<<< HEAD
 /* Manage in two IRQ chips since mask registers are not consecutive */
 enum bxtwc_irqs {
 	/* Level 1 */
+=======
+enum bxtwc_irqs {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	BXTWC_PWRBTN_LVL1_IRQ = 0,
 	BXTWC_TMU_LVL1_IRQ,
 	BXTWC_THRM_LVL1_IRQ,
@@ -77,9 +92,17 @@ enum bxtwc_irqs {
 	BXTWC_CHGR_LVL1_IRQ,
 	BXTWC_GPIO_LVL1_IRQ,
 	BXTWC_CRIT_LVL1_IRQ,
+<<<<<<< HEAD
 
 	/* Level 2 */
 	BXTWC_PWRBTN_IRQ,
+=======
+};
+
+enum bxtwc_irqs_pwrbtn {
+	BXTWC_PWRBTN_IRQ = 0,
+	BXTWC_UIBTN_IRQ,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 enum bxtwc_irqs_bcu {
@@ -113,7 +136,14 @@ static const struct regmap_irq bxtwc_regmap_irqs[] = {
 	REGMAP_IRQ_REG(BXTWC_CHGR_LVL1_IRQ, 0, BIT(5)),
 	REGMAP_IRQ_REG(BXTWC_GPIO_LVL1_IRQ, 0, BIT(6)),
 	REGMAP_IRQ_REG(BXTWC_CRIT_LVL1_IRQ, 0, BIT(7)),
+<<<<<<< HEAD
 	REGMAP_IRQ_REG(BXTWC_PWRBTN_IRQ, 1, 0x03),
+=======
+};
+
+static const struct regmap_irq bxtwc_regmap_irqs_pwrbtn[] = {
+	REGMAP_IRQ_REG(BXTWC_PWRBTN_IRQ, 0, 0x01),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const struct regmap_irq bxtwc_regmap_irqs_bcu[] = {
@@ -125,7 +155,11 @@ static const struct regmap_irq bxtwc_regmap_irqs_adc[] = {
 };
 
 static const struct regmap_irq bxtwc_regmap_irqs_chgr[] = {
+<<<<<<< HEAD
 	REGMAP_IRQ_REG(BXTWC_USBC_IRQ, 0, BIT(5)),
+=======
+	REGMAP_IRQ_REG(BXTWC_USBC_IRQ, 0, 0x20),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	REGMAP_IRQ_REG(BXTWC_CHGR0_IRQ, 0, 0x1f),
 	REGMAP_IRQ_REG(BXTWC_CHGR1_IRQ, 1, 0x1f),
 };
@@ -144,7 +178,20 @@ static struct regmap_irq_chip bxtwc_regmap_irq_chip = {
 	.mask_base = BXTWC_MIRQLVL1,
 	.irqs = bxtwc_regmap_irqs,
 	.num_irqs = ARRAY_SIZE(bxtwc_regmap_irqs),
+<<<<<<< HEAD
 	.num_regs = 2,
+=======
+	.num_regs = 1,
+};
+
+static struct regmap_irq_chip bxtwc_regmap_irq_chip_pwrbtn = {
+	.name = "bxtwc_irq_chip_pwrbtn",
+	.status_base = BXTWC_PWRBTNIRQ,
+	.mask_base = BXTWC_MPWRBTNIRQ,
+	.irqs = bxtwc_regmap_irqs_pwrbtn,
+	.num_irqs = ARRAY_SIZE(bxtwc_regmap_irqs_pwrbtn),
+	.num_regs = 1,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static struct regmap_irq_chip bxtwc_regmap_irq_chip_tmu = {
@@ -473,6 +520,19 @@ static int bxtwc_probe(struct platform_device *pdev)
 	}
 
 	ret = bxtwc_add_chained_irq_chip(pmic, pmic->irq_chip_data,
+<<<<<<< HEAD
+=======
+					 BXTWC_PWRBTN_LVL1_IRQ,
+					 IRQF_ONESHOT,
+					 &bxtwc_regmap_irq_chip_pwrbtn,
+					 &pmic->irq_chip_data_pwrbtn);
+	if (ret) {
+		dev_err(&pdev->dev, "Failed to add PWRBTN IRQ chip\n");
+		return ret;
+	}
+
+	ret = bxtwc_add_chained_irq_chip(pmic, pmic->irq_chip_data,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					 BXTWC_TMU_LVL1_IRQ,
 					 IRQF_ONESHOT,
 					 &bxtwc_regmap_irq_chip_tmu,

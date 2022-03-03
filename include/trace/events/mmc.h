@@ -187,6 +187,7 @@ TRACE_EVENT(mmc_request_done,
 		  __entry->hold_retune, __entry->retune_period)
 );
 
+<<<<<<< HEAD
 TRACE_EVENT(mmc_cmd_rw_start,
 	TP_PROTO(unsigned int cmd, unsigned int arg, unsigned int flags),
 	TP_ARGS(cmd, arg, flags),
@@ -333,6 +334,9 @@ DEFINE_EVENT(mmc_pm_template, sdhci_msm_runtime_resume,
 	     TP_PROTO(const char *dev_name, int err, s64 usecs),
 	     TP_ARGS(dev_name, err, usecs));
 #endif /* if !defined(_TRACE_MMC_H) || defined(TRACE_HEADER_MULTI_READ) */
+=======
+#endif /* _TRACE_MMC_H */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* This part must be outside protection */
 #include <trace/define_trace.h>

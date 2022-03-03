@@ -17,7 +17,16 @@
 # Mike Shaver, Helge Deller and Martin K. Petersen
 #
 
+<<<<<<< HEAD
 KBUILD_IMAGE := vmlinuz
+=======
+ifdef CONFIG_PARISC_SELF_EXTRACT
+boot := arch/parisc/boot
+KBUILD_IMAGE := $(boot)/bzImage
+else
+KBUILD_IMAGE := vmlinuz
+endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 KBUILD_DEFCONFIG := default_defconfig
 

@@ -3111,6 +3111,10 @@ int t3_sge_alloc_qset(struct adapter *adapter, unsigned int id, int nports,
 			  GFP_KERNEL | __GFP_COMP);
 	if (!avail) {
 		CH_ALERT(adapter, "free list queue 0 initialization failed\n");
+<<<<<<< HEAD
+=======
+		ret = -ENOMEM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto err;
 	}
 	if (avail < q->fl[0].size)

@@ -123,10 +123,17 @@ void adf_init_hw_data_c62xiov(struct adf_hw_device_data *hw_data)
 	hw_data->enable_error_correction = adf_vf_void_noop;
 	hw_data->init_admin_comms = adf_vf_int_noop;
 	hw_data->exit_admin_comms = adf_vf_void_noop;
+<<<<<<< HEAD
 	hw_data->send_admin_init = adf_vf2pf_init;
 	hw_data->init_arb = adf_vf_int_noop;
 	hw_data->exit_arb = adf_vf_void_noop;
 	hw_data->disable_iov = adf_vf2pf_shutdown;
+=======
+	hw_data->send_admin_init = adf_vf2pf_notify_init;
+	hw_data->init_arb = adf_vf_int_noop;
+	hw_data->exit_arb = adf_vf_void_noop;
+	hw_data->disable_iov = adf_vf2pf_notify_shutdown;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hw_data->get_accel_mask = get_accel_mask;
 	hw_data->get_ae_mask = get_ae_mask;
 	hw_data->get_num_accels = get_num_accels;

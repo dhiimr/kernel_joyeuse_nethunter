@@ -108,7 +108,11 @@ struct pcan_usb_msg_context {
 	u8 *end;
 	u8 rec_cnt;
 	u8 rec_idx;
+<<<<<<< HEAD
 	u8 rec_data_idx;
+=======
+	u8 rec_ts_idx;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct net_device *netdev;
 	struct pcan_usb *pdev;
 };
@@ -441,8 +445,13 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
 		}
 		if ((n & PCAN_USB_ERROR_BUS_LIGHT) == 0) {
 			/* no error (back to active state) */
+<<<<<<< HEAD
 			mc->pdev->dev.can.state = CAN_STATE_ERROR_ACTIVE;
 			return 0;
+=======
+			new_state = CAN_STATE_ERROR_ACTIVE;
+			break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		break;
 
@@ -465,9 +474,15 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
 		}
 
 		if ((n & PCAN_USB_ERROR_BUS_HEAVY) == 0) {
+<<<<<<< HEAD
 			/* no error (back to active state) */
 			mc->pdev->dev.can.state = CAN_STATE_ERROR_ACTIVE;
 			return 0;
+=======
+			/* no error (back to warning state) */
+			new_state = CAN_STATE_ERROR_WARNING;
+			break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		break;
 
@@ -506,6 +521,14 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
 		mc->pdev->dev.can.can_stats.error_warning++;
 		break;
 
+<<<<<<< HEAD
+=======
+	case CAN_STATE_ERROR_ACTIVE:
+		cf->can_id |= CAN_ERR_CRTL;
+		cf->data[1] = CAN_ERR_CRTL_ACTIVE;
+		break;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	default:
 		/* CAN_STATE_MAX (trick to handle other errors) */
 		cf->can_id |= CAN_ERR_CRTL;
@@ -552,10 +575,22 @@ static int pcan_usb_decode_status(struct pcan_usb_msg_context *mc,
 	mc->ptr += PCAN_USB_CMD_ARGS;
 
 	if (status_len & PCAN_USB_STATUSLEN_TIMESTAMP) {
+<<<<<<< HEAD
 		int err = pcan_usb_decode_ts(mc, !mc->rec_idx);
 
 		if (err)
 			return err;
+=======
+		int err = pcan_usb_decode_ts(mc, !mc->rec_ts_idx);
+
+		if (err)
+			return err;
+
+		/* Next packet in the buffer will have a timestamp on a single
+		 * byte
+		 */
+		mc->rec_ts_idx++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	switch (f) {
@@ -638,10 +673,20 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
 
 	cf->can_dlc = get_can_dlc(rec_len);
 
+<<<<<<< HEAD
 	/* first data packet timestamp is a word */
 	if (pcan_usb_decode_ts(mc, !mc->rec_data_idx))
 		goto decode_failed;
 
+=======
+	/* Only first packet timestamp is a word */
+	if (pcan_usb_decode_ts(mc, !mc->rec_ts_idx))
+		goto decode_failed;
+
+	/* Next packet in the buffer will have a timestamp on a single byte */
+	mc->rec_ts_idx++;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* read data */
 	memset(cf->data, 0x0, sizeof(cf->data));
 	if (status_len & PCAN_USB_STATUSLEN_RTR) {
@@ -695,7 +740,10 @@ static int pcan_usb_decode_msg(struct peak_usb_device *dev, u8 *ibuf, u32 lbuf)
 		/* handle normal can frames here */
 		} else {
 			err = pcan_usb_decode_data(&mc, sl);
+<<<<<<< HEAD
 			mc.rec_data_idx++;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 

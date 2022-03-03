@@ -246,6 +246,10 @@ static int sun4i_ts_probe(struct platform_device *pdev)
 	struct device *dev = &pdev->dev;
 	struct device_node *np = dev->of_node;
 	struct device *hwmon;
+<<<<<<< HEAD
+=======
+	struct thermal_zone_device *thermal;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int error;
 	u32 reg;
 	bool ts_attached;
@@ -365,7 +369,14 @@ static int sun4i_ts_probe(struct platform_device *pdev)
 	if (IS_ERR(hwmon))
 		return PTR_ERR(hwmon);
 
+<<<<<<< HEAD
 	devm_thermal_zone_of_sensor_register(ts->dev, 0, ts, &sun4i_ts_tz_ops);
+=======
+	thermal = devm_thermal_zone_of_sensor_register(ts->dev, 0, ts,
+						       &sun4i_ts_tz_ops);
+	if (IS_ERR(thermal))
+		return PTR_ERR(thermal);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	writel(TEMP_IRQ_EN(1), ts->base + TP_INT_FIFOC);
 

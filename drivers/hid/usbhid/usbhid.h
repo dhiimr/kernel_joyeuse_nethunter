@@ -93,6 +93,10 @@ struct usbhid_device {
 	dma_addr_t outbuf_dma;                                          /* Output buffer dma */
 	unsigned long last_out;							/* record of last output for timeouts */
 
+<<<<<<< HEAD
+=======
+	struct mutex mutex;						/* start/stop/open/close */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spinlock_t lock;						/* fifo spinlock */
 	unsigned long iofl;                                             /* I/O flags (CTRL_RUNNING, OUT_RUNNING) */
 	struct timer_list io_retry;                                     /* Retry timer */

@@ -1610,6 +1610,7 @@ static int do_test(const char *alg, u32 type, u32 mask, int m)
 				  speed_template_32);
 		break;
 
+<<<<<<< HEAD
 	case 219:
 		test_cipher_speed("adiantum(xchacha12,aes)", ENCRYPT, sec, NULL,
 				  0, speed_template_32);
@@ -1620,6 +1621,8 @@ static int do_test(const char *alg, u32 type, u32 mask, int m)
 		test_cipher_speed("adiantum(xchacha20,aes)", DECRYPT, sec, NULL,
 				  0, speed_template_32);
 		break;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	case 300:
 		if (alg) {

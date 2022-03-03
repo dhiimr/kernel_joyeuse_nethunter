@@ -2167,10 +2167,18 @@ resubmit:
 /*
  * Start the modem : init the data and start kernel thread
  */
+<<<<<<< HEAD
 static int uea_boot(struct uea_softc *sc)
 {
 	int ret, size;
 	struct intr_pkt *intr;
+=======
+static int uea_boot(struct uea_softc *sc, struct usb_interface *intf)
+{
+	struct intr_pkt *intr;
+	int ret = -ENOMEM;
+	int size;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	uea_enters(INS_TO_USBDEV(sc));
 
@@ -2195,6 +2203,14 @@ static int uea_boot(struct uea_softc *sc)
 	if (UEA_CHIP_VERSION(sc) == ADI930)
 		load_XILINX_firmware(sc);
 
+<<<<<<< HEAD
+=======
+	if (intf->cur_altsetting->desc.bNumEndpoints < 1) {
+		ret = -ENODEV;
+		goto err0;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	intr = kmalloc(size, GFP_KERNEL);
 	if (!intr)
 		goto err0;
@@ -2206,8 +2222,12 @@ static int uea_boot(struct uea_softc *sc)
 	usb_fill_int_urb(sc->urb_int, sc->usb_dev,
 			 usb_rcvintpipe(sc->usb_dev, UEA_INTR_PIPE),
 			 intr, size, uea_intr, sc,
+<<<<<<< HEAD
 			 sc->usb_dev->actconfig->interface[0]->altsetting[0].
 			 endpoint[0].desc.bInterval);
+=======
+			 intf->cur_altsetting->endpoint[0].desc.bInterval);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = usb_submit_urb(sc->urb_int, GFP_KERNEL);
 	if (ret < 0) {
@@ -2222,6 +2242,10 @@ static int uea_boot(struct uea_softc *sc)
 	sc->kthread = kthread_create(uea_kthread, sc, "ueagle-atm");
 	if (IS_ERR(sc->kthread)) {
 		uea_err(INS_TO_USBDEV(sc), "failed to create thread\n");
+<<<<<<< HEAD
+=======
+		ret = PTR_ERR(sc->kthread);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto err2;
 	}
 
@@ -2236,7 +2260,11 @@ err1:
 	kfree(intr);
 err0:
 	uea_leaves(INS_TO_USBDEV(sc));
+<<<<<<< HEAD
 	return -ENOMEM;
+=======
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -2597,7 +2625,11 @@ static int uea_bind(struct usbatm_data *usbatm, struct usb_interface *intf,
 	if (ret < 0)
 		goto error;
 
+<<<<<<< HEAD
 	ret = uea_boot(sc);
+=======
+	ret = uea_boot(sc, intf);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret < 0)
 		goto error_rm_grp;
 

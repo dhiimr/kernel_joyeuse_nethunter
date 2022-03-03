@@ -467,8 +467,12 @@ static inline void set_flow_mode(struct cc_hw_desc *pdesc,
  * @pdesc: pointer HW descriptor struct
  * @mode:  Any one of the modes defined in [CC7x-DESC]
  */
+<<<<<<< HEAD
 static inline void set_cipher_mode(struct cc_hw_desc *pdesc,
 				   enum drv_cipher_mode mode)
+=======
+static inline void set_cipher_mode(struct cc_hw_desc *pdesc, int mode)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	pdesc->word[4] |= FIELD_PREP(WORD4_CIPHER_MODE, mode);
 }
@@ -479,8 +483,12 @@ static inline void set_cipher_mode(struct cc_hw_desc *pdesc,
  * @pdesc: pointer HW descriptor struct
  * @mode: Any one of the modes defined in [CC7x-DESC]
  */
+<<<<<<< HEAD
 static inline void set_cipher_config0(struct cc_hw_desc *pdesc,
 				      enum drv_crypto_direction mode)
+=======
+static inline void set_cipher_config0(struct cc_hw_desc *pdesc, int mode)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	pdesc->word[4] |= FIELD_PREP(WORD4_CIPHER_CONF0, mode);
 }

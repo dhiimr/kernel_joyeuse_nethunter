@@ -80,8 +80,12 @@ int xfrm_dev_state_add(struct net *net, struct xfrm_state *x,
 		}
 
 		dst = __xfrm_dst_lookup(net, 0, 0, saddr, daddr,
+<<<<<<< HEAD
 					x->props.family,
 					xfrm_smark_get(0, x));
+=======
+					x->props.family, x->props.output_mark);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (IS_ERR(dst))
 			return 0;
 
@@ -154,12 +158,15 @@ static int xfrm_dev_register(struct net_device *dev)
 	return NOTIFY_DONE;
 }
 
+<<<<<<< HEAD
 static int xfrm_dev_unregister(struct net_device *dev)
 {
 	xfrm_policy_cache_flush();
 	return NOTIFY_DONE;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int xfrm_dev_feat_change(struct net_device *dev)
 {
 	if ((dev->features & NETIF_F_HW_ESP) && !dev->xfrmdev_ops)
@@ -179,7 +186,10 @@ static int xfrm_dev_down(struct net_device *dev)
 	if (dev->features & NETIF_F_HW_ESP)
 		xfrm_dev_state_flush(dev_net(dev), dev, true);
 
+<<<<<<< HEAD
 	xfrm_policy_cache_flush();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return NOTIFY_DONE;
 }
 
@@ -191,13 +201,20 @@ static int xfrm_dev_event(struct notifier_block *this, unsigned long event, void
 	case NETDEV_REGISTER:
 		return xfrm_dev_register(dev);
 
+<<<<<<< HEAD
 	case NETDEV_UNREGISTER:
 		return xfrm_dev_unregister(dev);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	case NETDEV_FEAT_CHANGE:
 		return xfrm_dev_feat_change(dev);
 
 	case NETDEV_DOWN:
+<<<<<<< HEAD
+=======
+	case NETDEV_UNREGISTER:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return xfrm_dev_down(dev);
 	}
 	return NOTIFY_DONE;

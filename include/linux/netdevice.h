@@ -272,6 +272,10 @@ struct header_ops {
 				const struct net_device *dev,
 				const unsigned char *haddr);
 	bool	(*validate)(const char *ll_header, unsigned int len);
+<<<<<<< HEAD
+=======
+	__be16	(*parse_protocol)(const struct sk_buff *skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* These flag bits are private to the generic network queueing
@@ -1718,6 +1722,14 @@ struct net_device {
 	unsigned char		if_port;
 	unsigned char		dma;
 
+<<<<<<< HEAD
+=======
+	/* Note : dev->mtu is often read without holding a lock.
+	 * Writers usually hold RTNL.
+	 * It is recommended to use READ_ONCE() to annotate the reads,
+	 * and to use WRITE_ONCE() to annotate the writes.
+	 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int		mtu;
 	unsigned int		min_mtu;
 	unsigned int		max_mtu;
@@ -2140,10 +2152,20 @@ struct napi_gro_cb {
 	/* Used in GRE, set in fou/gue_gro_receive */
 	u8	is_fou:1;
 
+<<<<<<< HEAD
 	/* Number of gro_receive callbacks this packet already went through */
 	u8 recursion_counter:4;
 
 	/* 2 bit hole */
+=======
+	/* Used to determine if flush_id can be ignored */
+	u8	is_atomic:1;
+
+	/* Number of gro_receive callbacks this packet already went through */
+	u8 recursion_counter:4;
+
+	/* 1 bit hole */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* used to support CHECKSUM_COMPLETE for tunneling protocols */
 	__wsum	csum;
@@ -2197,6 +2219,10 @@ struct packet_type {
 					 struct net_device *);
 	bool			(*id_match)(struct packet_type *ptype,
 					    struct sock *sk);
+<<<<<<< HEAD
+=======
+	struct net		*af_packet_net;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	void			*af_packet_priv;
 	struct list_head	list;
 };
@@ -2441,7 +2467,11 @@ void synchronize_net(void);
 int init_dummy_netdev(struct net_device *dev);
 
 DECLARE_PER_CPU(int, xmit_recursion);
+<<<<<<< HEAD
 #define XMIT_RECURSION_LIMIT	10
+=======
+#define XMIT_RECURSION_LIMIT	8
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static inline int dev_recursion_level(void)
 {
@@ -2723,6 +2753,18 @@ static inline int dev_parse_header(const struct sk_buff *skb,
 	return dev->header_ops->parse(skb, haddr);
 }
 
+<<<<<<< HEAD
+=======
+static inline __be16 dev_parse_header_protocol(const struct sk_buff *skb)
+{
+	const struct net_device *dev = skb->dev;
+
+	if (!dev->header_ops || !dev->header_ops->parse_protocol)
+		return 0;
+	return dev->header_ops->parse_protocol(skb);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* ll_header must have at least hard_header_len allocated */
 static inline bool dev_validate_header(const struct net_device *dev,
 				       char *ll_header, int len)
@@ -2768,15 +2810,21 @@ extern int netdev_flow_limit_table_len;
  */
 struct softnet_data {
 	struct list_head	poll_list;
+<<<<<<< HEAD
 	struct napi_struct	*current_napi;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct sk_buff_head	process_queue;
 
 	/* stats */
 	unsigned int		processed;
 	unsigned int		time_squeeze;
 	unsigned int		received_rps;
+<<<<<<< HEAD
 	unsigned int            gro_coalesced;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_RPS
 	struct softnet_data	*rps_ipi_list;
 #endif
@@ -3282,7 +3330,10 @@ struct sk_buff *napi_get_frags(struct napi_struct *napi);
 gro_result_t napi_gro_frags(struct napi_struct *napi);
 struct packet_offload *gro_find_receive_by_type(__be16 type);
 struct packet_offload *gro_find_complete_by_type(__be16 type);
+<<<<<<< HEAD
 extern struct napi_struct *get_current_napi_context(void);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static inline void napi_free_frags(struct napi_struct *napi)
 {
@@ -3309,6 +3360,10 @@ int dev_set_alias(struct net_device *, const char *, size_t);
 int dev_change_net_namespace(struct net_device *, struct net *, const char *);
 int __dev_set_mtu(struct net_device *, int);
 int dev_set_mtu(struct net_device *, int);
+<<<<<<< HEAD
+=======
+int dev_validate_mtu(struct net_device *dev, int mtu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void dev_set_group(struct net_device *, int);
 int dev_set_mac_address(struct net_device *, struct sockaddr *);
 int dev_change_carrier(struct net_device *, bool new_carrier);
@@ -3523,7 +3578,11 @@ static inline u32 netif_msg_init(int debug_value, int default_msg_enable_bits)
 	if (debug_value == 0)	/* no output */
 		return 0;
 	/* set low N bits */
+<<<<<<< HEAD
 	return (1 << debug_value) - 1;
+=======
+	return (1U << debug_value) - 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void __netif_tx_lock(struct netdev_queue *txq, int cpu)
@@ -3669,6 +3728,10 @@ static inline void netif_tx_disable(struct net_device *dev)
 
 	local_bh_disable();
 	cpu = smp_processor_id();
+<<<<<<< HEAD
+=======
+	spin_lock(&dev->tx_global_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (i = 0; i < dev->num_tx_queues; i++) {
 		struct netdev_queue *txq = netdev_get_tx_queue(dev, i);
 
@@ -3676,6 +3739,10 @@ static inline void netif_tx_disable(struct net_device *dev)
 		netif_tx_stop_queue(txq);
 		__netif_tx_unlock(txq);
 	}
+<<<<<<< HEAD
+=======
+	spin_unlock(&dev->tx_global_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	local_bh_enable();
 }
 
@@ -4133,7 +4200,10 @@ static inline bool net_gso_ok(netdev_features_t features, int gso_type)
 	BUILD_BUG_ON(SKB_GSO_SCTP    != (NETIF_F_GSO_SCTP >> NETIF_F_GSO_SHIFT));
 	BUILD_BUG_ON(SKB_GSO_ESP != (NETIF_F_GSO_ESP >> NETIF_F_GSO_SHIFT));
 	BUILD_BUG_ON(SKB_GSO_UDP != (NETIF_F_GSO_UDP >> NETIF_F_GSO_SHIFT));
+<<<<<<< HEAD
 	BUILD_BUG_ON(SKB_GSO_UDP_L4 != (NETIF_F_GSO_UDP_L4 >> NETIF_F_GSO_SHIFT));
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return (features & feature) == feature;
 }

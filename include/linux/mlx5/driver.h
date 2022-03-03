@@ -841,6 +841,10 @@ struct mlx5_cmd_work_ent {
 	struct delayed_work	cb_timeout_work;
 	void		       *context;
 	int			idx;
+<<<<<<< HEAD
+=======
+	struct completion	handling;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct completion	done;
 	struct mlx5_cmd        *cmd;
 	struct work_struct	work;

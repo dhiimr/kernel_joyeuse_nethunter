@@ -886,6 +886,11 @@ int usb_otg_start(struct platform_device *pdev)
 
 	/* request irq */
 	p_otg->irq = platform_get_irq(pdev, 0);
+<<<<<<< HEAD
+=======
+	if (p_otg->irq < 0)
+		return p_otg->irq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	status = request_irq(p_otg->irq, fsl_otg_isr,
 				IRQF_SHARED, driver_name, p_otg);
 	if (status) {

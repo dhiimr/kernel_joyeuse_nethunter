@@ -221,13 +221,22 @@ EXPORT_SYMBOL(rockchip_drm_psr_flush_all);
 int rockchip_drm_psr_register(struct drm_encoder *encoder,
 			void (*psr_set)(struct drm_encoder *, bool enable))
 {
+<<<<<<< HEAD
 	struct rockchip_drm_private *drm_drv = encoder->dev->dev_private;
+=======
+	struct rockchip_drm_private *drm_drv;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct psr_drv *psr;
 	unsigned long flags;
 
 	if (!encoder || !psr_set)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	drm_drv = encoder->dev->dev_private;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	psr = kzalloc(sizeof(struct psr_drv), GFP_KERNEL);
 	if (!psr)
 		return -ENOMEM;

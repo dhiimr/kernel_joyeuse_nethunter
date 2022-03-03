@@ -869,7 +869,14 @@ static int __qeth_l2_open(struct net_device *dev)
 
 	if (qdio_stop_irq(card->data.ccwdev, 0) >= 0) {
 		napi_enable(&card->napi);
+<<<<<<< HEAD
 		napi_schedule(&card->napi);
+=======
+		local_bh_disable();
+		napi_schedule(&card->napi);
+		/* kick-start the NAPI softirq: */
+		local_bh_enable();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else
 		rc = -EIO;
 	return rc;
@@ -1556,6 +1563,13 @@ static void qeth_bridge_state_change(struct qeth_card *card,
 	int extrasize;
 
 	QETH_CARD_TEXT(card, 2, "brstchng");
+<<<<<<< HEAD
+=======
+	if (qports->num_entries == 0) {
+		QETH_CARD_TEXT(card, 2, "BPempty");
+		return;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (qports->entry_length != sizeof(struct qeth_sbp_port_entry)) {
 		QETH_CARD_TEXT_(card, 2, "BPsz%04x", qports->entry_length);
 		return;
@@ -1998,7 +2012,11 @@ static void qeth_bridgeport_an_set_cb(void *priv,
 
 	l2entry = (struct qdio_brinfo_entry_l2 *)entry;
 	code = IPA_ADDR_CHANGE_CODE_MACADDR;
+<<<<<<< HEAD
 	if (l2entry->addr_lnid.lnid)
+=======
+	if (l2entry->addr_lnid.lnid < VLAN_N_VID)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		code |= IPA_ADDR_CHANGE_CODE_VLANID;
 	qeth_bridge_emit_host_event(card, anev_reg_unreg, code,
 		(struct net_if_token *)&l2entry->nit,

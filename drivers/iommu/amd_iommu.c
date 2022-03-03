@@ -139,10 +139,21 @@ static struct lock_class_key reserved_rbtree_key;
 static inline int match_hid_uid(struct device *dev,
 				struct acpihid_map_entry *entry)
 {
+<<<<<<< HEAD
 	const char *hid, *uid;
 
 	hid = acpi_device_hid(ACPI_COMPANION(dev));
 	uid = acpi_device_uid(ACPI_COMPANION(dev));
+=======
+	struct acpi_device *adev = ACPI_COMPANION(dev);
+	const char *hid, *uid;
+
+	if (!adev)
+		return -ENODEV;
+
+	hid = acpi_device_hid(adev);
+	uid = acpi_device_uid(adev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!hid || !(*hid))
 		return -ENODEV;
@@ -1150,6 +1161,20 @@ static void amd_iommu_flush_tlb_all(struct amd_iommu *iommu)
 	iommu_completion_wait(iommu);
 }
 
+<<<<<<< HEAD
+=======
+static void amd_iommu_flush_tlb_domid(struct amd_iommu *iommu, u32 dom_id)
+{
+	struct iommu_cmd cmd;
+
+	build_inv_iommu_pages(&cmd, 0, CMD_INV_IOMMU_ALL_PAGES_ADDRESS,
+			      dom_id, 1);
+	iommu_queue_command(iommu, &cmd);
+
+	iommu_completion_wait(iommu);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void amd_iommu_flush_all(struct amd_iommu *iommu)
 {
 	struct iommu_cmd cmd;
@@ -1326,6 +1351,7 @@ static void domain_flush_devices(struct protection_domain *domain)
  * another level increases the size of the address space by 9 bits to a size up
  * to 64 bits.
  */
+<<<<<<< HEAD
 static bool increase_address_space(struct protection_domain *domain,
 				   gfp_t gfp)
 {
@@ -1338,14 +1364,41 @@ static bool increase_address_space(struct protection_domain *domain,
 	pte = (void *)get_zeroed_page(gfp);
 	if (!pte)
 		return false;
+=======
+static void increase_address_space(struct protection_domain *domain,
+				   gfp_t gfp)
+{
+	unsigned long flags;
+	u64 *pte;
+
+	pte = (void *)get_zeroed_page(gfp);
+	if (!pte)
+		return;
+
+	spin_lock_irqsave(&domain->lock, flags);
+
+	if (WARN_ON_ONCE(domain->mode == PAGE_MODE_6_LEVEL))
+		/* address space already 64 bit large */
+		goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	*pte             = PM_LEVEL_PDE(domain->mode,
 					iommu_virt_to_phys(domain->pt_root));
 	domain->pt_root  = pte;
 	domain->mode    += 1;
 	domain->updated  = true;
+<<<<<<< HEAD
 
 	return true;
+=======
+	pte              = NULL;
+
+out:
+	spin_unlock_irqrestore(&domain->lock, flags);
+	free_page((unsigned long)pte);
+
+	return;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static u64 *alloc_pte(struct protection_domain *domain,
@@ -1835,6 +1888,10 @@ static void set_dte_entry(u16 devid, struct protection_domain *domain, bool ats)
 {
 	u64 pte_root = 0;
 	u64 flags = 0;
+<<<<<<< HEAD
+=======
+	u32 old_domid;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (domain->mode != PAGE_MODE_NONE)
 		pte_root = iommu_virt_to_phys(domain->pt_root);
@@ -1877,8 +1934,25 @@ static void set_dte_entry(u16 devid, struct protection_domain *domain, bool ats)
 	flags &= ~DEV_DOMID_MASK;
 	flags |= domain->id;
 
+<<<<<<< HEAD
 	amd_iommu_dev_table[devid].data[1]  = flags;
 	amd_iommu_dev_table[devid].data[0]  = pte_root;
+=======
+	old_domid = amd_iommu_dev_table[devid].data[1] & DEV_DOMID_MASK;
+	amd_iommu_dev_table[devid].data[1]  = flags;
+	amd_iommu_dev_table[devid].data[0]  = pte_root;
+
+	/*
+	 * A kdump kernel might be replacing a domain ID that was copied from
+	 * the previous kernel--if so, it needs to flush the translation cache
+	 * entries for the old domain ID that is being overwritten
+	 */
+	if (old_domid) {
+		struct amd_iommu *iommu = amd_iommu_rlookup_table[devid];
+
+		amd_iommu_flush_tlb_domid(iommu, old_domid);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void clear_dte_entry(u16 devid)
@@ -2126,6 +2200,11 @@ skip_ats_check:
 	 */
 	domain_flush_tlb_pde(domain);
 
+<<<<<<< HEAD
+=======
+	domain_flush_complete(domain);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -2538,7 +2617,13 @@ static int map_sg(struct device *dev, struct scatterlist *sglist,
 
 			bus_addr  = address + s->dma_address + (j << PAGE_SHIFT);
 			phys_addr = (sg_phys(s) & PAGE_MASK) + (j << PAGE_SHIFT);
+<<<<<<< HEAD
 			ret = iommu_map_page(domain, bus_addr, phys_addr, PAGE_SIZE, prot, GFP_ATOMIC);
+=======
+			ret = iommu_map_page(domain, bus_addr, phys_addr,
+					     PAGE_SIZE, prot,
+					     GFP_ATOMIC | __GFP_NOWARN);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (ret)
 				goto out_unmap;
 
@@ -4356,9 +4441,16 @@ int amd_iommu_create_irq_domain(struct amd_iommu *iommu)
 	if (!fn)
 		return -ENOMEM;
 	iommu->ir_domain = irq_domain_create_tree(fn, &amd_ir_domain_ops, iommu);
+<<<<<<< HEAD
 	irq_domain_free_fwnode(fn);
 	if (!iommu->ir_domain)
 		return -ENOMEM;
+=======
+	if (!iommu->ir_domain) {
+		irq_domain_free_fwnode(fn);
+		return -ENOMEM;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	iommu->ir_domain->parent = arch_get_ir_parent_domain();
 	iommu->msi_domain = arch_create_remap_msi_irq_domain(iommu->ir_domain,

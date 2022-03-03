@@ -35,7 +35,11 @@
 		led4 { gpios = <&gpio_simple 2 1>; };
 	};
 
+<<<<<<< HEAD
 	memory {
+=======
+	memory@0 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		reg = <0x00000000 0x10000000>;	// 256MB
 	};
 

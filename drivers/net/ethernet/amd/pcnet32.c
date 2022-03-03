@@ -1548,8 +1548,12 @@ pcnet32_probe_pci(struct pci_dev *pdev, const struct pci_device_id *ent)
 	}
 	pci_set_master(pdev);
 
+<<<<<<< HEAD
 	ioaddr = pci_resource_start(pdev, 0);
 	if (!ioaddr) {
+=======
+	if (!pci_resource_len(pdev, 0)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (pcnet32_debug & NETIF_MSG_PROBE)
 			pr_err("card has no PCI IO resources, aborting\n");
 		return -ENODEV;
@@ -1561,6 +1565,11 @@ pcnet32_probe_pci(struct pci_dev *pdev, const struct pci_device_id *ent)
 			pr_err("architecture does not support 32bit PCI busmaster DMA\n");
 		return err;
 	}
+<<<<<<< HEAD
+=======
+
+	ioaddr = pci_resource_start(pdev, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!request_region(ioaddr, PCNET32_TOTAL_SIZE, "pcnet32_probe_pci")) {
 		if (pcnet32_debug & NETIF_MSG_PROBE)
 			pr_err("io address range already allocated\n");

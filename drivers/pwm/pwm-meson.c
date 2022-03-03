@@ -111,6 +111,13 @@ struct meson_pwm {
 	const struct meson_pwm_data *data;
 	void __iomem *base;
 	u8 inverter_mask;
+<<<<<<< HEAD
+=======
+	/*
+	 * Protects register (write) access to the REG_MISC_AB register
+	 * that is shared between the two PWMs.
+	 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spinlock_t lock;
 };
 
@@ -184,7 +191,11 @@ static int meson_pwm_calc(struct meson_pwm *meson,
 	do_div(fin_ps, fin_freq);
 
 	/* Calc pre_div with the period */
+<<<<<<< HEAD
 	for (pre_div = 0; pre_div < MISC_CLK_DIV_MASK; pre_div++) {
+=======
+	for (pre_div = 0; pre_div <= MISC_CLK_DIV_MASK; pre_div++) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cnt = DIV_ROUND_CLOSEST_ULL((u64)period * 1000,
 					    fin_ps * (pre_div + 1));
 		dev_dbg(meson->chip.dev, "fin_ps=%llu pre_div=%u cnt=%u\n",
@@ -193,7 +204,11 @@ static int meson_pwm_calc(struct meson_pwm *meson,
 			break;
 	}
 
+<<<<<<< HEAD
 	if (pre_div == MISC_CLK_DIV_MASK) {
+=======
+	if (pre_div > MISC_CLK_DIV_MASK) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_err(meson->chip.dev, "unable to get period pre_div\n");
 		return -EINVAL;
 	}
@@ -235,6 +250,10 @@ static void meson_pwm_enable(struct meson_pwm *meson,
 {
 	u32 value, clk_shift, clk_enable, enable;
 	unsigned int offset;
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	switch (id) {
 	case 0:
@@ -255,6 +274,11 @@ static void meson_pwm_enable(struct meson_pwm *meson,
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	spin_lock_irqsave(&meson->lock, flags);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	value = readl(meson->base + REG_MISC_AB);
 	value &= ~(MISC_CLK_DIV_MASK << clk_shift);
 	value |= channel->pre_div << clk_shift;
@@ -267,11 +291,20 @@ static void meson_pwm_enable(struct meson_pwm *meson,
 	value = readl(meson->base + REG_MISC_AB);
 	value |= enable;
 	writel(value, meson->base + REG_MISC_AB);
+<<<<<<< HEAD
+=======
+
+	spin_unlock_irqrestore(&meson->lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void meson_pwm_disable(struct meson_pwm *meson, unsigned int id)
 {
 	u32 value, enable;
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	switch (id) {
 	case 0:
@@ -286,9 +319,19 @@ static void meson_pwm_disable(struct meson_pwm *meson, unsigned int id)
 		return;
 	}
 
+<<<<<<< HEAD
 	value = readl(meson->base + REG_MISC_AB);
 	value &= ~enable;
 	writel(value, meson->base + REG_MISC_AB);
+=======
+	spin_lock_irqsave(&meson->lock, flags);
+
+	value = readl(meson->base + REG_MISC_AB);
+	value &= ~enable;
+	writel(value, meson->base + REG_MISC_AB);
+
+	spin_unlock_irqrestore(&meson->lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int meson_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
@@ -296,29 +339,42 @@ static int meson_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
 {
 	struct meson_pwm_channel *channel = pwm_get_chip_data(pwm);
 	struct meson_pwm *meson = to_meson_pwm(chip);
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err = 0;
 
 	if (!state)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&meson->lock, flags);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!state->enabled) {
 		meson_pwm_disable(meson, pwm->hwpwm);
 		channel->state.enabled = false;
 
+<<<<<<< HEAD
 		goto unlock;
+=======
+		return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (state->period != channel->state.period ||
 	    state->duty_cycle != channel->state.duty_cycle ||
 	    state->polarity != channel->state.polarity) {
+<<<<<<< HEAD
 		if (channel->state.enabled) {
 			meson_pwm_disable(meson, pwm->hwpwm);
 			channel->state.enabled = false;
 		}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (state->polarity != channel->state.polarity) {
 			if (state->polarity == PWM_POLARITY_NORMAL)
 				meson->inverter_mask |= BIT(pwm->hwpwm);
@@ -329,7 +385,11 @@ static int meson_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
 		err = meson_pwm_calc(meson, channel, pwm->hwpwm,
 				     state->duty_cycle, state->period);
 		if (err < 0)
+<<<<<<< HEAD
 			goto unlock;
+=======
+			return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		channel->state.polarity = state->polarity;
 		channel->state.period = state->period;
@@ -341,9 +401,13 @@ static int meson_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
 		channel->state.enabled = true;
 	}
 
+<<<<<<< HEAD
 unlock:
 	spin_unlock_irqrestore(&meson->lock, flags);
 	return err;
+=======
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void meson_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,

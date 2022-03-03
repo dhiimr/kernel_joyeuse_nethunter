@@ -479,12 +479,21 @@ void add_page_to_unevictable_list(struct page *page)
  * directly back onto it's zone's unevictable list, it does NOT use a
  * per cpu pagevec.
  */
+<<<<<<< HEAD
 void __lru_cache_add_active_or_unevictable(struct page *page,
 					   unsigned long vma_flags)
 {
 	VM_BUG_ON_PAGE(PageLRU(page), page);
 
 	if (likely((vma_flags & (VM_LOCKED | VM_SPECIAL)) != VM_LOCKED)) {
+=======
+void lru_cache_add_active_or_unevictable(struct page *page,
+					 struct vm_area_struct *vma)
+{
+	VM_BUG_ON_PAGE(PageLRU(page), page);
+
+	if (likely((vma->vm_flags & (VM_LOCKED | VM_SPECIAL)) != VM_LOCKED)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		SetPageActive(page);
 		lru_cache_add(page);
 		return;
@@ -986,6 +995,7 @@ unsigned pagevec_lookup_range(struct pagevec *pvec,
 }
 EXPORT_SYMBOL(pagevec_lookup_range);
 
+<<<<<<< HEAD
 unsigned pagevec_lookup_range_tag(struct pagevec *pvec,
 		struct address_space *mapping, pgoff_t *index, pgoff_t end,
 		int tag)
@@ -1005,6 +1015,17 @@ unsigned pagevec_lookup_range_nr_tag(struct pagevec *pvec,
 	return pagevec_count(pvec);
 }
 EXPORT_SYMBOL(pagevec_lookup_range_nr_tag);
+=======
+unsigned pagevec_lookup_tag(struct pagevec *pvec, struct address_space *mapping,
+		pgoff_t *index, int tag, unsigned nr_pages)
+{
+	pvec->nr = find_get_pages_tag(mapping, index, tag,
+					nr_pages, pvec->pages);
+	return pagevec_count(pvec);
+}
+EXPORT_SYMBOL(pagevec_lookup_tag);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Perform any setup for the swap system
  */

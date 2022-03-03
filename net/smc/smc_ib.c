@@ -513,6 +513,11 @@ static void smc_ib_remove_dev(struct ib_device *ibdev, void *client_data)
 	struct smc_ib_device *smcibdev;
 
 	smcibdev = ib_get_client_data(ibdev, &smc_ib_client);
+<<<<<<< HEAD
+=======
+	if (!smcibdev || smcibdev->ibdev != ibdev)
+		return;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ib_set_client_data(ibdev, &smc_ib_client, NULL);
 	spin_lock(&smc_ib_devices.lock);
 	list_del_init(&smcibdev->list); /* remove from smc_ib_devices */

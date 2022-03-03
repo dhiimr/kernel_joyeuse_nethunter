@@ -189,7 +189,11 @@ config HAVE_MMIOTRACE_SUPPORT
 
 config X86_DECODER_SELFTEST
 	bool "x86 instruction decoder selftest"
+<<<<<<< HEAD
 	depends on DEBUG_KERNEL && KPROBES
+=======
+	depends on DEBUG_KERNEL && INSTRUCTION_DECODER
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	depends on !COMPILE_TEST
 	---help---
 	 Perform x86 instruction decoder selftests at build time.

@@ -441,7 +441,11 @@ struct sctp_af {
 					 int saddr);
 	void		(*from_sk)	(union sctp_addr *,
 					 struct sock *sk);
+<<<<<<< HEAD
 	void		(*from_addr_param) (union sctp_addr *,
+=======
+	bool		(*from_addr_param) (union sctp_addr *,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					    union sctp_addr_param *,
 					    __be16 port, int iif);
 	int		(*to_addr_param) (const union sctp_addr *,
@@ -1181,6 +1185,12 @@ struct sctp_ep_common {
 	/* What socket does this endpoint belong to?  */
 	struct sock *sk;
 
+<<<<<<< HEAD
+=======
+	/* Cache netns and it won't change once set */
+	struct net *net;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* This is where we receive inbound chunks.  */
 	struct sctp_inq	  inqueue;
 
@@ -1269,6 +1279,10 @@ struct sctp_endpoint {
 	      reconf_enable:1;
 
 	__u8  strreset_enable;
+<<<<<<< HEAD
+=======
+	struct rcu_head rcu;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* Recover the outter endpoint structure. */
@@ -1284,7 +1298,11 @@ static inline struct sctp_endpoint *sctp_ep(struct sctp_ep_common *base)
 struct sctp_endpoint *sctp_endpoint_new(struct sock *, gfp_t);
 void sctp_endpoint_free(struct sctp_endpoint *);
 void sctp_endpoint_put(struct sctp_endpoint *);
+<<<<<<< HEAD
 void sctp_endpoint_hold(struct sctp_endpoint *);
+=======
+int sctp_endpoint_hold(struct sctp_endpoint *ep);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void sctp_endpoint_add_asoc(struct sctp_endpoint *, struct sctp_association *);
 struct sctp_association *sctp_endpoint_lookup_assoc(
 	const struct sctp_endpoint *ep,

@@ -344,7 +344,11 @@ struct x86_hw_tss {
 #define INVALID_IO_BITMAP_OFFSET	0x8000
 
 struct entry_stack {
+<<<<<<< HEAD
 	unsigned long		words[64];
+=======
+	char	stack[PAGE_SIZE];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct entry_stack_page {
@@ -512,6 +516,7 @@ struct thread_struct {
 };
 
 /*
+<<<<<<< HEAD
  * Thread-synchronous status.
  *
  * This is different from the flags in that nobody else
@@ -521,6 +526,8 @@ struct thread_struct {
 #define TS_COMPAT		0x0002	/* 32bit syscall active (64BIT)*/
 
 /*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Set IOPL bits in EFLAGS from given mask
  */
 static inline void native_set_iopl_mask(unsigned mask)
@@ -988,4 +995,20 @@ enum l1tf_mitigations {
 
 extern enum l1tf_mitigations l1tf_mitigation;
 
+<<<<<<< HEAD
+=======
+enum mds_mitigations {
+	MDS_MITIGATION_OFF,
+	MDS_MITIGATION_FULL,
+	MDS_MITIGATION_VMWERV,
+};
+
+enum taa_mitigations {
+	TAA_MITIGATION_OFF,
+	TAA_MITIGATION_UCODE_NEEDED,
+	TAA_MITIGATION_VERW,
+	TAA_MITIGATION_TSX_DISABLED,
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _ASM_X86_PROCESSOR_H */

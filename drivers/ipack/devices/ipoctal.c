@@ -38,6 +38,10 @@ struct ipoctal_channel {
 	unsigned int			pointer_read;
 	unsigned int			pointer_write;
 	struct tty_port			tty_port;
+<<<<<<< HEAD
+=======
+	bool				tty_registered;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	union scc2698_channel __iomem	*regs;
 	union scc2698_block __iomem	*block_regs;
 	unsigned int			board_id;
@@ -86,6 +90,7 @@ static int ipoctal_port_activate(struct tty_port *port, struct tty_struct *tty)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ipoctal_open(struct tty_struct *tty, struct file *file)
 {
 	struct ipoctal_channel *channel = dev_get_drvdata(tty->dev);
@@ -93,15 +98,44 @@ static int ipoctal_open(struct tty_struct *tty, struct file *file)
 	int err;
 
 	tty->driver_data = channel;
+=======
+static int ipoctal_install(struct tty_driver *driver, struct tty_struct *tty)
+{
+	struct ipoctal_channel *channel = dev_get_drvdata(tty->dev);
+	struct ipoctal *ipoctal = chan_to_ipoctal(channel, tty->index);
+	int res;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!ipack_get_carrier(ipoctal->dev))
 		return -EBUSY;
 
+<<<<<<< HEAD
 	err = tty_port_open(&channel->tty_port, tty, file);
 	if (err)
 		ipack_put_carrier(ipoctal->dev);
 
 	return err;
+=======
+	res = tty_standard_install(driver, tty);
+	if (res)
+		goto err_put_carrier;
+
+	tty->driver_data = channel;
+
+	return 0;
+
+err_put_carrier:
+	ipack_put_carrier(ipoctal->dev);
+
+	return res;
+}
+
+static int ipoctal_open(struct tty_struct *tty, struct file *file)
+{
+	struct ipoctal_channel *channel = tty->driver_data;
+
+	return tty_port_open(&channel->tty_port, tty, file);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void ipoctal_reset_stats(struct ipoctal_stats *stats)
@@ -269,7 +303,10 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
 	int res;
 	int i;
 	struct tty_driver *tty;
+<<<<<<< HEAD
 	char name[20];
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct ipoctal_channel *channel;
 	struct ipack_region *region;
 	void __iomem *addr;
@@ -360,8 +397,16 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
 	/* Fill struct tty_driver with ipoctal data */
 	tty->owner = THIS_MODULE;
 	tty->driver_name = KBUILD_MODNAME;
+<<<<<<< HEAD
 	sprintf(name, KBUILD_MODNAME ".%d.%d.", bus_nr, slot);
 	tty->name = name;
+=======
+	tty->name = kasprintf(GFP_KERNEL, KBUILD_MODNAME ".%d.%d.", bus_nr, slot);
+	if (!tty->name) {
+		res = -ENOMEM;
+		goto err_put_driver;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tty->major = 0;
 
 	tty->minor_start = 0;
@@ -377,8 +422,12 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
 	res = tty_register_driver(tty);
 	if (res) {
 		dev_err(&ipoctal->dev->dev, "Can't register tty driver.\n");
+<<<<<<< HEAD
 		put_tty_driver(tty);
 		return res;
+=======
+		goto err_free_name;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Save struct tty_driver for use it when uninstalling the device */
@@ -389,7 +438,13 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
 
 		channel = &ipoctal->channel[i];
 		tty_port_init(&channel->tty_port);
+<<<<<<< HEAD
 		tty_port_alloc_xmit_buf(&channel->tty_port);
+=======
+		res = tty_port_alloc_xmit_buf(&channel->tty_port);
+		if (res)
+			continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		channel->tty_port.ops = &ipoctal_tty_port_ops;
 
 		ipoctal_reset_stats(&channel->stats);
@@ -397,6 +452,7 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
 		spin_lock_init(&channel->lock);
 		channel->pointer_read = 0;
 		channel->pointer_write = 0;
+<<<<<<< HEAD
 		tty_dev = tty_port_register_device(&channel->tty_port, tty, i, NULL);
 		if (IS_ERR(tty_dev)) {
 			dev_err(&ipoctal->dev->dev, "Failed to register tty device.\n");
@@ -404,6 +460,17 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
 			continue;
 		}
 		dev_set_drvdata(tty_dev, channel);
+=======
+		tty_dev = tty_port_register_device_attr(&channel->tty_port, tty,
+							i, NULL, channel, NULL);
+		if (IS_ERR(tty_dev)) {
+			dev_err(&ipoctal->dev->dev, "Failed to register tty device.\n");
+			tty_port_free_xmit_buf(&channel->tty_port);
+			tty_port_destroy(&channel->tty_port);
+			continue;
+		}
+		channel->tty_registered = true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/*
@@ -415,6 +482,16 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
 				       ipoctal_irq_handler, ipoctal);
 
 	return 0;
+<<<<<<< HEAD
+=======
+
+err_free_name:
+	kfree(tty->name);
+err_put_driver:
+	put_tty_driver(tty);
+
+	return res;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline int ipoctal_copy_write_buffer(struct ipoctal_channel *channel,
@@ -655,6 +732,10 @@ static void ipoctal_cleanup(struct tty_struct *tty)
 
 static const struct tty_operations ipoctal_fops = {
 	.ioctl =		NULL,
+<<<<<<< HEAD
+=======
+	.install =		ipoctal_install,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.open =			ipoctal_open,
 	.close =		ipoctal_close,
 	.write =		ipoctal_write_tty,
@@ -697,12 +778,23 @@ static void __ipoctal_remove(struct ipoctal *ipoctal)
 
 	for (i = 0; i < NR_CHANNELS; i++) {
 		struct ipoctal_channel *channel = &ipoctal->channel[i];
+<<<<<<< HEAD
+=======
+
+		if (!channel->tty_registered)
+			continue;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		tty_unregister_device(ipoctal->tty_drv, i);
 		tty_port_free_xmit_buf(&channel->tty_port);
 		tty_port_destroy(&channel->tty_port);
 	}
 
 	tty_unregister_driver(ipoctal->tty_drv);
+<<<<<<< HEAD
+=======
+	kfree(ipoctal->tty_drv->name);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	put_tty_driver(ipoctal->tty_drv);
 	kfree(ipoctal);
 }

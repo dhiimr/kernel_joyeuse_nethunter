@@ -236,7 +236,10 @@ extern struct cred init_cred;
 	.policy		= SCHED_NORMAL,					\
 	.cpus_allowed	= CPU_MASK_ALL,					\
 	.nr_cpus_allowed= NR_CPUS,					\
+<<<<<<< HEAD
 	.cpus_requested	= CPU_MASK_ALL,					\
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.mm		= NULL,						\
 	.active_mm	= &init_mm,					\
 	.restart_block = {						\

@@ -28,6 +28,7 @@ config DEFXX
 
 config DEFXX_MMIO
 	bool
+<<<<<<< HEAD
 	prompt "Use MMIO instead of PIO" if PCI || EISA
 	depends on DEFXX
 	default n if PCI || EISA
@@ -39,6 +40,22 @@ config DEFXX_MMIO
 	  of the driver, but it may cause problems with EISA (DEFEA)
 	  adapters.  TURBOchannel does not have the concept of I/O ports,
 	  so MMIO is always used for these (DEFTA) adapters.
+=======
+	prompt "Use MMIO instead of IOP" if PCI || EISA
+	depends on DEFXX
+	default n if EISA
+	default y
+	---help---
+	  This instructs the driver to use EISA or PCI memory-mapped I/O
+	  (MMIO) as appropriate instead of programmed I/O ports (IOP).
+	  Enabling this gives an improvement in processing time in parts
+	  of the driver, but it requires a memory window to be configured
+	  for EISA (DEFEA) adapters that may not always be available.
+	  Conversely some PCIe host bridges do not support IOP, so MMIO
+	  may be required to access PCI (DEFPA) adapters on downstream PCI
+	  buses with some systems.  TURBOchannel does not have the concept
+	  of I/O ports, so MMIO is always used for these (DEFTA) adapters.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	  If unsure, say N.
 

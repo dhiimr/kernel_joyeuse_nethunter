@@ -40,7 +40,11 @@
 /* 14 unused */
 #define AZX_DCAPS_CTX_WORKAROUND (1 << 15)	/* X-Fi workaround */
 #define AZX_DCAPS_POSFIX_LPIB	(1 << 16)	/* Use LPIB as default */
+<<<<<<< HEAD
 /* 17 unused */
+=======
+#define AZX_DCAPS_AMD_WORKAROUND (1 << 17)	/* AMD-specific workaround */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define AZX_DCAPS_NO_64BIT	(1 << 18)	/* No 64bit address */
 #define AZX_DCAPS_SYNC_WRITE	(1 << 19)	/* sync each cmd write */
 #define AZX_DCAPS_OLD_SSYNC	(1 << 20)	/* Old SSYNC reg for ICH */
@@ -176,11 +180,18 @@ struct azx {
 #define azx_bus(chip)	(&(chip)->bus.core)
 #define bus_to_azx(_bus)	container_of(_bus, struct azx, bus.core)
 
+<<<<<<< HEAD
 #ifdef CONFIG_X86
 #define azx_snoop(chip)		((chip)->snoop)
 #else
 #define azx_snoop(chip)		true
 #endif
+=======
+static inline bool azx_snoop(struct azx *chip)
+{
+	return !IS_ENABLED(CONFIG_X86) || chip->snoop;
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * macros for easy use

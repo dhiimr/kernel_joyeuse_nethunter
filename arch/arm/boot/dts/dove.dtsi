@@ -155,7 +155,11 @@
 				  0xffffe000 MBUS_ID(0x03, 0x01) 0 0x0000800   /* CESA SRAM  2k */
 				  0xfffff000 MBUS_ID(0x0d, 0x00) 0 0x0000800>; /* PMU  SRAM  2k */
 
+<<<<<<< HEAD
 			spi0: spi-ctrl@10600 {
+=======
+			spi0: spi@10600 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				compatible = "marvell,orion-spi";
 				#address-cells = <1>;
 				#size-cells = <0>;
@@ -168,7 +172,11 @@
 				status = "disabled";
 			};
 
+<<<<<<< HEAD
 			i2c: i2c-ctrl@11000 {
+=======
+			i2c: i2c@11000 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				compatible = "marvell,mv64xxx-i2c";
 				reg = <0x11000 0x20>;
 				#address-cells = <1>;
@@ -218,7 +226,11 @@
 				status = "disabled";
 			};
 
+<<<<<<< HEAD
 			spi1: spi-ctrl@14600 {
+=======
+			spi1: spi@14600 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				compatible = "marvell,orion-spi";
 				#address-cells = <1>;
 				#size-cells = <0>;

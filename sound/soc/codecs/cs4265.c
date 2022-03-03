@@ -60,7 +60,11 @@ static const struct reg_default cs4265_reg_defaults[] = {
 static bool cs4265_readable_register(struct device *dev, unsigned int reg)
 {
 	switch (reg) {
+<<<<<<< HEAD
 	case CS4265_CHIP_ID ... CS4265_SPDIF_CTL2:
+=======
+	case CS4265_CHIP_ID ... CS4265_MAX_REGISTER:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return true;
 	default:
 		return false;

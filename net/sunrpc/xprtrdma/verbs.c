@@ -264,6 +264,10 @@ rpcrdma_conn_upcall(struct rdma_cm_id *id, struct rdma_cm_event *event)
 			ia->ri_device->name,
 			sap, rpc_get_port(sap));
 #endif
+<<<<<<< HEAD
+=======
+		init_completion(&ia->ri_remove_done);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		set_bit(RPCRDMA_IAF_REMOVING, &ia->ri_flags);
 		ep->rep_connected = -ENODEV;
 		xprt_force_disconnect(&xprt->rx_xprt);
@@ -319,7 +323,10 @@ rpcrdma_create_id(struct rpcrdma_xprt *xprt,
 	int rc;
 
 	init_completion(&ia->ri_done);
+<<<<<<< HEAD
 	init_completion(&ia->ri_remove_done);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	id = rdma_create_id(&init_net, rpcrdma_conn_upcall, xprt, RDMA_PS_TCP,
 			    IB_QPT_RC);

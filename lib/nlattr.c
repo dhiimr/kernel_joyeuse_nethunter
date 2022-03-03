@@ -379,7 +379,11 @@ int nla_strcmp(const struct nlattr *nla, const char *str)
 	int attrlen = nla_len(nla);
 	int d;
 
+<<<<<<< HEAD
 	if (attrlen > 0 && buf[attrlen - 1] == '\0')
+=======
+	while (attrlen > 0 && buf[attrlen - 1] == '\0')
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		attrlen--;
 
 	d = attrlen - len;

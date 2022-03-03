@@ -724,6 +724,10 @@ err_unregister:
 	}
 
 err_reset:
+<<<<<<< HEAD
+=======
+	memset(&ucsi->cap, 0, sizeof(ucsi->cap));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ucsi_reset_ppm(ucsi);
 err:
 	mutex_unlock(&ucsi->ppm_lock);

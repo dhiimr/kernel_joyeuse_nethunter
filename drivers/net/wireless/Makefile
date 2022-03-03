@@ -27,6 +27,7 @@ obj-$(CONFIG_PCMCIA_WL3501)	+= wl3501_cs.o
 obj-$(CONFIG_USB_NET_RNDIS_WLAN)	+= rndis_wlan.o
 
 obj-$(CONFIG_MAC80211_HWSIM)	+= mac80211_hwsim.o
+<<<<<<< HEAD
 
 obj-$(CONFIG_CNSS2) += cnss2/
 
@@ -37,3 +38,5 @@ obj-$(CONFIG_CNSS_GENL) += cnss_genl/
 obj-$(CONFIG_CNSS_CRYPTO) += cnss_crypto/
 
 obj-$(CONFIG_VIRT_WIFI)	+= virt_wifi.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

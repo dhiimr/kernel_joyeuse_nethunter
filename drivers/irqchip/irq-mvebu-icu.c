@@ -92,7 +92,11 @@ static int
 mvebu_icu_irq_domain_translate(struct irq_domain *d, struct irq_fwspec *fwspec,
 			       unsigned long *hwirq, unsigned int *type)
 {
+<<<<<<< HEAD
 	struct mvebu_icu *icu = d->host_data;
+=======
+	struct mvebu_icu *icu = platform_msi_get_host_data(d);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int icu_group;
 
 	/* Check the count of the parameters in dt */

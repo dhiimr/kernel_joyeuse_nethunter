@@ -258,7 +258,11 @@ static int ndfc_remove(struct platform_device *ofdev)
 	struct ndfc_controller *ndfc = dev_get_drvdata(&ofdev->dev);
 	struct mtd_info *mtd = nand_to_mtd(&ndfc->chip);
 
+<<<<<<< HEAD
 	nand_release(mtd);
+=======
+	nand_release(&ndfc->chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(mtd->name);
 
 	return 0;

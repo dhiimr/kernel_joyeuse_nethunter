@@ -730,7 +730,11 @@ static void test_sockmap(int tasks, void *data)
 
 		FD_ZERO(&w);
 		FD_SET(sfd[3], &w);
+<<<<<<< HEAD
 		to.tv_sec = 1;
+=======
+		to.tv_sec = 30;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		to.tv_usec = 0;
 		s = select(sfd[3] + 1, &w, NULL, NULL, &to);
 		if (s == -1) {

@@ -15,5 +15,8 @@ nvme-fabrics-y				+= fabrics.o
 nvme-rdma-y				+= rdma.o
 
 nvme-fc-y				+= fc.o
+<<<<<<< HEAD
 
 obj-$(CONFIG_NVME_QCOM)			+= nvme-qcom.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

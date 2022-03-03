@@ -20,6 +20,10 @@
 #include <linux/string.h>
 #include <linux/module.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/scatterlist.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "usbip_common.h"
 #include "stub.h"
@@ -297,13 +301,56 @@ static struct stub_priv *stub_priv_pop_from_listhead(struct list_head *listhead)
 	struct stub_priv *priv, *tmp;
 
 	list_for_each_entry_safe(priv, tmp, listhead, list) {
+<<<<<<< HEAD
 		list_del(&priv->list);
+=======
+		list_del_init(&priv->list);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return priv;
 	}
 
 	return NULL;
 }
 
+<<<<<<< HEAD
+=======
+void stub_free_priv_and_urb(struct stub_priv *priv)
+{
+	struct urb *urb;
+	int i;
+
+	for (i = 0; i < priv->num_urbs; i++) {
+		urb = priv->urbs[i];
+
+		if (!urb)
+			return;
+
+		kfree(urb->setup_packet);
+		urb->setup_packet = NULL;
+
+
+		if (urb->transfer_buffer && !priv->sgl) {
+			kfree(urb->transfer_buffer);
+			urb->transfer_buffer = NULL;
+		}
+
+		if (urb->num_sgs) {
+			sgl_free(urb->sg);
+			urb->sg = NULL;
+			urb->num_sgs = 0;
+		}
+
+		usb_free_urb(urb);
+	}
+	if (!list_empty(&priv->list))
+		list_del(&priv->list);
+	if (priv->sgl)
+		sgl_free(priv->sgl);
+	kfree(priv->urbs);
+	kmem_cache_free(stub_priv_cache, priv);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct stub_priv *stub_priv_pop(struct stub_device *sdev)
 {
 	unsigned long flags;
@@ -330,11 +377,16 @@ done:
 void stub_device_cleanup_urbs(struct stub_device *sdev)
 {
 	struct stub_priv *priv;
+<<<<<<< HEAD
 	struct urb *urb;
+=======
+	int i;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dev_dbg(&sdev->udev->dev, "Stub device cleaning up urbs\n");
 
 	while ((priv = stub_priv_pop(sdev))) {
+<<<<<<< HEAD
 		urb = priv->urb;
 		dev_dbg(&sdev->udev->dev, "free urb seqnum %lu\n",
 			priv->seqnum);
@@ -349,6 +401,12 @@ void stub_device_cleanup_urbs(struct stub_device *sdev)
 		urb->setup_packet = NULL;
 
 		usb_free_urb(urb);
+=======
+		for (i = 0; i < priv->num_urbs; i++)
+			usb_kill_urb(priv->urbs[i]);
+
+		stub_free_priv_and_urb(priv);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 

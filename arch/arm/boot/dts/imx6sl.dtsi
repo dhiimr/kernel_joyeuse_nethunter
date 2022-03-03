@@ -718,7 +718,11 @@
 				reg = <0x020ec000 0x4000>;
 				interrupts = <0 2 IRQ_TYPE_LEVEL_HIGH>;
 				clocks = <&clks IMX6SL_CLK_SDMA>,
+<<<<<<< HEAD
 					 <&clks IMX6SL_CLK_SDMA>;
+=======
+					 <&clks IMX6SL_CLK_AHB>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				clock-names = "ipg", "ahb";
 				#dma-cells = <3>;
 				/* imx6sl reuses imx6q sdma firmware */

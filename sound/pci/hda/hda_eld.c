@@ -373,7 +373,11 @@ static void hdmi_print_pcm_rates(int pcm, char *buf, int buflen)
 
 	for (i = 0, j = 0; i < ARRAY_SIZE(alsa_rates); i++)
 		if (pcm & (1 << i))
+<<<<<<< HEAD
 			j += snprintf(buf + j, buflen - j,  " %d",
+=======
+			j += scnprintf(buf + j, buflen - j,  " %d",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				alsa_rates[i]);
 
 	buf[j] = '\0'; /* necessary when j == 0 */

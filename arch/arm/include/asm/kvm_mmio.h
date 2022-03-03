@@ -26,6 +26,11 @@
 struct kvm_decode {
 	unsigned long rt;
 	bool sign_extend;
+<<<<<<< HEAD
+=======
+	/* Not used on 32-bit arm */
+	bool sixty_four;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 void kvm_mmio_write_buf(void *buf, unsigned int len, unsigned long data);

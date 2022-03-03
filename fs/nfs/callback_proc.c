@@ -127,6 +127,11 @@ static struct inode *nfs_layout_find_inode_by_stateid(struct nfs_client *clp,
 restart:
 	list_for_each_entry_rcu(server, &clp->cl_superblocks, client_link) {
 		list_for_each_entry(lo, &server->layouts, plh_layouts) {
+<<<<<<< HEAD
+=======
+			if (!pnfs_layout_is_valid(lo))
+				continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (stateid != NULL &&
 			    !nfs4_stateid_match_other(stateid, &lo->plh_stateid))
 				continue;
@@ -353,7 +358,11 @@ __be32 nfs4_callback_devicenotify(void *argp, void *resp,
 				  struct cb_process_state *cps)
 {
 	struct cb_devicenotifyargs *args = argp;
+<<<<<<< HEAD
 	int i;
+=======
+	uint32_t i;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__be32 res = 0;
 	struct nfs_client *clp = cps->clp;
 	struct nfs_server *server = NULL;

@@ -79,14 +79,22 @@ void synchronize_rcu(void);
 
 static inline void __rcu_read_lock(void)
 {
+<<<<<<< HEAD
 	if (IS_ENABLED(CONFIG_PREEMPT_COUNT))
 		preempt_disable();
+=======
+	preempt_disable();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void __rcu_read_unlock(void)
 {
+<<<<<<< HEAD
 	if (IS_ENABLED(CONFIG_PREEMPT_COUNT))
 		preempt_enable();
+=======
+	preempt_enable();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void synchronize_rcu(void)
@@ -624,7 +632,11 @@ static inline void rcu_preempt_sleep_check(void) { }
  * read-side critical sections may be preempted and they may also block, but
  * only when acquiring spinlocks that are subject to priority inheritance.
  */
+<<<<<<< HEAD
 static inline void rcu_read_lock(void)
+=======
+static __always_inline void rcu_read_lock(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	__rcu_read_lock();
 	__acquire(RCU);

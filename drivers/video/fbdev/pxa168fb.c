@@ -769,8 +769,13 @@ failed_free_cmap:
 failed_free_clk:
 	clk_disable_unprepare(fbi->clk);
 failed_free_fbmem:
+<<<<<<< HEAD
 	dma_free_coherent(fbi->dev, info->fix.smem_len,
 			info->screen_base, fbi->fb_start_dma);
+=======
+	dma_free_wc(fbi->dev, info->fix.smem_len,
+		    info->screen_base, fbi->fb_start_dma);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 failed_free_info:
 	kfree(info);
 
@@ -804,7 +809,11 @@ static int pxa168fb_remove(struct platform_device *pdev)
 
 	irq = platform_get_irq(pdev, 0);
 
+<<<<<<< HEAD
 	dma_free_wc(fbi->dev, PAGE_ALIGN(info->fix.smem_len),
+=======
+	dma_free_wc(fbi->dev, info->fix.smem_len,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    info->screen_base, info->fix.smem_start);
 
 	clk_disable_unprepare(fbi->clk);

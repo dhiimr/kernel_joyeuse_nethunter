@@ -2271,6 +2271,11 @@ lpfc_sli_def_mbox_cmpl(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
 	    !pmb->u.mb.mbxStatus) {
 		rpi = pmb->u.mb.un.varWords[0];
 		vpi = pmb->u.mb.un.varRegLogin.vpi;
+<<<<<<< HEAD
+=======
+		if (phba->sli_rev == LPFC_SLI_REV4)
+			vpi -= phba->sli4_hba.max_cfg_param.vpi_base;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		lpfc_unreg_login(phba, vpi, rpi, pmb);
 		pmb->vport = vport;
 		pmb->mbox_cmpl = lpfc_sli_def_mbox_cmpl;
@@ -4421,6 +4426,11 @@ lpfc_sli_brdrestart_s4(struct lpfc_hba *phba)
 	hba_aer_enabled = phba->hba_flag & HBA_AER_ENABLED;
 
 	rc = lpfc_sli4_brdreset(phba);
+<<<<<<< HEAD
+=======
+	if (rc)
+		return rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	spin_lock_irq(&phba->hbalock);
 	phba->pport->stopped = 0;
@@ -7028,7 +7038,11 @@ lpfc_sli4_hba_setup(struct lpfc_hba *phba)
 				"0393 Error %d during rpi post operation\n",
 				rc);
 		rc = -ENODEV;
+<<<<<<< HEAD
 		goto out_destroy_queue;
+=======
+		goto out_free_iocblist;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	lpfc_sli4_node_prep(phba);
 
@@ -7153,8 +7167,14 @@ lpfc_sli4_hba_setup(struct lpfc_hba *phba)
 out_unset_queue:
 	/* Unset all the queues set up in this routine when error out */
 	lpfc_sli4_queue_unset(phba);
+<<<<<<< HEAD
 out_destroy_queue:
 	lpfc_free_iocb_list(phba);
+=======
+out_free_iocblist:
+	lpfc_free_iocb_list(phba);
+out_destroy_queue:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	lpfc_sli4_queue_destroy(phba);
 out_stop_timers:
 	lpfc_stop_hba_timers(phba);
@@ -10720,6 +10740,7 @@ lpfc_sli4_abort_nvme_io(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
 
 	/* Complete prepping the abort wqe and issue to the FW. */
 	abts_wqe = &abtsiocbp->wqe;
+<<<<<<< HEAD
 	bf_set(abort_cmd_ia, &abts_wqe->abort_cmd, 0);
 	bf_set(abort_cmd_criteria, &abts_wqe->abort_cmd, T_XRI_TAG);
 
@@ -10733,6 +10754,14 @@ lpfc_sli4_abort_nvme_io(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
 
 	/* word 7 */
 	bf_set(wqe_ct, &abts_wqe->abort_cmd.wqe_com, 0);
+=======
+
+	/* Clear any stale WQE contents */
+	memset(abts_wqe, 0, sizeof(union lpfc_wqe));
+	bf_set(abort_cmd_criteria, &abts_wqe->abort_cmd, T_XRI_TAG);
+
+	/* word 7 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bf_set(wqe_cmnd, &abts_wqe->abort_cmd.wqe_com, CMD_ABORT_XRI_CX);
 	bf_set(wqe_class, &abts_wqe->abort_cmd.wqe_com,
 	       cmdiocb->iocb.ulpClass);
@@ -10747,7 +10776,10 @@ lpfc_sli4_abort_nvme_io(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
 	       abtsiocbp->iotag);
 
 	/* word 10 */
+<<<<<<< HEAD
 	bf_set(wqe_wqid, &abts_wqe->abort_cmd.wqe_com, cmdiocb->hba_wqidx);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bf_set(wqe_qosd, &abts_wqe->abort_cmd.wqe_com, 1);
 	bf_set(wqe_lenloc, &abts_wqe->abort_cmd.wqe_com, LPFC_WQE_LENLOC_NONE);
 
@@ -12695,6 +12727,7 @@ send_current_mbox:
 	phba->sli.sli_flag &= ~LPFC_SLI_MBOX_ACTIVE;
 	/* Setting active mailbox pointer need to be in sync to flag clear */
 	phba->sli.mbox_active = NULL;
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&phba->hbalock, iflags);
 	/* Wake up worker thread to post the next pending mailbox command */
 	lpfc_worker_wake_up(phba);
@@ -12702,6 +12735,21 @@ out_no_mqe_complete:
 	if (bf_get(lpfc_trailer_consumed, mcqe))
 		lpfc_sli4_mq_release(phba->sli4_hba.mbx_wq);
 	return workposted;
+=======
+	if (bf_get(lpfc_trailer_consumed, mcqe))
+		lpfc_sli4_mq_release(phba->sli4_hba.mbx_wq);
+	spin_unlock_irqrestore(&phba->hbalock, iflags);
+	/* Wake up worker thread to post the next pending mailbox command */
+	lpfc_worker_wake_up(phba);
+	return workposted;
+
+out_no_mqe_complete:
+	spin_lock_irqsave(&phba->hbalock, iflags);
+	if (bf_get(lpfc_trailer_consumed, mcqe))
+		lpfc_sli4_mq_release(phba->sli4_hba.mbx_wq);
+	spin_unlock_irqrestore(&phba->hbalock, iflags);
+	return false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -16635,7 +16683,10 @@ lpfc_sli4_seq_abort_rsp_cmpl(struct lpfc_hba *phba,
 	if (cmd_iocbq) {
 		ndlp = (struct lpfc_nodelist *)cmd_iocbq->context1;
 		lpfc_nlp_put(ndlp);
+<<<<<<< HEAD
 		lpfc_nlp_not_used(ndlp);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		lpfc_sli_release_iocbq(phba, cmd_iocbq);
 	}
 
@@ -17036,6 +17087,13 @@ lpfc_prep_seq(struct lpfc_vport *vport, struct hbq_dmabuf *seq_dmabuf)
 			list_add_tail(&iocbq->list, &first_iocbq->list);
 		}
 	}
+<<<<<<< HEAD
+=======
+	/* Free the sequence's header buffer */
+	if (!first_iocbq)
+		lpfc_in_buf_free(vport->phba, &seq_dmabuf->dbuf);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return first_iocbq;
 }
 
@@ -17492,6 +17550,16 @@ lpfc_sli4_alloc_rpi(struct lpfc_hba *phba)
 static void
 __lpfc_sli4_free_rpi(struct lpfc_hba *phba, int rpi)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * if the rpi value indicates a prior unreg has already
+	 * been done, skip the unreg.
+	 */
+	if (rpi == LPFC_RPI_ALLOC_ERROR)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (test_and_clear_bit(rpi, phba->sli4_hba.rpi_bmask)) {
 		phba->sli4_hba.rpi_count--;
 		phba->sli4_hba.max_cfg_param.rpi_used--;
@@ -18056,6 +18124,7 @@ next_priority:
 			goto initial_priority;
 		lpfc_printf_log(phba, KERN_WARNING, LOG_FIP,
 				"2844 No roundrobin failover FCF available\n");
+<<<<<<< HEAD
 		if (next_fcf_index >= LPFC_SLI4_FCF_TBL_INDX_MAX)
 			return LPFC_FCOE_FCF_NEXT_NONE;
 		else {
@@ -18065,6 +18134,10 @@ next_priority:
 			phba->fcf.fcf_pri[next_fcf_index].fcf_rec.flag);
 			return next_fcf_index;
 		}
+=======
+
+		return LPFC_FCOE_FCF_NEXT_NONE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (next_fcf_index < LPFC_SLI4_FCF_TBL_INDX_MAX &&
@@ -18771,6 +18844,10 @@ lpfc_drain_txq(struct lpfc_hba *phba)
 					fail_msg,
 					piocbq->iotag, piocbq->sli4_xritag);
 			list_add_tail(&piocbq->list, &completions);
+<<<<<<< HEAD
+=======
+			fail_msg = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		spin_unlock_irqrestore(&pring->ring_lock, iflags);
 	}

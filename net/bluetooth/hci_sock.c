@@ -59,6 +59,20 @@ struct hci_pinfo {
 	char              comm[TASK_COMM_LEN];
 };
 
+<<<<<<< HEAD
+=======
+static struct hci_dev *hci_hdev_from_sock(struct sock *sk)
+{
+	struct hci_dev *hdev = hci_pi(sk)->hdev;
+
+	if (!hdev)
+		return ERR_PTR(-EBADFD);
+	if (hci_dev_test_flag(hdev, HCI_UNREGISTER))
+		return ERR_PTR(-EPIPE);
+	return hdev;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void hci_sock_set_flag(struct sock *sk, int nr)
 {
 	set_bit(nr, &hci_pi(sk)->flags);
@@ -747,6 +761,7 @@ void hci_sock_dev_event(struct hci_dev *hdev, int event)
 	if (event == HCI_DEV_UNREG) {
 		struct sock *sk;
 
+<<<<<<< HEAD
 		/* Detach sockets from device */
 		read_lock(&hci_sk_list.lock);
 		sk_for_each(sk, &hci_sk_list.head) {
@@ -760,6 +775,15 @@ void hci_sock_dev_event(struct hci_dev *hdev, int event)
 				hci_dev_put(hdev);
 			}
 			bh_unlock_sock(sk);
+=======
+		/* Wake up sockets using this dead device */
+		read_lock(&hci_sk_list.lock);
+		sk_for_each(sk, &hci_sk_list.head) {
+			if (hci_pi(sk)->hdev == hdev) {
+				sk->sk_err = EPIPE;
+				sk->sk_state_change(sk);
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		read_unlock(&hci_sk_list.lock);
 	}
@@ -826,6 +850,11 @@ static int hci_sock_release(struct socket *sock)
 	if (!sk)
 		return 0;
 
+<<<<<<< HEAD
+=======
+	lock_sock(sk);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	switch (hci_pi(sk)->channel) {
 	case HCI_CHANNEL_MONITOR:
 		atomic_dec(&monitor_promisc);
@@ -873,6 +902,10 @@ static int hci_sock_release(struct socket *sock)
 	skb_queue_purge(&sk->sk_receive_queue);
 	skb_queue_purge(&sk->sk_write_queue);
 
+<<<<<<< HEAD
+=======
+	release_sock(sk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sock_put(sk);
 	return 0;
 }
@@ -915,10 +948,17 @@ static int hci_sock_blacklist_del(struct hci_dev *hdev, void __user *arg)
 static int hci_sock_bound_ioctl(struct sock *sk, unsigned int cmd,
 				unsigned long arg)
 {
+<<<<<<< HEAD
 	struct hci_dev *hdev = hci_pi(sk)->hdev;
 
 	if (!hdev)
 		return -EBADFD;
+=======
+	struct hci_dev *hdev = hci_hdev_from_sock(sk);
+
+	if (IS_ERR(hdev))
+		return PTR_ERR(hdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (hci_dev_test_flag(hdev, HCI_USER_CHANNEL))
 		return -EBUSY;
@@ -1072,6 +1112,21 @@ static int hci_sock_bind(struct socket *sock, struct sockaddr *addr,
 
 	lock_sock(sk);
 
+<<<<<<< HEAD
+=======
+	/* Allow detaching from dead device and attaching to alive device, if
+	 * the caller wants to re-bind (instead of close) this socket in
+	 * response to hci_sock_dev_event(HCI_DEV_UNREG) notification.
+	 */
+	hdev = hci_pi(sk)->hdev;
+	if (hdev && hci_dev_test_flag(hdev, HCI_UNREGISTER)) {
+		hci_pi(sk)->hdev = NULL;
+		sk->sk_state = BT_OPEN;
+		hci_dev_put(hdev);
+	}
+	hdev = NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (sk->sk_state == BT_BOUND) {
 		err = -EALREADY;
 		goto done;
@@ -1348,9 +1403,15 @@ static int hci_sock_getname(struct socket *sock, struct sockaddr *addr,
 
 	lock_sock(sk);
 
+<<<<<<< HEAD
 	hdev = hci_pi(sk)->hdev;
 	if (!hdev) {
 		err = -EBADFD;
+=======
+	hdev = hci_hdev_from_sock(sk);
+	if (IS_ERR(hdev)) {
+		err = PTR_ERR(hdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto done;
 	}
 
@@ -1710,9 +1771,15 @@ static int hci_sock_sendmsg(struct socket *sock, struct msghdr *msg,
 		goto done;
 	}
 
+<<<<<<< HEAD
 	hdev = hci_pi(sk)->hdev;
 	if (!hdev) {
 		err = -EBADFD;
+=======
+	hdev = hci_hdev_from_sock(sk);
+	if (IS_ERR(hdev)) {
+		err = PTR_ERR(hdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto done;
 	}
 

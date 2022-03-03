@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #!/usr/bin/perl
+=======
+#!/usr/bin/env perl
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 use strict;
 
 # Copyright (c) 2017 Mauro Carvalho Chehab <mchehab@kernel.org>
@@ -301,7 +305,11 @@ sub give_redhat_hints()
 	#
 	# Checks valid for RHEL/CentOS version 7.x.
 	#
+<<<<<<< HEAD
 	if (! $system_release =~ /Fedora/) {
+=======
+	if (!($system_release =~ /Fedora/)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		$map{"virtualenv"} = "python-virtualenv";
 	}
 

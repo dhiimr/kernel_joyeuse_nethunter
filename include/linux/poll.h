@@ -15,7 +15,15 @@
 extern struct ctl_table epoll_table[]; /* for sysctl */
 /* ~832 bytes of stack space used max in sys_select/sys_poll before allocating
    additional memory. */
+<<<<<<< HEAD
 #define MAX_STACK_ALLOC 832
+=======
+#ifdef __clang__
+#define MAX_STACK_ALLOC 768
+#else
+#define MAX_STACK_ALLOC 832
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define FRONTEND_STACK_ALLOC	256
 #define SELECT_STACK_ALLOC	FRONTEND_STACK_ALLOC
 #define POLL_STACK_ALLOC	FRONTEND_STACK_ALLOC

@@ -35,11 +35,21 @@ REALMODE_CFLAGS	:= $(M16_CFLAGS) -g -Os -D__KERNEL__ \
 		   -DDISABLE_BRANCH_PROFILING \
 		   -Wall -Wstrict-prototypes -march=i386 -mregparm=3 \
 		   -fno-strict-aliasing -fomit-frame-pointer -fno-pic \
+<<<<<<< HEAD
 		   -mno-mmx -mno-sse
 
 REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -ffreestanding)
 REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -fno-stack-protector)
 REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), $(cc_stack_align4))
+=======
+		   -mno-mmx -mno-sse $(call cc-option,-fcf-protection=none)
+
+REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -ffreestanding)
+REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -fno-stack-protector)
+REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -Wno-address-of-packed-member)
+REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), $(cc_stack_align4))
+REALMODE_CFLAGS += $(CLANG_FLAGS)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 export REALMODE_CFLAGS
 
 # BITS is used as extension for files which are available in a 32 bit
@@ -48,7 +58,11 @@ export REALMODE_CFLAGS
 export BITS
 
 ifdef CONFIG_X86_NEED_RELOCS
+<<<<<<< HEAD
         LDFLAGS_vmlinux := --emit-relocs
+=======
+        LDFLAGS_vmlinux := --emit-relocs --discard-none
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif
 
 #
@@ -61,10 +75,15 @@ endif
 KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow
 KBUILD_CFLAGS += $(call cc-option,-mno-avx,)
 
+<<<<<<< HEAD
 # Never want PIC in a 32-bit kernel, prevent breakage with GCC built
 # with nonstandard options
 # Android toolchains enable PIC, so explicitly disable it on 64-bit kernel too.
 KBUILD_CFLAGS += -fno-pic
+=======
+# Intel CET isn't enabled in the kernel
+KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 ifeq ($(CONFIG_X86_32),y)
         BITS := 32
@@ -77,6 +96,13 @@ ifeq ($(CONFIG_X86_32),y)
 
         KBUILD_CFLAGS += -msoft-float -mregparm=3 -freg-struct-return
 
+<<<<<<< HEAD
+=======
+        # Never want PIC in a 32-bit kernel, prevent breakage with GCC built
+        # with nonstandard options
+        KBUILD_CFLAGS += -fno-pic
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
         # Align the stack to the register width instead of using the default
         # alignment of 16 bytes. This reduces stack usage and the number of
         # alignment instructions.
@@ -112,8 +138,11 @@ else
         KBUILD_CFLAGS += $(call cc-option,-mno-80387)
         KBUILD_CFLAGS += $(call cc-option,-mno-fp-ret-in-387)
 
+<<<<<<< HEAD
         KBUILD_CFLAGS += -fno-pic
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
         # By default gcc and clang use a stack alignment of 16 bytes for x86.
         # However the standard kernel entry on x86-64 leaves the stack on an
         # 8-byte boundary. If the compiler isn't informed about the actual
@@ -251,7 +280,11 @@ ifdef CONFIG_RETPOLINE
   # retpoline builds, however, gcc does not for x86. This has
   # only been fixed starting from gcc stable version 8.4.0 and
   # onwards, but not for older ones. See gcc bug #86952.
+<<<<<<< HEAD
   ifndef CONFIG_CC_IS_CLANG
+=======
+  ifneq ($(cc-name), clang)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
     KBUILD_CFLAGS += $(call cc-option,-fno-jump-tables)
   endif
 endif

@@ -17,3 +17,11 @@
 &crossbar_mpu {
 	ti,irqs-skip = <10 67 68 133 139 140>;
 };
+<<<<<<< HEAD
+=======
+
+&mmc3 {
+	/* dra76x is not affected by i887 */
+	max-frequency = <96000000>;
+};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

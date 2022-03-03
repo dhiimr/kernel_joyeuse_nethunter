@@ -77,6 +77,10 @@
 		pinctrl-0 = <&usb30_host_drv>;
 		regulator-name = "vcc_host_5v";
 		regulator-always-on;
+<<<<<<< HEAD
+=======
+		regulator-boot-on;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		vin-supply = <&vcc_sys>;
 	};
 
@@ -87,6 +91,10 @@
 		pinctrl-0 = <&usb20_host_drv>;
 		regulator-name = "vcc_host1_5v";
 		regulator-always-on;
+<<<<<<< HEAD
+=======
+		regulator-boot-on;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		vin-supply = <&vcc_sys>;
 	};
 
@@ -147,7 +155,11 @@
 &i2c1 {
 	status = "okay";
 
+<<<<<<< HEAD
 	rk805: rk805@18 {
+=======
+	rk805: pmic@18 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		compatible = "rockchip,rk805";
 		reg = <0x18>;
 		interrupt-parent = <&gpio2>;

@@ -222,11 +222,16 @@ static ssize_t config_show(struct device *dev,
 
 	mutex_lock(&test_fw_mutex);
 
+<<<<<<< HEAD
 	len += snprintf(buf, PAGE_SIZE,
+=======
+	len += scnprintf(buf, PAGE_SIZE - len,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			"Custom trigger configuration for: %s\n",
 			dev_name(dev));
 
 	if (test_fw_config->name)
+<<<<<<< HEAD
 		len += snprintf(buf+len, PAGE_SIZE,
 				"name:\t%s\n",
 				test_fw_config->name);
@@ -238,14 +243,34 @@ static ssize_t config_show(struct device *dev,
 			"num_requests:\t%u\n", test_fw_config->num_requests);
 
 	len += snprintf(buf+len, PAGE_SIZE,
+=======
+		len += scnprintf(buf+len, PAGE_SIZE - len,
+				"name:\t%s\n",
+				test_fw_config->name);
+	else
+		len += scnprintf(buf+len, PAGE_SIZE - len,
+				"name:\tEMTPY\n");
+
+	len += scnprintf(buf+len, PAGE_SIZE - len,
+			"num_requests:\t%u\n", test_fw_config->num_requests);
+
+	len += scnprintf(buf+len, PAGE_SIZE - len,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			"send_uevent:\t\t%s\n",
 			test_fw_config->send_uevent ?
 			"FW_ACTION_HOTPLUG" :
 			"FW_ACTION_NOHOTPLUG");
+<<<<<<< HEAD
 	len += snprintf(buf+len, PAGE_SIZE,
 			"sync_direct:\t\t%s\n",
 			test_fw_config->sync_direct ? "true" : "false");
 	len += snprintf(buf+len, PAGE_SIZE,
+=======
+	len += scnprintf(buf+len, PAGE_SIZE - len,
+			"sync_direct:\t\t%s\n",
+			test_fw_config->sync_direct ? "true" : "false");
+	len += scnprintf(buf+len, PAGE_SIZE - len,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			"read_fw_idx:\t%u\n", test_fw_config->read_fw_idx);
 
 	mutex_unlock(&test_fw_mutex);
@@ -895,8 +920,16 @@ static int __init test_firmware_init(void)
 		return -ENOMEM;
 
 	rc = __test_firmware_config_init();
+<<<<<<< HEAD
 	if (rc)
 		return rc;
+=======
+	if (rc) {
+		kfree(test_fw_config);
+		pr_err("could not init firmware test config: %d\n", rc);
+		return rc;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rc = misc_register(&test_fw_misc_device);
 	if (rc) {

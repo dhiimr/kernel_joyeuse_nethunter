@@ -1330,6 +1330,10 @@ static int ibmveth_poll(struct napi_struct *napi, int budget)
 			int offset = ibmveth_rxq_frame_offset(adapter);
 			int csum_good = ibmveth_rxq_csum_good(adapter);
 			int lrg_pkt = ibmveth_rxq_large_packet(adapter);
+<<<<<<< HEAD
+=======
+			__sum16 iph_check = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			skb = ibmveth_rxq_get_buffer(adapter);
 
@@ -1366,16 +1370,38 @@ static int ibmveth_poll(struct napi_struct *napi, int budget)
 			skb_put(skb, length);
 			skb->protocol = eth_type_trans(skb, netdev);
 
+<<<<<<< HEAD
 			if (csum_good) {
 				skb->ip_summed = CHECKSUM_UNNECESSARY;
 				ibmveth_rx_csum_helper(skb, adapter);
 			}
 
 			if (length > netdev->mtu + ETH_HLEN) {
+=======
+			/* PHYP without PLSO support places a -1 in the ip
+			 * checksum for large send frames.
+			 */
+			if (skb->protocol == cpu_to_be16(ETH_P_IP)) {
+				struct iphdr *iph = (struct iphdr *)skb->data;
+
+				iph_check = iph->check;
+			}
+
+			if ((length > netdev->mtu + ETH_HLEN) ||
+			    lrg_pkt || iph_check == 0xffff) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				ibmveth_rx_mss_helper(skb, mss, lrg_pkt);
 				adapter->rx_large_packets++;
 			}
 
+<<<<<<< HEAD
+=======
+			if (csum_good) {
+				skb->ip_summed = CHECKSUM_UNNECESSARY;
+				ibmveth_rx_csum_helper(skb, adapter);
+			}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			napi_gro_receive(napi, skb);	/* send it up */
 
 			netdev->stats.rx_packets++;
@@ -1618,7 +1644,11 @@ static int ibmveth_probe(struct vio_dev *dev, const struct vio_device_id *id)
 	struct net_device *netdev;
 	struct ibmveth_adapter *adapter;
 	unsigned char *mac_addr_p;
+<<<<<<< HEAD
 	unsigned int *mcastFilterSize_p;
+=======
+	__be32 *mcastFilterSize_p;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	long ret;
 	unsigned long ret_attr;
 
@@ -1640,8 +1670,14 @@ static int ibmveth_probe(struct vio_dev *dev, const struct vio_device_id *id)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	mcastFilterSize_p = (unsigned int *)vio_get_attribute(dev,
 						VETH_MCAST_FILTER_SIZE, NULL);
+=======
+	mcastFilterSize_p = (__be32 *)vio_get_attribute(dev,
+							VETH_MCAST_FILTER_SIZE,
+							NULL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!mcastFilterSize_p) {
 		dev_err(&dev->dev, "Can't find VETH_MCAST_FILTER_SIZE "
 			"attribute\n");
@@ -1658,7 +1694,11 @@ static int ibmveth_probe(struct vio_dev *dev, const struct vio_device_id *id)
 
 	adapter->vdev = dev;
 	adapter->netdev = netdev;
+<<<<<<< HEAD
 	adapter->mcastFilterSize = *mcastFilterSize_p;
+=======
+	adapter->mcastFilterSize = be32_to_cpu(*mcastFilterSize_p);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	adapter->pool_config = 0;
 
 	netif_napi_add(netdev, &adapter->napi, ibmveth_poll, 16);
@@ -1694,7 +1734,11 @@ static int ibmveth_probe(struct vio_dev *dev, const struct vio_device_id *id)
 	}
 
 	netdev->min_mtu = IBMVETH_MIN_MTU;
+<<<<<<< HEAD
 	netdev->max_mtu = ETH_MAX_MTU;
+=======
+	netdev->max_mtu = ETH_MAX_MTU - IBMVETH_BUFF_OH;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	memcpy(netdev->dev_addr, mac_addr_p, ETH_ALEN);
 

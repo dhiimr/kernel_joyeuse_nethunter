@@ -667,10 +667,18 @@ struct page *get_signal_page(void)
 
 	addr = page_address(page);
 
+<<<<<<< HEAD
+=======
+	/* Poison the entire page */
+	memset32(addr, __opcode_to_mem_arm(0xe7fddef1),
+		 PAGE_SIZE / sizeof(u32));
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Give the signal return code some randomness */
 	offset = 0x200 + (get_random_int() & 0x7fc);
 	signal_return_offset = offset;
 
+<<<<<<< HEAD
 	/*
 	 * Copy signal return handlers into the vector page, and
 	 * set sigreturn to be a pointer to these.
@@ -679,6 +687,14 @@ struct page *get_signal_page(void)
 
 	ptr = (unsigned long)addr + offset;
 	flush_icache_range(ptr, ptr + sizeof(sigreturn_codes));
+=======
+	/* Copy signal return handlers into the page */
+	memcpy(addr + offset, sigreturn_codes, sizeof(sigreturn_codes));
+
+	/* Flush out all instructions in this page */
+	ptr = (unsigned long)addr;
+	flush_icache_range(ptr, ptr + PAGE_SIZE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return page;
 }

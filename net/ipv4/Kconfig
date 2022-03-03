@@ -297,6 +297,10 @@ config SYN_COOKIES
 
 config NET_IPVTI
 	tristate "Virtual (secure) IP: tunneling"
+<<<<<<< HEAD
+=======
+	depends on IPV6 || IPV6=n
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select INET_TUNNEL
 	select NET_IP_TUNNEL
 	depends on INET_XFRM_MODE_TUNNEL

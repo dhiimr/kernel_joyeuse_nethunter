@@ -573,7 +573,11 @@ static int cyapa_pip_retrieve_data_structure(struct cyapa *cyapa,
 
 	memset(&cmd, 0, sizeof(cmd));
 	put_unaligned_le16(PIP_OUTPUT_REPORT_ADDR, &cmd.head.addr);
+<<<<<<< HEAD
 	put_unaligned_le16(sizeof(cmd), &cmd.head.length - 2);
+=======
+	put_unaligned_le16(sizeof(cmd) - 2, &cmd.head.length);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cmd.head.report_id = PIP_APP_CMD_REPORT_ID;
 	cmd.head.cmd_code = PIP_RETRIEVE_DATA_STRUCTURE;
 	put_unaligned_le16(read_offset, &cmd.read_offset);

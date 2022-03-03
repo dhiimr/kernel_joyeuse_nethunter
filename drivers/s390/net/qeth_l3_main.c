@@ -2849,7 +2849,14 @@ static int __qeth_l3_open(struct net_device *dev)
 
 	if (qdio_stop_irq(card->data.ccwdev, 0) >= 0) {
 		napi_enable(&card->napi);
+<<<<<<< HEAD
 		napi_schedule(&card->napi);
+=======
+		local_bh_disable();
+		napi_schedule(&card->napi);
+		/* kick-start the NAPI softirq: */
+		local_bh_enable();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else
 		rc = -EIO;
 	return rc;

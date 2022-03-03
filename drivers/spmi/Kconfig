@@ -24,6 +24,7 @@ config SPMI_MSM_PMIC_ARB
 	  This is required for communicating with Qualcomm PMICs and
 	  other devices that have the SPMI interface.
 
+<<<<<<< HEAD
 config SPMI_MSM_PMIC_ARB_DEBUG
 	tristate "QTI SPMI Debug Controller (PMIC Arbiter)"
 	depends on ARCH_QCOM || COMPILE_TEST
@@ -46,4 +47,6 @@ config VIOSPMI_MSM_PMIC_ARB
 
 source "drivers/spmi/simulator/Kconfig"
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif

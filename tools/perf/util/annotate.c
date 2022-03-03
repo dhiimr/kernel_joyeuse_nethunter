@@ -868,16 +868,24 @@ static int disasm_line__parse(char *line, const char **namep, char **rawp)
 	*namep = strdup(name);
 
 	if (*namep == NULL)
+<<<<<<< HEAD
 		goto out_free_name;
+=======
+		goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	(*rawp)[0] = tmp;
 	*rawp = ltrim(*rawp);
 
 	return 0;
 
+<<<<<<< HEAD
 out_free_name:
 	free((void *)namep);
 	*namep = NULL;
+=======
+out:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return -1;
 }
 

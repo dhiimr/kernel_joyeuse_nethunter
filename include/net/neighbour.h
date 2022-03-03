@@ -64,7 +64,10 @@ enum {
 	NEIGH_VAR_GC_THRESH1,
 	NEIGH_VAR_GC_THRESH2,
 	NEIGH_VAR_GC_THRESH3,
+<<<<<<< HEAD
 	NEIGH_VAR_PROBE,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	NEIGH_VAR_MAX
 };
 
@@ -430,8 +433,13 @@ static inline int neigh_event_send(struct neighbour *neigh, struct sk_buff *skb)
 {
 	unsigned long now = jiffies;
 	
+<<<<<<< HEAD
 	if (neigh->used != now)
 		neigh->used = now;
+=======
+	if (READ_ONCE(neigh->used) != now)
+		WRITE_ONCE(neigh->used, now);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!(neigh->nud_state&(NUD_CONNECTED|NUD_DELAY|NUD_PROBE)))
 		return __neigh_event_send(neigh, skb);
 	return 0;
@@ -459,7 +467,11 @@ static inline int neigh_hh_output(const struct hh_cache *hh, struct sk_buff *skb
 
 	do {
 		seq = read_seqbegin(&hh->hh_lock);
+<<<<<<< HEAD
 		hh_len = hh->hh_len;
+=======
+		hh_len = READ_ONCE(hh->hh_len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (likely(hh_len <= HH_DATA_MOD)) {
 			hh_alen = HH_DATA_MOD;
 

@@ -30,7 +30,11 @@
 #endif
 
 static int llc_find_offset(int state, int ev_type);
+<<<<<<< HEAD
 static int llc_conn_send_pdus(struct sock *sk, struct sk_buff *skb);
+=======
+static void llc_conn_send_pdus(struct sock *sk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int llc_conn_service(struct sock *sk, struct sk_buff *skb);
 static int llc_exec_conn_trans_actions(struct sock *sk,
 				       struct llc_conn_state_trans *trans,
@@ -55,6 +59,11 @@ int sysctl_llc2_busy_timeout = LLC2_BUSY_TIME * HZ;
  *	(executing it's actions and changing state), upper layer will be
  *	indicated or confirmed, if needed. Returns 0 for success, 1 for
  *	failure. The socket lock has to be held before calling this function.
+<<<<<<< HEAD
+=======
+ *
+ *	This function always consumes a reference to the skb.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 int llc_conn_state_process(struct sock *sk, struct sk_buff *skb)
 {
@@ -62,12 +71,15 @@ int llc_conn_state_process(struct sock *sk, struct sk_buff *skb)
 	struct llc_sock *llc = llc_sk(skb->sk);
 	struct llc_conn_state_ev *ev = llc_conn_ev(skb);
 
+<<<<<<< HEAD
 	/*
 	 * We have to hold the skb, because llc_conn_service will kfree it in
 	 * the sending path and we need to look at the skb->cb, where we encode
 	 * llc_conn_state_ev.
 	 */
 	skb_get(skb);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ev->ind_prim = ev->cfm_prim = 0;
 	/*
 	 * Send event to state machine
@@ -75,6 +87,7 @@ int llc_conn_state_process(struct sock *sk, struct sk_buff *skb)
 	rc = llc_conn_service(skb->sk, skb);
 	if (unlikely(rc != 0)) {
 		printk(KERN_ERR "%s: llc_conn_service failed\n", __func__);
+<<<<<<< HEAD
 		goto out_kfree_skb;
 	}
 
@@ -90,6 +103,14 @@ int llc_conn_state_process(struct sock *sk, struct sk_buff *skb)
 
 	switch (ev->ind_prim) {
 	case LLC_DATA_PRIM:
+=======
+		goto out_skb_put;
+	}
+
+	switch (ev->ind_prim) {
+	case LLC_DATA_PRIM:
+		skb_get(skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		llc_save_primitive(sk, skb, LLC_DATA_PRIM);
 		if (unlikely(sock_queue_rcv_skb(sk, skb))) {
 			/*
@@ -106,6 +127,10 @@ int llc_conn_state_process(struct sock *sk, struct sk_buff *skb)
 		 * skb->sk pointing to the newly created struct sock in
 		 * llc_conn_handler. -acme
 		 */
+<<<<<<< HEAD
+=======
+		skb_get(skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		skb_queue_tail(&sk->sk_receive_queue, skb);
 		sk->sk_state_change(sk);
 		break;
@@ -121,7 +146,10 @@ int llc_conn_state_process(struct sock *sk, struct sk_buff *skb)
 				sk->sk_state_change(sk);
 			}
 		}
+<<<<<<< HEAD
 		kfree_skb(skb);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		sock_put(sk);
 		break;
 	case LLC_RESET_PRIM:
@@ -130,6 +158,7 @@ int llc_conn_state_process(struct sock *sk, struct sk_buff *skb)
 		 * RESET is not being notified to upper layers for now
 		 */
 		printk(KERN_INFO "%s: received a reset ind!\n", __func__);
+<<<<<<< HEAD
 		kfree_skb(skb);
 		break;
 	default:
@@ -138,6 +167,13 @@ int llc_conn_state_process(struct sock *sk, struct sk_buff *skb)
 				__func__, ev->ind_prim);
 			kfree_skb(skb);
 		}
+=======
+		break;
+	default:
+		if (ev->ind_prim)
+			printk(KERN_INFO "%s: received unknown %d prim!\n",
+				__func__, ev->ind_prim);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* No indication */
 		break;
 	}
@@ -179,6 +215,7 @@ int llc_conn_state_process(struct sock *sk, struct sk_buff *skb)
 		printk(KERN_INFO "%s: received a reset conf!\n", __func__);
 		break;
 	default:
+<<<<<<< HEAD
 		if (ev->cfm_prim) {
 			printk(KERN_INFO "%s: received unknown %d prim!\n",
 					__func__, ev->cfm_prim);
@@ -188,16 +225,32 @@ int llc_conn_state_process(struct sock *sk, struct sk_buff *skb)
 	}
 out_kfree_skb:
 	kfree_skb(skb);
+=======
+		if (ev->cfm_prim)
+			printk(KERN_INFO "%s: received unknown %d prim!\n",
+					__func__, ev->cfm_prim);
+		/* No confirmation */
+		break;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out_skb_put:
 	kfree_skb(skb);
 	return rc;
 }
 
+<<<<<<< HEAD
 int llc_conn_send_pdu(struct sock *sk, struct sk_buff *skb)
 {
 	/* queue PDU to send to MAC layer */
 	skb_queue_tail(&sk->sk_write_queue, skb);
 	return llc_conn_send_pdus(sk, skb);
+=======
+void llc_conn_send_pdu(struct sock *sk, struct sk_buff *skb)
+{
+	/* queue PDU to send to MAC layer */
+	skb_queue_tail(&sk->sk_write_queue, skb);
+	llc_conn_send_pdus(sk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -255,7 +308,11 @@ void llc_conn_resend_i_pdu_as_cmd(struct sock *sk, u8 nr, u8 first_p_bit)
 	if (howmany_resend > 0)
 		llc->vS = (llc->vS + 1) % LLC_2_SEQ_NBR_MODULO;
 	/* any PDUs to re-send are queued up; start sending to MAC */
+<<<<<<< HEAD
 	llc_conn_send_pdus(sk, NULL);
+=======
+	llc_conn_send_pdus(sk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:;
 }
 
@@ -296,7 +353,11 @@ void llc_conn_resend_i_pdu_as_rsp(struct sock *sk, u8 nr, u8 first_f_bit)
 	if (howmany_resend > 0)
 		llc->vS = (llc->vS + 1) % LLC_2_SEQ_NBR_MODULO;
 	/* any PDUs to re-send are queued up; start sending to MAC */
+<<<<<<< HEAD
 	llc_conn_send_pdus(sk, NULL);
+=======
+	llc_conn_send_pdus(sk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:;
 }
 
@@ -340,6 +401,7 @@ out:
 /**
  *	llc_conn_send_pdus - Sends queued PDUs
  *	@sk: active connection
+<<<<<<< HEAD
  *	@hold_skb: the skb held by caller, or NULL if does not care
  *
  *	Sends queued pdus to MAC layer for transmission. When @hold_skb is
@@ -350,6 +412,14 @@ static int llc_conn_send_pdus(struct sock *sk, struct sk_buff *hold_skb)
 {
 	struct sk_buff *skb;
 	int ret = 0;
+=======
+ *
+ *	Sends queued pdus to MAC layer for transmission.
+ */
+static void llc_conn_send_pdus(struct sock *sk)
+{
+	struct sk_buff *skb;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	while ((skb = skb_dequeue(&sk->sk_write_queue)) != NULL) {
 		struct llc_pdu_sn *pdu = llc_pdu_sn_hdr(skb);
@@ -361,6 +431,7 @@ static int llc_conn_send_pdus(struct sock *sk, struct sk_buff *hold_skb)
 			skb_queue_tail(&llc_sk(sk)->pdu_unack_q, skb);
 			if (!skb2)
 				break;
+<<<<<<< HEAD
 			dev_queue_xmit(skb2);
 		} else {
 			bool is_target = skb == hold_skb;
@@ -375,6 +446,12 @@ static int llc_conn_send_pdus(struct sock *sk, struct sk_buff *hold_skb)
 	}
 
 	return ret;
+=======
+			skb = skb2;
+		}
+		dev_queue_xmit(skb);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**

@@ -1,9 +1,12 @@
 # SPDX-License-Identifier: GPL-2.0
 # Makefile for xmon
 
+<<<<<<< HEAD
 # Disable clang warning for using setjmp without setjmp.h header
 subdir-ccflags-y := $(call cc-disable-warning, builtin-requires-header)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 subdir-ccflags-$(CONFIG_PPC_WERROR) += -Werror
 
 GCOV_PROFILE := n
@@ -13,6 +16,15 @@ UBSAN_SANITIZE := n
 ORIG_CFLAGS := $(KBUILD_CFLAGS)
 KBUILD_CFLAGS = $(subst -mno-sched-epilog,,$(subst $(CC_FLAGS_FTRACE),,$(ORIG_CFLAGS)))
 
+<<<<<<< HEAD
+=======
+ifdef CONFIG_CC_IS_CLANG
+# clang stores addresses on the stack causing the frame size to blow
+# out. See https://github.com/ClangBuiltLinux/linux/issues/252
+KBUILD_CFLAGS += -Wframe-larger-than=4096
+endif
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 ccflags-$(CONFIG_PPC64) := $(NO_MINIMAL_TOC)
 
 obj-y			+= xmon.o nonstdio.o spr_access.o

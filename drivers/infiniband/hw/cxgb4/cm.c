@@ -456,6 +456,11 @@ static struct sk_buff *get_skb(struct sk_buff *skb, int len, gfp_t gfp)
 		skb_reset_transport_header(skb);
 	} else {
 		skb = alloc_skb(len, gfp);
+<<<<<<< HEAD
+=======
+		if (!skb)
+			return NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	t4_set_arp_err_handler(skb, NULL, NULL);
 	return skb;
@@ -489,7 +494,10 @@ static int _put_ep_safe(struct c4iw_dev *dev, struct sk_buff *skb)
 
 	ep = *((struct c4iw_ep **)(skb->cb + 2 * sizeof(void *)));
 	release_ep_resources(ep);
+<<<<<<< HEAD
 	kfree_skb(skb);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -500,7 +508,10 @@ static int _put_pass_ep_safe(struct c4iw_dev *dev, struct sk_buff *skb)
 	ep = *((struct c4iw_ep **)(skb->cb + 2 * sizeof(void *)));
 	c4iw_put_ep(&ep->parent_ep->com);
 	release_ep_resources(ep);
+<<<<<<< HEAD
 	kfree_skb(skb);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -2056,7 +2067,11 @@ static int import_ep(struct c4iw_ep *ep, int iptype, __u8 *peer_ip,
 	} else {
 		pdev = get_real_dev(n->dev);
 		ep->l2t = cxgb4_l2t_get(cdev->rdev.lldi.l2t,
+<<<<<<< HEAD
 					n, pdev, 0);
+=======
+					n, pdev, rt_tos2priority(tos));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!ep->l2t)
 			goto out;
 		ep->mtu = dst_mtu(dst);
@@ -2147,7 +2162,12 @@ static int c4iw_reconnect(struct c4iw_ep *ep)
 					   laddr6->sin6_addr.s6_addr,
 					   raddr6->sin6_addr.s6_addr,
 					   laddr6->sin6_port,
+<<<<<<< HEAD
 					   raddr6->sin6_port, 0,
+=======
+					   raddr6->sin6_port,
+					   ep->com.cm_id->tos,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					   raddr6->sin6_scope_id);
 		iptype = 6;
 		ra = (__u8 *)&raddr6->sin6_addr;
@@ -2923,6 +2943,7 @@ static int terminate(struct c4iw_dev *dev, struct sk_buff *skb)
 	ep = get_ep_from_tid(dev, tid);
 	BUG_ON(!ep);
 
+<<<<<<< HEAD
 	if (ep && ep->com.qp) {
 		pr_warn("TERM received tid %u qpid %u\n",
 			tid, ep->com.qp->wq.sq.qid);
@@ -2932,6 +2953,20 @@ static int terminate(struct c4iw_dev *dev, struct sk_buff *skb)
 	} else
 		pr_warn("TERM received tid %u no ep/qp\n", tid);
 	c4iw_put_ep(&ep->com);
+=======
+	if (ep) {
+		if (ep->com.qp) {
+			pr_warn("TERM received tid %u qpid %u\n", tid,
+				ep->com.qp->wq.sq.qid);
+			attrs.next_state = C4IW_QP_STATE_TERMINATE;
+			c4iw_modify_qp(ep->com.qp->rhp, ep->com.qp,
+				       C4IW_QP_ATTR_NEXT_STATE, &attrs, 1);
+		}
+
+		c4iw_put_ep(&ep->com);
+	} else
+		pr_warn("TERM received tid %u no ep/qp\n", tid);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -3261,7 +3296,11 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 		if (raddr->sin_addr.s_addr == htonl(INADDR_ANY)) {
 			err = pick_local_ipaddrs(dev, cm_id);
 			if (err)
+<<<<<<< HEAD
 				goto fail2;
+=======
+				goto fail3;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		/* find a route */
@@ -3283,7 +3322,11 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 		if (ipv6_addr_type(&raddr6->sin6_addr) == IPV6_ADDR_ANY) {
 			err = pick_local_ip6addrs(dev, cm_id);
 			if (err)
+<<<<<<< HEAD
 				goto fail2;
+=======
+				goto fail3;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		/* find a route */
@@ -3295,7 +3338,11 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 					   laddr6->sin6_addr.s6_addr,
 					   raddr6->sin6_addr.s6_addr,
 					   laddr6->sin6_port,
+<<<<<<< HEAD
 					   raddr6->sin6_port, 0,
+=======
+					   raddr6->sin6_port, cm_id->tos,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					   raddr6->sin6_scope_id);
 	}
 	if (!ep->dst) {
@@ -3488,13 +3535,22 @@ int c4iw_destroy_listen(struct iw_cm_id *cm_id)
 	    ep->com.local_addr.ss_family == AF_INET) {
 		err = cxgb4_remove_server_filter(
 			ep->com.dev->rdev.lldi.ports[0], ep->stid,
+<<<<<<< HEAD
 			ep->com.dev->rdev.lldi.rxq_ids[0], 0);
+=======
+			ep->com.dev->rdev.lldi.rxq_ids[0], false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		struct sockaddr_in6 *sin6;
 		c4iw_init_wr_wait(&ep->com.wr_wait);
 		err = cxgb4_remove_server(
 				ep->com.dev->rdev.lldi.ports[0], ep->stid,
+<<<<<<< HEAD
 				ep->com.dev->rdev.lldi.rxq_ids[0], 0);
+=======
+				ep->com.dev->rdev.lldi.rxq_ids[0],
+				ep->com.local_addr.ss_family == AF_INET6);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (err)
 			goto done;
 		err = c4iw_wait_for_reply(&ep->com.dev->rdev, &ep->com.wr_wait,

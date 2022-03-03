@@ -23,7 +23,10 @@
 #include <linux/of.h>
 #include <linux/sched.h>
 #include <linux/sched/topology.h>
+<<<<<<< HEAD
 #include <linux/sched/energy.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/slab.h>
 #include <linux/string.h>
 
@@ -31,6 +34,7 @@
 #include <asm/cputype.h>
 #include <asm/topology.h>
 
+<<<<<<< HEAD
 static inline
 const struct sched_group_energy * const cpu_core_energy(int cpu)
 {
@@ -43,6 +47,8 @@ const struct sched_group_energy * const cpu_cluster_energy(int cpu)
 	return sge_array[cpu][SD_LEVEL1];
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * cpu capacity scale management
  */
@@ -291,14 +297,18 @@ void store_cpu_topology(unsigned int cpuid)
 
 	update_cpu_capacity(cpuid);
 
+<<<<<<< HEAD
 	topology_detect_flags();
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pr_info("CPU%u: thread %d, cpu %d, socket %d, mpidr %x\n",
 		cpuid, cpu_topology[cpuid].thread_id,
 		cpu_topology[cpuid].core_id,
 		cpu_topology[cpuid].socket_id, mpidr);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_SCHED_MC
 static int core_flags(void)
 {
@@ -315,13 +325,25 @@ static inline int cpu_corepower_flags(void)
 static int cpu_flags(void)
 {
 	return topology_cpu_flags();
+=======
+static inline int cpu_corepower_flags(void)
+{
+	return SD_SHARE_PKG_RESOURCES  | SD_SHARE_POWERDOMAIN;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct sched_domain_topology_level arm_topology[] = {
 #ifdef CONFIG_SCHED_MC
+<<<<<<< HEAD
 	{ cpu_coregroup_mask, core_flags, cpu_core_energy, SD_INIT_NAME(MC) },
 #endif
 	{ cpu_cpu_mask, cpu_flags, cpu_cluster_energy, SD_INIT_NAME(DIE) },
+=======
+	{ cpu_corepower_mask, cpu_corepower_flags, SD_INIT_NAME(GMC) },
+	{ cpu_coregroup_mask, cpu_core_flags, SD_INIT_NAME(MC) },
+#endif
+	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ NULL, },
 };
 
@@ -347,9 +369,12 @@ void __init init_cpu_topology(void)
 
 	parse_dt_topology();
 
+<<<<<<< HEAD
 	for_each_possible_cpu(cpu)
 		update_siblings_masks(cpu);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Set scheduler topology descriptor */
 	set_sched_topology(arm_topology);
 }

@@ -394,7 +394,11 @@ data_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 			memcpy(di.channelmap, dev->channelmap,
 			       sizeof(di.channelmap));
 			di.nrbchan = dev->nrbchan;
+<<<<<<< HEAD
 			strcpy(di.name, dev_name(&dev->dev));
+=======
+			strscpy(di.name, dev_name(&dev->dev), sizeof(di.name));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (copy_to_user((void __user *)arg, &di, sizeof(di)))
 				err = -EFAULT;
 		} else
@@ -678,7 +682,11 @@ base_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 			memcpy(di.channelmap, dev->channelmap,
 			       sizeof(di.channelmap));
 			di.nrbchan = dev->nrbchan;
+<<<<<<< HEAD
 			strcpy(di.name, dev_name(&dev->dev));
+=======
+			strscpy(di.name, dev_name(&dev->dev), sizeof(di.name));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (copy_to_user((void __user *)arg, &di, sizeof(di)))
 				err = -EFAULT;
 		} else
@@ -692,6 +700,10 @@ base_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 			err = -EFAULT;
 			break;
 		}
+<<<<<<< HEAD
+=======
+		dn.name[sizeof(dn.name) - 1] = '\0';
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev = get_mdevice(dn.id);
 		if (dev)
 			err = device_rename(&dev->dev, dn.name);
@@ -712,10 +724,17 @@ base_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
 	struct sock *sk = sock->sk;
 	int err = 0;
 
+<<<<<<< HEAD
 	if (!maddr || maddr->family != AF_ISDN)
 		return -EINVAL;
 
 	if (addr_len < sizeof(struct sockaddr_mISDN))
+=======
+	if (addr_len < sizeof(struct sockaddr_mISDN))
+		return -EINVAL;
+
+	if (!maddr || maddr->family != AF_ISDN)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	lock_sock(sk);
@@ -765,6 +784,11 @@ base_sock_create(struct net *net, struct socket *sock, int protocol, int kern)
 
 	if (sock->type != SOCK_RAW)
 		return -ESOCKTNOSUPPORT;
+<<<<<<< HEAD
+=======
+	if (!capable(CAP_NET_RAW))
+		return -EPERM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	sk = sk_alloc(net, PF_ISDN, GFP_KERNEL, &mISDN_proto, kern);
 	if (!sk)

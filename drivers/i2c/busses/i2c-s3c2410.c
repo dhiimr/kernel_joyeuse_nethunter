@@ -495,7 +495,14 @@ static int i2c_s3c_irq_nextbyte(struct s3c24xx_i2c *i2c, unsigned long iicstat)
 					 * forces us to send a new START
 					 * when we change direction
 					 */
+<<<<<<< HEAD
 					s3c24xx_i2c_stop(i2c, -EINVAL);
+=======
+					dev_dbg(i2c->dev,
+						"missing START before write->read\n");
+					s3c24xx_i2c_stop(i2c, -EINVAL);
+					break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				}
 
 				goto retry_write;
@@ -1178,7 +1185,11 @@ static int s3c24xx_i2c_probe(struct platform_device *pdev)
 	 */
 	if (!(i2c->quirks & QUIRK_POLL)) {
 		i2c->irq = ret = platform_get_irq(pdev, 0);
+<<<<<<< HEAD
 		if (ret <= 0) {
+=======
+		if (ret < 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			dev_err(&pdev->dev, "cannot find IRQ\n");
 			clk_unprepare(i2c->clk);
 			return ret;

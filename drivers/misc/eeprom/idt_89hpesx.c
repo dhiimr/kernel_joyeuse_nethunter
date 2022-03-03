@@ -1165,6 +1165,10 @@ static void idt_get_fw_data(struct idt_89hpesx_dev *pdev)
 	else /* if (!fwnode_property_read_bool(node, "read-only")) */
 		pdev->eero = false;
 
+<<<<<<< HEAD
+=======
+	fwnode_handle_put(fwnode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev_info(dev, "EEPROM of %d bytes found by 0x%x",
 		pdev->eesize, pdev->eeaddr);
 }

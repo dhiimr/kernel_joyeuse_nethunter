@@ -2,6 +2,7 @@
 # QCOM Soc drivers
 #
 menu "Qualcomm SoC drivers"
+<<<<<<< HEAD
 config QCOM_MEM_OFFLINE
 	bool "Dynamic Memory Region Offline driver"
 	help
@@ -30,6 +31,8 @@ config QCOM_CPUSS_DUMP
 	  cpu subsystem to an allocated buffer. This allows for analysis of the
 	  the entities if corruption is suspected.
 	  If unsure, say N
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config QCOM_GLINK_SSR
 	tristate "Qualcomm Glink SSR driver"
@@ -40,6 +43,7 @@ config QCOM_GLINK_SSR
 	  implements the SSR protocol for notifying the remote processor about
 	  neighboring subsystems going up or down.
 
+<<<<<<< HEAD
 config QCOM_RUN_QUEUE_STATS
        bool "Enable collection and exporting of QTI Run Queue stats to userspace"
        help
@@ -48,6 +52,8 @@ config QCOM_RUN_QUEUE_STATS
         This information is exported to usespace via sysfs entries and userspace
         algorithms uses info and decide when to turn on/off the cpu cores.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config QCOM_GSBI
         tristate "QCOM General Serial Bus Interface"
         depends on ARCH_QCOM
@@ -61,6 +67,7 @@ config QCOM_MDT_LOADER
 	tristate
 	select QCOM_SCM
 
+<<<<<<< HEAD
 config QCOM_LLCC
 	tristate "Qualcomm Technologies, Inc. LLCC driver"
 	depends on ARCH_QCOM
@@ -148,6 +155,8 @@ config QCOM_LLCC_PERFMON
 	  interface. SYSFS interface used for configure and dump the LLCC
 	  performance events.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config QCOM_PM
 	bool "Qualcomm Power Management"
 	depends on ARCH_QCOM && !ARM64
@@ -158,6 +167,7 @@ config QCOM_PM
 	  modes. It interface with various system drivers to put the cores in
 	  low power modes.
 
+<<<<<<< HEAD
 config QCOM_QMI_HELPERS
 	bool "Qualcomm QMI Helpers"
 	depends on QRTR || QTI_QRTR
@@ -196,6 +206,8 @@ config QCOM_QMI_POWER_COLLAPSE
 	  detected flow status.
 	  If unsure or not use power save feature, say 'N'.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config QCOM_SMEM
 	tristate "Qualcomm Shared Memory Manager (SMEM)"
 	depends on ARCH_QCOM
@@ -220,6 +232,7 @@ config QCOM_SMD_RPM
 	  Say M here if you want to include support for the Qualcomm RPM as a
 	  module. This will build a module called "qcom-smd-rpm".
 
+<<<<<<< HEAD
 config MSM_SPM
         bool "Driver support for SPM and AVS wrapper hardware"
         help
@@ -299,12 +312,17 @@ config QCOM_WDOG_IPI_ENABLE
 
 	  To track CPUs health on LPM, or on debug builds enable it.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config QCOM_SMEM_STATE
 	bool
 
 config QCOM_SMP2P
 	tristate "Qualcomm Shared Memory Point to Point support"
+<<<<<<< HEAD
 	depends on MAILBOX
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	depends on QCOM_SMEM
 	select QCOM_SMEM_STATE
 	help
@@ -327,6 +345,7 @@ config QCOM_WCNSS_CTRL
 	  Client driver for the WCNSS_CTRL SMD channel, used to download nv
 	  firmware to a newly booted WCNSS chip.
 
+<<<<<<< HEAD
 config QPNP_PBS
 	tristate "PBS trigger support for QPNP PMIC"
 	depends on SPMI
@@ -915,3 +934,6 @@ config QCOM_HYP_CORE_CTL
 	  CPUs can be assigned to the other guest OS by the hypervisor.
 	  An offline CPU is considered as a reserved CPU since this OS can't use
 	  it.
+=======
+endmenu
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

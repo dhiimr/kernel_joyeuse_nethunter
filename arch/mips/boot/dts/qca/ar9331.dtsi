@@ -99,7 +99,11 @@
 
 			miscintc: interrupt-controller@18060010 {
 				compatible = "qca,ar7240-misc-intc";
+<<<<<<< HEAD
 				reg = <0x18060010 0x4>;
+=======
+				reg = <0x18060010 0x8>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 				interrupt-parent = <&cpuintc>;
 				interrupts = <6>;

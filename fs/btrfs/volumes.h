@@ -61,6 +61,14 @@ struct btrfs_device {
 
 	spinlock_t io_lock ____cacheline_aligned;
 	int running_pending;
+<<<<<<< HEAD
+=======
+	/* When true means this device has pending chunk alloc in
+	 * current transaction. Protected by chunk_mutex.
+	 */
+	bool has_pending_chunks;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* regular prio bios */
 	struct btrfs_pending_bios pending_bios;
 	/* sync bios */
@@ -312,7 +320,10 @@ struct btrfs_bio {
 	u64 map_type; /* get from map_lookup->type */
 	bio_end_io_t *end_io;
 	struct bio *orig_bio;
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	void *private;
 	atomic_t error;
 	int max_errors;

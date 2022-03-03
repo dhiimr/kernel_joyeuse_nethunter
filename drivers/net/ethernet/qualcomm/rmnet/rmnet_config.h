@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2013-2014, 2016-2019 The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2013-2014, 2016-2017 The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -14,12 +18,16 @@
  */
 
 #include <linux/skbuff.h>
+<<<<<<< HEAD
 #include <net/gro_cells.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifndef _RMNET_CONFIG_H_
 #define _RMNET_CONFIG_H_
 
 #define RMNET_MAX_LOGICAL_EP 255
+<<<<<<< HEAD
 #define RMNET_MAX_VEID 4
 
 struct rmnet_endpoint {
@@ -59,6 +67,16 @@ struct rmnet_egress_agg_params {
 struct rmnet_agg_page {
 	struct list_head list;
 	struct page *page;
+=======
+
+/* Information about the next device to deliver the packet to.
+ * Exact usage of this parameter depends on the rmnet_mode.
+ */
+struct rmnet_endpoint {
+	u8 rmnet_mode;
+	u8 mux_id;
+	struct net_device *egress_dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* One instance of this structure is instantiated for each real_dev associated
@@ -66,6 +84,7 @@ struct rmnet_agg_page {
  */
 struct rmnet_port {
 	struct net_device *dev;
+<<<<<<< HEAD
 	u32 data_format;
 	u8 nr_rmnet_devs;
 	u8 rmnet_mode;
@@ -99,10 +118,19 @@ struct rmnet_port {
 	/* Descriptor pool */
 	spinlock_t desc_pool_lock;
 	struct rmnet_frag_descriptor_pool *frag_desc_pool;
+=======
+	struct rmnet_endpoint local_ep;
+	struct rmnet_endpoint muxed_ep[RMNET_MAX_LOGICAL_EP];
+	u32 ingress_data_format;
+	u32 egress_data_format;
+	struct net_device *rmnet_devices[RMNET_MAX_LOGICAL_EP];
+	u8 nr_rmnet_devs;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 extern struct rtnl_link_ops rmnet_link_ops;
 
+<<<<<<< HEAD
 struct rmnet_vnd_stats {
 	u64 rx_pkts;
 	u64 rx_bytes;
@@ -192,4 +220,14 @@ int rmnet_add_bridge(struct net_device *rmnet_dev,
 		     struct net_device *slave_dev);
 int rmnet_del_bridge(struct net_device *rmnet_dev,
 		     struct net_device *slave_dev);
+=======
+struct rmnet_priv {
+	struct rmnet_endpoint local_ep;
+	u8 mux_id;
+	struct net_device *real_dev;
+};
+
+struct rmnet_port *rmnet_get_port(struct net_device *real_dev);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _RMNET_CONFIG_H_ */

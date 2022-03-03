@@ -300,6 +300,30 @@ static const struct iio_chan_spec at91_adc_channels[] = {
 				+ AT91_SAMA5D2_DIFF_CHAN_CNT + 1),
 };
 
+<<<<<<< HEAD
+=======
+static int at91_adc_chan_xlate(struct iio_dev *indio_dev, int chan)
+{
+	int i;
+
+	for (i = 0; i < indio_dev->num_channels; i++) {
+		if (indio_dev->channels[i].scan_index == chan)
+			return i;
+	}
+	return -EINVAL;
+}
+
+static inline struct iio_chan_spec const *
+at91_adc_chan_get(struct iio_dev *indio_dev, int chan)
+{
+	int index = at91_adc_chan_xlate(indio_dev, chan);
+
+	if (index < 0)
+		return NULL;
+	return indio_dev->channels + index;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int at91_adc_configure_trigger(struct iio_trigger *trig, bool state)
 {
 	struct iio_dev *indio = iio_trigger_get_drvdata(trig);
@@ -317,7 +341,28 @@ static int at91_adc_configure_trigger(struct iio_trigger *trig, bool state)
 	at91_adc_writel(st, AT91_SAMA5D2_TRGR, status);
 
 	for_each_set_bit(bit, indio->active_scan_mask, indio->num_channels) {
+<<<<<<< HEAD
 		struct iio_chan_spec const *chan = indio->channels + bit;
+=======
+		struct iio_chan_spec const *chan = at91_adc_chan_get(indio, bit);
+		u32 cor;
+
+		if (!chan)
+			continue;
+		if (state) {
+			cor = at91_adc_readl(st, AT91_SAMA5D2_COR);
+
+			if (chan->differential)
+				cor |= (BIT(chan->channel) |
+					BIT(chan->channel2)) <<
+					AT91_SAMA5D2_COR_DIFF_OFFSET;
+			else
+				cor &= ~(BIT(chan->channel) <<
+				       AT91_SAMA5D2_COR_DIFF_OFFSET);
+
+			at91_adc_writel(st, AT91_SAMA5D2_COR, cor);
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (state) {
 			at91_adc_writel(st, AT91_SAMA5D2_CHER,
@@ -398,8 +443,16 @@ static irqreturn_t at91_adc_trigger_handler(int irq, void *p)
 	u8 bit;
 
 	for_each_set_bit(bit, indio->active_scan_mask, indio->num_channels) {
+<<<<<<< HEAD
 		struct iio_chan_spec const *chan = indio->channels + bit;
 
+=======
+		struct iio_chan_spec const *chan =
+					at91_adc_chan_get(indio, bit);
+
+		if (!chan)
+			continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		st->buffer[i] = at91_adc_readl(st, chan->address);
 		i++;
 	}

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2012, 2017-2019, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2012, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -85,6 +89,7 @@ struct coresight_dev_subtype {
 };
 
 /**
+<<<<<<< HEAD
  * struct coresight_reg_clk - regulators and clocks need by coresight
  * @nr_reg:	number of regulators
  * @nr_clk:	number of clocks
@@ -99,30 +104,44 @@ struct coresight_reg_clk {
 };
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * struct coresight_platform_data - data harvested from the DT specification
  * @cpu:	the CPU a source belongs to. Only applicable for ETM/PTMs.
  * @name:	name of the component as shown under sysfs.
  * @nr_inport:	number of input ports for this component.
  * @outports:	list of remote endpoint port number.
+<<<<<<< HEAD
  * @source_names:name of all source components connected to this device.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @child_names:name of all child components connected to this device.
  * @child_ports:child component port number the current component is
 		connected  to.
  * @nr_outport:	number of output ports for this component.
  * @clk:	The clock this component is associated to.
+<<<<<<< HEAD
  * @reg_clk:	as defined by @coresight_reg_clk.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 struct coresight_platform_data {
 	int cpu;
 	const char *name;
 	int nr_inport;
 	int *outports;
+<<<<<<< HEAD
 	const char **source_names;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	const char **child_names;
 	int *child_ports;
 	int nr_outport;
 	struct clk *clk;
+<<<<<<< HEAD
 	struct coresight_reg_clk *reg_clk;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -148,7 +167,10 @@ struct coresight_desc {
 /**
  * struct coresight_connection - representation of a single connection
  * @outport:	a connection's output port number.
+<<<<<<< HEAD
  * @source_name:source component's name.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @chid_name:	remote component's name.
  * @child_port:	remote component's port number @output is connected to.
  * @child_dev:	a @coresight_device representation of the component
@@ -156,7 +178,10 @@ struct coresight_desc {
  */
 struct coresight_connection {
 	int outport;
+<<<<<<< HEAD
 	const char *source_name;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	const char *child_name;
 	int child_port;
 	struct coresight_device *child_dev;
@@ -178,8 +203,11 @@ struct coresight_connection {
  * @activated:	'true' only if a _sink_ has been activated.  A sink can be
 		activated but not yet enabled.  Enabling for a _sink_
 		happens when a source has been selected for that it.
+<<<<<<< HEAD
  * @abort:     captures sink trace on abort.
  * @reg_clk:	as defined by @coresight_reg_clk.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 struct coresight_device {
 	struct coresight_connection *conns;
@@ -190,11 +218,17 @@ struct coresight_device {
 	const struct coresight_ops *ops;
 	struct device dev;
 	atomic_t *refcnt;
+<<<<<<< HEAD
 	struct coresight_path *node;
 	bool orphan;
 	bool enable;	/* true only if configured as part of a path */
 	bool activated;	/* true only if a sink is part of a path */
 	struct coresight_reg_clk *reg_clk;
+=======
+	bool orphan;
+	bool enable;	/* true only if configured as part of a path */
+	bool activated;	/* true only if a sink is part of a path */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #define to_coresight_device(d) container_of(d, struct coresight_device, dev)
@@ -229,7 +263,10 @@ struct coresight_ops_sink {
 	void (*update_buffer)(struct coresight_device *csdev,
 			      struct perf_output_handle *handle,
 			      void *sink_config);
+<<<<<<< HEAD
 	void (*abort)(struct coresight_device *csdev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -276,9 +313,12 @@ extern int coresight_enable(struct coresight_device *csdev);
 extern void coresight_disable(struct coresight_device *csdev);
 extern int coresight_timeout(void __iomem *addr, u32 offset,
 			     int position, int value);
+<<<<<<< HEAD
 extern void coresight_abort(void);
 extern void coresight_disable_reg_clk(struct coresight_device *csdev);
 extern int coresight_enable_reg_clk(struct coresight_device *csdev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else
 static inline struct coresight_device *
 coresight_register(struct coresight_desc *desc) { return NULL; }
@@ -288,6 +328,7 @@ coresight_enable(struct coresight_device *csdev) { return -ENOSYS; }
 static inline void coresight_disable(struct coresight_device *csdev) {}
 static inline int coresight_timeout(void __iomem *addr, u32 offset,
 				     int position, int value) { return 1; }
+<<<<<<< HEAD
 static inline void coresight_abort(void) {}
 static inline void coresight_disable_reg_clk(struct coresight_device *csdev) {}
 static inline int coresight_enable_reg_clk(struct coresight_device *csdev)
@@ -306,15 +347,27 @@ extern struct coresight_cti_data *of_get_coresight_cti_data(
 extern int of_get_coresight_csr_name(struct device_node *node,
 				const char **csr_name);
 
+=======
+#endif
+
+#ifdef CONFIG_OF
+extern int of_coresight_get_cpu(const struct device_node *node);
+extern struct coresight_platform_data *
+of_get_coresight_platform_data(struct device *dev,
+			       const struct device_node *node);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else
 static inline int of_coresight_get_cpu(const struct device_node *node)
 { return 0; }
 static inline struct coresight_platform_data *of_get_coresight_platform_data(
 	struct device *dev, const struct device_node *node) { return NULL; }
+<<<<<<< HEAD
 static inline struct coresight_cti_data *of_get_coresight_cti_data(
 		struct device *dev, struct device_node *node) { return NULL; }
 static inline int of_get_coresight_csr_name(struct device_node *node,
 		const char **csr_name){ return -EINVAL; }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 #ifdef CONFIG_PID_NS

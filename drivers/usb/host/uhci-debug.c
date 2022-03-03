@@ -48,7 +48,11 @@ static int uhci_show_td(struct uhci_hcd *uhci, struct uhci_td *td, char *buf,
 	u32 status, token;
 
 	status = td_status(uhci, td);
+<<<<<<< HEAD
 	out += sprintf(out, "%*s[%pK] link (%08x) ", space, "", td,
+=======
+	out += sprintf(out, "%*s[%p] link (%08x) ", space, "", td,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		hc32_to_cpu(uhci, td->link));
 	out += sprintf(out, "e%d %s%s%s%s%s%s%s%s%s%sLength=%x ",
 		((status >> 27) & 3),
@@ -106,9 +110,15 @@ static int uhci_show_urbp(struct uhci_hcd *uhci, struct urb_priv *urbp,
 	char *ptype;
 
 
+<<<<<<< HEAD
 	out += sprintf(out, "urb_priv [%pK] ", urbp);
 	out += sprintf(out, "urb [%pK] ", urbp->urb);
 	out += sprintf(out, "qh [%pK] ", urbp->qh);
+=======
+	out += sprintf(out, "urb_priv [%p] ", urbp);
+	out += sprintf(out, "urb [%p] ", urbp->urb);
+	out += sprintf(out, "qh [%p] ", urbp->qh);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	out += sprintf(out, "Dev=%d ", usb_pipedevice(urbp->urb->pipe));
 	out += sprintf(out, "EP=%x(%s) ", usb_pipeendpoint(urbp->urb->pipe),
 			(usb_pipein(urbp->urb->pipe) ? "IN" : "OUT"));
@@ -178,13 +188,21 @@ static int uhci_show_qh(struct uhci_hcd *uhci,
 	default: qtype = "Skel" ; break;
 	}
 
+<<<<<<< HEAD
 	out += sprintf(out, "%*s[%pK] %s QH link (%08x) element (%08x)\n",
+=======
+	out += sprintf(out, "%*s[%p] %s QH link (%08x) element (%08x)\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			space, "", qh, qtype,
 			hc32_to_cpu(uhci, qh->link),
 			hc32_to_cpu(uhci, element));
 	if (qh->type == USB_ENDPOINT_XFER_ISOC)
 		out += sprintf(out,
+<<<<<<< HEAD
 				"%*s    period %d phase %d load %d us, frame %x desc [%pK]\n",
+=======
+				"%*s    period %d phase %d load %d us, frame %x desc [%p]\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				space, "", qh->period, qh->phase, qh->load,
 				qh->iso_frame, qh->iso_packet_desc);
 	else if (qh->type == USB_ENDPOINT_XFER_INT)

@@ -496,7 +496,11 @@ smb2_tcon_has_lease(struct cifs_tcon *tcon, struct smb2_lease_break *rsp,
 
 		cifs_dbg(FYI, "found in the open list\n");
 		cifs_dbg(FYI, "lease key match, lease break 0x%x\n",
+<<<<<<< HEAD
 			 le32_to_cpu(rsp->NewLeaseState));
+=======
+			 lease_state);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (ack_req)
 			cfile->oplock_break_cancelled = false;
@@ -505,6 +509,7 @@ smb2_tcon_has_lease(struct cifs_tcon *tcon, struct smb2_lease_break *rsp,
 
 		set_bit(CIFS_INODE_PENDING_OPLOCK_BREAK, &cinode->flags);
 
+<<<<<<< HEAD
 		/*
 		 * Set or clear flags depending on the lease state being READ.
 		 * HANDLE caching flag should be added when the client starts
@@ -516,6 +521,10 @@ smb2_tcon_has_lease(struct cifs_tcon *tcon, struct smb2_lease_break *rsp,
 		else
 			clear_bit(CIFS_INODE_DOWNGRADE_OPLOCK_TO_L2,
 				  &cinode->flags);
+=======
+		cfile->oplock_epoch = le16_to_cpu(rsp->Epoch);
+		cfile->oplock_level = lease_state;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		cifs_queue_oplock_break(cfile);
 		kfree(lw);
@@ -538,7 +547,11 @@ smb2_tcon_has_lease(struct cifs_tcon *tcon, struct smb2_lease_break *rsp,
 
 		cifs_dbg(FYI, "found in the pending open list\n");
 		cifs_dbg(FYI, "lease key match, lease break 0x%x\n",
+<<<<<<< HEAD
 			 le32_to_cpu(rsp->NewLeaseState));
+=======
+			 lease_state);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		open->oplock = lease_state;
 	}
@@ -622,10 +635,17 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
 	spin_lock(&cifs_tcp_ses_lock);
 	list_for_each(tmp, &server->smb_ses_list) {
 		ses = list_entry(tmp, struct cifs_ses, smb_ses_list);
+<<<<<<< HEAD
 		list_for_each(tmp1, &ses->tcon_list) {
 			tcon = list_entry(tmp1, struct cifs_tcon, tcon_list);
 
 			cifs_stats_inc(&tcon->stats.cifs_stats.num_oplock_brks);
+=======
+
+		list_for_each(tmp1, &ses->tcon_list) {
+			tcon = list_entry(tmp1, struct cifs_tcon, tcon_list);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			spin_lock(&tcon->open_file_lock);
 			list_for_each(tmp2, &tcon->openFileList) {
 				cfile = list_entry(tmp2, struct cifsFileInfo,
@@ -637,6 +657,11 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
 					continue;
 
 				cifs_dbg(FYI, "file id match, oplock break\n");
+<<<<<<< HEAD
+=======
+				cifs_stats_inc(
+				    &tcon->stats.cifs_stats.num_oplock_brks);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				cinode = CIFS_I(d_inode(cfile->dentry));
 				spin_lock(&cfile->file_info_lock);
 				if (!CIFS_CACHE_WRITE(cinode) &&
@@ -648,6 +673,7 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
 				set_bit(CIFS_INODE_PENDING_OPLOCK_BREAK,
 					&cinode->flags);
 
+<<<<<<< HEAD
 				/*
 				 * Set flag if the server downgrades the oplock
 				 * to L2 else clear.
@@ -660,6 +686,11 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
 					clear_bit(
 					   CIFS_INODE_DOWNGRADE_OPLOCK_TO_L2,
 					   &cinode->flags);
+=======
+				cfile->oplock_epoch = 0;
+				cfile->oplock_level = rsp->OplockLevel;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				spin_unlock(&cfile->file_info_lock);
 
 				cifs_queue_oplock_break(cfile);
@@ -669,6 +700,7 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
 				return true;
 			}
 			spin_unlock(&tcon->open_file_lock);
+<<<<<<< HEAD
 			spin_unlock(&cifs_tcp_ses_lock);
 			cifs_dbg(FYI, "No matching file for oplock break\n");
 			return true;
@@ -677,6 +709,13 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
 	spin_unlock(&cifs_tcp_ses_lock);
 	cifs_dbg(FYI, "Can not process oplock break for non-existent connection\n");
 	return false;
+=======
+		}
+	}
+	spin_unlock(&cifs_tcp_ses_lock);
+	cifs_dbg(FYI, "No file id matched, oplock break ignored\n");
+	return true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void

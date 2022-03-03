@@ -189,9 +189,15 @@ static ssize_t ad5504_write_dac_powerdown(struct iio_dev *indio_dev,
 		return ret;
 
 	if (pwr_down)
+<<<<<<< HEAD
 		st->pwr_down_mask |= (1 << chan->channel);
 	else
 		st->pwr_down_mask &= ~(1 << chan->channel);
+=======
+		st->pwr_down_mask &= ~(1 << chan->channel);
+	else
+		st->pwr_down_mask |= (1 << chan->channel);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = ad5504_spi_write(st, AD5504_ADDR_CTRL,
 				AD5504_DAC_PWRDWN_MODE(st->pwr_down_mode) |

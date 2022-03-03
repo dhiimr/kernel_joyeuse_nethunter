@@ -2022,7 +2022,11 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
 	this->bch_geometry.auxiliary_size = 128;
 	ret = gpmi_alloc_dma_buffer(this);
 	if (ret)
+<<<<<<< HEAD
 		goto err_out;
+=======
+		return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = nand_scan_ident(mtd, GPMI_IS_MX6(this) ? 2 : 1, NULL);
 	if (ret)
@@ -2135,7 +2139,11 @@ static int gpmi_nand_remove(struct platform_device *pdev)
 {
 	struct gpmi_nand_data *this = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	nand_release(nand_to_mtd(&this->nand));
+=======
+	nand_release(&this->nand);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	gpmi_free_dma_buffer(this);
 	release_resources(this);
 	return 0;

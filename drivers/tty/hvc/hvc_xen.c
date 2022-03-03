@@ -50,6 +50,11 @@ struct xencons_info {
 	struct xenbus_device *xbdev;
 	struct xencons_interface *intf;
 	unsigned int evtchn;
+<<<<<<< HEAD
+=======
+	XENCONS_RING_IDX out_cons;
+	unsigned int out_cons_same;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct hvc_struct *hvc;
 	int irq;
 	int vtermno;
@@ -99,7 +104,15 @@ static int __write_console(struct xencons_info *xencons,
 	cons = intf->out_cons;
 	prod = intf->out_prod;
 	mb();			/* update queue values before going on */
+<<<<<<< HEAD
 	BUG_ON((prod - cons) > sizeof(intf->out));
+=======
+
+	if ((prod - cons) > sizeof(intf->out)) {
+		pr_err_once("xencons: Illegal ring page indices");
+		return -EINVAL;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	while ((sent < len) && ((prod - cons) < sizeof(intf->out)))
 		intf->out[MASK_XENCONS_IDX(prod++, intf->out)] = data[sent++];
@@ -127,7 +140,14 @@ static int domU_write_console(uint32_t vtermno, const char *data, int len)
 	 */
 	while (len) {
 		int sent = __write_console(cons, data, len);
+<<<<<<< HEAD
 		
+=======
+
+		if (sent < 0)
+			return sent;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		data += sent;
 		len -= sent;
 
@@ -144,6 +164,11 @@ static int domU_read_console(uint32_t vtermno, char *buf, int len)
 	XENCONS_RING_IDX cons, prod;
 	int recv = 0;
 	struct xencons_info *xencons = vtermno_to_xencons(vtermno);
+<<<<<<< HEAD
+=======
+	unsigned int eoiflag = 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (xencons == NULL)
 		return -EINVAL;
 	intf = xencons->intf;
@@ -151,7 +176,15 @@ static int domU_read_console(uint32_t vtermno, char *buf, int len)
 	cons = intf->in_cons;
 	prod = intf->in_prod;
 	mb();			/* get pointers before reading ring */
+<<<<<<< HEAD
 	BUG_ON((prod - cons) > sizeof(intf->in));
+=======
+
+	if ((prod - cons) > sizeof(intf->in)) {
+		pr_err_once("xencons: Illegal ring page indices");
+		return -EINVAL;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	while (cons != prod && recv < len)
 		buf[recv++] = intf->in[MASK_XENCONS_IDX(cons++, intf->in)];
@@ -159,7 +192,31 @@ static int domU_read_console(uint32_t vtermno, char *buf, int len)
 	mb();			/* read ring before consuming */
 	intf->in_cons = cons;
 
+<<<<<<< HEAD
 	notify_daemon(xencons);
+=======
+	/*
+	 * When to mark interrupt having been spurious:
+	 * - there was no new data to be read, and
+	 * - the backend did not consume some output bytes, and
+	 * - the previous round with no read data didn't see consumed bytes
+	 *   (we might have a race with an interrupt being in flight while
+	 *   updating xencons->out_cons, so account for that by allowing one
+	 *   round without any visible reason)
+	 */
+	if (intf->out_cons != xencons->out_cons) {
+		xencons->out_cons = intf->out_cons;
+		xencons->out_cons_same = 0;
+	}
+	if (recv) {
+		notify_daemon(xencons);
+	} else if (xencons->out_cons_same++ > 1) {
+		eoiflag = XEN_EOI_FLAG_SPURIOUS;
+	}
+
+	xen_irq_lateeoi(xencons->irq, eoiflag);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return recv;
 }
 
@@ -388,7 +445,11 @@ static int xencons_connect_backend(struct xenbus_device *dev,
 	if (ret)
 		return ret;
 	info->evtchn = evtchn;
+<<<<<<< HEAD
 	irq = bind_evtchn_to_irq(evtchn);
+=======
+	irq = bind_interdomain_evtchn_to_irq_lateeoi(dev->otherend_id, evtchn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (irq < 0)
 		return irq;
 	info->irq = irq;
@@ -552,7 +613,11 @@ static int __init xen_hvc_init(void)
 			return r;
 
 		info = vtermno_to_xencons(HVC_COOKIE);
+<<<<<<< HEAD
 		info->irq = bind_evtchn_to_irq(info->evtchn);
+=======
+		info->irq = bind_evtchn_to_irq_lateeoi(info->evtchn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	if (info->irq < 0)
 		info->irq = 0; /* NO_IRQ */

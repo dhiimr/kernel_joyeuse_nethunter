@@ -126,10 +126,13 @@ static struct sctp_endpoint *sctp_endpoint_init(struct sctp_endpoint *ep,
 	/* Initialize the bind addr area */
 	sctp_bind_addr_init(&ep->base.bind_addr, 0);
 
+<<<<<<< HEAD
 	/* Remember who we are attached to.  */
 	ep->base.sk = sk;
 	sock_hold(ep->base.sk);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Create the lists of associations.  */
 	INIT_LIST_HEAD(&ep->asocs);
 
@@ -167,6 +170,14 @@ static struct sctp_endpoint *sctp_endpoint_init(struct sctp_endpoint *ep,
 	ep->prsctp_enable = net->sctp.prsctp_enable;
 	ep->reconf_enable = net->sctp.reconf_enable;
 
+<<<<<<< HEAD
+=======
+	/* Remember who we are attached to.  */
+	ep->base.sk = sk;
+	ep->base.net = sock_net(sk);
+	sock_hold(ep->base.sk);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ep;
 
 nomem_hmacs:
@@ -241,6 +252,21 @@ void sctp_endpoint_free(struct sctp_endpoint *ep)
 }
 
 /* Final destructor for endpoint.  */
+<<<<<<< HEAD
+=======
+static void sctp_endpoint_destroy_rcu(struct rcu_head *head)
+{
+	struct sctp_endpoint *ep = container_of(head, struct sctp_endpoint, rcu);
+	struct sock *sk = ep->base.sk;
+
+	sctp_sk(sk)->ep = NULL;
+	sock_put(sk);
+
+	kfree(ep);
+	SCTP_DBG_OBJCNT_DEC(ep);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void sctp_endpoint_destroy(struct sctp_endpoint *ep)
 {
 	struct sock *sk;
@@ -274,6 +300,7 @@ static void sctp_endpoint_destroy(struct sctp_endpoint *ep)
 	if (sctp_sk(sk)->bind_hash)
 		sctp_put_port(sk);
 
+<<<<<<< HEAD
 	sctp_sk(sk)->ep = NULL;
 	/* Give up our hold on the sock */
 	sock_put(sk);
@@ -286,6 +313,15 @@ static void sctp_endpoint_destroy(struct sctp_endpoint *ep)
 void sctp_endpoint_hold(struct sctp_endpoint *ep)
 {
 	refcount_inc(&ep->base.refcnt);
+=======
+	call_rcu(&ep->rcu, sctp_endpoint_destroy_rcu);
+}
+
+/* Hold a reference to an endpoint. */
+int sctp_endpoint_hold(struct sctp_endpoint *ep)
+{
+	return refcount_inc_not_zero(&ep->base.refcnt);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Release a reference to an endpoint and clean up if there are

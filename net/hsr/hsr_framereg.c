@@ -310,7 +310,12 @@ void hsr_addr_subst_dest(struct hsr_node *node_src, struct sk_buff *skb,
 
 	node_dst = find_node_by_AddrA(&port->hsr->node_db, eth_hdr(skb)->h_dest);
 	if (!node_dst) {
+<<<<<<< HEAD
 		WARN_ONCE(1, "%s: Unknown node\n", __func__);
+=======
+		if (net_ratelimit())
+			netdev_err(skb->dev, "%s: Unknown node\n", __func__);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 	}
 	if (port->type != node_dst->AddrB_port)
@@ -468,6 +473,7 @@ int hsr_get_node_data(struct hsr_priv *hsr,
 	struct hsr_port *port;
 	unsigned long tdiff;
 
+<<<<<<< HEAD
 
 	rcu_read_lock();
 	node = find_node_by_AddrA(&hsr->node_db, addr);
@@ -475,6 +481,11 @@ int hsr_get_node_data(struct hsr_priv *hsr,
 		rcu_read_unlock();
 		return -ENOENT;	/* No such entry */
 	}
+=======
+	node = find_node_by_AddrA(&hsr->node_db, addr);
+	if (!node)
+		return -ENOENT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ether_addr_copy(addr_b, node->MacAddressB);
 
@@ -509,7 +520,10 @@ int hsr_get_node_data(struct hsr_priv *hsr,
 		*addr_b_ifindex = -1;
 	}
 
+<<<<<<< HEAD
 	rcu_read_unlock();
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }

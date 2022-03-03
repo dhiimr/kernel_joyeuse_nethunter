@@ -83,7 +83,10 @@ static inline int set_av_attr(struct ocrdma_dev *dev, struct ocrdma_ah *ah,
 	struct iphdr ipv4;
 	const struct ib_global_route *ib_grh;
 	union {
+<<<<<<< HEAD
 		struct sockaddr     _sockaddr;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct sockaddr_in  _sockaddr_in;
 		struct sockaddr_in6 _sockaddr_in6;
 	} sgid_addr, dgid_addr;
@@ -133,9 +136,15 @@ static inline int set_av_attr(struct ocrdma_dev *dev, struct ocrdma_ah *ah,
 		ipv4.tot_len = htons(0);
 		ipv4.ttl = ib_grh->hop_limit;
 		ipv4.protocol = nxthdr;
+<<<<<<< HEAD
 		rdma_gid2ip(&sgid_addr._sockaddr, sgid);
 		ipv4.saddr = sgid_addr._sockaddr_in.sin_addr.s_addr;
 		rdma_gid2ip(&dgid_addr._sockaddr, &ib_grh->dgid);
+=======
+		rdma_gid2ip((struct sockaddr *)&sgid_addr, sgid);
+		ipv4.saddr = sgid_addr._sockaddr_in.sin_addr.s_addr;
+		rdma_gid2ip((struct sockaddr*)&dgid_addr, &ib_grh->dgid);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ipv4.daddr = dgid_addr._sockaddr_in.sin_addr.s_addr;
 		memcpy((u8 *)ah->av + eth_sz, &ipv4, sizeof(struct iphdr));
 	} else {

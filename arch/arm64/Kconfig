@@ -22,6 +22,7 @@ config ARM64
 	select ARCH_HAS_STRICT_MODULE_RWX
 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if ACPI_APEI_SEA
+<<<<<<< HEAD
 	select ARCH_INLINE_READ_LOCK if !PREEMPT
 	select ARCH_INLINE_READ_LOCK_BH if !PREEMPT
 	select ARCH_INLINE_READ_LOCK_IRQ if !PREEMPT
@@ -42,6 +43,10 @@ config ARM64
 	select ARCH_USE_QUEUED_RWLOCKS
 	select ARCH_SUPPORTS_MEMORY_FAILURE
 	select ARCH_SUPPORTS_LTO_CLANG
+=======
+	select ARCH_USE_CMPXCHG_LOCKREF
+	select ARCH_SUPPORTS_MEMORY_FAILURE
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select ARCH_SUPPORTS_ATOMIC_RMW
 	select ARCH_SUPPORTS_NUMA_BALANCING
 	select ARCH_WANT_COMPAT_IPC_PARSE_VERSION
@@ -67,6 +72,10 @@ config ARM64
 	select GENERIC_CLOCKEVENTS
 	select GENERIC_CLOCKEVENTS_BROADCAST
 	select GENERIC_CPU_AUTOPROBE
+<<<<<<< HEAD
+=======
+	select GENERIC_CPU_VULNERABILITIES
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select GENERIC_EARLY_IOREMAP
 	select GENERIC_IDLE_POLL_SETUP
 	select GENERIC_IRQ_PROBE
@@ -140,7 +149,10 @@ config ARM64
 	select SPARSE_IRQ
 	select SYSCTL_EXCEPTION_TRACE
 	select THREAD_INFO_IN_TASK
+<<<<<<< HEAD
 	select ARCH_SUPPORTS_SPECULATIVE_PAGE_FAULT
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  ARM 64-bit (AArch64) Linux support.
 
@@ -246,6 +258,7 @@ config NEED_SG_DMA_LENGTH
 config SMP
 	def_bool y
 
+<<<<<<< HEAD
 config HOTPLUG_SIZE_BITS
 	int "Memory hotplug block size(29 => 512MB 30 => 1GB)"
 	depends on SPARSEMEM
@@ -257,6 +270,8 @@ config HOTPLUG_SIZE_BITS
 	 of 2.
 	 If unsure, stick with default value.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config SWIOTLB
 	def_bool y
 
@@ -284,6 +299,7 @@ config ARCH_SUPPORTS_UPROBES
 config ARCH_PROC_KCORE_TEXT
 	def_bool y
 
+<<<<<<< HEAD
 config QTI_GVM
 	bool "Enable virtualization Support for MSM kernel"
 	help
@@ -303,6 +319,8 @@ config QTI_GVM_QUIN
 		This should work on 64bit machines.
 		If you don't know what to do here, say N.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 source "init/Kconfig"
 
 source "kernel/Kconfig.freezer"
@@ -482,7 +500,11 @@ config ARM64_ERRATUM_845719
 
 config ARM64_ERRATUM_843419
 	bool "Cortex-A53: 843419: A load or store might access an incorrect address"
+<<<<<<< HEAD
 	default y if !LTO_CLANG
+=======
+	default y
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select ARM64_MODULE_CMODEL_LARGE if MODULES
 	help
 	  This option links the kernel with '--fix-cortex-a53-843419' and
@@ -498,7 +520,11 @@ config ARM64_ERRATUM_1024718
 	help
 	  This option adds work around for Arm Cortex-A55 Erratum 1024718.
 
+<<<<<<< HEAD
 	  Affected Cortex-A55 cores (r0p0, r0p1, r1p0) could cause incorrect
+=======
+	  Affected Cortex-A55 cores (all revisions) could cause incorrect
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	  update of the hardware dirty bit when the DBM/AP bits are updated
 	  without a break-before-make. The work around is to disable the usage
 	  of hardware DBM locally on the affected cores. CPUs not affected by
@@ -506,6 +532,7 @@ config ARM64_ERRATUM_1024718
 
 	  If unsure, say Y.
 
+<<<<<<< HEAD
 config ARM64_ERRATUM_1286807
 	bool "Cortex-A76: Modification of the translation table for a virtual address might lead to read-after-read ordering violation"
 	default n
@@ -534,6 +561,8 @@ config ARM64_ERRATUM_1188873
 
 	  If unsure, say Y.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config CAVIUM_ERRATUM_22375
 	bool "Cavium erratum 22375, 24313"
 	default y
@@ -603,6 +632,7 @@ config QCOM_FALKOR_ERRATUM_1003
 	  is unchanged. Work around the erratum by invalidating the walk cache
 	  entries for the trampoline before entering the kernel proper.
 
+<<<<<<< HEAD
 config ARM64_WORKAROUND_REPEAT_TLBI
 	bool
 	help
@@ -613,6 +643,11 @@ config QCOM_FALKOR_ERRATUM_1009
 	bool "Falkor E1009: Prematurely complete a DSB after a TLBI"
 	default y
 	select ARM64_WORKAROUND_REPEAT_TLBI
+=======
+config QCOM_FALKOR_ERRATUM_1009
+	bool "Falkor E1009: Prematurely complete a DSB after a TLBI"
+	default y
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  On Falkor v1, the CPU may prematurely complete a DSB following a
 	  TLBI xxIS invalidate maintenance operation. Repeat the TLBI operation
@@ -742,6 +777,7 @@ config HOTPLUG_CPU
 	  Say Y here to experiment with turning CPUs off and on.  CPUs
 	  can be controlled through /sys/devices/system/cpu.
 
+<<<<<<< HEAD
 config ARCH_ENABLE_MEMORY_HOTPLUG
     depends on !NUMA
 	def_bool y
@@ -761,6 +797,8 @@ config ARCH_NR_GPIO
 
 	  If unsure, leave the default value.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # Common NUMA Features
 config NUMA
 	bool "Numa Memory Allocation and Scheduler Support"
@@ -834,6 +872,7 @@ config ARCH_HAS_CACHE_LINE_SIZE
 
 source "mm/Kconfig"
 
+<<<<<<< HEAD
 config KERNEL_CUSTOM_FACTORY
         default n
         bool "Custom for hardware FACTORY_pcb"
@@ -881,6 +920,8 @@ config ARCH_MEMORY_PROBE
 	def_bool y
 	depends on MEMORY_HOTPLUG
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config SECCOMP
 	bool "Enable seccomp to safely compute untrusted bytecode"
 	---help---
@@ -946,6 +987,7 @@ config XEN
 	help
 	  Say Y if you want to run Linux in a Virtual Machine on Xen on ARM64.
 
+<<<<<<< HEAD
 config OKL4_GUEST
 	bool "OKL4 Hypervisor guest support"
 	depends on ARM64 && OF
@@ -953,6 +995,8 @@ config OKL4_GUEST
 	help
 	  Say Y if you want to run Linux as a guest of the OKL4 hypervisor
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config FORCE_MAX_ZONEORDER
 	int
 	default "14" if (ARM64_64K_PAGES && TRANSPARENT_HUGEPAGE)
@@ -1005,6 +1049,7 @@ config HARDEN_BRANCH_PREDICTOR
 
 	  If unsure, say Y.
 
+<<<<<<< HEAD
 config PRINT_VMEMLAYOUT
 	bool "Enable debug option to print kernel virtual memory layout"
 	help
@@ -1016,6 +1061,11 @@ config PRINT_VMEMLAYOUT
 
 config ARM64_SSBD
 	bool "Speculative Store Bypass Disable" if EXPERT
+=======
+config ARM64_SSBD
+	bool "Speculative Store Bypass Disable" if EXPERT
+	default y
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  This enables mitigation of the bypassing of previous stores
 	  by speculative loads.
@@ -1234,7 +1284,11 @@ config RANDOMIZE_BASE
 
 config RANDOMIZE_MODULE_REGION_FULL
 	bool "Randomize the module region independently from the core kernel"
+<<<<<<< HEAD
 	depends on RANDOMIZE_BASE && !LTO_CLANG
+=======
+	depends on RANDOMIZE_BASE
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	default y
 	help
 	  Randomizes the location of the module region without considering the
@@ -1268,6 +1322,7 @@ config CMDLINE
 	  entering them here. As a minimum, you should specify the the
 	  root device (e.g. root=/dev/nfs).
 
+<<<<<<< HEAD
 choice
 	prompt "Kernel command line type" if CMDLINE != ""
 	default CMDLINE_FROM_BOOTLOADER
@@ -1285,6 +1340,8 @@ config CMDLINE_EXTEND
 	  The command-line arguments provided by the boot loader will be
 	  appended to the default kernel command string.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config CMDLINE_FORCE
 	bool "Always use the default kernel command string"
 	help
@@ -1292,7 +1349,10 @@ config CMDLINE_FORCE
 	  loader passes other arguments to the kernel.
 	  This is useful if you cannot or don't want to change the
 	  command-line options your boot loader passes to the kernel.
+<<<<<<< HEAD
 endchoice
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config EFI_STUB
 	bool
@@ -1325,6 +1385,7 @@ config DMI
 	  However, even with this option, the resultant kernel should
 	  continue to boot on existing non-UEFI platforms.
 
+<<<<<<< HEAD
 config BUILD_ARM64_APPENDED_DTB_IMAGE
 	bool "Build a concatenated Image.gz/dtb by default"
 	depends on OF
@@ -1406,6 +1467,8 @@ config BUILD_ARM64_DT_OVERLAY
 	depends on OF
 	help
 	  This option enables support for DT overlay compilation.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endmenu
 
 menu "Userspace binary formats"
@@ -1452,11 +1515,14 @@ config ARCH_HIBERNATION_HEADER
 config ARCH_SUSPEND_POSSIBLE
 	def_bool y
 
+<<<<<<< HEAD
 config DEBUG_USB
 	def_bool n
 	help
 	  Open debug log for usb.
           
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endmenu
 
 menu "CPU Power Management"

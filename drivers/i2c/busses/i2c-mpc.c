@@ -23,6 +23,10 @@
 
 #include <linux/clk.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/iopoll.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/fsl_devices.h>
 #include <linux/i2c.h>
 #include <linux/interrupt.h>
@@ -49,6 +53,10 @@
 #define CCR_MTX  0x10
 #define CCR_TXAK 0x08
 #define CCR_RSTA 0x04
+<<<<<<< HEAD
+=======
+#define CCR_RSVD 0x02
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define CSR_MCF  0x80
 #define CSR_MAAS 0x40
@@ -70,6 +78,10 @@ struct mpc_i2c {
 	u8 fdr, dfsrr;
 #endif
 	struct clk *clk_per;
+<<<<<<< HEAD
+=======
+	bool has_errata_A004447;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct mpc_i2c_divider {
@@ -104,11 +116,16 @@ static irqreturn_t mpc_i2c_isr(int irq, void *dev_id)
 /* Sometimes 9th clock pulse isn't generated, and slave doesn't release
  * the bus, because it wants to send ACK.
  * Following sequence of enabling/disabling and sending start/stop generates
+<<<<<<< HEAD
  * the 9 pulses, so it's all OK.
+=======
+ * the 9 pulses, each with a START then ending with STOP, so it's all OK.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 static void mpc_i2c_fixup(struct mpc_i2c *i2c)
 {
 	int k;
+<<<<<<< HEAD
 	u32 delay_val = 1000000 / i2c->real_clk + 1;
 
 	if (delay_val < 2)
@@ -121,6 +138,27 @@ static void mpc_i2c_fixup(struct mpc_i2c *i2c)
 		writeccr(i2c, CCR_MEN);
 		udelay(delay_val << 1);
 	}
+=======
+	unsigned long flags;
+
+	for (k = 9; k; k--) {
+		writeccr(i2c, 0);
+		writeb(0, i2c->base + MPC_I2C_SR); /* clear any status bits */
+		writeccr(i2c, CCR_MEN | CCR_MSTA); /* START */
+		readb(i2c->base + MPC_I2C_DR); /* init xfer */
+		udelay(15); /* let it hit the bus */
+		local_irq_save(flags); /* should not be delayed further */
+		writeccr(i2c, CCR_MEN | CCR_MSTA | CCR_RSTA); /* delay SDA */
+		readb(i2c->base + MPC_I2C_DR);
+		if (k != 1)
+			udelay(5);
+		local_irq_restore(flags);
+	}
+	writeccr(i2c, CCR_MEN); /* Initiate STOP */
+	readb(i2c->base + MPC_I2C_DR);
+	udelay(15); /* Let STOP propagate */
+	writeccr(i2c, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int i2c_wait(struct mpc_i2c *i2c, unsigned timeout, int writing)
@@ -178,6 +216,78 @@ static int i2c_wait(struct mpc_i2c *i2c, unsigned timeout, int writing)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int i2c_mpc_wait_sr(struct mpc_i2c *i2c, int mask)
+{
+	void __iomem *addr = i2c->base + MPC_I2C_SR;
+	u8 val;
+
+	return readb_poll_timeout(addr, val, val & mask, 0, 100);
+}
+
+/*
+ * Workaround for Erratum A004447. From the P2040CE Rev Q
+ *
+ * 1.  Set up the frequency divider and sampling rate.
+ * 2.  I2CCR - a0h
+ * 3.  Poll for I2CSR[MBB] to get set.
+ * 4.  If I2CSR[MAL] is set (an indication that SDA is stuck low), then go to
+ *     step 5. If MAL is not set, then go to step 13.
+ * 5.  I2CCR - 00h
+ * 6.  I2CCR - 22h
+ * 7.  I2CCR - a2h
+ * 8.  Poll for I2CSR[MBB] to get set.
+ * 9.  Issue read to I2CDR.
+ * 10. Poll for I2CSR[MIF] to be set.
+ * 11. I2CCR - 82h
+ * 12. Workaround complete. Skip the next steps.
+ * 13. Issue read to I2CDR.
+ * 14. Poll for I2CSR[MIF] to be set.
+ * 15. I2CCR - 80h
+ */
+static void mpc_i2c_fixup_A004447(struct mpc_i2c *i2c)
+{
+	int ret;
+	u32 val;
+
+	writeccr(i2c, CCR_MEN | CCR_MSTA);
+	ret = i2c_mpc_wait_sr(i2c, CSR_MBB);
+	if (ret) {
+		dev_err(i2c->dev, "timeout waiting for CSR_MBB\n");
+		return;
+	}
+
+	val = readb(i2c->base + MPC_I2C_SR);
+
+	if (val & CSR_MAL) {
+		writeccr(i2c, 0x00);
+		writeccr(i2c, CCR_MSTA | CCR_RSVD);
+		writeccr(i2c, CCR_MEN | CCR_MSTA | CCR_RSVD);
+		ret = i2c_mpc_wait_sr(i2c, CSR_MBB);
+		if (ret) {
+			dev_err(i2c->dev, "timeout waiting for CSR_MBB\n");
+			return;
+		}
+		val = readb(i2c->base + MPC_I2C_DR);
+		ret = i2c_mpc_wait_sr(i2c, CSR_MIF);
+		if (ret) {
+			dev_err(i2c->dev, "timeout waiting for CSR_MIF\n");
+			return;
+		}
+		writeccr(i2c, CCR_MEN | CCR_RSVD);
+	} else {
+		val = readb(i2c->base + MPC_I2C_DR);
+		ret = i2c_mpc_wait_sr(i2c, CSR_MIF);
+		if (ret) {
+			dev_err(i2c->dev, "timeout waiting for CSR_MIF\n");
+			return;
+		}
+		writeccr(i2c, CCR_MEN);
+	}
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #if defined(CONFIG_PPC_MPC52xx) || defined(CONFIG_PPC_MPC512x)
 static const struct mpc_i2c_divider mpc_i2c_dividers_52xx[] = {
 	{20, 0x20}, {22, 0x21}, {24, 0x22}, {26, 0x23},
@@ -581,7 +691,11 @@ static int mpc_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
 			if ((status & (CSR_MCF | CSR_MBB | CSR_RXAK)) != 0) {
 				writeb(status & ~CSR_MAL,
 				       i2c->base + MPC_I2C_SR);
+<<<<<<< HEAD
 				mpc_i2c_fixup(i2c);
+=======
+				i2c_recover_bus(&i2c->adap);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 			return -EIO;
 		}
@@ -617,7 +731,11 @@ static int mpc_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
 			if ((status & (CSR_MCF | CSR_MBB | CSR_RXAK)) != 0) {
 				writeb(status & ~CSR_MAL,
 				       i2c->base + MPC_I2C_SR);
+<<<<<<< HEAD
 				mpc_i2c_fixup(i2c);
+=======
+				i2c_recover_bus(&i2c->adap);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 			return -EIO;
 		}
@@ -632,6 +750,21 @@ static u32 mpc_functionality(struct i2c_adapter *adap)
 	  | I2C_FUNC_SMBUS_READ_BLOCK_DATA | I2C_FUNC_SMBUS_BLOCK_PROC_CALL;
 }
 
+<<<<<<< HEAD
+=======
+static int fsl_i2c_bus_recovery(struct i2c_adapter *adap)
+{
+	struct mpc_i2c *i2c = i2c_get_adapdata(adap);
+
+	if (i2c->has_errata_A004447)
+		mpc_i2c_fixup_A004447(i2c);
+	else
+		mpc_i2c_fixup(i2c);
+
+	return 0;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const struct i2c_algorithm mpc_algo = {
 	.master_xfer = mpc_xfer,
 	.functionality = mpc_functionality,
@@ -643,6 +776,13 @@ static struct i2c_adapter mpc_ops = {
 	.timeout = HZ,
 };
 
+<<<<<<< HEAD
+=======
+static struct i2c_bus_recovery_info fsl_i2c_recovery_info = {
+	.recover_bus = fsl_i2c_bus_recovery,
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const struct of_device_id mpc_i2c_of_match[];
 static int fsl_i2c_probe(struct platform_device *op)
 {
@@ -727,6 +867,11 @@ static int fsl_i2c_probe(struct platform_device *op)
 	dev_info(i2c->dev, "timeout %u us\n", mpc_ops.timeout * 1000000 / HZ);
 
 	platform_set_drvdata(op, i2c);
+<<<<<<< HEAD
+=======
+	if (of_property_read_bool(op->dev.of_node, "fsl,i2c-erratum-a004447"))
+		i2c->has_errata_A004447 = true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	i2c->adap = mpc_ops;
 	of_address_to_resource(op->dev.of_node, 0, &res);
@@ -735,6 +880,10 @@ static int fsl_i2c_probe(struct platform_device *op)
 	i2c_set_adapdata(&i2c->adap, i2c);
 	i2c->adap.dev.parent = &op->dev;
 	i2c->adap.dev.of_node = of_node_get(op->dev.of_node);
+<<<<<<< HEAD
+=======
+	i2c->adap.bus_recovery_info = &fsl_i2c_recovery_info;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	result = i2c_add_adapter(&i2c->adap);
 	if (result < 0)

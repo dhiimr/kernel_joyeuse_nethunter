@@ -854,7 +854,12 @@ void rfkill_resume_polling(struct rfkill *rfkill)
 }
 EXPORT_SYMBOL(rfkill_resume_polling);
 
+<<<<<<< HEAD
 static __maybe_unused int rfkill_suspend(struct device *dev)
+=======
+#ifdef CONFIG_PM_SLEEP
+static int rfkill_suspend(struct device *dev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct rfkill *rfkill = to_rfkill(dev);
 
@@ -864,7 +869,11 @@ static __maybe_unused int rfkill_suspend(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static __maybe_unused int rfkill_resume(struct device *dev)
+=======
+static int rfkill_resume(struct device *dev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct rfkill *rfkill = to_rfkill(dev);
 	bool cur;
@@ -884,13 +893,24 @@ static __maybe_unused int rfkill_resume(struct device *dev)
 }
 
 static SIMPLE_DEV_PM_OPS(rfkill_pm_ops, rfkill_suspend, rfkill_resume);
+<<<<<<< HEAD
+=======
+#define RFKILL_PM_OPS (&rfkill_pm_ops)
+#else
+#define RFKILL_PM_OPS NULL
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct class rfkill_class = {
 	.name		= "rfkill",
 	.dev_release	= rfkill_release,
 	.dev_groups	= rfkill_dev_groups,
 	.dev_uevent	= rfkill_dev_uevent,
+<<<<<<< HEAD
 	.pm		= IS_ENABLED(CONFIG_RFKILL_PM) ? &rfkill_pm_ops : NULL,
+=======
+	.pm		= RFKILL_PM_OPS,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 bool rfkill_blocked(struct rfkill *rfkill)
@@ -993,10 +1013,20 @@ static void rfkill_sync_work(struct work_struct *work)
 int __must_check rfkill_register(struct rfkill *rfkill)
 {
 	static unsigned long rfkill_no;
+<<<<<<< HEAD
 	struct device *dev = &rfkill->dev;
 	int error;
 
 	BUG_ON(!rfkill);
+=======
+	struct device *dev;
+	int error;
+
+	if (!rfkill)
+		return -EINVAL;
+
+	dev = &rfkill->dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_lock(&rfkill_global_mutex);
 
@@ -1307,10 +1337,19 @@ static const struct file_operations rfkill_fops = {
 	.llseek		= no_llseek,
 };
 
+<<<<<<< HEAD
 static struct miscdevice rfkill_miscdev = {
 	.name	= "rfkill",
 	.fops	= &rfkill_fops,
 	.minor	= MISC_DYNAMIC_MINOR,
+=======
+#define RFKILL_NAME "rfkill"
+
+static struct miscdevice rfkill_miscdev = {
+	.fops	= &rfkill_fops,
+	.name	= RFKILL_NAME,
+	.minor	= RFKILL_MINOR,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static int __init rfkill_init(void)
@@ -1362,3 +1401,9 @@ static void __exit rfkill_exit(void)
 	class_unregister(&rfkill_class);
 }
 module_exit(rfkill_exit);
+<<<<<<< HEAD
+=======
+
+MODULE_ALIAS_MISCDEV(RFKILL_MINOR);
+MODULE_ALIAS("devname:" RFKILL_NAME);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

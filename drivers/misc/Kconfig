@@ -473,6 +473,7 @@ config SRAM
 config SRAM_EXEC
 	bool
 
+<<<<<<< HEAD
 config HDCP_QSEECOM
 	tristate "QTI High-Bandwidth Digital Content Protection Module"
 	help
@@ -490,6 +491,8 @@ config QSEECOM
           Manager (SCM) interface. It exposes APIs for both userspace and
           kernel clients.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config VEXPRESS_SYSCFG
 	bool "Versatile Express System Configuration driver"
 	depends on VEXPRESS_CONFIG
@@ -523,6 +526,7 @@ config PCI_ENDPOINT_TEST
            Enable this configuration option to enable the host side test driver
            for PCI Endpoint.
 
+<<<<<<< HEAD
 config UID_SYS_STATS
 	bool "Per-UID statistics"
 	depends on PROFILING && TASK_XACCT && TASK_IO_ACCOUNTING
@@ -590,6 +594,9 @@ config TEST_IRQ_REQUESTER
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/aw8624_haptic/Kconfig"
 source "drivers/misc/drv2624_haptic/Kconfig"
+=======
+source "drivers/misc/c2port/Kconfig"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 source "drivers/misc/eeprom/Kconfig"
 source "drivers/misc/cb710/Kconfig"
 source "drivers/misc/ti-st/Kconfig"
@@ -601,6 +608,7 @@ source "drivers/misc/mic/Kconfig"
 source "drivers/misc/genwqe/Kconfig"
 source "drivers/misc/echo/Kconfig"
 source "drivers/misc/cxl/Kconfig"
+<<<<<<< HEAD
 source "drivers/misc/fpr_FingerprintCard/Kconfig"
 endmenu
 
@@ -639,3 +647,6 @@ config ANT_CHECK_DIV
 	  and the driver provides an API to check if this interrupt
 	  is available on the current PMIC chip.
 
+=======
+endmenu
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

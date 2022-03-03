@@ -209,7 +209,11 @@ static inline void maybe_update_pmtu(int skb_af, struct sk_buff *skb, int mtu)
 	struct rtable *ort = skb_rtable(skb);
 
 	if (!skb->dev && sk && sk_fullsock(sk))
+<<<<<<< HEAD
 		ort->dst.ops->update_pmtu(&ort->dst, sk, NULL, mtu);
+=======
+		ort->dst.ops->update_pmtu(&ort->dst, sk, NULL, mtu, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline bool ensure_mtu_is_adequate(struct netns_ipvs *ipvs, int skb_af,

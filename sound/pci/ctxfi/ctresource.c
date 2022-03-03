@@ -113,18 +113,30 @@ static int audio_ring_slot(const struct rsc *rsc)
     return (rsc->conj << 4) + offset_in_audio_slot_block[rsc->type];
 }
 
+<<<<<<< HEAD
 static int rsc_next_conj(struct rsc *rsc)
+=======
+static void rsc_next_conj(struct rsc *rsc)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned int i;
 	for (i = 0; (i < 8) && (!(rsc->msr & (0x1 << i))); )
 		i++;
 	rsc->conj += (AUDIO_SLOT_BLOCK_NUM >> i);
+<<<<<<< HEAD
 	return rsc->conj;
 }
 
 static int rsc_master(struct rsc *rsc)
 {
 	return rsc->conj = rsc->idx;
+=======
+}
+
+static void rsc_master(struct rsc *rsc)
+{
+	rsc->conj = rsc->idx;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct rsc_ops rsc_generic_ops = {

@@ -130,11 +130,19 @@ static int vfio_ccw_mdev_remove(struct mdev_device *mdev)
 
 	if ((private->state != VFIO_CCW_STATE_NOT_OPER) &&
 	    (private->state != VFIO_CCW_STATE_STANDBY)) {
+<<<<<<< HEAD
 		if (!vfio_ccw_mdev_reset(mdev))
+=======
+		if (!vfio_ccw_sch_quiesce(private->sch))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			private->state = VFIO_CCW_STATE_STANDBY;
 		/* The state will be NOT_OPER on error. */
 	}
 
+<<<<<<< HEAD
+=======
+	cp_free(&private->cp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	private->mdev = NULL;
 	atomic_inc(&private->avail);
 
@@ -158,6 +166,17 @@ static void vfio_ccw_mdev_release(struct mdev_device *mdev)
 	struct vfio_ccw_private *private =
 		dev_get_drvdata(mdev_parent_dev(mdev));
 
+<<<<<<< HEAD
+=======
+	if ((private->state != VFIO_CCW_STATE_NOT_OPER) &&
+	    (private->state != VFIO_CCW_STATE_STANDBY)) {
+		if (!vfio_ccw_mdev_reset(mdev))
+			private->state = VFIO_CCW_STATE_STANDBY;
+		/* The state will be NOT_OPER on error. */
+	}
+
+	cp_free(&private->cp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
 				 &private->nb);
 }
@@ -332,7 +351,11 @@ static ssize_t vfio_ccw_mdev_ioctl(struct mdev_device *mdev,
 		if (ret)
 			return ret;
 
+<<<<<<< HEAD
 		return copy_to_user((void __user *)arg, &info, minsz);
+=======
+		return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	case VFIO_DEVICE_GET_REGION_INFO:
 	{
@@ -353,7 +376,11 @@ static ssize_t vfio_ccw_mdev_ioctl(struct mdev_device *mdev,
 		if (ret)
 			return ret;
 
+<<<<<<< HEAD
 		return copy_to_user((void __user *)arg, &info, minsz);
+=======
+		return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	case VFIO_DEVICE_GET_IRQ_INFO:
 	{
@@ -374,7 +401,11 @@ static ssize_t vfio_ccw_mdev_ioctl(struct mdev_device *mdev,
 		if (info.count == -1)
 			return -EINVAL;
 
+<<<<<<< HEAD
 		return copy_to_user((void __user *)arg, &info, minsz);
+=======
+		return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	case VFIO_DEVICE_SET_IRQS:
 	{

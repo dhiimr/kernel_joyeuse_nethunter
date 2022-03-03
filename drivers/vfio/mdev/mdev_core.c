@@ -150,10 +150,17 @@ static int mdev_device_remove_ops(struct mdev_device *mdev, bool force_remove)
 
 static int mdev_device_remove_cb(struct device *dev, void *data)
 {
+<<<<<<< HEAD
 	if (!dev_is_mdev(dev))
 		return 0;
 
 	return mdev_device_remove(dev, data ? *(bool *)data : true);
+=======
+	if (dev_is_mdev(dev))
+		mdev_device_remove(dev, true);
+
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -182,6 +189,10 @@ int mdev_register_device(struct device *dev, const struct mdev_parent_ops *ops)
 	/* Check for duplicate */
 	parent = __find_parent_device(dev);
 	if (parent) {
+<<<<<<< HEAD
+=======
+		parent = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = -EEXIST;
 		goto add_dev_err;
 	}
@@ -240,7 +251,10 @@ EXPORT_SYMBOL(mdev_register_device);
 void mdev_unregister_device(struct device *dev)
 {
 	struct mdev_parent *parent;
+<<<<<<< HEAD
 	bool force_remove = true;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_lock(&parent_list_lock);
 	parent = __find_parent_device(dev);
@@ -254,8 +268,12 @@ void mdev_unregister_device(struct device *dev)
 	list_del(&parent->next);
 	class_compat_remove_link(mdev_bus_compat_class, dev, NULL);
 
+<<<<<<< HEAD
 	device_for_each_child(dev, (void *)&force_remove,
 			      mdev_device_remove_cb);
+=======
+	device_for_each_child(dev, NULL, mdev_device_remove_cb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	parent_remove_sysfs_files(parent);
 

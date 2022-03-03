@@ -18,7 +18,10 @@
 #include <linux/string.h>
 #include <linux/errno.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
 #include <linux/netdevice.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <net/netlink.h>
 #include <net/pkt_sched.h>
 #include <net/pkt_cls.h>
@@ -29,7 +32,10 @@ struct prio_sched_data {
 	struct tcf_block *block;
 	u8  prio2band[TC_PRIO_MAX+1];
 	struct Qdisc *queues[TCQ_PRIO_BANDS];
+<<<<<<< HEAD
 	u8 enable_flow;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 
@@ -103,9 +109,12 @@ static struct sk_buff *prio_peek(struct Qdisc *sch)
 	struct prio_sched_data *q = qdisc_priv(sch);
 	int prio;
 
+<<<<<<< HEAD
 	if (!q->enable_flow)
 		return NULL;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (prio = 0; prio < q->bands; prio++) {
 		struct Qdisc *qdisc = q->queues[prio];
 		struct sk_buff *skb = qdisc->ops->peek(qdisc);
@@ -120,9 +129,12 @@ static struct sk_buff *prio_dequeue(struct Qdisc *sch)
 	struct prio_sched_data *q = qdisc_priv(sch);
 	int prio;
 
+<<<<<<< HEAD
 	if (!q->enable_flow)
 		return NULL;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (prio = 0; prio < q->bands; prio++) {
 		struct Qdisc *qdisc = q->queues[prio];
 		struct sk_buff *skb = qdisc_dequeue_peeked(qdisc);
@@ -147,7 +159,10 @@ prio_reset(struct Qdisc *sch)
 		qdisc_reset(q->queues[prio]);
 	sch->qstats.backlog = 0;
 	sch->q.qlen = 0;
+<<<<<<< HEAD
 	q->enable_flow = 1;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void
@@ -167,7 +182,10 @@ static int prio_tune(struct Qdisc *sch, struct nlattr *opt)
 	struct Qdisc *queues[TCQ_PRIO_BANDS];
 	int oldbands = q->bands, i;
 	struct tc_prio_qopt *qopt;
+<<<<<<< HEAD
 	int flow_change = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (nla_len(opt) < sizeof(*qopt))
 		return -EINVAL;
@@ -193,10 +211,13 @@ static int prio_tune(struct Qdisc *sch, struct nlattr *opt)
 	}
 
 	sch_tree_lock(sch);
+<<<<<<< HEAD
 	if (q->enable_flow != qopt->enable_flow) {
 		q->enable_flow = qopt->enable_flow;
 		flow_change = 1;
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	q->bands = qopt->bands;
 	memcpy(q->prio2band, qopt->priomap, TC_PRIO_MAX+1);
 
@@ -215,12 +236,15 @@ static int prio_tune(struct Qdisc *sch, struct nlattr *opt)
 	}
 
 	sch_tree_unlock(sch);
+<<<<<<< HEAD
 
 	/* Schedule qdisc when flow re-enabled */
 	if (flow_change && q->enable_flow) {
 		if (!test_bit(__QDISC_STATE_DEACTIVATED, &sch->state))
 			__netif_schedule(qdisc_root(sch));
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -246,7 +270,10 @@ static int prio_dump(struct Qdisc *sch, struct sk_buff *skb)
 	struct tc_prio_qopt opt;
 
 	opt.bands = q->bands;
+<<<<<<< HEAD
 	opt.enable_flow = q->enable_flow;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	memcpy(&opt.priomap, q->prio2band, TC_PRIO_MAX + 1);
 
 	if (nla_put(skb, TCA_OPTIONS, sizeof(opt), &opt))
@@ -265,8 +292,19 @@ static int prio_graft(struct Qdisc *sch, unsigned long arg, struct Qdisc *new,
 	struct prio_sched_data *q = qdisc_priv(sch);
 	unsigned long band = arg - 1;
 
+<<<<<<< HEAD
 	if (new == NULL)
 		new = &noop_qdisc;
+=======
+	if (!new) {
+		new = qdisc_create_dflt(sch->dev_queue, &pfifo_qdisc_ops,
+					TC_H_MAKE(sch->handle, arg));
+		if (!new)
+			new = &noop_qdisc;
+		else
+			qdisc_hash_add(new, true);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	*old = qdisc_replace(sch, new, &q->queues[band]);
 	return 0;
@@ -319,7 +357,11 @@ static int prio_dump_class_stats(struct Qdisc *sch, unsigned long cl,
 
 	cl_q = q->queues[cl - 1];
 	if (gnet_stats_copy_basic(qdisc_root_sleeping_running(sch),
+<<<<<<< HEAD
 				  d, NULL, &cl_q->bstats) < 0 ||
+=======
+				  d, cl_q->cpu_bstats, &cl_q->bstats) < 0 ||
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    gnet_stats_copy_queue(d, NULL, &cl_q->qstats, cl_q->q.qlen) < 0)
 		return -1;
 

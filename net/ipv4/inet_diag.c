@@ -105,6 +105,7 @@ static size_t inet_sk_attr_size(struct sock *sk,
 		aux = handler->idiag_get_aux_size(sk, net_admin);
 
 	return	  nla_total_size(sizeof(struct tcp_info))
+<<<<<<< HEAD
 		+ nla_total_size(1) /* INET_DIAG_SHUTDOWN */
 		+ nla_total_size(1) /* INET_DIAG_TOS */
 		+ nla_total_size(1) /* INET_DIAG_TCLASS */
@@ -112,6 +113,11 @@ static size_t inet_sk_attr_size(struct sock *sk,
 		+ nla_total_size(4) /* INET_DIAG_CLASS_ID */
 		+ nla_total_size(sizeof(struct inet_diag_meminfo))
 		+ nla_total_size(sizeof(struct inet_diag_msg))
+=======
+		+ nla_total_size(sizeof(struct inet_diag_msg))
+		+ inet_diag_msg_attrs_size()
+		+ nla_total_size(sizeof(struct inet_diag_meminfo))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		+ nla_total_size(SK_MEMINFO_VARS * sizeof(u32))
 		+ nla_total_size(TCP_CA_NAME_MAX)
 		+ nla_total_size(sizeof(struct tcpvegas_info))
@@ -152,6 +158,27 @@ int inet_diag_msg_attrs_fill(struct sock *sk, struct sk_buff *skb,
 	if (net_admin && nla_put_u32(skb, INET_DIAG_MARK, sk->sk_mark))
 		goto errout;
 
+<<<<<<< HEAD
+=======
+	if (ext & (1 << (INET_DIAG_CLASS_ID - 1)) ||
+	    ext & (1 << (INET_DIAG_TCLASS - 1))) {
+		u32 classid = 0;
+
+#ifdef CONFIG_SOCK_CGROUP_DATA
+		classid = sock_cgroup_classid(&sk->sk_cgrp_data);
+#endif
+		/* Fallback to socket priority if class id isn't set.
+		 * Classful qdiscs use it as direct reference to class.
+		 * For cgroup2 classid is always zero.
+		 */
+		if (!classid)
+			classid = sk->sk_priority;
+
+		if (nla_put_u32(skb, INET_DIAG_CLASS_ID, classid))
+			goto errout;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	r->idiag_uid = from_kuid_munged(user_ns, sock_i_uid(sk));
 	r->idiag_inode = sock_i_ino(sk);
 
@@ -289,6 +316,7 @@ int inet_sk_diag_fill(struct sock *sk, struct inet_connection_sock *icsk,
 			goto errout;
 	}
 
+<<<<<<< HEAD
 	if (ext & (1 << (INET_DIAG_CLASS_ID - 1)) ||
 	    ext & (1 << (INET_DIAG_TCLASS - 1))) {
 		u32 classid = 0;
@@ -307,6 +335,8 @@ int inet_sk_diag_fill(struct sock *sk, struct inet_connection_sock *icsk,
 			goto errout;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	nlmsg_end(skb, nlh);
 	return 0;
@@ -397,8 +427,15 @@ static int inet_req_diag_fill(struct sock *sk, struct sk_buff *skb,
 	r->idiag_inode	= 0;
 
 	if (net_admin && nla_put_u32(skb, INET_DIAG_MARK,
+<<<<<<< HEAD
 				     inet_rsk(reqsk)->ir_mark))
 		return -EMSGSIZE;
+=======
+				     inet_rsk(reqsk)->ir_mark)) {
+		nlmsg_cancel(skb, nlh);
+		return -EMSGSIZE;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	nlmsg_end(skb, nlh);
 	return 0;
@@ -911,11 +948,19 @@ void inet_diag_dump_icsk(struct inet_hashinfo *hashinfo, struct sk_buff *skb,
 
 		for (i = s_i; i < INET_LHTABLE_SIZE; i++) {
 			struct inet_listen_hashbucket *ilb;
+<<<<<<< HEAD
+=======
+			struct hlist_nulls_node *node;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			num = 0;
 			ilb = &hashinfo->listening_hash[i];
 			spin_lock(&ilb->lock);
+<<<<<<< HEAD
 			sk_for_each(sk, &ilb->head) {
+=======
+			sk_nulls_for_each(sk, node, &ilb->nulls_head) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				struct inet_sock *inet = inet_sk(sk);
 
 				if (!net_eq(sock_net(sk), net))

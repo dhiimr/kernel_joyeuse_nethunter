@@ -397,7 +397,11 @@ config MMC_OMAP_HS
 
 config MMC_WBSD
 	tristate "Winbond W83L51xD SD/MMC Card Interface support"
+<<<<<<< HEAD
 	depends on ISA_DMA_API
+=======
+	depends on ISA_DMA_API && !M68K
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  This selects the Winbond(R) W83L51xD Secure digital and
           Multimedia card Interface.
@@ -426,19 +430,30 @@ config MMC_ATMELMCI
 	  If unsure, say N.
 
 config MMC_SDHCI_MSM
+<<<<<<< HEAD
 	tristate "Qualcomm Technologies, Inc. SDHCI Controller Support"
 	depends on ARCH_QCOM || ARCH_MSM || (ARM && COMPILE_TEST)
+=======
+	tristate "Qualcomm SDHCI Controller Support"
+	depends on ARCH_QCOM || (ARM && COMPILE_TEST)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	depends on MMC_SDHCI_PLTFM
 	select MMC_SDHCI_IO_ACCESSORS
 	help
 	  This selects the Secure Digital Host Controller Interface (SDHCI)
+<<<<<<< HEAD
 	  support present in Qualcomm Technologies, Inc. SOCs. The controller
 	  supports SD/MMC/SDIO devices.
+=======
+	  support present in Qualcomm SOCs. The controller supports
+	  SD/MMC/SDIO devices.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	  If you have a controller with this interface, say Y or M here.
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 config MMC_SDHCI_MSM_ICE
 	bool "Qualcomm Technologies, Inc Inline Crypto Engine for SDHCI core"
 	depends on MMC_SDHCI_MSM && CRYPTO_DEV_QCOM_ICE
@@ -450,6 +465,8 @@ config MMC_SDHCI_MSM_ICE
 	  Select this if you have ICE supported for SDHCI on QTI chipset.
 	  If unsure, say N.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config MMC_MXC
 	tristate "Freescale i.MX21/27/31 or MPC512x Multimedia Card support"
 	depends on ARCH_MXC || PPC_MPC512x
@@ -855,6 +872,7 @@ config MMC_SUNXI
 	  This selects support for the SD/MMC Host Controller on
 	  Allwinner sunxi SoCs.
 
+<<<<<<< HEAD
 config MMC_CQ_HCI
 	tristate "Command Queue Support"
 	depends on HAS_DMA
@@ -868,6 +886,8 @@ config MMC_CQ_HCI
 
 	  If unsure, say N.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config MMC_TOSHIBA_PCI
 	tristate "Toshiba Type A SD/MMC Card Interface Driver"
 	depends on PCI

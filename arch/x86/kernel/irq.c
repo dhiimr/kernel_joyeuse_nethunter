@@ -274,8 +274,15 @@ void kvm_set_posted_intr_wakeup_handler(void (*handler)(void))
 {
 	if (handler)
 		kvm_posted_intr_wakeup_handler = handler;
+<<<<<<< HEAD
 	else
 		kvm_posted_intr_wakeup_handler = dummy_handler;
+=======
+	else {
+		kvm_posted_intr_wakeup_handler = dummy_handler;
+		synchronize_rcu();
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(kvm_set_posted_intr_wakeup_handler);
 

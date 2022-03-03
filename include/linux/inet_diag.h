@@ -2,6 +2,7 @@
 #ifndef _INET_DIAG_H_
 #define _INET_DIAG_H_ 1
 
+<<<<<<< HEAD
 #include <uapi/linux/inet_diag.h>
 
 struct net;
@@ -11,6 +12,12 @@ struct nlattr;
 struct nlmsghdr;
 struct sk_buff;
 struct netlink_callback;
+=======
+#include <net/netlink.h>
+#include <uapi/linux/inet_diag.h>
+
+struct inet_hashinfo;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct inet_diag_handler {
 	void		(*dump)(struct sk_buff *skb,
@@ -62,6 +69,20 @@ int inet_diag_bc_sk(const struct nlattr *_bc, struct sock *sk);
 
 void inet_diag_msg_common_fill(struct inet_diag_msg *r, struct sock *sk);
 
+<<<<<<< HEAD
+=======
+static inline size_t inet_diag_msg_attrs_size(void)
+{
+	return	  nla_total_size(1)  /* INET_DIAG_SHUTDOWN */
+		+ nla_total_size(1)  /* INET_DIAG_TOS */
+#if IS_ENABLED(CONFIG_IPV6)
+		+ nla_total_size(1)  /* INET_DIAG_TCLASS */
+		+ nla_total_size(1)  /* INET_DIAG_SKV6ONLY */
+#endif
+		+ nla_total_size(4)  /* INET_DIAG_MARK */
+		+ nla_total_size(4); /* INET_DIAG_CLASS_ID */
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int inet_diag_msg_attrs_fill(struct sock *sk, struct sk_buff *skb,
 			     struct inet_diag_msg *r, int ext,
 			     struct user_namespace *user_ns, bool net_admin);

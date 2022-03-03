@@ -287,7 +287,11 @@ static int fsl_lpspi_config(struct fsl_lpspi_data *fsl_lpspi)
 
 	fsl_lpspi_set_watermark(fsl_lpspi);
 
+<<<<<<< HEAD
 	temp = CFGR1_PCSCFG | CFGR1_MASTER | CFGR1_NOSTALL;
+=======
+	temp = CFGR1_PCSCFG | CFGR1_MASTER;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (fsl_lpspi->config.mode & SPI_CS_HIGH)
 		temp |= CFGR1_PCSPOL;
 	writel(temp, fsl_lpspi->base + IMX7ULP_CFGR1);

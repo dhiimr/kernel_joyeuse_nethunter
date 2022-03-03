@@ -699,6 +699,7 @@ struct drm_cmdline_mode {
  * @audio_latency: audio latency info from ELD, if found
  * @null_edid_counter: track sinks that give us all zeros for the EDID
  * @bad_edid_counter: track sinks that give us an EDID with invalid checksum
+<<<<<<< HEAD
  * @pt_scan_info: PT scan info obtained from the VCDB of EDID
  * @it_scan_info: IT scan info obtained from the VCDB of EDID
  * @ce_scan_info: CE scan info obtained from the VCDB of EDID
@@ -713,6 +714,8 @@ struct drm_cmdline_mode {
  * @rr_capable: when set the sink is capable of initiating an SCDC read request
  * @supports_scramble: when set the sink supports less than 340Mcsc scrambling
  * @flags_3d: 3D view(s) supported by the sink, see drm_edid.h (DRM_EDID_3D_*)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @edid_corrupt: indicates whether the last read EDID was corrupt
  * @debugfs_entry: debugfs directory for this connector
  * @has_tile: is this connector connected to a tiled monitor
@@ -887,6 +890,7 @@ struct drm_connector {
 	int null_edid_counter; /* needed to workaround some HW bugs where we get all 0s */
 	unsigned bad_edid_counter;
 
+<<<<<<< HEAD
 	u8 pt_scan_info;
 	u8 it_scan_info;
 	u8 ce_scan_info;
@@ -904,6 +908,8 @@ struct drm_connector {
 	bool supports_scramble;
 	int flags_3d;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Flag for raw EDID header corruption - used in Displayport
 	 * compliance testing - * Displayport Link CTS Core 1.2 rev1.1 4.2.2.6
 	 */
@@ -964,11 +970,18 @@ static inline unsigned drm_connector_index(struct drm_connector *connector)
  * add takes a reference to it.
  */
 static inline struct drm_connector *drm_connector_lookup(struct drm_device *dev,
+<<<<<<< HEAD
 		struct drm_file *file_priv,
 		uint32_t id)
 {
 	struct drm_mode_object *mo;
 	mo = drm_mode_object_find(dev, file_priv, id, DRM_MODE_OBJECT_CONNECTOR);
+=======
+		uint32_t id)
+{
+	struct drm_mode_object *mo;
+	mo = drm_mode_object_find(dev, id, DRM_MODE_OBJECT_CONNECTOR);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return mo ? obj_to_connector(mo) : NULL;
 }
 

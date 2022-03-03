@@ -79,7 +79,12 @@ socket_match(const struct sk_buff *skb, struct xt_action_param *par,
 		    transparent && sk_fullsock(sk))
 			pskb->mark = sk->sk_mark;
 
+<<<<<<< HEAD
 		sock_gen_put(sk);
+=======
+		if (sk != skb->sk)
+			sock_gen_put(sk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (wildcard || !transparent)
 			sk = NULL;

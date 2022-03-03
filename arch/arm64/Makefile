@@ -10,7 +10,11 @@
 #
 # Copyright (C) 1995-2001 by Russell King
 
+<<<<<<< HEAD
 LDFLAGS_vmlinux	:=--no-undefined -X
+=======
+LDFLAGS_vmlinux	:=--no-undefined -X -z norelro
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 CPPFLAGS_vmlinux.lds = -DTEXT_OFFSET=$(TEXT_OFFSET)
 GZFLAGS		:=-9
 
@@ -18,7 +22,11 @@ ifeq ($(CONFIG_RELOCATABLE), y)
 # Pass --no-apply-dynamic-relocs to restore pre-binutils-2.27 behaviour
 # for relative relocs, since this leads to better Image compression
 # with the relocation offsets always being zero.
+<<<<<<< HEAD
 LDFLAGS_vmlinux		+= -shared -Bsymbolic -z notext -z norelro \
+=======
+LDFLAGS_vmlinux		+= -shared -Bsymbolic -z notext \
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			$(call ld-option, --no-apply-dynamic-relocs)
 endif
 
@@ -26,6 +34,7 @@ ifeq ($(CONFIG_ARM64_ERRATUM_843419),y)
   ifeq ($(call ld-option, --fix-cortex-a53-843419),)
 $(warning ld does not support --fix-cortex-a53-843419; kernel may be susceptible to erratum)
   else
+<<<<<<< HEAD
     ifeq ($(call gold-ifversion, -lt, 114000000, y), y)
 $(warning This version of GNU gold may generate incorrect code with --fix-cortex-a53-843419;\
 	see https://sourceware.org/bugzilla/show_bug.cgi?id=21491)
@@ -37,6 +46,10 @@ else
 # Pass --no-fix-cortex-a53-843419 to ensure the erratum fix is disabled
 LDFLAGS	+= --no-fix-cortex-a53-843419
   endif
+=======
+LDFLAGS_vmlinux	+= --fix-cortex-a53-843419
+  endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif
 
 KBUILD_DEFCONFIG := defconfig
@@ -58,6 +71,7 @@ $(warning Detected assembler with broken .inst; disassembly will be unreliable)
   endif
 endif
 
+<<<<<<< HEAD
 ifeq ($(cc-name),clang)
 # This is a workaround for https://bugs.llvm.org/show_bug.cgi?id=30792.
 # TODO: revert when this is fixed in LLVM.
@@ -69,6 +83,11 @@ KBUILD_CFLAGS	+= $(lseinstr) $(brokengasinst)
 KBUILD_CFLAGS	+= -fno-asynchronous-unwind-tables
 KBUILD_CFLAGS	+= $(call cc-option, -mpc-relative-literal-loads)
 KBUILD_CFLAGS	+= -fno-pic
+=======
+KBUILD_CFLAGS	+= -mgeneral-regs-only $(lseinstr) $(brokengasinst)
+KBUILD_CFLAGS	+= -fno-asynchronous-unwind-tables
+KBUILD_CFLAGS	+= $(call cc-option, -mpc-relative-literal-loads)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 KBUILD_AFLAGS	+= $(lseinstr) $(brokengasinst)
 
 KBUILD_CFLAGS	+= $(call cc-option,-mabi=lp64)
@@ -79,22 +98,30 @@ KBUILD_CPPFLAGS	+= -mbig-endian
 CHECKFLAGS	+= -D__AARCH64EB__
 AS		+= -EB
 LD		+= -EB
+<<<<<<< HEAD
 ifeq ($(ld-name),gold)
 LDFLAGS		+= -maarch64_elf64_be_vec
 else
 LDFLAGS		+= -maarch64linuxb
 endif
+=======
+LDFLAGS		+= -maarch64linuxb
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 UTS_MACHINE	:= aarch64_be
 else
 KBUILD_CPPFLAGS	+= -mlittle-endian
 CHECKFLAGS	+= -D__AARCH64EL__
 AS		+= -EL
 LD		+= -EL
+<<<<<<< HEAD
 ifeq ($(ld-name),gold)
 LDFLAGS		+= -maarch64_elf64_le_vec
 else
 LDFLAGS		+= -maarch64linux
 endif
+=======
+LDFLAGS		+= -maarch64linux
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 UTS_MACHINE	:= aarch64
 endif
 
@@ -102,10 +129,13 @@ CHECKFLAGS	+= -D__aarch64__ -m64
 
 ifeq ($(CONFIG_ARM64_MODULE_CMODEL_LARGE), y)
 KBUILD_CFLAGS_MODULE	+= -mcmodel=large
+<<<<<<< HEAD
 ifeq ($(CONFIG_LTO_CLANG), y)
 # Code model is not stored in LLVM IR, so we need to pass it also to LLVMgold
 KBUILD_LDFLAGS_MODULE	+= -plugin-opt=-code-model=large
 endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif
 
 ifeq ($(CONFIG_ARM64_MODULE_PLTS),y)
@@ -124,10 +154,13 @@ else
 TEXT_OFFSET := 0x00080000
 endif
 
+<<<<<<< HEAD
 ifeq ($(cc-name),clang)
 KBUILD_CFLAGS += $(call cc-disable-warning, asm-operand-widths)
 endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # KASAN_SHADOW_OFFSET = VA_START + (1 << (VA_BITS - 3)) - (1 << 61)
 # in 32-bit arithmetic
 KASAN_SHADOW_OFFSET := $(shell printf "0x%08x00000000\n" $$(( \
@@ -145,6 +178,7 @@ core-$(CONFIG_CRYPTO) += arch/arm64/crypto/
 libs-y		:= arch/arm64/lib/ $(libs-y)
 core-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
 
+<<<<<<< HEAD
 ifeq ($(CONFIG_BUILD_ARM64_KERNEL_COMPRESSION_GZIP),y)
 KBUILD_IMAGE   := Image.gz
 else
@@ -172,6 +206,15 @@ export DTC_FLAGS := -@
 endif
 
 all:	$(KBUILD_DTBS) $(KBUILD_DTB) $(KBUILD_TARGET)
+=======
+# Default target when executing plain make
+boot		:= arch/arm64/boot
+KBUILD_IMAGE	:= $(boot)/Image.gz
+KBUILD_DTBS	:= dtbs
+
+all:	Image.gz $(KBUILD_DTBS)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 Image: vmlinux
 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
@@ -193,6 +236,7 @@ dtbs: prepare scripts
 dtbs_install:
 	$(Q)$(MAKE) $(dtbinst)=$(boot)/dts
 
+<<<<<<< HEAD
 Image-dtb: vmlinux scripts dtbs
 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
 
@@ -209,6 +253,8 @@ endif
 $(KBUILD_DTB): $(KBUILD_DTBS)
 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 PHONY += vdso_install
 vdso_install:
 	$(Q)$(MAKE) $(build)=arch/arm64/kernel/vdso $@
@@ -218,6 +264,10 @@ archclean:
 	$(Q)$(MAKE) $(clean)=$(boot)
 	$(Q)$(MAKE) $(clean)=$(boot)/dts
 
+<<<<<<< HEAD
+=======
+ifeq ($(KBUILD_EXTMOD),)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # We need to generate vdso-offsets.h before compiling certain files in kernel/.
 # In order to do that, we should use the archprepare target, but we can't since
 # asm-offsets.h is included in some files used to generate vdso-offsets.h, and
@@ -227,6 +277,10 @@ archclean:
 prepare: vdso_prepare
 vdso_prepare: prepare0
 	$(Q)$(MAKE) $(build)=arch/arm64/kernel/vdso include/generated/vdso-offsets.h
+<<<<<<< HEAD
+=======
+endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 define archhelp
   echo  '* Image.gz      - Compressed kernel image (arch/$(ARCH)/boot/Image.gz)'

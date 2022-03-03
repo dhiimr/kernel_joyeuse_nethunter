@@ -234,6 +234,10 @@ ENTRY(__switch_to_asm)
 	pushl	%ebx
 	pushl	%edi
 	pushl	%esi
+<<<<<<< HEAD
+=======
+	pushfl
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* switch stack */
 	movl	%esp, TASK_threadsp(%eax)
@@ -256,6 +260,10 @@ ENTRY(__switch_to_asm)
 #endif
 
 	/* restore callee-saved registers */
+<<<<<<< HEAD
+=======
+	popfl
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	popl	%esi
 	popl	%edi
 	popl	%ebx
@@ -1055,6 +1063,10 @@ ENTRY(int3)
 END(int3)
 
 ENTRY(general_protection)
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pushl	$do_general_protection
 	jmp	common_exception
 END(general_protection)

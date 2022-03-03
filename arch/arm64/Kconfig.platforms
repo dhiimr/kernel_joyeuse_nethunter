@@ -46,6 +46,10 @@ config ARCH_BCM_IPROC
 config ARCH_BERLIN
 	bool "Marvell Berlin SoC Family"
 	select DW_APB_ICTL
+<<<<<<< HEAD
+=======
+	select DW_APB_TIMER_OF
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select GPIOLIB
 	select PINCTRL
 	help
@@ -133,6 +137,7 @@ config ARCH_QCOM
 	bool "Qualcomm Platforms"
 	select GPIOLIB
 	select PINCTRL
+<<<<<<< HEAD
 	select PM_OPP
 	select SOC_BUS
 	select MFD_CORE
@@ -212,6 +217,11 @@ config ARCH_TRINKET
 	  This enables support for the TRINKET chipset. If you do not
 	  wish to build a kernel that runs on this chipset, say 'N' here.
 
+=======
+	help
+	  This enables support for the ARMv8 based Qualcomm chipsets.
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config ARCH_REALTEK
 	bool "Realtek Platforms"
 	help

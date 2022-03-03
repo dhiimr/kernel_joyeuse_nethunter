@@ -80,7 +80,11 @@ static int bnx2fc_bind_pcidev(struct bnx2fc_hba *hba);
 static void bnx2fc_unbind_pcidev(struct bnx2fc_hba *hba);
 static struct fc_lport *bnx2fc_if_create(struct bnx2fc_interface *interface,
 				  struct device *parent, int npiv);
+<<<<<<< HEAD
 static void bnx2fc_destroy_work(struct work_struct *work);
+=======
+static void bnx2fc_port_destroy(struct fcoe_port *port);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct bnx2fc_hba *bnx2fc_hba_lookup(struct net_device *phys_dev);
 static struct bnx2fc_interface *bnx2fc_interface_lookup(struct net_device
@@ -515,7 +519,12 @@ static int bnx2fc_l2_rcv_thread(void *arg)
 
 static void bnx2fc_recv_frame(struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	u32 fr_len;
+=======
+	u64 crc_err;
+	u32 fr_len, fr_crc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct fc_lport *lport;
 	struct fcoe_rcv_info *fr;
 	struct fc_stats *stats;
@@ -549,6 +558,14 @@ static void bnx2fc_recv_frame(struct sk_buff *skb)
 	skb_pull(skb, sizeof(struct fcoe_hdr));
 	fr_len = skb->len - sizeof(struct fcoe_crc_eof);
 
+<<<<<<< HEAD
+=======
+	stats = per_cpu_ptr(lport->stats, get_cpu());
+	stats->RxFrames++;
+	stats->RxWords += fr_len / FCOE_WORD_TO_BYTE;
+	put_cpu();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	fp = (struct fc_frame *)skb;
 	fc_frame_init(fp);
 	fr_dev(fp) = lport;
@@ -631,6 +648,7 @@ static void bnx2fc_recv_frame(struct sk_buff *skb)
 		return;
 	}
 
+<<<<<<< HEAD
 	stats = per_cpu_ptr(lport->stats, smp_processor_id());
 	stats->RxFrames++;
 	stats->RxWords += fr_len / FCOE_WORD_TO_BYTE;
@@ -641,6 +659,17 @@ static void bnx2fc_recv_frame(struct sk_buff *skb)
 			printk(KERN_WARNING PFX "dropping frame with "
 			       "CRC error\n");
 		stats->InvalidCRCCount++;
+=======
+	fr_crc = le32_to_cpu(fr_crc(fp));
+
+	if (unlikely(fr_crc != ~crc32(~0, skb->data, fr_len))) {
+		stats = per_cpu_ptr(lport->stats, get_cpu());
+		crc_err = (stats->InvalidCRCCount++);
+		put_cpu();
+		if (crc_err < 5)
+			printk(KERN_WARNING PFX "dropping frame with "
+			       "CRC error\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kfree_skb(skb);
 		return;
 	}
@@ -911,9 +940,12 @@ static void bnx2fc_indicate_netevent(void *context, unsigned long event,
 				__bnx2fc_destroy(interface);
 		}
 		mutex_unlock(&bnx2fc_dev_lock);
+<<<<<<< HEAD
 
 		/* Ensure ALL destroy work has been completed before return */
 		flush_workqueue(bnx2fc_wq);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 
 	default:
@@ -1220,8 +1252,13 @@ static int bnx2fc_vport_destroy(struct fc_vport *vport)
 	mutex_unlock(&n_port->lp_mutex);
 	bnx2fc_free_vport(interface->hba, port->lport);
 	bnx2fc_port_shutdown(port->lport);
+<<<<<<< HEAD
 	bnx2fc_interface_put(interface);
 	queue_work(bnx2fc_wq, &port->destroy_work);
+=======
+	bnx2fc_port_destroy(port);
+	bnx2fc_interface_put(interface);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -1530,7 +1567,10 @@ static struct fc_lport *bnx2fc_if_create(struct bnx2fc_interface *interface,
 	port->lport = lport;
 	port->priv = interface;
 	port->get_netdev = bnx2fc_netdev;
+<<<<<<< HEAD
 	INIT_WORK(&port->destroy_work, bnx2fc_destroy_work);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Configure fcoe_port */
 	rc = bnx2fc_lport_config(lport);
@@ -1658,8 +1698,13 @@ static void __bnx2fc_destroy(struct bnx2fc_interface *interface)
 	bnx2fc_interface_cleanup(interface);
 	bnx2fc_stop(interface);
 	list_del(&interface->list);
+<<<<<<< HEAD
 	bnx2fc_interface_put(interface);
 	queue_work(bnx2fc_wq, &port->destroy_work);
+=======
+	bnx2fc_port_destroy(port);
+	bnx2fc_interface_put(interface);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -1700,6 +1745,7 @@ netdev_err:
 	return rc;
 }
 
+<<<<<<< HEAD
 static void bnx2fc_destroy_work(struct work_struct *work)
 {
 	struct fcoe_port *port;
@@ -1709,6 +1755,14 @@ static void bnx2fc_destroy_work(struct work_struct *work)
 	lport = port->lport;
 
 	BNX2FC_HBA_DBG(lport, "Entered bnx2fc_destroy_work\n");
+=======
+static void bnx2fc_port_destroy(struct fcoe_port *port)
+{
+	struct fc_lport *lport;
+
+	lport = port->lport;
+	BNX2FC_HBA_DBG(lport, "Entered %s, destroying lport %p\n", __func__, lport);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	bnx2fc_if_destroy(lport);
 }
@@ -2563,9 +2617,12 @@ static void bnx2fc_ulp_exit(struct cnic_dev *dev)
 			__bnx2fc_destroy(interface);
 	mutex_unlock(&bnx2fc_dev_lock);
 
+<<<<<<< HEAD
 	/* Ensure ALL destroy work has been completed before return */
 	flush_workqueue(bnx2fc_wq);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bnx2fc_ulp_stop(hba);
 	/* unregister cnic device */
 	if (test_and_clear_bit(BNX2FC_CNIC_REGISTERED, &hba->reg_with_cnic))

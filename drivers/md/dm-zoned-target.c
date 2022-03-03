@@ -79,6 +79,11 @@ static inline void dmz_bio_endio(struct bio *bio, blk_status_t status)
 
 	if (status != BLK_STS_OK && bio->bi_status == BLK_STS_OK)
 		bio->bi_status = status;
+<<<<<<< HEAD
+=======
+	if (bio->bi_status != BLK_STS_OK)
+		bioctx->target->dev->flags |= DMZ_CHECK_BDEV;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (atomic_dec_and_test(&bioctx->ref)) {
 		struct dm_zone *zone = bioctx->zone;
@@ -277,8 +282,13 @@ static int dmz_handle_buffered_write(struct dmz_target *dmz,
 
 	/* Get the buffer zone. One will be allocated if needed */
 	bzone = dmz_get_chunk_buffer(zmd, zone);
+<<<<<<< HEAD
 	if (!bzone)
 		return -ENOSPC;
+=======
+	if (IS_ERR(bzone))
+		return PTR_ERR(bzone);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (dmz_is_readonly(bzone))
 		return -EROFS;
@@ -389,6 +399,14 @@ static void dmz_handle_bio(struct dmz_target *dmz, struct dm_chunk_work *cw,
 
 	dmz_lock_metadata(zmd);
 
+<<<<<<< HEAD
+=======
+	if (dmz->dev->flags & DMZ_BDEV_DYING) {
+		ret = -EIO;
+		goto out;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Get the data zone mapping the chunk. There may be no
 	 * mapping for read and discard. If a mapping is obtained,
@@ -493,6 +511,11 @@ static void dmz_flush_work(struct work_struct *work)
 
 	/* Flush dirty metadata blocks */
 	ret = dmz_flush_metadata(dmz->metadata);
+<<<<<<< HEAD
+=======
+	if (ret)
+		dmz_dev_debug(dmz->dev, "Metadata flush failed, rc=%d\n", ret);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Process queued flush requests */
 	while (1) {
@@ -513,22 +536,40 @@ static void dmz_flush_work(struct work_struct *work)
  * Get a chunk work and start it to process a new BIO.
  * If the BIO chunk has no work yet, create one.
  */
+<<<<<<< HEAD
 static void dmz_queue_chunk_work(struct dmz_target *dmz, struct bio *bio)
 {
 	unsigned int chunk = dmz_bio_chunk(dmz->dev, bio);
 	struct dm_chunk_work *cw;
+=======
+static int dmz_queue_chunk_work(struct dmz_target *dmz, struct bio *bio)
+{
+	unsigned int chunk = dmz_bio_chunk(dmz->dev, bio);
+	struct dm_chunk_work *cw;
+	int ret = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_lock(&dmz->chunk_lock);
 
 	/* Get the BIO chunk work. If one is not active yet, create one */
 	cw = radix_tree_lookup(&dmz->chunk_rxtree, chunk);
 	if (!cw) {
+<<<<<<< HEAD
 		int ret;
 
 		/* Create a new chunk work */
 		cw = kmalloc(sizeof(struct dm_chunk_work), GFP_NOIO);
 		if (!cw)
 			goto out;
+=======
+
+		/* Create a new chunk work */
+		cw = kmalloc(sizeof(struct dm_chunk_work), GFP_NOIO);
+		if (unlikely(!cw)) {
+			ret = -ENOMEM;
+			goto out;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		INIT_WORK(&cw->work, dmz_chunk_work);
 		atomic_set(&cw->refcount, 0);
@@ -539,7 +580,10 @@ static void dmz_queue_chunk_work(struct dmz_target *dmz, struct bio *bio)
 		ret = radix_tree_insert(&dmz->chunk_rxtree, chunk, cw);
 		if (unlikely(ret)) {
 			kfree(cw);
+<<<<<<< HEAD
 			cw = NULL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto out;
 		}
 	}
@@ -547,10 +591,64 @@ static void dmz_queue_chunk_work(struct dmz_target *dmz, struct bio *bio)
 	bio_list_add(&cw->bio_list, bio);
 	dmz_get_chunk_work(cw);
 
+<<<<<<< HEAD
+=======
+	dmz_reclaim_bio_acc(dmz->reclaim);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (queue_work(dmz->chunk_wq, &cw->work))
 		dmz_get_chunk_work(cw);
 out:
 	mutex_unlock(&dmz->chunk_lock);
+<<<<<<< HEAD
+=======
+	return ret;
+}
+
+/*
+ * Check if the backing device is being removed. If it's on the way out,
+ * start failing I/O. Reclaim and metadata components also call this
+ * function to cleanly abort operation in the event of such failure.
+ */
+bool dmz_bdev_is_dying(struct dmz_dev *dmz_dev)
+{
+	if (dmz_dev->flags & DMZ_BDEV_DYING)
+		return true;
+
+	if (dmz_dev->flags & DMZ_CHECK_BDEV)
+		return !dmz_check_bdev(dmz_dev);
+
+	if (blk_queue_dying(bdev_get_queue(dmz_dev->bdev))) {
+		dmz_dev_warn(dmz_dev, "Backing device queue dying");
+		dmz_dev->flags |= DMZ_BDEV_DYING;
+	}
+
+	return dmz_dev->flags & DMZ_BDEV_DYING;
+}
+
+/*
+ * Check the backing device availability. This detects such events as
+ * backing device going offline due to errors, media removals, etc.
+ * This check is less efficient than dmz_bdev_is_dying() and should
+ * only be performed as a part of error handling.
+ */
+bool dmz_check_bdev(struct dmz_dev *dmz_dev)
+{
+	struct gendisk *disk;
+
+	dmz_dev->flags &= ~DMZ_CHECK_BDEV;
+
+	if (dmz_bdev_is_dying(dmz_dev))
+		return false;
+
+	disk = dmz_dev->bdev->bd_disk;
+	if (disk->fops->check_events &&
+	    disk->fops->check_events(disk, 0) & DISK_EVENT_MEDIA_CHANGE) {
+		dmz_dev_warn(dmz_dev, "Backing device offline");
+		dmz_dev->flags |= DMZ_BDEV_DYING;
+	}
+
+	return !(dmz_dev->flags & DMZ_BDEV_DYING);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -564,6 +662,13 @@ static int dmz_map(struct dm_target *ti, struct bio *bio)
 	sector_t sector = bio->bi_iter.bi_sector;
 	unsigned int nr_sectors = bio_sectors(bio);
 	sector_t chunk_sector;
+<<<<<<< HEAD
+=======
+	int ret;
+
+	if (dmz_bdev_is_dying(dmz->dev))
+		return DM_MAPIO_KILL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dmz_dev_debug(dev, "BIO op %d sector %llu + %u => chunk %llu, block %llu, %u blocks",
 		      bio_op(bio), (unsigned long long)sector, nr_sectors,
@@ -601,8 +706,19 @@ static int dmz_map(struct dm_target *ti, struct bio *bio)
 		dm_accept_partial_bio(bio, dev->zone_nr_sectors - chunk_sector);
 
 	/* Now ready to handle this BIO */
+<<<<<<< HEAD
 	dmz_reclaim_bio_acc(dmz->reclaim);
 	dmz_queue_chunk_work(dmz, bio);
+=======
+	ret = dmz_queue_chunk_work(dmz, bio);
+	if (ret) {
+		dmz_dev_debug(dmz->dev,
+			      "BIO op %d, can't process chunk %llu, err %i\n",
+			      bio_op(bio), (u64)dmz_bio_chunk(dmz->dev, bio),
+			      ret);
+		return DM_MAPIO_REQUEUE;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return DM_MAPIO_SUBMITTED;
 }
@@ -721,7 +837,11 @@ static int dmz_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	}
 
 	/* Set target (no write same support) */
+<<<<<<< HEAD
 	ti->max_io_len = dev->zone_nr_sectors << 9;
+=======
+	ti->max_io_len = dev->zone_nr_sectors;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ti->num_flush_bios = 1;
 	ti->num_discard_bios = 1;
 	ti->num_write_zeroes_bios = 1;
@@ -855,6 +975,12 @@ static int dmz_prepare_ioctl(struct dm_target *ti,
 {
 	struct dmz_target *dmz = ti->private;
 
+<<<<<<< HEAD
+=======
+	if (!dmz_check_bdev(dmz->dev))
+		return -EIO;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	*bdev = dmz->dev->bdev;
 
 	return 0;

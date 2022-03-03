@@ -2976,6 +2976,10 @@ megasas_fw_crash_buffer_show(struct device *cdev,
 	u32 size;
 	unsigned long buff_addr;
 	unsigned long dmachunk = CRASH_DMA_BUF_SIZE;
+<<<<<<< HEAD
+=======
+	unsigned long chunk_left_bytes;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long src_addr;
 	unsigned long flags;
 	u32 buff_offset;
@@ -3001,6 +3005,11 @@ megasas_fw_crash_buffer_show(struct device *cdev,
 	}
 
 	size = (instance->fw_crash_buffer_size * dmachunk) - buff_offset;
+<<<<<<< HEAD
+=======
+	chunk_left_bytes = dmachunk - (buff_offset % dmachunk);
+	size = (size > chunk_left_bytes) ? chunk_left_bytes : size;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	size = (size >= PAGE_SIZE) ? (PAGE_SIZE - 1) : size;
 
 	src_addr = (unsigned long)instance->crash_buf[buff_offset / dmachunk] +
@@ -3820,12 +3829,20 @@ megasas_transition_to_ready(struct megasas_instance *instance, int ocr)
 		/*
 		 * The cur_state should not last for more than max_wait secs
 		 */
+<<<<<<< HEAD
 		for (i = 0; i < (max_wait * 1000); i++) {
+=======
+		for (i = 0; i < max_wait * 50; i++) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			curr_abs_state = instance->instancet->
 				read_fw_status_reg(instance->reg_set);
 
 			if (abs_state == curr_abs_state) {
+<<<<<<< HEAD
 				msleep(1);
+=======
+				msleep(20);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			} else
 				break;
 		}
@@ -4106,7 +4123,12 @@ dcmd_timeout_ocr_possible(struct megasas_instance *instance) {
 	if (instance->adapter_type == MFI_SERIES)
 		return KILL_ADAPTER;
 	else if (instance->unload ||
+<<<<<<< HEAD
 			test_bit(MEGASAS_FUSION_IN_RESET, &instance->reset_flags))
+=======
+			test_bit(MEGASAS_FUSION_OCR_NOT_POSSIBLE,
+				 &instance->reset_flags))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return IGNORE_TIMEOUT;
 	else
 		return INITIATE_OCR;
@@ -5321,7 +5343,11 @@ static int megasas_init_fw(struct megasas_instance *instance)
 	if (!instance->msix_vectors) {
 		i = pci_alloc_irq_vectors(instance->pdev, 1, 1, PCI_IRQ_LEGACY);
 		if (i < 0)
+<<<<<<< HEAD
 			goto fail_setup_irqs;
+=======
+			goto fail_init_adapter;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	megasas_setup_reply_map(instance);
@@ -5538,9 +5564,14 @@ static int megasas_init_fw(struct megasas_instance *instance)
 
 fail_get_ld_pd_list:
 	instance->instancet->disable_intr(instance);
+<<<<<<< HEAD
 fail_init_adapter:
 	megasas_destroy_irqs(instance);
 fail_setup_irqs:
+=======
+	megasas_destroy_irqs(instance);
+fail_init_adapter:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (instance->msix_vectors)
 		pci_free_irq_vectors(instance->pdev);
 	instance->msix_vectors = 0;
@@ -5806,7 +5837,12 @@ megasas_get_target_prop(struct megasas_instance *instance,
 	int ret;
 	struct megasas_cmd *cmd;
 	struct megasas_dcmd_frame *dcmd;
+<<<<<<< HEAD
 	u16 targetId = (sdev->channel % 2) + sdev->id;
+=======
+	u16 targetId = ((sdev->channel % 2) * MEGASAS_MAX_DEV_PER_CHANNEL) +
+			sdev->id;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cmd = megasas_get_cmd(instance);
 

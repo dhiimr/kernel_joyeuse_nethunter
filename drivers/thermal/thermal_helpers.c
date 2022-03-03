@@ -109,7 +109,11 @@ int thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp)
 		if (!ret && *temp < crit_temp)
 			*temp = tz->emul_temperature;
 	}
+<<<<<<< HEAD
 	trace_thermal_query_temp(tz, *temp);
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(&tz->lock);
 exit:
 	return ret;
@@ -143,6 +147,13 @@ void thermal_zone_set_trips(struct thermal_zone_device *tz)
 			high = trip_temp;
 	}
 
+<<<<<<< HEAD
+=======
+	/* No need to change trip points */
+	if (tz->prev_low_trip == low && tz->prev_high_trip == high)
+		goto exit;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tz->prev_low_trip = low;
 	tz->prev_high_trip = high;
 
@@ -156,7 +167,10 @@ void thermal_zone_set_trips(struct thermal_zone_device *tz)
 	ret = tz->ops->set_trips(tz, low, high);
 	if (ret)
 		dev_err(&tz->device, "Failed to set trips: %d\n", ret);
+<<<<<<< HEAD
 	trace_thermal_set_trip(tz);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 exit:
 	mutex_unlock(&tz->lock);
@@ -166,7 +180,11 @@ EXPORT_SYMBOL_GPL(thermal_zone_set_trips);
 void thermal_cdev_update(struct thermal_cooling_device *cdev)
 {
 	struct thermal_instance *instance;
+<<<<<<< HEAD
 	unsigned long current_target = 0, min_target = ULONG_MAX;
+=======
+	unsigned long target = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_lock(&cdev->lock);
 	/* cooling device is updated*/
@@ -176,6 +194,7 @@ void thermal_cdev_update(struct thermal_cooling_device *cdev)
 	}
 
 	/* Make sure cdev enters the deepest cooling state */
+<<<<<<< HEAD
 	current_target = cdev->sysfs_cur_state_req;
 	min_target = cdev->sysfs_min_state_req;
 	list_for_each_entry(instance, &cdev->thermal_instances, cdev_node) {
@@ -200,6 +219,21 @@ void thermal_cdev_update(struct thermal_cooling_device *cdev)
 	trace_cdev_update(cdev, current_target, min_target);
 	dev_dbg(&cdev->device, "set to state %lu min state %lu\n",
 				current_target, min_target);
+=======
+	list_for_each_entry(instance, &cdev->thermal_instances, cdev_node) {
+		dev_dbg(&cdev->device, "zone%d->target=%lu\n",
+			instance->tz->id, instance->target);
+		if (instance->target == THERMAL_NO_TARGET)
+			continue;
+		if (instance->target > target)
+			target = instance->target;
+	}
+	cdev->ops->set_cur_state(cdev, target);
+	cdev->updated = true;
+	mutex_unlock(&cdev->lock);
+	trace_cdev_update(cdev, target);
+	dev_dbg(&cdev->device, "set to state %lu\n", target);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL(thermal_cdev_update);
 

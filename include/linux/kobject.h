@@ -29,7 +29,11 @@
 #include <linux/workqueue.h>
 
 #define UEVENT_HELPER_PATH_LEN		256
+<<<<<<< HEAD
 #define UEVENT_NUM_ENVP			64	/* number of env pointers */
+=======
+#define UEVENT_NUM_ENVP			32	/* number of env pointers */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define UEVENT_BUFFER_SIZE		2048	/* buffer for the variables */
 
 #ifdef CONFIG_UEVENT_HELPER

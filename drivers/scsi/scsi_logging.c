@@ -16,6 +16,7 @@
 #include <scsi/scsi_eh.h>
 #include <scsi/scsi_dbg.h>
 
+<<<<<<< HEAD
 #define SCSI_LOG_SPOOLSIZE 4096
 
 #if (SCSI_LOG_SPOOLSIZE / SCSI_LOG_BUFSIZE) > BITS_PER_LONG
@@ -51,10 +52,17 @@ static char *scsi_log_reserve_buffer(size_t *len)
 	}
 	*len = SCSI_LOG_BUFSIZE;
 	return buf->buffer + idx * SCSI_LOG_BUFSIZE;
+=======
+static char *scsi_log_reserve_buffer(size_t *len)
+{
+	*len = 128;
+	return kmalloc(*len, GFP_ATOMIC);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void scsi_log_release_buffer(char *bufptr)
 {
+<<<<<<< HEAD
 	struct scsi_log_buf *buf;
 	unsigned long idx;
 	int ret;
@@ -67,6 +75,9 @@ static void scsi_log_release_buffer(char *bufptr)
 		WARN_ON(!ret);
 	}
 	preempt_enable();
+=======
+	kfree(bufptr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline const char *scmd_name(const struct scsi_cmnd *scmd)

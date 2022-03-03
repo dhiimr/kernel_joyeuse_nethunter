@@ -357,7 +357,11 @@ static int altr_sdram_probe(struct platform_device *pdev)
 	if (irq < 0) {
 		edac_printk(KERN_ERR, EDAC_MC,
 			    "No irq %d in DT\n", irq);
+<<<<<<< HEAD
 		return -ENODEV;
+=======
+		return irq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Arria10 has a 2nd IRQ */
@@ -1646,6 +1650,10 @@ static void altr_edac_a10_irq_handler(struct irq_desc *desc)
 	struct altr_arria10_edac *edac = irq_desc_get_handler_data(desc);
 	struct irq_chip *chip = irq_desc_get_chip(desc);
 	int irq = irq_desc_get_irq(desc);
+<<<<<<< HEAD
+=======
+	unsigned long bits;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dberr = (irq == edac->db_irq) ? 1 : 0;
 	sm_offset = dberr ? A10_SYSMGR_ECC_INTSTAT_DERR_OFST :
@@ -1655,7 +1663,12 @@ static void altr_edac_a10_irq_handler(struct irq_desc *desc)
 
 	regmap_read(edac->ecc_mgr_map, sm_offset, &irq_status);
 
+<<<<<<< HEAD
 	for_each_set_bit(bit, (unsigned long *)&irq_status, 32) {
+=======
+	bits = irq_status;
+	for_each_set_bit(bit, &bits, 32) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		irq = irq_linear_revmap(edac->domain, dberr * 32 + bit);
 		if (irq)
 			generic_handle_irq(irq);

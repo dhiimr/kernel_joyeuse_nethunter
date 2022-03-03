@@ -614,7 +614,11 @@ static struct ctl_table nlm_sysctl_root[] = {
  */
 
 #define param_set_min_max(name, type, which_strtol, min, max)		\
+<<<<<<< HEAD
 static int param_set_##name(const char *val, const struct kernel_param *kp) \
+=======
+static int param_set_##name(const char *val, struct kernel_param *kp)	\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {									\
 	char *endp;							\
 	__typeof__(type) num = which_strtol(val, &endp, 0);		\

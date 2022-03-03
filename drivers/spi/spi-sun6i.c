@@ -202,7 +202,11 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
 				  struct spi_transfer *tfr)
 {
 	struct sun6i_spi *sspi = spi_master_get_devdata(master);
+<<<<<<< HEAD
 	unsigned int mclk_rate, div, timeout;
+=======
+	unsigned int mclk_rate, div, div_cdr1, div_cdr2, timeout;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int start, end, tx_time;
 	unsigned int trig_level;
 	unsigned int tx_len = 0;
@@ -291,6 +295,7 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
 	 * First try CDR2, and if we can't reach the expected
 	 * frequency, fall back to CDR1.
 	 */
+<<<<<<< HEAD
 	div = mclk_rate / (2 * tfr->speed_hz);
 	if (div <= (SUN6I_CLK_CTL_CDR2_MASK + 1)) {
 		if (div > 0)
@@ -299,10 +304,25 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
 		reg = SUN6I_CLK_CTL_CDR2(div) | SUN6I_CLK_CTL_DRS;
 	} else {
 		div = ilog2(mclk_rate) - ilog2(tfr->speed_hz);
+=======
+	div_cdr1 = DIV_ROUND_UP(mclk_rate, tfr->speed_hz);
+	div_cdr2 = DIV_ROUND_UP(div_cdr1, 2);
+	if (div_cdr2 <= (SUN6I_CLK_CTL_CDR2_MASK + 1)) {
+		reg = SUN6I_CLK_CTL_CDR2(div_cdr2 - 1) | SUN6I_CLK_CTL_DRS;
+	} else {
+		div = min(SUN6I_CLK_CTL_CDR1_MASK, order_base_2(div_cdr1));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		reg = SUN6I_CLK_CTL_CDR1(div);
 	}
 
 	sun6i_spi_write(sspi, SUN6I_CLK_CTL_REG, reg);
+<<<<<<< HEAD
+=======
+	/* Finally enable the bus - doing so before might raise SCK to HIGH */
+	reg = sun6i_spi_read(sspi, SUN6I_GBL_CTL_REG);
+	reg |= SUN6I_GBL_CTL_BUS_ENABLE;
+	sun6i_spi_write(sspi, SUN6I_GBL_CTL_REG, reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Setup the transfer now... */
 	if (sspi->tx_buf)
@@ -411,7 +431,11 @@ static int sun6i_spi_runtime_resume(struct device *dev)
 	}
 
 	sun6i_spi_write(sspi, SUN6I_GBL_CTL_REG,
+<<<<<<< HEAD
 			SUN6I_GBL_CTL_BUS_ENABLE | SUN6I_GBL_CTL_MASTER | SUN6I_GBL_CTL_TP);
+=======
+			SUN6I_GBL_CTL_MASTER | SUN6I_GBL_CTL_TP);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 

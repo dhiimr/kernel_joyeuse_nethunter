@@ -427,7 +427,11 @@ int rtl_regd_init(struct ieee80211_hw *hw,
 	struct wiphy *wiphy = hw->wiphy;
 	struct country_code_to_enum_rd *country = NULL;
 
+<<<<<<< HEAD
 	if (wiphy == NULL || &rtlpriv->regd == NULL)
+=======
+	if (!wiphy)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	/* init country_code from efuse channel plan */

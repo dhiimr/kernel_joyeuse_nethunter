@@ -195,6 +195,14 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max_low,
 #ifdef CONFIG_HAVE_ARCH_PFN_VALID
 int pfn_valid(unsigned long pfn)
 {
+<<<<<<< HEAD
+=======
+	phys_addr_t addr = __pfn_to_phys(pfn);
+
+	if (__phys_to_pfn(addr) != pfn)
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return memblock_is_map_memory(__pfn_to_phys(pfn));
 }
 EXPORT_SYMBOL(pfn_valid);
@@ -351,7 +359,11 @@ static inline void poison_init_mem(void *s, size_t count)
 		*p++ = 0xe7fddef0;
 }
 
+<<<<<<< HEAD
 static inline void
+=======
+static inline void __init
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 free_memmap(unsigned long start_pfn, unsigned long end_pfn)
 {
 	struct page *start_pg, *end_pg;
@@ -600,9 +612,12 @@ struct section_perm {
 	pmdval_t mask;
 	pmdval_t prot;
 	pmdval_t clear;
+<<<<<<< HEAD
 	pteval_t ptemask;
 	pteval_t pteprot;
 	pteval_t pteclear;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* First section-aligned location at or after __start_rodata. */
@@ -616,8 +631,11 @@ static struct section_perm nx_perms[] = {
 		.end	= (unsigned long)_stext,
 		.mask	= ~PMD_SECT_XN,
 		.prot	= PMD_SECT_XN,
+<<<<<<< HEAD
 		.ptemask = ~L_PTE_XN,
 		.pteprot = L_PTE_XN,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	/* Make init RW (set NX). */
 	{
@@ -626,8 +644,11 @@ static struct section_perm nx_perms[] = {
 		.end	= (unsigned long)_sdata,
 		.mask	= ~PMD_SECT_XN,
 		.prot	= PMD_SECT_XN,
+<<<<<<< HEAD
 		.ptemask = ~L_PTE_XN,
 		.pteprot = L_PTE_XN,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	/* Make rodata NX (set RO in ro_perms below). */
 	{
@@ -636,8 +657,11 @@ static struct section_perm nx_perms[] = {
 		.end    = (unsigned long)__init_begin,
 		.mask   = ~PMD_SECT_XN,
 		.prot   = PMD_SECT_XN,
+<<<<<<< HEAD
 		.ptemask = ~L_PTE_XN,
 		.pteprot = L_PTE_XN,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 };
 
@@ -655,8 +679,11 @@ static struct section_perm ro_perms[] = {
 		.prot   = PMD_SECT_APX | PMD_SECT_AP_WRITE,
 		.clear  = PMD_SECT_AP_WRITE,
 #endif
+<<<<<<< HEAD
 		.ptemask = ~L_PTE_RDONLY,
 		.pteprot = L_PTE_RDONLY,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 };
 
@@ -665,6 +692,7 @@ static struct section_perm ro_perms[] = {
  * copied into each mm). During startup, this is the init_mm. Is only
  * safe to be called with preemption disabled, as under stop_machine().
  */
+<<<<<<< HEAD
 struct pte_data {
 	pteval_t mask;
 	pteval_t val;
@@ -697,6 +725,8 @@ static inline void pte_update(unsigned long addr, pteval_t mask,
 	flush_tlb_kernel_range(addr, addr + SECTION_SIZE);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline void section_update(unsigned long addr, pmdval_t mask,
 				  pmdval_t prot, struct mm_struct *mm)
 {
@@ -745,6 +775,7 @@ void set_section_perms(struct section_perm *perms, int n, bool set,
 
 		for (addr = perms[i].start;
 		     addr < perms[i].end;
+<<<<<<< HEAD
 		     addr += SECTION_SIZE) {
 			pmd_t *pmd;
 
@@ -760,6 +791,13 @@ void set_section_perms(struct section_perm *perms, int n, bool set,
 				     mm);
 		}
 	}
+=======
+		     addr += SECTION_SIZE)
+			section_update(addr, perms[i].mask,
+				set ? perms[i].prot : perms[i].clear, mm);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -775,7 +813,12 @@ static void update_sections_early(struct section_perm perms[], int n)
 		if (t->flags & PF_KTHREAD)
 			continue;
 		for_each_thread(t, s)
+<<<<<<< HEAD
 			set_section_perms(perms, n, true, s->mm);
+=======
+			if (s->mm)
+				set_section_perms(perms, n, true, s->mm);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	set_section_perms(perms, n, true, current->active_mm);
 	set_section_perms(perms, n, true, &init_mm);

@@ -35,9 +35,16 @@ static int brcmf_cfg80211_vndr_cmds_dcmd_handler(struct wiphy *wiphy,
 	struct brcmf_if *ifp;
 	const struct brcmf_vndr_dcmd_hdr *cmdhdr = data;
 	struct sk_buff *reply;
+<<<<<<< HEAD
 	int ret, payload, ret_len;
 	void *dcmd_buf = NULL, *wr_pointer;
 	u16 msglen, maxmsglen = PAGE_SIZE - 0x100;
+=======
+	unsigned int payload, ret_len;
+	void *dcmd_buf = NULL, *wr_pointer;
+	u16 msglen, maxmsglen = PAGE_SIZE - 0x100;
+	int ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (len < sizeof(*cmdhdr)) {
 		brcmf_err("vendor command too short: %d\n", len);
@@ -65,7 +72,11 @@ static int brcmf_cfg80211_vndr_cmds_dcmd_handler(struct wiphy *wiphy,
 			brcmf_err("oversize return buffer %d\n", ret_len);
 			ret_len = BRCMF_DCMD_MAXLEN;
 		}
+<<<<<<< HEAD
 		payload = max(ret_len, len) + 1;
+=======
+		payload = max_t(unsigned int, ret_len, len) + 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dcmd_buf = vzalloc(payload);
 		if (NULL == dcmd_buf)
 			return -ENOMEM;

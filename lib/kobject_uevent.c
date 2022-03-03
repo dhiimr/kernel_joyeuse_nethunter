@@ -271,12 +271,22 @@ static int kobj_usermode_filter(struct kobject *kobj)
 
 static int init_uevent_argv(struct kobj_uevent_env *env, const char *subsystem)
 {
+<<<<<<< HEAD
 	int len;
 
 	len = strlcpy(&env->buf[env->buflen], subsystem,
 		      sizeof(env->buf) - env->buflen);
 	if (len >= (sizeof(env->buf) - env->buflen)) {
 		WARN(1, KERN_ERR "init_uevent_argv: buffer size too small\n");
+=======
+	int buffer_size = sizeof(env->buf) - env->buflen;
+	int len;
+
+	len = strlcpy(&env->buf[env->buflen], subsystem, buffer_size);
+	if (len >= buffer_size) {
+		pr_warn("init_uevent_argv: buffer size of %d too small, needed %d\n",
+			buffer_size, len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -ENOMEM;
 	}
 
@@ -340,6 +350,16 @@ int kobject_uevent_env(struct kobject *kobj, enum kobject_action action,
 	struct uevent_sock *ue_sk;
 #endif
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Mark "remove" event done regardless of result, for some subsystems
+	 * do not want to re-trigger "remove" event via automatic cleanup.
+	 */
+	if (action == KOBJ_REMOVE)
+		kobj->state_remove_uevent_sent = 1;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pr_debug("kobject: '%s' (%p): %s\n",
 		 kobject_name(kobj), kobj, __func__);
 
@@ -441,10 +461,13 @@ int kobject_uevent_env(struct kobject *kobj, enum kobject_action action,
 		kobj->state_add_uevent_sent = 1;
 		break;
 
+<<<<<<< HEAD
 	case KOBJ_REMOVE:
 		kobj->state_remove_uevent_sent = 1;
 		break;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	case KOBJ_UNBIND:
 		zap_modalias_env(env);
 		break;

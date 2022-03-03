@@ -651,9 +651,12 @@ void native_flush_tlb_others(const struct cpumask *cpumask,
 		 * that UV should be updated so that smp_call_function_many(),
 		 * etc, are optimal on UV.
 		 */
+<<<<<<< HEAD
 		unsigned int cpu;
 
 		cpu = smp_processor_id();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cpumask = uv_flush_tlb_others(cpumask, info);
 		if (cpumask)
 			smp_call_function_many(cpumask, flush_tlb_func_remote,

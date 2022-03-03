@@ -532,6 +532,10 @@ static struct scatterlist *alloc_sgtable(int size)
 				if (new_page)
 					__free_page(new_page);
 			}
+<<<<<<< HEAD
+=======
+			kfree(table);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return NULL;
 		}
 		alloc_size = min_t(int, size, PAGE_SIZE);
@@ -775,7 +779,11 @@ void iwl_fw_error_dump(struct iwl_fw_runtime *fwrt)
 	dump_data = iwl_fw_error_next_data(dump_data);
 
 	/* We only dump the FIFOs if the FW is in error state */
+<<<<<<< HEAD
 	if (test_bit(STATUS_FW_ERROR, &fwrt->trans->status)) {
+=======
+	if (fifo_data_len) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		iwl_fw_dump_fifos(fwrt, &dump_data);
 		if (radio_len)
 			iwl_read_radio_regs(fwrt, &dump_data);
@@ -954,7 +962,11 @@ int iwl_fw_dbg_collect_desc(struct iwl_fw_runtime *fwrt,
 	 * If the loading of the FW completed successfully, the next step is to
 	 * get the SMEM config data. Thus, if fwrt->smem_cfg.num_lmacs is non
 	 * zero, the FW was already loaded successully. If the state is "NO_FW"
+<<<<<<< HEAD
 	 * in such a case - WARN and exit, since FW may be dead. Otherwise, we
+=======
+	 * in such a case - exit, since FW may be dead. Otherwise, we
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * can try to collect the data, since FW might just not be fully
 	 * loaded (no "ALIVE" yet), and the debug data is accessible.
 	 *
@@ -962,9 +974,14 @@ int iwl_fw_dbg_collect_desc(struct iwl_fw_runtime *fwrt,
 	 *	config. In such a case, due to HW access problems, we might
 	 *	collect garbage.
 	 */
+<<<<<<< HEAD
 	if (WARN((fwrt->trans->state == IWL_TRANS_NO_FW) &&
 		 fwrt->smem_cfg.num_lmacs,
 		 "Can't collect dbg data when FW isn't alive\n"))
+=======
+	if (fwrt->trans->state == IWL_TRANS_NO_FW &&
+	    fwrt->smem_cfg.num_lmacs)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EIO;
 
 	if (test_and_set_bit(IWL_FWRT_STATUS_DUMPING, &fwrt->status))

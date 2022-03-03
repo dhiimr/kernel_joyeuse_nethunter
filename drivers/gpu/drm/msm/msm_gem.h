@@ -24,6 +24,7 @@
 
 /* Additional internal-use only BO flags: */
 #define MSM_BO_STOLEN        0x10000000    /* try to use stolen/splash memory */
+<<<<<<< HEAD
 #define MSM_BO_KEEPATTRS     0x20000000    /* keep h/w bus attributes */
 #define MSM_BO_SKIPSYNC      0x40000000    /* skip dmabuf cpu sync */
 #define MSM_BO_EXTBUF        0x80000000    /* indicate BO is an import buffer */
@@ -56,6 +57,8 @@ struct aspace_client {
 	struct list_head list;
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct msm_gem_address_space {
 	const char *name;
@@ -66,6 +69,7 @@ struct msm_gem_address_space {
 	spinlock_t lock; /* Protects drm_mm node allocation/removal */
 	struct msm_mmu *mmu;
 	struct kref kref;
+<<<<<<< HEAD
 	bool domain_attached;
 	const struct msm_gem_aspace_ops *ops;
 	struct drm_device *dev;
@@ -74,6 +78,8 @@ struct msm_gem_address_space {
 	/* list of clients */
 	struct list_head clients;
 	struct mutex list_lock; /* Protects active_list & clients */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct msm_gem_vma {
@@ -131,10 +137,13 @@ struct msm_gem_object {
 	 */
 	struct drm_mm_node *vram_node;
 	struct mutex lock; /* Protects resources associated with bo */
+<<<<<<< HEAD
 	struct list_head iova_list;
 
 	struct msm_gem_address_space *aspace;
 	bool in_active_list;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 #define to_msm_bo(x) container_of(x, struct msm_gem_object, base)
 

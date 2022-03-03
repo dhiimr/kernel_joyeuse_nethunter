@@ -21,6 +21,17 @@
 #include "vhost.h"
 
 #define VHOST_VSOCK_DEFAULT_HOST_CID	2
+<<<<<<< HEAD
+=======
+/* Max number of bytes transferred before requeueing the job.
+ * Using this limit prevents one virtqueue from starving others. */
+#define VHOST_VSOCK_WEIGHT 0x80000
+/* Max number of packets transferred before requeueing the job.
+ * Using this limit prevents one virtqueue from starving others with
+ * small pkts.
+ */
+#define VHOST_VSOCK_PKT_WEIGHT 256
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 enum {
 	VHOST_VSOCK_FEATURES = VHOST_FEATURES,
@@ -78,6 +89,10 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
 			    struct vhost_virtqueue *vq)
 {
 	struct vhost_virtqueue *tx_vq = &vsock->vqs[VSOCK_VQ_TX];
+<<<<<<< HEAD
+=======
+	int pkts = 0, total_len = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool added = false;
 	bool restart_tx = false;
 
@@ -89,12 +104,20 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
 	/* Avoid further vmexits, we're already processing the virtqueue */
 	vhost_disable_notify(&vsock->dev, vq);
 
+<<<<<<< HEAD
 	for (;;) {
+=======
+	do {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct virtio_vsock_pkt *pkt;
 		struct iov_iter iov_iter;
 		unsigned out, in;
 		size_t nbytes;
+<<<<<<< HEAD
 		size_t len;
+=======
+		size_t iov_len, payload_len;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		int head;
 
 		spin_lock_bh(&vsock->send_pkt_list_lock);
@@ -139,8 +162,29 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
 			break;
 		}
 
+<<<<<<< HEAD
 		len = iov_length(&vq->iov[out], in);
 		iov_iter_init(&iov_iter, READ, &vq->iov[out], in, len);
+=======
+		iov_len = iov_length(&vq->iov[out], in);
+		if (iov_len < sizeof(pkt->hdr)) {
+			virtio_transport_free_pkt(pkt);
+			vq_err(vq, "Buffer len [%zu] too small\n", iov_len);
+			break;
+		}
+
+		iov_iter_init(&iov_iter, READ, &vq->iov[out], in, iov_len);
+		payload_len = pkt->len - pkt->off;
+
+		/* If the packet is greater than the space available in the
+		 * buffer, we split it using multiple buffers.
+		 */
+		if (payload_len > iov_len - sizeof(pkt->hdr))
+			payload_len = iov_len - sizeof(pkt->hdr);
+
+		/* Set the correct length in the header */
+		pkt->hdr.len = cpu_to_le32(payload_len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		nbytes = copy_to_iter(&pkt->hdr, sizeof(pkt->hdr), &iov_iter);
 		if (nbytes != sizeof(pkt->hdr)) {
@@ -149,13 +193,20 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
 			break;
 		}
 
+<<<<<<< HEAD
 		nbytes = copy_to_iter(pkt->buf, pkt->len, &iov_iter);
 		if (nbytes != pkt->len) {
+=======
+		nbytes = copy_to_iter(pkt->buf + pkt->off, payload_len,
+				      &iov_iter);
+		if (nbytes != payload_len) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			virtio_transport_free_pkt(pkt);
 			vq_err(vq, "Faulted on copying pkt buf\n");
 			break;
 		}
 
+<<<<<<< HEAD
 		vhost_add_used(vq, head, sizeof(pkt->hdr) + pkt->len);
 		added = true;
 
@@ -176,6 +227,42 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
 
 		virtio_transport_free_pkt(pkt);
 	}
+=======
+		/* Deliver to monitoring devices all packets that we
+		 * will transmit.
+		 */
+		virtio_transport_deliver_tap_pkt(pkt);
+
+		vhost_add_used(vq, head, sizeof(pkt->hdr) + payload_len);
+		added = true;
+
+		pkt->off += payload_len;
+		total_len += payload_len;
+
+		/* If we didn't send all the payload we can requeue the packet
+		 * to send it with the next available buffer.
+		 */
+		if (pkt->off < pkt->len) {
+			spin_lock_bh(&vsock->send_pkt_list_lock);
+			list_add(&pkt->list, &vsock->send_pkt_list);
+			spin_unlock_bh(&vsock->send_pkt_list_lock);
+		} else {
+			if (pkt->reply) {
+				int val;
+
+				val = atomic_dec_return(&vsock->queued_replies);
+
+				/* Do we have resources to resume tx
+				 * processing?
+				 */
+				if (val + 1 == tx_vq->num)
+					restart_tx = true;
+			}
+
+			virtio_transport_free_pkt(pkt);
+		}
+	} while(likely(!vhost_exceeds_weight(vq, ++pkts, total_len)));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (added)
 		vhost_signal(&vsock->dev, vq);
 
@@ -343,6 +430,55 @@ static bool vhost_vsock_more_replies(struct vhost_vsock *vsock)
 	return val < vq->num;
 }
 
+<<<<<<< HEAD
+=======
+static struct virtio_transport vhost_transport = {
+	.transport = {
+		.get_local_cid            = vhost_transport_get_local_cid,
+
+		.init                     = virtio_transport_do_socket_init,
+		.destruct                 = virtio_transport_destruct,
+		.release                  = virtio_transport_release,
+		.connect                  = virtio_transport_connect,
+		.shutdown                 = virtio_transport_shutdown,
+		.cancel_pkt               = vhost_transport_cancel_pkt,
+
+		.dgram_enqueue            = virtio_transport_dgram_enqueue,
+		.dgram_dequeue            = virtio_transport_dgram_dequeue,
+		.dgram_bind               = virtio_transport_dgram_bind,
+		.dgram_allow              = virtio_transport_dgram_allow,
+
+		.stream_enqueue           = virtio_transport_stream_enqueue,
+		.stream_dequeue           = virtio_transport_stream_dequeue,
+		.stream_has_data          = virtio_transport_stream_has_data,
+		.stream_has_space         = virtio_transport_stream_has_space,
+		.stream_rcvhiwat          = virtio_transport_stream_rcvhiwat,
+		.stream_is_active         = virtio_transport_stream_is_active,
+		.stream_allow             = virtio_transport_stream_allow,
+
+		.notify_poll_in           = virtio_transport_notify_poll_in,
+		.notify_poll_out          = virtio_transport_notify_poll_out,
+		.notify_recv_init         = virtio_transport_notify_recv_init,
+		.notify_recv_pre_block    = virtio_transport_notify_recv_pre_block,
+		.notify_recv_pre_dequeue  = virtio_transport_notify_recv_pre_dequeue,
+		.notify_recv_post_dequeue = virtio_transport_notify_recv_post_dequeue,
+		.notify_send_init         = virtio_transport_notify_send_init,
+		.notify_send_pre_block    = virtio_transport_notify_send_pre_block,
+		.notify_send_pre_enqueue  = virtio_transport_notify_send_pre_enqueue,
+		.notify_send_post_enqueue = virtio_transport_notify_send_post_enqueue,
+
+		.set_buffer_size          = virtio_transport_set_buffer_size,
+		.set_min_buffer_size      = virtio_transport_set_min_buffer_size,
+		.set_max_buffer_size      = virtio_transport_set_max_buffer_size,
+		.get_buffer_size          = virtio_transport_get_buffer_size,
+		.get_min_buffer_size      = virtio_transport_get_min_buffer_size,
+		.get_max_buffer_size      = virtio_transport_get_max_buffer_size,
+	},
+
+	.send_pkt = vhost_transport_send_pkt,
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
 {
 	struct vhost_virtqueue *vq = container_of(work, struct vhost_virtqueue,
@@ -350,7 +486,11 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
 	struct vhost_vsock *vsock = container_of(vq->dev, struct vhost_vsock,
 						 dev);
 	struct virtio_vsock_pkt *pkt;
+<<<<<<< HEAD
 	int head;
+=======
+	int head, pkts = 0, total_len = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int out, in;
 	bool added = false;
 
@@ -360,7 +500,11 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
 		goto out;
 
 	vhost_disable_notify(&vsock->dev, vq);
+<<<<<<< HEAD
 	for (;;) {
+=======
+	do {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		u32 len;
 
 		if (!vhost_vsock_more_replies(vsock)) {
@@ -396,6 +540,7 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
 		virtio_transport_deliver_tap_pkt(pkt);
 
 		/* Only accept correctly addressed packets */
+<<<<<<< HEAD
 		if (le64_to_cpu(pkt->hdr.src_cid) == vsock->guest_cid)
 			virtio_transport_recv_pkt(pkt);
 		else
@@ -404,6 +549,20 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
 		vhost_add_used(vq, head, sizeof(pkt->hdr) + len);
 		added = true;
 	}
+=======
+		if (le64_to_cpu(pkt->hdr.src_cid) == vsock->guest_cid &&
+		    le64_to_cpu(pkt->hdr.dst_cid) ==
+		    vhost_transport_get_local_cid())
+			virtio_transport_recv_pkt(&vhost_transport, pkt);
+		else
+			virtio_transport_free_pkt(pkt);
+
+		len += sizeof(pkt->hdr);
+		vhost_add_used(vq, head, 0);
+		total_len += len;
+		added = true;
+	} while(likely(!vhost_exceeds_weight(vq, ++pkts, total_len)));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 no_more_replies:
 	if (added)
@@ -455,6 +614,14 @@ static int vhost_vsock_start(struct vhost_vsock *vsock)
 		mutex_unlock(&vq->mutex);
 	}
 
+<<<<<<< HEAD
+=======
+	/* Some packets may have been queued before the device was started,
+	 * let's kick the send worker to send them.
+	 */
+	vhost_work_queue(&vsock->dev, &vsock->send_pkt_work);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(&vsock->dev.mutex);
 	return 0;
 
@@ -474,6 +641,7 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int vhost_vsock_stop(struct vhost_vsock *vsock)
 {
 	size_t i;
@@ -484,6 +652,20 @@ static int vhost_vsock_stop(struct vhost_vsock *vsock)
 	ret = vhost_dev_check_owner(&vsock->dev);
 	if (ret)
 		goto err;
+=======
+static int vhost_vsock_stop(struct vhost_vsock *vsock, bool check_owner)
+{
+	size_t i;
+	int ret = 0;
+
+	mutex_lock(&vsock->dev.mutex);
+
+	if (check_owner) {
+		ret = vhost_dev_check_owner(&vsock->dev);
+		if (ret)
+			goto err;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (i = 0; i < ARRAY_SIZE(vsock->vqs); i++) {
 		struct vhost_virtqueue *vq = &vsock->vqs[i];
@@ -531,7 +713,12 @@ static int vhost_vsock_dev_open(struct inode *inode, struct file *file)
 	vsock->vqs[VSOCK_VQ_TX].handle_kick = vhost_vsock_handle_tx_kick;
 	vsock->vqs[VSOCK_VQ_RX].handle_kick = vhost_vsock_handle_rx_kick;
 
+<<<<<<< HEAD
 	vhost_dev_init(&vsock->dev, vqs, ARRAY_SIZE(vsock->vqs));
+=======
+	vhost_dev_init(&vsock->dev, vqs, ARRAY_SIZE(vsock->vqs),
+		       VHOST_VSOCK_PKT_WEIGHT, VHOST_VSOCK_WEIGHT);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	file->private_data = vsock;
 	spin_lock_init(&vsock->send_pkt_list_lock);
@@ -596,7 +783,16 @@ static int vhost_vsock_dev_release(struct inode *inode, struct file *file)
 	 * inefficient.  Room for improvement here. */
 	vsock_for_each_connected_socket(vhost_vsock_reset_orphans);
 
+<<<<<<< HEAD
 	vhost_vsock_stop(vsock);
+=======
+	/* Don't check the owner, because we are in the release path, so we
+	 * need to stop the vsock device in any case.
+	 * vhost_vsock_stop() can not fail in this case, so we don't need to
+	 * check the return code.
+	 */
+	vhost_vsock_stop(vsock, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	vhost_vsock_flush(vsock);
 	vhost_dev_stop(&vsock->dev);
 
@@ -694,7 +890,11 @@ static long vhost_vsock_dev_ioctl(struct file *f, unsigned int ioctl,
 		if (start)
 			return vhost_vsock_start(vsock);
 		else
+<<<<<<< HEAD
 			return vhost_vsock_stop(vsock);
+=======
+			return vhost_vsock_stop(vsock, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	case VHOST_GET_FEATURES:
 		features = VHOST_VSOCK_FEATURES;
 		if (copy_to_user(argp, &features, sizeof(features)))
@@ -730,6 +930,7 @@ static struct miscdevice vhost_vsock_misc = {
 	.fops = &vhost_vsock_fops,
 };
 
+<<<<<<< HEAD
 static struct virtio_transport vhost_transport = {
 	.transport = {
 		.get_local_cid            = vhost_transport_get_local_cid,
@@ -776,6 +977,8 @@ static struct virtio_transport vhost_transport = {
 	.send_pkt = vhost_transport_send_pkt,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int __init vhost_vsock_init(void)
 {
 	int ret;

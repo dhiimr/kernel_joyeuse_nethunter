@@ -18,7 +18,11 @@
 #include <linux/errno.h>
 #include <linux/init.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
 #include <linux/jhash.h>
+=======
+#include <linux/siphash.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
 #include <net/netlink.h>
@@ -121,7 +125,11 @@ struct sfq_sched_data {
 	u8		headdrop;
 	u8		maxdepth;	/* limit of packets per flow */
 
+<<<<<<< HEAD
 	u32		perturbation;
+=======
+	siphash_key_t 	perturbation;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8		cur_depth;	/* depth of longest slot */
 	u8		flags;
 	unsigned short  scaled_quantum; /* SFQ_ALLOT_SIZE(quantum) */
@@ -160,7 +168,11 @@ static inline struct sfq_head *sfq_dep_head(struct sfq_sched_data *q, sfq_index 
 static unsigned int sfq_hash(const struct sfq_sched_data *q,
 			     const struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	return skb_get_hash_perturb(skb, q->perturbation) & (q->divisor - 1);
+=======
+	return skb_get_hash_perturb(skb, &q->perturbation) & (q->divisor - 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static unsigned int sfq_classify(struct sk_buff *skb, struct Qdisc *sch,
@@ -609,9 +621,17 @@ static void sfq_perturbation(unsigned long arg)
 	struct Qdisc *sch = (struct Qdisc *)arg;
 	struct sfq_sched_data *q = qdisc_priv(sch);
 	spinlock_t *root_lock = qdisc_lock(qdisc_root_sleeping(sch));
+<<<<<<< HEAD
 
 	spin_lock(root_lock);
 	q->perturbation = prandom_u32();
+=======
+	siphash_key_t nkey;
+
+	get_random_bytes(&nkey, sizeof(nkey));
+	spin_lock(root_lock);
+	q->perturbation = nkey;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!q->filter_list && q->tail)
 		sfq_rehash(sch);
 	spin_unlock(root_lock);
@@ -637,8 +657,22 @@ static int sfq_change(struct Qdisc *sch, struct nlattr *opt)
 	if (ctl->divisor &&
 	    (!is_power_of_2(ctl->divisor) || ctl->divisor > 65536))
 		return -EINVAL;
+<<<<<<< HEAD
 	if (ctl_v1 && !red_check_params(ctl_v1->qth_min, ctl_v1->qth_max,
 					ctl_v1->Wlog))
+=======
+
+	/* slot->allot is a short, make sure quantum is not too big. */
+	if (ctl->quantum) {
+		unsigned int scaled = SFQ_ALLOT_SIZE(ctl->quantum);
+
+		if (scaled <= 0 || scaled > SHRT_MAX)
+			return -EINVAL;
+	}
+
+	if (ctl_v1 && !red_check_params(ctl_v1->qth_min, ctl_v1->qth_max,
+					ctl_v1->Wlog, ctl_v1->Scell_log, NULL))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 	if (ctl_v1 && ctl_v1->qth_min) {
 		p = kmalloc(sizeof(*p), GFP_KERNEL);
@@ -690,7 +724,11 @@ static int sfq_change(struct Qdisc *sch, struct nlattr *opt)
 	del_timer(&q->perturb_timer);
 	if (q->perturb_period) {
 		mod_timer(&q->perturb_timer, jiffies + q->perturb_period);
+<<<<<<< HEAD
 		q->perturbation = prandom_u32();
+=======
+		get_random_bytes(&q->perturbation, sizeof(q->perturbation));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	sch_tree_unlock(sch);
 	kfree(p);
@@ -746,7 +784,11 @@ static int sfq_init(struct Qdisc *sch, struct nlattr *opt)
 	q->quantum = psched_mtu(qdisc_dev(sch));
 	q->scaled_quantum = SFQ_ALLOT_SIZE(q->quantum);
 	q->perturb_period = 0;
+<<<<<<< HEAD
 	q->perturbation = prandom_u32();
+=======
+	get_random_bytes(&q->perturbation, sizeof(q->perturbation));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (opt) {
 		int err = sfq_change(sch, opt);

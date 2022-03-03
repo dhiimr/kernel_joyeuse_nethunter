@@ -29,6 +29,7 @@ struct sha256_ce_state {
 
 asmlinkage void sha2_ce_transform(struct sha256_ce_state *sst, u8 const *src,
 				  int blocks);
+<<<<<<< HEAD
 #ifdef CONFIG_CFI_CLANG
 static inline void __cfi_sha2_ce_transform(struct sha256_state *sst,
 					   u8 const *src, int blocks)
@@ -37,6 +38,8 @@ static inline void __cfi_sha2_ce_transform(struct sha256_state *sst,
 }
 #define sha2_ce_transform __cfi_sha2_ce_transform
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 const u32 sha256_ce_offsetof_count = offsetof(struct sha256_ce_state,
 					      sst.count);
@@ -67,7 +70,11 @@ static int sha256_ce_finup(struct shash_desc *desc, const u8 *data,
 			   unsigned int len, u8 *out)
 {
 	struct sha256_ce_state *sctx = shash_desc_ctx(desc);
+<<<<<<< HEAD
 	bool finalize = !sctx->sst.count && !(len % SHA256_BLOCK_SIZE);
+=======
+	bool finalize = !sctx->sst.count && !(len % SHA256_BLOCK_SIZE) && len;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!may_use_simd()) {
 		if (len)

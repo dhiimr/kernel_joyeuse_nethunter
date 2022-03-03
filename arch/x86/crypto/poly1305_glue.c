@@ -83,6 +83,7 @@ static unsigned int poly1305_simd_blocks(struct poly1305_desc_ctx *dctx,
 	if (poly1305_use_avx2 && srclen >= POLY1305_BLOCK_SIZE * 4) {
 		if (unlikely(!sctx->wset)) {
 			if (!sctx->uset) {
+<<<<<<< HEAD
 				memcpy(sctx->u, dctx->r.r, sizeof(sctx->u));
 				poly1305_simd_mult(sctx->u, dctx->r.r);
 				sctx->uset = true;
@@ -96,12 +97,27 @@ static unsigned int poly1305_simd_blocks(struct poly1305_desc_ctx *dctx,
 		blocks = srclen / (POLY1305_BLOCK_SIZE * 4);
 		poly1305_4block_avx2(dctx->h.h, src, dctx->r.r, blocks,
 				     sctx->u);
+=======
+				memcpy(sctx->u, dctx->r, sizeof(sctx->u));
+				poly1305_simd_mult(sctx->u, dctx->r);
+				sctx->uset = true;
+			}
+			memcpy(sctx->u + 5, sctx->u, sizeof(sctx->u));
+			poly1305_simd_mult(sctx->u + 5, dctx->r);
+			memcpy(sctx->u + 10, sctx->u + 5, sizeof(sctx->u));
+			poly1305_simd_mult(sctx->u + 10, dctx->r);
+			sctx->wset = true;
+		}
+		blocks = srclen / (POLY1305_BLOCK_SIZE * 4);
+		poly1305_4block_avx2(dctx->h, src, dctx->r, blocks, sctx->u);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		src += POLY1305_BLOCK_SIZE * 4 * blocks;
 		srclen -= POLY1305_BLOCK_SIZE * 4 * blocks;
 	}
 #endif
 	if (likely(srclen >= POLY1305_BLOCK_SIZE * 2)) {
 		if (unlikely(!sctx->uset)) {
+<<<<<<< HEAD
 			memcpy(sctx->u, dctx->r.r, sizeof(sctx->u));
 			poly1305_simd_mult(sctx->u, dctx->r.r);
 			sctx->uset = true;
@@ -109,11 +125,23 @@ static unsigned int poly1305_simd_blocks(struct poly1305_desc_ctx *dctx,
 		blocks = srclen / (POLY1305_BLOCK_SIZE * 2);
 		poly1305_2block_sse2(dctx->h.h, src, dctx->r.r, blocks,
 				     sctx->u);
+=======
+			memcpy(sctx->u, dctx->r, sizeof(sctx->u));
+			poly1305_simd_mult(sctx->u, dctx->r);
+			sctx->uset = true;
+		}
+		blocks = srclen / (POLY1305_BLOCK_SIZE * 2);
+		poly1305_2block_sse2(dctx->h, src, dctx->r, blocks, sctx->u);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		src += POLY1305_BLOCK_SIZE * 2 * blocks;
 		srclen -= POLY1305_BLOCK_SIZE * 2 * blocks;
 	}
 	if (srclen >= POLY1305_BLOCK_SIZE) {
+<<<<<<< HEAD
 		poly1305_block_sse2(dctx->h.h, src, dctx->r.r, 1);
+=======
+		poly1305_block_sse2(dctx->h, src, dctx->r, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		srclen -= POLY1305_BLOCK_SIZE;
 	}
 	return srclen;

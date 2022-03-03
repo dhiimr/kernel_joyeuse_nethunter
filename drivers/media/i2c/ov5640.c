@@ -1216,7 +1216,11 @@ static int ov5640_set_ae_target(struct ov5640_dev *sensor, int target)
 	return ov5640_write_reg(sensor, OV5640_REG_AEC_CTRL1F, fast_low);
 }
 
+<<<<<<< HEAD
 static int ov5640_binning_on(struct ov5640_dev *sensor)
+=======
+static int ov5640_get_binning(struct ov5640_dev *sensor)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u8 temp;
 	int ret;
@@ -1224,8 +1228,13 @@ static int ov5640_binning_on(struct ov5640_dev *sensor)
 	ret = ov5640_read_reg(sensor, OV5640_REG_TIMING_TC_REG21, &temp);
 	if (ret)
 		return ret;
+<<<<<<< HEAD
 	temp &= 0xfe;
 	return temp ? 1 : 0;
+=======
+
+	return temp & BIT(0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int ov5640_set_virtual_channel(struct ov5640_dev *sensor)
@@ -1293,7 +1302,11 @@ static int ov5640_set_mode_exposure_calc(
 	if (ret < 0)
 		return ret;
 	prev_shutter = ret;
+<<<<<<< HEAD
 	ret = ov5640_binning_on(sensor);
+=======
+	ret = ov5640_get_binning(sensor);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret < 0)
 		return ret;
 	if (ret && mode->id != OV5640_MODE_720P_1280_720 &&
@@ -1900,16 +1913,22 @@ static int ov5640_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
 
 	switch (ctrl->id) {
 	case V4L2_CID_AUTOGAIN:
+<<<<<<< HEAD
 		if (!ctrl->val)
 			return 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		val = ov5640_get_gain(sensor);
 		if (val < 0)
 			return val;
 		sensor->ctrls.gain->val = val;
 		break;
 	case V4L2_CID_EXPOSURE_AUTO:
+<<<<<<< HEAD
 		if (ctrl->val == V4L2_EXPOSURE_MANUAL)
 			return 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		val = ov5640_get_exposure(sensor);
 		if (val < 0)
 			return val;
@@ -2265,9 +2284,20 @@ static int ov5640_probe(struct i2c_client *client,
 	/* request optional power down pin */
 	sensor->pwdn_gpio = devm_gpiod_get_optional(dev, "powerdown",
 						    GPIOD_OUT_HIGH);
+<<<<<<< HEAD
 	/* request optional reset pin */
 	sensor->reset_gpio = devm_gpiod_get_optional(dev, "reset",
 						     GPIOD_OUT_HIGH);
+=======
+	if (IS_ERR(sensor->pwdn_gpio))
+		return PTR_ERR(sensor->pwdn_gpio);
+
+	/* request optional reset pin */
+	sensor->reset_gpio = devm_gpiod_get_optional(dev, "reset",
+						     GPIOD_OUT_HIGH);
+	if (IS_ERR(sensor->reset_gpio))
+		return PTR_ERR(sensor->reset_gpio);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	v4l2_i2c_subdev_init(&sensor->sd, client, &ov5640_subdev_ops);
 
@@ -2297,8 +2327,13 @@ static int ov5640_probe(struct i2c_client *client,
 free_ctrls:
 	v4l2_ctrl_handler_free(&sensor->ctrls.handler);
 entity_cleanup:
+<<<<<<< HEAD
 	mutex_destroy(&sensor->lock);
 	media_entity_cleanup(&sensor->sd.entity);
+=======
+	media_entity_cleanup(&sensor->sd.entity);
+	mutex_destroy(&sensor->lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -2308,9 +2343,15 @@ static int ov5640_remove(struct i2c_client *client)
 	struct ov5640_dev *sensor = to_ov5640_dev(sd);
 
 	v4l2_async_unregister_subdev(&sensor->sd);
+<<<<<<< HEAD
 	mutex_destroy(&sensor->lock);
 	media_entity_cleanup(&sensor->sd.entity);
 	v4l2_ctrl_handler_free(&sensor->ctrls.handler);
+=======
+	media_entity_cleanup(&sensor->sd.entity);
+	v4l2_ctrl_handler_free(&sensor->ctrls.handler);
+	mutex_destroy(&sensor->lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }

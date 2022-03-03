@@ -199,12 +199,19 @@ struct pde_opener {
 extern const struct inode_operations proc_link_inode_operations;
 
 extern const struct inode_operations proc_pid_link_inode_operations;
+<<<<<<< HEAD
 extern const struct file_operations proc_reclaim_operations;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 extern void proc_init_inodecache(void);
 void set_proc_pid_nlink(void);
 extern struct inode *proc_get_inode(struct super_block *, struct proc_dir_entry *);
+<<<<<<< HEAD
 extern int proc_fill_super(struct super_block *);
+=======
+extern int proc_fill_super(struct super_block *, void *data, int flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void proc_entry_rundown(struct proc_dir_entry *);
 
 /*
@@ -250,6 +257,7 @@ static inline void proc_sys_evict_inode(struct  inode *inode,
 #endif
 
 /*
+<<<<<<< HEAD
  * uid.c
  */
 #ifdef CONFIG_PROC_UID
@@ -259,6 +267,8 @@ static inline void proc_uid_init(void) { }
 #endif
 
 /*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * proc_tty.c
  */
 #ifdef CONFIG_TTY
@@ -271,6 +281,10 @@ static inline void proc_tty_init(void) {}
  * root.c
  */
 extern struct proc_dir_entry proc_root;
+<<<<<<< HEAD
+=======
+extern int proc_parse_options(char *options, struct pid_namespace *pid);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 extern void proc_self_init(void);
 extern int proc_remount(struct super_block *, int *, char *);

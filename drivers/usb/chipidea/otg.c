@@ -206,6 +206,7 @@ static void ci_otg_work(struct work_struct *work)
 	}
 
 	pm_runtime_get_sync(ci->dev);
+<<<<<<< HEAD
 	if (ci->id_event) {
 		ci->id_event = false;
 		ci_handle_id_switch(ci);
@@ -214,6 +215,19 @@ static void ci_otg_work(struct work_struct *work)
 		ci_handle_vbus_change(ci);
 	} else
 		dev_err(ci->dev, "unexpected event occurs at %s\n", __func__);
+=======
+
+	if (ci->id_event) {
+		ci->id_event = false;
+		ci_handle_id_switch(ci);
+	}
+
+	if (ci->b_sess_valid_event) {
+		ci->b_sess_valid_event = false;
+		ci_handle_vbus_change(ci);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pm_runtime_put_sync(ci->dev);
 
 	enable_irq(ci->irq);

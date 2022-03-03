@@ -126,8 +126,11 @@ disable_ext_identify   Disable the extension list configured by mkfs, so f2fs
                        does not aware of cold files such as media files.
 inline_xattr           Enable the inline xattrs feature.
 noinline_xattr         Disable the inline xattrs feature.
+<<<<<<< HEAD
 inline_xattr_size=%u   Support configuring inline xattr size, it depends on
 		       flexible inline xattr feature.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 inline_data            Enable the inline data feature: New created small(<~3.4k)
                        files can be written into inode block.
 inline_dentry          Enable the inline dir feature: data in new created
@@ -159,6 +162,7 @@ data_flush             Enable data flushing before checkpoint in order to
                        persist data of regular and symlink.
 fault_injection=%d     Enable fault injection in all supported types with
                        specified injection rate.
+<<<<<<< HEAD
 fault_type=%d          Support configuring fault injection type, should be
                        enabled with fault_injection option, fault type value
                        is shown below, it supports single or combined type.
@@ -178,6 +182,8 @@ fault_type=%d          Support configuring fault injection type, should be
                        FAULT_CHECKPOINT		0x000001000
                        FAULT_DISCARD		0x000002000
                        FAULT_WRITE_IO		0x000004000
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 mode=%s                Control block allocation mode which supports "adaptive"
                        and "lfs". In "lfs" mode, there should be no random
                        writes towards main area.
@@ -195,6 +201,7 @@ offgrpjquota           Turn off group journelled quota.
 offprjjquota           Turn off project journelled quota.
 quota                  Enable plain user disk quota accounting.
 noquota                Disable all plain disk quota option.
+<<<<<<< HEAD
 whint_mode=%s          Control which write hints are passed down to block
                        layer. This supports "off", "user-based", and
                        "fs-based".  In "off" mode (default), f2fs does not pass
@@ -219,6 +226,8 @@ checkpoint=%s          Set to "disable" to turn off checkpointing. Set to "enabl
                        disabled, any unmounting or unexpected shutdowns will cause
                        the filesystem contents to appear as they did when the
                        filesystem was mounted with that option.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 ================================================================================
 DEBUGFS ENTRIES

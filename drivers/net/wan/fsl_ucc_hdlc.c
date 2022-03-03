@@ -76,7 +76,11 @@ static struct ucc_tdm_info utdm_primary_info = {
 	},
 };
 
+<<<<<<< HEAD
 static struct ucc_tdm_info utdm_info[MAX_HDLC_NUM];
+=======
+static struct ucc_tdm_info utdm_info[UCC_MAX_NUM];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int uhdlc_init(struct ucc_hdlc_private *priv)
 {
@@ -200,6 +204,7 @@ static int uhdlc_init(struct ucc_hdlc_private *priv)
 
 	priv->rx_skbuff = kzalloc(priv->rx_ring_size * sizeof(*priv->rx_skbuff),
 				  GFP_KERNEL);
+<<<<<<< HEAD
 	if (!priv->rx_skbuff)
 		goto free_ucc_pram;
 
@@ -207,6 +212,19 @@ static int uhdlc_init(struct ucc_hdlc_private *priv)
 				  GFP_KERNEL);
 	if (!priv->tx_skbuff)
 		goto free_rx_skbuff;
+=======
+	if (!priv->rx_skbuff) {
+		ret = -ENOMEM;
+		goto free_ucc_pram;
+	}
+
+	priv->tx_skbuff = kzalloc(priv->tx_ring_size * sizeof(*priv->tx_skbuff),
+				  GFP_KERNEL);
+	if (!priv->tx_skbuff) {
+		ret = -ENOMEM;
+		goto free_rx_skbuff;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	priv->skb_curtx = 0;
 	priv->skb_dirtytx = 0;
@@ -240,6 +258,14 @@ static int uhdlc_init(struct ucc_hdlc_private *priv)
 		ret = -ENOMEM;
 		goto free_riptr;
 	}
+<<<<<<< HEAD
+=======
+	if (riptr != (u16)riptr || tiptr != (u16)tiptr) {
+		dev_err(priv->dev, "MURAM allocation out of addressable range\n");
+		ret = -ENOMEM;
+		goto free_tiptr;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Set RIPTR, TIPTR */
 	iowrite16be(riptr, &priv->ucc_pram->riptr);
@@ -1114,7 +1140,10 @@ static int ucc_hdlc_probe(struct platform_device *pdev)
 	if (register_hdlc_device(dev)) {
 		ret = -ENOBUFS;
 		pr_err("ucc_hdlc: unable to register hdlc device\n");
+<<<<<<< HEAD
 		free_netdev(dev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto free_dev;
 	}
 

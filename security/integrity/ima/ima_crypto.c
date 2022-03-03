@@ -232,7 +232,11 @@ static int ima_calc_file_hash_atfm(struct file *file,
 {
 	loff_t i_size, offset;
 	char *rbuf[2] = { NULL, };
+<<<<<<< HEAD
 	int rc, read = 0, rbuf_len, active = 0, ahash_rc = 0;
+=======
+	int rc, rbuf_len, active = 0, ahash_rc = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct ahash_request *req;
 	struct scatterlist sg[1];
 	struct ahash_completion res;
@@ -279,11 +283,14 @@ static int ima_calc_file_hash_atfm(struct file *file,
 					  &rbuf_size[1], 0);
 	}
 
+<<<<<<< HEAD
 	if (!(file->f_mode & FMODE_READ)) {
 		file->f_mode |= FMODE_READ;
 		read = 1;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (offset = 0; offset < i_size; offset += rbuf_len) {
 		if (!rbuf[1] && offset) {
 			/* Not using two buffers, and it is not the first
@@ -298,8 +305,16 @@ static int ima_calc_file_hash_atfm(struct file *file,
 		rbuf_len = min_t(loff_t, i_size - offset, rbuf_size[active]);
 		rc = integrity_kernel_read(file, offset, rbuf[active],
 					   rbuf_len);
+<<<<<<< HEAD
 		if (rc != rbuf_len)
 			goto out3;
+=======
+		if (rc != rbuf_len) {
+			if (rc >= 0)
+				rc = -EINVAL;
+			goto out3;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (rbuf[1] && offset) {
 			/* Using two buffers, and it is not the first
@@ -322,8 +337,11 @@ static int ima_calc_file_hash_atfm(struct file *file,
 	/* wait for the last update request to complete */
 	rc = ahash_wait(ahash_rc, &res);
 out3:
+<<<<<<< HEAD
 	if (read)
 		file->f_mode &= ~FMODE_READ;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ima_free_pages(rbuf[0], rbuf_size[0]);
 	ima_free_pages(rbuf[1], rbuf_size[1]);
 out2:
@@ -358,7 +376,11 @@ static int ima_calc_file_hash_tfm(struct file *file,
 {
 	loff_t i_size, offset = 0;
 	char *rbuf;
+<<<<<<< HEAD
 	int rc, read = 0;
+=======
+	int rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	SHASH_DESC_ON_STACK(shash, tfm);
 
 	shash->tfm = tfm;
@@ -379,11 +401,14 @@ static int ima_calc_file_hash_tfm(struct file *file,
 	if (!rbuf)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	if (!(file->f_mode & FMODE_READ)) {
 		file->f_mode |= FMODE_READ;
 		read = 1;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	while (offset < i_size) {
 		int rbuf_len;
 
@@ -400,8 +425,11 @@ static int ima_calc_file_hash_tfm(struct file *file,
 		if (rc)
 			break;
 	}
+<<<<<<< HEAD
 	if (read)
 		file->f_mode &= ~FMODE_READ;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(rbuf);
 out:
 	if (!rc)
@@ -442,6 +470,11 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
 {
 	loff_t i_size;
 	int rc;
+<<<<<<< HEAD
+=======
+	struct file *f = file;
+	bool new_file_instance = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * For consistency, fail file's opened with the O_DIRECT flag on
@@ -453,6 +486,7 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	i_size = i_size_read(file_inode(file));
 
 	if (ima_ahash_minsize && i_size >= ima_ahash_minsize) {
@@ -462,6 +496,33 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
 	}
 
 	return ima_calc_file_shash(file, hash);
+=======
+	/* Open a new file instance in O_RDONLY if we cannot read */
+	if (!(file->f_mode & FMODE_READ)) {
+		int flags = file->f_flags & ~(O_WRONLY | O_APPEND |
+				O_TRUNC | O_CREAT | O_NOCTTY | O_EXCL);
+		flags |= O_RDONLY;
+		f = dentry_open(&file->f_path, flags, file->f_cred);
+		if (IS_ERR(f))
+			return PTR_ERR(f);
+
+		new_file_instance = true;
+	}
+
+	i_size = i_size_read(file_inode(f));
+
+	if (ima_ahash_minsize && i_size >= ima_ahash_minsize) {
+		rc = ima_calc_file_ahash(f, hash);
+		if (!rc)
+			goto out;
+	}
+
+	rc = ima_calc_file_shash(f, hash);
+out:
+	if (new_file_instance)
+		fput(f);
+	return rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -682,6 +743,11 @@ static int __init ima_calc_boot_aggregate_tfm(char *digest,
 		ima_pcrread(i, pcr_i);
 		/* now accumulate with current aggregate */
 		rc = crypto_shash_update(shash, pcr_i, TPM_DIGEST_SIZE);
+<<<<<<< HEAD
+=======
+		if (rc != 0)
+			return rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	if (!rc)
 		crypto_shash_final(shash, digest);

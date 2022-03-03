@@ -53,6 +53,7 @@ struct configfs_buffer {
 	bool			write_in_progress;
 	char			*bin_buffer;
 	int			bin_buffer_size;
+<<<<<<< HEAD
 };
 
 
@@ -72,12 +73,35 @@ static int fill_read_buffer(struct dentry * dentry, struct configfs_buffer * buf
 	struct config_item * item = to_item(dentry->d_parent);
 	int ret = 0;
 	ssize_t count;
+=======
+	int			cb_max_size;
+	struct config_item	*item;
+	struct module		*owner;
+	union {
+		struct configfs_attribute	*attr;
+		struct configfs_bin_attribute	*bin_attr;
+	};
+};
+
+static inline struct configfs_fragment *to_frag(struct file *file)
+{
+	struct configfs_dirent *sd = file->f_path.dentry->d_fsdata;
+
+	return sd->s_frag;
+}
+
+static int fill_read_buffer(struct file *file, struct configfs_buffer *buffer)
+{
+	struct configfs_fragment *frag = to_frag(file);
+	ssize_t count = -ENOENT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!buffer->page)
 		buffer->page = (char *) get_zeroed_page(GFP_KERNEL);
 	if (!buffer->page)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	count = attr->show(item, buffer->page);
 
 	BUG_ON(count > (ssize_t)SIMPLE_ATTR_SIZE);
@@ -87,6 +111,20 @@ static int fill_read_buffer(struct dentry * dentry, struct configfs_buffer * buf
 	} else
 		ret = count;
 	return ret;
+=======
+	down_read(&frag->frag_sem);
+	if (!frag->frag_dead)
+		count = buffer->attr->show(buffer->item, buffer->page);
+	up_read(&frag->frag_sem);
+
+	if (count < 0)
+		return count;
+	if (WARN_ON_ONCE(count > (ssize_t)SIMPLE_ATTR_SIZE))
+		return -EIO;
+	buffer->needs_read_fill = 0;
+	buffer->count = count;
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -111,12 +149,21 @@ static int fill_read_buffer(struct dentry * dentry, struct configfs_buffer * buf
 static ssize_t
 configfs_read_file(struct file *file, char __user *buf, size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct configfs_buffer * buffer = file->private_data;
+=======
+	struct configfs_buffer *buffer = file->private_data;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ssize_t retval = 0;
 
 	mutex_lock(&buffer->mutex);
 	if (buffer->needs_read_fill) {
+<<<<<<< HEAD
 		if ((retval = fill_read_buffer(file->f_path.dentry,buffer)))
+=======
+		retval = fill_read_buffer(file, buffer);
+		if (retval)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto out;
 	}
 	pr_debug("%s: count = %zd, ppos = %lld, buf = %s\n",
@@ -152,10 +199,15 @@ static ssize_t
 configfs_read_bin_file(struct file *file, char __user *buf,
 		       size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct configfs_buffer *buffer = file->private_data;
 	struct dentry *dentry = file->f_path.dentry;
 	struct config_item *item = to_item(dentry->d_parent);
 	struct configfs_bin_attribute *bin_attr = to_bin_attr(dentry);
+=======
+	struct configfs_fragment *frag = to_frag(file);
+	struct configfs_buffer *buffer = file->private_data;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ssize_t retval = 0;
 	ssize_t len = min_t(size_t, count, PAGE_SIZE);
 
@@ -166,18 +218,35 @@ configfs_read_bin_file(struct file *file, char __user *buf,
 		retval = -ETXTBSY;
 		goto out;
 	}
+<<<<<<< HEAD
 	buffer->read_in_progress = 1;
 
 	if (buffer->needs_read_fill) {
 		/* perform first read with buf == NULL to get extent */
 		len = bin_attr->read(item, NULL, 0);
+=======
+	buffer->read_in_progress = true;
+
+	if (buffer->needs_read_fill) {
+		/* perform first read with buf == NULL to get extent */
+		down_read(&frag->frag_sem);
+		if (!frag->frag_dead)
+			len = buffer->bin_attr->read(buffer->item, NULL, 0);
+		else
+			len = -ENOENT;
+		up_read(&frag->frag_sem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (len <= 0) {
 			retval = len;
 			goto out;
 		}
 
 		/* do not exceed the maximum value */
+<<<<<<< HEAD
 		if (bin_attr->cb_max_size && len > bin_attr->cb_max_size) {
+=======
+		if (buffer->cb_max_size && len > buffer->cb_max_size) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			retval = -EFBIG;
 			goto out;
 		}
@@ -190,7 +259,17 @@ configfs_read_bin_file(struct file *file, char __user *buf,
 		buffer->bin_buffer_size = len;
 
 		/* perform second read to fill buffer */
+<<<<<<< HEAD
 		len = bin_attr->read(item, buffer->bin_buffer, len);
+=======
+		down_read(&frag->frag_sem);
+		if (!frag->frag_dead)
+			len = buffer->bin_attr->read(buffer->item,
+						     buffer->bin_buffer, len);
+		else
+			len = -ENOENT;
+		up_read(&frag->frag_sem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (len < 0) {
 			retval = len;
 			vfree(buffer->bin_buffer);
@@ -240,6 +319,7 @@ fill_write_buffer(struct configfs_buffer * buffer, const char __user * buf, size
 	return error ? -EFAULT : count;
 }
 
+<<<<<<< HEAD
 
 /**
  *	flush_write_buffer - push buffer to config_item.
@@ -259,6 +339,19 @@ flush_write_buffer(struct dentry * dentry, struct configfs_buffer * buffer, size
 	struct config_item * item = to_item(dentry->d_parent);
 
 	return attr->store(item, buffer->page, count);
+=======
+static int
+flush_write_buffer(struct file *file, struct configfs_buffer *buffer, size_t count)
+{
+	struct configfs_fragment *frag = to_frag(file);
+	int res = -ENOENT;
+
+	down_read(&frag->frag_sem);
+	if (!frag->frag_dead)
+		res = buffer->attr->store(buffer->item, buffer->page, count);
+	up_read(&frag->frag_sem);
+	return res;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 
@@ -282,13 +375,21 @@ flush_write_buffer(struct dentry * dentry, struct configfs_buffer * buffer, size
 static ssize_t
 configfs_write_file(struct file *file, const char __user *buf, size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct configfs_buffer * buffer = file->private_data;
+=======
+	struct configfs_buffer *buffer = file->private_data;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ssize_t len;
 
 	mutex_lock(&buffer->mutex);
 	len = fill_write_buffer(buffer, buf, count);
 	if (len > 0)
+<<<<<<< HEAD
 		len = flush_write_buffer(file->f_path.dentry, buffer, len);
+=======
+		len = flush_write_buffer(file, buffer, len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (len > 0)
 		*ppos += len;
 	mutex_unlock(&buffer->mutex);
@@ -313,8 +414,11 @@ configfs_write_bin_file(struct file *file, const char __user *buf,
 			size_t count, loff_t *ppos)
 {
 	struct configfs_buffer *buffer = file->private_data;
+<<<<<<< HEAD
 	struct dentry *dentry = file->f_path.dentry;
 	struct configfs_bin_attribute *bin_attr = to_bin_attr(dentry);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	void *tbuf = NULL;
 	ssize_t len;
 
@@ -325,13 +429,22 @@ configfs_write_bin_file(struct file *file, const char __user *buf,
 		len = -ETXTBSY;
 		goto out;
 	}
+<<<<<<< HEAD
 	buffer->write_in_progress = 1;
+=======
+	buffer->write_in_progress = true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* buffer grows? */
 	if (*ppos + count > buffer->bin_buffer_size) {
 
+<<<<<<< HEAD
 		if (bin_attr->cb_max_size &&
 			*ppos + count > bin_attr->cb_max_size) {
+=======
+		if (buffer->cb_max_size &&
+			*ppos + count > buffer->cb_max_size) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			len = -EFBIG;
 			goto out;
 		}
@@ -363,6 +476,7 @@ out:
 	return len;
 }
 
+<<<<<<< HEAD
 static int check_perm(struct inode * inode, struct file * file, int type)
 {
 	struct config_item *item = configfs_get_config_item(file->f_path.dentry->d_parent);
@@ -388,6 +502,53 @@ static int check_perm(struct inode * inode, struct file * file, int type)
 		ops = item->ci_type->ct_item_ops;
 	else
 		goto Eaccess;
+=======
+static int __configfs_open_file(struct inode *inode, struct file *file, int type)
+{
+	struct dentry *dentry = file->f_path.dentry;
+	struct configfs_fragment *frag = to_frag(file);
+	struct configfs_attribute *attr;
+	struct configfs_buffer *buffer;
+	int error;
+
+	error = -ENOMEM;
+	buffer = kzalloc(sizeof(struct configfs_buffer), GFP_KERNEL);
+	if (!buffer)
+		goto out;
+
+	error = -ENOENT;
+	down_read(&frag->frag_sem);
+	if (unlikely(frag->frag_dead))
+		goto out_free_buffer;
+
+	error = -EINVAL;
+	buffer->item = to_item(dentry->d_parent);
+	if (!buffer->item)
+		goto out_free_buffer;
+
+	attr = to_attr(dentry);
+	if (!attr)
+		goto out_free_buffer;
+
+	if (type & CONFIGFS_ITEM_BIN_ATTR) {
+		buffer->bin_attr = to_bin_attr(dentry);
+		buffer->cb_max_size = buffer->bin_attr->cb_max_size;
+	} else {
+		buffer->attr = attr;
+	}
+
+	buffer->owner = attr->ca_owner;
+	/* Grab the module reference for this attribute if we have one */
+	error = -ENODEV;
+	if (!try_module_get(buffer->owner))
+		goto out_free_buffer;
+
+	error = -EACCES;
+	if (!buffer->item->ci_type)
+		goto out_put_module;
+
+	buffer->ops = buffer->item->ci_type->ct_item_ops;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* File needs write support.
 	 * The inode's perms must say it's ok,
@@ -395,6 +556,7 @@ static int check_perm(struct inode * inode, struct file * file, int type)
 	 */
 	if (file->f_mode & FMODE_WRITE) {
 		if (!(inode->i_mode & S_IWUGO))
+<<<<<<< HEAD
 			goto Eaccess;
 
 		if ((type & CONFIGFS_ITEM_ATTR) && !attr->store)
@@ -402,6 +564,13 @@ static int check_perm(struct inode * inode, struct file * file, int type)
 
 		if ((type & CONFIGFS_ITEM_BIN_ATTR) && !bin_attr->write)
 			goto Eaccess;
+=======
+			goto out_put_module;
+		if ((type & CONFIGFS_ITEM_ATTR) && !attr->store)
+			goto out_put_module;
+		if ((type & CONFIGFS_ITEM_BIN_ATTR) && !buffer->bin_attr->write)
+			goto out_put_module;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* File needs read support.
@@ -410,6 +579,7 @@ static int check_perm(struct inode * inode, struct file * file, int type)
 	 */
 	if (file->f_mode & FMODE_READ) {
 		if (!(inode->i_mode & S_IRUGO))
+<<<<<<< HEAD
 			goto Eaccess;
 
 		if ((type & CONFIGFS_ITEM_ATTR) && !attr->show)
@@ -445,11 +615,35 @@ static int check_perm(struct inode * inode, struct file * file, int type)
  Done:
 	if (error && item)
 		config_item_put(item);
+=======
+			goto out_put_module;
+		if ((type & CONFIGFS_ITEM_ATTR) && !attr->show)
+			goto out_put_module;
+		if ((type & CONFIGFS_ITEM_BIN_ATTR) && !buffer->bin_attr->read)
+			goto out_put_module;
+	}
+
+	mutex_init(&buffer->mutex);
+	buffer->needs_read_fill = 1;
+	buffer->read_in_progress = false;
+	buffer->write_in_progress = false;
+	file->private_data = buffer;
+	up_read(&frag->frag_sem);
+	return 0;
+
+out_put_module:
+	module_put(buffer->owner);
+out_free_buffer:
+	up_read(&frag->frag_sem);
+	kfree(buffer);
+out:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return error;
 }
 
 static int configfs_release(struct inode *inode, struct file *filp)
 {
+<<<<<<< HEAD
 	struct config_item * item = to_item(filp->f_path.dentry->d_parent);
 	struct configfs_attribute * attr = to_attr(filp->f_path.dentry);
 	struct module * owner = attr->ca_owner;
@@ -466,16 +660,30 @@ static int configfs_release(struct inode *inode, struct file *filp)
 		mutex_destroy(&buffer->mutex);
 		kfree(buffer);
 	}
+=======
+	struct configfs_buffer *buffer = filp->private_data;
+
+	module_put(buffer->owner);
+	if (buffer->page)
+		free_page((unsigned long)buffer->page);
+	mutex_destroy(&buffer->mutex);
+	kfree(buffer);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
 static int configfs_open_file(struct inode *inode, struct file *filp)
 {
+<<<<<<< HEAD
 	return check_perm(inode, filp, CONFIGFS_ITEM_ATTR);
+=======
+	return __configfs_open_file(inode, filp, CONFIGFS_ITEM_ATTR);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int configfs_open_bin_file(struct inode *inode, struct file *filp)
 {
+<<<<<<< HEAD
 	return check_perm(inode, filp, CONFIGFS_ITEM_BIN_ATTR);
 }
 
@@ -507,6 +715,38 @@ static int configfs_release_bin_file(struct inode *inode, struct file *filp)
 	if (len < 0)
 		return len;
 	return ret;
+=======
+	return __configfs_open_file(inode, filp, CONFIGFS_ITEM_BIN_ATTR);
+}
+
+static int configfs_release_bin_file(struct inode *inode, struct file *file)
+{
+	struct configfs_buffer *buffer = file->private_data;
+
+	buffer->read_in_progress = false;
+
+	if (buffer->write_in_progress) {
+		struct configfs_fragment *frag = to_frag(file);
+		buffer->write_in_progress = false;
+
+		down_read(&frag->frag_sem);
+		if (!frag->frag_dead) {
+			/* result of ->release() is ignored */
+			buffer->bin_attr->write(buffer->item,
+					buffer->bin_buffer,
+					buffer->bin_buffer_size);
+		}
+		up_read(&frag->frag_sem);
+	}
+
+	vfree(buffer->bin_buffer);
+	buffer->bin_buffer = NULL;
+	buffer->bin_buffer_size = 0;
+	buffer->needs_read_fill = 1;
+
+	configfs_release(inode, file);
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 
@@ -541,7 +781,11 @@ int configfs_create_file(struct config_item * item, const struct configfs_attrib
 
 	inode_lock_nested(d_inode(dir), I_MUTEX_NORMAL);
 	error = configfs_make_dirent(parent_sd, NULL, (void *) attr, mode,
+<<<<<<< HEAD
 				     CONFIGFS_ITEM_ATTR);
+=======
+				     CONFIGFS_ITEM_ATTR, parent_sd->s_frag);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	inode_unlock(d_inode(dir));
 
 	return error;
@@ -563,7 +807,11 @@ int configfs_create_bin_file(struct config_item *item,
 
 	inode_lock_nested(dir->d_inode, I_MUTEX_NORMAL);
 	error = configfs_make_dirent(parent_sd, NULL, (void *) bin_attr, mode,
+<<<<<<< HEAD
 				     CONFIGFS_ITEM_BIN_ATTR);
+=======
+				     CONFIGFS_ITEM_BIN_ATTR, parent_sd->s_frag);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	inode_unlock(dir->d_inode);
 
 	return error;

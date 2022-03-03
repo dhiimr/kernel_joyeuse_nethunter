@@ -15,6 +15,10 @@
 #include <linux/clocksource.h>
 #include <linux/console.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include <linux/sizes.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/cpu.h>
 #include <linux/of_fdt.h>
 #include <linux/of.h>
@@ -355,12 +359,20 @@ static void arc_chk_core_config(void)
 	if ((unsigned int)__arc_dccm_base != cpu->dccm.base_addr)
 		panic("Linux built with incorrect DCCM Base address\n");
 
+<<<<<<< HEAD
 	if (CONFIG_ARC_DCCM_SZ != cpu->dccm.sz)
+=======
+	if (CONFIG_ARC_DCCM_SZ * SZ_1K != cpu->dccm.sz)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		panic("Linux built with incorrect DCCM Size\n");
 #endif
 
 #ifdef CONFIG_ARC_HAS_ICCM
+<<<<<<< HEAD
 	if (CONFIG_ARC_ICCM_SZ != cpu->iccm.sz)
+=======
+	if (CONFIG_ARC_ICCM_SZ * SZ_1K != cpu->iccm.sz)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		panic("Linux built with incorrect ICCM Size\n");
 #endif
 

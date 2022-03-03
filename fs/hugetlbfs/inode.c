@@ -436,9 +436,13 @@ static void remove_inode_hugepages(struct inode *inode, loff_t lstart,
 			u32 hash;
 
 			index = page->index;
+<<<<<<< HEAD
 			hash = hugetlb_fault_mutex_hash(h, current->mm,
 							&pseudo_vma,
 							mapping, index, 0);
+=======
+			hash = hugetlb_fault_mutex_hash(h, mapping, index);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			mutex_lock(&hugetlb_fault_mutex_table[hash]);
 
 			/*
@@ -557,7 +561,10 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
 	struct address_space *mapping = inode->i_mapping;
 	struct hstate *h = hstate_inode(inode);
 	struct vm_area_struct pseudo_vma;
+<<<<<<< HEAD
 	struct mm_struct *mm = current->mm;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	loff_t hpage_size = huge_page_size(h);
 	unsigned long hpage_shift = huge_page_shift(h);
 	pgoff_t start, index, end;
@@ -621,8 +628,12 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
 		addr = index * hpage_size;
 
 		/* mutex taken here, fault path and hole punch */
+<<<<<<< HEAD
 		hash = hugetlb_fault_mutex_hash(h, mm, &pseudo_vma, mapping,
 						index, addr);
+=======
+		hash = hugetlb_fault_mutex_hash(h, mapping, index);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mutex_lock(&hugetlb_fault_mutex_table[hash]);
 
 		/* See if already present in mapping to avoid alloc/free */
@@ -653,8 +664,14 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
 
 		mutex_unlock(&hugetlb_fault_mutex_table[hash]);
 
+<<<<<<< HEAD
 		/*
 		 * page_put due to reference from alloc_huge_page()
+=======
+		set_page_huge_active(page);
+		/*
+		 * put_page() due to reference from alloc_huge_page()
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		 * unlock_page because locked by add_to_page_cache()
 		 */
 		put_page(page);

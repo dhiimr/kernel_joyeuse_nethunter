@@ -64,6 +64,7 @@ struct snd_compr_params {
  * @pcm_io_frames: Frames rendered or received by DSP into a mixer or an audio
  * output/input. This field should be used for A/V sync or time estimates.
  * @sampling_rate: sampling rate of audio
+<<<<<<< HEAD
  * @timestamp: timestamp of audio clips
  */
 struct snd_compr_tstamp {
@@ -73,6 +74,15 @@ struct snd_compr_tstamp {
 	__u32 pcm_io_frames;
 	__u32 sampling_rate;
 	__u64 timestamp;
+=======
+ */
+struct snd_compr_tstamp {
+	__u32 byte_offset;
+	__u32 copied_total;
+	__u32 pcm_frames;
+	__u32 pcm_io_frames;
+	__u32 sampling_rate;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 } __attribute__((packed, aligned(4)));
 
 /**
@@ -125,6 +135,7 @@ struct snd_compr_codec_caps {
 } __attribute__((packed, aligned(4)));
 
 /**
+<<<<<<< HEAD
  * struct snd_compr_audio_info: compressed input audio information
  * @frame_size: legth of the encoded frame with valid data
  * @reserved: reserved for furture use
@@ -147,11 +158,14 @@ enum sndrv_compress_latency_mode {
 };
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * enum sndrv_compress_encoder
  * @SNDRV_COMPRESS_ENCODER_PADDING: no of samples appended by the encoder at the
  * end of the track
  * @SNDRV_COMPRESS_ENCODER_DELAY: no of samples inserted by the encoder at the
  * beginning of the track
+<<<<<<< HEAD
  * @SNDRV_COMPRESS_PATH_DELAY: dsp path delay in microseconds
  * @SNDRV_COMPRESS_RENDER_MODE: dsp render mode (audio master or stc)
  * @SNDRV_COMPRESS_CLK_REC_MODE: clock recovery mode ( none or auto)
@@ -159,10 +173,13 @@ enum sndrv_compress_latency_mode {
  * @SNDRV_COMPRESS_START_DELAY: start delay
  * @SNDRV_COMPRESS_ENABLE_ADJUST_SESSION_CLOCK: enable dsp drift correction
  * @SNDRV_COMPRESS_ADJUST_SESSION_CLOCK: set drift correction value
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 enum sndrv_compress_encoder {
 	SNDRV_COMPRESS_ENCODER_PADDING = 1,
 	SNDRV_COMPRESS_ENCODER_DELAY = 2,
+<<<<<<< HEAD
 	SNDRV_COMPRESS_MIN_BLK_SIZE = 3,
 	SNDRV_COMPRESS_MAX_BLK_SIZE = 4,
 	SNDRV_COMPRESS_PATH_DELAY = 5,
@@ -189,6 +206,10 @@ enum sndrv_compress_encoder {
 #define SNDRV_COMPRESS_LATENCY_MODE SNDRV_COMPRESS_LATENCY_MODE
 #define SNDRV_COMPRESS_IN_TTP_OFFSET SNDRV_COMPRESS_IN_TTP_OFFSET
 
+=======
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * struct snd_compr_metadata - compressed stream metadata
  * @key: key id
@@ -215,8 +236,11 @@ struct snd_compr_metadata {
  * SNDRV_COMPRESS_STOP: stop a running stream, discarding ring buffer content
  * and the buffers currently with DSP
  * SNDRV_COMPRESS_DRAIN: Play till end of buffers and stop after that
+<<<<<<< HEAD
  * SNDRV_COMPRESS_SET_NEXT_TRACK_PARAM: send codec specific data for the next
  * track in gapless
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * SNDRV_COMPRESS_IOCTL_VERSION: Query the API version
  */
 #define SNDRV_COMPRESS_IOCTL_VERSION	_IOR('C', 0x00, int)
@@ -238,8 +262,11 @@ struct snd_compr_metadata {
 #define SNDRV_COMPRESS_DRAIN		_IO('C', 0x34)
 #define SNDRV_COMPRESS_NEXT_TRACK	_IO('C', 0x35)
 #define SNDRV_COMPRESS_PARTIAL_DRAIN	_IO('C', 0x36)
+<<<<<<< HEAD
 #define SNDRV_COMPRESS_SET_NEXT_TRACK_PARAM\
 					_IOW('C', 0x80, union snd_codec_options)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * TODO
  * 1. add mmap support
@@ -248,5 +275,8 @@ struct snd_compr_metadata {
 #define SND_COMPR_TRIGGER_DRAIN 7 /*FIXME move this to pcm.h */
 #define SND_COMPR_TRIGGER_NEXT_TRACK 8
 #define SND_COMPR_TRIGGER_PARTIAL_DRAIN 9
+<<<<<<< HEAD
 #define SNDRV_COMPRESS_DSP_POSITION 10
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif

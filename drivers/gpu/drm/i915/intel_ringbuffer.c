@@ -1358,6 +1358,10 @@ void intel_ring_unpin(struct intel_ring *ring)
 static struct i915_vma *
 intel_ring_create_vma(struct drm_i915_private *dev_priv, int size)
 {
+<<<<<<< HEAD
+=======
+	struct i915_address_space *vm = &dev_priv->ggtt.base;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct drm_i915_gem_object *obj;
 	struct i915_vma *vma;
 
@@ -1367,10 +1371,21 @@ intel_ring_create_vma(struct drm_i915_private *dev_priv, int size)
 	if (IS_ERR(obj))
 		return ERR_CAST(obj);
 
+<<<<<<< HEAD
 	/* mark ring buffers as read-only from GPU side by default */
 	obj->gt_ro = 1;
 
 	vma = i915_vma_instance(obj, &dev_priv->ggtt.base, NULL);
+=======
+	/*
+	 * Mark ring buffers as read-only from GPU side (so no stray overwrites)
+	 * if supported by the platform's GGTT.
+	 */
+	if (vm->has_read_only)
+		i915_gem_object_set_readonly(obj);
+
+	vma = i915_vma_instance(obj, vm, NULL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (IS_ERR(vma))
 		goto err;
 

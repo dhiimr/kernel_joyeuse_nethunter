@@ -406,7 +406,11 @@ int smp_find_processor_id(u16 address)
 	return -1;
 }
 
+<<<<<<< HEAD
 bool arch_vcpu_is_preempted(int cpu)
+=======
+bool notrace arch_vcpu_is_preempted(int cpu)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (test_cpu_flag_of(CIF_ENABLED_WAIT, cpu))
 		return false;
@@ -416,7 +420,11 @@ bool arch_vcpu_is_preempted(int cpu)
 }
 EXPORT_SYMBOL(arch_vcpu_is_preempted);
 
+<<<<<<< HEAD
 void smp_yield_cpu(int cpu)
+=======
+void notrace smp_yield_cpu(int cpu)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (MACHINE_HAS_DIAG9C) {
 		diag_stat_inc_norecursion(DIAG_STAT_X09C);
@@ -725,6 +733,7 @@ static void __ref smp_get_core_info(struct sclp_core_info *info, int early)
 
 static int smp_add_present_cpu(int cpu);
 
+<<<<<<< HEAD
 static int __smp_rescan_cpus(struct sclp_core_info *info, int sysfs_add)
 {
 	struct pcpu *pcpu;
@@ -758,6 +767,69 @@ static int __smp_rescan_cpus(struct sclp_core_info *info, int sysfs_add)
 				break;
 		}
 	}
+=======
+static int smp_add_core(struct sclp_core_entry *core, cpumask_t *avail,
+			bool configured, bool early)
+{
+	struct pcpu *pcpu;
+	int cpu, nr, i;
+	u16 address;
+
+	nr = 0;
+	if (sclp.has_core_type && core->type != boot_core_type)
+		return nr;
+	cpu = cpumask_first(avail);
+	address = core->core_id << smp_cpu_mt_shift;
+	for (i = 0; (i <= smp_cpu_mtid) && (cpu < nr_cpu_ids); i++) {
+		if (pcpu_find_address(cpu_present_mask, address + i))
+			continue;
+		pcpu = pcpu_devices + cpu;
+		pcpu->address = address + i;
+		if (configured)
+			pcpu->state = CPU_STATE_CONFIGURED;
+		else
+			pcpu->state = CPU_STATE_STANDBY;
+		smp_cpu_set_polarization(cpu, POLARIZATION_UNKNOWN);
+		set_cpu_present(cpu, true);
+		if (!early && smp_add_present_cpu(cpu) != 0)
+			set_cpu_present(cpu, false);
+		else
+			nr++;
+		cpumask_clear_cpu(cpu, avail);
+		cpu = cpumask_next(cpu, avail);
+	}
+	return nr;
+}
+
+static int __smp_rescan_cpus(struct sclp_core_info *info, bool early)
+{
+	struct sclp_core_entry *core;
+	static cpumask_t avail;
+	bool configured;
+	u16 core_id;
+	int nr, i;
+
+	nr = 0;
+	cpumask_xor(&avail, cpu_possible_mask, cpu_present_mask);
+	/*
+	 * Add IPL core first (which got logical CPU number 0) to make sure
+	 * that all SMT threads get subsequent logical CPU numbers.
+	 */
+	if (early) {
+		core_id = pcpu_devices[0].address >> smp_cpu_mt_shift;
+		for (i = 0; i < info->configured; i++) {
+			core = &info->core[i];
+			if (core->core_id == core_id) {
+				nr += smp_add_core(core, &avail, true, early);
+				break;
+			}
+		}
+	}
+	for (i = 0; i < info->combined; i++) {
+		configured = i < info->configured;
+		nr += smp_add_core(&info->core[i], &avail, configured, early);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return nr;
 }
 
@@ -803,7 +875,11 @@ void __init smp_detect_cpus(void)
 
 	/* Add CPUs present at boot */
 	get_online_cpus();
+<<<<<<< HEAD
 	__smp_rescan_cpus(info, 0);
+=======
+	__smp_rescan_cpus(info, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	put_online_cpus();
 	memblock_free_early((unsigned long)info, sizeof(*info));
 }
@@ -836,6 +912,7 @@ static void smp_start_secondary(void *cpuvoid)
 /* Upping and downing of CPUs */
 int __cpu_up(unsigned int cpu, struct task_struct *tidle)
 {
+<<<<<<< HEAD
 	struct pcpu *pcpu;
 	int base, i, rc;
 
@@ -854,6 +931,14 @@ int __cpu_up(unsigned int cpu, struct task_struct *tidle)
 	 */
 	if (i > smp_cpu_mtid &&
 	    pcpu_sigp_retry(pcpu_devices + base, SIGP_INITIAL_CPU_RESET, 0) !=
+=======
+	struct pcpu *pcpu = pcpu_devices + cpu;
+	int rc;
+
+	if (pcpu->state != CPU_STATE_CONFIGURED)
+		return -EIO;
+	if (pcpu_sigp_retry(pcpu, SIGP_INITIAL_CPU_RESET, 0) !=
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    SIGP_CC_ORDER_CODE_ACCEPTED)
 		return -EIO;
 
@@ -1156,7 +1241,11 @@ int __ref smp_rescan_cpus(void)
 	smp_get_core_info(info, 0);
 	get_online_cpus();
 	mutex_lock(&smp_cpu_state_mutex);
+<<<<<<< HEAD
 	nr = __smp_rescan_cpus(info, 1);
+=======
+	nr = __smp_rescan_cpus(info, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(&smp_cpu_state_mutex);
 	put_online_cpus();
 	kfree(info);

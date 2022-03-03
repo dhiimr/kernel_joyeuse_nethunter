@@ -829,7 +829,11 @@ u16 qed_get_cm_pq_idx_vf(struct qed_hwfn *p_hwfn, u16 vf);
 /* Prototypes */
 int qed_fill_dev_info(struct qed_dev *cdev,
 		      struct qed_dev_info *dev_info);
+<<<<<<< HEAD
 void qed_link_update(struct qed_hwfn *hwfn);
+=======
+void qed_link_update(struct qed_hwfn *hwfn, struct qed_ptt *ptt);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 u32 qed_unzip_data(struct qed_hwfn *p_hwfn,
 		   u32 input_len, u8 *input_buf,
 		   u32 max_size, u8 *unzip_buf);

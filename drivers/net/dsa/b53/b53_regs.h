@@ -112,6 +112,10 @@
 #define B53_UC_FLOOD_MASK		0x32
 #define B53_MC_FLOOD_MASK		0x34
 #define B53_IPMC_FLOOD_MASK		0x36
+<<<<<<< HEAD
+=======
+#define B53_DIS_LEARNING		0x3c
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Override Ports 0-7 State on devices with xMII interfaces (8 bit)
@@ -294,7 +298,11 @@
  *
  * BCM5325 and BCM5365 share most definitions below
  */
+<<<<<<< HEAD
 #define B53_ARLTBL_MAC_VID_ENTRY(n)	(0x10 * (n))
+=======
+#define B53_ARLTBL_MAC_VID_ENTRY(n)	((0x10 * (n)) + 0x10)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define   ARLTBL_MAC_MASK		0xffffffffffffULL
 #define   ARLTBL_VID_S			48
 #define   ARLTBL_VID_MASK_25		0xff
@@ -306,13 +314,23 @@
 #define   ARLTBL_VALID_25		BIT(63)
 
 /* ARL Table Data Entry N Registers (32 bit) */
+<<<<<<< HEAD
 #define B53_ARLTBL_DATA_ENTRY(n)	((0x10 * (n)) + 0x08)
+=======
+#define B53_ARLTBL_DATA_ENTRY(n)	((0x10 * (n)) + 0x18)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define   ARLTBL_DATA_PORT_ID_MASK	0x1ff
 #define   ARLTBL_TC(tc)			((3 & tc) << 11)
 #define   ARLTBL_AGE			BIT(14)
 #define   ARLTBL_STATIC			BIT(15)
 #define   ARLTBL_VALID			BIT(16)
 
+<<<<<<< HEAD
+=======
+/* Maximum number of bin entries in the ARL for all switches */
+#define B53_ARLTBL_MAX_BIN_ENTRIES	4
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* ARL Search Control Register (8 bit) */
 #define B53_ARL_SRCH_CTL		0x50
 #define B53_ARL_SRCH_CTL_25		0x20

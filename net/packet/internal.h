@@ -70,7 +70,14 @@ struct packet_ring_buffer {
 
 	unsigned int __percpu	*pending_refcnt;
 
+<<<<<<< HEAD
 	struct tpacket_kbdq_core	prb_bdqc;
+=======
+	union {
+		unsigned long			*rx_owner_map;
+		struct tpacket_kbdq_core	prb_bdqc;
+	};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 extern struct mutex fanout_mutex;
@@ -128,6 +135,10 @@ struct packet_sock {
 	unsigned int		tp_hdrlen;
 	unsigned int		tp_reserve;
 	unsigned int		tp_tstamp;
+<<<<<<< HEAD
+=======
+	struct completion	skb_completion;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct net_device __rcu	*cached_dev;
 	int			(*xmit)(struct sk_buff *skb);
 	struct packet_type	prot_hook ____cacheline_aligned_in_smp;

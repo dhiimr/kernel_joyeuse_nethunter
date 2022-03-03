@@ -112,12 +112,20 @@ static void ib_cq_poll_work(struct work_struct *work)
 				    IB_POLL_BATCH);
 	if (completed >= IB_POLL_BUDGET_WORKQUEUE ||
 	    ib_req_notify_cq(cq, IB_POLL_FLAGS) > 0)
+<<<<<<< HEAD
 		queue_work(ib_comp_wq, &cq->work);
+=======
+		queue_work(cq->comp_wq, &cq->work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void ib_cq_completion_workqueue(struct ib_cq *cq, void *private)
 {
+<<<<<<< HEAD
 	queue_work(ib_comp_wq, &cq->work);
+=======
+	queue_work(cq->comp_wq, &cq->work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -169,9 +177,18 @@ struct ib_cq *ib_alloc_cq(struct ib_device *dev, void *private,
 		ib_req_notify_cq(cq, IB_CQ_NEXT_COMP);
 		break;
 	case IB_POLL_WORKQUEUE:
+<<<<<<< HEAD
 		cq->comp_handler = ib_cq_completion_workqueue;
 		INIT_WORK(&cq->work, ib_cq_poll_work);
 		ib_req_notify_cq(cq, IB_CQ_NEXT_COMP);
+=======
+	case IB_POLL_UNBOUND_WORKQUEUE:
+		cq->comp_handler = ib_cq_completion_workqueue;
+		INIT_WORK(&cq->work, ib_cq_poll_work);
+		ib_req_notify_cq(cq, IB_CQ_NEXT_COMP);
+		cq->comp_wq = (cq->poll_ctx == IB_POLL_WORKQUEUE) ?
+				ib_comp_wq : ib_comp_unbound_wq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	default:
 		ret = -EINVAL;
@@ -206,6 +223,10 @@ void ib_free_cq(struct ib_cq *cq)
 		irq_poll_disable(&cq->iop);
 		break;
 	case IB_POLL_WORKQUEUE:
+<<<<<<< HEAD
+=======
+	case IB_POLL_UNBOUND_WORKQUEUE:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cancel_work_sync(&cq->work);
 		break;
 	default:

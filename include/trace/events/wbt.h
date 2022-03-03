@@ -33,7 +33,12 @@ TRACE_EVENT(wbt_stat,
 	),
 
 	TP_fast_assign(
+<<<<<<< HEAD
 		strncpy(__entry->name, dev_name(bdi->dev), 32);
+=======
+		strlcpy(__entry->name, dev_name(bdi->dev),
+			ARRAY_SIZE(__entry->name));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__entry->rmean		= stat[0].mean;
 		__entry->rmin		= stat[0].min;
 		__entry->rmax		= stat[0].max;
@@ -67,7 +72,12 @@ TRACE_EVENT(wbt_lat,
 	),
 
 	TP_fast_assign(
+<<<<<<< HEAD
 		strncpy(__entry->name, dev_name(bdi->dev), 32);
+=======
+		strlcpy(__entry->name, dev_name(bdi->dev),
+			ARRAY_SIZE(__entry->name));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__entry->lat = div_u64(lat, 1000);
 	),
 
@@ -103,7 +113,12 @@ TRACE_EVENT(wbt_step,
 	),
 
 	TP_fast_assign(
+<<<<<<< HEAD
 		strncpy(__entry->name, dev_name(bdi->dev), 32);
+=======
+		strlcpy(__entry->name, dev_name(bdi->dev),
+			ARRAY_SIZE(__entry->name));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__entry->msg	= msg;
 		__entry->step	= step;
 		__entry->window	= div_u64(window, 1000);
@@ -138,7 +153,12 @@ TRACE_EVENT(wbt_timer,
 	),
 
 	TP_fast_assign(
+<<<<<<< HEAD
 		strncpy(__entry->name, dev_name(bdi->dev), 32);
+=======
+		strlcpy(__entry->name, dev_name(bdi->dev),
+			ARRAY_SIZE(__entry->name));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__entry->status		= status;
 		__entry->step		= step;
 		__entry->inflight	= inflight;

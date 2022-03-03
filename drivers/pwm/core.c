@@ -294,7 +294,10 @@ int pwmchip_add_with_polarity(struct pwm_chip *chip,
 		pwm->pwm = chip->base + i;
 		pwm->hwpwm = i;
 		pwm->state.polarity = polarity;
+<<<<<<< HEAD
 		pwm->state.output_type = PWM_OUTPUT_FIXED;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (chip->ops->get_state)
 			chip->ops->get_state(chip, pwm, &pwm->state);
@@ -312,10 +315,19 @@ int pwmchip_add_with_polarity(struct pwm_chip *chip,
 	if (IS_ENABLED(CONFIG_OF))
 		of_pwmchip_add(chip);
 
+<<<<<<< HEAD
 	pwmchip_sysfs_export(chip);
 
 out:
 	mutex_unlock(&pwm_lock);
+=======
+out:
+	mutex_unlock(&pwm_lock);
+
+	if (!ret)
+		pwmchip_sysfs_export(chip);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 EXPORT_SYMBOL_GPL(pwmchip_add_with_polarity);
@@ -349,7 +361,11 @@ int pwmchip_remove(struct pwm_chip *chip)
 	unsigned int i;
 	int ret = 0;
 
+<<<<<<< HEAD
 	pwmchip_sysfs_unexport_children(chip);
+=======
+	pwmchip_sysfs_unexport(chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_lock(&pwm_lock);
 
@@ -369,8 +385,11 @@ int pwmchip_remove(struct pwm_chip *chip)
 
 	free_pwms(chip);
 
+<<<<<<< HEAD
 	pwmchip_sysfs_unexport(chip);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	mutex_unlock(&pwm_lock);
 	return ret;
@@ -508,6 +527,7 @@ int pwm_apply_state(struct pwm_device *pwm, struct pwm_state *state)
 			pwm->state.polarity = state->polarity;
 		}
 
+<<<<<<< HEAD
 		if (state->output_type != pwm->state.output_type) {
 			if (!pwm->chip->ops->set_output_type)
 				return -ENOTSUPP;
@@ -548,6 +568,13 @@ int pwm_apply_state(struct pwm_device *pwm, struct pwm_state *state)
 						state->duty_cycle,
 						state->period);
 			}
+=======
+		if (state->period != pwm->state.period ||
+		    state->duty_cycle != pwm->state.duty_cycle) {
+			err = pwm->chip->ops->config(pwm->chip, pwm,
+						     state->duty_cycle,
+						     state->period);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (err)
 				return err;
 
@@ -910,6 +937,10 @@ void pwm_put(struct pwm_device *pwm)
 	if (pwm->chip->ops->free)
 		pwm->chip->ops->free(pwm->chip, pwm);
 
+<<<<<<< HEAD
+=======
+	pwm_set_chip_data(pwm, NULL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pwm->label = NULL;
 
 	module_put(pwm->chip->ops->owner);
@@ -1031,8 +1062,13 @@ static void pwm_dbg_show(struct pwm_chip *chip, struct seq_file *s)
 		if (state.enabled)
 			seq_puts(s, " enabled");
 
+<<<<<<< HEAD
 		seq_printf(s, " period: %llu ns", state.period);
 		seq_printf(s, " duty: %llu ns", state.duty_cycle);
+=======
+		seq_printf(s, " period: %u ns", state.period);
+		seq_printf(s, " duty: %u ns", state.duty_cycle);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		seq_printf(s, " polarity: %s",
 			   state.polarity ? "inverse" : "normal");
 

@@ -336,6 +336,7 @@ bool amdgpu_atombios_get_connector_info_from_object_table(struct amdgpu_device *
 		path_size += le16_to_cpu(path->usSize);
 
 		if (device_support & le16_to_cpu(path->usDeviceTag)) {
+<<<<<<< HEAD
 			uint8_t con_obj_id, con_obj_num, con_obj_type;
 
 			con_obj_id =
@@ -347,6 +348,11 @@ bool amdgpu_atombios_get_connector_info_from_object_table(struct amdgpu_device *
 			con_obj_type =
 			    (le16_to_cpu(path->usConnObjectId) &
 			     OBJECT_TYPE_MASK) >> OBJECT_TYPE_SHIFT;
+=======
+			uint8_t con_obj_id =
+			    (le16_to_cpu(path->usConnObjectId) & OBJECT_ID_MASK)
+			    >> OBJECT_ID_SHIFT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			/* Skip TV/CV support */
 			if ((le16_to_cpu(path->usDeviceTag) ==
@@ -371,6 +377,7 @@ bool amdgpu_atombios_get_connector_info_from_object_table(struct amdgpu_device *
 			router.ddc_valid = false;
 			router.cd_valid = false;
 			for (j = 0; j < ((le16_to_cpu(path->usSize) - 8) / 2); j++) {
+<<<<<<< HEAD
 				uint8_t grph_obj_id, grph_obj_num, grph_obj_type;
 
 				grph_obj_id =
@@ -380,6 +387,9 @@ bool amdgpu_atombios_get_connector_info_from_object_table(struct amdgpu_device *
 				    (le16_to_cpu(path->usGraphicObjIds[j]) &
 				     ENUM_ID_MASK) >> ENUM_ID_SHIFT;
 				grph_obj_type =
+=======
+				uint8_t grph_obj_type =
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				    (le16_to_cpu(path->usGraphicObjIds[j]) &
 				     OBJECT_TYPE_MASK) >> OBJECT_TYPE_SHIFT;
 

@@ -58,7 +58,11 @@
 
 #define IMX2_WDT_WMCR		0x08		/* Misc Register */
 
+<<<<<<< HEAD
 #define IMX2_WDT_MAX_TIME	128
+=======
+#define IMX2_WDT_MAX_TIME	128U
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define IMX2_WDT_DEFAULT_TIME	60		/* in seconds */
 
 #define WDOG_SEC_TO_COUNT(s)	((s * 2 - 1) << 8)
@@ -181,8 +185,15 @@ static void __imx2_wdt_set_timeout(struct watchdog_device *wdog,
 static int imx2_wdt_set_timeout(struct watchdog_device *wdog,
 				unsigned int new_timeout)
 {
+<<<<<<< HEAD
 	__imx2_wdt_set_timeout(wdog, new_timeout);
 
+=======
+	unsigned int actual;
+
+	actual = min(new_timeout, IMX2_WDT_MAX_TIME);
+	__imx2_wdt_set_timeout(wdog, actual);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	wdog->timeout = new_timeout;
 	return 0;
 }

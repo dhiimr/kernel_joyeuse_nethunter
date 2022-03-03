@@ -37,9 +37,12 @@
 #define sCR0_VMID16EN			(1 << 31)
 #define sCR0_BSU_SHIFT			14
 #define sCR0_BSU_MASK			0x3
+<<<<<<< HEAD
 #define sCR0_SHCFG_SHIFT		22
 #define sCR0_SHCFG_MASK			0x3
 #define sCR0_SHCFG_NSH			3
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Auxiliary Configuration register */
 #define ARM_SMMU_GR0_sACR		0x10
@@ -108,8 +111,11 @@
 #define ARM_SMMU_GR0_SMR(n)		(0x800 + ((n) << 2))
 #define SMR_VALID			(1 << 31)
 #define SMR_MASK_SHIFT			16
+<<<<<<< HEAD
 #define SMR_MASK_MASK			0x7FFF
 #define SID_MASK			0x7FFF
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define SMR_ID_SHIFT			0
 
 #define ARM_SMMU_GR0_S2CR(n)		(0xc00 + ((n) << 2))
@@ -118,9 +124,12 @@
 #define S2CR_EXIDVALID			(1 << 10)
 #define S2CR_TYPE_SHIFT			16
 #define S2CR_TYPE_MASK			0x3
+<<<<<<< HEAD
 #define S2CR_SHCFG_SHIFT		8
 #define S2CR_SHCFG_MASK			0x3
 #define S2CR_SHCFG_NSH			0x3
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 enum arm_smmu_s2cr_type {
 	S2CR_TYPE_TRANS,
 	S2CR_TYPE_BYPASS,
@@ -155,9 +164,12 @@ enum arm_smmu_s2cr_privcfg {
 #define CBAR_IRPTNDX_SHIFT		24
 #define CBAR_IRPTNDX_MASK		0xff
 
+<<<<<<< HEAD
 #define ARM_SMMU_GR1_CBFRSYNRA(n)	(0x400 + ((n) << 2))
 #define CBFRSYNRA_SID_MASK		(0xffff)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define ARM_SMMU_GR1_CBA2R(n)		(0x800 + ((n) << 2))
 #define CBA2R_RW64_32BIT		(0 << 0)
 #define CBA2R_RW64_64BIT		(1 << 0)
@@ -176,6 +188,7 @@ enum arm_smmu_s2cr_privcfg {
 #define ARM_SMMU_CB_S1_MAIR1		0x3c
 #define ARM_SMMU_CB_PAR			0x50
 #define ARM_SMMU_CB_FSR			0x58
+<<<<<<< HEAD
 #define ARM_SMMU_CB_FSRRESTORE		0x5c
 #define ARM_SMMU_CB_FAR			0x60
 #define ARM_SMMU_CB_FSYNR0		0x68
@@ -183,11 +196,18 @@ enum arm_smmu_s2cr_privcfg {
 #define ARM_SMMU_CB_S1_TLBIVA		0x600
 #define ARM_SMMU_CB_S1_TLBIASID		0x610
 #define ARM_SMMU_CB_S1_TLBIALL		0x618
+=======
+#define ARM_SMMU_CB_FAR			0x60
+#define ARM_SMMU_CB_FSYNR0		0x68
+#define ARM_SMMU_CB_S1_TLBIVA		0x600
+#define ARM_SMMU_CB_S1_TLBIASID		0x610
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define ARM_SMMU_CB_S1_TLBIVAL		0x620
 #define ARM_SMMU_CB_S2_TLBIIPAS2	0x630
 #define ARM_SMMU_CB_S2_TLBIIPAS2L	0x638
 #define ARM_SMMU_CB_TLBSYNC		0x7f0
 #define ARM_SMMU_CB_TLBSTATUS		0x7f4
+<<<<<<< HEAD
 #define TLBSTATUS_SACTIVE		(1 << 0)
 #define ARM_SMMU_CB_ATS1PR		0x800
 #define ARM_SMMU_CB_ATSR		0x8f0
@@ -214,6 +234,13 @@ enum arm_smmu_s2cr_privcfg {
 #define SCTLR_S1_ASIDPNE		(1 << 12)
 #define SCTLR_CFCFG			(1 << 7)
 #define SCTLR_HUPCF			(1 << 8)
+=======
+#define ARM_SMMU_CB_ATS1PR		0x800
+#define ARM_SMMU_CB_ATSR		0x8f0
+
+#define SCTLR_S1_ASIDPNE		(1 << 12)
+#define SCTLR_CFCFG			(1 << 7)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define SCTLR_CFIE			(1 << 6)
 #define SCTLR_CFRE			(1 << 5)
 #define SCTLR_E				(1 << 4)

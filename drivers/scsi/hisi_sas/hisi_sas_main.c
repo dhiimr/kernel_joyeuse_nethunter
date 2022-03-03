@@ -655,12 +655,20 @@ static void hisi_sas_port_notify_formed(struct asd_sas_phy *sas_phy)
 	struct hisi_hba *hisi_hba = sas_ha->lldd_ha;
 	struct hisi_sas_phy *phy = sas_phy->lldd_phy;
 	struct asd_sas_port *sas_port = sas_phy->port;
+<<<<<<< HEAD
 	struct hisi_sas_port *port = to_hisi_sas_port(sas_port);
+=======
+	struct hisi_sas_port *port;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long flags;
 
 	if (!sas_port)
 		return;
 
+<<<<<<< HEAD
+=======
+	port = to_hisi_sas_port(sas_port);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&hisi_hba->lock, flags);
 	port->port_attached = 1;
 	port->id = phy->port_id;

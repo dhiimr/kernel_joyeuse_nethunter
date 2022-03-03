@@ -5,6 +5,13 @@
 #include <types.h>
 #include <string.h>
 
+<<<<<<< HEAD
+=======
+#define INT_MAX			((int)(~0U>>1))
+#define UINT32_MAX		((u32)~0U)
+#define INT32_MAX		((s32)(UINT32_MAX >> 1))
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "of.h"
 
 typedef u32 uint32_t;

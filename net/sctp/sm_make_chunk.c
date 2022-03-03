@@ -858,7 +858,15 @@ struct sctp_chunk *sctp_make_shutdown(const struct sctp_association *asoc,
 	struct sctp_chunk *retval;
 	__u32 ctsn;
 
+<<<<<<< HEAD
 	ctsn = sctp_tsnmap_get_ctsn(&asoc->peer.tsn_map);
+=======
+	if (chunk && chunk->asoc)
+		ctsn = sctp_tsnmap_get_ctsn(&chunk->asoc->peer.tsn_map);
+	else
+		ctsn = sctp_tsnmap_get_ctsn(&asoc->peer.tsn_map);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	shut.cum_tsn_ack = htonl(ctsn);
 
 	retval = sctp_make_control(asoc, SCTP_CID_SHUTDOWN, 0,
@@ -2157,9 +2165,22 @@ static enum sctp_ierror sctp_verify_param(struct net *net,
 		break;
 
 	case SCTP_PARAM_SET_PRIMARY:
+<<<<<<< HEAD
 		if (net->sctp.addip_enable)
 			break;
 		goto fallthrough;
+=======
+		if (!net->sctp.addip_enable)
+			goto fallthrough;
+
+		if (ntohs(param.p->length) < sizeof(struct sctp_addip_param) +
+					     sizeof(struct sctp_paramhdr)) {
+			sctp_process_inv_paramlength(asoc, param.p,
+						     chunk, err_chunk);
+			retval = SCTP_IERROR_ABORT;
+		}
+		break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	case SCTP_PARAM_HOST_NAME_ADDRESS:
 		/* Tell the peer, we won't support this param.  */
@@ -2318,7 +2339,10 @@ int sctp_process_init(struct sctp_association *asoc, struct sctp_chunk *chunk,
 	union sctp_addr addr;
 	struct sctp_af *af;
 	int src_match = 0;
+<<<<<<< HEAD
 	char *cookie;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* We must include the address that the INIT packet came from.
 	 * This is the only address that matters for an INIT packet.
@@ -2338,11 +2362,21 @@ int sctp_process_init(struct sctp_association *asoc, struct sctp_chunk *chunk,
 
 	/* Process the initialization parameters.  */
 	sctp_walk_params(param, peer_init, init_hdr.params) {
+<<<<<<< HEAD
 		if (!src_match && (param.p->type == SCTP_PARAM_IPV4_ADDRESS ||
 		    param.p->type == SCTP_PARAM_IPV6_ADDRESS)) {
 			af = sctp_get_af_specific(param_type2af(param.p->type));
 			af->from_addr_param(&addr, param.addr,
 					    chunk->sctp_hdr->source, 0);
+=======
+		if (!src_match &&
+		    (param.p->type == SCTP_PARAM_IPV4_ADDRESS ||
+		     param.p->type == SCTP_PARAM_IPV6_ADDRESS)) {
+			af = sctp_get_af_specific(param_type2af(param.p->type));
+			if (!af->from_addr_param(&addr, param.addr,
+						 chunk->sctp_hdr->source, 0))
+				continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (sctp_cmp_addr_exact(sctp_source(chunk), &addr))
 				src_match = 1;
 		}
@@ -2422,6 +2456,7 @@ int sctp_process_init(struct sctp_association *asoc, struct sctp_chunk *chunk,
 	/* Peer Rwnd   : Current calculated value of the peer's rwnd.  */
 	asoc->peer.rwnd = asoc->peer.i.a_rwnd;
 
+<<<<<<< HEAD
 	/* Copy cookie in case we need to resend COOKIE-ECHO. */
 	cookie = asoc->peer.cookie;
 	if (cookie) {
@@ -2430,6 +2465,8 @@ int sctp_process_init(struct sctp_association *asoc, struct sctp_chunk *chunk,
 			goto clean_up;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* RFC 2960 7.2.1 The initial value of ssthresh MAY be arbitrarily
 	 * high (for example, implementations MAY use the size of the receiver
 	 * advertised window).
@@ -2528,7 +2565,12 @@ static int sctp_process_param(struct sctp_association *asoc,
 			break;
 do_addr_param:
 		af = sctp_get_af_specific(param_type2af(param.p->type));
+<<<<<<< HEAD
 		af->from_addr_param(&addr, param.addr, htons(asoc->peer.port), 0);
+=======
+		if (!af->from_addr_param(&addr, param.addr, htons(asoc->peer.port), 0))
+			break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		scope = sctp_scope(peer_addr);
 		if (sctp_in_scope(net, &addr, scope))
 			if (!sctp_assoc_add_peer(asoc, &addr, gfp, SCTP_UNCONFIRMED))
@@ -2595,7 +2637,15 @@ do_addr_param:
 	case SCTP_PARAM_STATE_COOKIE:
 		asoc->peer.cookie_len =
 			ntohs(param.p->length) - sizeof(struct sctp_paramhdr);
+<<<<<<< HEAD
 		asoc->peer.cookie = param.cookie->body;
+=======
+		if (asoc->peer.cookie)
+			kfree(asoc->peer.cookie);
+		asoc->peer.cookie = kmemdup(param.cookie->body, asoc->peer.cookie_len, gfp);
+		if (!asoc->peer.cookie)
+			retval = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 
 	case SCTP_PARAM_HEARTBEAT_INFO:
@@ -2621,6 +2671,7 @@ do_addr_param:
 		addr_param = param.v + sizeof(struct sctp_addip_param);
 
 		af = sctp_get_af_specific(param_type2af(addr_param->p.type));
+<<<<<<< HEAD
 		if (af == NULL)
 			break;
 
@@ -2630,6 +2681,15 @@ do_addr_param:
 		/* if the address is invalid, we can't process it.
 		 * XXX: see spec for what to do.
 		 */
+=======
+		if (!af)
+			break;
+
+		if (!af->from_addr_param(&addr, addr_param,
+					 htons(asoc->peer.port), 0))
+			break;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!af->addr_valid(&addr, NULL, NULL))
 			break;
 
@@ -2657,6 +2717,11 @@ do_addr_param:
 			goto fall_through;
 
 		/* Save peer's random parameter */
+<<<<<<< HEAD
+=======
+		if (asoc->peer.peer_random)
+			kfree(asoc->peer.peer_random);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		asoc->peer.peer_random = kmemdup(param.p,
 					    ntohs(param.p->length), gfp);
 		if (!asoc->peer.peer_random) {
@@ -2670,6 +2735,11 @@ do_addr_param:
 			goto fall_through;
 
 		/* Save peer's HMAC list */
+<<<<<<< HEAD
+=======
+		if (asoc->peer.peer_hmacs)
+			kfree(asoc->peer.peer_hmacs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		asoc->peer.peer_hmacs = kmemdup(param.p,
 					    ntohs(param.p->length), gfp);
 		if (!asoc->peer.peer_hmacs) {
@@ -2685,6 +2755,11 @@ do_addr_param:
 		if (!ep->auth_enable)
 			goto fall_through;
 
+<<<<<<< HEAD
+=======
+		if (asoc->peer.peer_chunks)
+			kfree(asoc->peer.peer_chunks);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		asoc->peer.peer_chunks = kmemdup(param.p,
 					    ntohs(param.p->length), gfp);
 		if (!asoc->peer.peer_chunks)
@@ -3040,7 +3115,12 @@ static __be16 sctp_process_asconf_param(struct sctp_association *asoc,
 	if (unlikely(!af))
 		return SCTP_ERROR_DNS_FAILED;
 
+<<<<<<< HEAD
 	af->from_addr_param(&addr, addr_param, htons(asoc->peer.port), 0);
+=======
+	if (!af->from_addr_param(&addr, addr_param, htons(asoc->peer.port), 0))
+		return SCTP_ERROR_DNS_FAILED;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* ADDIP 4.2.1  This parameter MUST NOT contain a broadcast
 	 * or multicast address.
@@ -3123,7 +3203,11 @@ static __be16 sctp_process_asconf_param(struct sctp_association *asoc,
 		 * primary.
 		 */
 		if (af->is_any(&addr))
+<<<<<<< HEAD
 			memcpy(&addr.v4, sctp_source(asconf), sizeof(addr));
+=======
+			memcpy(&addr, sctp_source(asconf), sizeof(addr));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		peer = sctp_assoc_lookup_paddr(asoc, &addr);
 		if (!peer)
@@ -3305,7 +3389,12 @@ static void sctp_asconf_param_success(struct sctp_association *asoc,
 
 	/* We have checked the packet before, so we do not check again.	*/
 	af = sctp_get_af_specific(param_type2af(addr_param->p.type));
+<<<<<<< HEAD
 	af->from_addr_param(&addr, addr_param, htons(bp->port), 0);
+=======
+	if (!af->from_addr_param(&addr, addr_param, htons(bp->port), 0))
+		return;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	switch (asconf_param->param_hdr.type) {
 	case SCTP_PARAM_ADD_IP:
@@ -3608,7 +3697,11 @@ struct sctp_chunk *sctp_make_strreset_req(
 	outlen = (sizeof(outreq) + stream_len) * out;
 	inlen = (sizeof(inreq) + stream_len) * in;
 
+<<<<<<< HEAD
 	retval = sctp_make_reconf(asoc, outlen + inlen);
+=======
+	retval = sctp_make_reconf(asoc, SCTP_PAD4(outlen) + SCTP_PAD4(inlen));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!retval)
 		return NULL;
 

@@ -436,7 +436,11 @@ static irqreturn_t das800_interrupt(int irq, void *d)
 	struct comedi_cmd *cmd;
 	unsigned long irq_flags;
 	unsigned int status;
+<<<<<<< HEAD
 	unsigned int val;
+=======
+	unsigned short val;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool fifo_empty;
 	bool fifo_overflow;
 	int i;

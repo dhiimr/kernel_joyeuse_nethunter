@@ -218,5 +218,9 @@ All other architectures should build just fine too - but they won't have
 the new syscalls yet.
 
 Architectures need to implement the new futex_atomic_cmpxchg_inatomic()
+<<<<<<< HEAD
 inline function before writing up the syscalls (that function returns
 -ENOSYS right now).
+=======
+inline function before writing up the syscalls.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

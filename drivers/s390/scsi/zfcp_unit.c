@@ -124,7 +124,11 @@ int zfcp_unit_add(struct zfcp_port *port, u64 fcp_lun)
 	int retval = 0;
 
 	mutex_lock(&zfcp_sysfs_port_units_mutex);
+<<<<<<< HEAD
 	if (atomic_read(&port->units) == -1) {
+=======
+	if (zfcp_sysfs_port_is_removing(port)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* port is already gone */
 		retval = -ENODEV;
 		goto out;
@@ -168,8 +172,19 @@ int zfcp_unit_add(struct zfcp_port *port, u64 fcp_lun)
 	write_lock_irq(&port->unit_list_lock);
 	list_add_tail(&unit->list, &port->unit_list);
 	write_unlock_irq(&port->unit_list_lock);
+<<<<<<< HEAD
 
 	zfcp_unit_scsi_scan(unit);
+=======
+	/*
+	 * lock order: shost->scan_mutex before zfcp_sysfs_port_units_mutex
+	 * due to      zfcp_unit_scsi_scan() => zfcp_scsi_slave_alloc()
+	 */
+	mutex_unlock(&zfcp_sysfs_port_units_mutex);
+
+	zfcp_unit_scsi_scan(unit);
+	return retval;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 out:
 	mutex_unlock(&zfcp_sysfs_port_units_mutex);

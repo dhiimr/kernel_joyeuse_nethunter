@@ -451,8 +451,15 @@ do {									\
 ({									\
 	int __gu_err;							\
 	__inttype(*(ptr)) __gu_val;					\
+<<<<<<< HEAD
 	__uaccess_begin_nospec();					\
 	__get_user_size(__gu_val, (ptr), (size), __gu_err, -EFAULT);	\
+=======
+	__typeof__(ptr) __gu_ptr = (ptr);				\
+	__typeof__(size) __gu_size = (size);				\
+	__uaccess_begin_nospec();					\
+	__get_user_size(__gu_val, __gu_ptr, __gu_size, __gu_err, -EFAULT);	\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__uaccess_end();						\
 	(x) = (__force __typeof__(*(ptr)))__gu_val;			\
 	__builtin_expect(__gu_err, 0);					\
@@ -709,7 +716,21 @@ extern struct movsl_mask {
  * checking before using them, but you have to surround them with the
  * user_access_begin/end() pair.
  */
+<<<<<<< HEAD
 #define user_access_begin()	__uaccess_begin()
+=======
+static __must_check inline bool user_access_begin(int type,
+						  const void __user *ptr,
+						  size_t len)
+{
+	if (unlikely(!access_ok(type, ptr, len)))
+		return 0;
+	__uaccess_begin_nospec();
+	return 1;
+}
+
+#define user_access_begin(a, b, c)	user_access_begin(a, b, c)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define user_access_end()	__uaccess_end()
 
 #define unsafe_put_user(x, ptr, err_label)					\

@@ -33,7 +33,10 @@
 #include <linux/genhd.h>
 #include <linux/ktime.h>
 #include <trace/events/power.h>
+<<<<<<< HEAD
 #include <soc/qcom/boot_stats.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "power.h"
 
@@ -259,6 +262,14 @@ void swsusp_show_speed(ktime_t start, ktime_t stop,
 		(kps % 1000) / 10);
 }
 
+<<<<<<< HEAD
+=======
+__weak int arch_resume_nosmt(void)
+{
+	return 0;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * create_image - Create a hibernation image.
  * @platform_mode: Whether or not to use the platform driver.
@@ -323,6 +334,13 @@ static int create_image(int platform_mode)
  Enable_cpus:
 	enable_nonboot_cpus();
 
+<<<<<<< HEAD
+=======
+	/* Allow architectures to do nosmt-specific post-resume dances */
+	if (!in_suspend)
+		error = arch_resume_nosmt();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  Platform_finish:
 	platform_finish(platform_mode);
 
@@ -660,7 +678,11 @@ static int load_image_and_restore(void)
 		goto Unlock;
 
 	error = swsusp_read(&flags);
+<<<<<<< HEAD
 	swsusp_close(FMODE_READ);
+=======
+	swsusp_close(FMODE_READ | FMODE_EXCL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!error)
 		hibernation_restore(flags & SF_PLATFORM_MODE);
 
@@ -741,7 +763,10 @@ int hibernate(void)
 		in_suspend = 0;
 		pm_restore_gfp_mask();
 	} else {
+<<<<<<< HEAD
 		place_marker("PM: Image restored!");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pm_pr_dbg("Image restored successfully.\n");
 	}
 
@@ -765,7 +790,10 @@ int hibernate(void)
 	atomic_inc(&snapshot_device_available);
  Unlock:
 	unlock_system_sleep();
+<<<<<<< HEAD
 	place_marker("PM: Hibernation Exit!");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pr_info("hibernation exit\n");
 
 	return error;
@@ -827,6 +855,7 @@ static int software_resume(void)
 
 	/* Check if the device is there */
 	swsusp_resume_device = name_to_dev_t(resume_file);
+<<<<<<< HEAD
 
 	/*
 	 * name_to_dev_t is ineffective to verify parition if resume_file is in
@@ -838,6 +867,8 @@ static int software_resume(void)
 			msleep(10);
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!swsusp_resume_device) {
 		/*
 		 * Some device discovery might still be in progress; we need
@@ -870,7 +901,11 @@ static int software_resume(void)
 	/* The snapshot device should not be opened while we're running */
 	if (!atomic_add_unless(&snapshot_device_available, -1, 0)) {
 		error = -EBUSY;
+<<<<<<< HEAD
 		swsusp_close(FMODE_READ);
+=======
+		swsusp_close(FMODE_READ | FMODE_EXCL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto Unlock;
 	}
 
@@ -886,9 +921,21 @@ static int software_resume(void)
 	error = freeze_processes();
 	if (error)
 		goto Close_Finish;
+<<<<<<< HEAD
 	error = load_image_and_restore();
 	thaw_processes();
 	place_marker("PM: Thaw completed!");
+=======
+
+	error = freeze_kernel_threads();
+	if (error) {
+		thaw_processes();
+		goto Close_Finish;
+	}
+
+	error = load_image_and_restore();
+	thaw_processes();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  Finish:
 	__pm_notifier_call_chain(PM_POST_RESTORE, nr_calls, NULL);
 	pm_restore_console();
@@ -900,7 +947,11 @@ static int software_resume(void)
 	pm_pr_dbg("Hibernation image not present or could not be loaded.\n");
 	return error;
  Close_Finish:
+<<<<<<< HEAD
 	swsusp_close(FMODE_READ);
+=======
+	swsusp_close(FMODE_READ | FMODE_EXCL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	goto Finish;
 }
 

@@ -266,6 +266,7 @@ static int propagate_one(struct mount *m)
 	if (IS_ERR(child))
 		return PTR_ERR(child);
 	child->mnt.mnt_flags &= ~MNT_LOCKED;
+<<<<<<< HEAD
 	mnt_set_mountpoint(m, mp, child);
 	last_dest = m;
 	last_source = child;
@@ -274,6 +275,15 @@ static int propagate_one(struct mount *m)
 		SET_MNT_MARK(m->mnt_master);
 		read_sequnlock_excl(&mount_lock);
 	}
+=======
+	read_seqlock_excl(&mount_lock);
+	mnt_set_mountpoint(m, mp, child);
+	if (m->mnt_master != dest_master)
+		SET_MNT_MARK(m->mnt_master);
+	read_sequnlock_excl(&mount_lock);
+	last_dest = m;
+	last_source = child;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hlist_add_head(&child->mnt_hash, list);
 	return count_mounts(m->mnt_ns, child);
 }
@@ -607,6 +617,7 @@ int propagate_umount(struct list_head *list)
 
 	return 0;
 }
+<<<<<<< HEAD
 
 void propagate_remount(struct mount *mnt)
 {
@@ -623,3 +634,5 @@ void propagate_remount(struct mount *mnt)
 			sb->s_op->copy_mnt_data(m->mnt.data, mnt->mnt.data);
 	}
 }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

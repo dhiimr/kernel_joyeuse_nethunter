@@ -202,7 +202,11 @@ int qlcnic_sriov_get_vf_vport_info(struct qlcnic_adapter *,
 				   struct qlcnic_info *, u16);
 int qlcnic_sriov_cfg_vf_guest_vlan(struct qlcnic_adapter *, u16, u8);
 void qlcnic_sriov_free_vlans(struct qlcnic_adapter *);
+<<<<<<< HEAD
 void qlcnic_sriov_alloc_vlans(struct qlcnic_adapter *);
+=======
+int qlcnic_sriov_alloc_vlans(struct qlcnic_adapter *);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 bool qlcnic_sriov_check_any_vlan(struct qlcnic_vf_info *);
 void qlcnic_sriov_del_vlan_id(struct qlcnic_sriov *,
 			      struct qlcnic_vf_info *, u16);

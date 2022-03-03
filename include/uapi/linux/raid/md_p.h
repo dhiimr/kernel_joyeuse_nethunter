@@ -329,6 +329,10 @@ struct mdp_superblock_1 {
 #define	MD_FEATURE_JOURNAL		512 /* support write cache */
 #define	MD_FEATURE_PPL			1024 /* support PPL */
 #define	MD_FEATURE_MULTIPLE_PPLS	2048 /* support for multiple PPLs */
+<<<<<<< HEAD
+=======
+#define	MD_FEATURE_RAID0_LAYOUT		4096 /* layout is meaningful for RAID0 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define	MD_FEATURE_ALL			(MD_FEATURE_BITMAP_OFFSET	\
 					|MD_FEATURE_RECOVERY_OFFSET	\
 					|MD_FEATURE_RESHAPE_ACTIVE	\
@@ -341,6 +345,10 @@ struct mdp_superblock_1 {
 					|MD_FEATURE_JOURNAL		\
 					|MD_FEATURE_PPL			\
 					|MD_FEATURE_MULTIPLE_PPLS	\
+<<<<<<< HEAD
+=======
+					|MD_FEATURE_RAID0_LAYOUT	\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					)
 
 struct r5l_payload_header {

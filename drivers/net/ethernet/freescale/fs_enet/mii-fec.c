@@ -224,3 +224,7 @@ static struct platform_driver fs_enet_fec_mdio_driver = {
 };
 
 module_platform_driver(fs_enet_fec_mdio_driver);
+<<<<<<< HEAD
+=======
+MODULE_LICENSE("GPL");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

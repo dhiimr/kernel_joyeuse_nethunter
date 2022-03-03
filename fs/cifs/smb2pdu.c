@@ -166,7 +166,11 @@ smb2_reconnect(__le16 smb2_command, struct cifs_tcon *tcon)
 	if (tcon == NULL)
 		return 0;
 
+<<<<<<< HEAD
 	if (smb2_command == SMB2_TREE_CONNECT)
+=======
+	if (smb2_command == SMB2_TREE_CONNECT || smb2_command == SMB2_IOCTL)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 
 	if (tcon->tidStatus == CifsExiting) {
@@ -257,9 +261,20 @@ smb2_reconnect(__le16 smb2_command, struct cifs_tcon *tcon)
 	}
 
 	rc = cifs_negotiate_protocol(0, tcon->ses);
+<<<<<<< HEAD
 	if (!rc && tcon->ses->need_reconnect)
 		rc = cifs_setup_session(0, tcon->ses, nls_codepage);
 
+=======
+	if (!rc && tcon->ses->need_reconnect) {
+		rc = cifs_setup_session(0, tcon->ses, nls_codepage);
+		if ((rc == -EACCES) && !tcon->retry) {
+			rc = -EHOSTDOWN;
+			mutex_unlock(&tcon->ses->session_mutex);
+			goto failed;
+		}
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (rc || !tcon->need_reconnect) {
 		mutex_unlock(&tcon->ses->session_mutex);
 		goto out;
@@ -301,6 +316,10 @@ out:
 	case SMB2_SET_INFO:
 		rc = -EAGAIN;
 	}
+<<<<<<< HEAD
+=======
+failed:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unload_nls(nls_codepage);
 	return rc;
 }
@@ -575,6 +594,10 @@ SMB2_negotiate(const unsigned int xid, struct cifs_ses *ses)
 		} else if (rsp->DialectRevision == cpu_to_le16(SMB21_PROT_ID)) {
 			/* ops set to 3.0 by default for default so update */
 			ses->server->ops = &smb21_operations;
+<<<<<<< HEAD
+=======
+			ses->server->vals = &smb21_values;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	} else if (le16_to_cpu(rsp->DialectRevision) !=
 				ses->server->vals->protocol_id) {
@@ -834,7 +857,16 @@ SMB2_sess_alloc_buffer(struct SMB2_sess_data *sess_data)
 	else
 		req->SecurityMode = 0;
 
+<<<<<<< HEAD
 	req->Capabilities = 0;
+=======
+#ifdef CONFIG_CIFS_DFS_UPCALL
+	req->Capabilities = cpu_to_le32(SMB2_GLOBAL_CAP_DFS);
+#else
+	req->Capabilities = 0;
+#endif /* DFS_UPCALL */
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	req->Channel = 0; /* MBZ */
 
 	sess_data->iov[0].iov_base = (char *)req;
@@ -930,6 +962,11 @@ SMB2_auth_kerberos(struct SMB2_sess_data *sess_data)
 	spnego_key = cifs_get_spnego_key(ses);
 	if (IS_ERR(spnego_key)) {
 		rc = PTR_ERR(spnego_key);
+<<<<<<< HEAD
+=======
+		if (rc == -ENOKEY)
+			cifs_dbg(VFS, "Verify user has a krb5 ticket and keyutils is installed\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		spnego_key = NULL;
 		goto out;
 	}
@@ -2504,10 +2541,17 @@ smb2_new_read_req(void **buf, unsigned int *total_len,
 			 * Related requests use info from previous read request
 			 * in chain.
 			 */
+<<<<<<< HEAD
 			shdr->SessionId = 0xFFFFFFFF;
 			shdr->TreeId = 0xFFFFFFFF;
 			req->PersistentFileId = 0xFFFFFFFF;
 			req->VolatileFileId = 0xFFFFFFFF;
+=======
+			shdr->SessionId = 0xFFFFFFFFFFFFFFFF;
+			shdr->TreeId = 0xFFFFFFFF;
+			req->PersistentFileId = 0xFFFFFFFFFFFFFFFF;
+			req->VolatileFileId = 0xFFFFFFFFFFFFFFFF;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 	if (remaining_bytes > io_parms->length)

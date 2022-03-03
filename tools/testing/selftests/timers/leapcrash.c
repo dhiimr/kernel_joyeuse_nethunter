@@ -101,6 +101,10 @@ int main(void)
 		}
 		clear_time_state();
 		printf(".");
+<<<<<<< HEAD
+=======
+		fflush(stdout);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	printf("[OK]\n");
 	return ksft_exit_pass();

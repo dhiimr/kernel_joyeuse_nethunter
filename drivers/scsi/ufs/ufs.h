@@ -38,7 +38,10 @@
 
 #include <linux/mutex.h>
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <scsi/ufs/ufs.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define MAX_CDB_SIZE	16
 #define GENERAL_UPIU_REQUEST_SIZE 32
@@ -65,8 +68,11 @@
 #define UFS_MAX_LUNS		(SCSI_W_LUN_BASE + UFS_UPIU_MAX_UNIT_NUM_ID)
 #define UFS_UPIU_WLUN_ID	(1 << 7)
 #define UFS_UPIU_MAX_GENERAL_LUN	8
+<<<<<<< HEAD
 #define UFS_MAX_WLUS			4
 #define UFS_MAX_LUS	(UFS_UPIU_MAX_GENERAL_LUN + UFS_MAX_WLUS)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Well known logical unit id in LUN field of UPIU */
 enum {
@@ -76,6 +82,7 @@ enum {
 	UFS_UPIU_RPMB_WLUN		= 0xC4,
 };
 
+<<<<<<< HEAD
 /**
  * ufs_is_valid_unit_desc_lun - checks if the given LUN has a unit descriptor
  * @lun: LU number to check
@@ -86,6 +93,8 @@ static inline bool ufs_is_valid_unit_desc_lun(u8 lun)
 	return (lun == UFS_UPIU_RPMB_WLUN || (lun < UFS_UPIU_MAX_GENERAL_LUN));
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * UFS Protocol Information Unit related definitions
  */
@@ -141,6 +150,38 @@ enum {
 	UPIU_QUERY_FUNC_STANDARD_WRITE_REQUEST          = 0x81,
 };
 
+<<<<<<< HEAD
+=======
+/* Flag idn for Query Requests*/
+enum flag_idn {
+	QUERY_FLAG_IDN_FDEVICEINIT      = 0x01,
+	QUERY_FLAG_IDN_PWR_ON_WPE	= 0x03,
+	QUERY_FLAG_IDN_BKOPS_EN         = 0x04,
+};
+
+/* Attribute idn for Query requests */
+enum attr_idn {
+	QUERY_ATTR_IDN_ACTIVE_ICC_LVL	= 0x03,
+	QUERY_ATTR_IDN_BKOPS_STATUS	= 0x05,
+	QUERY_ATTR_IDN_EE_CONTROL	= 0x0D,
+	QUERY_ATTR_IDN_EE_STATUS	= 0x0E,
+};
+
+/* Descriptor idn for Query requests */
+enum desc_idn {
+	QUERY_DESC_IDN_DEVICE		= 0x0,
+	QUERY_DESC_IDN_CONFIGURATION	= 0x1,
+	QUERY_DESC_IDN_UNIT		= 0x2,
+	QUERY_DESC_IDN_RFU_0		= 0x3,
+	QUERY_DESC_IDN_INTERCONNECT	= 0x4,
+	QUERY_DESC_IDN_STRING		= 0x5,
+	QUERY_DESC_IDN_RFU_1		= 0x6,
+	QUERY_DESC_IDN_GEOMETRY		= 0x7,
+	QUERY_DESC_IDN_POWER		= 0x8,
+	QUERY_DESC_IDN_MAX,
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 enum desc_header_offset {
 	QUERY_DESC_LENGTH_OFFSET	= 0x00,
 	QUERY_DESC_DESC_TYPE_OFFSET	= 0x01,
@@ -258,6 +299,7 @@ enum bkops_status {
 	BKOPS_STATUS_MAX		 = BKOPS_STATUS_CRITICAL,
 };
 
+<<<<<<< HEAD
 /* bRefClkFreq attribute values */
 enum ref_clk_freq {
 	REF_CLK_FREQ_19_2_MHZ	= 0x0,
@@ -265,6 +307,19 @@ enum ref_clk_freq {
 	REF_CLK_FREQ_38_4_MHZ	= 0x2,
 	REF_CLK_FREQ_52_MHZ	= 0x3,
 	REF_CLK_FREQ_MAX	= REF_CLK_FREQ_52_MHZ,
+=======
+/* UTP QUERY Transaction Specific Fields OpCode */
+enum query_opcode {
+	UPIU_QUERY_OPCODE_NOP		= 0x0,
+	UPIU_QUERY_OPCODE_READ_DESC	= 0x1,
+	UPIU_QUERY_OPCODE_WRITE_DESC	= 0x2,
+	UPIU_QUERY_OPCODE_READ_ATTR	= 0x3,
+	UPIU_QUERY_OPCODE_WRITE_ATTR	= 0x4,
+	UPIU_QUERY_OPCODE_READ_FLAG	= 0x5,
+	UPIU_QUERY_OPCODE_SET_FLAG	= 0x6,
+	UPIU_QUERY_OPCODE_CLEAR_FLAG	= 0x7,
+	UPIU_QUERY_OPCODE_TOGGLE_FLAG	= 0x8,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* Query response result code */
@@ -462,9 +517,15 @@ struct ufs_query_res {
 #define UFS_VREG_VCC_MAX_UV	   3600000 /* uV */
 #define UFS_VREG_VCC_1P8_MIN_UV    1700000 /* uV */
 #define UFS_VREG_VCC_1P8_MAX_UV    1950000 /* uV */
+<<<<<<< HEAD
 #define UFS_VREG_VCCQ_MIN_UV	   1140000 /* uV */
 #define UFS_VREG_VCCQ_MAX_UV	   1300000 /* uV */
 #define UFS_VREG_VCCQ2_MIN_UV	   1700000 /* uV */
+=======
+#define UFS_VREG_VCCQ_MIN_UV	   1100000 /* uV */
+#define UFS_VREG_VCCQ_MAX_UV	   1300000 /* uV */
+#define UFS_VREG_VCCQ2_MIN_UV	   1650000 /* uV */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define UFS_VREG_VCCQ2_MAX_UV	   1950000 /* uV */
 
 /*
@@ -480,8 +541,11 @@ struct ufs_vreg {
 	bool unused;
 	int min_uV;
 	int max_uV;
+<<<<<<< HEAD
 	bool low_voltage_sup;
 	bool low_voltage_active;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int min_uA;
 	int max_uA;
 };
@@ -493,6 +557,7 @@ struct ufs_vreg_info {
 	struct ufs_vreg *vdd_hba;
 };
 
+<<<<<<< HEAD
 /* Possible values for bDeviceSubClass of device descriptor */
 enum {
 	UFS_DEV_EMBEDDED_BOOTABLE	= 0x00,
@@ -518,6 +583,12 @@ struct ufs_dev_info {
 
 	/* Device deviations from standard UFS device spec. */
 	unsigned int quirks;
+=======
+struct ufs_dev_info {
+	bool f_power_on_wp_en;
+	/* Keeps information if any of the LU is power on write protected */
+	bool is_lu_power_on_wp;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #define MAX_MODEL_LEN 16
@@ -530,7 +601,10 @@ struct ufs_dev_info {
 struct ufs_dev_desc {
 	u16 wmanufacturerid;
 	char model[MAX_MODEL_LEN + 1];
+<<<<<<< HEAD
 	u16 wspecversion;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #endif /* End of Header */

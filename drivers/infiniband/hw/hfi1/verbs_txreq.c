@@ -100,7 +100,11 @@ struct verbs_txreq *__get_txreq(struct hfi1_ibdev *dev,
 	if (ib_rvt_state_ops[qp->state] & RVT_PROCESS_RECV_OK) {
 		struct hfi1_qp_priv *priv;
 
+<<<<<<< HEAD
 		tx = kmem_cache_alloc(dev->verbs_txreq_cache, GFP_ATOMIC);
+=======
+		tx = kmem_cache_alloc(dev->verbs_txreq_cache, VERBS_TXREQ_GFP);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (tx)
 			goto out;
 		priv = qp->priv;

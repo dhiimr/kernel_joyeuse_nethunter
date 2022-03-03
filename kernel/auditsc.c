@@ -1102,7 +1102,11 @@ static void audit_log_execve_info(struct audit_context *context,
 		}
 
 		/* write as much as we can to the audit log */
+<<<<<<< HEAD
 		if (len_buf > 0) {
+=======
+		if (len_buf >= 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/* NOTE: some magic numbers here - basically if we
 			 *       can't fit a reasonable amount of data into the
 			 *       existing audit buffer, flush it and start with

@@ -184,6 +184,7 @@ config INPUT_APMPOWER
 	  To compile this driver as a module, choose M here: the
 	  module will be called apm-power.
 
+<<<<<<< HEAD
 config INPUT_KEYRESET
 	bool "Reset key"
 	depends on INPUT
@@ -203,6 +204,8 @@ config INPUT_FINGERPRINT
 	---help---
 	  Say Y here if you want to build fingerprint driver;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 comment "Input Device Drivers"
 
 source "drivers/input/keyboard/Kconfig"
@@ -219,9 +222,12 @@ source "drivers/input/misc/Kconfig"
 
 source "drivers/input/rmi4/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/input/fingerprint/Kconfig"
 
 source "drivers/input/fingerprint/gf3208/Kconfig"
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif
 
 menu "Hardware I/O ports"

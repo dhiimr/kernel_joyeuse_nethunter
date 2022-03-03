@@ -2437,6 +2437,7 @@ static ssize_t charge_full_store(struct ab8500_fg *di, const char *buf,
 				 size_t count)
 {
 	unsigned long charge_full;
+<<<<<<< HEAD
 	ssize_t ret;
 
 	ret = kstrtoul(buf, 10, &charge_full);
@@ -2448,6 +2449,16 @@ static ssize_t charge_full_store(struct ab8500_fg *di, const char *buf,
 		ret = count;
 	}
 	return ret;
+=======
+	int ret;
+
+	ret = kstrtoul(buf, 10, &charge_full);
+	if (ret)
+		return ret;
+
+	di->bat_cap.max_mah = (int) charge_full;
+	return count;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static ssize_t charge_now_show(struct ab8500_fg *di, char *buf)
@@ -2459,6 +2470,7 @@ static ssize_t charge_now_store(struct ab8500_fg *di, const char *buf,
 				 size_t count)
 {
 	unsigned long charge_now;
+<<<<<<< HEAD
 	ssize_t ret;
 
 	ret = kstrtoul(buf, 10, &charge_now);
@@ -2473,6 +2485,18 @@ static ssize_t charge_now_store(struct ab8500_fg *di, const char *buf,
 		queue_delayed_work(di->fg_wq, &di->fg_periodic_work, 0);
 	}
 	return ret;
+=======
+	int ret;
+
+	ret = kstrtoul(buf, 10, &charge_now);
+	if (ret)
+		return ret;
+
+	di->bat_cap.user_mah = (int) charge_now;
+	di->flags.user_cap = true;
+	queue_delayed_work(di->fg_wq, &di->fg_periodic_work, 0);
+	return count;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct ab8500_fg_sysfs_entry charge_full_attr =
@@ -3236,6 +3260,10 @@ static const struct of_device_id ab8500_fg_match[] = {
 	{ .compatible = "stericsson,ab8500-fg", },
 	{ },
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(of, ab8500_fg_match);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct platform_driver ab8500_fg_driver = {
 	.probe = ab8500_fg_probe,

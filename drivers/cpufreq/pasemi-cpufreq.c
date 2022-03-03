@@ -145,10 +145,26 @@ static int pas_cpufreq_cpu_init(struct cpufreq_policy *policy)
 	int err = -ENODEV;
 
 	cpu = of_get_cpu_node(policy->cpu, NULL);
+<<<<<<< HEAD
 
 	if (!cpu)
 		goto out;
 
+=======
+	if (!cpu)
+		goto out;
+
+	max_freqp = of_get_property(cpu, "clock-frequency", NULL);
+	of_node_put(cpu);
+	if (!max_freqp) {
+		err = -EINVAL;
+		goto out;
+	}
+
+	/* we need the freq in kHz */
+	max_freq = *max_freqp / 1000;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dn = of_find_compatible_node(NULL, NULL, "1682m-sdc");
 	if (!dn)
 		dn = of_find_compatible_node(NULL, NULL,
@@ -184,6 +200,7 @@ static int pas_cpufreq_cpu_init(struct cpufreq_policy *policy)
 	}
 
 	pr_debug("init cpufreq on CPU %d\n", policy->cpu);
+<<<<<<< HEAD
 
 	max_freqp = of_get_property(cpu, "clock-frequency", NULL);
 	if (!max_freqp) {
@@ -194,6 +211,8 @@ static int pas_cpufreq_cpu_init(struct cpufreq_policy *policy)
 	/* we need the freq in kHz */
 	max_freq = *max_freqp / 1000;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pr_debug("max clock-frequency is at %u kHz\n", max_freq);
 	pr_debug("initializing frequency table\n");
 
@@ -211,9 +230,12 @@ static int pas_cpufreq_cpu_init(struct cpufreq_policy *policy)
 
 	return cpufreq_generic_init(policy, pas_freqs, get_gizmo_latency());
 
+<<<<<<< HEAD
 out_unmap_sdcpwr:
 	iounmap(sdcpwr_mapbase);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out_unmap_sdcasr:
 	iounmap(sdcasr_mapbase);
 out:

@@ -18,10 +18,18 @@
 #include <linux/serial.h>
 #include <linux/tty.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 
 struct ttyprintk_port {
 	struct tty_port port;
 	struct mutex port_write_mutex;
+=======
+#include <linux/spinlock.h>
+
+struct ttyprintk_port {
+	struct tty_port port;
+	spinlock_t spinlock;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static struct ttyprintk_port tpk_port;
@@ -100,11 +108,20 @@ static int tpk_open(struct tty_struct *tty, struct file *filp)
 static void tpk_close(struct tty_struct *tty, struct file *filp)
 {
 	struct ttyprintk_port *tpkp = tty->driver_data;
+<<<<<<< HEAD
 
 	mutex_lock(&tpkp->port_write_mutex);
 	/* flush tpk_printk buffer */
 	tpk_printk(NULL, 0);
 	mutex_unlock(&tpkp->port_write_mutex);
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&tpkp->spinlock, flags);
+	/* flush tpk_printk buffer */
+	tpk_printk(NULL, 0);
+	spin_unlock_irqrestore(&tpkp->spinlock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	tty_port_close(&tpkp->port, tty, filp);
 }
@@ -116,13 +133,23 @@ static int tpk_write(struct tty_struct *tty,
 		const unsigned char *buf, int count)
 {
 	struct ttyprintk_port *tpkp = tty->driver_data;
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 
 
 	/* exclusive use of tpk_printk within this tty */
+<<<<<<< HEAD
 	mutex_lock(&tpkp->port_write_mutex);
 	ret = tpk_printk(buf, count);
 	mutex_unlock(&tpkp->port_write_mutex);
+=======
+	spin_lock_irqsave(&tpkp->spinlock, flags);
+	ret = tpk_printk(buf, count);
+	spin_unlock_irqrestore(&tpkp->spinlock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }
@@ -156,12 +183,29 @@ static int tpk_ioctl(struct tty_struct *tty,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * TTY operations hangup function.
+ */
+static void tpk_hangup(struct tty_struct *tty)
+{
+	struct ttyprintk_port *tpkp = tty->driver_data;
+
+	tty_port_hangup(&tpkp->port);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const struct tty_operations ttyprintk_ops = {
 	.open = tpk_open,
 	.close = tpk_close,
 	.write = tpk_write,
 	.write_room = tpk_write_room,
 	.ioctl = tpk_ioctl,
+<<<<<<< HEAD
+=======
+	.hangup = tpk_hangup,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const struct tty_port_operations null_ops = { };
@@ -172,7 +216,11 @@ static int __init ttyprintk_init(void)
 {
 	int ret = -ENOMEM;
 
+<<<<<<< HEAD
 	mutex_init(&tpk_port.port_write_mutex);
+=======
+	spin_lock_init(&tpk_port.spinlock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ttyprintk_driver = tty_alloc_driver(1,
 			TTY_DRIVER_RESET_TERMIOS |

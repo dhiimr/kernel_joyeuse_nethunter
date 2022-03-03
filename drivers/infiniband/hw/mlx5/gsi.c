@@ -507,8 +507,12 @@ int mlx5_ib_gsi_post_send(struct ib_qp *qp, struct ib_send_wr *wr,
 		ret = ib_post_send(tx_qp, &cur_wr.wr, bad_wr);
 		if (ret) {
 			/* Undo the effect of adding the outstanding wr */
+<<<<<<< HEAD
 			gsi->outstanding_pi = (gsi->outstanding_pi - 1) %
 					      gsi->cap.max_send_wr;
+=======
+			gsi->outstanding_pi--;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto err;
 		}
 		spin_unlock_irqrestore(&gsi->lock, flags);

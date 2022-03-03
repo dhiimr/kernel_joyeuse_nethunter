@@ -214,19 +214,25 @@ static inline void fsnotify_modify(struct file *file)
 static inline void fsnotify_open(struct file *file)
 {
 	const struct path *path = &file->f_path;
+<<<<<<< HEAD
 	struct path lower_path;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct inode *inode = path->dentry->d_inode;
 	__u32 mask = FS_OPEN;
 
 	if (S_ISDIR(inode->i_mode))
 		mask |= FS_ISDIR;
 
+<<<<<<< HEAD
 	if (path->dentry->d_op && path->dentry->d_op->d_canonical_path) {
 		path->dentry->d_op->d_canonical_path(path, &lower_path);
 		fsnotify_parent(&lower_path, NULL, mask);
 		fsnotify(lower_path.dentry->d_inode, mask, &lower_path, FSNOTIFY_EVENT_PATH, NULL, 0);
 		path_put(&lower_path);
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	fsnotify_parent(path, NULL, mask);
 	fsnotify(inode, mask, path, FSNOTIFY_EVENT_PATH, NULL, 0);
 }

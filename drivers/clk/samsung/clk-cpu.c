@@ -152,7 +152,11 @@ static int exynos_cpuclk_pre_rate_change(struct clk_notifier_data *ndata,
 			struct exynos_cpuclk *cpuclk, void __iomem *base)
 {
 	const struct exynos_cpuclk_cfg_data *cfg_data = cpuclk->cfg;
+<<<<<<< HEAD
 	unsigned long alt_prate = clk_get_rate(cpuclk->alt_parent);
+=======
+	unsigned long alt_prate = clk_hw_get_rate(cpuclk->alt_parent);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long alt_div = 0, alt_div_mask = DIV_MASK;
 	unsigned long div0, div1 = 0, mux_reg;
 	unsigned long flags;
@@ -280,7 +284,11 @@ static int exynos5433_cpuclk_pre_rate_change(struct clk_notifier_data *ndata,
 			struct exynos_cpuclk *cpuclk, void __iomem *base)
 {
 	const struct exynos_cpuclk_cfg_data *cfg_data = cpuclk->cfg;
+<<<<<<< HEAD
 	unsigned long alt_prate = clk_get_rate(cpuclk->alt_parent);
+=======
+	unsigned long alt_prate = clk_hw_get_rate(cpuclk->alt_parent);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long alt_div = 0, alt_div_mask = DIV_MASK;
 	unsigned long div0, div1 = 0, mux_reg;
 	unsigned long flags;
@@ -432,7 +440,11 @@ int __init exynos_register_cpu_clock(struct samsung_clk_provider *ctx,
 	else
 		cpuclk->clk_nb.notifier_call = exynos_cpuclk_notifier_cb;
 
+<<<<<<< HEAD
 	cpuclk->alt_parent = __clk_lookup(alt_parent);
+=======
+	cpuclk->alt_parent = __clk_get_hw(__clk_lookup(alt_parent));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!cpuclk->alt_parent) {
 		pr_err("%s: could not lookup alternate parent %s\n",
 				__func__, alt_parent);

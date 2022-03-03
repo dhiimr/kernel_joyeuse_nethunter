@@ -40,6 +40,13 @@
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
+=======
+/* PID Codes that are used here, from EHCI specification, Table 3-16. */
+#define PID_CODE_IN    1
+#define PID_CODE_SETUP 2
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* fill a qtd, returning how much of the buffer we were able to queue up */
 
 static int
@@ -203,7 +210,11 @@ static int qtd_copy_status (
 	int	status = -EINPROGRESS;
 
 	/* count IN/OUT bytes, not SETUP (even short packets) */
+<<<<<<< HEAD
 	if (likely (QTD_PID (token) != 2))
+=======
+	if (likely(QTD_PID(token) != PID_CODE_SETUP))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		urb->actual_length += length - QTD_LENGTH (token);
 
 	/* don't modify error codes */
@@ -219,6 +230,16 @@ static int qtd_copy_status (
 		if (token & QTD_STS_BABBLE) {
 			/* FIXME "must" disable babbling device's port too */
 			status = -EOVERFLOW;
+<<<<<<< HEAD
+=======
+		/*
+		 * When MMF is active and PID Code is IN, queue is halted.
+		 * EHCI Specification, Table 4-13.
+		 */
+		} else if ((token & QTD_STS_MMF) &&
+					(QTD_PID(token) == PID_CODE_IN)) {
+			status = -EPROTO;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* CERR nonzero + halt --> stall */
 		} else if (QTD_CERR(token)) {
 			status = -EPIPE;
@@ -268,7 +289,11 @@ ehci_urb_done(struct ehci_hcd *ehci, struct urb *urb, int status)
 
 #ifdef EHCI_URB_TRACE
 	ehci_dbg (ehci,
+<<<<<<< HEAD
 		"%s %s urb %pK ep%d%s status %d len %d/%d\n",
+=======
+		"%s %s urb %p ep%d%s status %d len %d/%d\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__func__, urb->dev->devpath, urb,
 		usb_pipeendpoint (urb->pipe),
 		usb_pipein (urb->pipe) ? "in" : "out",
@@ -354,7 +379,11 @@ qh_completions (struct ehci_hcd *ehci, struct ehci_qh *qh)
 			/* Report Data Buffer Error: non-fatal but useful */
 			if (token & QTD_STS_DBE)
 				ehci_dbg(ehci,
+<<<<<<< HEAD
 					"detected DataBufferErr for urb %pK ep%d%s len %d, qtd %pK [qh %pK]\n",
+=======
+					"detected DataBufferErr for urb %p ep%d%s len %d, qtd %p [qh %p]\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					urb,
 					usb_endpoint_num(&urb->ep->desc),
 					usb_endpoint_dir_in(&urb->ep->desc) ? "in" : "out",
@@ -931,7 +960,11 @@ qh_make (
 		}
 		break;
 	default:
+<<<<<<< HEAD
 		ehci_dbg(ehci, "bogus dev %pK speed %d\n", urb->dev,
+=======
+		ehci_dbg(ehci, "bogus dev %p speed %d\n", urb->dev,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			urb->dev->speed);
 done:
 		qh_destroy(ehci, qh);
@@ -1119,7 +1152,11 @@ submit_async (
 		struct ehci_qtd *qtd;
 		qtd = list_entry(qtd_list->next, struct ehci_qtd, qtd_list);
 		ehci_dbg(ehci,
+<<<<<<< HEAD
 			 "%s %s urb %pK ep%d%s len %d, qtd %pK [qh %pK]\n",
+=======
+			 "%s %s urb %p ep%d%s len %d, qtd %p [qh %p]\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			 __func__, urb->dev->devpath, urb,
 			 epnum & 0x0f, (epnum & USB_DIR_IN) ? "in" : "out",
 			 urb->transfer_buffer_length,

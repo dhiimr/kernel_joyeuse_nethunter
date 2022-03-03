@@ -138,6 +138,12 @@ teql_destroy(struct Qdisc *sch)
 	struct teql_sched_data *dat = qdisc_priv(sch);
 	struct teql_master *master = dat->m;
 
+<<<<<<< HEAD
+=======
+	if (!master)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	prev = master->slaves;
 	if (prev) {
 		do {

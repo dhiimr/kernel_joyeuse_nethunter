@@ -30,7 +30,10 @@ Currently, these files are in /proc/sys/vm:
 - dirty_writeback_centisecs
 - drop_caches
 - extfrag_threshold
+<<<<<<< HEAD
 - extra_free_kbytes
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 - hugepages_treat_as_movable
 - hugetlb_shm_group
 - laptop_mode
@@ -50,7 +53,10 @@ Currently, these files are in /proc/sys/vm:
 - nr_trim_pages         (only if CONFIG_MMU=n)
 - numa_zonelist_order
 - oom_dump_tasks
+<<<<<<< HEAD
 - reap_mem_on_sigkill
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 - oom_kill_allocating_task
 - overcommit_kbytes
 - overcommit_memory
@@ -65,7 +71,10 @@ Currently, these files are in /proc/sys/vm:
 - vfs_cache_pressure
 - watermark_scale_factor
 - zone_reclaim_mode
+<<<<<<< HEAD
 - want_old_faultaround_pte
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 ==============================================================
 
@@ -263,6 +272,7 @@ any throttling.
 
 ==============================================================
 
+<<<<<<< HEAD
 extra_free_kbytes
 
 This parameter tells the VM to keep extra free memory between the threshold
@@ -278,6 +288,8 @@ related latencies.
 
 ==============================================================
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 hugepages_treat_as_movable
 
 This parameter controls whether we can allocate hugepages from ZONE_MOVABLE
@@ -658,6 +670,7 @@ The default value is 1 (enabled).
 
 ==============================================================
 
+<<<<<<< HEAD
 reap_mem_on_sigkill
 
 This enables or disables the memory reaping for a SIGKILL received
@@ -676,6 +689,8 @@ The default value is 0 (disabled).
 
 ==============================================================
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 oom_kill_allocating_task
 
 This enables or disables killing the OOM-triggering task in
@@ -933,6 +948,7 @@ Allowing regular swap effectively restricts allocations to the local
 node unless explicitly overridden by memory policies or cpuset
 configurations.
 
+<<<<<<< HEAD
 =============================================================
 
 want_old_faultaround_pte:
@@ -954,4 +970,6 @@ benefit with old faultaround ptes.
 
 The default value is 0.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 ============ End of Document =================================

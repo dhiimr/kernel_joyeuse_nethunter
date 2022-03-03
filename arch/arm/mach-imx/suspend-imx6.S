@@ -73,6 +73,10 @@
 #define MX6Q_CCM_CCR	0x0
 
 	.align 3
+<<<<<<< HEAD
+=======
+	.arm
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	.macro  sync_l2_cache
 
@@ -333,6 +337,7 @@ resume:
 
 	ret	lr
 ENDPROC(imx6_suspend)
+<<<<<<< HEAD
 
 /*
  * The following code must assume it is running from physical address
@@ -347,3 +352,5 @@ ENTRY(v7_cpu_resume)
 #endif
 	b	cpu_resume
 ENDPROC(v7_cpu_resume)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

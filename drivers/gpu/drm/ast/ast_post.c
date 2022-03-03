@@ -46,7 +46,11 @@ void ast_enable_mmio(struct drm_device *dev)
 {
 	struct ast_private *ast = dev->dev_private;
 
+<<<<<<< HEAD
 	ast_set_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xa1, 0xff, 0x04);
+=======
+	ast_set_index_reg(ast, AST_IO_CRTC_PORT, 0xa1, 0x06);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 

@@ -927,7 +927,11 @@ static int fsl_ifc_chip_remove(struct fsl_ifc_mtd *priv)
 {
 	struct mtd_info *mtd = nand_to_mtd(&priv->chip);
 
+<<<<<<< HEAD
 	nand_release(mtd);
+=======
+	nand_release(&priv->chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	kfree(mtd->name);
 

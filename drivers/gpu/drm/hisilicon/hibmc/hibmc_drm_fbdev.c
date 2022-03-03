@@ -71,7 +71,10 @@ static int hibmc_drm_fb_create(struct drm_fb_helper *helper,
 	DRM_DEBUG_DRIVER("surface width(%d), height(%d) and bpp(%d)\n",
 			 sizes->surface_width, sizes->surface_height,
 			 sizes->surface_bpp);
+<<<<<<< HEAD
 	sizes->surface_depth = 32;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	bytes_per_pixel = DIV_ROUND_UP(sizes->surface_bpp, 8);
 

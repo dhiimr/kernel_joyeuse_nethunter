@@ -740,6 +740,7 @@ qlafx00_lun_reset(fc_port_t *fcport, uint64_t l, int tag)
 }
 
 int
+<<<<<<< HEAD
 qlafx00_loop_reset(scsi_qla_host_t *vha)
 {
 	int ret;
@@ -763,6 +764,8 @@ qlafx00_loop_reset(scsi_qla_host_t *vha)
 }
 
 int
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 qlafx00_iospace_config(struct qla_hw_data *ha)
 {
 	if (pci_request_selected_regions(ha->pdev, ha->bars,

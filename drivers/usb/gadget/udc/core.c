@@ -107,6 +107,20 @@ int usb_ep_enable(struct usb_ep *ep)
 	if (ep->enabled)
 		goto out;
 
+<<<<<<< HEAD
+=======
+	/* UDC drivers can't handle endpoints with maxpacket size 0 */
+	if (usb_endpoint_maxp(ep->desc) == 0) {
+		/*
+		 * We should log an error message here, but we can't call
+		 * dev_err() because there's no way to find the gadget
+		 * given only ep.
+		 */
+		ret = -EINVAL;
+		goto out;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = ep->ops->enable(ep, ep->desc);
 	if (ret)
 		goto out;
@@ -483,6 +497,7 @@ out:
 EXPORT_SYMBOL_GPL(usb_gadget_wakeup);
 
 /**
+<<<<<<< HEAD
  * usb_gsi_ep_op - performs operation on GSI accelerated EP based on EP op code
  *
  * Operations such as EP configuration, TRB allocation, StartXfer etc.
@@ -520,6 +535,8 @@ int usb_gadget_func_wakeup(struct usb_gadget *gadget,
 EXPORT_SYMBOL(usb_gadget_func_wakeup);
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * usb_gadget_set_selfpowered - sets the device selfpowered feature.
  * @gadget:the device being declared as self-powered
  *
@@ -1484,10 +1501,20 @@ static ssize_t usb_udc_softconn_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t n)
 {
 	struct usb_udc		*udc = container_of(dev, struct usb_udc, dev);
+<<<<<<< HEAD
 
 	if (!udc->driver) {
 		dev_err(dev, "soft-connect without a gadget driver\n");
 		return -EOPNOTSUPP;
+=======
+	ssize_t			ret;
+
+	mutex_lock(&udc_lock);
+	if (!udc->driver) {
+		dev_err(dev, "soft-connect without a gadget driver\n");
+		ret = -EOPNOTSUPP;
+		goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (sysfs_streq(buf, "connect")) {
@@ -1499,10 +1526,21 @@ static ssize_t usb_udc_softconn_store(struct device *dev,
 		usb_gadget_udc_stop(udc);
 	} else {
 		dev_err(dev, "unsupported command '%s'\n", buf);
+<<<<<<< HEAD
 		return -EINVAL;
 	}
 
 	return n;
+=======
+		ret = -EINVAL;
+		goto out;
+	}
+
+	ret = n;
+out:
+	mutex_unlock(&udc_lock);
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 static DEVICE_ATTR(soft_connect, S_IWUSR, NULL, usb_udc_softconn_store);
 

@@ -18,8 +18,11 @@
 #include <linux/page_idle.h>
 #include <linux/shmem_fs.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
 #include <linux/mm_inline.h>
 #include <linux/ctype.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <asm/elf.h>
 #include <asm/tlb.h>
@@ -132,6 +135,7 @@ static void release_task_mempolicy(struct proc_maps_private *priv)
 }
 #endif
 
+<<<<<<< HEAD
 static void seq_print_vma_name(struct seq_file *m, struct vm_area_struct *vma)
 {
 	const char __user *name = vma_get_anon_name(vma);
@@ -182,6 +186,8 @@ static void seq_print_vma_name(struct seq_file *m, struct vm_area_struct *vma)
 	seq_putc(m, ']');
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void vma_stop(struct proc_maps_private *priv)
 {
 	struct mm_struct *mm = priv->mm;
@@ -401,6 +407,7 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma, int is_pid)
 			goto done;
 		}
 
+<<<<<<< HEAD
 		if (is_stack(vma)) {
 			name = "[stack]";
 			goto done;
@@ -410,6 +417,10 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma, int is_pid)
 			seq_pad(m, ' ');
 			seq_print_vma_name(m, vma);
 		}
+=======
+		if (is_stack(vma))
+			name = "[stack]";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 done:
@@ -865,11 +876,14 @@ static int show_smap(struct seq_file *m, void *v, int is_pid)
 
 	if (!rollup_mode) {
 		show_map_vma(m, vma, is_pid);
+<<<<<<< HEAD
 		if (vma_get_anon_name(vma)) {
 			seq_puts(m, "Name:           ");
 			seq_print_vma_name(m, vma);
 			seq_putc(m, '\n');
 		}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else if (last_vma) {
 		show_vma_header_prefix(
 			m, mss->first_vma_start, vma->vm_end, 0, 0, 0, 0);
@@ -879,12 +893,15 @@ static int show_smap(struct seq_file *m, void *v, int is_pid)
 		ret = SEQ_SKIP;
 	}
 
+<<<<<<< HEAD
 	if (vma_get_anon_name(vma)) {
 		seq_puts(m, "Name:           ");
 		seq_print_vma_name(m, vma);
 		seq_putc(m, '\n');
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!rollup_mode)
 		seq_printf(m,
 			   "Size:           %8lu kB\n"
@@ -1249,11 +1266,16 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
 					goto out_mm;
 				}
 				for (vma = mm->mmap; vma; vma = vma->vm_next) {
+<<<<<<< HEAD
 					vm_write_begin(vma);
 					WRITE_ONCE(vma->vm_flags,
 						vma->vm_flags & ~VM_SOFTDIRTY);
 					vma_set_page_prot(vma);
 					vm_write_end(vma);
+=======
+					vma->vm_flags &= ~VM_SOFTDIRTY;
+					vma_set_page_prot(vma);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				}
 				downgrade_write(&mm->mmap_sem);
 				break;
@@ -1680,6 +1702,7 @@ const struct file_operations proc_pagemap_operations = {
 };
 #endif /* CONFIG_PROC_PAGE_MONITOR */
 
+<<<<<<< HEAD
 #ifdef CONFIG_PROCESS_RECLAIM
 int reclaim_pte_range(pmd_t *pmd, unsigned long addr,
 				unsigned long end, struct mm_walk *walk)
@@ -1932,6 +1955,8 @@ const struct file_operations proc_reclaim_operations = {
 };
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_NUMA
 
 struct numa_maps {

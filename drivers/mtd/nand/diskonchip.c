@@ -1605,6 +1605,7 @@ static int __init doc_probe(unsigned long physadr)
 		numchips = doc2001_init(mtd);
 
 	if ((ret = nand_scan(mtd, numchips)) || (ret = doc->late_init(mtd))) {
+<<<<<<< HEAD
 		/* DBB note: i believe nand_release is necessary here, as
 		   buffers may have been allocated in nand_base.  Check with
 		   Thomas. FIX ME! */
@@ -1612,6 +1613,12 @@ static int __init doc_probe(unsigned long physadr)
 		   haven't yet added it.  This is handled without incident by
 		   mtd_device_unregister, as far as I can tell. */
 		nand_release(mtd);
+=======
+		/* DBB note: i believe nand_cleanup is necessary here, as
+		   buffers may have been allocated in nand_base.  Check with
+		   Thomas. FIX ME! */
+		nand_cleanup(nand);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kfree(nand);
 		goto fail;
 	}
@@ -1644,7 +1651,11 @@ static void release_nanddoc(void)
 		doc = nand_get_controller_data(nand);
 
 		nextmtd = doc->nextdoc;
+<<<<<<< HEAD
 		nand_release(mtd);
+=======
+		nand_release(nand);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		iounmap(doc->virtadr);
 		release_mem_region(doc->physadr, DOC_IOREMAP_LEN);
 		kfree(nand);

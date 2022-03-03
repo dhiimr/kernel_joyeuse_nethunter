@@ -42,7 +42,11 @@ DEFINE_PER_CPU_SHARED_ALIGNED(struct rds_ib_statistics, rds_ib_stats);
 static const char *const rds_ib_stat_names[] = {
 	"ib_connect_raced",
 	"ib_listen_closed_stale",
+<<<<<<< HEAD
 	"s_ib_evt_handler_call",
+=======
+	"ib_evt_handler_call",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	"ib_tasklet_call",
 	"ib_tx_cq_event",
 	"ib_tx_ring_full",

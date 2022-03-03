@@ -327,6 +327,15 @@ static int set_sample_rate_v1(struct snd_usb_audio *chip, int iface,
 	}
 
 	crate = data[0] | (data[1] << 8) | (data[2] << 16);
+<<<<<<< HEAD
+=======
+	if (!crate) {
+		dev_info(&dev->dev, "failed to read current rate; disabling the check\n");
+		chip->sample_rate_read_error = 3; /* three strikes, see above */
+		return 0;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (crate != rate) {
 		dev_warn(&dev->dev, "current rate %d is different from the runtime rate %d\n", crate, rate);
 		// runtime->rate = crate;
@@ -431,10 +440,13 @@ int snd_usb_init_sample_rate(struct snd_usb_audio *chip, int iface,
 
 	case UAC_VERSION_2:
 		return set_sample_rate_v2(chip, iface, alts, fmt, rate);
+<<<<<<< HEAD
 
 	/* Clock rate is fixed at 48 kHz for BADD devices */
 	case UAC_VERSION_3:
 		return 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 

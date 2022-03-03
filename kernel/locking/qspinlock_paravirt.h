@@ -247,7 +247,11 @@ pv_wait_early(struct pv_node *prev, int loop)
 	if ((loop & PV_PREV_CHECK_MASK) != 0)
 		return false;
 
+<<<<<<< HEAD
 	return READ_ONCE(prev->state) != vcpu_running || vcpu_is_preempted(prev->cpu);
+=======
+	return READ_ONCE(prev->state) != vcpu_running;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*

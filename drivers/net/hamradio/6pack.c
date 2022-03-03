@@ -68,9 +68,15 @@
 #define SIXP_DAMA_OFF		0
 
 /* default level 2 parameters */
+<<<<<<< HEAD
 #define SIXP_TXDELAY			(HZ/4)	/* in 1 s */
 #define SIXP_PERSIST			50	/* in 256ths */
 #define SIXP_SLOTTIME			(HZ/10)	/* in 1 s */
+=======
+#define SIXP_TXDELAY			25	/* 250 ms */
+#define SIXP_PERSIST			50	/* in 256ths */
+#define SIXP_SLOTTIME			10	/* 100 ms */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define SIXP_INIT_RESYNC_TIMEOUT	(3*HZ/2) /* in 1 s */
 #define SIXP_RESYNC_TIMEOUT		5*HZ	/* in 1 s */
 
@@ -665,10 +671,17 @@ static void sixpack_close(struct tty_struct *tty)
 {
 	struct sixpack *sp;
 
+<<<<<<< HEAD
 	write_lock_bh(&disc_data_lock);
 	sp = tty->disc_data;
 	tty->disc_data = NULL;
 	write_unlock_bh(&disc_data_lock);
+=======
+	write_lock_irq(&disc_data_lock);
+	sp = tty->disc_data;
+	tty->disc_data = NULL;
+	write_unlock_irq(&disc_data_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!sp)
 		return;
 
@@ -870,6 +883,15 @@ static void decode_data(struct sixpack *sp, unsigned char inbyte)
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	if (sp->rx_count_cooked + 2 >= sizeof(sp->cooked_buf)) {
+		pr_err("6pack: cooked buffer overrun, data loss\n");
+		sp->rx_count = 0;
+		return;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	buf = sp->raw_buf;
 	sp->cooked_buf[sp->rx_count_cooked++] =
 		buf[0] | ((buf[1] << 2) & 0xc0);

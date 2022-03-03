@@ -56,7 +56,11 @@ static int itimer_one_shot(struct clock_event_device *evt)
 static struct clock_event_device timer_clockevent = {
 	.name			= "posix-timer",
 	.rating			= 250,
+<<<<<<< HEAD
 	.cpumask		= cpu_all_mask,
+=======
+	.cpumask		= cpu_possible_mask,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.features		= CLOCK_EVT_FEAT_PERIODIC |
 				  CLOCK_EVT_FEAT_ONESHOT,
 	.set_state_shutdown	= itimer_shutdown,

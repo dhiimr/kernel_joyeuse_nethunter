@@ -29,7 +29,11 @@ static void a5xx_dump(struct msm_gpu *gpu);
 static int zap_shader_load_mdt(struct device *dev, const char *fwname)
 {
 	const struct firmware *fw;
+<<<<<<< HEAD
 	struct device_node *np;
+=======
+	struct device_node *np, *mem_np;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct resource r;
 	phys_addr_t mem_phys;
 	ssize_t mem_size;
@@ -43,11 +47,21 @@ static int zap_shader_load_mdt(struct device *dev, const char *fwname)
 	if (!np)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	np = of_parse_phandle(np, "memory-region", 0);
 	if (!np)
 		return -EINVAL;
 
 	ret = of_address_to_resource(np, 0, &r);
+=======
+	mem_np = of_parse_phandle(np, "memory-region", 0);
+	of_node_put(np);
+	if (!mem_np)
+		return -EINVAL;
+
+	ret = of_address_to_resource(mem_np, 0, &r);
+	of_node_put(mem_np);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		return ret;
 
@@ -470,8 +484,11 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
 	if (adreno_gpu->info->quirks & ADRENO_QUIRK_TWO_PASS_USE_WFI)
 		gpu_rmw(gpu, REG_A5XX_PC_DBG_ECO_CNTL, 0, (1 << 8));
 
+<<<<<<< HEAD
 	gpu_write(gpu, REG_A5XX_PC_DBG_ECO_CNTL, 0xc0200100);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Enable USE_RETENTION_FLOPS */
 	gpu_write(gpu, REG_A5XX_CP_CHICKEN_DBG, 0x02000000);
 

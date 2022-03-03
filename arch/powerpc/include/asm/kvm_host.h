@@ -296,6 +296,10 @@ struct kvm_arch {
 #ifdef CONFIG_PPC_BOOK3S_64
 	struct list_head spapr_tce_tables;
 	struct list_head rtas_tokens;
+<<<<<<< HEAD
+=======
+	struct mutex rtas_token_lock;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	DECLARE_BITMAP(enabled_hcalls, MAX_HCALL_OPCODE/4 + 1);
 #endif
 #ifdef CONFIG_KVM_MPIC

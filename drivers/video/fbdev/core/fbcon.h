@@ -62,7 +62,11 @@ struct fbcon_ops {
 	void (*clear_margins)(struct vc_data *vc, struct fb_info *info,
 			      int color, int bottom_only);
 	void (*cursor)(struct vc_data *vc, struct fb_info *info, int mode,
+<<<<<<< HEAD
 		       int softback_lines, int fg, int bg);
+=======
+		       int fg, int bg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int  (*update_start)(struct fb_info *info);
 	int  (*rotate_font)(struct fb_info *info, struct vc_data *vc);
 	struct fb_var_screeninfo var;  /* copy of the current fb_var_screeninfo */
@@ -151,6 +155,7 @@ static inline int attr_col_ec(int shift, struct vc_data *vc,
 #define attr_bgcol_ec(bgshift, vc, info) attr_col_ec(bgshift, vc, info, 0)
 #define attr_fgcol_ec(fgshift, vc, info) attr_col_ec(fgshift, vc, info, 1)
 
+<<<<<<< HEAD
 /* Font */
 #define REFCOUNT(fd)	(((int *)(fd))[-1])
 #define FNTSIZE(fd)	(((int *)(fd))[-2])
@@ -158,6 +163,8 @@ static inline int attr_col_ec(int shift, struct vc_data *vc,
 #define FNTSUM(fd)	(((int *)(fd))[-4])
 #define FONT_EXTRA_WORDS 4
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
     /*
      *  Scroll Method
      */

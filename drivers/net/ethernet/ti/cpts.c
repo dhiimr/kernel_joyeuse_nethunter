@@ -116,9 +116,13 @@ static bool cpts_match_tx_ts(struct cpts *cpts, struct cpts_event *event)
 				mtype, seqid);
 		} else if (time_after(jiffies, skb_cb->tmo)) {
 			/* timeout any expired skbs over 1s */
+<<<<<<< HEAD
 			dev_dbg(cpts->dev,
 				"expiring tx timestamp mtype %u seqid %04x\n",
 				mtype, seqid);
+=======
+			dev_dbg(cpts->dev, "expiring tx timestamp from txq\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			__skb_unlink(skb, &cpts->txq);
 			dev_consume_skb_any(skb);
 		}
@@ -473,6 +477,10 @@ void cpts_unregister(struct cpts *cpts)
 
 	ptp_clock_unregister(cpts->clock);
 	cpts->clock = NULL;
+<<<<<<< HEAD
+=======
+	cpts->phc_index = -1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cpts_write32(cpts, 0, int_enable);
 	cpts_write32(cpts, 0, control);
@@ -567,11 +575,21 @@ struct cpts *cpts_create(struct device *dev, void __iomem *regs,
 		return ERR_PTR(PTR_ERR(cpts->refclk));
 	}
 
+<<<<<<< HEAD
 	clk_prepare(cpts->refclk);
+=======
+	ret = clk_prepare(cpts->refclk);
+	if (ret)
+		return ERR_PTR(ret);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cpts->cc.read = cpts_systim_read;
 	cpts->cc.mask = CLOCKSOURCE_MASK(32);
 	cpts->info = cpts_info;
+<<<<<<< HEAD
+=======
+	cpts->phc_index = -1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cpts_calc_mult_shift(cpts);
 	/* save cc.mult original value as it can be modified

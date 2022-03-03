@@ -12,11 +12,20 @@ struct psample_group {
 	u32 group_num;
 	u32 refcount;
 	u32 seq;
+<<<<<<< HEAD
+=======
+	struct rcu_head rcu;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct psample_group *psample_group_get(struct net *net, u32 group_num);
 void psample_group_put(struct psample_group *group);
 
+<<<<<<< HEAD
+=======
+struct sk_buff;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #if IS_ENABLED(CONFIG_PSAMPLE)
 
 void psample_sample_packet(struct psample_group *group, struct sk_buff *skb,

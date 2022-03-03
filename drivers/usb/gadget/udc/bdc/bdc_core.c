@@ -288,6 +288,10 @@ static void bdc_mem_init(struct bdc *bdc, bool reinit)
 	 * in that case reinit is passed as 1
 	 */
 	if (reinit) {
+<<<<<<< HEAD
+=======
+		int i;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* Enable interrupts */
 		temp = bdc_readl(bdc->regs, BDC_BDCSC);
 		temp |= BDC_GIE;
@@ -297,6 +301,12 @@ static void bdc_mem_init(struct bdc *bdc, bool reinit)
 		/* Initialize SRR to 0 */
 		memset(bdc->srr.sr_bds, 0,
 					NUM_SR_ENTRIES * sizeof(struct bdc_bd));
+<<<<<<< HEAD
+=======
+		/* clear ep flags to avoid post disconnect stops/deconfigs */
+		for (i = 1; i < bdc->num_eps; ++i)
+			bdc->bdc_ep_array[i]->flags = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		/* One time initiaization only */
 		/* Enable status report function pointers */
@@ -569,7 +579,12 @@ static int bdc_probe(struct platform_device *pdev)
 		if (ret) {
 			dev_err(dev,
 				"No suitable DMA config available, abort\n");
+<<<<<<< HEAD
 			return -ENOTSUPP;
+=======
+			ret = -ENOTSUPP;
+			goto phycleanup;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		dev_dbg(dev, "Using 32-bit address\n");
 	}
@@ -609,9 +624,20 @@ static int bdc_remove(struct platform_device *pdev)
 static int bdc_suspend(struct device *dev)
 {
 	struct bdc *bdc = dev_get_drvdata(dev);
+<<<<<<< HEAD
 
 	clk_disable_unprepare(bdc->clk);
 	return 0;
+=======
+	int ret;
+
+	/* Halt the controller */
+	ret = bdc_stop(bdc);
+	if (!ret)
+		clk_disable_unprepare(bdc->clk);
+
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int bdc_resume(struct device *dev)

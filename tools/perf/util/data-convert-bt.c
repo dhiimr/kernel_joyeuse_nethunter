@@ -271,7 +271,11 @@ static int string_set_value(struct bt_ctf_field *field, const char *string)
 				if (i > 0)
 					strncpy(buffer, string, i);
 			}
+<<<<<<< HEAD
 			strncat(buffer + p, numstr, 4);
+=======
+			memcpy(buffer + p, numstr, 4);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			p += 3;
 		}
 	}

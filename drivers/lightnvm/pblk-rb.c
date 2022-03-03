@@ -825,8 +825,13 @@ int pblk_rb_tear_down_check(struct pblk_rb *rb)
 	}
 
 out:
+<<<<<<< HEAD
 	spin_unlock(&rb->w_lock);
 	spin_unlock_irq(&rb->s_lock);
+=======
+	spin_unlock_irq(&rb->s_lock);
+	spin_unlock(&rb->w_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }

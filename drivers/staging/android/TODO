@@ -12,6 +12,7 @@ ion/
  - Split /dev/ion up into multiple nodes (e.g. /dev/ion/heap0)
  - Better test framework (integration with VGEM was suggested)
 
+<<<<<<< HEAD
 vsoc.c, uapi/vsoc_shm.h
  - The current driver uses the same wait queue for all of the futexes in a
    region. This will cause false wakeups in regions with a large number of
@@ -21,5 +22,7 @@ vsoc.c, uapi/vsoc_shm.h
  - Remove VSOC_WAIT_FOR_INCOMING_INTERRUPT ioctl. This functionality has been
    superseded by the futex and is there for legacy reasons.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 Please send patches to Greg Kroah-Hartman <greg@kroah.com> and Cc:
 Arve Hjønnevåg <arve@android.com> and Riley Andrews <riandrews@android.com>

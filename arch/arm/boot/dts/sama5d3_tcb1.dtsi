@@ -23,6 +23,10 @@
 					tcb1_clk: tcb1_clk {
 						#clock-cells = <0>;
 						reg = <27>;
+<<<<<<< HEAD
+=======
+						atmel,clk-output-range = <0 166000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					};
 				};
 			};

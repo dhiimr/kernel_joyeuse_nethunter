@@ -542,7 +542,11 @@
 				pins = "gpio63", "gpio64", "gpio65", "gpio66",
 				       "gpio67", "gpio68";
 				drive-strength = <8>;
+<<<<<<< HEAD
 				bias-pull-none;
+=======
+				bias-disable;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			};
 		};
 		cdc_pdm_lines_sus: pdm_lines_off {
@@ -555,7 +559,11 @@
 				pins = "gpio63", "gpio64", "gpio65", "gpio66",
 				       "gpio67", "gpio68";
 				drive-strength = <2>;
+<<<<<<< HEAD
 				bias-disable;
+=======
+				bias-pull-down;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			};
 		};
 	};
@@ -571,7 +579,11 @@
 				pins = "gpio113", "gpio114", "gpio115",
 				       "gpio116";
 				drive-strength = <8>;
+<<<<<<< HEAD
 				bias-pull-none;
+=======
+				bias-disable;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			};
 		};
 
@@ -599,7 +611,11 @@
 			pinconf {
 				pins = "gpio110";
 				drive-strength = <8>;
+<<<<<<< HEAD
 				bias-pull-none;
+=======
+				bias-disable;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			};
 		};
 
@@ -625,7 +641,11 @@
 			pinconf {
 				pins = "gpio116";
 				drive-strength = <8>;
+<<<<<<< HEAD
 				bias-pull-none;
+=======
+				bias-disable;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			};
 		};
 		ext_mclk_tlmm_lines_sus: mclk_lines_off {
@@ -653,7 +673,11 @@
 				pins = "gpio112", "gpio117", "gpio118",
 					"gpio119";
 				drive-strength = <8>;
+<<<<<<< HEAD
 				bias-pull-none;
+=======
+				bias-disable;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			};
 		};
 		ext_sec_tlmm_lines_sus: tlmm_lines_off {

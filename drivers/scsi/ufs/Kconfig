@@ -100,6 +100,7 @@ config SCSI_UFS_QCOM
 
 	  Select this if you have UFS controller on QCOM chipset.
 	  If unsure, say N.
+<<<<<<< HEAD
 
 config SCSI_UFS_QCOM_ICE
 	bool "QCOM specific hooks to Inline Crypto Engine for UFS driver"
@@ -135,3 +136,5 @@ config SCSI_UFSHCD_CMD_LOGGING
 
 	  Select this if you want above mentioned debug information captured.
 	  If unsure, say N.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

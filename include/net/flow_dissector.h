@@ -4,6 +4,11 @@
 
 #include <linux/types.h>
 #include <linux/in6.h>
+<<<<<<< HEAD
+=======
+#include <linux/siphash.h>
+#include <linux/string.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <uapi/linux/if_ether.h>
 
 /**
@@ -229,7 +234,11 @@ struct flow_dissector {
 struct flow_keys {
 	struct flow_dissector_key_control control;
 #define FLOW_KEYS_HASH_START_FIELD basic
+<<<<<<< HEAD
 	struct flow_dissector_key_basic basic;
+=======
+	struct flow_dissector_key_basic basic __aligned(SIPHASH_ALIGNMENT);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct flow_dissector_key_tags tags;
 	struct flow_dissector_key_vlan vlan;
 	struct flow_dissector_key_keyid keyid;
@@ -281,4 +290,15 @@ static inline void *skb_flow_dissector_target(struct flow_dissector *flow_dissec
 	return ((char *)target_container) + flow_dissector->offset[key_id];
 }
 
+<<<<<<< HEAD
+=======
+static inline void
+flow_dissector_init_keys(struct flow_dissector_key_control *key_control,
+			 struct flow_dissector_key_basic *key_basic)
+{
+	memset(key_control, 0, sizeof(*key_control));
+	memset(key_basic, 0, sizeof(*key_basic));
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif

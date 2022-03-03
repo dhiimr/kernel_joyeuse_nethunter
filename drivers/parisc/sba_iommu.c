@@ -575,8 +575,12 @@ sba_io_pdir_entry(u64 *pdir_ptr, space_t sid, unsigned long vba,
 	pa = virt_to_phys(vba);
 	pa &= IOVP_MASK;
 
+<<<<<<< HEAD
 	mtsp(sid,1);
 	asm("lci 0(%%sr1, %1), %0" : "=r" (ci) : "r" (vba));
+=======
+	asm("lci 0(%1), %0" : "=r" (ci) : "r" (vba));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pa |= (ci >> PAGE_SHIFT) & 0xff;  /* move CI (8 bits) into lowest byte */
 
 	pa |= SBA_PDIR_VALID_BIT;	/* set "valid" bit */
@@ -1064,7 +1068,11 @@ sba_unmap_sg(struct device *dev, struct scatterlist *sglist, int nents,
 	spin_unlock_irqrestore(&ioc->res_lock, flags);
 #endif
 
+<<<<<<< HEAD
 	while (sg_dma_len(sglist) && nents--) {
+=======
+	while (nents && sg_dma_len(sglist)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		sba_unmap_page(dev, sg_dma_address(sglist), sg_dma_len(sglist),
 				direction, 0);
@@ -1073,6 +1081,10 @@ sba_unmap_sg(struct device *dev, struct scatterlist *sglist, int nents,
 		ioc->usingle_calls--;	/* kluge since call is unmap_sg() */
 #endif
 		++sglist;
+<<<<<<< HEAD
+=======
+		nents--;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	DBG_RUN_SG("%s() DONE (nents %d)\n", __func__,  nents);
@@ -1292,7 +1304,11 @@ sba_ioc_init_pluto(struct parisc_device *sba, struct ioc *ioc, int ioc_num)
 	** (one that doesn't overlap memory or LMMIO space) in the
 	** IBASE and IMASK registers.
 	*/
+<<<<<<< HEAD
 	ioc->ibase = READ_REG(ioc->ioc_hpa + IOC_IBASE);
+=======
+	ioc->ibase = READ_REG(ioc->ioc_hpa + IOC_IBASE) & ~0x1fffffULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	iova_space_size = ~(READ_REG(ioc->ioc_hpa + IOC_IMASK) & 0xFFFFFFFFUL) + 1;
 
 	if ((ioc->ibase < 0xfed00000UL) && ((ioc->ibase + iova_space_size) > 0xfee00000UL)) {

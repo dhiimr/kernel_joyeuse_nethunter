@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2013-2015, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -54,7 +58,12 @@ UFSCHD_CLK_GATING_STATES;
 #define EM(a)	{ a, #a },
 #define EMe(a)	{ a, #a }
 
+<<<<<<< HEAD
 DECLARE_EVENT_CLASS(ufshcd_state_change_template,
+=======
+TRACE_EVENT(ufshcd_clk_gating,
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	TP_PROTO(const char *dev_name, int state),
 
 	TP_ARGS(dev_name, state),
@@ -69,11 +78,16 @@ DECLARE_EVENT_CLASS(ufshcd_state_change_template,
 		__entry->state = state;
 	),
 
+<<<<<<< HEAD
 	TP_printk("%s: state changed to %s",
+=======
+	TP_printk("%s: gating state changed to %s",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__get_str(dev_name),
 		__print_symbolic(__entry->state, UFSCHD_CLK_GATING_STATES))
 );
 
+<<<<<<< HEAD
 DEFINE_EVENT_PRINT(ufshcd_state_change_template, ufshcd_clk_gating,
 	TP_PROTO(const char *dev_name, int state),
 	TP_ARGS(dev_name, state),
@@ -100,6 +114,8 @@ DEFINE_EVENT(ufshcd_state_change_template, ufshcd_auto_bkops_state,
 	TP_PROTO(const char *dev_name, int state),
 	TP_ARGS(dev_name, state));
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 TRACE_EVENT(ufshcd_clk_scaling,
 
 	TP_PROTO(const char *dev_name, const char *state, const char *clk,
@@ -128,6 +144,29 @@ TRACE_EVENT(ufshcd_clk_scaling,
 		__entry->prev_state, __entry->curr_state)
 );
 
+<<<<<<< HEAD
+=======
+TRACE_EVENT(ufshcd_auto_bkops_state,
+
+	TP_PROTO(const char *dev_name, const char *state),
+
+	TP_ARGS(dev_name, state),
+
+	TP_STRUCT__entry(
+		__string(dev_name, dev_name)
+		__string(state, state)
+	),
+
+	TP_fast_assign(
+		__assign_str(dev_name, dev_name);
+		__assign_str(state, state);
+	),
+
+	TP_printk("%s: auto bkops - %s",
+		__get_str(dev_name), __get_str(state))
+);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 DECLARE_EVENT_CLASS(ufshcd_profiling_template,
 	TP_PROTO(const char *dev_name, const char *profile_info, s64 time_us,
 		 int err),
@@ -201,6 +240,7 @@ DECLARE_EVENT_CLASS(ufshcd_template,
 );
 
 DEFINE_EVENT(ufshcd_template, ufshcd_system_suspend,
+<<<<<<< HEAD
 	TP_PROTO(const char *dev_name, int err, s64 usecs,
 		int dev_state, int link_state),
 	TP_ARGS(dev_name, err, usecs, dev_state, link_state));
@@ -224,6 +264,31 @@ DEFINE_EVENT(ufshcd_template, ufshcd_init,
 	TP_PROTO(const char *dev_name, int err, s64 usecs,
 		int dev_state, int link_state),
 	TP_ARGS(dev_name, err, usecs, dev_state, link_state));
+=======
+	     TP_PROTO(const char *dev_name, int err, s64 usecs,
+		      int dev_state, int link_state),
+	     TP_ARGS(dev_name, err, usecs, dev_state, link_state));
+
+DEFINE_EVENT(ufshcd_template, ufshcd_system_resume,
+	     TP_PROTO(const char *dev_name, int err, s64 usecs,
+		      int dev_state, int link_state),
+	     TP_ARGS(dev_name, err, usecs, dev_state, link_state));
+
+DEFINE_EVENT(ufshcd_template, ufshcd_runtime_suspend,
+	     TP_PROTO(const char *dev_name, int err, s64 usecs,
+		      int dev_state, int link_state),
+	     TP_ARGS(dev_name, err, usecs, dev_state, link_state));
+
+DEFINE_EVENT(ufshcd_template, ufshcd_runtime_resume,
+	     TP_PROTO(const char *dev_name, int err, s64 usecs,
+		      int dev_state, int link_state),
+	     TP_ARGS(dev_name, err, usecs, dev_state, link_state));
+
+DEFINE_EVENT(ufshcd_template, ufshcd_init,
+	     TP_PROTO(const char *dev_name, int err, s64 usecs,
+		      int dev_state, int link_state),
+	     TP_ARGS(dev_name, err, usecs, dev_state, link_state));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 TRACE_EVENT(ufshcd_command,
 	TP_PROTO(const char *dev_name, const char *str, unsigned int tag,
@@ -255,10 +320,17 @@ TRACE_EVENT(ufshcd_command,
 	),
 
 	TP_printk(
+<<<<<<< HEAD
 		"%s: %14s: tag: %-2u cmd: 0x%-2x lba: %-9llu size: %-7d DB: 0x%-8x IS: 0x%x",
 		__get_str(dev_name), __get_str(str), __entry->tag,
 		(u32)__entry->opcode, __entry->lba, __entry->transfer_len,
 		__entry->doorbell, __entry->intr
+=======
+		"%s: %s: tag: %u, DB: 0x%x, size: %d, IS: %u, LBA: %llu, opcode: 0x%x",
+		__get_str(str), __get_str(dev_name), __entry->tag,
+		__entry->doorbell, __entry->transfer_len,
+		__entry->intr, __entry->lba, (u32)__entry->opcode
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	)
 );
 

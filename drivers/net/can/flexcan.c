@@ -177,7 +177,11 @@
 #define FLEXCAN_MB_CNT_LENGTH(x)	(((x) & 0xf) << 16)
 #define FLEXCAN_MB_CNT_TIMESTAMP(x)	((x) & 0xffff)
 
+<<<<<<< HEAD
 #define FLEXCAN_TIMEOUT_US		(50)
+=======
+#define FLEXCAN_TIMEOUT_US		(250)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* FLEXCAN hardware feature flags
  *
@@ -413,11 +417,25 @@ static int flexcan_chip_disable(struct flexcan_priv *priv)
 static int flexcan_chip_freeze(struct flexcan_priv *priv)
 {
 	struct flexcan_regs __iomem *regs = priv->regs;
+<<<<<<< HEAD
 	unsigned int timeout = 1000 * 1000 * 10 / priv->can.bittiming.bitrate;
 	u32 reg;
 
 	reg = flexcan_read(&regs->mcr);
 	reg |= FLEXCAN_MCR_HALT;
+=======
+	unsigned int timeout;
+	u32 bitrate = priv->can.bittiming.bitrate;
+	u32 reg;
+
+	if (bitrate)
+		timeout = 1000 * 1000 * 10 / bitrate;
+	else
+		timeout = FLEXCAN_TIMEOUT_US / 10;
+
+	reg = flexcan_read(&regs->mcr);
+	reg |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	flexcan_write(reg, &regs->mcr);
 
 	while (timeout-- && !(flexcan_read(&regs->mcr) & FLEXCAN_MCR_FRZ_ACK))
@@ -1018,6 +1036,10 @@ static int flexcan_chip_start(struct net_device *dev)
 		reg_mecr = flexcan_read(&regs->mecr);
 		reg_mecr &= ~FLEXCAN_MECR_ECRWRDIS;
 		flexcan_write(reg_mecr, &regs->mecr);
+<<<<<<< HEAD
+=======
+		reg_mecr |= FLEXCAN_MECR_ECCDIS;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		reg_mecr &= ~(FLEXCAN_MECR_NCEFAFRZ | FLEXCAN_MECR_HANCEI_MSK |
 			      FLEXCAN_MECR_FANCEI_MSK);
 		flexcan_write(reg_mecr, &regs->mecr);
@@ -1054,6 +1076,7 @@ static int flexcan_chip_start(struct net_device *dev)
 	return err;
 }
 
+<<<<<<< HEAD
 /* flexcan_chip_stop
  *
  * this functions is entered with clocks enabled
@@ -1066,6 +1089,25 @@ static void flexcan_chip_stop(struct net_device *dev)
 	/* freeze + disable module */
 	flexcan_chip_freeze(priv);
 	flexcan_chip_disable(priv);
+=======
+/* __flexcan_chip_stop
+ *
+ * this function is entered with clocks enabled
+ */
+static int __flexcan_chip_stop(struct net_device *dev, bool disable_on_error)
+{
+	struct flexcan_priv *priv = netdev_priv(dev);
+	struct flexcan_regs __iomem *regs = priv->regs;
+	int err;
+
+	/* freeze + disable module */
+	err = flexcan_chip_freeze(priv);
+	if (err && !disable_on_error)
+		return err;
+	err = flexcan_chip_disable(priv);
+	if (err && !disable_on_error)
+		goto out_chip_unfreeze;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Disable all interrupts */
 	flexcan_write(0, &regs->imask2);
@@ -1075,6 +1117,26 @@ static void flexcan_chip_stop(struct net_device *dev)
 
 	flexcan_transceiver_disable(priv);
 	priv->can.state = CAN_STATE_STOPPED;
+<<<<<<< HEAD
+=======
+
+	return 0;
+
+ out_chip_unfreeze:
+	flexcan_chip_unfreeze(priv);
+
+	return err;
+}
+
+static inline int flexcan_chip_stop_disable_on_error(struct net_device *dev)
+{
+	return __flexcan_chip_stop(dev, true);
+}
+
+static inline int flexcan_chip_stop(struct net_device *dev)
+{
+	return __flexcan_chip_stop(dev, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int flexcan_open(struct net_device *dev)
@@ -1128,7 +1190,11 @@ static int flexcan_close(struct net_device *dev)
 
 	netif_stop_queue(dev);
 	can_rx_offload_disable(&priv->offload);
+<<<<<<< HEAD
 	flexcan_chip_stop(dev);
+=======
+	flexcan_chip_stop_disable_on_error(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	free_irq(dev->irq, dev);
 	clk_disable_unprepare(priv->clk_per);
@@ -1194,10 +1260,21 @@ static int register_flexcandev(struct net_device *dev)
 	if (err)
 		goto out_chip_disable;
 
+<<<<<<< HEAD
 	/* set freeze, halt and activate FIFO, restrict register access */
 	reg = flexcan_read(&regs->mcr);
 	reg |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT |
 		FLEXCAN_MCR_FEN | FLEXCAN_MCR_SUPV;
+=======
+	/* set freeze, halt */
+	err = flexcan_chip_freeze(priv);
+	if (err)
+		goto out_chip_disable;
+
+	/* activate FIFO, restrict register access */
+	reg = flexcan_read(&regs->mcr);
+	reg |=  FLEXCAN_MCR_FEN | FLEXCAN_MCR_SUPV;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	flexcan_write(reg, &regs->mcr);
 
 	/* Currently we only support newer versions of this core

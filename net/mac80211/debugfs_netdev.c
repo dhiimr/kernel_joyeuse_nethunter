@@ -490,9 +490,20 @@ static ssize_t ieee80211_if_fmt_aqm(
 	const struct ieee80211_sub_if_data *sdata, char *buf, int buflen)
 {
 	struct ieee80211_local *local = sdata->local;
+<<<<<<< HEAD
 	struct txq_info *txqi = to_txq_info(sdata->vif.txq);
 	int len;
 
+=======
+	struct txq_info *txqi;
+	int len;
+
+	if (!sdata->vif.txq)
+		return 0;
+
+	txqi = to_txq_info(sdata->vif.txq);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_bh(&local->fq.lock);
 	rcu_read_lock();
 
@@ -659,7 +670,13 @@ static void add_common_files(struct ieee80211_sub_if_data *sdata)
 	DEBUGFS_ADD(rc_rateidx_vht_mcs_mask_5ghz);
 	DEBUGFS_ADD(hw_queues);
 
+<<<<<<< HEAD
 	if (sdata->local->ops->wake_tx_queue)
+=======
+	if (sdata->local->ops->wake_tx_queue &&
+	    sdata->vif.type != NL80211_IFTYPE_P2P_DEVICE &&
+	    sdata->vif.type != NL80211_IFTYPE_NAN)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		DEBUGFS_ADD(aqm);
 }
 

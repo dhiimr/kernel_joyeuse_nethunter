@@ -427,6 +427,10 @@ struct mlx5_umr_wr {
 	u64				length;
 	int				access_flags;
 	u32				mkey;
+<<<<<<< HEAD
+=======
+	u8				ignore_free_state:1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static inline struct mlx5_umr_wr *umr_wr(struct ib_send_wr *wr)

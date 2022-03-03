@@ -541,6 +541,7 @@ int input_ff_flush(struct input_dev *dev, struct file *file);
 int input_ff_create_memless(struct input_dev *dev, void *data,
 		int (*play_effect)(struct input_dev *, void *, struct ff_effect *));
 
+<<<<<<< HEAD
 #define active_tp_setup(vendor)\
 static char vendor##active_touch[512] = {0};\
 int __init vendor##_active_tp_setup(char *str)\
@@ -611,4 +612,6 @@ exit:\
 	return ret;\
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif

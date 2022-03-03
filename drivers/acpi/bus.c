@@ -196,7 +196,11 @@ int acpi_bus_get_private_data(acpi_handle handle, void **data)
 {
 	acpi_status status;
 
+<<<<<<< HEAD
 	if (!*data)
+=======
+	if (!data)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	status = acpi_get_data(handle, acpi_bus_private_data_handler, data);
@@ -1249,6 +1253,10 @@ static int __init acpi_init(void)
 	init_acpi_device_notify();
 	result = acpi_bus_init();
 	if (result) {
+<<<<<<< HEAD
+=======
+		kobject_put(acpi_kobj);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		disable_acpi();
 		return result;
 	}

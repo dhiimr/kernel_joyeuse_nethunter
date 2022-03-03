@@ -457,7 +457,15 @@
 
 /* Bitfields in TISUBN */
 #define GEM_SUBNSINCR_OFFSET			0
+<<<<<<< HEAD
 #define GEM_SUBNSINCR_SIZE			16
+=======
+#define GEM_SUBNSINCRL_OFFSET			24
+#define GEM_SUBNSINCRL_SIZE			8
+#define GEM_SUBNSINCRH_OFFSET			0
+#define GEM_SUBNSINCRH_SIZE			16
+#define GEM_SUBNSINCR_SIZE			24
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Bitfields in TI */
 #define GEM_NSINCR_OFFSET			0

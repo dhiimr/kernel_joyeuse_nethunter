@@ -1374,7 +1374,11 @@
 					0xffffffff 0x3ffcfe7c 0x1c010101	/* pioA */
 					0x7fffffff 0xfffccc3a 0x3f00cc3a	/* pioB */
 					0xffffffff 0x3ff83fff 0xff00ffff	/* pioC */
+<<<<<<< HEAD
 					0x0003ff00 0x8002a800 0x00000000	/* pioD */
+=======
+					0xb003ff00 0x8002a800 0x00000000	/* pioD */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					0xffffffff 0x7fffffff 0x76fff1bf	/* pioE */
 					>;
 

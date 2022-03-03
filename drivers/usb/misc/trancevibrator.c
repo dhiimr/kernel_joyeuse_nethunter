@@ -72,9 +72,15 @@ static ssize_t set_speed(struct device *dev, struct device_attribute *attr,
 	/* Set speed */
 	retval = usb_control_msg(tv->udev, usb_sndctrlpipe(tv->udev, 0),
 				 0x01, /* vendor request: set speed */
+<<<<<<< HEAD
 				 USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
 				 tv->speed, /* speed value */
 				 0, NULL, 0, USB_CTRL_GET_TIMEOUT);
+=======
+				 USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+				 tv->speed, /* speed value */
+				 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (retval) {
 		tv->speed = old;
 		dev_dbg(&tv->udev->dev, "retval = %d\n", retval);

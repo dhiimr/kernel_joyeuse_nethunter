@@ -579,6 +579,14 @@ static const struct of_device_id mxs_mmc_dt_ids[] = {
 };
 MODULE_DEVICE_TABLE(of, mxs_mmc_dt_ids);
 
+<<<<<<< HEAD
+=======
+static void mxs_mmc_regulator_disable(void *regulator)
+{
+	regulator_disable(regulator);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int mxs_mmc_probe(struct platform_device *pdev)
 {
 	const struct of_device_id *of_id =
@@ -622,6 +630,14 @@ static int mxs_mmc_probe(struct platform_device *pdev)
 				"Failed to enable vmmc regulator: %d\n", ret);
 			goto out_mmc_free;
 		}
+<<<<<<< HEAD
+=======
+
+		ret = devm_add_action_or_reset(&pdev->dev, mxs_mmc_regulator_disable,
+					       reg_vmmc);
+		if (ret)
+			goto out_mmc_free;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ssp->clk = devm_clk_get(&pdev->dev, NULL);
@@ -659,7 +675,11 @@ static int mxs_mmc_probe(struct platform_device *pdev)
 
 	ret = mmc_of_parse(mmc);
 	if (ret)
+<<<<<<< HEAD
 		goto out_clk_disable;
+=======
+		goto out_free_dma;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mmc->ocr_avail = MMC_VDD_32_33 | MMC_VDD_33_34;
 

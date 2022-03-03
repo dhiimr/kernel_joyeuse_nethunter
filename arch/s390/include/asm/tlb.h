@@ -116,6 +116,23 @@ static inline void tlb_remove_page_size(struct mmu_gather *tlb,
 	return tlb_remove_page(tlb, page);
 }
 
+<<<<<<< HEAD
+=======
+static inline void tlb_flush_pmd_range(struct mmu_gather *tlb,
+				unsigned long address, unsigned long size)
+{
+	/*
+	 * the range might exceed the original range that was provided to
+	 * tlb_gather_mmu(), so we need to update it despite the fact it is
+	 * usually not updated.
+	 */
+	if (tlb->start > address)
+		tlb->start = address;
+	if (tlb->end < address + size)
+		tlb->end = address + size;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * pte_free_tlb frees a pte table and clears the CRSTE for the
  * page table from the tlb.

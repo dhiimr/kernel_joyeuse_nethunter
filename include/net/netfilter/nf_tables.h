@@ -136,6 +136,11 @@ static inline u8 nft_reg_load8(u32 *sreg)
 static inline void nft_data_copy(u32 *dst, const struct nft_data *src,
 				 unsigned int len)
 {
+<<<<<<< HEAD
+=======
+	if (len % NFT_REG32_SIZE)
+		dst[len / NFT_REG32_SIZE] = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	memcpy(dst, src, len);
 }
 
@@ -759,7 +764,12 @@ struct nft_expr_ops {
  */
 struct nft_expr {
 	const struct nft_expr_ops	*ops;
+<<<<<<< HEAD
 	unsigned char			data[];
+=======
+	unsigned char			data[]
+		__attribute__((aligned(__alignof__(u64))));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static inline void *nft_expr_priv(const struct nft_expr *expr)

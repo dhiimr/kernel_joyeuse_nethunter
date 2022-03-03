@@ -90,6 +90,10 @@ void fsnotify_unmount_inodes(struct super_block *sb)
 
 		iput_inode = inode;
 
+<<<<<<< HEAD
+=======
+		cond_resched();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		spin_lock(&sb->s_inode_list_lock);
 	}
 	spin_unlock(&sb->s_inode_list_lock);

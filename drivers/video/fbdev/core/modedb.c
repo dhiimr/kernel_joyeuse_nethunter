@@ -289,6 +289,7 @@ static const struct fb_videomode modedb[] = {
 };
 
 #ifdef CONFIG_FB_MODE_HELPERS
+<<<<<<< HEAD
 const struct fb_videomode cea_modes[65] = {
 	/* #1: 640x480p@59.94/60Hz */
 	[1] = {
@@ -346,6 +347,8 @@ const struct fb_videomode cea_modes[65] = {
 	},
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 const struct fb_videomode vesa_modes[] = {
 	/* 0 640x350-85 VESA */
 	{ NULL, 85, 640, 350, 31746,  96, 32, 60, 32, 64, 3,
@@ -933,6 +936,12 @@ void fb_var_to_videomode(struct fb_videomode *mode,
 	if (var->vmode & FB_VMODE_DOUBLE)
 		vtotal *= 2;
 
+<<<<<<< HEAD
+=======
+	if (!htotal || !vtotal)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hfreq = pixclock/htotal;
 	mode->refresh = hfreq/vtotal;
 }

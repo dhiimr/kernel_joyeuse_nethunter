@@ -42,6 +42,11 @@
 
 /* STM32F7 I2C control 1 */
 #define STM32F7_I2C_CR1_ANFOFF			BIT(12)
+<<<<<<< HEAD
+=======
+#define STM32F7_I2C_CR1_DNF_MASK		GENMASK(11, 8)
+#define STM32F7_I2C_CR1_DNF(n)			(((n) & 0xf) << 8)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define STM32F7_I2C_CR1_ERRIE			BIT(7)
 #define STM32F7_I2C_CR1_TCIE			BIT(6)
 #define STM32F7_I2C_CR1_STOPIE			BIT(5)
@@ -95,7 +100,11 @@
 #define STM32F7_I2C_MAX_LEN			0xff
 
 #define STM32F7_I2C_DNF_DEFAULT			0
+<<<<<<< HEAD
 #define STM32F7_I2C_DNF_MAX			16
+=======
+#define STM32F7_I2C_DNF_MAX			15
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define STM32F7_I2C_ANALOG_FILTER_ENABLE	1
 #define STM32F7_I2C_ANALOG_FILTER_DELAY_MIN	50	/* ns */
@@ -219,7 +228,11 @@ struct stm32f7_i2c_dev {
 	struct stm32f7_i2c_timings timing;
 };
 
+<<<<<<< HEAD
 /**
+=======
+/*
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * All these values are coming from I2C Specification, Version 6.0, 4th of
  * April 2014.
  *
@@ -543,6 +556,16 @@ static void stm32f7_i2c_hw_config(struct stm32f7_i2c_dev *i2c_dev)
 	else
 		stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
 				     STM32F7_I2C_CR1_ANFOFF);
+<<<<<<< HEAD
+=======
+
+	/* Program the Digital Filter */
+	stm32f7_i2c_clr_bits(i2c_dev->base + STM32F7_I2C_CR1,
+			     STM32F7_I2C_CR1_DNF_MASK);
+	stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
+			     STM32F7_I2C_CR1_DNF(i2c_dev->setup.dnf));
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
 			     STM32F7_I2C_CR1_PE);
 }

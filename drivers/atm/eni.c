@@ -372,7 +372,11 @@ static int do_rx_dma(struct atm_vcc *vcc,struct sk_buff *skb,
 		here = (eni_vcc->descr+skip) & (eni_vcc->words-1);
 		dma[j++] = (here << MID_DMA_COUNT_SHIFT) | (vcc->vci
 		    << MID_DMA_VCI_SHIFT) | MID_DT_JK;
+<<<<<<< HEAD
 		j++;
+=======
+		dma[j++] = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	here = (eni_vcc->descr+size+skip) & (eni_vcc->words-1);
 	if (!eff) size += skip;
@@ -445,7 +449,11 @@ static int do_rx_dma(struct atm_vcc *vcc,struct sk_buff *skb,
 	if (size != eff) {
 		dma[j++] = (here << MID_DMA_COUNT_SHIFT) |
 		    (vcc->vci << MID_DMA_VCI_SHIFT) | MID_DT_JK;
+<<<<<<< HEAD
 		j++;
+=======
+		dma[j++] = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	if (!j || j > 2*RX_DMA_BUF) {
 		printk(KERN_CRIT DEV_LABEL "!j or j too big!!!\n");
@@ -2243,7 +2251,11 @@ static int eni_init_one(struct pci_dev *pci_dev,
 
 	rc = dma_set_mask_and_coherent(&pci_dev->dev, DMA_BIT_MASK(32));
 	if (rc < 0)
+<<<<<<< HEAD
 		goto out;
+=======
+		goto err_disable;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rc = -ENOMEM;
 	eni_dev = kmalloc(sizeof(struct eni_dev), GFP_KERNEL);
@@ -2279,7 +2291,12 @@ out:
 	return rc;
 
 err_eni_release:
+<<<<<<< HEAD
 	eni_do_release(dev);
+=======
+	dev->phy = NULL;
+	iounmap(ENI_DEV(dev)->ioaddr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 err_unregister:
 	atm_dev_deregister(dev);
 err_free_consistent:

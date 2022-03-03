@@ -130,9 +130,13 @@ int xfrm6_output_finish(struct sock *sk, struct sk_buff *skb)
 {
 	memset(IP6CB(skb), 0, sizeof(*IP6CB(skb)));
 
+<<<<<<< HEAD
 #ifdef CONFIG_NETFILTER
 	IP6CB(skb)->flags |= IP6SKB_XFRM_TRANSFORMED;
 #endif
+=======
+	IP6CB(skb)->flags |= IP6SKB_XFRM_TRANSFORMED;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return xfrm_output(sk, skb);
 }
@@ -148,7 +152,11 @@ static int __xfrm6_output(struct net *net, struct sock *sk, struct sk_buff *skb)
 {
 	struct dst_entry *dst = skb_dst(skb);
 	struct xfrm_state *x = dst->xfrm;
+<<<<<<< HEAD
 	int mtu;
+=======
+	unsigned int mtu;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool toobig;
 
 #ifdef CONFIG_NETFILTER

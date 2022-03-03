@@ -394,6 +394,7 @@ static int i_ipmi_set_timeout(struct ipmi_smi_msg  *smi_msg,
 	data[0] = 0;
 	WDOG_SET_TIMER_USE(data[0], WDOG_TIMER_USE_SMS_OS);
 
+<<<<<<< HEAD
 	if ((ipmi_version_major > 1)
 	    || ((ipmi_version_major == 1) && (ipmi_version_minor >= 5))) {
 		/* This is an IPMI 1.5-only feature. */
@@ -404,6 +405,20 @@ static int i_ipmi_set_timeout(struct ipmi_smi_msg  *smi_msg,
 		 * need to start it back up again.
 		 */
 		hbnow = 1;
+=======
+	if (ipmi_watchdog_state != WDOG_TIMEOUT_NONE) {
+		if ((ipmi_version_major > 1) ||
+		    ((ipmi_version_major == 1) && (ipmi_version_minor >= 5))) {
+			/* This is an IPMI 1.5-only feature. */
+			data[0] |= WDOG_DONT_STOP_ON_SET;
+		} else {
+			/*
+			 * In ipmi 1.0, setting the timer stops the watchdog, we
+			 * need to start it back up again.
+			 */
+			hbnow = 1;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	data[1] = 0;

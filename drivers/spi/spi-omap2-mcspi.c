@@ -298,7 +298,11 @@ static void omap2_mcspi_set_fifo(const struct spi_device *spi,
 	struct omap2_mcspi_cs *cs = spi->controller_state;
 	struct omap2_mcspi *mcspi;
 	unsigned int wcnt;
+<<<<<<< HEAD
 	int max_fifo_depth, fifo_depth, bytes_per_word;
+=======
+	int max_fifo_depth, bytes_per_word;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 chconf, xferlevel;
 
 	mcspi = spi_master_get_devdata(master);
@@ -314,10 +318,13 @@ static void omap2_mcspi_set_fifo(const struct spi_device *spi,
 		else
 			max_fifo_depth = OMAP2_MCSPI_MAX_FIFODEPTH;
 
+<<<<<<< HEAD
 		fifo_depth = gcd(t->len, max_fifo_depth);
 		if (fifo_depth < 2 || fifo_depth % bytes_per_word != 0)
 			goto disable_fifo;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		wcnt = t->len / bytes_per_word;
 		if (wcnt > OMAP2_MCSPI_MAX_FIFOWCNT)
 			goto disable_fifo;
@@ -325,16 +332,29 @@ static void omap2_mcspi_set_fifo(const struct spi_device *spi,
 		xferlevel = wcnt << 16;
 		if (t->rx_buf != NULL) {
 			chconf |= OMAP2_MCSPI_CHCONF_FFER;
+<<<<<<< HEAD
 			xferlevel |= (fifo_depth - 1) << 8;
 		}
 		if (t->tx_buf != NULL) {
 			chconf |= OMAP2_MCSPI_CHCONF_FFET;
 			xferlevel |= fifo_depth - 1;
+=======
+			xferlevel |= (bytes_per_word - 1) << 8;
+		}
+
+		if (t->tx_buf != NULL) {
+			chconf |= OMAP2_MCSPI_CHCONF_FFET;
+			xferlevel |= bytes_per_word - 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		mcspi_write_reg(master, OMAP2_MCSPI_XFERLEVEL, xferlevel);
 		mcspi_write_chconf0(spi, chconf);
+<<<<<<< HEAD
 		mcspi->fifo_depth = fifo_depth;
+=======
+		mcspi->fifo_depth = max_fifo_depth;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		return;
 	}
@@ -601,7 +621,10 @@ omap2_mcspi_txrx_dma(struct spi_device *spi, struct spi_transfer *xfer)
 	struct dma_slave_config	cfg;
 	enum dma_slave_buswidth width;
 	unsigned es;
+<<<<<<< HEAD
 	u32			burst;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	void __iomem		*chstat_reg;
 	void __iomem            *irqstat_reg;
 	int			wait_res;
@@ -623,6 +646,7 @@ omap2_mcspi_txrx_dma(struct spi_device *spi, struct spi_transfer *xfer)
 	}
 
 	count = xfer->len;
+<<<<<<< HEAD
 	burst = 1;
 
 	if (mcspi->fifo_depth > 0) {
@@ -631,14 +655,21 @@ omap2_mcspi_txrx_dma(struct spi_device *spi, struct spi_transfer *xfer)
 		else
 			burst = count / es;
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	memset(&cfg, 0, sizeof(cfg));
 	cfg.src_addr = cs->phys + OMAP2_MCSPI_RX0;
 	cfg.dst_addr = cs->phys + OMAP2_MCSPI_TX0;
 	cfg.src_addr_width = width;
 	cfg.dst_addr_width = width;
+<<<<<<< HEAD
 	cfg.src_maxburst = burst;
 	cfg.dst_maxburst = burst;
+=======
+	cfg.src_maxburst = 1;
+	cfg.dst_maxburst = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rx = xfer->rx_buf;
 	tx = xfer->tx_buf;

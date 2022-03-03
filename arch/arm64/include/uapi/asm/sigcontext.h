@@ -17,7 +17,10 @@
 #ifndef _UAPI__ASM_SIGCONTEXT_H
 #define _UAPI__ASM_SIGCONTEXT_H
 
+<<<<<<< HEAD
 #ifdef CONFIG_64BIT
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/types.h>
 
 /*
@@ -118,6 +121,7 @@ struct extra_context {
 	__u32 __reserved[3];
 };
 
+<<<<<<< HEAD
 #else /* CONFIG_64BIT */
 
 /*
@@ -149,4 +153,6 @@ struct sigcontext {
 	unsigned long fault_address;
 };
 #endif /* CONFIG_64BIT */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _UAPI__ASM_SIGCONTEXT_H */

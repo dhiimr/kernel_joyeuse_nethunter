@@ -241,6 +241,17 @@ tcp_base_mss - INTEGER
 	Path MTU discovery (MTU probing).  If MTU probing is enabled,
 	this is the initial MSS used by the connection.
 
+<<<<<<< HEAD
+=======
+tcp_min_snd_mss - INTEGER
+	TCP SYN and SYNACK messages usually advertise an ADVMSS option,
+	as described in RFC 1122 and RFC 6691.
+	If this ADVMSS option is smaller than tcp_min_snd_mss,
+	it is silently capped to tcp_min_snd_mss.
+
+	Default : 48 (at least 8 bytes of payload per segment)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 tcp_congestion_control - STRING
 	Set the congestion control algorithm to be used for new
 	connections. The algorithm "reno" is always available, but
@@ -606,6 +617,7 @@ tcp_fastopen_blackhole_timeout_sec - INTEGER
 	initial value when the blackhole issue goes away.
 	By default, it is set to 1hr.
 
+<<<<<<< HEAD
 tcp_fwmark_accept - BOOLEAN
 	If set, incoming connections to listening sockets that do not have a
 	socket mark will set the mark of the accepting socket to the fwmark of
@@ -616,6 +628,8 @@ tcp_fwmark_accept - BOOLEAN
 	unaffected.
 	Default: 0
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 tcp_syn_retries - INTEGER
 	Number of times initial SYNs for an active TCP connection attempt
 	will be retransmitted. Should not be higher than 127. Default value
@@ -855,11 +869,14 @@ ip_unprivileged_port_start - INTEGER
 
 	Default: 1024
 
+<<<<<<< HEAD
 reserved_port_bind - BOOLEAN
 	If set, allows explicit bind requests to applications requesting
 	any port within the range of ip_local_reserved_ports.
 	Default: 1
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 ip_nonlocal_bind - BOOLEAN
 	If set, allows processes to bind() to non-local IP addresses,
 	which can be quite useful - but may break some applications.
@@ -912,12 +929,21 @@ icmp_ratelimit - INTEGER
 icmp_msgs_per_sec - INTEGER
 	Limit maximal number of ICMP packets sent per second from this host.
 	Only messages whose type matches icmp_ratemask (see below) are
+<<<<<<< HEAD
 	controlled by this limit.
+=======
+	controlled by this limit. For security reasons, the precise count
+	of messages per second is randomized.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	Default: 1000
 
 icmp_msgs_burst - INTEGER
 	icmp_msgs_per_sec controls number of ICMP packets sent per second,
 	while icmp_msgs_burst controls the burst size of these packets.
+<<<<<<< HEAD
+=======
+	For security reasons, the precise burst size is randomized.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	Default: 50
 
 icmp_ratemask - INTEGER
@@ -1309,10 +1335,13 @@ igmp_link_local_mcast_reports - BOOLEAN
 	224.0.0.X range.
 	Default TRUE
 
+<<<<<<< HEAD
 nf_ipv4_defrag_skip - BOOLEAN
 	Skip defragmentation per interface if set.
 	Default : 0 (always defrag)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 Alexey Kuznetsov.
 kuznet@ms2.inr.ac.ru
 
@@ -1532,11 +1561,14 @@ accept_ra_mtu - BOOLEAN
 	Functional default: enabled if accept_ra is enabled.
 			    disabled if accept_ra is disabled.
 
+<<<<<<< HEAD
 accept_ra_prefix_route - BOOLEAN
 	Set the prefix route for the autoconfigured interface address
 
 	Functional default: enabled
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 accept_redirects - BOOLEAN
 	Accept Redirects.
 

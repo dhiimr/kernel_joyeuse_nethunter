@@ -133,14 +133,20 @@ struct snd_card {
 	struct device card_dev;		/* cardX object for sysfs */
 	const struct attribute_group *dev_groups[4]; /* assigned sysfs attr */
 	bool registered;		/* card_dev is registered? */
+<<<<<<< HEAD
 	int offline;			/* if this sound card is offline */
 	unsigned long offline_change;
 	wait_queue_head_t offline_poll_wait;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_PM
 	unsigned int power_state;	/* power state */
 	wait_queue_head_t power_sleep;
+<<<<<<< HEAD
 	unsigned long power_change;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 #if IS_ENABLED(CONFIG_SND_MIXER_OSS)
@@ -160,9 +166,12 @@ static inline unsigned int snd_power_get_state(struct snd_card *card)
 static inline void snd_power_change_state(struct snd_card *card, unsigned int state)
 {
 	card->power_state = state;
+<<<<<<< HEAD
 	/* make sure power is updated prior to wake up */
 	wmb();
 	xchg(&card->power_change, 1);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	wake_up(&card->power_sleep);
 }
 
@@ -258,8 +267,11 @@ int snd_component_add(struct snd_card *card, const char *component);
 int snd_card_file_add(struct snd_card *card, struct file *file);
 int snd_card_file_remove(struct snd_card *card, struct file *file);
 #define snd_card_unref(card)	put_device(&(card)->card_dev)
+<<<<<<< HEAD
 void snd_card_change_online_state(struct snd_card *card, int online);
 bool snd_card_is_online_state(struct snd_card *card);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define snd_card_set_dev(card, devptr) ((card)->dev = (devptr))
 

@@ -126,6 +126,7 @@ int inet6addr_validator_notifier_call_chain(unsigned long val, void *v)
 }
 EXPORT_SYMBOL(inet6addr_validator_notifier_call_chain);
 
+<<<<<<< HEAD
 static int eafnosupport_ipv6_dst_lookup(struct net *net, struct sock *u1,
 					struct dst_entry **u2,
 					struct flowi6 *u3)
@@ -135,6 +136,18 @@ static int eafnosupport_ipv6_dst_lookup(struct net *net, struct sock *u1,
 
 const struct ipv6_stub *ipv6_stub __read_mostly = &(struct ipv6_stub) {
 	.ipv6_dst_lookup = eafnosupport_ipv6_dst_lookup,
+=======
+static struct dst_entry *eafnosupport_ipv6_dst_lookup_flow(struct net *net,
+							   const struct sock *sk,
+							   struct flowi6 *fl6,
+							   const struct in6_addr *final_dst)
+{
+	return ERR_PTR(-EAFNOSUPPORT);
+}
+
+const struct ipv6_stub *ipv6_stub __read_mostly = &(struct ipv6_stub) {
+	.ipv6_dst_lookup_flow = eafnosupport_ipv6_dst_lookup_flow,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 EXPORT_SYMBOL_GPL(ipv6_stub);
 

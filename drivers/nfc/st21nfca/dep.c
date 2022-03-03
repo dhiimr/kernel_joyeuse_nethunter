@@ -184,8 +184,15 @@ static int st21nfca_tm_send_atr_res(struct nfc_hci_dev *hdev,
 		memcpy(atr_res->gbi, atr_req->gbi, gb_len);
 		r = nfc_set_remote_general_bytes(hdev->ndev, atr_res->gbi,
 						  gb_len);
+<<<<<<< HEAD
 		if (r < 0)
 			return r;
+=======
+		if (r < 0) {
+			kfree_skb(skb);
+			return r;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	info->dep_info.curr_nfc_dep_pni = 0;
@@ -217,8 +224,12 @@ static int st21nfca_tm_recv_atr_req(struct nfc_hci_dev *hdev,
 
 	atr_req = (struct st21nfca_atr_req *)skb->data;
 
+<<<<<<< HEAD
 	if (atr_req->length < sizeof(struct st21nfca_atr_req) ||
 	    atr_req->length > skb->len) {
+=======
+	if (atr_req->length < sizeof(struct st21nfca_atr_req)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		r = -EPROTO;
 		goto exit;
 	}

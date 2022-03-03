@@ -43,10 +43,17 @@ static int stmmac_jumbo_frm(void *p, struct sk_buff *skb, int csum)
 
 	len = nopaged_len - bmax;
 
+<<<<<<< HEAD
 	des2 = dma_map_single(GET_MEM_PDEV_DEV, skb->data,
 			      bmax, DMA_TO_DEVICE);
 	desc->des2 = cpu_to_le32(des2);
 	if (dma_mapping_error(GET_MEM_PDEV_DEV, des2))
+=======
+	des2 = dma_map_single(priv->device, skb->data,
+			      bmax, DMA_TO_DEVICE);
+	desc->des2 = cpu_to_le32(des2);
+	if (dma_mapping_error(priv->device, des2))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -1;
 	tx_q->tx_skbuff_dma[entry].buf = des2;
 	tx_q->tx_skbuff_dma[entry].len = bmax;

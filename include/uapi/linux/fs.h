@@ -265,8 +265,12 @@ struct fsxattr {
 #define FS_POLICY_FLAGS_PAD_16		0x02
 #define FS_POLICY_FLAGS_PAD_32		0x03
 #define FS_POLICY_FLAGS_PAD_MASK	0x03
+<<<<<<< HEAD
 #define FS_POLICY_FLAG_DIRECT_KEY	0x04	/* use master key directly */
 #define FS_POLICY_FLAGS_VALID		0x07
+=======
+#define FS_POLICY_FLAGS_VALID		0x03
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Encryption algorithms */
 #define FS_ENCRYPTION_MODE_INVALID		0
@@ -276,10 +280,13 @@ struct fsxattr {
 #define FS_ENCRYPTION_MODE_AES_256_CTS		4
 #define FS_ENCRYPTION_MODE_AES_128_CBC		5
 #define FS_ENCRYPTION_MODE_AES_128_CTS		6
+<<<<<<< HEAD
 #define FS_ENCRYPTION_MODE_SPECK128_256_XTS	7 /* Removed, do not use. */
 #define FS_ENCRYPTION_MODE_SPECK128_256_CTS	8 /* Removed, do not use. */
 #define FS_ENCRYPTION_MODE_ADIANTUM		9
 #define FS_ENCRYPTION_MODE_PRIVATE		127
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct fscrypt_policy {
 	__u8 version;

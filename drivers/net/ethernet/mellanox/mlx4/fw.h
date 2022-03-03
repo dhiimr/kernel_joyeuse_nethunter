@@ -181,8 +181,13 @@ struct mlx4_init_hca_param {
 	u64 cmpt_base;
 	u64 mtt_base;
 	u64 global_caps;
+<<<<<<< HEAD
 	u16 log_mc_entry_sz;
 	u16 log_mc_hash_sz;
+=======
+	u8 log_mc_entry_sz;
+	u8 log_mc_hash_sz;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u16 hca_core_clock; /* Internal Clock Frequency (in MHz) */
 	u8  log_num_qps;
 	u8  log_num_srqs;

@@ -398,6 +398,11 @@ static int usbpn_probe(struct usb_interface *intf, const struct usb_device_id *i
 
 	err = register_netdev(dev);
 	if (err) {
+<<<<<<< HEAD
+=======
+		/* Set disconnected flag so that disconnect() returns early. */
+		pnd->disconnected = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		usb_driver_release_interface(&usbpn_driver, data_intf);
 		goto out;
 	}

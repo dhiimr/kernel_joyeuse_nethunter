@@ -548,13 +548,23 @@ int arch_validate_hwbkpt_settings(struct perf_event *bp)
 			/* Aligned */
 			break;
 		case 1:
+<<<<<<< HEAD
 			/* Allow single byte watchpoint. */
 			if (info->ctrl.len == ARM_BREAKPOINT_LEN_1)
 				break;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		case 2:
 			/* Allow halfword watchpoints and breakpoints. */
 			if (info->ctrl.len == ARM_BREAKPOINT_LEN_2)
 				break;
+<<<<<<< HEAD
+=======
+		case 3:
+			/* Allow single byte watchpoint. */
+			if (info->ctrl.len == ARM_BREAKPOINT_LEN_1)
+				break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		default:
 			return -EINVAL;
 		}
@@ -737,6 +747,30 @@ static u64 get_distance_from_watchpoint(unsigned long addr, u64 val,
 		return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int watchpoint_report(struct perf_event *wp, unsigned long addr,
+			     struct pt_regs *regs)
+{
+	int step = is_default_overflow_handler(wp);
+	struct arch_hw_breakpoint *info = counter_arch_bp(wp);
+
+	info->trigger = addr;
+
+	/*
+	 * If we triggered a user watchpoint from a uaccess routine, then
+	 * handle the stepping ourselves since userspace really can't help
+	 * us with this.
+	 */
+	if (!user_mode(regs) && info->ctrl.privilege == AARCH64_BREAKPOINT_EL0)
+		step = 1;
+	else
+		perf_bp_event(wp, regs);
+
+	return step;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int watchpoint_handler(unsigned long addr, unsigned int esr,
 			      struct pt_regs *regs)
 {
@@ -746,7 +780,10 @@ static int watchpoint_handler(unsigned long addr, unsigned int esr,
 	u64 val;
 	struct perf_event *wp, **slots;
 	struct debug_info *debug_info;
+<<<<<<< HEAD
 	struct arch_hw_breakpoint *info;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct arch_hw_breakpoint_ctrl ctrl;
 
 	slots = this_cpu_ptr(wp_on_reg);
@@ -784,6 +821,7 @@ static int watchpoint_handler(unsigned long addr, unsigned int esr,
 		if (dist != 0)
 			continue;
 
+<<<<<<< HEAD
 		info = counter_arch_bp(wp);
 		info->trigger = addr;
 		perf_bp_event(wp, regs);
@@ -803,6 +841,15 @@ static int watchpoint_handler(unsigned long addr, unsigned int esr,
 		if (is_default_overflow_handler(wp))
 			step = 1;
 	}
+=======
+		step = watchpoint_report(wp, addr, regs);
+	}
+
+	/* No exact match found? */
+	if (min_dist > 0 && min_dist != -1)
+		step = watchpoint_report(slots[closest_match], addr, regs);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rcu_read_unlock();
 
 	if (!step)
@@ -935,6 +982,7 @@ void hw_breakpoint_thread_switch(struct task_struct *next)
 }
 
 /*
+<<<<<<< HEAD
  * Check if halted debug mode is enabled.
  */
 static u32 hde_enabled(void)
@@ -946,12 +994,15 @@ static u32 hde_enabled(void)
 }
 
 /*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * CPU initialisation.
  */
 static int hw_breakpoint_reset(unsigned int cpu)
 {
 	int i;
 	struct perf_event **slots;
+<<<<<<< HEAD
 
 	/*
 	 * When halting debug mode is enabled, break point could be already
@@ -960,6 +1011,8 @@ static int hw_breakpoint_reset(unsigned int cpu)
 	 */
 	if (hde_enabled())
 		return 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * When a CPU goes through cold-boot, it does not have any installed
 	 * slot, so it is safe to share the same function for restoring and

@@ -245,6 +245,7 @@ static void hv_kbd_handle_received_packet(struct hv_device *hv_dev,
 
 static void hv_kbd_on_channel_callback(void *context)
 {
+<<<<<<< HEAD
 	struct hv_device *hv_dev = context;
 	void *buffer;
 	int bufferlen = 0x100; /* Start with sensible size */
@@ -279,6 +280,19 @@ static void hv_kbd_on_channel_callback(void *context)
 				return;
 			break;
 		}
+=======
+	struct vmpacket_descriptor *desc;
+	struct hv_device *hv_dev = context;
+	u32 bytes_recvd;
+	u64 req_id;
+
+	foreach_vmbus_pkt(desc, hv_dev->channel) {
+		bytes_recvd = desc->len8 * 8;
+		req_id = desc->trans_id;
+
+		hv_kbd_handle_received_packet(hv_dev, desc, bytes_recvd,
+					      req_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 

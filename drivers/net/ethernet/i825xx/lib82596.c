@@ -1065,7 +1065,11 @@ static int i82596_probe(struct net_device *dev)
 
 	dma = dma_alloc_attrs(dev->dev.parent, sizeof(struct i596_dma),
 			      &lp->dma_addr, GFP_KERNEL,
+<<<<<<< HEAD
 			      DMA_ATTR_NON_CONSISTENT);
+=======
+			      LIB82596_DMA_ATTR);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!dma) {
 		printk(KERN_ERR "%s: Couldn't get shared memory\n", __FILE__);
 		return -ENOMEM;
@@ -1087,7 +1091,11 @@ static int i82596_probe(struct net_device *dev)
 	i = register_netdev(dev);
 	if (i) {
 		dma_free_attrs(dev->dev.parent, sizeof(struct i596_dma),
+<<<<<<< HEAD
 			       dma, lp->dma_addr, DMA_ATTR_NON_CONSISTENT);
+=======
+			       dma, lp->dma_addr, LIB82596_DMA_ATTR);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return i;
 	}
 

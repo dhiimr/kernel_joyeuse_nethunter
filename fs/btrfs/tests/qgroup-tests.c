@@ -487,9 +487,15 @@ int btrfs_test_qgroups(u32 sectorsize, u32 nodesize)
 	 * *cough*backref walking code*cough*
 	 */
 	root->node = alloc_test_extent_buffer(root->fs_info, nodesize);
+<<<<<<< HEAD
 	if (!root->node) {
 		test_msg("Couldn't allocate dummy buffer\n");
 		ret = -ENOMEM;
+=======
+	if (IS_ERR(root->node)) {
+		test_msg("Couldn't allocate dummy buffer\n");
+		ret = PTR_ERR(root->node);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out;
 	}
 	btrfs_set_header_level(root->node, 0);

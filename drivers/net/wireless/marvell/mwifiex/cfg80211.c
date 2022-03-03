@@ -362,11 +362,28 @@ mwifiex_cfg80211_set_tx_power(struct wiphy *wiphy,
 	struct mwifiex_power_cfg power_cfg;
 	int dbm = MBM_TO_DBM(mbm);
 
+<<<<<<< HEAD
 	if (type == NL80211_TX_POWER_FIXED) {
 		power_cfg.is_power_auto = 0;
 		power_cfg.power_level = dbm;
 	} else {
 		power_cfg.is_power_auto = 1;
+=======
+	switch (type) {
+	case NL80211_TX_POWER_FIXED:
+		power_cfg.is_power_auto = 0;
+		power_cfg.is_power_fixed = 1;
+		power_cfg.power_level = dbm;
+		break;
+	case NL80211_TX_POWER_LIMITED:
+		power_cfg.is_power_auto = 0;
+		power_cfg.is_power_fixed = 0;
+		power_cfg.power_level = dbm;
+		break;
+	case NL80211_TX_POWER_AUTOMATIC:
+		power_cfg.is_power_auto = 1;
+		break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	priv = mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_ANY);
@@ -889,6 +906,7 @@ mwifiex_init_new_priv_params(struct mwifiex_private *priv,
 	switch (type) {
 	case NL80211_IFTYPE_STATION:
 	case NL80211_IFTYPE_ADHOC:
+<<<<<<< HEAD
 		priv->bss_role =  MWIFIEX_BSS_ROLE_STA;
 		break;
 	case NL80211_IFTYPE_P2P_CLIENT:
@@ -899,6 +917,22 @@ mwifiex_init_new_priv_params(struct mwifiex_private *priv,
 		break;
 	case NL80211_IFTYPE_AP:
 		priv->bss_role = MWIFIEX_BSS_ROLE_UAP;
+=======
+		priv->bss_role = MWIFIEX_BSS_ROLE_STA;
+		priv->bss_type = MWIFIEX_BSS_TYPE_STA;
+		break;
+	case NL80211_IFTYPE_P2P_CLIENT:
+		priv->bss_role = MWIFIEX_BSS_ROLE_STA;
+		priv->bss_type = MWIFIEX_BSS_TYPE_P2P;
+		break;
+	case NL80211_IFTYPE_P2P_GO:
+		priv->bss_role = MWIFIEX_BSS_ROLE_UAP;
+		priv->bss_type = MWIFIEX_BSS_TYPE_P2P;
+		break;
+	case NL80211_IFTYPE_AP:
+		priv->bss_role = MWIFIEX_BSS_ROLE_UAP;
+		priv->bss_type = MWIFIEX_BSS_TYPE_UAP;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	default:
 		mwifiex_dbg(adapter, ERROR,
@@ -1208,6 +1242,7 @@ mwifiex_cfg80211_change_virtual_intf(struct wiphy *wiphy,
 		break;
 	case NL80211_IFTYPE_P2P_CLIENT:
 	case NL80211_IFTYPE_P2P_GO:
+<<<<<<< HEAD
 		switch (type) {
 		case NL80211_IFTYPE_STATION:
 			if (mwifiex_cfg80211_deinit_p2p(priv))
@@ -1231,6 +1266,17 @@ mwifiex_cfg80211_change_virtual_intf(struct wiphy *wiphy,
 		case NL80211_IFTYPE_AP:
 			if (mwifiex_cfg80211_deinit_p2p(priv))
 				return -EFAULT;
+=======
+		if (mwifiex_cfg80211_deinit_p2p(priv))
+			return -EFAULT;
+
+		switch (type) {
+		case NL80211_IFTYPE_ADHOC:
+		case NL80211_IFTYPE_STATION:
+			return mwifiex_change_vif_to_sta_adhoc(dev, curr_iftype,
+							       type, params);
+		case NL80211_IFTYPE_AP:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return mwifiex_change_vif_to_ap(dev, curr_iftype, type,
 							params);
 		case NL80211_IFTYPE_UNSPECIFIED:
@@ -1442,7 +1488,12 @@ mwifiex_cfg80211_dump_station(struct wiphy *wiphy, struct net_device *dev,
 			      int idx, u8 *mac, struct station_info *sinfo)
 {
 	struct mwifiex_private *priv = mwifiex_netdev_get_priv(dev);
+<<<<<<< HEAD
 	static struct mwifiex_sta_node *node;
+=======
+	struct mwifiex_sta_node *node;
+	int i;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if ((GET_BSS_ROLE(priv) == MWIFIEX_BSS_ROLE_STA) &&
 	    priv->media_connected && idx == 0) {
@@ -1452,6 +1503,7 @@ mwifiex_cfg80211_dump_station(struct wiphy *wiphy, struct net_device *dev,
 		mwifiex_send_cmd(priv, HOST_CMD_APCMD_STA_LIST,
 				 HostCmd_ACT_GEN_GET, 0, NULL, true);
 
+<<<<<<< HEAD
 		if (node && (&node->list == &priv->sta_list)) {
 			node = NULL;
 			return -ENOENT;
@@ -1459,6 +1511,12 @@ mwifiex_cfg80211_dump_station(struct wiphy *wiphy, struct net_device *dev,
 
 		node = list_prepare_entry(node, &priv->sta_list, list);
 		list_for_each_entry_continue(node, &priv->sta_list, list) {
+=======
+		i = 0;
+		list_for_each_entry(node, &priv->sta_list, list) {
+			if (i++ != idx)
+				continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ether_addr_copy(mac, node->mac_addr);
 			return mwifiex_dump_station_info(priv, node, sinfo);
 		}
@@ -4024,16 +4082,31 @@ static int mwifiex_tm_cmd(struct wiphy *wiphy, struct wireless_dev *wdev,
 
 		if (mwifiex_send_cmd(priv, 0, 0, 0, hostcmd, true)) {
 			dev_err(priv->adapter->dev, "Failed to process hostcmd\n");
+<<<<<<< HEAD
+=======
+			kfree(hostcmd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return -EFAULT;
 		}
 
 		/* process hostcmd response*/
 		skb = cfg80211_testmode_alloc_reply_skb(wiphy, hostcmd->len);
+<<<<<<< HEAD
 		if (!skb)
 			return -ENOMEM;
 		err = nla_put(skb, MWIFIEX_TM_ATTR_DATA,
 			      hostcmd->len, hostcmd->cmd);
 		if (err) {
+=======
+		if (!skb) {
+			kfree(hostcmd);
+			return -ENOMEM;
+		}
+		err = nla_put(skb, MWIFIEX_TM_ATTR_DATA,
+			      hostcmd->len, hostcmd->cmd);
+		if (err) {
+			kfree(hostcmd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			kfree_skb(skb);
 			return -EMSGSIZE;
 		}

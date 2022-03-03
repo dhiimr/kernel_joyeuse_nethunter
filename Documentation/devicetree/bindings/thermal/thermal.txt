@@ -175,10 +175,13 @@ Optional property:
 			2000mW, while on a 10'' tablet is around
 			4500mW.
 
+<<<<<<< HEAD
 - wake-capable-sensor:	Set to true if thermal zone sensor is wake up capable
   Type: bool		and cooling devices binded to this thermal zone are not
   Size: none		affected during suspend.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 Note: The delay properties are bound to the maximum dT/dt (temperature
 derivative over time) in two situations for a thermal zone:
 (i)  - when passive cooling is activated (polling-delay-passive); and

@@ -29,7 +29,11 @@ menuconfig VFIO
 
 	  If you don't know what to do here, say N.
 
+<<<<<<< HEAD
 menuconfig VFIO_NOIOMMU
+=======
+config VFIO_NOIOMMU
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool "VFIO No-IOMMU support"
 	depends on VFIO
 	help

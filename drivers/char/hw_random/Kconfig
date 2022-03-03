@@ -335,6 +335,10 @@ config HW_RANDOM_HISI
 config HW_RANDOM_MSM
 	tristate "Qualcomm SoCs Random Number Generator support"
 	depends on HW_RANDOM && ARCH_QCOM
+<<<<<<< HEAD
+=======
+	default HW_RANDOM
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	---help---
 	  This driver provides kernel-side support for the Random Number
 	  Generator hardware found on Qualcomm SoCs.
@@ -344,6 +348,7 @@ config HW_RANDOM_MSM
 
 	  If unsure, say Y.
 
+<<<<<<< HEAD
 config HW_RANDOM_MSM_LEGACY
 	tristate "QTI MSM Random Number Generator support (LEGACY)"
 	depends on HW_RANDOM && ARCH_QCOM
@@ -358,6 +363,8 @@ config HW_RANDOM_MSM_LEGACY
 
 	  If unsure, say Y.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config HW_RANDOM_ST
 	tristate "ST Microelectronics HW Random Number Generator support"
 	depends on HW_RANDOM && ARCH_STI

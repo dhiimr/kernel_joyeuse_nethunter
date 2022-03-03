@@ -54,6 +54,12 @@ struct devfreq_governor {
 				unsigned int event, void *data);
 };
 
+<<<<<<< HEAD
+=======
+/* Caution: devfreq->lock must be locked before calling update_devfreq */
+extern int update_devfreq(struct devfreq *devfreq);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void devfreq_monitor_start(struct devfreq *devfreq);
 extern void devfreq_monitor_stop(struct devfreq *devfreq);
 extern void devfreq_monitor_suspend(struct devfreq *devfreq);

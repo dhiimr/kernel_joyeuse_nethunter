@@ -193,6 +193,10 @@ static struct platform_driver rn5t618_wdt_driver = {
 
 module_platform_driver(rn5t618_wdt_driver);
 
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:rn5t618-wdt");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 MODULE_AUTHOR("Beniamino Galvani <b.galvani@gmail.com>");
 MODULE_DESCRIPTION("RN5T618 watchdog driver");
 MODULE_LICENSE("GPL v2");

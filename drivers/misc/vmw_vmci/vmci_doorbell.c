@@ -318,7 +318,12 @@ int vmci_dbell_host_context_notify(u32 src_cid, struct vmci_handle handle)
 
 	entry = container_of(resource, struct dbell_entry, resource);
 	if (entry->run_delayed) {
+<<<<<<< HEAD
 		schedule_work(&entry->work);
+=======
+		if (!schedule_work(&entry->work))
+			vmci_resource_put(resource);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		entry->notify_cb(entry->client_data);
 		vmci_resource_put(resource);
@@ -333,7 +338,11 @@ int vmci_dbell_host_context_notify(u32 src_cid, struct vmci_handle handle)
 bool vmci_dbell_register_notification_bitmap(u32 bitmap_ppn)
 {
 	int result;
+<<<<<<< HEAD
 	struct vmci_notify_bm_set_msg bitmap_set_msg;
+=======
+	struct vmci_notify_bm_set_msg bitmap_set_msg = { };
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	bitmap_set_msg.hdr.dst = vmci_make_handle(VMCI_HYPERVISOR_CONTEXT_ID,
 						  VMCI_SET_NOTIFY_BITMAP);
@@ -366,7 +375,12 @@ static void dbell_fire_entries(u32 notify_idx)
 		    atomic_read(&dbell->active) == 1) {
 			if (dbell->run_delayed) {
 				vmci_resource_get(&dbell->resource);
+<<<<<<< HEAD
 				schedule_work(&dbell->work);
+=======
+				if (!schedule_work(&dbell->work))
+					vmci_resource_put(&dbell->resource);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			} else {
 				dbell->notify_cb(dbell->client_data);
 			}

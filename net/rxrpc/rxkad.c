@@ -1111,7 +1111,11 @@ static int rxkad_verify_response(struct rxrpc_connection *conn,
 	ret = rxkad_decrypt_ticket(conn, skb, ticket, ticket_len, &session_key,
 				   &expiry, _abort_code);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto temporary_error_free_resp;
+=======
+		goto temporary_error_free_ticket;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* use the session key from inside the ticket to decrypt the
 	 * response */
@@ -1193,7 +1197,10 @@ protocol_error:
 
 temporary_error_free_ticket:
 	kfree(ticket);
+<<<<<<< HEAD
 temporary_error_free_resp:
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(response);
 temporary_error:
 	/* Ignore the response packet if we got a temporary error such as

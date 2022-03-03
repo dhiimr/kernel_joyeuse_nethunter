@@ -58,13 +58,24 @@ static DEFINE_MUTEX(spi_mutex);
  * RT5677_SPI_READ/WRITE_32:	Transfer 4 bytes
  * RT5677_SPI_READ/WRITE_BURST:	Transfer any multiples of 8 bytes
  *
+<<<<<<< HEAD
  * For example, reading 260 bytes at 0x60030002 uses the following commands:
  * 0x60030002 RT5677_SPI_READ_16	2 bytes
+=======
+ * Note:
+ * 16 Bit writes and reads are restricted to the address range
+ * 0x18020000 ~ 0x18021000
+ *
+ * For example, reading 256 bytes at 0x60030004 uses the following commands:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * 0x60030004 RT5677_SPI_READ_32	4 bytes
  * 0x60030008 RT5677_SPI_READ_BURST	240 bytes
  * 0x600300F8 RT5677_SPI_READ_BURST	8 bytes
  * 0x60030100 RT5677_SPI_READ_32	4 bytes
+<<<<<<< HEAD
  * 0x60030104 RT5677_SPI_READ_16	2 bytes
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Input:
  * @read: true for read commands; false for write commands
@@ -79,15 +90,24 @@ static u8 rt5677_spi_select_cmd(bool read, u32 align, u32 remain, u32 *len)
 {
 	u8 cmd;
 
+<<<<<<< HEAD
 	if (align == 2 || align == 6 || remain == 2) {
 		cmd = RT5677_SPI_READ_16;
 		*len = 2;
 	} else if (align == 4 || remain <= 6) {
+=======
+	if (align == 4 || remain <= 4) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cmd = RT5677_SPI_READ_32;
 		*len = 4;
 	} else {
 		cmd = RT5677_SPI_READ_BURST;
+<<<<<<< HEAD
 		*len = min_t(u32, remain & ~7, RT5677_SPI_BURST_LEN);
+=======
+		*len = (((remain - 1) >> 3) + 1) << 3;
+		*len = min_t(u32, *len, RT5677_SPI_BURST_LEN);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return read ? cmd : cmd + 1;
 }
@@ -108,7 +128,11 @@ static void rt5677_spi_reverse(u8 *dst, u32 dstlen, const u8 *src, u32 srclen)
 	}
 }
 
+<<<<<<< HEAD
 /* Read DSP address space using SPI. addr and len have to be 2-byte aligned. */
+=======
+/* Read DSP address space using SPI. addr and len have to be 4-byte aligned. */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int rt5677_spi_read(u32 addr, void *rxbuf, size_t len)
 {
 	u32 offset;
@@ -124,7 +148,11 @@ int rt5677_spi_read(u32 addr, void *rxbuf, size_t len)
 	if (!g_spi)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	if ((addr & 1) || (len & 1)) {
+=======
+	if ((addr & 3) || (len & 3)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_err(&g_spi->dev, "Bad read align 0x%x(%zu)\n", addr, len);
 		return -EACCES;
 	}
@@ -159,13 +187,22 @@ int rt5677_spi_read(u32 addr, void *rxbuf, size_t len)
 }
 EXPORT_SYMBOL_GPL(rt5677_spi_read);
 
+<<<<<<< HEAD
 /* Write DSP address space using SPI. addr has to be 2-byte aligned.
  * If len is not 2-byte aligned, an extra byte of zero is written at the end
+=======
+/* Write DSP address space using SPI. addr has to be 4-byte aligned.
+ * If len is not 4-byte aligned, then extra zeros are written at the end
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * as padding.
  */
 int rt5677_spi_write(u32 addr, const void *txbuf, size_t len)
 {
+<<<<<<< HEAD
 	u32 offset, len_with_pad = len;
+=======
+	u32 offset;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int status = 0;
 	struct spi_transfer t;
 	struct spi_message m;
@@ -178,22 +215,35 @@ int rt5677_spi_write(u32 addr, const void *txbuf, size_t len)
 	if (!g_spi)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	if (addr & 1) {
+=======
+	if (addr & 3) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_err(&g_spi->dev, "Bad write align 0x%x(%zu)\n", addr, len);
 		return -EACCES;
 	}
 
+<<<<<<< HEAD
 	if (len & 1)
 		len_with_pad = len + 1;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	memset(&t, 0, sizeof(t));
 	t.tx_buf = buf;
 	t.speed_hz = RT5677_SPI_FREQ;
 	spi_message_init_with_transfers(&m, &t, 1);
 
+<<<<<<< HEAD
 	for (offset = 0; offset < len_with_pad;) {
 		spi_cmd = rt5677_spi_select_cmd(false, (addr + offset) & 7,
 				len_with_pad - offset, &t.len);
+=======
+	for (offset = 0; offset < len;) {
+		spi_cmd = rt5677_spi_select_cmd(false, (addr + offset) & 7,
+				len - offset, &t.len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* Construct SPI message header */
 		buf[0] = spi_cmd;

@@ -438,7 +438,11 @@ static void kgdb_disable_hw_debug(struct pt_regs *regs)
  */
 void kgdb_roundup_cpus(unsigned long flags)
 {
+<<<<<<< HEAD
 	apic->send_IPI_allbutself(APIC_DM_NMI);
+=======
+	apic->send_IPI_allbutself(NMI_VECTOR);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #endif
 

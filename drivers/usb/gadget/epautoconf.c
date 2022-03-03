@@ -209,6 +209,7 @@ void usb_ep_autoconfig_reset (struct usb_gadget *gadget)
 	gadget->out_epnum = 0;
 }
 EXPORT_SYMBOL_GPL(usb_ep_autoconfig_reset);
+<<<<<<< HEAD
 
 /**
  * usb_ep_autoconfig_by_name - Used to pick the endpoint by name. eg ep1in-gsi
@@ -247,3 +248,5 @@ struct usb_ep *usb_ep_autoconfig_by_name(
 	return NULL;
 }
 EXPORT_SYMBOL(usb_ep_autoconfig_by_name);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

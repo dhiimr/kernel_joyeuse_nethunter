@@ -261,10 +261,18 @@ static void sii902x_bridge_mode_set(struct drm_bridge *bridge,
 	struct regmap *regmap = sii902x->regmap;
 	u8 buf[HDMI_INFOFRAME_SIZE(AVI)];
 	struct hdmi_avi_infoframe frame;
+<<<<<<< HEAD
 	int ret;
 
 	buf[0] = adj->clock;
 	buf[1] = adj->clock >> 8;
+=======
+	u16 pixel_clock_10kHz = adj->clock / 10;
+	int ret;
+
+	buf[0] = pixel_clock_10kHz & 0xff;
+	buf[1] = pixel_clock_10kHz >> 8;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	buf[2] = adj->vrefresh;
 	buf[3] = 0x00;
 	buf[4] = adj->hdisplay;

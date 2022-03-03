@@ -531,6 +531,10 @@ static int radeon_info_ioctl(struct drm_device *dev, void *data, struct drm_file
 			*value = rdev->config.si.backend_enable_mask;
 		} else {
 			DRM_DEBUG_KMS("BACKEND_ENABLED_MASK is si+ only!\n");
+<<<<<<< HEAD
+=======
+			return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		break;
 	case RADEON_INFO_MAX_SCLK:
@@ -654,11 +658,17 @@ void radeon_driver_lastclose_kms(struct drm_device *dev)
 int radeon_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
 {
 	struct radeon_device *rdev = dev->dev_private;
+<<<<<<< HEAD
+=======
+	struct radeon_fpriv *fpriv;
+	struct radeon_vm *vm;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int r;
 
 	file_priv->driver_priv = NULL;
 
 	r = pm_runtime_get_sync(dev->dev);
+<<<<<<< HEAD
 	if (r < 0)
 		return r;
 
@@ -666,16 +676,30 @@ int radeon_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
 	if (rdev->family >= CHIP_CAYMAN) {
 		struct radeon_fpriv *fpriv;
 		struct radeon_vm *vm;
+=======
+	if (r < 0) {
+		pm_runtime_put_autosuspend(dev->dev);
+		return r;
+	}
+
+	/* new gpu have virtual address space support */
+	if (rdev->family >= CHIP_CAYMAN) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		fpriv = kzalloc(sizeof(*fpriv), GFP_KERNEL);
 		if (unlikely(!fpriv)) {
 			r = -ENOMEM;
+<<<<<<< HEAD
 			goto out_suspend;
+=======
+			goto err_suspend;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		if (rdev->accel_working) {
 			vm = &fpriv->vm;
 			r = radeon_vm_init(rdev, vm);
+<<<<<<< HEAD
 			if (r) {
 				kfree(fpriv);
 				goto out_suspend;
@@ -687,25 +711,59 @@ int radeon_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
 				kfree(fpriv);
 				goto out_suspend;
 			}
+=======
+			if (r)
+				goto err_fpriv;
+
+			r = radeon_bo_reserve(rdev->ring_tmp_bo.bo, false);
+			if (r)
+				goto err_vm_fini;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			/* map the ib pool buffer read only into
 			 * virtual address space */
 			vm->ib_bo_va = radeon_vm_bo_add(rdev, vm,
 							rdev->ring_tmp_bo.bo);
+<<<<<<< HEAD
+=======
+			if (!vm->ib_bo_va) {
+				r = -ENOMEM;
+				goto err_vm_fini;
+			}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			r = radeon_vm_bo_set_addr(rdev, vm->ib_bo_va,
 						  RADEON_VA_IB_OFFSET,
 						  RADEON_VM_PAGE_READABLE |
 						  RADEON_VM_PAGE_SNOOPED);
+<<<<<<< HEAD
 			if (r) {
 				radeon_vm_fini(rdev, vm);
 				kfree(fpriv);
 				goto out_suspend;
 			}
+=======
+			if (r)
+				goto err_vm_fini;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		file_priv->driver_priv = fpriv;
 	}
 
+<<<<<<< HEAD
 out_suspend:
+=======
+	pm_runtime_mark_last_busy(dev->dev);
+	pm_runtime_put_autosuspend(dev->dev);
+	return 0;
+
+err_vm_fini:
+	radeon_vm_fini(rdev, vm);
+err_fpriv:
+	kfree(fpriv);
+
+err_suspend:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pm_runtime_mark_last_busy(dev->dev);
 	pm_runtime_put_autosuspend(dev->dev);
 	return r;

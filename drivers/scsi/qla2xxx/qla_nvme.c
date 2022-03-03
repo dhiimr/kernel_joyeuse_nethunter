@@ -88,8 +88,14 @@ static int qla_nvme_alloc_queue(struct nvme_fc_local_port *lport,
 	struct qla_hw_data *ha;
 	struct qla_qpair *qpair;
 
+<<<<<<< HEAD
 	if (!qidx)
 		qidx++;
+=======
+	/* Map admin queue and 1st IO queue to index 0 */
+	if (qidx)
+		qidx--;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	vha = (struct scsi_qla_host *)lport->private;
 	ha = vha->hw;

@@ -97,7 +97,11 @@ static void pwm_lpss_prepare(struct pwm_lpss_chip *lpwm, struct pwm_device *pwm,
 	unsigned long long on_time_div;
 	unsigned long c = lpwm->info->clk_rate, base_unit_range;
 	unsigned long long base_unit, freq = NSEC_PER_SEC;
+<<<<<<< HEAD
 	u32 ctrl;
+=======
+	u32 orig_ctrl, ctrl;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	do_div(freq, period_ns);
 
@@ -105,15 +109,25 @@ static void pwm_lpss_prepare(struct pwm_lpss_chip *lpwm, struct pwm_device *pwm,
 	 * The equation is:
 	 * base_unit = round(base_unit_range * freq / c)
 	 */
+<<<<<<< HEAD
 	base_unit_range = BIT(lpwm->info->base_unit_bits) - 1;
 	freq *= base_unit_range;
 
 	base_unit = DIV_ROUND_CLOSEST_ULL(freq, c);
+=======
+	base_unit_range = BIT(lpwm->info->base_unit_bits);
+	freq *= base_unit_range;
+
+	base_unit = DIV_ROUND_CLOSEST_ULL(freq, c);
+	/* base_unit must not be 0 and we also want to avoid overflowing it */
+	base_unit = clamp_val(base_unit, 1, base_unit_range - 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	on_time_div = 255ULL * duty_ns;
 	do_div(on_time_div, period_ns);
 	on_time_div = 255ULL - on_time_div;
 
+<<<<<<< HEAD
 	ctrl = pwm_lpss_read(pwm);
 	ctrl &= ~PWM_ON_TIME_DIV_MASK;
 	ctrl &= ~(base_unit_range << PWM_BASE_UNIT_SHIFT);
@@ -121,6 +135,18 @@ static void pwm_lpss_prepare(struct pwm_lpss_chip *lpwm, struct pwm_device *pwm,
 	ctrl |= (u32) base_unit << PWM_BASE_UNIT_SHIFT;
 	ctrl |= on_time_div;
 	pwm_lpss_write(pwm, ctrl);
+=======
+	orig_ctrl = ctrl = pwm_lpss_read(pwm);
+	ctrl &= ~PWM_ON_TIME_DIV_MASK;
+	ctrl &= ~((base_unit_range - 1) << PWM_BASE_UNIT_SHIFT);
+	ctrl |= (u32) base_unit << PWM_BASE_UNIT_SHIFT;
+	ctrl |= on_time_div;
+
+	if (orig_ctrl != ctrl) {
+		pwm_lpss_write(pwm, ctrl);
+		pwm_lpss_write(pwm, ctrl | PWM_SW_UPDATE);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void pwm_lpss_cond_enable(struct pwm_device *pwm, bool cond)
@@ -144,7 +170,10 @@ static int pwm_lpss_apply(struct pwm_chip *chip, struct pwm_device *pwm,
 				return ret;
 			}
 			pwm_lpss_prepare(lpwm, pwm, state->duty_cycle, state->period);
+<<<<<<< HEAD
 			pwm_lpss_write(pwm, pwm_lpss_read(pwm) | PWM_SW_UPDATE);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			pwm_lpss_cond_enable(pwm, lpwm->info->bypass == false);
 			ret = pwm_lpss_wait_for_update(pwm);
 			if (ret) {
@@ -157,7 +186,10 @@ static int pwm_lpss_apply(struct pwm_chip *chip, struct pwm_device *pwm,
 			if (ret)
 				return ret;
 			pwm_lpss_prepare(lpwm, pwm, state->duty_cycle, state->period);
+<<<<<<< HEAD
 			pwm_lpss_write(pwm, pwm_lpss_read(pwm) | PWM_SW_UPDATE);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return pwm_lpss_wait_for_update(pwm);
 		}
 	} else if (pwm_is_enabled(pwm)) {
@@ -214,6 +246,15 @@ EXPORT_SYMBOL_GPL(pwm_lpss_probe);
 
 int pwm_lpss_remove(struct pwm_lpss_chip *lpwm)
 {
+<<<<<<< HEAD
+=======
+	int i;
+
+	for (i = 0; i < lpwm->info->npwm; i++) {
+		if (pwm_is_enabled(&lpwm->chip.pwms[i]))
+			pm_runtime_put(lpwm->chip.dev);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return pwmchip_remove(&lpwm->chip);
 }
 EXPORT_SYMBOL_GPL(pwm_lpss_remove);

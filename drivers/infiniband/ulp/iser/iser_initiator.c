@@ -592,6 +592,7 @@ void iser_login_rsp(struct ib_cq *cq, struct ib_wc *wc)
 	ib_conn->post_recv_buf_count--;
 }
 
+<<<<<<< HEAD
 static inline void
 iser_inv_desc(struct iser_fr_desc *desc, u32 rkey)
 {
@@ -599,6 +600,21 @@ iser_inv_desc(struct iser_fr_desc *desc, u32 rkey)
 		desc->rsc.mr_valid = 0;
 	else if (likely(rkey == desc->pi_ctx->sig_mr->rkey))
 		desc->pi_ctx->sig_mr_valid = 0;
+=======
+static inline int
+iser_inv_desc(struct iser_fr_desc *desc, u32 rkey)
+{
+	if (likely(rkey == desc->rsc.mr->rkey)) {
+		desc->rsc.mr_valid = 0;
+	} else if (likely(desc->pi_ctx && rkey == desc->pi_ctx->sig_mr->rkey)) {
+		desc->pi_ctx->sig_mr_valid = 0;
+	} else {
+		iser_err("Bogus remote invalidation for rkey %#x\n", rkey);
+		return -EINVAL;
+	}
+
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int
@@ -626,12 +642,22 @@ iser_check_remote_inv(struct iser_conn *iser_conn,
 
 			if (iser_task->dir[ISER_DIR_IN]) {
 				desc = iser_task->rdma_reg[ISER_DIR_IN].mem_h;
+<<<<<<< HEAD
 				iser_inv_desc(desc, rkey);
+=======
+				if (unlikely(iser_inv_desc(desc, rkey)))
+					return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 
 			if (iser_task->dir[ISER_DIR_OUT]) {
 				desc = iser_task->rdma_reg[ISER_DIR_OUT].mem_h;
+<<<<<<< HEAD
 				iser_inv_desc(desc, rkey);
+=======
+				if (unlikely(iser_inv_desc(desc, rkey)))
+					return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 		} else {
 			iser_err("failed to get task for itt=%d\n", hdr->itt);

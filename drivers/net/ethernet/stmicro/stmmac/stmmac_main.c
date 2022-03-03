@@ -51,7 +51,11 @@
 #include <linux/of_mdio.h>
 #include "dwmac1000.h"
 
+<<<<<<< HEAD
 #define	STMMAC_ALIGN(x)		__ALIGN_KERNEL(x, SMP_CACHE_BYTES)
+=======
+#define	STMMAC_ALIGN(x)		ALIGN(ALIGN(x, SMP_CACHE_BYTES), 16)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define	TSO_MAX_BUFF_SIZE	(SZ_16K - 1)
 
 /* Module parameters */
@@ -232,7 +236,11 @@ static void stmmac_clk_csr_set(struct stmmac_priv *priv)
 			priv->clk_csr = STMMAC_CSR_100_150M;
 		else if ((clk_rate >= CSR_F_150M) && (clk_rate < CSR_F_250M))
 			priv->clk_csr = STMMAC_CSR_150_250M;
+<<<<<<< HEAD
 		else if ((clk_rate >= CSR_F_250M) && (clk_rate < CSR_F_300M))
+=======
+		else if ((clk_rate >= CSR_F_250M) && (clk_rate <= CSR_F_300M))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			priv->clk_csr = STMMAC_CSR_250_300M;
 	}
 
@@ -561,6 +569,12 @@ static int stmmac_hwtstamp_ioctl(struct net_device *dev, struct ifreq *ifr)
 			/* PTP v1, UDP, any kind of event packet */
 			config.rx_filter = HWTSTAMP_FILTER_PTP_V1_L4_EVENT;
 			/* take time stamp for all event messages */
+<<<<<<< HEAD
+=======
+			if (priv->plat->has_gmac4)
+				snap_type_sel = PTP_GMAC4_TCR_SNAPTYPSEL_1;
+			else
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				snap_type_sel = PTP_TCR_SNAPTYPSEL_1;
 
 			ptp_over_ipv4_udp = PTP_TCR_TSIPV4ENA;
@@ -593,6 +607,12 @@ static int stmmac_hwtstamp_ioctl(struct net_device *dev, struct ifreq *ifr)
 			config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L4_EVENT;
 			ptp_v2 = PTP_TCR_TSVER2ENA;
 			/* take time stamp for all event messages */
+<<<<<<< HEAD
+=======
+			if (priv->plat->has_gmac4)
+				snap_type_sel = PTP_GMAC4_TCR_SNAPTYPSEL_1;
+			else
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				snap_type_sel = PTP_TCR_SNAPTYPSEL_1;
 
 			ptp_over_ipv4_udp = PTP_TCR_TSIPV4ENA;
@@ -627,6 +647,12 @@ static int stmmac_hwtstamp_ioctl(struct net_device *dev, struct ifreq *ifr)
 			config.rx_filter = HWTSTAMP_FILTER_PTP_V2_EVENT;
 			ptp_v2 = PTP_TCR_TSVER2ENA;
 			/* take time stamp for all event messages */
+<<<<<<< HEAD
+=======
+			if (priv->plat->has_gmac4)
+				snap_type_sel = PTP_GMAC4_TCR_SNAPTYPSEL_1;
+			else
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				snap_type_sel = PTP_TCR_SNAPTYPSEL_1;
 
 			ptp_over_ipv4_udp = PTP_TCR_TSIPV4ENA;
@@ -972,6 +998,7 @@ static int stmmac_init_phy(struct net_device *dev)
 	if (phydev->is_pseudo_fixed_link)
 		phydev->irq = PHY_POLL;
 
+<<<<<<< HEAD
 	if (phy_intr_en) {
 		phydev->irq = PHY_IGNORE_INTERRUPT;
 		phydev->interrupts =  PHY_INTERRUPT_ENABLED;
@@ -982,6 +1009,8 @@ static int stmmac_init_phy(struct net_device *dev)
 				 __func__);
 		}
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	phy_attached_info(phydev);
 	return 0;
 }
@@ -1042,7 +1071,13 @@ static int stmmac_set_bfsize(int mtu, int bufsize)
 {
 	int ret = bufsize;
 
+<<<<<<< HEAD
 	if (mtu >= BUF_SIZE_4KiB)
+=======
+	if (mtu >= BUF_SIZE_8KiB)
+		ret = BUF_SIZE_16KiB;
+	else if (mtu >= BUF_SIZE_4KiB)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = BUF_SIZE_8KiB;
 	else if (mtu >= BUF_SIZE_2KiB)
 		ret = BUF_SIZE_4KiB;
@@ -1071,11 +1106,21 @@ static void stmmac_clear_rx_descriptors(struct stmmac_priv *priv, u32 queue)
 		if (priv->extend_desc)
 			priv->hw->desc->init_rx_desc(&rx_q->dma_erx[i].basic,
 						     priv->use_riwt, priv->mode,
+<<<<<<< HEAD
 						     (i == DMA_RX_SIZE - 1));
 		else
 			priv->hw->desc->init_rx_desc(&rx_q->dma_rx[i],
 						     priv->use_riwt, priv->mode,
 						     (i == DMA_RX_SIZE - 1));
+=======
+						     (i == DMA_RX_SIZE - 1),
+						     priv->dma_buf_sz);
+		else
+			priv->hw->desc->init_rx_desc(&rx_q->dma_rx[i],
+						     priv->use_riwt, priv->mode,
+						     (i == DMA_RX_SIZE - 1),
+						     priv->dma_buf_sz);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -1146,10 +1191,17 @@ static int stmmac_init_rx_buffers(struct stmmac_priv *priv, struct dma_desc *p,
 		return -ENOMEM;
 	}
 	rx_q->rx_skbuff[i] = skb;
+<<<<<<< HEAD
 	rx_q->rx_skbuff_dma[i] = dma_map_single(GET_MEM_PDEV_DEV, skb->data,
 						priv->dma_buf_sz,
 						DMA_FROM_DEVICE);
 	if (dma_mapping_error(GET_MEM_PDEV_DEV, rx_q->rx_skbuff_dma[i])) {
+=======
+	rx_q->rx_skbuff_dma[i] = dma_map_single(priv->device, skb->data,
+						priv->dma_buf_sz,
+						DMA_FROM_DEVICE);
+	if (dma_mapping_error(priv->device, rx_q->rx_skbuff_dma[i])) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		netdev_err(priv->dev, "%s: DMA mapping error\n", __func__);
 		dev_kfree_skb_any(skb);
 		return -EINVAL;
@@ -1178,7 +1230,11 @@ static void stmmac_free_rx_buffer(struct stmmac_priv *priv, u32 queue, int i)
 	struct stmmac_rx_queue *rx_q = &priv->rx_queue[queue];
 
 	if (rx_q->rx_skbuff[i]) {
+<<<<<<< HEAD
 		dma_unmap_single(GET_MEM_PDEV_DEV, rx_q->rx_skbuff_dma[i],
+=======
+		dma_unmap_single(priv->device, rx_q->rx_skbuff_dma[i],
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				 priv->dma_buf_sz, DMA_FROM_DEVICE);
 		dev_kfree_skb_any(rx_q->rx_skbuff[i]);
 	}
@@ -1197,12 +1253,20 @@ static void stmmac_free_tx_buffer(struct stmmac_priv *priv, u32 queue, int i)
 
 	if (tx_q->tx_skbuff_dma[i].buf) {
 		if (tx_q->tx_skbuff_dma[i].map_as_page)
+<<<<<<< HEAD
 			dma_unmap_page(GET_MEM_PDEV_DEV,
+=======
+			dma_unmap_page(priv->device,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				       tx_q->tx_skbuff_dma[i].buf,
 				       tx_q->tx_skbuff_dma[i].len,
 				       DMA_TO_DEVICE);
 		else
+<<<<<<< HEAD
 			dma_unmap_single(GET_MEM_PDEV_DEV,
+=======
+			dma_unmap_single(priv->device,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					 tx_q->tx_skbuff_dma[i].buf,
 					 tx_q->tx_skbuff_dma[i].len,
 					 DMA_TO_DEVICE);
@@ -1426,6 +1490,22 @@ static void dma_free_tx_skbufs(struct stmmac_priv *priv, u32 queue)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * stmmac_free_tx_skbufs - free TX skb buffers
+ * @priv: private structure
+ */
+static void stmmac_free_tx_skbufs(struct stmmac_priv *priv)
+{
+	u32 tx_queue_cnt = priv->plat->tx_queues_to_use;
+	u32 queue;
+
+	for (queue = 0; queue < tx_queue_cnt; queue++)
+		dma_free_tx_skbufs(priv, queue);
+}
+
+/**
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * free_dma_rx_desc_resources - free RX dma desc resources
  * @priv: private structure
  */
@@ -1443,11 +1523,19 @@ static void free_dma_rx_desc_resources(struct stmmac_priv *priv)
 
 		/* Free DMA regions of consistent memory previously allocated */
 		if (!priv->extend_desc)
+<<<<<<< HEAD
 			dma_free_coherent(GET_MEM_PDEV_DEV,
 					  DMA_RX_SIZE * sizeof(struct dma_desc),
 					  rx_q->dma_rx, rx_q->dma_rx_phy);
 		else
 			dma_free_coherent(GET_MEM_PDEV_DEV, DMA_RX_SIZE *
+=======
+			dma_free_coherent(priv->device,
+					  DMA_RX_SIZE * sizeof(struct dma_desc),
+					  rx_q->dma_rx, rx_q->dma_rx_phy);
+		else
+			dma_free_coherent(priv->device, DMA_RX_SIZE *
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					  sizeof(struct dma_extended_desc),
 					  rx_q->dma_erx, rx_q->dma_rx_phy);
 
@@ -1474,11 +1562,19 @@ static void free_dma_tx_desc_resources(struct stmmac_priv *priv)
 
 		/* Free DMA regions of consistent memory previously allocated */
 		if (!priv->extend_desc)
+<<<<<<< HEAD
 			dma_free_coherent(GET_MEM_PDEV_DEV,
 					  DMA_TX_SIZE * sizeof(struct dma_desc),
 					  tx_q->dma_tx, tx_q->dma_tx_phy);
 		else
 			dma_free_coherent(GET_MEM_PDEV_DEV, DMA_TX_SIZE *
+=======
+			dma_free_coherent(priv->device,
+					  DMA_TX_SIZE * sizeof(struct dma_desc),
+					  tx_q->dma_tx, tx_q->dma_tx_phy);
+		else
+			dma_free_coherent(priv->device, DMA_TX_SIZE *
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					  sizeof(struct dma_extended_desc),
 					  tx_q->dma_etx, tx_q->dma_tx_phy);
 
@@ -1521,7 +1617,11 @@ static int alloc_dma_rx_desc_resources(struct stmmac_priv *priv)
 			goto err_dma;
 
 		if (priv->extend_desc) {
+<<<<<<< HEAD
 			rx_q->dma_erx = dma_zalloc_coherent(GET_MEM_PDEV_DEV,
+=======
+			rx_q->dma_erx = dma_zalloc_coherent(priv->device,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 							    DMA_RX_SIZE *
 							    sizeof(struct
 							    dma_extended_desc),
@@ -1531,7 +1631,11 @@ static int alloc_dma_rx_desc_resources(struct stmmac_priv *priv)
 				goto err_dma;
 
 		} else {
+<<<<<<< HEAD
 			rx_q->dma_rx = dma_zalloc_coherent(GET_MEM_PDEV_DEV,
+=======
+			rx_q->dma_rx = dma_zalloc_coherent(priv->device,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 							   DMA_RX_SIZE *
 							   sizeof(struct
 							   dma_desc),
@@ -1584,7 +1688,11 @@ static int alloc_dma_tx_desc_resources(struct stmmac_priv *priv)
 			goto err_dma;
 
 		if (priv->extend_desc) {
+<<<<<<< HEAD
 			tx_q->dma_etx = dma_zalloc_coherent(GET_MEM_PDEV_DEV,
+=======
+			tx_q->dma_etx = dma_zalloc_coherent(priv->device,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 							    DMA_TX_SIZE *
 							    sizeof(struct
 							    dma_extended_desc),
@@ -1593,7 +1701,11 @@ static int alloc_dma_tx_desc_resources(struct stmmac_priv *priv)
 			if (!tx_q->dma_etx)
 				goto err_dma;
 		} else {
+<<<<<<< HEAD
 			tx_q->dma_tx = dma_zalloc_coherent(GET_MEM_PDEV_DEV,
+=======
+			tx_q->dma_tx = dma_zalloc_coherent(priv->device,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 							   DMA_TX_SIZE *
 							   sizeof(struct
 								  dma_desc),
@@ -1865,12 +1977,20 @@ static void stmmac_tx_clean(struct stmmac_priv *priv, u32 queue)
 
 		if (likely(tx_q->tx_skbuff_dma[entry].buf)) {
 			if (tx_q->tx_skbuff_dma[entry].map_as_page)
+<<<<<<< HEAD
 				dma_unmap_page(GET_MEM_PDEV_DEV,
+=======
+				dma_unmap_page(priv->device,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					       tx_q->tx_skbuff_dma[entry].buf,
 					       tx_q->tx_skbuff_dma[entry].len,
 					       DMA_TO_DEVICE);
 			else
+<<<<<<< HEAD
 				dma_unmap_single(GET_MEM_PDEV_DEV,
+=======
+				dma_unmap_single(priv->device,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						 tx_q->tx_skbuff_dma[entry].buf,
 						 tx_q->tx_skbuff_dma[entry].len,
 						 DMA_TO_DEVICE);
@@ -2527,6 +2647,7 @@ static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
 			netdev_warn(priv->dev, "PTP not supported by HW\n");
 		else if (ret)
 			netdev_warn(priv->dev, "PTP init failed\n");
+<<<<<<< HEAD
 		else
 			ret = clk_set_rate(priv->plat->clk_ptp_ref, 96000000);
 		ret = ethqos_init_pps(priv);
@@ -2538,6 +2659,10 @@ static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
 		netdev_warn(priv->dev, "%s: failed debugFS registration\n",
 			    __func__);
 #endif
+=======
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	priv->tx_lpi_timer = STMMAC_DEFAULT_TWT_LS;
 
 	if ((priv->use_riwt) && (priv->hw->dma->rx_watchdog)) {
@@ -2618,12 +2743,16 @@ static int stmmac_open(struct net_device *dev)
 		goto init_error;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_PTPSUPPORT_OBJ
 	ret = stmmac_hw_setup(dev, true);
 #else
 	ret = stmmac_hw_setup(dev, false);
 #endif
 
+=======
+	ret = stmmac_hw_setup(dev, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret < 0) {
 		netdev_err(priv->dev, "%s: Hw setup failed\n", __func__);
 		goto init_error;
@@ -2703,9 +2832,12 @@ static int stmmac_release(struct net_device *dev)
 {
 	struct stmmac_priv *priv = netdev_priv(dev);
 
+<<<<<<< HEAD
 	if (priv->eee_enabled)
 		del_timer_sync(&priv->eee_ctrl_timer);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Stop and disconnect the PHY */
 	if (dev->phydev) {
 		phy_stop(dev->phydev);
@@ -2725,6 +2857,14 @@ static int stmmac_release(struct net_device *dev)
 	if (priv->lpi_irq > 0)
 		free_irq(priv->lpi_irq, dev);
 
+<<<<<<< HEAD
+=======
+	if (priv->eee_enabled) {
+		priv->tx_path_in_lpi_mode = false;
+		del_timer_sync(&priv->eee_ctrl_timer);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Stop TX/RX DMA and clear the descriptors */
 	stmmac_stop_all_dma(priv);
 
@@ -2736,10 +2876,13 @@ static int stmmac_release(struct net_device *dev)
 
 	netif_carrier_off(dev);
 
+<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_FS
 	stmmac_exit_fs(dev);
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	stmmac_release_ptp(priv);
 
 	return 0;
@@ -2867,9 +3010,15 @@ static netdev_tx_t stmmac_tso_xmit(struct sk_buff *skb, struct net_device *dev)
 	first = desc;
 
 	/* first descriptor: fill Headers on Buf1 */
+<<<<<<< HEAD
 	des = dma_map_single(GET_MEM_PDEV_DEV, skb->data, skb_headlen(skb),
 			     DMA_TO_DEVICE);
 	if (dma_mapping_error(GET_MEM_PDEV_DEV, des))
+=======
+	des = dma_map_single(priv->device, skb->data, skb_headlen(skb),
+			     DMA_TO_DEVICE);
+	if (dma_mapping_error(priv->device, des))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto dma_map_err;
 
 	tx_q->tx_skbuff_dma[first_entry].buf = des;
@@ -2890,10 +3039,17 @@ static netdev_tx_t stmmac_tso_xmit(struct sk_buff *skb, struct net_device *dev)
 	for (i = 0; i < nfrags; i++) {
 		const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
 
+<<<<<<< HEAD
 		des = skb_frag_dma_map(GET_MEM_PDEV_DEV, frag, 0,
 				       skb_frag_size(frag),
 				       DMA_TO_DEVICE);
 		if (dma_mapping_error(GET_MEM_PDEV_DEV, des))
+=======
+		des = skb_frag_dma_map(priv->device, frag, 0,
+				       skb_frag_size(frag),
+				       DMA_TO_DEVICE);
+		if (dma_mapping_error(priv->device, des))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto dma_map_err;
 
 		stmmac_tso_allocator(priv, des, skb_frag_size(frag),
@@ -3088,9 +3244,15 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
 		else
 			desc = tx_q->dma_tx + entry;
 
+<<<<<<< HEAD
 		des = skb_frag_dma_map(GET_MEM_PDEV_DEV, frag, 0, len,
 				       DMA_TO_DEVICE);
 		if (dma_mapping_error(GET_MEM_PDEV_DEV, des))
+=======
+		des = skb_frag_dma_map(priv->device, frag, 0, len,
+				       DMA_TO_DEVICE);
+		if (dma_mapping_error(priv->device, des))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto dma_map_err; /* should reuse desc w/o issues */
 
 		tx_q->tx_skbuff[entry] = NULL;
@@ -3173,9 +3335,15 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
 	if (likely(!is_jumbo)) {
 		bool last_segment = (nfrags == 0);
 
+<<<<<<< HEAD
 		des = dma_map_single(GET_MEM_PDEV_DEV, skb->data,
 				     nopaged_len, DMA_TO_DEVICE);
 		if (dma_mapping_error(GET_MEM_PDEV_DEV, des))
+=======
+		des = dma_map_single(priv->device, skb->data,
+				     nopaged_len, DMA_TO_DEVICE);
+		if (dma_mapping_error(priv->device, des))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto dma_map_err;
 
 		tx_q->tx_skbuff_dma[first_entry].buf = des;
@@ -3289,9 +3457,15 @@ static inline void stmmac_rx_refill(struct stmmac_priv *priv, u32 queue)
 
 			rx_q->rx_skbuff[entry] = skb;
 			rx_q->rx_skbuff_dma[entry] =
+<<<<<<< HEAD
 			    dma_map_single(GET_MEM_PDEV_DEV, skb->data, bfsize,
 					   DMA_FROM_DEVICE);
 			if (dma_mapping_error(GET_MEM_PDEV_DEV,
+=======
+			    dma_map_single(priv->device, skb->data, bfsize,
+					   DMA_FROM_DEVICE);
+			if (dma_mapping_error(priv->device,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					      rx_q->rx_skbuff_dma[entry])) {
 				netdev_err(priv->dev, "Rx DMA map failed\n");
 				dev_kfree_skb(skb);
@@ -3316,7 +3490,11 @@ static inline void stmmac_rx_refill(struct stmmac_priv *priv, u32 queue)
 		dma_wmb();
 
 		if (unlikely(priv->synopsys_id >= DWMAC_CORE_4_00))
+<<<<<<< HEAD
 			priv->hw->desc->init_rx_desc(p, priv->use_riwt, 0, 0);
+=======
+			priv->hw->desc->init_rx_desc(p, priv->use_riwt, 0, 0, priv->dma_buf_sz);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		else
 			priv->hw->desc->set_rx_owner(p);
 
@@ -3338,9 +3516,14 @@ static inline void stmmac_rx_refill(struct stmmac_priv *priv, u32 queue)
 static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
 {
 	struct stmmac_rx_queue *rx_q = &priv->rx_queue[queue];
+<<<<<<< HEAD
 	unsigned int entry = rx_q->cur_rx;
 	int coe = priv->hw->rx_csum;
 	unsigned int next_entry;
+=======
+	int coe = priv->hw->rx_csum;
+	unsigned int next_entry = rx_q->cur_rx;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int count = 0;
 
 	if (netif_msg_rx_status(priv)) {
@@ -3355,10 +3538,19 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
 		priv->hw->desc->display_ring(rx_head, DMA_RX_SIZE, true);
 	}
 	while (count < limit) {
+<<<<<<< HEAD
 		int status;
 		struct dma_desc *p;
 		struct dma_desc *np;
 
+=======
+		int entry, status;
+		struct dma_desc *p;
+		struct dma_desc *np;
+
+		entry = next_entry;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (priv->extend_desc)
 			p = (struct dma_desc *)(rx_q->dma_erx + entry);
 		else
@@ -3398,7 +3590,11 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
 				 */
 				dev_kfree_skb_any(rx_q->rx_skbuff[entry]);
 				rx_q->rx_skbuff[entry] = NULL;
+<<<<<<< HEAD
 				dma_unmap_single(GET_MEM_PDEV_DEV,
+=======
+				dma_unmap_single(priv->device,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						 rx_q->rx_skbuff_dma[entry],
 						 priv->dma_buf_sz,
 						 DMA_FROM_DEVICE);
@@ -3425,7 +3621,11 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
 						   "len %d larger than size (%d)\n",
 						   frame_len, priv->dma_buf_sz);
 				priv->dev->stats.rx_length_errors++;
+<<<<<<< HEAD
 				break;
+=======
+				continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 
 			/* ACS is set; GMAC core strips PAD/FCS for IEEE 802.3
@@ -3461,10 +3661,17 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
 						dev_warn(priv->device,
 							 "packet dropped\n");
 					priv->dev->stats.rx_dropped++;
+<<<<<<< HEAD
 					break;
 				}
 
 				dma_sync_single_for_cpu(GET_MEM_PDEV_DEV,
+=======
+					continue;
+				}
+
+				dma_sync_single_for_cpu(priv->device,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 							rx_q->rx_skbuff_dma
 							[entry], frame_len,
 							DMA_FROM_DEVICE);
@@ -3474,7 +3681,11 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
 							frame_len);
 
 				skb_put(skb, frame_len);
+<<<<<<< HEAD
 				dma_sync_single_for_device(GET_MEM_PDEV_DEV,
+=======
+				dma_sync_single_for_device(priv->device,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 							   rx_q->rx_skbuff_dma
 							   [entry], frame_len,
 							   DMA_FROM_DEVICE);
@@ -3486,14 +3697,22 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
 							   "%s: Inconsistent Rx chain\n",
 							   priv->dev->name);
 					priv->dev->stats.rx_dropped++;
+<<<<<<< HEAD
 					break;
+=======
+					continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				}
 				prefetch(skb->data - NET_IP_ALIGN);
 				rx_q->rx_skbuff[entry] = NULL;
 				rx_q->rx_zeroc_thresh++;
 
 				skb_put(skb, frame_len);
+<<<<<<< HEAD
 				dma_unmap_single(GET_MEM_PDEV_DEV,
+=======
+				dma_unmap_single(priv->device,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						 rx_q->rx_skbuff_dma[entry],
 						 priv->dma_buf_sz,
 						 DMA_FROM_DEVICE);
@@ -3521,7 +3740,10 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
 			priv->dev->stats.rx_packets++;
 			priv->dev->stats.rx_bytes += frame_len;
 		}
+<<<<<<< HEAD
 		entry = next_entry;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	stmmac_rx_refill(priv, queue);
@@ -3612,13 +3834,33 @@ static void stmmac_set_rx_mode(struct net_device *dev)
 static int stmmac_change_mtu(struct net_device *dev, int new_mtu)
 {
 	struct stmmac_priv *priv = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+	int txfifosz = priv->plat->tx_fifo_size;
+	const int mtu = new_mtu;
+
+	if (txfifosz == 0)
+		txfifosz = priv->dma_cap.tx_fifo_size;
+
+	txfifosz /= priv->plat->tx_queues_to_use;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (netif_running(dev)) {
 		netdev_err(priv->dev, "must be stopped to change its MTU\n");
 		return -EBUSY;
 	}
 
+<<<<<<< HEAD
 	dev->mtu = new_mtu;
+=======
+	new_mtu = STMMAC_ALIGN(new_mtu);
+
+	/* If condition true, FIFO is too small or MTU too large */
+	if ((txfifosz < new_mtu) || (new_mtu > BUF_SIZE_16KiB))
+		return -EINVAL;
+
+	dev->mtu = mtu;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	netdev_update_features(dev);
 
@@ -3786,8 +4028,11 @@ static int stmmac_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
 		break;
 	case SIOCSHWTSTAMP:
 		ret = stmmac_hwtstamp_ioctl(dev, rq);
+<<<<<<< HEAD
 	case SIOCDEVPRIVATE:
 		ret = ethqos_handle_prv_ioctl(dev, rq, cmd);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	default:
 		break;
@@ -3848,6 +4093,12 @@ static int stmmac_sysfs_ring_read(struct seq_file *seq, void *v)
 	u32 tx_count = priv->plat->tx_queues_to_use;
 	u32 queue;
 
+<<<<<<< HEAD
+=======
+	if ((dev->flags & IFF_UP) == 0)
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (queue = 0; queue < rx_count; queue++) {
 		struct stmmac_rx_queue *rx_q = &priv->rx_queue[queue];
 
@@ -4319,6 +4570,16 @@ int stmmac_dvr_probe(struct device *device,
 		goto error_netdev_register;
 	}
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_DEBUG_FS
+	ret = stmmac_init_fs(ndev);
+	if (ret < 0)
+		netdev_warn(priv->dev, "%s: failed debugFS registration\n",
+			    __func__);
+#endif
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 
 error_netdev_register:
@@ -4352,6 +4613,12 @@ int stmmac_dvr_remove(struct device *dev)
 
 	netdev_info(priv->dev, "%s: removing driver", __func__);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_DEBUG_FS
+	stmmac_exit_fs(ndev);
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	stmmac_stop_all_dma(priv);
 
 	priv->hw->mac->set_mac(priv->ioaddr, false);
@@ -4397,6 +4664,14 @@ int stmmac_suspend(struct device *dev)
 
 	stmmac_disable_all_queues(priv);
 
+<<<<<<< HEAD
+=======
+	if (priv->eee_enabled) {
+		priv->tx_path_in_lpi_mode = false;
+		del_timer_sync(&priv->eee_ctrl_timer);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Stop TX/RX DMA */
 	stmmac_stop_all_dma(priv);
 
@@ -4408,8 +4683,15 @@ int stmmac_suspend(struct device *dev)
 		priv->hw->mac->set_mac(priv->ioaddr, false);
 		pinctrl_pm_select_sleep_state(priv->device);
 		/* Disable clock in case of PWM is off */
+<<<<<<< HEAD
 		clk_disable(priv->plat->pclk);
 		clk_disable(priv->plat->stmmac_clk);
+=======
+		if (priv->plat->clk_ptp_ref)
+			clk_disable_unprepare(priv->plat->clk_ptp_ref);
+		clk_disable_unprepare(priv->plat->pclk);
+		clk_disable_unprepare(priv->plat->stmmac_clk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	mutex_unlock(&priv->lock);
 
@@ -4473,8 +4755,15 @@ int stmmac_resume(struct device *dev)
 	} else {
 		pinctrl_pm_select_default_state(priv->device);
 		/* enable the clk previously disabled */
+<<<<<<< HEAD
 		clk_enable(priv->plat->stmmac_clk);
 		clk_enable(priv->plat->pclk);
+=======
+		clk_prepare_enable(priv->plat->stmmac_clk);
+		clk_prepare_enable(priv->plat->pclk);
+		if (priv->plat->clk_ptp_ref)
+			clk_prepare_enable(priv->plat->clk_ptp_ref);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* reset the phy so that it's ready */
 		if (priv->mii)
 			stmmac_mdio_reset(priv->mii);
@@ -4491,6 +4780,10 @@ int stmmac_resume(struct device *dev)
 	 */
 	priv->mss = 0;
 
+<<<<<<< HEAD
+=======
+	stmmac_free_tx_skbufs(priv);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	stmmac_clear_descriptors(priv);
 
 	stmmac_hw_setup(ndev, false);

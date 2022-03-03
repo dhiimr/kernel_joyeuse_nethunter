@@ -3346,7 +3346,12 @@ found:
 			"Found block at %x: code=%d ref=%d length=%d major=%d minor=%d\n",
 			cptr, code, reference, length, major, minor);
 		if ((!AR_SREV_9485(ah) && length >= 1024) ||
+<<<<<<< HEAD
 		    (AR_SREV_9485(ah) && length > EEPROM_DATA_LEN_9485)) {
+=======
+		    (AR_SREV_9485(ah) && length > EEPROM_DATA_LEN_9485) ||
+		    (length > cptr)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ath_dbg(common, EEPROM, "Skipping bad header\n");
 			cptr -= COMP_HDR_LEN;
 			continue;
@@ -4116,7 +4121,11 @@ static void ar9003_hw_thermometer_apply(struct ath_hw *ah)
 
 static void ar9003_hw_thermo_cal_apply(struct ath_hw *ah)
 {
+<<<<<<< HEAD
 	u32 data, ko, kg;
+=======
+	u32 data = 0, ko, kg;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!AR_SREV_9462_20_OR_LATER(ah))
 		return;

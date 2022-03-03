@@ -7,7 +7,11 @@ endif
 
 feature_check = $(eval $(feature_check_code))
 define feature_check_code
+<<<<<<< HEAD
   feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
+=======
+  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)" CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endef
 
 feature_set = $(eval $(feature_set_code))
@@ -31,8 +35,16 @@ FEATURE_TESTS_BASIC :=                  \
         backtrace                       \
         dwarf                           \
         dwarf_getlocations              \
+<<<<<<< HEAD
         fortify-source                  \
         sync-compare-and-swap           \
+=======
+        eventfd                         \
+        fortify-source                  \
+        sync-compare-and-swap           \
+        get_current_dir_name            \
+        gettid				\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
         glibc                           \
         gtk2                            \
         gtk2-infobar                    \
@@ -56,6 +68,10 @@ FEATURE_TESTS_BASIC :=                  \
         libunwind-arm                   \
         libunwind-aarch64               \
         pthread-attr-setaffinity-np     \
+<<<<<<< HEAD
+=======
+        pthread-barrier     		\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
         stackprotector-all              \
         timerfd                         \
         libdw-dwarf-unwind              \

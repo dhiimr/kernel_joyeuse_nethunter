@@ -34,7 +34,11 @@ int perf_reg_value(u64 *valp, struct regs_dump *regs, int id);
 
 static inline const char *perf_reg_name(int id __maybe_unused)
 {
+<<<<<<< HEAD
 	return NULL;
+=======
+	return "unknown";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline int perf_reg_value(u64 *valp __maybe_unused,

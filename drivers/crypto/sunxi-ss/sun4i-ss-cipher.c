@@ -34,6 +34,11 @@ static int sun4i_ss_opti_poll(struct skcipher_request *areq)
 	unsigned int ileft = areq->cryptlen;
 	unsigned int oleft = areq->cryptlen;
 	unsigned int todo;
+<<<<<<< HEAD
+=======
+	unsigned long pi = 0, po = 0; /* progress for in and out */
+	bool miter_err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct sg_mapping_iter mi, mo;
 	unsigned int oi, oo; /* offset for in and out */
 	unsigned long flags;
@@ -53,17 +58,27 @@ static int sun4i_ss_opti_poll(struct skcipher_request *areq)
 
 	spin_lock_irqsave(&ss->slock, flags);
 
+<<<<<<< HEAD
 	for (i = 0; i < op->keylen; i += 4)
 		writel(*(op->key + i / 4), ss->base + SS_KEY0 + i);
+=======
+	for (i = 0; i < op->keylen / 4; i++)
+		writesl(ss->base + SS_KEY0 + i * 4, &op->key[i], 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (areq->iv) {
 		for (i = 0; i < 4 && i < ivsize / 4; i++) {
 			v = *(u32 *)(areq->iv + i * 4);
+<<<<<<< HEAD
 			writel(v, ss->base + SS_IV0 + i * 4);
+=======
+			writesl(ss->base + SS_IV0 + i * 4, &v, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 	writel(mode, ss->base + SS_CTL);
 
+<<<<<<< HEAD
 	sg_miter_start(&mi, areq->src, sg_nents(areq->src),
 		       SG_MITER_FROM_SG | SG_MITER_ATOMIC);
 	sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
@@ -75,12 +90,15 @@ static int sun4i_ss_opti_poll(struct skcipher_request *areq)
 		err = -EINVAL;
 		goto release_ss;
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ileft = areq->cryptlen / 4;
 	oleft = areq->cryptlen / 4;
 	oi = 0;
 	oo = 0;
 	do {
+<<<<<<< HEAD
 		todo = min3(rx_cnt, ileft, (mi.length - oi) / 4);
 		if (todo) {
 			ileft -= todo;
@@ -90,22 +108,69 @@ static int sun4i_ss_opti_poll(struct skcipher_request *areq)
 		if (oi == mi.length) {
 			sg_miter_next(&mi);
 			oi = 0;
+=======
+		if (ileft) {
+			sg_miter_start(&mi, areq->src, sg_nents(areq->src),
+					SG_MITER_FROM_SG | SG_MITER_ATOMIC);
+			if (pi)
+				sg_miter_skip(&mi, pi);
+			miter_err = sg_miter_next(&mi);
+			if (!miter_err || !mi.addr) {
+				dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
+				err = -EINVAL;
+				goto release_ss;
+			}
+			todo = min(rx_cnt, ileft);
+			todo = min_t(size_t, todo, (mi.length - oi) / 4);
+			if (todo) {
+				ileft -= todo;
+				writesl(ss->base + SS_RXFIFO, mi.addr + oi, todo);
+				oi += todo * 4;
+			}
+			if (oi == mi.length) {
+				pi += mi.length;
+				oi = 0;
+			}
+			sg_miter_stop(&mi);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		spaces = readl(ss->base + SS_FCSR);
 		rx_cnt = SS_RXFIFO_SPACES(spaces);
 		tx_cnt = SS_TXFIFO_SPACES(spaces);
 
+<<<<<<< HEAD
 		todo = min3(tx_cnt, oleft, (mo.length - oo) / 4);
+=======
+		sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
+			       SG_MITER_TO_SG | SG_MITER_ATOMIC);
+		if (po)
+			sg_miter_skip(&mo, po);
+		miter_err = sg_miter_next(&mo);
+		if (!miter_err || !mo.addr) {
+			dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
+			err = -EINVAL;
+			goto release_ss;
+		}
+		todo = min(tx_cnt, oleft);
+		todo = min_t(size_t, todo, (mo.length - oo) / 4);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (todo) {
 			oleft -= todo;
 			readsl(ss->base + SS_TXFIFO, mo.addr + oo, todo);
 			oo += todo * 4;
 		}
 		if (oo == mo.length) {
+<<<<<<< HEAD
 			sg_miter_next(&mo);
 			oo = 0;
 		}
+=======
+			oo = 0;
+			po += mo.length;
+		}
+		sg_miter_stop(&mo);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} while (oleft);
 
 	if (areq->iv) {
@@ -116,8 +181,11 @@ static int sun4i_ss_opti_poll(struct skcipher_request *areq)
 	}
 
 release_ss:
+<<<<<<< HEAD
 	sg_miter_stop(&mi);
 	sg_miter_stop(&mo);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	writel(0, ss->base + SS_CTL);
 	spin_unlock_irqrestore(&ss->slock, flags);
 	return err;
@@ -146,6 +214,11 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
 	unsigned int oleft = areq->cryptlen;
 	unsigned int todo;
 	struct sg_mapping_iter mi, mo;
+<<<<<<< HEAD
+=======
+	unsigned long pi = 0, po = 0; /* progress for in and out */
+	bool miter_err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int oi, oo;	/* offset for in and out */
 	char buf[4 * SS_RX_MAX];/* buffer for linearize SG src */
 	char bufo[4 * SS_TX_MAX]; /* buffer for linearize SG dst */
@@ -172,12 +245,20 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
 	 * we can use the SS optimized function
 	 */
 	while (in_sg && no_chunk == 1) {
+<<<<<<< HEAD
 		if (in_sg->length % 4)
+=======
+		if ((in_sg->length | in_sg->offset) & 3u)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			no_chunk = 0;
 		in_sg = sg_next(in_sg);
 	}
 	while (out_sg && no_chunk == 1) {
+<<<<<<< HEAD
 		if (out_sg->length % 4)
+=======
+		if ((out_sg->length | out_sg->offset) & 3u)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			no_chunk = 0;
 		out_sg = sg_next(out_sg);
 	}
@@ -187,17 +268,27 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
 
 	spin_lock_irqsave(&ss->slock, flags);
 
+<<<<<<< HEAD
 	for (i = 0; i < op->keylen; i += 4)
 		writel(*(op->key + i / 4), ss->base + SS_KEY0 + i);
+=======
+	for (i = 0; i < op->keylen / 4; i++)
+		writesl(ss->base + SS_KEY0 + i * 4, &op->key[i], 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (areq->iv) {
 		for (i = 0; i < 4 && i < ivsize / 4; i++) {
 			v = *(u32 *)(areq->iv + i * 4);
+<<<<<<< HEAD
 			writel(v, ss->base + SS_IV0 + i * 4);
+=======
+			writesl(ss->base + SS_IV0 + i * 4, &v, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 	writel(mode, ss->base + SS_CTL);
 
+<<<<<<< HEAD
 	sg_miter_start(&mi, areq->src, sg_nents(areq->src),
 		       SG_MITER_FROM_SG | SG_MITER_ATOMIC);
 	sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
@@ -209,6 +300,8 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
 		err = -EINVAL;
 		goto release_ss;
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ileft = areq->cryptlen;
 	oleft = areq->cryptlen;
 	oi = 0;
@@ -216,11 +309,29 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
 
 	while (oleft) {
 		if (ileft) {
+<<<<<<< HEAD
+=======
+			sg_miter_start(&mi, areq->src, sg_nents(areq->src),
+				       SG_MITER_FROM_SG | SG_MITER_ATOMIC);
+			if (pi)
+				sg_miter_skip(&mi, pi);
+			miter_err = sg_miter_next(&mi);
+			if (!miter_err || !mi.addr) {
+				dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
+				err = -EINVAL;
+				goto release_ss;
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/*
 			 * todo is the number of consecutive 4byte word that we
 			 * can read from current SG
 			 */
+<<<<<<< HEAD
 			todo = min3(rx_cnt, ileft / 4, (mi.length - oi) / 4);
+=======
+			todo = min(rx_cnt, ileft / 4);
+			todo = min_t(size_t, todo, (mi.length - oi) / 4);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (todo && !ob) {
 				writesl(ss->base + SS_RXFIFO, mi.addr + oi,
 					todo);
@@ -234,8 +345,13 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
 				 * we need to be able to write all buf in one
 				 * pass, so it is why we min() with rx_cnt
 				 */
+<<<<<<< HEAD
 				todo = min3(rx_cnt * 4 - ob, ileft,
 					    mi.length - oi);
+=======
+				todo = min(rx_cnt * 4 - ob, ileft);
+				todo = min_t(size_t, todo, mi.length - oi);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				memcpy(buf + ob, mi.addr + oi, todo);
 				ileft -= todo;
 				oi += todo;
@@ -247,14 +363,22 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
 				}
 			}
 			if (oi == mi.length) {
+<<<<<<< HEAD
 				sg_miter_next(&mi);
 				oi = 0;
 			}
+=======
+				pi += mi.length;
+				oi = 0;
+			}
+			sg_miter_stop(&mi);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		spaces = readl(ss->base + SS_FCSR);
 		rx_cnt = SS_RXFIFO_SPACES(spaces);
 		tx_cnt = SS_TXFIFO_SPACES(spaces);
+<<<<<<< HEAD
 		dev_dbg(ss->dev, "%x %u/%u %u/%u cnt=%u %u/%u %u/%u cnt=%u %u\n",
 			mode,
 			oi, mi.length, ileft, areq->cryptlen, rx_cnt,
@@ -264,12 +388,35 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
 			continue;
 		/* todo in 4bytes word */
 		todo = min3(tx_cnt, oleft / 4, (mo.length - oo) / 4);
+=======
+
+		if (!tx_cnt)
+			continue;
+		sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
+			       SG_MITER_TO_SG | SG_MITER_ATOMIC);
+		if (po)
+			sg_miter_skip(&mo, po);
+		miter_err = sg_miter_next(&mo);
+		if (!miter_err || !mo.addr) {
+			dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
+			err = -EINVAL;
+			goto release_ss;
+		}
+		/* todo in 4bytes word */
+		todo = min(tx_cnt, oleft / 4);
+		todo = min_t(size_t, todo, (mo.length - oo) / 4);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (todo) {
 			readsl(ss->base + SS_TXFIFO, mo.addr + oo, todo);
 			oleft -= todo * 4;
 			oo += todo * 4;
 			if (oo == mo.length) {
+<<<<<<< HEAD
 				sg_miter_next(&mo);
+=======
+				po += mo.length;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				oo = 0;
 			}
 		} else {
@@ -287,18 +434,31 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
 				 * no more than remaining buffer
 				 * no need to test against oleft
 				 */
+<<<<<<< HEAD
 				todo = min(mo.length - oo, obl - obo);
+=======
+				todo = min_t(size_t,
+					     mo.length - oo, obl - obo);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				memcpy(mo.addr + oo, bufo + obo, todo);
 				oleft -= todo;
 				obo += todo;
 				oo += todo;
 				if (oo == mo.length) {
+<<<<<<< HEAD
+=======
+					po += mo.length;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					sg_miter_next(&mo);
 					oo = 0;
 				}
 			} while (obo < obl);
 			/* bufo must be fully used here */
 		}
+<<<<<<< HEAD
+=======
+		sg_miter_stop(&mo);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	if (areq->iv) {
 		for (i = 0; i < 4 && i < ivsize / 4; i++) {
@@ -308,8 +468,11 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
 	}
 
 release_ss:
+<<<<<<< HEAD
 	sg_miter_stop(&mi);
 	sg_miter_stop(&mo);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	writel(0, ss->base + SS_CTL);
 	spin_unlock_irqrestore(&ss->slock, flags);
 

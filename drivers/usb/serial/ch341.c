@@ -83,9 +83,18 @@
 #define CH341_LCR_CS5          0x00
 
 static const struct usb_device_id id_table[] = {
+<<<<<<< HEAD
 	{ USB_DEVICE(0x4348, 0x5523) },
 	{ USB_DEVICE(0x1a86, 0x7523) },
 	{ USB_DEVICE(0x1a86, 0x5523) },
+=======
+	{ USB_DEVICE(0x1a86, 0x5523) },
+	{ USB_DEVICE(0x1a86, 0x7522) },
+	{ USB_DEVICE(0x1a86, 0x7523) },
+	{ USB_DEVICE(0x2184, 0x0057) },
+	{ USB_DEVICE(0x4348, 0x5523) },
+	{ USB_DEVICE(0x9986, 0x7523) },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ },
 };
 MODULE_DEVICE_TABLE(usb, id_table);
@@ -592,9 +601,19 @@ static int ch341_tiocmget(struct tty_struct *tty)
 static int ch341_reset_resume(struct usb_serial *serial)
 {
 	struct usb_serial_port *port = serial->port[0];
+<<<<<<< HEAD
 	struct ch341_private *priv = usb_get_serial_port_data(port);
 	int ret;
 
+=======
+	struct ch341_private *priv;
+	int ret;
+
+	priv = usb_get_serial_port_data(port);
+	if (!priv)
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* reconfigure ch341 serial port after bus-reset */
 	ch341_configure(serial->dev, priv);
 

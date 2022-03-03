@@ -105,6 +105,15 @@ struct mma8452_data {
 	u8 ctrl_reg1;
 	u8 data_cfg;
 	const struct mma_chip_info *chip_info;
+<<<<<<< HEAD
+=======
+
+	/* Ensure correct alignment of time stamp when present */
+	struct {
+		__be16 channels[3];
+		s64 ts __aligned(8);
+	} buffer;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -1003,6 +1012,7 @@ static irqreturn_t mma8452_trigger_handler(int irq, void *p)
 	struct iio_poll_func *pf = p;
 	struct iio_dev *indio_dev = pf->indio_dev;
 	struct mma8452_data *data = iio_priv(indio_dev);
+<<<<<<< HEAD
 	u8 buffer[16]; /* 3 16-bit channels + padding + ts */
 	int ret;
 
@@ -1011,6 +1021,15 @@ static irqreturn_t mma8452_trigger_handler(int irq, void *p)
 		goto done;
 
 	iio_push_to_buffers_with_timestamp(indio_dev, buffer,
+=======
+	int ret;
+
+	ret = mma8452_read(data, data->buffer.channels);
+	if (ret < 0)
+		goto done;
+
+	iio_push_to_buffers_with_timestamp(indio_dev, &data->buffer,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					   iio_get_time_ns(indio_dev));
 
 done:
@@ -1391,7 +1410,11 @@ static int mma8452_trigger_setup(struct iio_dev *indio_dev)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	indio_dev->trig = trig;
+=======
+	indio_dev->trig = iio_trigger_get(trig);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -1583,10 +1606,20 @@ static int mma8452_probe(struct i2c_client *client,
 
 	ret = mma8452_set_freefall_mode(data, false);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto buffer_cleanup;
 
 	return 0;
 
+=======
+		goto unregister_device;
+
+	return 0;
+
+unregister_device:
+	iio_device_unregister(indio_dev);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 buffer_cleanup:
 	iio_triggered_buffer_cleanup(indio_dev);
 

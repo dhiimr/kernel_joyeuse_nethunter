@@ -496,8 +496,14 @@ bool mlx5e_poll_tx_cq(struct mlx5e_cq *cq, int napi_budget)
 void mlx5e_free_txqsq_descs(struct mlx5e_txqsq *sq)
 {
 	struct mlx5e_tx_wqe_info *wi;
+<<<<<<< HEAD
 	struct sk_buff *skb;
 	u16 ci;
+=======
+	u32 nbytes = 0;
+	u16 ci, npkts = 0;
+	struct sk_buff *skb;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int i;
 
 	while (sq->cc != sq->pc) {
@@ -518,8 +524,16 @@ void mlx5e_free_txqsq_descs(struct mlx5e_txqsq *sq)
 		}
 
 		dev_kfree_skb_any(skb);
+<<<<<<< HEAD
 		sq->cc += wi->num_wqebbs;
 	}
+=======
+		npkts++;
+		nbytes += wi->num_bytes;
+		sq->cc += wi->num_wqebbs;
+	}
+	netdev_tx_completed_queue(sq->txq, npkts, nbytes);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #ifdef CONFIG_MLX5_CORE_IPOIB

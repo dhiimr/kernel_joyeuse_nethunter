@@ -266,8 +266,16 @@ static int adis16480_set_freq(struct iio_dev *indio_dev, int val, int val2)
 	struct adis16480 *st = iio_priv(indio_dev);
 	unsigned int t;
 
+<<<<<<< HEAD
 	t =  val * 1000 + val2 / 1000;
 	if (t <= 0)
+=======
+	if (val < 0 || val2 < 0)
+		return -EINVAL;
+
+	t =  val * 1000 + val2 / 1000;
+	if (t == 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	t = 2460000 / t;
@@ -369,12 +377,22 @@ static int adis16480_get_calibbias(struct iio_dev *indio_dev,
 	case IIO_MAGN:
 	case IIO_PRESSURE:
 		ret = adis_read_reg_16(&st->adis, reg, &val16);
+<<<<<<< HEAD
 		*bias = sign_extend32(val16, 15);
+=======
+		if (ret == 0)
+			*bias = sign_extend32(val16, 15);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	case IIO_ANGL_VEL:
 	case IIO_ACCEL:
 		ret = adis_read_reg_32(&st->adis, reg, &val32);
+<<<<<<< HEAD
 		*bias = sign_extend32(val32, 31);
+=======
+		if (ret == 0)
+			*bias = sign_extend32(val32, 31);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	default:
 			ret = -EINVAL;
@@ -721,6 +739,10 @@ static const struct iio_info adis16480_info = {
 	.write_raw = &adis16480_write_raw,
 	.update_scan_mode = adis_update_scan_mode,
 	.driver_module = THIS_MODULE,
+<<<<<<< HEAD
+=======
+	.debugfs_reg_access = adis_debugfs_reg_access,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static int adis16480_stop_device(struct iio_dev *indio_dev)

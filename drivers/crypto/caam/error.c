@@ -22,7 +22,11 @@ void caam_dump_sg(const char *level, const char *prefix_str, int prefix_type,
 	size_t len;
 	void *buf;
 
+<<<<<<< HEAD
 	for (it = sg; it && tlen > 0 ; it = sg_next(sg)) {
+=======
+	for (it = sg; it && tlen > 0 ; it = sg_next(it)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/*
 		 * make sure the scatterlist's page
 		 * has a valid virtual memory mapping

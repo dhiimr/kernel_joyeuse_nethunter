@@ -958,12 +958,15 @@ All time durations are in microseconds.
 	$PERIOD duration.  If only one number is written, $MAX is
 	updated.
 
+<<<<<<< HEAD
   cpu.pressure
 	A read-only nested-key file which exists on non-root cgroups.
 
 	Shows pressure stall information for CPU. See
 	Documentation/accounting/psi.txt for details.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 Memory
 ------
@@ -1200,12 +1203,15 @@ PAGE_SIZE multiple when read back.
 	Swap usage hard limit.  If a cgroup's swap usage reaches this
 	limit, anonymous meomry of the cgroup will not be swapped out.
 
+<<<<<<< HEAD
   memory.pressure
 	A read-only nested-key file which exists on non-root cgroups.
 
 	Shows pressure stall information for memory. See
 	Documentation/accounting/psi.txt for details.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 Usage Guidelines
 ~~~~~~~~~~~~~~~~
@@ -1341,12 +1347,15 @@ IO Interface Files
 
 	  8:16 rbps=2097152 wbps=max riops=max wiops=max
 
+<<<<<<< HEAD
   io.pressure
 	A read-only nested-key file which exists on non-root cgroups.
 
 	Shows pressure stall information for IO. See
 	Documentation/accounting/psi.txt for details.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 Writeback
 ~~~~~~~~~

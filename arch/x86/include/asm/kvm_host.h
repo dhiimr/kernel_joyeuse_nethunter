@@ -277,6 +277,10 @@ struct kvm_rmap_head {
 struct kvm_mmu_page {
 	struct list_head link;
 	struct hlist_node hash_link;
+<<<<<<< HEAD
+=======
+	struct list_head lpage_disallowed_link;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * The following two entries are used to key the shadow page in the
@@ -289,6 +293,10 @@ struct kvm_mmu_page {
 	/* hold the gfn of each spte inside spt */
 	gfn_t *gfns;
 	bool unsync;
+<<<<<<< HEAD
+=======
+	bool lpage_disallowed; /* Can't be replaced by an equiv large page */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int root_count;          /* Currently serving as active root */
 	unsigned int unsync_children;
 	struct kvm_rmap_head parent_ptes; /* rmap pointers to parent sptes */
@@ -779,6 +787,10 @@ struct kvm_arch {
 	 */
 	struct list_head active_mmu_pages;
 	struct list_head zapped_obsolete_pages;
+<<<<<<< HEAD
+=======
+	struct list_head lpage_disallowed_mmu_pages;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct kvm_page_track_notifier_node mmu_sp_tracker;
 	struct kvm_page_track_notifier_head track_notifier_head;
 
@@ -854,6 +866,11 @@ struct kvm_arch {
 
 	bool x2apic_format;
 	bool x2apic_broadcast_quirk_disabled;
+<<<<<<< HEAD
+=======
+
+	struct task_struct *nx_lpage_recovery_thread;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct kvm_vm_stat {
@@ -867,6 +884,10 @@ struct kvm_vm_stat {
 	ulong mmu_unsync;
 	ulong remote_tlb_flush;
 	ulong lpages;
+<<<<<<< HEAD
+=======
+	ulong nx_lpage_splits;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ulong max_mmu_page_hash_collisions;
 };
 
@@ -973,7 +994,11 @@ struct kvm_x86_ops {
 	unsigned long (*get_rflags)(struct kvm_vcpu *vcpu);
 	void (*set_rflags)(struct kvm_vcpu *vcpu, unsigned long rflags);
 
+<<<<<<< HEAD
 	void (*tlb_flush)(struct kvm_vcpu *vcpu);
+=======
+	void (*tlb_flush)(struct kvm_vcpu *vcpu, bool invalidate_gpa);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	void (*run)(struct kvm_vcpu *vcpu);
 	int (*handle_exit)(struct kvm_vcpu *vcpu);
@@ -998,9 +1023,15 @@ struct kvm_x86_ops {
 	void (*hwapic_irr_update)(struct kvm_vcpu *vcpu, int max_irr);
 	void (*hwapic_isr_update)(struct kvm_vcpu *vcpu, int isr);
 	void (*load_eoi_exitmap)(struct kvm_vcpu *vcpu, u64 *eoi_exit_bitmap);
+<<<<<<< HEAD
 	void (*set_virtual_x2apic_mode)(struct kvm_vcpu *vcpu, bool set);
 	void (*set_apic_access_page_addr)(struct kvm_vcpu *vcpu, hpa_t hpa);
 	void (*deliver_posted_interrupt)(struct kvm_vcpu *vcpu, int vector);
+=======
+	void (*set_virtual_apic_mode)(struct kvm_vcpu *vcpu);
+	void (*set_apic_access_page_addr)(struct kvm_vcpu *vcpu, hpa_t hpa);
+	int (*deliver_posted_interrupt)(struct kvm_vcpu *vcpu, int vector);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int (*sync_pir_to_irr)(struct kvm_vcpu *vcpu);
 	int (*set_tss_addr)(struct kvm *kvm, unsigned int addr);
 	int (*get_tdp_level)(struct kvm_vcpu *vcpu);
@@ -1026,7 +1057,11 @@ struct kvm_x86_ops {
 	bool (*mpx_supported)(void);
 	bool (*xsaves_supported)(void);
 
+<<<<<<< HEAD
 	int (*check_nested_events)(struct kvm_vcpu *vcpu, bool external_intr);
+=======
+	int (*check_nested_events)(struct kvm_vcpu *vcpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	void (*sched_in)(struct kvm_vcpu *kvm, int cpu);
 
@@ -1054,7 +1089,11 @@ struct kvm_x86_ops {
 	void (*enable_log_dirty_pt_masked)(struct kvm *kvm,
 					   struct kvm_memory_slot *slot,
 					   gfn_t offset, unsigned long mask);
+<<<<<<< HEAD
 	int (*write_log_dirty)(struct kvm_vcpu *vcpu);
+=======
+	int (*write_log_dirty)(struct kvm_vcpu *vcpu, gpa_t l2_gpa);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* pmu operations of sub-arch */
 	const struct kvm_pmu_ops *pmu_ops;
@@ -1077,6 +1116,10 @@ struct kvm_x86_ops {
 	int (*update_pi_irte)(struct kvm *kvm, unsigned int host_irq,
 			      uint32_t guest_irq, bool set);
 	void (*apicv_post_state_restore)(struct kvm_vcpu *vcpu);
+<<<<<<< HEAD
+=======
+	bool (*dy_apicv_has_pending_interrupt)(struct kvm_vcpu *vcpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	int (*set_hv_timer)(struct kvm_vcpu *vcpu, u64 guest_deadline_tsc);
 	void (*cancel_hv_timer)(struct kvm_vcpu *vcpu);
@@ -1353,6 +1396,7 @@ enum {
 #define kvm_arch_vcpu_memslots_id(vcpu) ((vcpu)->arch.hflags & HF_SMM_MASK ? 1 : 0)
 #define kvm_memslots_for_spte_role(kvm, role) __kvm_memslots(kvm, (role).smm)
 
+<<<<<<< HEAD
 /*
  * Hardware virtualization extension instructions may fault if a
  * reboot turns off virtualization while processes are running.
@@ -1372,6 +1416,31 @@ asmlinkage void kvm_spurious_fault(void);
 	"jmp kvm_spurious_fault \n\t"	      \
 	".popsection \n\t" \
 	_ASM_EXTABLE(666b, 667b)
+=======
+asmlinkage void __noreturn kvm_spurious_fault(void);
+
+/*
+ * Hardware virtualization extension instructions may fault if a
+ * reboot turns off virtualization while processes are running.
+ * Usually after catching the fault we just panic; during reboot
+ * instead the instruction is ignored.
+ */
+#define ____kvm_handle_fault_on_reboot(insn, cleanup_insn)		\
+	"666: \n\t"							\
+	insn "\n\t"							\
+	"jmp	668f \n\t"						\
+	"667: \n\t"							\
+	"call	kvm_spurious_fault \n\t"				\
+	"668: \n\t"							\
+	".pushsection .fixup, \"ax\" \n\t"				\
+	"700: \n\t"							\
+	cleanup_insn "\n\t"						\
+	"cmpb	$0, kvm_rebooting\n\t"					\
+	"je	667b \n\t"						\
+	"jmp	668b \n\t"						\
+	".popsection \n\t"						\
+	_ASM_EXTABLE(666b, 700b)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define __kvm_handle_fault_on_reboot(insn)		\
 	____kvm_handle_fault_on_reboot(insn, "")

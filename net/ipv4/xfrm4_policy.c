@@ -17,6 +17,10 @@
 #include <net/xfrm.h>
 #include <net/ip.h>
 #include <net/l3mdev.h>
+<<<<<<< HEAD
+=======
+#include <net/inet_ecn.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct dst_entry *__xfrm4_dst_lookup(struct net *net, struct flowi4 *fl4,
 					    int tos, int oif,
@@ -111,7 +115,12 @@ static void
 _decode_session4(struct sk_buff *skb, struct flowi *fl, int reverse)
 {
 	const struct iphdr *iph = ip_hdr(skb);
+<<<<<<< HEAD
 	u8 *xprth = skb_network_header(skb) + iph->ihl * 4;
+=======
+	int ihl = iph->ihl;
+	u8 *xprth = skb_network_header(skb) + ihl * 4;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct flowi4 *fl4 = &fl->u.ip4;
 	int oif = 0;
 
@@ -122,6 +131,14 @@ _decode_session4(struct sk_buff *skb, struct flowi *fl, int reverse)
 	fl4->flowi4_mark = skb->mark;
 	fl4->flowi4_oif = reverse ? skb->skb_iif : oif;
 
+<<<<<<< HEAD
+=======
+	fl4->flowi4_proto = iph->protocol;
+	fl4->daddr = reverse ? iph->saddr : iph->daddr;
+	fl4->saddr = reverse ? iph->daddr : iph->saddr;
+	fl4->flowi4_tos = iph->tos & ~INET_ECN_MASK;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!ip_is_fragment(iph)) {
 		switch (iph->protocol) {
 		case IPPROTO_UDP:
@@ -133,7 +150,11 @@ _decode_session4(struct sk_buff *skb, struct flowi *fl, int reverse)
 			    pskb_may_pull(skb, xprth + 4 - skb->data)) {
 				__be16 *ports;
 
+<<<<<<< HEAD
 				xprth = skb_network_header(skb) + iph->ihl * 4;
+=======
+				xprth = skb_network_header(skb) + ihl * 4;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				ports = (__be16 *)xprth;
 
 				fl4->fl4_sport = ports[!!reverse];
@@ -146,7 +167,11 @@ _decode_session4(struct sk_buff *skb, struct flowi *fl, int reverse)
 			    pskb_may_pull(skb, xprth + 2 - skb->data)) {
 				u8 *icmp;
 
+<<<<<<< HEAD
 				xprth = skb_network_header(skb) + iph->ihl * 4;
+=======
+				xprth = skb_network_header(skb) + ihl * 4;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				icmp = xprth;
 
 				fl4->fl4_icmp_type = icmp[0];
@@ -159,7 +184,11 @@ _decode_session4(struct sk_buff *skb, struct flowi *fl, int reverse)
 			    pskb_may_pull(skb, xprth + 4 - skb->data)) {
 				__be32 *ehdr;
 
+<<<<<<< HEAD
 				xprth = skb_network_header(skb) + iph->ihl * 4;
+=======
+				xprth = skb_network_header(skb) + ihl * 4;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				ehdr = (__be32 *)xprth;
 
 				fl4->fl4_ipsec_spi = ehdr[0];
@@ -171,7 +200,11 @@ _decode_session4(struct sk_buff *skb, struct flowi *fl, int reverse)
 			    pskb_may_pull(skb, xprth + 8 - skb->data)) {
 				__be32 *ah_hdr;
 
+<<<<<<< HEAD
 				xprth = skb_network_header(skb) + iph->ihl * 4;
+=======
+				xprth = skb_network_header(skb) + ihl * 4;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				ah_hdr = (__be32 *)xprth;
 
 				fl4->fl4_ipsec_spi = ah_hdr[1];
@@ -183,7 +216,11 @@ _decode_session4(struct sk_buff *skb, struct flowi *fl, int reverse)
 			    pskb_may_pull(skb, xprth + 4 - skb->data)) {
 				__be16 *ipcomp_hdr;
 
+<<<<<<< HEAD
 				xprth = skb_network_header(skb) + iph->ihl * 4;
+=======
+				xprth = skb_network_header(skb) + ihl * 4;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				ipcomp_hdr = (__be16 *)xprth;
 
 				fl4->fl4_ipsec_spi = htonl(ntohs(ipcomp_hdr[1]));
@@ -196,7 +233,11 @@ _decode_session4(struct sk_buff *skb, struct flowi *fl, int reverse)
 				__be16 *greflags;
 				__be32 *gre_hdr;
 
+<<<<<<< HEAD
 				xprth = skb_network_header(skb) + iph->ihl * 4;
+=======
+				xprth = skb_network_header(skb) + ihl * 4;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				greflags = (__be16 *)xprth;
 				gre_hdr = (__be32 *)xprth;
 
@@ -213,6 +254,7 @@ _decode_session4(struct sk_buff *skb, struct flowi *fl, int reverse)
 			break;
 		}
 	}
+<<<<<<< HEAD
 	fl4->flowi4_proto = iph->protocol;
 	fl4->daddr = reverse ? iph->saddr : iph->daddr;
 	fl4->saddr = reverse ? iph->daddr : iph->saddr;
@@ -221,11 +263,22 @@ _decode_session4(struct sk_buff *skb, struct flowi *fl, int reverse)
 
 static void xfrm4_update_pmtu(struct dst_entry *dst, struct sock *sk,
 			      struct sk_buff *skb, u32 mtu)
+=======
+}
+
+static void xfrm4_update_pmtu(struct dst_entry *dst, struct sock *sk,
+			      struct sk_buff *skb, u32 mtu,
+			      bool confirm_neigh)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct xfrm_dst *xdst = (struct xfrm_dst *)dst;
 	struct dst_entry *path = xdst->route;
 
+<<<<<<< HEAD
 	path->ops->update_pmtu(path, sk, skb, mtu);
+=======
+	path->ops->update_pmtu(path, sk, skb, mtu, confirm_neigh);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void xfrm4_redirect(struct dst_entry *dst, struct sock *sk,

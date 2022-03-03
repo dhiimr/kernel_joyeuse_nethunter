@@ -96,8 +96,11 @@ struct stmmac_priv {
 	struct net_device *dev;
 	struct device *device;
 	struct mac_device_info *hw;
+<<<<<<< HEAD
 
 	/* Mutex lock */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct mutex lock;
 
 	/* RX Queue */
@@ -149,6 +152,7 @@ struct stmmac_priv {
 #endif
 };
 
+<<<<<<< HEAD
 struct emac_emb_smmu_cb_ctx {
 	bool valid;
 	struct platform_device *pdev_master;
@@ -170,6 +174,8 @@ int ethqos_handle_prv_ioctl(struct net_device *dev, struct ifreq *rq, int cmd);
 int ethqos_init_pps(struct stmmac_priv *priv);
 
 extern bool phy_intr_en;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int stmmac_mdio_unregister(struct net_device *ndev);
 int stmmac_mdio_register(struct net_device *ndev);
 int stmmac_mdio_reset(struct mii_bus *mii);

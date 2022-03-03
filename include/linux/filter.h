@@ -729,6 +729,11 @@ struct sock *do_sk_redirect_map(struct sk_buff *skb);
 extern int bpf_jit_enable;
 extern int bpf_jit_harden;
 extern int bpf_jit_kallsyms;
+<<<<<<< HEAD
+=======
+extern long bpf_jit_limit;
+extern long bpf_jit_limit_max;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 typedef void (*bpf_jit_fill_hole_t)(void *area, unsigned int size);
 

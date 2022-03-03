@@ -37,6 +37,10 @@ static int (*orig_bus_suspend)(struct usb_hcd *hcd);
 
 struct ehci_ci_priv {
 	struct regulator *reg_vbus;
+<<<<<<< HEAD
+=======
+	bool enabled;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static int ehci_ci_portpower(struct usb_hcd *hcd, int portnum, bool enable)
@@ -48,7 +52,11 @@ static int ehci_ci_portpower(struct usb_hcd *hcd, int portnum, bool enable)
 	int ret = 0;
 	int port = HCS_N_PORTS(ehci->hcs_params);
 
+<<<<<<< HEAD
 	if (priv->reg_vbus) {
+=======
+	if (priv->reg_vbus && enable != priv->enabled) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (port > 1) {
 			dev_warn(dev,
 				"Not support multi-port regulator control\n");
@@ -64,6 +72,10 @@ static int ehci_ci_portpower(struct usb_hcd *hcd, int portnum, bool enable)
 				enable ? "enable" : "disable", ret);
 			return ret;
 		}
+<<<<<<< HEAD
+=======
+		priv->enabled = enable;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (enable && (ci->platdata->phy_mode == USBPHY_INTERFACE_MODE_HSIC)) {

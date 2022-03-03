@@ -928,6 +928,16 @@ static bool intel_sdvo_set_colorimetry(struct intel_sdvo *intel_sdvo,
 	return intel_sdvo_set_value(intel_sdvo, SDVO_CMD_SET_COLORIMETRY, &mode, 1);
 }
 
+<<<<<<< HEAD
+=======
+static bool intel_sdvo_set_audio_state(struct intel_sdvo *intel_sdvo,
+				       u8 audio_state)
+{
+	return intel_sdvo_set_value(intel_sdvo, SDVO_CMD_SET_AUDIO_STAT,
+				    &audio_state, 1);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #if 0
 static void intel_sdvo_dump_hdmi_buf(struct intel_sdvo *intel_sdvo)
 {
@@ -1359,11 +1369,14 @@ static void intel_sdvo_pre_enable(struct intel_encoder *intel_encoder,
 	else
 		sdvox |= SDVO_PIPE_SEL(crtc->pipe);
 
+<<<<<<< HEAD
 	if (crtc_state->has_audio) {
 		WARN_ON_ONCE(INTEL_GEN(dev_priv) < 4);
 		sdvox |= SDVO_AUDIO_ENABLE;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (INTEL_GEN(dev_priv) >= 4) {
 		/* done in crtc_mode_set as the dpll_md reg must be written early */
 	} else if (IS_I945G(dev_priv) || IS_I945GM(dev_priv) ||
@@ -1492,8 +1505,18 @@ static void intel_sdvo_get_config(struct intel_encoder *encoder,
 	if (sdvox & HDMI_COLOR_RANGE_16_235)
 		pipe_config->limited_color_range = true;
 
+<<<<<<< HEAD
 	if (sdvox & SDVO_AUDIO_ENABLE)
 		pipe_config->has_audio = true;
+=======
+	if (intel_sdvo_get_value(intel_sdvo, SDVO_CMD_GET_AUDIO_STAT,
+				 &val, 1)) {
+		u8 mask = SDVO_AUDIO_ELD_VALID | SDVO_AUDIO_PRESENCE_DETECT;
+
+		if ((val & mask) == mask)
+			pipe_config->has_audio = true;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (intel_sdvo_get_value(intel_sdvo, SDVO_CMD_GET_ENCODE,
 				 &val, 1)) {
@@ -1506,6 +1529,35 @@ static void intel_sdvo_get_config(struct intel_encoder *encoder,
 	     pipe_config->pixel_multiplier, encoder_pixel_multiplier);
 }
 
+<<<<<<< HEAD
+=======
+static void intel_sdvo_disable_audio(struct intel_sdvo *intel_sdvo)
+{
+	intel_sdvo_set_audio_state(intel_sdvo, 0);
+}
+
+static void intel_sdvo_enable_audio(struct intel_sdvo *intel_sdvo,
+				    const struct intel_crtc_state *crtc_state,
+				    const struct drm_connector_state *conn_state)
+{
+	const struct drm_display_mode *adjusted_mode =
+		&crtc_state->base.adjusted_mode;
+	struct drm_connector *connector = conn_state->connector;
+	u8 *eld = connector->eld;
+
+	eld[6] = drm_av_sync_delay(connector, adjusted_mode) / 2;
+
+	intel_sdvo_set_audio_state(intel_sdvo, 0);
+
+	intel_sdvo_write_infoframe(intel_sdvo, SDVO_HBUF_INDEX_ELD,
+				   SDVO_HBUF_TX_DISABLED,
+				   eld, drm_eld_size(eld));
+
+	intel_sdvo_set_audio_state(intel_sdvo, SDVO_AUDIO_ELD_VALID |
+				   SDVO_AUDIO_PRESENCE_DETECT);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void intel_disable_sdvo(struct intel_encoder *encoder,
 			       struct intel_crtc_state *old_crtc_state,
 			       struct drm_connector_state *conn_state)
@@ -1515,6 +1567,12 @@ static void intel_disable_sdvo(struct intel_encoder *encoder,
 	struct intel_crtc *crtc = to_intel_crtc(encoder->base.crtc);
 	u32 temp;
 
+<<<<<<< HEAD
+=======
+	if (old_crtc_state->has_audio)
+		intel_sdvo_disable_audio(intel_sdvo);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	intel_sdvo_set_active_outputs(intel_sdvo, 0);
 	if (0)
 		intel_sdvo_set_encoder_power_state(intel_sdvo,
@@ -1598,6 +1656,12 @@ static void intel_enable_sdvo(struct intel_encoder *encoder,
 		intel_sdvo_set_encoder_power_state(intel_sdvo,
 						   DRM_MODE_DPMS_ON);
 	intel_sdvo_set_active_outputs(intel_sdvo, intel_sdvo->attached_output);
+<<<<<<< HEAD
+=======
+
+	if (pipe_config->has_audio)
+		intel_sdvo_enable_audio(intel_sdvo, pipe_config, conn_state);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static enum drm_mode_status
@@ -2468,7 +2532,10 @@ static bool
 intel_sdvo_dvi_init(struct intel_sdvo *intel_sdvo, int device)
 {
 	struct drm_encoder *encoder = &intel_sdvo->base.base;
+<<<<<<< HEAD
 	struct drm_i915_private *dev_priv = to_i915(encoder->dev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct drm_connector *connector;
 	struct intel_encoder *intel_encoder = to_intel_encoder(encoder);
 	struct intel_connector *intel_connector;
@@ -2504,9 +2571,13 @@ intel_sdvo_dvi_init(struct intel_sdvo *intel_sdvo, int device)
 	encoder->encoder_type = DRM_MODE_ENCODER_TMDS;
 	connector->connector_type = DRM_MODE_CONNECTOR_DVID;
 
+<<<<<<< HEAD
 	/* gen3 doesn't do the hdmi bits in the SDVO register */
 	if (INTEL_GEN(dev_priv) >= 4 &&
 	    intel_sdvo_is_hdmi_connector(intel_sdvo, device)) {
+=======
+	if (intel_sdvo_is_hdmi_connector(intel_sdvo, device)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		connector->connector_type = DRM_MODE_CONNECTOR_HDMIA;
 		intel_sdvo->is_hdmi = true;
 	}

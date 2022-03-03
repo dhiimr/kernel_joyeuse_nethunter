@@ -40,7 +40,10 @@
 #include <asm/suspend.h>
 #include <asm/sysreg.h>
 #include <asm/virt.h>
+<<<<<<< HEAD
 #include <soc/qcom/boot_stats.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Hibernate core relies on this value being 0 on resume, and marks it
@@ -85,6 +88,7 @@ static struct arch_hibernate_hdr {
 	void		(*reenter_kernel)(void);
 
 	/*
+<<<<<<< HEAD
 	 * Another entry point if jump to kernel happens with mmu disabled,
 	 * generally done when restoring hibernation image from bootloader
 	 * context
@@ -93,6 +97,8 @@ static struct arch_hibernate_hdr {
 	phys_addr_t	phys_reenter_kernel;
 
 	/*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * We need to know where the __hyp_stub_vectors are after restore to
 	 * re-configure el2.
 	 */
@@ -135,7 +141,10 @@ int arch_hibernation_header_save(void *addr, unsigned int max_size)
 	arch_hdr_invariants(&hdr->invariants);
 	hdr->ttbr1_el1		= __pa_symbol(swapper_pg_dir);
 	hdr->reenter_kernel	= _cpu_resume;
+<<<<<<< HEAD
 	hdr->phys_reenter_kernel  = __pa(cpu_resume);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* We can't use __hyp_get_vectors() because kvm may still be loaded */
 	if (el2_reset_needed())
@@ -256,8 +265,12 @@ static int create_safe_exec_page(void *src_start, size_t length,
 	}
 
 	pte = pte_offset_kernel(pmd, dst_addr);
+<<<<<<< HEAD
 	set_pte(pte, __pte(virt_to_phys((void *)dst) |
 			 pgprot_val(PAGE_KERNEL_EXEC)));
+=======
+	set_pte(pte, pfn_pte(virt_to_pfn(dst), PAGE_KERNEL_EXEC));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Load our new page tables. A strict BBM approach requires that we
@@ -339,7 +352,10 @@ int swsusp_arch_suspend(void)
 	}
 
 	local_dbg_restore(flags);
+<<<<<<< HEAD
 	place_marker("PM: Kernel restore start!");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }

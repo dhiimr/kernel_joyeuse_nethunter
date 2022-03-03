@@ -549,7 +549,11 @@ static void qh_link_periodic(struct ehci_hcd *ehci, struct ehci_qh *qh)
 	unsigned	period = qh->ps.period;
 
 	dev_dbg(&qh->ps.udev->dev,
+<<<<<<< HEAD
 		"link qh%d-%04x/%pK start %d [%d/%d us]\n",
+=======
+		"link qh%d-%04x/%p start %d [%d/%d us]\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		period, hc32_to_cpup(ehci, &qh->hw->hw_info2)
 			& (QH_CMASK | QH_SMASK),
 		qh, qh->ps.phase, qh->ps.usecs, qh->ps.c_usecs);
@@ -642,7 +646,11 @@ static void qh_unlink_periodic(struct ehci_hcd *ehci, struct ehci_qh *qh)
 		: (qh->ps.usecs * 8);
 
 	dev_dbg(&qh->ps.udev->dev,
+<<<<<<< HEAD
 		"unlink qh%d-%04x/%pK start %d [%d/%d us]\n",
+=======
+		"unlink qh%d-%04x/%p start %d [%d/%d us]\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		qh->ps.period,
 		hc32_to_cpup(ehci, &qh->hw->hw_info2) & (QH_CMASK | QH_SMASK),
 		qh, qh->ps.phase, qh->ps.usecs, qh->ps.c_usecs);
@@ -752,7 +760,11 @@ static void end_unlink_intr(struct ehci_hcd *ehci, struct ehci_qh *qh)
 		 * FIXME kill the now-dysfunctional queued urbs
 		 */
 		else {
+<<<<<<< HEAD
 			ehci_err(ehci, "can't reschedule qh %pK, err %d\n",
+=======
+			ehci_err(ehci, "can't reschedule qh %p, err %d\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					qh, rc);
 		}
 	}
@@ -870,7 +882,11 @@ static int qh_schedule(struct ehci_hcd *ehci, struct ehci_qh *qh)
 
 	/* reuse the previous schedule slots, if we can */
 	if (qh->ps.phase != NO_FRAME) {
+<<<<<<< HEAD
 		ehci_dbg(ehci, "reused qh %pK schedule\n", qh);
+=======
+		ehci_dbg(ehci, "reused qh %p schedule\n", qh);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 	}
 
@@ -1549,7 +1565,11 @@ iso_stream_schedule(
 
 			/* no room in the schedule */
 			if (!done) {
+<<<<<<< HEAD
 				ehci_dbg(ehci, "iso sched full %pK", urb);
+=======
+				ehci_dbg(ehci, "iso sched full %p", urb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				status = -ENOSPC;
 				goto fail;
 			}
@@ -1603,7 +1623,11 @@ iso_stream_schedule(
 
 	/* Is the schedule about to wrap around? */
 	if (unlikely(!empty && start < period)) {
+<<<<<<< HEAD
 		ehci_dbg(ehci, "request %pK would overflow (%u-%u < %u mod %u)\n",
+=======
+		ehci_dbg(ehci, "request %p would overflow (%u-%u < %u mod %u)\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				urb, stream->next_uframe, base, period, mod);
 		status = -EFBIG;
 		goto fail;
@@ -1632,7 +1656,11 @@ iso_stream_schedule(
 	/* How many uframes and packets do we need to skip? */
 	skip = (now2 - start + period - 1) & -period;
 	if (skip >= span) {		/* Entirely in the past? */
+<<<<<<< HEAD
 		ehci_dbg(ehci, "iso underrun %pK (%u+%u < %u) [%u]\n",
+=======
+		ehci_dbg(ehci, "iso underrun %p (%u+%u < %u) [%u]\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				urb, start + base, span - period, now2 + base,
 				base);
 
@@ -1659,7 +1687,11 @@ iso_stream_schedule(
  use_start:
 	/* Tried to schedule too far into the future? */
 	if (unlikely(start + span - period >= mod + wrap)) {
+<<<<<<< HEAD
 		ehci_dbg(ehci, "request %pK would overflow (%u+%u >= %u)\n",
+=======
+		ehci_dbg(ehci, "request %p would overflow (%u+%u >= %u)\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				urb, start, span - period, mod + wrap);
 		status = -EFBIG;
 		goto fail;
@@ -1955,7 +1987,11 @@ static int itd_submit(struct ehci_hcd *ehci, struct urb *urb,
 
 #ifdef EHCI_URB_TRACE
 	ehci_dbg(ehci,
+<<<<<<< HEAD
 		"%s %s urb %p ep%d%s len %d, %d pkts %d uframes [%pK]\n",
+=======
+		"%s %s urb %p ep%d%s len %d, %d pkts %d uframes [%p]\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__func__, urb->dev->devpath, urb,
 		usb_pipeendpoint(urb->pipe),
 		usb_pipein(urb->pipe) ? "in" : "out",
@@ -2335,8 +2371,13 @@ static int sitd_submit(struct ehci_hcd *ehci, struct urb *urb,
 	}
 
 #ifdef EHCI_URB_TRACE
+<<<<<<< HEAD
 	ehci_dbg (ehci,
 		"submit %pK dev%s ep%d%s-iso len %d\n",
+=======
+	ehci_dbg(ehci,
+		"submit %p dev%s ep%d%s-iso len %d\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		urb, urb->dev->devpath,
 		usb_pipeendpoint(urb->pipe),
 		usb_pipein(urb->pipe) ? "in" : "out",

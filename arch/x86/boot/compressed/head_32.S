@@ -49,16 +49,27 @@
  * Position Independent Executable (PIE) so that linker won't optimize
  * R_386_GOT32X relocation to its fixed symbol address.  Older
  * linkers generate R_386_32 relocations against locally defined symbols,
+<<<<<<< HEAD
  * _bss, _ebss, _got and _egot, in PIE.  It isn't wrong, just less
  * optimal than R_386_RELATIVE.  But the x86 kernel fails to properly handle
  * R_386_32 relocations when relocating the kernel.  To generate
  * R_386_RELATIVE relocations, we mark _bss, _ebss, _got and _egot as
+=======
+ * _bss, _ebss, _got, _egot and _end, in PIE.  It isn't wrong, just less
+ * optimal than R_386_RELATIVE.  But the x86 kernel fails to properly handle
+ * R_386_32 relocations when relocating the kernel.  To generate
+ * R_386_RELATIVE relocations, we mark _bss, _ebss, _got, _egot and _end as
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * hidden:
  */
 	.hidden _bss
 	.hidden _ebss
 	.hidden _got
 	.hidden _egot
+<<<<<<< HEAD
+=======
+	.hidden _end
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	__HEAD
 ENTRY(startup_32)
@@ -106,7 +117,11 @@ ENTRY(startup_32)
 	notl	%eax
 	andl    %eax, %ebx
 	cmpl	$LOAD_PHYSICAL_ADDR, %ebx
+<<<<<<< HEAD
 	jge	1f
+=======
+	jae	1f
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 	movl	$LOAD_PHYSICAL_ADDR, %ebx
 1:

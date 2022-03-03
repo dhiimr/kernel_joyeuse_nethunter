@@ -710,6 +710,10 @@ static noinline int skip_rcv_packet(struct hfi1_packet *packet, int thread)
 {
 	int ret;
 
+<<<<<<< HEAD
+=======
+	packet->rcd->dd->ctx0_seq_drop++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Set up for the next packet */
 	packet->rhqoff += packet->rsize;
 	if (packet->rhqoff >= packet->maxcnt)

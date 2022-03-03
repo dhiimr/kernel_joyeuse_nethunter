@@ -58,6 +58,7 @@ init_iova_domain(struct iova_domain *iovad, unsigned long granule,
 }
 EXPORT_SYMBOL_GPL(init_iova_domain);
 
+<<<<<<< HEAD
 static void free_iova_flush_queue(struct iova_domain *iovad)
 {
 	if (!iovad->fq)
@@ -65,6 +66,19 @@ static void free_iova_flush_queue(struct iova_domain *iovad)
 
 	if (timer_pending(&iovad->fq_timer))
 		del_timer(&iovad->fq_timer);
+=======
+bool has_iova_flush_queue(struct iova_domain *iovad)
+{
+	return !!iovad->fq;
+}
+
+static void free_iova_flush_queue(struct iova_domain *iovad)
+{
+	if (!has_iova_flush_queue(iovad))
+		return;
+
+	del_timer_sync(&iovad->fq_timer);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	fq_destroy_all_entries(iovad);
 
@@ -78,13 +92,22 @@ static void free_iova_flush_queue(struct iova_domain *iovad)
 int init_iova_flush_queue(struct iova_domain *iovad,
 			  iova_flush_cb flush_cb, iova_entry_dtor entry_dtor)
 {
+<<<<<<< HEAD
+=======
+	struct iova_fq __percpu *queue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int cpu;
 
 	atomic64_set(&iovad->fq_flush_start_cnt,  0);
 	atomic64_set(&iovad->fq_flush_finish_cnt, 0);
 
+<<<<<<< HEAD
 	iovad->fq = alloc_percpu(struct iova_fq);
 	if (!iovad->fq)
+=======
+	queue = alloc_percpu(struct iova_fq);
+	if (!queue)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -ENOMEM;
 
 	iovad->flush_cb   = flush_cb;
@@ -93,13 +116,24 @@ int init_iova_flush_queue(struct iova_domain *iovad,
 	for_each_possible_cpu(cpu) {
 		struct iova_fq *fq;
 
+<<<<<<< HEAD
 		fq = per_cpu_ptr(iovad->fq, cpu);
+=======
+		fq = per_cpu_ptr(queue, cpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		fq->head = 0;
 		fq->tail = 0;
 
 		spin_lock_init(&fq->lock);
 	}
 
+<<<<<<< HEAD
+=======
+	smp_wmb();
+
+	iovad->fq = queue;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	setup_timer(&iovad->fq_timer, fq_flush_timeout, (unsigned long)iovad);
 	atomic_set(&iovad->fq_timer_on, 0);
 
@@ -182,6 +216,7 @@ iova_insert_rbtree(struct rb_root *root, struct iova *iova,
 	rb_insert_color(&iova->node, root);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARM64_DMA_IOMMU_ALIGNMENT
 #define MAX_ALIGN(shift) (((1 << CONFIG_ARM64_DMA_IOMMU_ALIGNMENT) * PAGE_SIZE)\
 			  >> (shift))
@@ -204,6 +239,16 @@ iova_get_pad_size(unsigned int size, unsigned int limit_pfn,
 		align = max_align;
 
 	return (limit_pfn - size) & (align - 1);
+=======
+/*
+ * Computes the padding size required, to make the start address
+ * naturally aligned on the power-of-two order of its size
+ */
+static unsigned int
+iova_get_pad_size(unsigned int size, unsigned int limit_pfn)
+{
+	return (limit_pfn - size) & (__roundup_pow_of_two(size) - 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int __alloc_and_insert_iova_range(struct iova_domain *iovad,
@@ -214,14 +259,20 @@ static int __alloc_and_insert_iova_range(struct iova_domain *iovad,
 	unsigned long flags;
 	unsigned long saved_pfn;
 	unsigned int pad_size = 0;
+<<<<<<< HEAD
 	unsigned long shift = iova_shift(iovad);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Walk the tree backwards */
 	spin_lock_irqsave(&iovad->iova_rbtree_lock, flags);
 	saved_pfn = limit_pfn;
 	curr = __get_cached_rbnode(iovad, &limit_pfn);
 	prev = curr;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	while (curr) {
 		struct iova *curr_iova = rb_entry(curr, struct iova, node);
 
@@ -229,8 +280,12 @@ static int __alloc_and_insert_iova_range(struct iova_domain *iovad,
 			goto move_left;
 		} else if (limit_pfn > curr_iova->pfn_hi) {
 			if (size_aligned)
+<<<<<<< HEAD
 				pad_size = iova_get_pad_size(size, limit_pfn,
 							     MAX_ALIGN(shift));
+=======
+				pad_size = iova_get_pad_size(size, limit_pfn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if ((curr_iova->pfn_hi + size + pad_size) < limit_pfn)
 				break;	/* found a free slot */
 		}
@@ -242,8 +297,12 @@ move_left:
 
 	if (!curr) {
 		if (size_aligned)
+<<<<<<< HEAD
 			pad_size = iova_get_pad_size(size, limit_pfn,
 						     MAX_ALIGN(shift));
+=======
+			pad_size = iova_get_pad_size(size, limit_pfn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if ((iovad->start_pfn + size + pad_size) > limit_pfn) {
 			spin_unlock_irqrestore(&iovad->iova_rbtree_lock, flags);
 			return -ENOMEM;
@@ -615,7 +674,13 @@ void queue_iova(struct iova_domain *iovad,
 
 	spin_unlock_irqrestore(&fq->lock, flags);
 
+<<<<<<< HEAD
 	if (atomic_cmpxchg(&iovad->fq_timer_on, 0, 1) == 0)
+=======
+	/* Avoid false sharing as much as possible. */
+	if (!atomic_read(&iovad->fq_timer_on) &&
+	    !atomic_cmpxchg(&iovad->fq_timer_on, 0, 1))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mod_timer(&iovad->fq_timer,
 			  jiffies + msecs_to_jiffies(IOVA_FQ_TIMEOUT));
 
@@ -851,7 +916,13 @@ iova_magazine_free_pfns(struct iova_magazine *mag, struct iova_domain *iovad)
 	for (i = 0 ; i < mag->size; ++i) {
 		struct iova *iova = private_find_iova(iovad, mag->pfns[i]);
 
+<<<<<<< HEAD
 		BUG_ON(!iova);
+=======
+		if (WARN_ON(!iova))
+			continue;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		private_free_iova(iovad, iova);
 	}
 

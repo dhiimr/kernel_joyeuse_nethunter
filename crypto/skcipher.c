@@ -95,7 +95,11 @@ static inline u8 *skcipher_get_spot(u8 *start, unsigned int len)
 	return max(start, end_page);
 }
 
+<<<<<<< HEAD
 static void skcipher_done_slow(struct skcipher_walk *walk, unsigned int bsize)
+=======
+static int skcipher_done_slow(struct skcipher_walk *walk, unsigned int bsize)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u8 *addr;
 
@@ -103,10 +107,15 @@ static void skcipher_done_slow(struct skcipher_walk *walk, unsigned int bsize)
 	addr = skcipher_get_spot(addr, bsize);
 	scatterwalk_copychunks(addr, &walk->out, bsize,
 			       (walk->flags & SKCIPHER_WALK_PHYS) ? 2 : 1);
+<<<<<<< HEAD
+=======
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 int skcipher_walk_done(struct skcipher_walk *walk, int err)
 {
+<<<<<<< HEAD
 	unsigned int n; /* bytes processed */
 	bool more;
 
@@ -116,6 +125,18 @@ int skcipher_walk_done(struct skcipher_walk *walk, int err)
 	n = walk->nbytes - err;
 	walk->total -= n;
 	more = (walk->total != 0);
+=======
+	unsigned int n = walk->nbytes;
+	unsigned int nbytes = 0;
+
+	if (!n)
+		goto finish;
+
+	if (likely(err >= 0)) {
+		n -= err;
+		nbytes = walk->total - n;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (likely(!(walk->flags & (SKCIPHER_WALK_PHYS |
 				    SKCIPHER_WALK_SLOW |
@@ -131,6 +152,7 @@ unmap_src:
 		memcpy(walk->dst.virt.addr, walk->page, n);
 		skcipher_unmap_dst(walk);
 	} else if (unlikely(walk->flags & SKCIPHER_WALK_SLOW)) {
+<<<<<<< HEAD
 		if (WARN_ON(err)) {
 			/* unexpected case; didn't process all bytes */
 			err = -EINVAL;
@@ -147,14 +169,46 @@ already_advanced:
 	scatterwalk_done(&walk->out, 1, more);
 
 	if (more) {
+=======
+		if (err > 0) {
+			/*
+			 * Didn't process all bytes.  Either the algorithm is
+			 * broken, or this was the last step and it turned out
+			 * the message wasn't evenly divisible into blocks but
+			 * the algorithm requires it.
+			 */
+			err = -EINVAL;
+			nbytes = 0;
+		} else
+			n = skcipher_done_slow(walk, n);
+	}
+
+	if (err > 0)
+		err = 0;
+
+	walk->total = nbytes;
+	walk->nbytes = 0;
+
+	scatterwalk_advance(&walk->in, n);
+	scatterwalk_advance(&walk->out, n);
+	scatterwalk_done(&walk->in, 0, nbytes);
+	scatterwalk_done(&walk->out, 1, nbytes);
+
+	if (nbytes) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		crypto_yield(walk->flags & SKCIPHER_WALK_SLEEP ?
 			     CRYPTO_TFM_REQ_MAY_SLEEP : 0);
 		return skcipher_walk_next(walk);
 	}
+<<<<<<< HEAD
 	err = 0;
 finish:
 	walk->nbytes = 0;
 
+=======
+
+finish:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Short-circuit for the common/fast path. */
 	if (!((unsigned long)walk->buffer | (unsigned long)walk->page))
 		goto out;

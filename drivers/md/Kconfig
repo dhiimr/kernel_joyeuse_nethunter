@@ -286,6 +286,7 @@ config DM_CRYPT
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 config DM_DEFAULT_KEY
 	tristate "Default-key crypt target support"
 	depends on BLK_DEV_DM
@@ -304,6 +305,8 @@ config DM_DEFAULT_KEY
 
 	  If unsure, say N.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config DM_SNAPSHOT
        tristate "Snapshot target"
        depends on BLK_DEV_DM
@@ -558,6 +561,7 @@ config DM_ZONED
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 config DM_VERITY_AVB
 	tristate "Support AVB specific verity error behavior"
 	depends on DM_VERITY
@@ -619,4 +623,6 @@ config DM_BOW
 
 	  If unsure, say N.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif # MD

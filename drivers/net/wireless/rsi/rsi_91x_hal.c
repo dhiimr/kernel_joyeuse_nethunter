@@ -386,9 +386,15 @@ int rsi_prepare_beacon(struct rsi_common *common, struct sk_buff *skb)
 	}
 
 	if (common->band == NL80211_BAND_2GHZ)
+<<<<<<< HEAD
 		bcn_frm->bbp_info |= cpu_to_le16(RSI_RATE_1);
 	else
 		bcn_frm->bbp_info |= cpu_to_le16(RSI_RATE_6);
+=======
+		bcn_frm->rate_info |= cpu_to_le16(RSI_RATE_1);
+	else
+		bcn_frm->rate_info |= cpu_to_le16(RSI_RATE_6);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (mac_bcn->data[tim_offset + 2] == 0)
 		bcn_frm->frame_info |= cpu_to_le16(RSI_DATA_DESC_DTIM_BEACON);
@@ -541,6 +547,10 @@ static int bl_cmd(struct rsi_hw *adapter, u8 cmd, u8 exp_resp, char *str)
 	bl_start_cmd_timer(adapter, timeout);
 	status = bl_write_cmd(adapter, cmd, exp_resp, &regout_val);
 	if (status < 0) {
+<<<<<<< HEAD
+=======
+		bl_stop_cmd_timer(adapter);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rsi_dbg(ERR_ZONE,
 			"%s: Command %s (%0x) writing failed..\n",
 			__func__, str, cmd);
@@ -656,10 +666,16 @@ static int ping_pong_write(struct rsi_hw *adapter, u8 cmd, u8 *addr, u32 size)
 	}
 
 	status = bl_cmd(adapter, cmd_req, cmd_resp, str);
+<<<<<<< HEAD
 	if (status) {
 		bl_stop_cmd_timer(adapter);
 		return status;
 	}
+=======
+	if (status)
+		return status;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -749,10 +765,16 @@ static int auto_fw_upgrade(struct rsi_hw *adapter, u8 *flash_content,
 
 	status = bl_cmd(adapter, EOF_REACHED, FW_LOADING_SUCCESSFUL,
 			"EOF_REACHED");
+<<<<<<< HEAD
 	if (status) {
 		bl_stop_cmd_timer(adapter);
 		return status;
 	}
+=======
+	if (status)
+		return status;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rsi_dbg(INFO_ZONE, "FW loading is done and FW is running..\n");
 	return 0;
 }
@@ -773,6 +795,10 @@ static int rsi_load_firmware(struct rsi_hw *adapter)
 		status = hif_ops->master_reg_read(adapter, SWBL_REGOUT,
 					      &regout_val, 2);
 		if (status < 0) {
+<<<<<<< HEAD
+=======
+			bl_stop_cmd_timer(adapter);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			rsi_dbg(ERR_ZONE,
 				"%s: REGOUT read failed\n", __func__);
 			return status;

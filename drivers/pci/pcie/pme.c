@@ -441,6 +441,10 @@ static void pcie_pme_remove(struct pcie_device *srv)
 
 	pcie_pme_disable_interrupt(srv->port, data);
 	free_irq(srv->irq, srv);
+<<<<<<< HEAD
+=======
+	cancel_work_sync(&data->work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(data);
 }
 

@@ -164,7 +164,15 @@ int stk_camera_read_reg(struct stk_camera *dev, u16 index, u8 *value)
 		*value = *buf;
 
 	kfree(buf);
+<<<<<<< HEAD
 	return ret;
+=======
+
+	if (ret < 0)
+		return ret;
+	else
+		return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int stk_start_stream(struct stk_camera *dev)
@@ -640,8 +648,12 @@ static int v4l_stk_release(struct file *fp)
 		dev->owner = NULL;
 	}
 
+<<<<<<< HEAD
 	if (is_present(dev))
 		usb_autopm_put_interface(dev->interface);
+=======
+	usb_autopm_put_interface(dev->interface);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(&dev->lock);
 	return v4l2_fh_release(fp);
 }
@@ -1352,7 +1364,11 @@ static int stk_camera_probe(struct usb_interface *interface,
 	if (!dev->isoc_ep) {
 		pr_err("Could not find isoc-in endpoint\n");
 		err = -ENODEV;
+<<<<<<< HEAD
 		goto error;
+=======
+		goto error_put;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	dev->vsettings.palette = V4L2_PIX_FMT_RGB565;
 	dev->vsettings.mode = MODE_VGA;
@@ -1365,10 +1381,19 @@ static int stk_camera_probe(struct usb_interface *interface,
 
 	err = stk_register_video_device(dev);
 	if (err)
+<<<<<<< HEAD
 		goto error;
 
 	return 0;
 
+=======
+		goto error_put;
+
+	return 0;
+
+error_put:
+	usb_put_intf(interface);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 error:
 	v4l2_ctrl_handler_free(hdl);
 	v4l2_device_unregister(&dev->v4l2_dev);

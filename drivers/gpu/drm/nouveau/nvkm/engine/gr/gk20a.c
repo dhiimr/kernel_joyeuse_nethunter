@@ -143,23 +143,40 @@ gk20a_gr_av_to_method(struct gf100_gr *gr, const char *fw_name,
 
 	nent = (fuc.size / sizeof(struct gk20a_fw_av));
 
+<<<<<<< HEAD
 	pack = vzalloc((sizeof(*pack) * max_classes) +
 		       (sizeof(*init) * (nent + 1)));
+=======
+	pack = vzalloc((sizeof(*pack) * (max_classes + 1)) +
+		       (sizeof(*init) * (nent + max_classes + 1)));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!pack) {
 		ret = -ENOMEM;
 		goto end;
 	}
 
+<<<<<<< HEAD
 	init = (void *)(pack + max_classes);
 
 	for (i = 0; i < nent; i++) {
 		struct gf100_gr_init *ent = &init[i];
+=======
+	init = (void *)(pack + max_classes + 1);
+
+	for (i = 0; i < nent; i++, init++) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct gk20a_fw_av *av = &((struct gk20a_fw_av *)fuc.data)[i];
 		u32 class = av->addr & 0xffff;
 		u32 addr = (av->addr & 0xffff0000) >> 14;
 
 		if (prevclass != class) {
+<<<<<<< HEAD
 			pack[classidx].init = ent;
+=======
+			if (prevclass) /* Add terminator to the method list. */
+				init++;
+			pack[classidx].init = init;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			pack[classidx].type = class;
 			prevclass = class;
 			if (++classidx >= max_classes) {
@@ -169,10 +186,17 @@ gk20a_gr_av_to_method(struct gf100_gr *gr, const char *fw_name,
 			}
 		}
 
+<<<<<<< HEAD
 		ent->addr = addr;
 		ent->data = av->data;
 		ent->count = 1;
 		ent->pitch = 1;
+=======
+		init->addr = addr;
+		init->data = av->data;
+		init->count = 1;
+		init->pitch = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	*ppack = pack;

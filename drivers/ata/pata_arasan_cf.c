@@ -819,12 +819,28 @@ static int arasan_cf_probe(struct platform_device *pdev)
 	else
 		quirk = CF_BROKEN_UDMA; /* as it is on spear1340 */
 
+<<<<<<< HEAD
 	/* if irq is 0, support only PIO */
 	acdev->irq = platform_get_irq(pdev, 0);
 	if (acdev->irq)
 		irq_handler = arasan_cf_interrupt;
 	else
 		quirk |= CF_BROKEN_MWDMA | CF_BROKEN_UDMA;
+=======
+	/*
+	 * If there's an error getting IRQ (or we do get IRQ0),
+	 * support only PIO
+	 */
+	ret = platform_get_irq(pdev, 0);
+	if (ret > 0) {
+		acdev->irq = ret;
+		irq_handler = arasan_cf_interrupt;
+	} else	if (ret == -EPROBE_DEFER) {
+		return ret;
+	} else	{
+		quirk |= CF_BROKEN_MWDMA | CF_BROKEN_UDMA;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	acdev->pbase = res->start;
 	acdev->vbase = devm_ioremap_nocache(&pdev->dev, res->start,

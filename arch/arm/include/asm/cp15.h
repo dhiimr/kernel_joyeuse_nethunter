@@ -68,6 +68,11 @@
 #define BPIALL				__ACCESS_CP15(c7, 0, c5, 6)
 #define ICIALLU				__ACCESS_CP15(c7, 0, c5, 0)
 
+<<<<<<< HEAD
+=======
+#define CNTVCT				__ACCESS_CP15_64(1, c14)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern unsigned long cr_alignment;	/* defined in entry-armv.S */
 
 static inline unsigned long get_cr(void)

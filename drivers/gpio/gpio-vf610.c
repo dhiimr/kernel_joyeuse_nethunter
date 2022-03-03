@@ -37,6 +37,10 @@ struct fsl_gpio_soc_data {
 
 struct vf610_gpio_port {
 	struct gpio_chip gc;
+<<<<<<< HEAD
+=======
+	struct irq_chip ic;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	void __iomem *base;
 	void __iomem *gpio_base;
 	const struct fsl_gpio_soc_data *sdata;
@@ -66,8 +70,11 @@ struct vf610_gpio_port {
 #define PORT_INT_EITHER_EDGE	0xb
 #define PORT_INT_LOGIC_ONE	0xc
 
+<<<<<<< HEAD
 static struct irq_chip vf610_gpio_irq_chip;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const struct fsl_gpio_soc_data imx_data = {
 	.have_paddr = true,
 };
@@ -243,6 +250,7 @@ static int vf610_gpio_irq_set_wake(struct irq_data *d, u32 enable)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct irq_chip vf610_gpio_irq_chip = {
 	.name		= "gpio-vf610",
 	.irq_ack	= vf610_gpio_irq_ack,
@@ -252,6 +260,8 @@ static struct irq_chip vf610_gpio_irq_chip = {
 	.irq_set_wake	= vf610_gpio_irq_set_wake,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int vf610_gpio_probe(struct platform_device *pdev)
 {
 	const struct of_device_id *of_id = of_match_device(vf610_gpio_dt_ids,
@@ -261,6 +271,10 @@ static int vf610_gpio_probe(struct platform_device *pdev)
 	struct vf610_gpio_port *port;
 	struct resource *iores;
 	struct gpio_chip *gc;
+<<<<<<< HEAD
+=======
+	struct irq_chip *ic;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int i;
 	int ret;
 
@@ -297,6 +311,17 @@ static int vf610_gpio_probe(struct platform_device *pdev)
 	gc->direction_output = vf610_gpio_direction_output;
 	gc->set = vf610_gpio_set;
 
+<<<<<<< HEAD
+=======
+	ic = &port->ic;
+	ic->name = "gpio-vf610";
+	ic->irq_ack = vf610_gpio_irq_ack;
+	ic->irq_mask = vf610_gpio_irq_mask;
+	ic->irq_unmask = vf610_gpio_irq_unmask;
+	ic->irq_set_type = vf610_gpio_irq_set_type;
+	ic->irq_set_wake = vf610_gpio_irq_set_wake;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = gpiochip_add_data(gc, port);
 	if (ret < 0)
 		return ret;
@@ -308,14 +333,22 @@ static int vf610_gpio_probe(struct platform_device *pdev)
 	/* Clear the interrupt status register for all GPIO's */
 	vf610_gpio_writel(~0, port->base + PORT_ISFR);
 
+<<<<<<< HEAD
 	ret = gpiochip_irqchip_add(gc, &vf610_gpio_irq_chip, 0,
 				   handle_edge_irq, IRQ_TYPE_NONE);
+=======
+	ret = gpiochip_irqchip_add(gc, ic, 0, handle_edge_irq, IRQ_TYPE_NONE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret) {
 		dev_err(dev, "failed to add irqchip\n");
 		gpiochip_remove(gc);
 		return ret;
 	}
+<<<<<<< HEAD
 	gpiochip_set_chained_irqchip(gc, &vf610_gpio_irq_chip, port->irq,
+=======
+	gpiochip_set_chained_irqchip(gc, ic, port->irq,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				     vf610_gpio_irq_handler);
 
 	return 0;

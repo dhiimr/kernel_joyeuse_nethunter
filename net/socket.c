@@ -89,8 +89,11 @@
 #include <linux/magic.h>
 #include <linux/slab.h>
 #include <linux/xattr.h>
+<<<<<<< HEAD
 #include <linux/seemp_api.h>
 #include <linux/seemp_instrumentation.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/nospec.h>
 
 #include <linux/uaccess.h>
@@ -118,8 +121,11 @@ unsigned int sysctl_net_busy_poll __read_mostly;
 
 static ssize_t sock_read_iter(struct kiocb *iocb, struct iov_iter *to);
 static ssize_t sock_write_iter(struct kiocb *iocb, struct iov_iter *from);
+<<<<<<< HEAD
 static BLOCKING_NOTIFIER_HEAD(sockev_notifier_list);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int sock_mmap(struct file *file, struct vm_area_struct *vma);
 
 static int sock_close(struct inode *inode, struct file *file);
@@ -174,6 +180,7 @@ static const struct net_proto_family __rcu *net_families[NPROTO] __read_mostly;
 static DEFINE_PER_CPU(int, sockets_in_use);
 
 /*
+<<<<<<< HEAD
  * Socket Event framework helpers
  */
 static void sockev_notify(unsigned long event, struct socket *sk)
@@ -182,6 +189,8 @@ static void sockev_notify(unsigned long event, struct socket *sk)
 }
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Support routines.
  * Move socket addresses back and forth across the kernel/user
  * divide and look after the messy bits.
@@ -508,7 +517,11 @@ static struct socket *sockfd_lookup_light(int fd, int *err, int *fput_needed)
 	if (f.file) {
 		sock = sock_from_file(f.file, err);
 		if (likely(sock)) {
+<<<<<<< HEAD
 			*fput_needed = f.flags;
+=======
+			*fput_needed = f.flags & FDPUT_FPUT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return sock;
 		}
 		fdput(f);
@@ -903,7 +916,11 @@ static ssize_t sock_read_iter(struct kiocb *iocb, struct iov_iter *to)
 			     .msg_iocb = iocb};
 	ssize_t res;
 
+<<<<<<< HEAD
 	if (file->f_flags & O_NONBLOCK)
+=======
+	if (file->f_flags & O_NONBLOCK || (iocb->ki_flags & IOCB_NOWAIT))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		msg.msg_flags = MSG_DONTWAIT;
 
 	if (iocb->ki_pos != 0)
@@ -928,7 +945,11 @@ static ssize_t sock_write_iter(struct kiocb *iocb, struct iov_iter *from)
 	if (iocb->ki_pos != 0)
 		return -ESPIPE;
 
+<<<<<<< HEAD
 	if (file->f_flags & O_NONBLOCK)
+=======
+	if (file->f_flags & O_NONBLOCK || (iocb->ki_flags & IOCB_NOWAIT))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		msg.msg_flags = MSG_DONTWAIT;
 
 	if (sock->type == SOCK_SEQPACKET)
@@ -1358,9 +1379,12 @@ SYSCALL_DEFINE3(socket, int, family, int, type, int, protocol)
 	if (retval < 0)
 		goto out;
 
+<<<<<<< HEAD
 	if (retval == 0)
 		sockev_notify(SOCKEV_SOCKET, sock);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	retval = sock_map_fd(sock, flags & (O_CLOEXEC | O_NONBLOCK));
 	if (retval < 0)
 		goto out_release;
@@ -1506,8 +1530,11 @@ SYSCALL_DEFINE3(bind, int, fd, struct sockaddr __user *, umyaddr, int, addrlen)
 						      &address, addrlen);
 		}
 		fput_light(sock->file, fput_needed);
+<<<<<<< HEAD
 		if (!err)
 			sockev_notify(SOCKEV_BIND, sock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return err;
 }
@@ -1535,8 +1562,11 @@ SYSCALL_DEFINE2(listen, int, fd, int, backlog)
 			err = sock->ops->listen(sock, backlog);
 
 		fput_light(sock->file, fput_needed);
+<<<<<<< HEAD
 		if (!err)
 			sockev_notify(SOCKEV_LISTEN, sock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return err;
 }
@@ -1623,8 +1653,12 @@ SYSCALL_DEFINE4(accept4, int, fd, struct sockaddr __user *, upeer_sockaddr,
 
 	fd_install(newfd, newfile);
 	err = newfd;
+<<<<<<< HEAD
 	if (!err)
 		sockev_notify(SOCKEV_ACCEPT, sock);
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out_put:
 	fput_light(sock->file, fput_needed);
 out:
@@ -1674,8 +1708,11 @@ SYSCALL_DEFINE3(connect, int, fd, struct sockaddr __user *, uservaddr,
 
 	err = sock->ops->connect(sock, (struct sockaddr *)&address, addrlen,
 				 sock->file->f_flags);
+<<<<<<< HEAD
 	if (!err)
 		sockev_notify(SOCKEV_CONNECT, sock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out_put:
 	fput_light(sock->file, fput_needed);
 out:
@@ -1761,8 +1798,11 @@ SYSCALL_DEFINE6(sendto, int, fd, void __user *, buff, size_t, len,
 	struct iovec iov;
 	int fput_needed;
 
+<<<<<<< HEAD
 	seemp_logk_sendto(fd, buff, len, flags, addr, addr_len);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = import_single_range(WRITE, buff, len, &iov, &msg.msg_iter);
 	if (unlikely(err))
 		return err;
@@ -1936,7 +1976,10 @@ SYSCALL_DEFINE2(shutdown, int, fd, int, how)
 
 	sock = sockfd_lookup_light(fd, &err, &fput_needed);
 	if (sock != NULL) {
+<<<<<<< HEAD
 		sockev_notify(SOCKEV_SHUTDOWN, sock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		err = security_socket_shutdown(sock, how);
 		if (!err)
 			err = sock->ops->shutdown(sock, how);
@@ -2681,6 +2724,7 @@ out_fs:
 
 core_initcall(sock_init);	/* early initcall */
 
+<<<<<<< HEAD
 static int __init jit_init(void)
 {
 #ifdef CONFIG_BPF_JIT_ALWAYS_ON
@@ -2690,6 +2734,8 @@ static int __init jit_init(void)
 }
 pure_initcall(jit_init);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_PROC_FS
 void socket_seq_show(struct seq_file *seq)
 {
@@ -3301,6 +3347,10 @@ static int compat_sock_ioctl_trans(struct file *file, struct socket *sock,
 	case SIOCSARP:
 	case SIOCGARP:
 	case SIOCDARP:
+<<<<<<< HEAD
+=======
+	case SIOCOUTQNSD:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	case SIOCATMARK:
 		return sock_do_ioctl(net, sock, cmd, arg);
 	}
@@ -3518,6 +3568,7 @@ u32 kernel_sock_ip_overhead(struct sock *sk)
 	}
 }
 EXPORT_SYMBOL(kernel_sock_ip_overhead);
+<<<<<<< HEAD
 int sockev_register_notify(struct notifier_block *nb)
 {
 	return blocking_notifier_chain_register(&sockev_notifier_list, nb);
@@ -3529,3 +3580,5 @@ int sockev_unregister_notify(struct notifier_block *nb)
 	return blocking_notifier_chain_unregister(&sockev_notifier_list, nb);
 }
 EXPORT_SYMBOL(sockev_unregister_notify);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

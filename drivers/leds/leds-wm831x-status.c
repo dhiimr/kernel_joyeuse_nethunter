@@ -283,12 +283,30 @@ static int wm831x_status_probe(struct platform_device *pdev)
 	drvdata->cdev.blink_set = wm831x_status_blink_set;
 	drvdata->cdev.groups = wm831x_status_groups;
 
+<<<<<<< HEAD
 	ret = devm_led_classdev_register(wm831x->dev, &drvdata->cdev);
+=======
+	ret = led_classdev_register(wm831x->dev, &drvdata->cdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret < 0) {
 		dev_err(&pdev->dev, "Failed to register LED: %d\n", ret);
 		return ret;
 	}
 
+<<<<<<< HEAD
+=======
+	platform_set_drvdata(pdev, drvdata);
+
+	return 0;
+}
+
+static int wm831x_status_remove(struct platform_device *pdev)
+{
+	struct wm831x_status *drvdata = platform_get_drvdata(pdev);
+
+	led_classdev_unregister(&drvdata->cdev);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -297,6 +315,10 @@ static struct platform_driver wm831x_status_driver = {
 		   .name = "wm831x-status",
 		   },
 	.probe = wm831x_status_probe,
+<<<<<<< HEAD
+=======
+	.remove = wm831x_status_remove,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 module_platform_driver(wm831x_status_driver);

@@ -431,12 +431,15 @@ void dm_set_mdptr(struct mapped_device *md, void *ptr);
 void *dm_get_mdptr(struct mapped_device *md);
 
 /*
+<<<<<<< HEAD
  * Export the device via the ioctl interface (uses mdptr).
  */
 int dm_ioctl_export(struct mapped_device *md, const char *name,
 		    const char *uuid);
 
 /*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * A device can still be used while suspended, but I/O is deferred.
  */
 int dm_suspend(struct mapped_device *md, unsigned suspend_flags);
@@ -465,6 +468,7 @@ union map_info *dm_get_rq_mapinfo(struct request *rq);
 
 struct queue_limits *dm_get_queue_limits(struct mapped_device *md);
 
+<<<<<<< HEAD
 void dm_lock_md_type(struct mapped_device *md);
 void dm_unlock_md_type(struct mapped_device *md);
 void dm_set_md_type(struct mapped_device *md, unsigned type);
@@ -472,6 +476,8 @@ unsigned dm_get_md_type(struct mapped_device *md);
 int dm_setup_md_queue(struct mapped_device *md, struct dm_table *t);
 unsigned dm_table_get_type(struct dm_table *t);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Geometry functions.
  */
@@ -590,8 +596,11 @@ do {									\
 #define DMEMIT(x...) sz += ((sz >= maxlen) ? \
 			  0 : scnprintf(result + sz, maxlen - sz, x))
 
+<<<<<<< HEAD
 #define SECTOR_SHIFT 9
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Definitions of return values from target end_io function.
  */

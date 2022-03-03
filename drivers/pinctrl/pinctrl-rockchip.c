@@ -2547,7 +2547,13 @@ static int rockchip_gpio_to_irq(struct gpio_chip *gc, unsigned offset)
 	if (!bank->domain)
 		return -ENXIO;
 
+<<<<<<< HEAD
 	virq = irq_create_mapping(bank->domain, offset);
+=======
+	clk_enable(bank->clk);
+	virq = irq_create_mapping(bank->domain, offset);
+	clk_disable(bank->clk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return (virq) ? : -ENXIO;
 }
@@ -2941,6 +2947,10 @@ static int rockchip_get_bank_data(struct rockchip_pin_bank *bank,
 						    base,
 						    &rockchip_regmap_config);
 		}
+<<<<<<< HEAD
+=======
+		of_node_put(node);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	bank->irq = irq_of_parse_and_map(bank->of_node, 0);
@@ -3118,12 +3128,24 @@ static int __maybe_unused rockchip_pinctrl_suspend(struct device *dev)
 static int __maybe_unused rockchip_pinctrl_resume(struct device *dev)
 {
 	struct rockchip_pinctrl *info = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	int ret = regmap_write(info->regmap_base, RK3288_GRF_GPIO6C_IOMUX,
 			       rk3288_grf_gpio6c_iomux |
 			       GPIO6C6_SEL_WRITE_ENABLE);
 
 	if (ret)
 		return ret;
+=======
+	int ret;
+
+	if (info->ctrl->type == RK3288) {
+		ret = regmap_write(info->regmap_base, RK3288_GRF_GPIO6C_IOMUX,
+				   rk3288_grf_gpio6c_iomux |
+				   GPIO6C6_SEL_WRITE_ENABLE);
+		if (ret)
+			return ret;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return pinctrl_force_default(info->pctl_dev);
 }

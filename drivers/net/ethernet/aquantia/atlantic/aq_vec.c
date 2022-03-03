@@ -310,6 +310,7 @@ irqreturn_t aq_vec_isr_legacy(int irq, void *private)
 {
 	struct aq_vec_s *self = private;
 	u64 irq_mask = 0U;
+<<<<<<< HEAD
 	irqreturn_t err = 0;
 
 	if (!self) {
@@ -319,6 +320,15 @@ irqreturn_t aq_vec_isr_legacy(int irq, void *private)
 	err = self->aq_hw_ops->hw_irq_read(self->aq_hw, &irq_mask);
 	if (err < 0)
 		goto err_exit;
+=======
+	int err;
+
+	if (!self)
+		return IRQ_NONE;
+	err = self->aq_hw_ops->hw_irq_read(self->aq_hw, &irq_mask);
+	if (err < 0)
+		return IRQ_NONE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (irq_mask) {
 		self->aq_hw_ops->hw_irq_disable(self->aq_hw,
@@ -326,11 +336,18 @@ irqreturn_t aq_vec_isr_legacy(int irq, void *private)
 		napi_schedule(&self->napi);
 	} else {
 		self->aq_hw_ops->hw_irq_enable(self->aq_hw, 1U);
+<<<<<<< HEAD
 		err = IRQ_NONE;
 	}
 
 err_exit:
 	return err >= 0 ? IRQ_HANDLED : IRQ_NONE;
+=======
+		return IRQ_NONE;
+	}
+
+	return IRQ_HANDLED;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 cpumask_t *aq_vec_get_affinity_mask(struct aq_vec_s *self)

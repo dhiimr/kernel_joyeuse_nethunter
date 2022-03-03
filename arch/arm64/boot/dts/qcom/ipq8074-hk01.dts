@@ -27,7 +27,11 @@
 		stdout-path = "serial0";
 	};
 
+<<<<<<< HEAD
 	memory {
+=======
+	memory@40000000 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		device_type = "memory";
 		reg = <0x0 0x40000000 0x0 0x20000000>;
 	};

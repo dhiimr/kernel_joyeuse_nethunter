@@ -288,10 +288,13 @@ int hvc_instantiate(uint32_t vtermno, int index, const struct hv_ops *ops)
 	vtermnos[index] = vtermno;
 	cons_ops[index] = ops;
 
+<<<<<<< HEAD
 	/* reserve all indices up to and including this index */
 	if (last_hvc < index)
 		last_hvc = index;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* check if we need to re-register the kernel console */
 	hvc_check_console(index);
 
@@ -361,15 +364,25 @@ static int hvc_open(struct tty_struct *tty, struct file * filp)
 	 * tty fields and return the kref reference.
 	 */
 	if (rc) {
+<<<<<<< HEAD
 		tty_port_tty_set(&hp->port, NULL);
 		tty->driver_data = NULL;
 		tty_port_put(&hp->port);
 		printk(KERN_ERR "hvc_open: request_irq failed with rc %d.\n", rc);
 	} else
+=======
+		printk(KERN_ERR "hvc_open: request_irq failed with rc %d.\n", rc);
+	} else {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* We are ready... raise DTR/RTS */
 		if (C_BAUD(tty))
 			if (hp->ops->dtr_rts)
 				hp->ops->dtr_rts(hp, 1);
+<<<<<<< HEAD
+=======
+		tty_port_set_initialized(&hp->port, true);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Force wakeup of the polling thread */
 	hvc_kick();
@@ -379,12 +392,17 @@ static int hvc_open(struct tty_struct *tty, struct file * filp)
 
 static void hvc_close(struct tty_struct *tty, struct file * filp)
 {
+<<<<<<< HEAD
 	struct hvc_struct *hp;
+=======
+	struct hvc_struct *hp = tty->driver_data;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long flags;
 
 	if (tty_hung_up_p(filp))
 		return;
 
+<<<<<<< HEAD
 	/*
 	 * No driver_data means that this close was issued after a failed
 	 * hvc_open by the tty layer's release_dev() function and we can just
@@ -395,6 +413,8 @@ static void hvc_close(struct tty_struct *tty, struct file * filp)
 
 	hp = tty->driver_data;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&hp->port.lock, flags);
 
 	if (--hp->port.count == 0) {
@@ -402,6 +422,12 @@ static void hvc_close(struct tty_struct *tty, struct file * filp)
 		/* We are done with the tty pointer now. */
 		tty_port_tty_set(&hp->port, NULL);
 
+<<<<<<< HEAD
+=======
+		if (!tty_port_initialized(&hp->port))
+			return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (C_HUPCL(tty))
 			if (hp->ops->dtr_rts)
 				hp->ops->dtr_rts(hp, 0);
@@ -418,6 +444,10 @@ static void hvc_close(struct tty_struct *tty, struct file * filp)
 		 * waking periodically to check chars_in_buffer().
 		 */
 		tty_wait_until_sent(tty, HVC_CLOSE_WAIT);
+<<<<<<< HEAD
+=======
+		tty_port_set_initialized(&hp->port, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		if (hp->port.count < 0)
 			printk(KERN_ERR "hvc_close %X: oops, count is %d\n",
@@ -895,6 +925,7 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
 		    cons_ops[i] == hp->ops)
 			break;
 
+<<<<<<< HEAD
 	/* no matching slot, just use a counter */
 	if (i >= MAX_NR_HVC_CONSOLES)
 		i = ++last_hvc;
@@ -902,6 +933,24 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
 	hp->index = i;
 	cons_ops[i] = ops;
 	vtermnos[i] = vtermno;
+=======
+	if (i >= MAX_NR_HVC_CONSOLES) {
+
+		/* find 'empty' slot for console */
+		for (i = 0; i < MAX_NR_HVC_CONSOLES && vtermnos[i] != -1; i++) {
+		}
+
+		/* no matching slot, just use a counter */
+		if (i == MAX_NR_HVC_CONSOLES)
+			i = ++last_hvc + MAX_NR_HVC_CONSOLES;
+	}
+
+	hp->index = i;
+	if (i < MAX_NR_HVC_CONSOLES) {
+		cons_ops[i] = ops;
+		vtermnos[i] = vtermno;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	list_add_tail(&(hp->next), &hvc_structs);
 	spin_unlock(&hvc_structs_lock);

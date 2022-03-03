@@ -497,6 +497,7 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
 
 		spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
 
+<<<<<<< HEAD
 		if (!qed_mcp_has_pending_cmd(p_hwfn))
 			break;
 
@@ -505,6 +506,20 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
 			break;
 		else if (rc != -EAGAIN)
 			goto err;
+=======
+		if (!qed_mcp_has_pending_cmd(p_hwfn)) {
+			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+			break;
+		}
+
+		rc = qed_mcp_update_pending_cmd(p_hwfn, p_ptt);
+		if (!rc) {
+			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+			break;
+		} else if (rc != -EAGAIN) {
+			goto err;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
 
@@ -521,6 +536,11 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
 		return -EAGAIN;
 	}
 
+<<<<<<< HEAD
+=======
+	spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Send the mailbox command */
 	qed_mcp_reread_offsets(p_hwfn, p_ptt);
 	seq_num = ++p_hwfn->mcp_info->drv_mb_seq;
@@ -547,6 +567,7 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
 
 		spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
 
+<<<<<<< HEAD
 		if (p_cmd_elem->b_is_completed)
 			break;
 
@@ -555,6 +576,20 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
 			break;
 		else if (rc != -EAGAIN)
 			goto err;
+=======
+		if (p_cmd_elem->b_is_completed) {
+			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+			break;
+		}
+
+		rc = qed_mcp_update_pending_cmd(p_hwfn, p_ptt);
+		if (!rc) {
+			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+			break;
+		} else if (rc != -EAGAIN) {
+			goto err;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
 	} while (++cnt < max_retries);
@@ -575,6 +610,10 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
 		return -EAGAIN;
 	}
 
+<<<<<<< HEAD
+=======
+	spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	qed_mcp_cmd_del_elem(p_hwfn, p_cmd_elem);
 	spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
 
@@ -1352,7 +1391,11 @@ static void qed_mcp_handle_link_change(struct qed_hwfn *p_hwfn,
 	if (p_hwfn->mcp_info->capabilities & FW_MB_PARAM_FEATURE_SUPPORT_EEE)
 		qed_mcp_read_eee_config(p_hwfn, p_ptt, p_link);
 
+<<<<<<< HEAD
 	qed_link_update(p_hwfn);
+=======
+	qed_link_update(p_hwfn, p_ptt);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	spin_unlock_bh(&p_hwfn->mcp_info->link_lock);
 }
@@ -1722,12 +1765,19 @@ int qed_mcp_get_mbi_ver(struct qed_hwfn *p_hwfn,
 	return 0;
 }
 
+<<<<<<< HEAD
 int qed_mcp_get_media_type(struct qed_dev *cdev, u32 *p_media_type)
 {
 	struct qed_hwfn *p_hwfn = &cdev->hwfns[0];
 	struct qed_ptt  *p_ptt;
 
 	if (IS_VF(cdev))
+=======
+int qed_mcp_get_media_type(struct qed_hwfn *p_hwfn,
+			   struct qed_ptt *p_ptt, u32 *p_media_type)
+{
+	if (IS_VF(p_hwfn->cdev))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	if (!qed_mcp_is_init(p_hwfn)) {
@@ -1735,6 +1785,7 @@ int qed_mcp_get_media_type(struct qed_dev *cdev, u32 *p_media_type)
 		return -EBUSY;
 	}
 
+<<<<<<< HEAD
 	*p_media_type = MEDIA_UNSPECIFIED;
 
 	p_ptt = qed_ptt_acquire(p_hwfn);
@@ -1745,6 +1796,17 @@ int qed_mcp_get_media_type(struct qed_dev *cdev, u32 *p_media_type)
 			       offsetof(struct public_port, media_type));
 
 	qed_ptt_release(p_hwfn, p_ptt);
+=======
+	if (!p_ptt) {
+		*p_media_type = MEDIA_UNSPECIFIED;
+		return -EINVAL;
+	}
+
+	*p_media_type = qed_rd(p_hwfn, p_ptt,
+			       p_hwfn->mcp_info->port_addr +
+			       offsetof(struct public_port,
+					media_type));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }

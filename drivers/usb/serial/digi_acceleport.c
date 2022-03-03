@@ -23,7 +23,10 @@
 #include <linux/tty_flip.h>
 #include <linux/module.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <linux/workqueue.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/uaccess.h>
 #include <linux/usb.h>
 #include <linux/wait.h>
@@ -202,14 +205,20 @@ struct digi_port {
 	int dp_throttle_restart;
 	wait_queue_head_t dp_flush_wait;
 	wait_queue_head_t dp_close_wait;	/* wait queue for close */
+<<<<<<< HEAD
 	struct work_struct dp_wakeup_work;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct usb_serial_port *dp_port;
 };
 
 
 /* Local Function Declarations */
 
+<<<<<<< HEAD
 static void digi_wakeup_write_lock(struct work_struct *work);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int digi_write_oob_command(struct usb_serial_port *port,
 	unsigned char *buf, int count, int interruptible);
 static int digi_write_inb_command(struct usb_serial_port *port,
@@ -360,6 +369,7 @@ __releases(lock)
 	return timeout;
 }
 
+<<<<<<< HEAD
 
 /*
  *  Digi Wakeup Write
@@ -380,6 +390,8 @@ static void digi_wakeup_write_lock(struct work_struct *work)
 	spin_unlock_irqrestore(&priv->dp_port_lock, flags);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  *  Digi Write OOB Command
  *
@@ -990,6 +1002,10 @@ static void digi_write_bulk_callback(struct urb *urb)
 	struct digi_serial *serial_priv;
 	int ret = 0;
 	int status = urb->status;
+<<<<<<< HEAD
+=======
+	bool wakeup;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* port and serial sanity check */
 	if (port == NULL || (priv = usb_get_serial_port_data(port)) == NULL) {
@@ -1016,6 +1032,10 @@ static void digi_write_bulk_callback(struct urb *urb)
 	}
 
 	/* try to send any buffered data on this port */
+<<<<<<< HEAD
+=======
+	wakeup = true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock(&priv->dp_port_lock);
 	priv->dp_write_urb_in_use = 0;
 	if (priv->dp_out_buf_len > 0) {
@@ -1031,6 +1051,7 @@ static void digi_write_bulk_callback(struct urb *urb)
 		if (ret == 0) {
 			priv->dp_write_urb_in_use = 1;
 			priv->dp_out_buf_len = 0;
+<<<<<<< HEAD
 		}
 	}
 	/* wake up processes sleeping on writes immediately */
@@ -1040,10 +1061,23 @@ static void digi_write_bulk_callback(struct urb *urb)
 	schedule_work(&priv->dp_wakeup_work);
 
 	spin_unlock(&priv->dp_port_lock);
+=======
+			wakeup = false;
+		}
+	}
+	spin_unlock(&priv->dp_port_lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret && ret != -EPERM)
 		dev_err_console(port,
 			"%s: usb_submit_urb failed, ret=%d, port=%d\n",
 			__func__, ret, priv->dp_port_num);
+<<<<<<< HEAD
+=======
+
+	if (wakeup)
+		tty_port_tty_wakeup(&port->port);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int digi_write_room(struct tty_struct *tty)
@@ -1243,7 +1277,10 @@ static int digi_port_init(struct usb_serial_port *port, unsigned port_num)
 	init_waitqueue_head(&priv->dp_transmit_idle_wait);
 	init_waitqueue_head(&priv->dp_flush_wait);
 	init_waitqueue_head(&priv->dp_close_wait);
+<<<<<<< HEAD
 	INIT_WORK(&priv->dp_wakeup_work, digi_wakeup_write_lock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	priv->dp_port = port;
 
 	init_waitqueue_head(&port->write_wait);
@@ -1510,13 +1547,23 @@ static int digi_read_oob_callback(struct urb *urb)
 			rts = C_CRTSCTS(tty);
 
 		if (tty && opcode == DIGI_CMD_READ_INPUT_SIGNALS) {
+<<<<<<< HEAD
+=======
+			bool wakeup = false;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			spin_lock(&priv->dp_port_lock);
 			/* convert from digi flags to termiox flags */
 			if (val & DIGI_READ_INPUT_SIGNALS_CTS) {
 				priv->dp_modem_signals |= TIOCM_CTS;
+<<<<<<< HEAD
 				/* port must be open to use tty struct */
 				if (rts)
 					tty_port_tty_wakeup(&port->port);
+=======
+				if (rts)
+					wakeup = true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			} else {
 				priv->dp_modem_signals &= ~TIOCM_CTS;
 				/* port must be open to use tty struct */
@@ -1535,6 +1582,12 @@ static int digi_read_oob_callback(struct urb *urb)
 				priv->dp_modem_signals &= ~TIOCM_CD;
 
 			spin_unlock(&priv->dp_port_lock);
+<<<<<<< HEAD
+=======
+
+			if (wakeup)
+				tty_port_tty_wakeup(&port->port);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else if (opcode == DIGI_CMD_TRANSMIT_IDLE) {
 			spin_lock(&priv->dp_port_lock);
 			priv->dp_transmit_idle = 1;

@@ -15,6 +15,10 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #include <linux/mm.h>
+<<<<<<< HEAD
+=======
+#include <linux/highmem.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/slab.h>
 #include <linux/sched.h>
 #include <linux/sched/task.h>
@@ -58,11 +62,20 @@ static noinline int check_stack_object(const void *obj, unsigned long len)
 	return GOOD_STACK;
 }
 
+<<<<<<< HEAD
 static void report_usercopy(unsigned long len, bool to_user, const char *type)
 {
 	pr_emerg("kernel memory %s attempt detected %s '%s' (%lu bytes)\n",
 		to_user ? "exposure" : "overwrite",
 		to_user ? "from" : "to", type ? : "unknown", len);
+=======
+static void report_usercopy(const void *ptr, unsigned long len,
+			    bool to_user, const char *type)
+{
+	pr_emerg("kernel memory %s attempt detected %s %p (%s) (%lu bytes)\n",
+		to_user ? "exposure" : "overwrite",
+		to_user ? "from" : "to", ptr, type ? : "unknown", len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * For greater effect, it would be nice to do do_group_exit(),
 	 * but BUG() actually hooks all the lock-breaking and per-arch
@@ -138,8 +151,11 @@ static inline const char *check_page_span(const void *ptr, unsigned long n,
 	const void *end = ptr + n - 1;
 	struct page *endpage;
 	bool is_reserved, is_cma;
+<<<<<<< HEAD
 	const void * const stack = task_stack_page(current);
 	const void * const stackend = stack + THREAD_SIZE;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Sometimes the kernel data regions are not marked Reserved (see
@@ -164,10 +180,13 @@ static inline const char *check_page_span(const void *ptr, unsigned long n,
 	    end <= (const void *)__bss_stop)
 		return NULL;
 
+<<<<<<< HEAD
 	/* Allow stack region to span multiple pages */
 	if (ptr >= stack && end <= stackend)
 		return NULL;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Is the object wholly within one base page? */
 	if (likely(((unsigned long)ptr & (unsigned long)PAGE_MASK) ==
 		   ((unsigned long)end & (unsigned long)PAGE_MASK)))
@@ -208,7 +227,16 @@ static inline const char *check_heap_object(const void *ptr, unsigned long n,
 	if (!virt_addr_valid(ptr))
 		return NULL;
 
+<<<<<<< HEAD
 	page = virt_to_head_page(ptr);
+=======
+	/*
+	 * When CONFIG_HIGHMEM=y, kmap_to_page() will give either the
+	 * highmem page or fallback to virt_to_page(). The following
+	 * is effectively a highmem-aware virt_to_head_page().
+	 */
+	page = compound_head(kmap_to_page((void *)ptr));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Check slab allocator for flags and size. */
 	if (PageSlab(page))
@@ -266,6 +294,10 @@ void __check_object_size(const void *ptr, unsigned long n, bool to_user)
 		return;
 
 report:
+<<<<<<< HEAD
 	report_usercopy(n, to_user, err);
+=======
+	report_usercopy(ptr, n, to_user, err);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL(__check_object_size);

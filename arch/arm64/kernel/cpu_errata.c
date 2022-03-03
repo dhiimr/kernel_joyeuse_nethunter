@@ -19,6 +19,10 @@
 #include <linux/arm-smccc.h>
 #include <linux/psci.h>
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/cpu.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/cpu.h>
 #include <asm/cputype.h>
 #include <asm/cpufeature.h>
@@ -26,10 +30,25 @@
 static bool __maybe_unused
 is_affected_midr_range(const struct arm64_cpu_capabilities *entry, int scope)
 {
+<<<<<<< HEAD
 	WARN_ON(scope != SCOPE_LOCAL_CPU || preemptible());
 	return MIDR_IS_CPU_MODEL_RANGE(read_cpuid_id(), entry->midr_model,
 				       entry->midr_range_min,
 				       entry->midr_range_max);
+=======
+	u32 midr = read_cpuid_id();
+
+	WARN_ON(scope != SCOPE_LOCAL_CPU || preemptible());
+	return is_midr_in_range(midr, &entry->midr_range);
+}
+
+static bool __maybe_unused
+is_affected_midr_range_list(const struct arm64_cpu_capabilities *entry,
+			    int scope)
+{
+	WARN_ON(scope != SCOPE_LOCAL_CPU || preemptible());
+	return is_midr_in_range_list(read_cpuid_id(), entry->midr_range_list);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static bool __maybe_unused
@@ -43,7 +62,11 @@ is_kryo_midr(const struct arm64_cpu_capabilities *entry, int scope)
 	model &= MIDR_IMPLEMENTOR_MASK | (0xf00 << MIDR_PARTNUM_SHIFT) |
 		 MIDR_ARCHITECTURE_MASK;
 
+<<<<<<< HEAD
 	return model == entry->midr_model;
+=======
+	return model == entry->midr_range.model;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static bool
@@ -61,6 +84,7 @@ has_mismatched_cache_type(const struct arm64_cpu_capabilities *entry,
 	       (arm64_ftr_reg_ctrel0.sys_val & mask);
 }
 
+<<<<<<< HEAD
 static int cpu_enable_trap_ctr_access(void *__unused)
 {
 	/* Clear SCTLR_EL1.UCT */
@@ -69,18 +93,32 @@ static int cpu_enable_trap_ctr_access(void *__unused)
 }
 
 #ifdef CONFIG_HARDEN_BRANCH_PREDICTOR
+=======
+static void
+cpu_enable_trap_ctr_access(const struct arm64_cpu_capabilities *__unused)
+{
+	/* Clear SCTLR_EL1.UCT */
+	config_sctlr_el1(SCTLR_EL1_UCT, 0);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/mmu_context.h>
 #include <asm/cacheflush.h>
 
 DEFINE_PER_CPU_READ_MOSTLY(struct bp_hardening_data, bp_hardening_data);
 
 #ifdef CONFIG_KVM
+<<<<<<< HEAD
 extern char __qcom_hyp_sanitize_link_stack_start[];
 extern char __qcom_hyp_sanitize_link_stack_end[];
 extern char __smccc_workaround_1_smc_start[];
 extern char __smccc_workaround_1_smc_end[];
 extern char __smccc_workaround_1_hvc_start[];
 extern char __smccc_workaround_1_hvc_end[];
+=======
+extern char __smccc_workaround_1_smc_start[];
+extern char __smccc_workaround_1_smc_end[];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static void __copy_hyp_vect_bpi(int slot, const char *hyp_vecs_start,
 				const char *hyp_vecs_end)
@@ -94,9 +132,15 @@ static void __copy_hyp_vect_bpi(int slot, const char *hyp_vecs_start,
 	flush_icache_range((uintptr_t)dst, (uintptr_t)dst + SZ_2K);
 }
 
+<<<<<<< HEAD
 static void __install_bp_hardening_cb(bp_hardening_cb_t fn,
 				      const char *hyp_vecs_start,
 				      const char *hyp_vecs_end)
+=======
+static void install_bp_hardening_cb(bp_hardening_cb_t fn,
+				    const char *hyp_vecs_start,
+				    const char *hyp_vecs_end)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	static int last_slot = -1;
 	static DEFINE_SPINLOCK(bp_lock);
@@ -123,6 +167,7 @@ static void __install_bp_hardening_cb(bp_hardening_cb_t fn,
 	spin_unlock(&bp_lock);
 }
 #else
+<<<<<<< HEAD
 #define __qcom_hyp_sanitize_link_stack_start	NULL
 #define __qcom_hyp_sanitize_link_stack_end	NULL
 #define __smccc_workaround_1_smc_start		NULL
@@ -131,6 +176,12 @@ static void __install_bp_hardening_cb(bp_hardening_cb_t fn,
 #define __smccc_workaround_1_hvc_end		NULL
 
 static void __install_bp_hardening_cb(bp_hardening_cb_t fn,
+=======
+#define __smccc_workaround_1_smc_start		NULL
+#define __smccc_workaround_1_smc_end		NULL
+
+static void install_bp_hardening_cb(bp_hardening_cb_t fn,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				      const char *hyp_vecs_start,
 				      const char *hyp_vecs_end)
 {
@@ -138,6 +189,7 @@ static void __install_bp_hardening_cb(bp_hardening_cb_t fn,
 }
 #endif	/* CONFIG_KVM */
 
+<<<<<<< HEAD
 static void  install_bp_hardening_cb(const struct arm64_cpu_capabilities *entry,
 				     bp_hardening_cb_t fn,
 				     const char *hyp_vecs_start,
@@ -156,6 +208,11 @@ static void  install_bp_hardening_cb(const struct arm64_cpu_capabilities *entry,
 }
 
 #include <uapi/linux/psci.h>
+=======
+#include <uapi/linux/psci.h>
+#include <linux/arm-smccc.h>
+#include <linux/psci.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static void call_smc_arch_workaround_1(void)
 {
@@ -167,6 +224,7 @@ static void call_hvc_arch_workaround_1(void)
 	arm_smccc_1_1_hvc(ARM_SMCCC_ARCH_WORKAROUND_1, NULL);
 }
 
+<<<<<<< HEAD
 static int enable_smccc_arch_workaround_1(void *data)
 {
 	const struct arm64_cpu_capabilities *entry = data;
@@ -179,21 +237,74 @@ static int enable_smccc_arch_workaround_1(void *data)
 
 	if (psci_ops.smccc_version == SMCCC_VERSION_1_0)
 		return 0;
+=======
+static void qcom_link_stack_sanitization(void)
+{
+	u64 tmp;
+
+	asm volatile("mov	%0, x30		\n"
+		     ".rept	16		\n"
+		     "bl	. + 4		\n"
+		     ".endr			\n"
+		     "mov	x30, %0		\n"
+		     : "=&r" (tmp));
+}
+
+static bool __nospectre_v2;
+static int __init parse_nospectre_v2(char *str)
+{
+	__nospectre_v2 = true;
+	return 0;
+}
+early_param("nospectre_v2", parse_nospectre_v2);
+
+/*
+ * -1: No workaround
+ *  0: No workaround required
+ *  1: Workaround installed
+ */
+static int detect_harden_bp_fw(void)
+{
+	bp_hardening_cb_t cb;
+	void *smccc_start, *smccc_end;
+	struct arm_smccc_res res;
+	u32 midr = read_cpuid_id();
+
+	if (psci_ops.smccc_version == SMCCC_VERSION_1_0)
+		return -1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	switch (psci_ops.conduit) {
 	case PSCI_CONDUIT_HVC:
 		arm_smccc_1_1_hvc(ARM_SMCCC_ARCH_FEATURES_FUNC_ID,
 				  ARM_SMCCC_ARCH_WORKAROUND_1, &res);
+<<<<<<< HEAD
 		if ((int)res.a0 < 0)
 			return 0;
 		cb = call_hvc_arch_workaround_1;
 		smccc_start = __smccc_workaround_1_hvc_start;
 		smccc_end = __smccc_workaround_1_hvc_end;
+=======
+		switch ((int)res.a0) {
+		case 1:
+			/* Firmware says we're just fine */
+			return 0;
+		case 0:
+			cb = call_hvc_arch_workaround_1;
+			/* This is a guest, no need to patch KVM vectors */
+			smccc_start = NULL;
+			smccc_end = NULL;
+			break;
+		default:
+			return -1;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 
 	case PSCI_CONDUIT_SMC:
 		arm_smccc_1_1_smc(ARM_SMCCC_ARCH_FEATURES_FUNC_ID,
 				  ARM_SMCCC_ARCH_WORKAROUND_1, &res);
+<<<<<<< HEAD
 		if ((int)res.a0 < 0)
 			return 0;
 		cb = call_smc_arch_workaround_1;
@@ -238,6 +349,40 @@ static int qcom_enable_link_stack_sanitization(void *data)
 DEFINE_PER_CPU_READ_MOSTLY(u64, arm64_ssbd_callback_required);
 
 int ssbd_state __read_mostly = ARM64_SSBD_KERNEL;
+=======
+		switch ((int)res.a0) {
+		case 1:
+			/* Firmware says we're just fine */
+			return 0;
+		case 0:
+			cb = call_smc_arch_workaround_1;
+			smccc_start = __smccc_workaround_1_smc_start;
+			smccc_end = __smccc_workaround_1_smc_end;
+			break;
+		default:
+			return -1;
+		}
+		break;
+
+	default:
+		return -1;
+	}
+
+	if (((midr & MIDR_CPU_MODEL_MASK) == MIDR_QCOM_FALKOR) ||
+	    ((midr & MIDR_CPU_MODEL_MASK) == MIDR_QCOM_FALKOR_V1))
+		cb = qcom_link_stack_sanitization;
+
+	if (IS_ENABLED(CONFIG_HARDEN_BRANCH_PREDICTOR))
+		install_bp_hardening_cb(cb, smccc_start, smccc_end);
+
+	return 1;
+}
+
+DEFINE_PER_CPU_READ_MOSTLY(u64, arm64_ssbd_callback_required);
+
+int ssbd_state __read_mostly = ARM64_SSBD_KERNEL;
+static bool __ssb_safe = true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static const struct ssbd_options {
 	const char	*str;
@@ -269,8 +414,54 @@ static int __init ssbd_cfg(char *buf)
 }
 early_param("ssbd", ssbd_cfg);
 
+<<<<<<< HEAD
 void arm64_set_ssbd_mitigation(bool state)
 {
+=======
+void __init arm64_update_smccc_conduit(struct alt_instr *alt,
+				       __le32 *origptr, __le32 *updptr,
+				       int nr_inst)
+{
+	u32 insn;
+
+	BUG_ON(nr_inst != 1);
+
+	switch (psci_ops.conduit) {
+	case PSCI_CONDUIT_HVC:
+		insn = aarch64_insn_get_hvc_value();
+		break;
+	case PSCI_CONDUIT_SMC:
+		insn = aarch64_insn_get_smc_value();
+		break;
+	default:
+		return;
+	}
+
+	*updptr = cpu_to_le32(insn);
+}
+
+void __init arm64_enable_wa2_handling(struct alt_instr *alt,
+				      __le32 *origptr, __le32 *updptr,
+				      int nr_inst)
+{
+	BUG_ON(nr_inst != 1);
+	/*
+	 * Only allow mitigation on EL1 entry/exit and guest
+	 * ARCH_WORKAROUND_2 handling if the SSBD state allows it to
+	 * be flipped.
+	 */
+	if (arm64_get_ssbd_state() == ARM64_SSBD_KERNEL)
+		*updptr = cpu_to_le32(aarch64_insn_gen_nop());
+}
+
+void arm64_set_ssbd_mitigation(bool state)
+{
+	if (!IS_ENABLED(CONFIG_ARM64_SSBD)) {
+		pr_info_once("SSBD disabled by kernel configuration\n");
+		return;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (this_cpu_has_cap(ARM64_SSBS)) {
 		if (state)
 			asm volatile(SET_PSTATE_SSBS(0));
@@ -300,16 +491,38 @@ static bool has_ssbd_mitigation(const struct arm64_cpu_capabilities *entry,
 	struct arm_smccc_res res;
 	bool required = true;
 	s32 val;
+<<<<<<< HEAD
 
 	WARN_ON(scope != SCOPE_LOCAL_CPU || preemptible());
 
 	if (this_cpu_has_cap(ARM64_SSBS)) {
+=======
+	bool this_cpu_safe = false;
+
+	WARN_ON(scope != SCOPE_LOCAL_CPU || preemptible());
+
+	if (cpu_mitigations_off())
+		ssbd_state = ARM64_SSBD_FORCE_DISABLE;
+
+	/* delay setting __ssb_safe until we get a firmware response */
+	if (is_midr_in_range_list(read_cpuid_id(), entry->midr_range_list))
+		this_cpu_safe = true;
+
+	if (this_cpu_has_cap(ARM64_SSBS)) {
+		if (!this_cpu_safe)
+			__ssb_safe = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		required = false;
 		goto out_printmsg;
 	}
 
 	if (psci_ops.smccc_version == SMCCC_VERSION_1_0) {
 		ssbd_state = ARM64_SSBD_UNKNOWN;
+<<<<<<< HEAD
+=======
+		if (!this_cpu_safe)
+			__ssb_safe = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return false;
 	}
 
@@ -326,6 +539,11 @@ static bool has_ssbd_mitigation(const struct arm64_cpu_capabilities *entry,
 
 	default:
 		ssbd_state = ARM64_SSBD_UNKNOWN;
+<<<<<<< HEAD
+=======
+		if (!this_cpu_safe)
+			__ssb_safe = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return false;
 	}
 
@@ -334,14 +552,26 @@ static bool has_ssbd_mitigation(const struct arm64_cpu_capabilities *entry,
 	switch (val) {
 	case SMCCC_RET_NOT_SUPPORTED:
 		ssbd_state = ARM64_SSBD_UNKNOWN;
+<<<<<<< HEAD
 		return false;
 
+=======
+		if (!this_cpu_safe)
+			__ssb_safe = false;
+		return false;
+
+	/* machines with mixed mitigation requirements must not return this */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	case SMCCC_RET_NOT_REQUIRED:
 		pr_info_once("%s mitigation not required\n", entry->desc);
 		ssbd_state = ARM64_SSBD_MITIGATED;
 		return false;
 
 	case SMCCC_RET_SUCCESS:
+<<<<<<< HEAD
+=======
+		__ssb_safe = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		required = true;
 		break;
 
@@ -351,6 +581,11 @@ static bool has_ssbd_mitigation(const struct arm64_cpu_capabilities *entry,
 
 	default:
 		WARN_ON(1);
+<<<<<<< HEAD
+=======
+		if (!this_cpu_safe)
+			__ssb_safe = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return false;
 	}
 
@@ -390,6 +625,7 @@ out_printmsg:
 
 	return required;
 }
+<<<<<<< HEAD
 #endif	/* CONFIG_ARM64_SSBD */
 
 #define MIDR_RANGE(model, min, max) \
@@ -405,6 +641,115 @@ out_printmsg:
 	.midr_model = model, \
 	.midr_range_min = 0, \
 	.midr_range_max = (MIDR_VARIANT_MASK | MIDR_REVISION_MASK)
+=======
+
+/* known invulnerable cores */
+static const struct midr_range arm64_ssb_cpus[] = {
+	MIDR_ALL_VERSIONS(MIDR_CORTEX_A35),
+	MIDR_ALL_VERSIONS(MIDR_CORTEX_A53),
+	MIDR_ALL_VERSIONS(MIDR_CORTEX_A55),
+	{},
+};
+
+#define CAP_MIDR_RANGE(model, v_min, r_min, v_max, r_max)	\
+	.matches = is_affected_midr_range,			\
+	.midr_range = MIDR_RANGE(model, v_min, r_min, v_max, r_max)
+
+#define CAP_MIDR_ALL_VERSIONS(model)					\
+	.matches = is_affected_midr_range,				\
+	.midr_range = MIDR_ALL_VERSIONS(model)
+
+#define MIDR_FIXED(rev, revidr_mask) \
+	.fixed_revs = (struct arm64_midr_revidr[]){{ (rev), (revidr_mask) }, {}}
+
+#define ERRATA_MIDR_RANGE(model, v_min, r_min, v_max, r_max)		\
+	.type = ARM64_CPUCAP_LOCAL_CPU_ERRATUM,				\
+	CAP_MIDR_RANGE(model, v_min, r_min, v_max, r_max)
+
+#define CAP_MIDR_RANGE_LIST(list)				\
+	.matches = is_affected_midr_range_list,			\
+	.midr_range_list = list
+
+/* Errata affecting a range of revisions of  given model variant */
+#define ERRATA_MIDR_REV_RANGE(m, var, r_min, r_max)	 \
+	ERRATA_MIDR_RANGE(m, var, r_min, var, r_max)
+
+/* Errata affecting a single variant/revision of a model */
+#define ERRATA_MIDR_REV(model, var, rev)	\
+	ERRATA_MIDR_RANGE(model, var, rev, var, rev)
+
+/* Errata affecting all variants/revisions of a given a model */
+#define ERRATA_MIDR_ALL_VERSIONS(model)				\
+	.type = ARM64_CPUCAP_LOCAL_CPU_ERRATUM,			\
+	CAP_MIDR_ALL_VERSIONS(model)
+
+/* Errata affecting a list of midr ranges, with same work around */
+#define ERRATA_MIDR_RANGE_LIST(midr_list)			\
+	.type = ARM64_CPUCAP_LOCAL_CPU_ERRATUM,			\
+	CAP_MIDR_RANGE_LIST(midr_list)
+
+/* Track overall mitigation state. We are only mitigated if all cores are ok */
+static bool __hardenbp_enab = true;
+static bool __spectrev2_safe = true;
+
+/*
+ * List of CPUs that do not need any Spectre-v2 mitigation at all.
+ */
+static const struct midr_range spectre_v2_safe_list[] = {
+	MIDR_ALL_VERSIONS(MIDR_CORTEX_A35),
+	MIDR_ALL_VERSIONS(MIDR_CORTEX_A53),
+	MIDR_ALL_VERSIONS(MIDR_CORTEX_A55),
+	{ /* sentinel */ }
+};
+
+/*
+ * Track overall bp hardening for all heterogeneous cores in the machine.
+ * We are only considered "safe" if all booted cores are known safe.
+ */
+static bool __maybe_unused
+check_branch_predictor(const struct arm64_cpu_capabilities *entry, int scope)
+{
+	int need_wa;
+
+	WARN_ON(scope != SCOPE_LOCAL_CPU || preemptible());
+
+	/* If the CPU has CSV2 set, we're safe */
+	if (cpuid_feature_extract_unsigned_field(read_cpuid(ID_AA64PFR0_EL1),
+						 ID_AA64PFR0_CSV2_SHIFT))
+		return false;
+
+	/* Alternatively, we have a list of unaffected CPUs */
+	if (is_midr_in_range_list(read_cpuid_id(), spectre_v2_safe_list))
+		return false;
+
+	/* Fallback to firmware detection */
+	need_wa = detect_harden_bp_fw();
+	if (!need_wa)
+		return false;
+
+	__spectrev2_safe = false;
+
+	if (!IS_ENABLED(CONFIG_HARDEN_BRANCH_PREDICTOR)) {
+		pr_warn_once("spectrev2 mitigation disabled by kernel configuration\n");
+		__hardenbp_enab = false;
+		return false;
+	}
+
+	/* forced off */
+	if (__nospectre_v2 || cpu_mitigations_off()) {
+		pr_info_once("spectrev2 mitigation disabled by command line option\n");
+		__hardenbp_enab = false;
+		return false;
+	}
+
+	if (need_wa < 0) {
+		pr_warn_once("ARM_SMCCC_ARCH_WORKAROUND_1 missing from firmware\n");
+		__hardenbp_enab = false;
+	}
+
+	return (need_wa > 0);
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 const struct arm64_cpu_capabilities arm64_errata[] = {
 #if	defined(CONFIG_ARM64_ERRATUM_826319) || \
@@ -414,8 +759,13 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 	/* Cortex-A53 r0p[012] */
 		.desc = "ARM errata 826319, 827319, 824069",
 		.capability = ARM64_WORKAROUND_CLEAN_CACHE,
+<<<<<<< HEAD
 		MIDR_RANGE(MIDR_CORTEX_A53, 0x00, 0x02),
 		.enable = cpu_enable_cache_maint_trap,
+=======
+		ERRATA_MIDR_REV_RANGE(MIDR_CORTEX_A53, 0, 0, 2),
+		.cpu_enable = cpu_enable_cache_maint_trap,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 #endif
 #ifdef CONFIG_ARM64_ERRATUM_819472
@@ -423,8 +773,13 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 	/* Cortex-A53 r0p[01] */
 		.desc = "ARM errata 819472",
 		.capability = ARM64_WORKAROUND_CLEAN_CACHE,
+<<<<<<< HEAD
 		MIDR_RANGE(MIDR_CORTEX_A53, 0x00, 0x01),
 		.enable = cpu_enable_cache_maint_trap,
+=======
+		ERRATA_MIDR_REV_RANGE(MIDR_CORTEX_A53, 0, 0, 1),
+		.cpu_enable = cpu_enable_cache_maint_trap,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 #endif
 #ifdef CONFIG_ARM64_ERRATUM_832075
@@ -432,9 +787,15 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 	/* Cortex-A57 r0p0 - r1p2 */
 		.desc = "ARM erratum 832075",
 		.capability = ARM64_WORKAROUND_DEVICE_LOAD_ACQUIRE,
+<<<<<<< HEAD
 		MIDR_RANGE(MIDR_CORTEX_A57,
 			   MIDR_CPU_VAR_REV(0, 0),
 			   MIDR_CPU_VAR_REV(1, 2)),
+=======
+		ERRATA_MIDR_RANGE(MIDR_CORTEX_A57,
+				  0, 0,
+				  1, 2),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 #endif
 #ifdef CONFIG_ARM64_ERRATUM_834220
@@ -442,9 +803,15 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 	/* Cortex-A57 r0p0 - r1p2 */
 		.desc = "ARM erratum 834220",
 		.capability = ARM64_WORKAROUND_834220,
+<<<<<<< HEAD
 		MIDR_RANGE(MIDR_CORTEX_A57,
 			   MIDR_CPU_VAR_REV(0, 0),
 			   MIDR_CPU_VAR_REV(1, 2)),
+=======
+		ERRATA_MIDR_RANGE(MIDR_CORTEX_A57,
+				  0, 0,
+				  1, 2),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 #endif
 #ifdef CONFIG_ARM64_ERRATUM_845719
@@ -452,6 +819,7 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 	/* Cortex-A53 r0p[01234] */
 		.desc = "ARM erratum 845719",
 		.capability = ARM64_WORKAROUND_845719,
+<<<<<<< HEAD
 		MIDR_RANGE(MIDR_CORTEX_A53, 0x00, 0x04),
 	},
 	{
@@ -459,6 +827,9 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 		.desc = "Kryo2xx Silver erratum 845719",
 		.capability = ARM64_WORKAROUND_845719,
 		MIDR_RANGE(MIDR_KRYO2XX_SILVER, 0xA00004, 0xA00004),
+=======
+		ERRATA_MIDR_REV_RANGE(MIDR_CORTEX_A53, 0, 0, 4),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 #endif
 #ifdef CONFIG_CAVIUM_ERRATUM_23154
@@ -466,7 +837,11 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 	/* Cavium ThunderX, pass 1.x */
 		.desc = "Cavium erratum 23154",
 		.capability = ARM64_WORKAROUND_CAVIUM_23154,
+<<<<<<< HEAD
 		MIDR_RANGE(MIDR_THUNDERX, 0x00, 0x01),
+=======
+		ERRATA_MIDR_REV_RANGE(MIDR_THUNDERX, 0, 0, 1),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 #endif
 #ifdef CONFIG_CAVIUM_ERRATUM_27456
@@ -474,15 +849,25 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 	/* Cavium ThunderX, T88 pass 1.x - 2.1 */
 		.desc = "Cavium erratum 27456",
 		.capability = ARM64_WORKAROUND_CAVIUM_27456,
+<<<<<<< HEAD
 		MIDR_RANGE(MIDR_THUNDERX,
 			   MIDR_CPU_VAR_REV(0, 0),
 			   MIDR_CPU_VAR_REV(1, 1)),
+=======
+		ERRATA_MIDR_RANGE(MIDR_THUNDERX,
+				  0, 0,
+				  1, 1),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	{
 	/* Cavium ThunderX, T81 pass 1.0 */
 		.desc = "Cavium erratum 27456",
 		.capability = ARM64_WORKAROUND_CAVIUM_27456,
+<<<<<<< HEAD
 		MIDR_RANGE(MIDR_THUNDERX_81XX, 0x00, 0x00),
+=======
+		ERRATA_MIDR_REV(MIDR_THUNDERX_81XX, 0, 0),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 #endif
 #ifdef CONFIG_CAVIUM_ERRATUM_30115
@@ -490,49 +875,82 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 	/* Cavium ThunderX, T88 pass 1.x - 2.2 */
 		.desc = "Cavium erratum 30115",
 		.capability = ARM64_WORKAROUND_CAVIUM_30115,
+<<<<<<< HEAD
 		MIDR_RANGE(MIDR_THUNDERX, 0x00,
 			   (1 << MIDR_VARIANT_SHIFT) | 2),
+=======
+		ERRATA_MIDR_RANGE(MIDR_THUNDERX,
+				      0, 0,
+				      1, 2),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	{
 	/* Cavium ThunderX, T81 pass 1.0 - 1.2 */
 		.desc = "Cavium erratum 30115",
 		.capability = ARM64_WORKAROUND_CAVIUM_30115,
+<<<<<<< HEAD
 		MIDR_RANGE(MIDR_THUNDERX_81XX, 0x00, 0x02),
+=======
+		ERRATA_MIDR_REV_RANGE(MIDR_THUNDERX_81XX, 0, 0, 2),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	{
 	/* Cavium ThunderX, T83 pass 1.0 */
 		.desc = "Cavium erratum 30115",
 		.capability = ARM64_WORKAROUND_CAVIUM_30115,
+<<<<<<< HEAD
 		MIDR_RANGE(MIDR_THUNDERX_83XX, 0x00, 0x00),
+=======
+		ERRATA_MIDR_REV(MIDR_THUNDERX_83XX, 0, 0),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 #endif
 	{
 		.desc = "Mismatched cache line size",
 		.capability = ARM64_MISMATCHED_CACHE_LINE_SIZE,
 		.matches = has_mismatched_cache_type,
+<<<<<<< HEAD
 		.def_scope = SCOPE_LOCAL_CPU,
 		.enable = cpu_enable_trap_ctr_access,
+=======
+		.type = ARM64_CPUCAP_LOCAL_CPU_ERRATUM,
+		.cpu_enable = cpu_enable_trap_ctr_access,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	{
 		.desc = "Mismatched cache type",
 		.capability = ARM64_MISMATCHED_CACHE_TYPE,
 		.matches = has_mismatched_cache_type,
+<<<<<<< HEAD
 		.def_scope = SCOPE_LOCAL_CPU,
 		.enable = cpu_enable_trap_ctr_access,
+=======
+		.type = ARM64_CPUCAP_LOCAL_CPU_ERRATUM,
+		.cpu_enable = cpu_enable_trap_ctr_access,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 #ifdef CONFIG_QCOM_FALKOR_ERRATUM_1003
 	{
 		.desc = "Qualcomm Technologies Falkor erratum 1003",
 		.capability = ARM64_WORKAROUND_QCOM_FALKOR_E1003,
+<<<<<<< HEAD
 		MIDR_RANGE(MIDR_QCOM_FALKOR_V1,
 			   MIDR_CPU_VAR_REV(0, 0),
 			   MIDR_CPU_VAR_REV(0, 0)),
+=======
+		ERRATA_MIDR_REV(MIDR_QCOM_FALKOR_V1, 0, 0),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	{
 		.desc = "Qualcomm Technologies Kryo erratum 1003",
 		.capability = ARM64_WORKAROUND_QCOM_FALKOR_E1003,
+<<<<<<< HEAD
 		.def_scope = SCOPE_LOCAL_CPU,
 		.midr_model = MIDR_QCOM_KRYO,
+=======
+		.type = ARM64_CPUCAP_LOCAL_CPU_ERRATUM,
+		.midr_range.model = MIDR_QCOM_KRYO,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.matches = is_kryo_midr,
 	},
 #endif
@@ -540,6 +958,7 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 	{
 		.desc = "Qualcomm Technologies Falkor erratum 1009",
 		.capability = ARM64_WORKAROUND_REPEAT_TLBI,
+<<<<<<< HEAD
 		MIDR_RANGE(MIDR_QCOM_FALKOR_V1,
 			   MIDR_CPU_VAR_REV(0, 0),
 			   MIDR_CPU_VAR_REV(0, 0)),
@@ -559,6 +978,9 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 		MIDR_RANGE(MIDR_KRYO4G,
 			   MIDR_CPU_VAR_REV(12, 14),
 			   MIDR_CPU_VAR_REV(13, 14)),
+=======
+		ERRATA_MIDR_REV(MIDR_QCOM_FALKOR_V1, 0, 0),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 #endif
 #ifdef CONFIG_ARM64_ERRATUM_858921
@@ -566,6 +988,7 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 	/* Cortex-A73 all versions */
 		.desc = "ARM erratum 858921",
 		.capability = ARM64_WORKAROUND_858921,
+<<<<<<< HEAD
 		MIDR_ALL_VERSIONS(MIDR_CORTEX_A73),
 	},
 	{
@@ -664,10 +1087,28 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 			MIDR_CPU_VAR_REV(15, 15)),
 	},
 #endif
+=======
+		ERRATA_MIDR_ALL_VERSIONS(MIDR_CORTEX_A73),
+	},
+#endif
+	{
+		.capability = ARM64_HARDEN_BRANCH_PREDICTOR,
+		.type = ARM64_CPUCAP_LOCAL_CPU_ERRATUM,
+		.matches = check_branch_predictor,
+	},
+	{
+		.desc = "Speculative Store Bypass Disable",
+		.type = ARM64_CPUCAP_LOCAL_CPU_ERRATUM,
+		.capability = ARM64_SSBD,
+		.matches = has_ssbd_mitigation,
+		.midr_range_list = arm64_ssb_cpus,
+	},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{
 	}
 };
 
+<<<<<<< HEAD
 /*
  * The CPU Errata work arounds are detected and applied at boot time
  * and the related information is freed soon after. If the new CPU requires
@@ -699,4 +1140,39 @@ void update_cpu_errata_workarounds(void)
 void __init enable_errata_workarounds(void)
 {
 	enable_cpu_capabilities(arm64_errata);
+=======
+ssize_t cpu_show_spectre_v1(struct device *dev, struct device_attribute *attr,
+			    char *buf)
+{
+	return sprintf(buf, "Mitigation: __user pointer sanitization\n");
+}
+
+ssize_t cpu_show_spectre_v2(struct device *dev, struct device_attribute *attr,
+		char *buf)
+{
+	if (__spectrev2_safe)
+		return sprintf(buf, "Not affected\n");
+
+	if (__hardenbp_enab)
+		return sprintf(buf, "Mitigation: Branch predictor hardening\n");
+
+	return sprintf(buf, "Vulnerable\n");
+}
+
+ssize_t cpu_show_spec_store_bypass(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	if (__ssb_safe)
+		return sprintf(buf, "Not affected\n");
+
+	switch (ssbd_state) {
+	case ARM64_SSBD_KERNEL:
+	case ARM64_SSBD_FORCE_ENABLE:
+		if (IS_ENABLED(CONFIG_ARM64_SSBD))
+			return sprintf(buf,
+			    "Mitigation: Speculative Store Bypass disabled via prctl\n");
+	}
+
+	return sprintf(buf, "Vulnerable\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }

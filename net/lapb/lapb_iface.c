@@ -182,6 +182,10 @@ int lapb_unregister(struct net_device *dev)
 	lapb = __lapb_devtostruct(dev);
 	if (!lapb)
 		goto out;
+<<<<<<< HEAD
+=======
+	lapb_put(lapb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	lapb_stop_t1timer(lapb);
 	lapb_stop_t2timer(lapb);

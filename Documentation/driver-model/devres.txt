@@ -237,7 +237,10 @@ CLOCK
   devm_clk_get()
   devm_clk_put()
   devm_clk_hw_register()
+<<<<<<< HEAD
   devm_of_clk_add_hw_provider()
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 DMA
   dmam_alloc_coherent()

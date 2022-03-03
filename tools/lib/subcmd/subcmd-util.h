@@ -50,6 +50,7 @@ static NORETURN inline void die(const char *err, ...)
 static inline void *xrealloc(void *ptr, size_t size)
 {
 	void *ret = realloc(ptr, size);
+<<<<<<< HEAD
 	if (!ret && !size)
 		ret = realloc(ptr, 1);
 	if (!ret) {
@@ -59,6 +60,10 @@ static inline void *xrealloc(void *ptr, size_t size)
 		if (!ret)
 			die("Out of memory, realloc failed");
 	}
+=======
+	if (!ret)
+		die("Out of memory, realloc failed");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 

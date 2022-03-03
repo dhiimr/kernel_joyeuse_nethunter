@@ -3,5 +3,8 @@ zImage
 xipImage
 bootpImage
 uImage
+<<<<<<< HEAD
 Image-dtb-hdr
 Image-dtb
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

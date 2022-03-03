@@ -27,6 +27,10 @@
 #include <linux/irqbypass.h>
 #include <linux/swait.h>
 #include <linux/refcount.h>
+<<<<<<< HEAD
+=======
+#include <linux/nospec.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/signal.h>
 
 #include <linux/kvm.h>
@@ -139,7 +143,11 @@ static inline bool is_error_page(struct page *page)
 
 extern struct kmem_cache *kvm_vcpu_cache;
 
+<<<<<<< HEAD
 extern spinlock_t kvm_lock;
+=======
+extern struct mutex kvm_lock;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern struct list_head vm_list;
 
 struct kvm_io_range {
@@ -483,10 +491,17 @@ static inline struct kvm_io_bus *kvm_get_bus(struct kvm *kvm, enum kvm_bus idx)
 
 static inline struct kvm_vcpu *kvm_get_vcpu(struct kvm *kvm, int i)
 {
+<<<<<<< HEAD
 	/* Pairs with smp_wmb() in kvm_vm_ioctl_create_vcpu, in case
 	 * the caller has read kvm->online_vcpus before (as is the case
 	 * for kvm_for_each_vcpu, for example).
 	 */
+=======
+	int num_vcpus = atomic_read(&kvm->online_vcpus);
+	i = array_index_nospec(i, num_vcpus);
+
+	/* Pairs with smp_wmb() in kvm_vm_ioctl_create_vcpu.  */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	smp_rmb();
 	return kvm->vcpus[i];
 }
@@ -570,6 +585,10 @@ void kvm_put_kvm(struct kvm *kvm);
 
 static inline struct kvm_memslots *__kvm_memslots(struct kvm *kvm, int as_id)
 {
+<<<<<<< HEAD
+=======
+	as_id = array_index_nospec(as_id, KVM_ADDRESS_SPACE_NUM);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return srcu_dereference_check(kvm->memslots[as_id], &kvm->srcu,
 			lockdep_is_held(&kvm->slots_lock) ||
 			!refcount_read(&kvm->users_count));
@@ -693,7 +712,11 @@ int kvm_clear_guest_page(struct kvm *kvm, gfn_t gfn, int offset, int len);
 int kvm_clear_guest(struct kvm *kvm, gpa_t gpa, unsigned long len);
 struct kvm_memory_slot *gfn_to_memslot(struct kvm *kvm, gfn_t gfn);
 bool kvm_is_visible_gfn(struct kvm *kvm, gfn_t gfn);
+<<<<<<< HEAD
 unsigned long kvm_host_page_size(struct kvm *kvm, gfn_t gfn);
+=======
+unsigned long kvm_host_page_size(struct kvm_vcpu *vcpu, gfn_t gfn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void mark_page_dirty(struct kvm *kvm, gfn_t gfn);
 
 struct kvm_memslots *kvm_vcpu_memslots(struct kvm_vcpu *vcpu);
@@ -806,6 +829,10 @@ void kvm_arch_check_processor_compat(void *rtn);
 int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu);
 bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu);
 int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu);
+<<<<<<< HEAD
+=======
+bool kvm_arch_dy_runnable(struct kvm_vcpu *vcpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifndef __KVM_HAVE_ARCH_VM_ALLOC
 static inline struct kvm *kvm_arch_alloc_vm(void)
@@ -887,6 +914,10 @@ int kvm_cpu_has_pending_timer(struct kvm_vcpu *vcpu);
 void kvm_vcpu_kick(struct kvm_vcpu *vcpu);
 
 bool kvm_is_reserved_pfn(kvm_pfn_t pfn);
+<<<<<<< HEAD
+=======
+bool kvm_is_zone_device_pfn(kvm_pfn_t pfn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct kvm_irq_ack_notifier {
 	struct hlist_node link;
@@ -941,7 +972,11 @@ search_memslots(struct kvm_memslots *slots, gfn_t gfn)
 			start = slot + 1;
 	}
 
+<<<<<<< HEAD
 	if (gfn >= memslots[start].base_gfn &&
+=======
+	if (start < slots->used_slots && gfn >= memslots[start].base_gfn &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    gfn < memslots[start].base_gfn + memslots[start].npages) {
 		atomic_set(&slots->lru_slot, start);
 		return &memslots[start];
@@ -959,7 +994,19 @@ __gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
 static inline unsigned long
 __gfn_to_hva_memslot(struct kvm_memory_slot *slot, gfn_t gfn)
 {
+<<<<<<< HEAD
 	return slot->userspace_addr + (gfn - slot->base_gfn) * PAGE_SIZE;
+=======
+	/*
+	 * The index was checked originally in search_memslots.  To avoid
+	 * that a malicious guest builds a Spectre gadget out of e.g. page
+	 * table walks, do not let the processor speculate loads outside
+	 * the guest's registered memslots.
+	 */
+	unsigned long offset = gfn - slot->base_gfn;
+	offset = array_index_nospec(offset, slot->npages);
+	return slot->userspace_addr + offset * PAGE_SIZE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline int memslot_id(struct kvm *kvm, gfn_t gfn)
@@ -1010,6 +1057,10 @@ enum kvm_stat_kind {
 
 struct kvm_stat_data {
 	int offset;
+<<<<<<< HEAD
+=======
+	int mode;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct kvm *kvm;
 };
 
@@ -1017,6 +1068,10 @@ struct kvm_stats_debugfs_item {
 	const char *name;
 	int offset;
 	enum kvm_stat_kind kind;
+<<<<<<< HEAD
+=======
+	int mode;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 extern struct kvm_stats_debugfs_item debugfs_entries[];
 extern struct dentry *kvm_debugfs_dir;
@@ -1255,4 +1310,13 @@ static inline bool vcpu_valid_wakeup(struct kvm_vcpu *vcpu)
 }
 #endif /* CONFIG_HAVE_KVM_INVALID_WAKEUPS */
 
+<<<<<<< HEAD
+=======
+typedef int (*kvm_vm_thread_fn_t)(struct kvm *kvm, uintptr_t data);
+
+int kvm_vm_create_worker_thread(struct kvm *kvm, kvm_vm_thread_fn_t thread_fn,
+				uintptr_t data, const char *name,
+				struct task_struct **thread_ptr);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif

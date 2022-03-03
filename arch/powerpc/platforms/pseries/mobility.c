@@ -9,8 +9,15 @@
  * 2 as published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/kobject.h>
+=======
+#include <linux/cpu.h>
+#include <linux/kernel.h>
+#include <linux/kobject.h>
+#include <linux/sched.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/smp.h>
 #include <linux/stat.h>
 #include <linux/completion.h>
@@ -21,6 +28,10 @@
 #include <asm/machdep.h>
 #include <asm/rtas.h>
 #include "pseries.h"
+<<<<<<< HEAD
+=======
+#include "../../kernel/cacheinfo.h"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct kobject *mobility_kobj;
 
@@ -207,7 +218,15 @@ static int update_dt_node(__be32 phandle, s32 scope)
 
 				prop_data += vd;
 			}
+<<<<<<< HEAD
 		}
+=======
+
+			cond_resched();
+		}
+
+		cond_resched();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} while (rtas_rc == 1);
 
 	of_node_put(dn);
@@ -316,8 +335,17 @@ int pseries_devicetree_update(s32 scope)
 					add_dt_node(phandle, drc_index);
 					break;
 				}
+<<<<<<< HEAD
 			}
 		}
+=======
+
+				cond_resched();
+			}
+		}
+
+		cond_resched();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} while (rc == 1);
 
 	kfree(rtas_buf);
@@ -343,11 +371,34 @@ void post_mobility_fixup(void)
 	if (rc)
 		printk(KERN_ERR "Post-mobility activate-fw failed: %d\n", rc);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * We don't want CPUs to go online/offline while the device
+	 * tree is being updated.
+	 */
+	cpus_read_lock();
+
+	/*
+	 * It's common for the destination firmware to replace cache
+	 * nodes.  Release all of the cacheinfo hierarchy's references
+	 * before updating the device tree.
+	 */
+	cacheinfo_teardown();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rc = pseries_devicetree_update(MIGRATION_SCOPE);
 	if (rc)
 		printk(KERN_ERR "Post-mobility device tree update "
 			"failed: %d\n", rc);
 
+<<<<<<< HEAD
+=======
+	cacheinfo_rebuild();
+
+	cpus_read_unlock();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Possibly switch to a new RFI flush type */
 	pseries_setup_rfi_flush();
 

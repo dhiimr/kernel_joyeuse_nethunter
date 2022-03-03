@@ -1364,7 +1364,11 @@ static int iwl_mvm_check_running_scans(struct iwl_mvm *mvm, int type)
 	return -EIO;
 }
 
+<<<<<<< HEAD
 #define SCAN_TIMEOUT 20000
+=======
+#define SCAN_TIMEOUT 30000
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 void iwl_mvm_scan_timeout_wk(struct work_struct *work)
 {

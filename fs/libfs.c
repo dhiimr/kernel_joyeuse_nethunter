@@ -86,6 +86,7 @@ int dcache_dir_close(struct inode *inode, struct file *file)
 EXPORT_SYMBOL(dcache_dir_close);
 
 /* parent is locked at least shared */
+<<<<<<< HEAD
 static struct dentry *next_positive(struct dentry *parent,
 				    struct list_head *from,
 				    int count)
@@ -138,6 +139,49 @@ static void move_cursor(struct dentry *cursor, struct list_head *after)
 		list_add_tail(&cursor->d_child, &parent->d_subdirs);
 	smp_store_release(seq, n + 2);
 	spin_unlock(&parent->d_lock);
+=======
+/*
+ * Returns an element of siblings' list.
+ * We are looking for <count>th positive after <p>; if
+ * found, dentry is grabbed and passed to caller via *<res>.
+ * If no such element exists, the anchor of list is returned
+ * and *<res> is set to NULL.
+ */
+static struct list_head *scan_positives(struct dentry *cursor,
+					struct list_head *p,
+					loff_t count,
+					struct dentry **res)
+{
+	struct dentry *dentry = cursor->d_parent, *found = NULL;
+
+	spin_lock(&dentry->d_lock);
+	while ((p = p->next) != &dentry->d_subdirs) {
+		struct dentry *d = list_entry(p, struct dentry, d_child);
+		// we must at least skip cursors, to avoid livelocks
+		if (d->d_flags & DCACHE_DENTRY_CURSOR)
+			continue;
+		if (simple_positive(d) && !--count) {
+			spin_lock_nested(&d->d_lock, DENTRY_D_LOCK_NESTED);
+			if (simple_positive(d))
+				found = dget_dlock(d);
+			spin_unlock(&d->d_lock);
+			if (likely(found))
+				break;
+			count = 1;
+		}
+		if (need_resched()) {
+			list_move(&cursor->d_child, p);
+			p = &cursor->d_child;
+			spin_unlock(&dentry->d_lock);
+			cond_resched();
+			spin_lock(&dentry->d_lock);
+		}
+	}
+	spin_unlock(&dentry->d_lock);
+	dput(*res);
+	*res = found;
+	return p;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 loff_t dcache_dir_lseek(struct file *file, loff_t offset, int whence)
@@ -153,6 +197,7 @@ loff_t dcache_dir_lseek(struct file *file, loff_t offset, int whence)
 			return -EINVAL;
 	}
 	if (offset != file->f_pos) {
+<<<<<<< HEAD
 		file->f_pos = offset;
 		if (file->f_pos >= 2) {
 			struct dentry *cursor = file->private_data;
@@ -164,6 +209,30 @@ loff_t dcache_dir_lseek(struct file *file, loff_t offset, int whence)
 			move_cursor(cursor, to ? &to->d_child : NULL);
 			inode_unlock_shared(dentry->d_inode);
 		}
+=======
+		struct dentry *cursor = file->private_data;
+		struct dentry *to = NULL;
+		struct list_head *p;
+
+		file->f_pos = offset;
+		inode_lock_shared(dentry->d_inode);
+
+		if (file->f_pos > 2) {
+			p = scan_positives(cursor, &dentry->d_subdirs,
+					   file->f_pos - 2, &to);
+			spin_lock(&dentry->d_lock);
+			list_move(&cursor->d_child, p);
+			spin_unlock(&dentry->d_lock);
+		} else {
+			spin_lock(&dentry->d_lock);
+			list_del_init(&cursor->d_child);
+			spin_unlock(&dentry->d_lock);
+		}
+
+		dput(to);
+
+		inode_unlock_shared(dentry->d_inode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return offset;
 }
@@ -185,14 +254,21 @@ int dcache_readdir(struct file *file, struct dir_context *ctx)
 {
 	struct dentry *dentry = file->f_path.dentry;
 	struct dentry *cursor = file->private_data;
+<<<<<<< HEAD
 	struct list_head *p = &cursor->d_child;
 	struct dentry *next;
 	bool moved = false;
+=======
+	struct list_head *anchor = &dentry->d_subdirs;
+	struct dentry *next = NULL;
+	struct list_head *p;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!dir_emit_dots(file, ctx))
 		return 0;
 
 	if (ctx->pos == 2)
+<<<<<<< HEAD
 		p = &dentry->d_subdirs;
 	while ((next = next_positive(dentry, p, 1)) != NULL) {
 		if (!dir_emit(ctx, next->d_name.name, next->d_name.len,
@@ -204,6 +280,23 @@ int dcache_readdir(struct file *file, struct dir_context *ctx)
 	}
 	if (moved)
 		move_cursor(cursor, p);
+=======
+		p = anchor;
+	else
+		p = &cursor->d_child;
+
+	while ((p = scan_positives(cursor, p, 1, &next)) != anchor) {
+		if (!dir_emit(ctx, next->d_name.name, next->d_name.len,
+			      d_inode(next)->i_ino, dt_type(d_inode(next))))
+			break;
+		ctx->pos++;
+	}
+	spin_lock(&dentry->d_lock);
+	list_move_tail(&cursor->d_child, p);
+	spin_unlock(&dentry->d_lock);
+	dput(next);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 EXPORT_SYMBOL(dcache_readdir);
@@ -798,7 +891,11 @@ int simple_attr_open(struct inode *inode, struct file *file,
 {
 	struct simple_attr *attr;
 
+<<<<<<< HEAD
 	attr = kmalloc(sizeof(*attr), GFP_KERNEL);
+=======
+	attr = kzalloc(sizeof(*attr), GFP_KERNEL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!attr)
 		return -ENOMEM;
 
@@ -838,9 +935,17 @@ ssize_t simple_attr_read(struct file *file, char __user *buf,
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	if (*ppos) {		/* continued read */
 		size = strlen(attr->get_buf);
 	} else {		/* first read */
+=======
+	if (*ppos && attr->get_buf[0]) {
+		/* continued read */
+		size = strlen(attr->get_buf);
+	} else {
+		/* first read */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		u64 val;
 		ret = attr->get(attr->data, &val);
 		if (ret)
@@ -862,7 +967,11 @@ ssize_t simple_attr_write(struct file *file, const char __user *buf,
 			  size_t len, loff_t *ppos)
 {
 	struct simple_attr *attr;
+<<<<<<< HEAD
 	u64 val;
+=======
+	unsigned long long val;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	size_t size;
 	ssize_t ret;
 
@@ -880,7 +989,13 @@ ssize_t simple_attr_write(struct file *file, const char __user *buf,
 		goto out;
 
 	attr->set_buf[size] = '\0';
+<<<<<<< HEAD
 	val = simple_strtoll(attr->set_buf, NULL, 0);
+=======
+	ret = kstrtoull(attr->set_buf, 0, &val);
+	if (ret)
+		goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = attr->set(attr->data, val);
 	if (ret == 0)
 		ret = len; /* on success, claim we got the whole input */

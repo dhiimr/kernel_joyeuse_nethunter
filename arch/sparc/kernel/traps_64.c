@@ -290,6 +290,7 @@ bool is_no_fault_exception(struct pt_regs *regs)
 			asi = (regs->tstate >> 24); /* saved %asi       */
 		else
 			asi = (insn >> 5);	    /* immediate asi    */
+<<<<<<< HEAD
 		if ((asi & 0xf2) == ASI_PNF) {
 			if (insn & 0x1000000) {     /* op3[5:4]=3       */
 				handle_ldf_stq(insn, regs);
@@ -298,6 +299,15 @@ bool is_no_fault_exception(struct pt_regs *regs)
 				return false;
 			}
 			handle_ld_nf(insn, regs);
+=======
+		if ((asi & 0xf6) == ASI_PNF) {
+			if (insn & 0x200000)        /* op3[2], stores   */
+				return false;
+			if (insn & 0x1000000)       /* op3[5:4]=3 (fp)  */
+				handle_ldf_stq(insn, regs);
+			else
+				handle_ld_nf(insn, regs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return true;
 		}
 	}

@@ -2449,6 +2449,11 @@ static int cxgb_extension_ioctl(struct net_device *dev, void __user *useraddr)
 
 		if (!is_offload(adapter))
 			return -EOPNOTSUPP;
+<<<<<<< HEAD
+=======
+		if (!capable(CAP_NET_ADMIN))
+			return -EPERM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!(adapter->flags & FULL_INIT_DONE))
 			return -EIO;	/* need the memory controllers */
 		if (copy_from_user(&t, useraddr, sizeof(t)))
@@ -3270,7 +3275,11 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (!adapter->regs) {
 		dev_err(&pdev->dev, "cannot map device registers\n");
 		err = -ENOMEM;
+<<<<<<< HEAD
 		goto out_free_adapter;
+=======
+		goto out_free_adapter_nofail;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	adapter->pdev = pdev;
@@ -3390,6 +3399,12 @@ out_free_dev:
 		if (adapter->port[i])
 			free_netdev(adapter->port[i]);
 
+<<<<<<< HEAD
+=======
+out_free_adapter_nofail:
+	kfree_skb(adapter->nofail_skb);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out_free_adapter:
 	kfree(adapter);
 

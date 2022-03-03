@@ -1029,6 +1029,13 @@ static int tpm2_get_cc_attrs_tbl(struct tpm_chip *chip)
 
 	chip->cc_attrs_tbl = devm_kzalloc(&chip->dev, 4 * nr_commands,
 					  GFP_KERNEL);
+<<<<<<< HEAD
+=======
+	if (!chip->cc_attrs_tbl) {
+		rc = -ENOMEM;
+		goto out;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rc = tpm_buf_init(&buf, TPM2_ST_NO_SESSIONS, TPM2_CC_GET_CAPABILITY);
 	if (rc)
@@ -1047,6 +1054,10 @@ static int tpm2_get_cc_attrs_tbl(struct tpm_chip *chip)
 
 	if (nr_commands !=
 	    be32_to_cpup((__be32 *)&buf.data[TPM_HEADER_SIZE + 5])) {
+<<<<<<< HEAD
+=======
+		rc = -EFAULT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		tpm_buf_destroy(&buf);
 		goto out;
 	}

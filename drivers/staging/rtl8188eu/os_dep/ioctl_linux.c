@@ -1169,9 +1169,17 @@ static int rtw_wx_set_scan(struct net_device *dev, struct iw_request_info *a,
 						break;
 					}
 					sec_len = *(pos++); len -= 1;
+<<<<<<< HEAD
 					if (sec_len > 0 && sec_len <= len) {
 						ssid[ssid_index].SsidLength = sec_len;
 						memcpy(ssid[ssid_index].Ssid, pos, ssid[ssid_index].SsidLength);
+=======
+					if (sec_len > 0 &&
+					    sec_len <= len &&
+					    sec_len <= 32) {
+						ssid[ssid_index].SsidLength = sec_len;
+						memcpy(ssid[ssid_index].Ssid, pos, sec_len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						ssid_index++;
 					}
 					pos += sec_len;
@@ -2051,7 +2059,11 @@ static int wpa_supplicant_ioctl(struct net_device *dev, struct iw_point *p)
 	struct ieee_param *param;
 	uint ret = 0;
 
+<<<<<<< HEAD
 	if (p->length < sizeof(struct ieee_param) || !p->pointer) {
+=======
+	if (!p->pointer || p->length != sizeof(struct ieee_param)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = -EINVAL;
 		goto out;
 	}
@@ -2856,7 +2868,11 @@ static int rtw_hostapd_ioctl(struct net_device *dev, struct iw_point *p)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (!p->pointer) {
+=======
+	if (!p->pointer || p->length != sizeof(struct ieee_param)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = -EINVAL;
 		goto out;
 	}

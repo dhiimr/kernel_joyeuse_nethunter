@@ -37,7 +37,23 @@ import glob
 from docutils import nodes, statemachine
 from docutils.statemachine import ViewList
 from docutils.parsers.rst import directives, Directive
+<<<<<<< HEAD
 from sphinx.ext.autodoc import AutodocReporter
+=======
+
+#
+# AutodocReporter is only good up to Sphinx 1.7
+#
+import sphinx
+
+Use_SSI = sphinx.__version__[:3] >= '1.7'
+if Use_SSI:
+    from sphinx.util.docutils import switch_source_input
+else:
+    from sphinx.ext.autodoc import AutodocReporter
+
+import kernellog
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 __version__  = '1.0'
 
@@ -86,7 +102,12 @@ class KernelDocDirective(Directive):
         cmd += [filename]
 
         try:
+<<<<<<< HEAD
             env.app.verbose('calling kernel-doc \'%s\'' % (" ".join(cmd)))
+=======
+            kernellog.verbose(env.app,
+                              'calling kernel-doc \'%s\'' % (" ".join(cmd)))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()
@@ -96,7 +117,12 @@ class KernelDocDirective(Directive):
             if p.returncode != 0:
                 sys.stderr.write(err)
 
+<<<<<<< HEAD
                 env.app.warn('kernel-doc \'%s\' failed with return code %d' % (" ".join(cmd), p.returncode))
+=======
+                kernellog.warn(env.app,
+                               'kernel-doc \'%s\' failed with return code %d' % (" ".join(cmd), p.returncode))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
                 return [nodes.error(None, nodes.paragraph(text = "kernel-doc missing"))]
             elif env.config.kerneldoc_verbosity > 0:
                 sys.stderr.write(err)
@@ -117,12 +143,31 @@ class KernelDocDirective(Directive):
                     lineoffset += 1
 
             node = nodes.section()
+<<<<<<< HEAD
             buf = self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter
+=======
+            self.do_parse(result, node)
+
+            return node.children
+
+        except Exception as e:  # pylint: disable=W0703
+            kernellog.warn(env.app, 'kernel-doc \'%s\' processing failed with: %s' %
+                           (" ".join(cmd), str(e)))
+            return [nodes.error(None, nodes.paragraph(text = "kernel-doc missing"))]
+
+    def do_parse(self, result, node):
+        if Use_SSI:
+            with switch_source_input(self.state, result):
+                self.state.nested_parse(result, 0, node, match_titles=1)
+        else:
+            save = self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
             self.state.memo.reporter = AutodocReporter(result, self.state.memo.reporter)
             self.state.memo.title_styles, self.state.memo.section_level = [], 0
             try:
                 self.state.nested_parse(result, 0, node, match_titles=1)
             finally:
+<<<<<<< HEAD
                 self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter = buf
 
             return node.children
@@ -131,6 +176,10 @@ class KernelDocDirective(Directive):
             env.app.warn('kernel-doc \'%s\' processing failed with: %s' %
                          (" ".join(cmd), str(e)))
             return [nodes.error(None, nodes.paragraph(text = "kernel-doc missing"))]
+=======
+                self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter = save
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 def setup(app):
     app.add_config_value('kerneldoc_bin', None, 'env')

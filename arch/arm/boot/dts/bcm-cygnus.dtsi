@@ -165,8 +165,13 @@
 		mdio: mdio@18002000 {
 			compatible = "brcm,iproc-mdio";
 			reg = <0x18002000 0x8>;
+<<<<<<< HEAD
 			#size-cells = <1>;
 			#address-cells = <0>;
+=======
+			#size-cells = <0>;
+			#address-cells = <1>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			status = "disabled";
 
 			gphy0: ethernet-phy@0 {
@@ -446,7 +451,11 @@
 			status = "disabled";
 		};
 
+<<<<<<< HEAD
 		nand: nand@18046000 {
+=======
+		nand_controller: nand-controller@18046000 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1";
 			reg = <0x18046000 0x600>, <0xf8105408 0x600>,
 			      <0x18046f00 0x20>;

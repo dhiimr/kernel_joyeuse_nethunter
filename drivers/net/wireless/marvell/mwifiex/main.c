@@ -1447,6 +1447,11 @@ int mwifiex_shutdown_sw(struct mwifiex_adapter *adapter)
 	priv = mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_ANY);
 	mwifiex_deauthenticate(priv, NULL);
 
+<<<<<<< HEAD
+=======
+	mwifiex_init_shutdown_fw(priv, MWIFIEX_FUNC_SHUTDOWN);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mwifiex_uninit_sw(adapter);
 
 	if (adapter->if_ops.down_dev)

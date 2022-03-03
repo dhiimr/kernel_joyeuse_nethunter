@@ -38,12 +38,21 @@ void nf_nat_l4proto_unique_tuple(const struct nf_nat_l3proto *l3proto,
 				 struct nf_conntrack_tuple *tuple,
 				 const struct nf_nat_range *range,
 				 enum nf_nat_manip_type maniptype,
+<<<<<<< HEAD
 				 const struct nf_conn *ct,
 				 u16 *rover)
 {
 	unsigned int range_size, min, max, i;
 	__be16 *portptr;
 	u_int16_t off;
+=======
+				 const struct nf_conn *ct)
+{
+	unsigned int range_size, min, max, i, attempts;
+	__be16 *portptr;
+	u16 off;
+	static const unsigned int max_attempts = 128;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (maniptype == NF_NAT_MANIP_SRC)
 		portptr = &tuple->src.u.all;
@@ -84,6 +93,7 @@ void nf_nat_l4proto_unique_tuple(const struct nf_nat_l3proto *l3proto,
 	} else if (range->flags & NF_NAT_RANGE_PROTO_RANDOM_FULLY) {
 		off = prandom_u32();
 	} else {
+<<<<<<< HEAD
 		off = *rover;
 	}
 
@@ -95,6 +105,33 @@ void nf_nat_l4proto_unique_tuple(const struct nf_nat_l3proto *l3proto,
 			*rover = off;
 		return;
 	}
+=======
+		off = prandom_u32();
+	}
+
+	attempts = range_size;
+	if (attempts > max_attempts)
+		attempts = max_attempts;
+
+	/* We are in softirq; doing a search of the entire range risks
+	 * soft lockup when all tuples are already used.
+	 *
+	 * If we can't find any free port from first offset, pick a new
+	 * one and try again, with ever smaller search window.
+	 */
+another_round:
+	for (i = 0; i < attempts; i++, off++) {
+		*portptr = htons(min + off % range_size);
+		if (!nf_nat_used_tuple(tuple, ct))
+			return;
+	}
+
+	if (attempts >= range_size || attempts < 16)
+		return;
+	attempts /= 2;
+	off = prandom_u32();
+	goto another_round;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(nf_nat_l4proto_unique_tuple);
 

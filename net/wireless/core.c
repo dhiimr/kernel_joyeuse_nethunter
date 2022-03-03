@@ -498,7 +498,11 @@ use_default_name:
 				   &rdev->rfkill_ops, rdev);
 
 	if (!rdev->rfkill) {
+<<<<<<< HEAD
 		kfree(rdev);
+=======
+		wiphy_free(&rdev->wiphy);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return NULL;
 	}
 
@@ -1008,7 +1012,10 @@ void cfg80211_unregister_wdev(struct wireless_dev *wdev)
 	nl80211_notify_iface(rdev, wdev, NL80211_CMD_DEL_INTERFACE);
 
 	list_del_rcu(&wdev->list);
+<<<<<<< HEAD
 	synchronize_rcu();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rdev->devlist_generation++;
 
 	switch (wdev->iftype) {

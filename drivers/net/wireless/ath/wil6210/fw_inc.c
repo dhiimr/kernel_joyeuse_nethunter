@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2014-2017 Qualcomm Atheros, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -128,6 +131,17 @@ static int fw_ignore_section(struct wil6210_priv *wil, const void *data,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int fw_handle_comment(struct wil6210_priv *wil, const void *data,
+			     size_t size)
+{
+	wil_hex_dump_fw("", DUMP_PREFIX_OFFSET, 16, 1, data, size, true);
+
+	return 0;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int
 fw_handle_capabilities(struct wil6210_priv *wil, const void *data,
 		       size_t size)
@@ -135,11 +149,17 @@ fw_handle_capabilities(struct wil6210_priv *wil, const void *data,
 	const struct wil_fw_record_capabilities *rec = data;
 	size_t capa_size;
 
+<<<<<<< HEAD
 	if (size < sizeof(*rec)) {
 		wil_err_fw(wil, "capabilities record too short: %zu\n", size);
 		/* let the FW load anyway */
 		return 0;
 	}
+=======
+	if (size < sizeof(*rec) ||
+	    le32_to_cpu(rec->magic) != WIL_FW_CAPABILITIES_MAGIC)
+		return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	capa_size = size - offsetof(struct wil_fw_record_capabilities,
 				    capabilities);
@@ -151,6 +171,7 @@ fw_handle_capabilities(struct wil6210_priv *wil, const void *data,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int
 fw_handle_brd_file(struct wil6210_priv *wil, const void *data,
 		   size_t size)
@@ -245,6 +266,10 @@ fw_handle_comment(struct wil6210_priv *wil, const void *data,
 
 static int __fw_handle_data(struct wil6210_priv *wil, const void *data,
 			    size_t size, __le32 addr)
+=======
+static int fw_handle_data(struct wil6210_priv *wil, const void *data,
+			  size_t size)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	const struct wil_fw_record_data *d = data;
 	void __iomem *dst;
@@ -255,15 +280,23 @@ static int __fw_handle_data(struct wil6210_priv *wil, const void *data,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (!wil_fw_addr_check(wil, &dst, addr, s, "address"))
 		return -EINVAL;
 	wil_dbg_fw(wil, "write [0x%08x] <== %zu bytes\n", le32_to_cpu(addr), s);
+=======
+	if (!wil_fw_addr_check(wil, &dst, d->addr, s, "address"))
+		return -EINVAL;
+	wil_dbg_fw(wil, "write [0x%08x] <== %zu bytes\n", le32_to_cpu(d->addr),
+		   s);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	wil_memcpy_toio_32(dst, d->data, s);
 	wmb(); /* finish before processing next record */
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int fw_handle_data(struct wil6210_priv *wil, const void *data,
 			  size_t size)
 {
@@ -272,6 +305,8 @@ static int fw_handle_data(struct wil6210_priv *wil, const void *data,
 	return __fw_handle_data(wil, data, size, d->addr);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int fw_handle_fill(struct wil6210_priv *wil, const void *data,
 			  size_t size)
 {
@@ -534,7 +569,11 @@ static const struct {
 	int (*parse_handler)(struct wil6210_priv *wil, const void *data,
 			     size_t size);
 } wil_fw_handlers[] = {
+<<<<<<< HEAD
 	{wil_fw_type_comment, fw_handle_comment, fw_handle_comment},
+=======
+	{wil_fw_type_comment, fw_handle_comment, fw_handle_capabilities},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{wil_fw_type_data, fw_handle_data, fw_ignore_section},
 	{wil_fw_type_fill, fw_handle_fill, fw_ignore_section},
 	/* wil_fw_type_action */
@@ -629,7 +668,11 @@ int wil_request_firmware(struct wil6210_priv *wil, const char *name,
 
 	rc = request_firmware(&fw, name, wil_to_dev(wil));
 	if (rc) {
+<<<<<<< HEAD
 		wil_err_fw(wil, "Failed to load firmware %s rc %d\n", name, rc);
+=======
+		wil_err_fw(wil, "Failed to load firmware %s\n", name);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return rc;
 	}
 	wil_dbg_fw(wil, "Loading <%s>, %zu bytes\n", name, fw->size);
@@ -651,6 +694,7 @@ out:
 }
 
 /**
+<<<<<<< HEAD
  * wil_brd_process - process section from BRD file
  *
  * Return error code
@@ -745,6 +789,8 @@ out:
 }
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * wil_fw_verify_file_exists - checks if firmware file exist
  *
  * @wil: driver context

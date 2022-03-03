@@ -1196,8 +1196,13 @@ static int ena_io_poll(struct napi_struct *napi, int budget)
 	struct ena_napi *ena_napi = container_of(napi, struct ena_napi, napi);
 	struct ena_ring *tx_ring, *rx_ring;
 
+<<<<<<< HEAD
 	u32 tx_work_done;
 	u32 rx_work_done;
+=======
+	int tx_work_done;
+	int rx_work_done = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int tx_budget;
 	int napi_comp_call = 0;
 	int ret;
@@ -1214,7 +1219,15 @@ static int ena_io_poll(struct napi_struct *napi, int budget)
 	}
 
 	tx_work_done = ena_clean_tx_irq(tx_ring, tx_budget);
+<<<<<<< HEAD
 	rx_work_done = ena_clean_rx_irq(rx_ring, napi, budget);
+=======
+	/* On netpoll the budget is zero and the handler should only clean the
+	 * tx completions.
+	 */
+	if (likely(budget))
+		rx_work_done = ena_clean_rx_irq(rx_ring, napi, budget);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* If the device is about to reset or down, avoid unmask
 	 * the interrupt and return 0 so NAPI won't reschedule
@@ -1792,6 +1805,10 @@ err_setup_rx:
 err_setup_tx:
 	ena_free_io_irq(adapter);
 err_req_irq:
+<<<<<<< HEAD
+=======
+	ena_del_napi(adapter);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return rc;
 }
@@ -2229,7 +2246,11 @@ static void ena_config_host_info(struct ena_com_dev *ena_dev)
 
 	host_info->os_type = ENA_ADMIN_OS_LINUX;
 	host_info->kernel_ver = LINUX_VERSION_CODE;
+<<<<<<< HEAD
 	strncpy(host_info->kernel_ver_str, utsname()->version,
+=======
+	strlcpy(host_info->kernel_ver_str, utsname()->version,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		sizeof(host_info->kernel_ver_str) - 1);
 	host_info->os_dist = 0;
 	strncpy(host_info->os_dist_str, utsname()->release,
@@ -2469,6 +2490,7 @@ static int ena_device_init(struct ena_com_dev *ena_dev, struct pci_dev *pdev,
 		goto err_mmio_read_less;
 	}
 
+<<<<<<< HEAD
 	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(dma_width));
 	if (rc) {
 		dev_err(dev, "pci_set_dma_mask failed 0x%x\n", rc);
@@ -2479,6 +2501,11 @@ static int ena_device_init(struct ena_com_dev *ena_dev, struct pci_dev *pdev,
 	if (rc) {
 		dev_err(dev, "err_pci_set_consistent_dma_mask failed 0x%x\n",
 			rc);
+=======
+	rc = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(dma_width));
+	if (rc) {
+		dev_err(dev, "dma_set_mask_and_coherent failed %d\n", rc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto err_mmio_read_less;
 	}
 
@@ -2798,8 +2825,13 @@ static void check_for_missing_keep_alive(struct ena_adapter *adapter)
 	if (adapter->keep_alive_timeout == ENA_HW_HINTS_NO_TIMEOUT)
 		return;
 
+<<<<<<< HEAD
 	keep_alive_expired = round_jiffies(adapter->last_keep_alive_jiffies +
 					   adapter->keep_alive_timeout);
+=======
+	keep_alive_expired = adapter->last_keep_alive_jiffies +
+			     adapter->keep_alive_timeout;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (unlikely(time_is_before_jiffies(keep_alive_expired))) {
 		netif_err(adapter, drv, adapter->netdev,
 			  "Keep alive watchdog timeout.\n");
@@ -2901,7 +2933,11 @@ static void ena_timer_service(unsigned long data)
 	}
 
 	/* Reset the timer */
+<<<<<<< HEAD
 	mod_timer(&adapter->timer_service, jiffies + HZ);
+=======
+	mod_timer(&adapter->timer_service, round_jiffies(jiffies + HZ));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int ena_calc_io_queue_num(struct pci_dev *pdev,
@@ -3136,6 +3172,15 @@ static int ena_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		return rc;
 	}
 
+<<<<<<< HEAD
+=======
+	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(ENA_MAX_PHYS_ADDR_SIZE_BITS));
+	if (rc) {
+		dev_err(&pdev->dev, "dma_set_mask_and_coherent failed %d\n", rc);
+		goto err_disable_device;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pci_set_master(pdev);
 
 	ena_dev = vzalloc(sizeof(*ena_dev));

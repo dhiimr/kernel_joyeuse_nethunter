@@ -18,9 +18,12 @@
 #include "u_audio.h"
 #include "u_uac2.h"
 
+<<<<<<< HEAD
 /* Keep everyone on toes */
 #define USB_XFERS	8
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * The driver implements a simple UAC_2 topology.
  * USB-OUT -> IT_1 -> OT_3 -> ALSA_Capture
@@ -281,8 +284,13 @@ static struct usb_endpoint_descriptor fs_epout_desc = {
 	.bDescriptorType = USB_DT_ENDPOINT,
 
 	.bEndpointAddress = USB_DIR_OUT,
+<<<<<<< HEAD
 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_SYNC,
 	.wMaxPacketSize = cpu_to_le16(1023),
+=======
+	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
+	/* .wMaxPacketSize = DYNAMIC */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.bInterval = 1,
 };
 
@@ -290,6 +298,7 @@ static struct usb_endpoint_descriptor hs_epout_desc = {
 	.bLength = USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType = USB_DT_ENDPOINT,
 
+<<<<<<< HEAD
 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_SYNC,
 	.wMaxPacketSize = cpu_to_le16(1024),
 	.bInterval = 4,
@@ -302,6 +311,13 @@ static struct usb_ss_ep_comp_descriptor ss_epout_comp_desc = {
 	 .wBytesPerInterval =	cpu_to_le16(1024),
 };
 
+=======
+	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
+	/* .wMaxPacketSize = DYNAMIC */
+	.bInterval = 4,
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* CS AS ISO OUT Endpoint */
 static struct uac2_iso_endpoint_descriptor as_iso_out_desc = {
 	.bLength = sizeof as_iso_out_desc,
@@ -365,8 +381,13 @@ static struct usb_endpoint_descriptor fs_epin_desc = {
 	.bDescriptorType = USB_DT_ENDPOINT,
 
 	.bEndpointAddress = USB_DIR_IN,
+<<<<<<< HEAD
 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_SYNC,
 	.wMaxPacketSize = cpu_to_le16(1023),
+=======
+	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
+	/* .wMaxPacketSize = DYNAMIC */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.bInterval = 1,
 };
 
@@ -374,6 +395,7 @@ static struct usb_endpoint_descriptor hs_epin_desc = {
 	.bLength = USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType = USB_DT_ENDPOINT,
 
+<<<<<<< HEAD
 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_SYNC,
 	.wMaxPacketSize = cpu_to_le16(1024),
 	.bInterval = 4,
@@ -386,6 +408,13 @@ static struct usb_ss_ep_comp_descriptor ss_epin_comp_desc = {
 	 .wBytesPerInterval =	cpu_to_le16(1024),
 };
 
+=======
+	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
+	/* .wMaxPacketSize = DYNAMIC */
+	.bInterval = 4,
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* CS AS ISO IN Endpoint */
 static struct uac2_iso_endpoint_descriptor as_iso_in_desc = {
 	.bLength = sizeof as_iso_in_desc,
@@ -458,6 +487,7 @@ static struct usb_descriptor_header *hs_audio_desc[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 static struct usb_descriptor_header *ss_audio_desc[] = {
 	(struct usb_descriptor_header *)&iad_desc,
 	(struct usb_descriptor_header *)&std_ac_if_desc,
@@ -490,6 +520,8 @@ static struct usb_descriptor_header *ss_audio_desc[] = {
 	NULL,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct cntrl_cur_lay3 {
 	__le32	dCUR;
 };
@@ -501,12 +533,37 @@ struct cntrl_range_lay3 {
 	__le32	dRES;
 } __packed;
 
+<<<<<<< HEAD
 static void set_ep_max_packet_size(const struct f_uac2_opts *uac2_opts,
 	struct usb_endpoint_descriptor *ep_desc,
 	unsigned int factor, bool is_playback)
 {
 	int chmask, srate, ssize;
 	u16 max_packet_size;
+=======
+static int set_ep_max_packet_size(const struct f_uac2_opts *uac2_opts,
+	struct usb_endpoint_descriptor *ep_desc,
+	enum usb_device_speed speed, bool is_playback)
+{
+	int chmask, srate, ssize;
+	u16 max_size_bw, max_size_ep;
+	unsigned int factor;
+
+	switch (speed) {
+	case USB_SPEED_FULL:
+		max_size_ep = 1023;
+		factor = 1000;
+		break;
+
+	case USB_SPEED_HIGH:
+		max_size_ep = 1024;
+		factor = 8000;
+		break;
+
+	default:
+		return -EINVAL;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (is_playback) {
 		chmask = uac2_opts->p_chmask;
@@ -518,10 +575,19 @@ static void set_ep_max_packet_size(const struct f_uac2_opts *uac2_opts,
 		ssize = uac2_opts->c_ssize;
 	}
 
+<<<<<<< HEAD
 	max_packet_size = num_channels(chmask) * ssize *
 		DIV_ROUND_UP(srate, factor / (1 << (ep_desc->bInterval - 1)));
 	ep_desc->wMaxPacketSize = cpu_to_le16(min_t(u16, max_packet_size,
 				le16_to_cpu(ep_desc->wMaxPacketSize)));
+=======
+	max_size_bw = num_channels(chmask) * ssize *
+		((srate / (factor / (1 << (ep_desc->bInterval - 1)))) + 1);
+	ep_desc->wMaxPacketSize = cpu_to_le16(min_t(u16, max_size_bw,
+						    max_size_ep));
+
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int
@@ -580,7 +646,10 @@ afunc_bind(struct usb_configuration *cfg, struct usb_function *fn)
 	iad_desc.bFirstInterface = ret;
 
 	std_ac_if_desc.bInterfaceNumber = ret;
+<<<<<<< HEAD
 	iad_desc.bFirstInterface = ret;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	uac2->ac_intf = ret;
 	uac2->ac_alt = 0;
 
@@ -605,10 +674,40 @@ afunc_bind(struct usb_configuration *cfg, struct usb_function *fn)
 	uac2->as_in_alt = 0;
 
 	/* Calculate wMaxPacketSize according to audio bandwidth */
+<<<<<<< HEAD
 	set_ep_max_packet_size(uac2_opts, &fs_epin_desc, 1000, true);
 	set_ep_max_packet_size(uac2_opts, &fs_epout_desc, 1000, false);
 	set_ep_max_packet_size(uac2_opts, &hs_epin_desc, 8000, true);
 	set_ep_max_packet_size(uac2_opts, &hs_epout_desc, 8000, false);
+=======
+	ret = set_ep_max_packet_size(uac2_opts, &fs_epin_desc, USB_SPEED_FULL,
+				     true);
+	if (ret < 0) {
+		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
+		return ret;
+	}
+
+	ret = set_ep_max_packet_size(uac2_opts, &fs_epout_desc, USB_SPEED_FULL,
+				     false);
+	if (ret < 0) {
+		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
+		return ret;
+	}
+
+	ret = set_ep_max_packet_size(uac2_opts, &hs_epin_desc, USB_SPEED_HIGH,
+				     true);
+	if (ret < 0) {
+		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
+		return ret;
+	}
+
+	ret = set_ep_max_packet_size(uac2_opts, &hs_epout_desc, USB_SPEED_HIGH,
+				     false);
+	if (ret < 0) {
+		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
+		return ret;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	agdev->out_ep = usb_ep_autoconfig(gadget, &fs_epout_desc);
 	if (!agdev->out_ep) {
@@ -632,8 +731,13 @@ afunc_bind(struct usb_configuration *cfg, struct usb_function *fn)
 	hs_epout_desc.bEndpointAddress = fs_epout_desc.bEndpointAddress;
 	hs_epin_desc.bEndpointAddress = fs_epin_desc.bEndpointAddress;
 
+<<<<<<< HEAD
 	ret = usb_assign_descriptors(fn, fs_audio_desc, hs_audio_desc,
 					ss_audio_desc, NULL);
+=======
+	ret = usb_assign_descriptors(fn, fs_audio_desc, hs_audio_desc, NULL,
+				     NULL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		return ret;
 
@@ -1061,6 +1165,7 @@ static struct usb_function *afunc_alloc(struct usb_function_instance *fi)
 }
 
 DECLARE_USB_FUNCTION_INIT(uac2, afunc_alloc_inst, afunc_alloc);
+<<<<<<< HEAD
 
 static int afunc_init(void)
 {
@@ -1074,6 +1179,8 @@ static void __exit afunc_exit(void)
 }
 module_exit(afunc_exit);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Yadwinder Singh");
 MODULE_AUTHOR("Jaswinder Singh");

@@ -89,7 +89,17 @@ int main(int argc, char *argv[])
 	fd = open("/dev/watchdog", O_WRONLY);
 
 	if (fd == -1) {
+<<<<<<< HEAD
 		printf("Watchdog device not enabled.\n");
+=======
+		if (errno == ENOENT)
+			printf("Watchdog device not enabled.\n");
+		else if (errno == EACCES)
+			printf("Run watchdog as root.\n");
+		else
+			printf("Watchdog device open failed %s\n",
+				strerror(errno));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		exit(-1);
 	}
 
@@ -103,7 +113,11 @@ int main(int argc, char *argv[])
 				printf("Last boot is caused by: %s.\n", (flags != 0) ?
 					"Watchdog" : "Power-On-Reset");
 			else
+<<<<<<< HEAD
 				printf("WDIOC_GETBOOTSTATUS errno '%s'\n", strerror(errno));
+=======
+				printf("WDIOC_GETBOOTSTATUS error '%s'\n", strerror(errno));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		case 'd':
 			flags = WDIOS_DISABLECARD;
@@ -111,7 +125,11 @@ int main(int argc, char *argv[])
 			if (!ret)
 				printf("Watchdog card disabled.\n");
 			else
+<<<<<<< HEAD
 				printf("WDIOS_DISABLECARD errno '%s'\n", strerror(errno));
+=======
+				printf("WDIOS_DISABLECARD error '%s'\n", strerror(errno));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		case 'e':
 			flags = WDIOS_ENABLECARD;
@@ -119,7 +137,11 @@ int main(int argc, char *argv[])
 			if (!ret)
 				printf("Watchdog card enabled.\n");
 			else
+<<<<<<< HEAD
 				printf("WDIOS_ENABLECARD errno '%s'\n", strerror(errno));
+=======
+				printf("WDIOS_ENABLECARD error '%s'\n", strerror(errno));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		case 'p':
 			ping_rate = strtoul(optarg, NULL, 0);
@@ -133,7 +155,11 @@ int main(int argc, char *argv[])
 			if (!ret)
 				printf("Watchdog timeout set to %u seconds.\n", flags);
 			else
+<<<<<<< HEAD
 				printf("WDIOC_SETTIMEOUT errno '%s'\n", strerror(errno));
+=======
+				printf("WDIOC_SETTIMEOUT error '%s'\n", strerror(errno));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		default:
 			usage(argv[0]);

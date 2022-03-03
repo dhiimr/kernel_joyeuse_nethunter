@@ -45,4 +45,7 @@ obj-$(CONFIG_IR_SERIAL) += serial_ir.o
 obj-$(CONFIG_IR_SIR) += sir_ir.o
 obj-$(CONFIG_IR_MTK) += mtk-cir.o
 obj-$(CONFIG_IR_ZX) += zx-irdec.o
+<<<<<<< HEAD
 obj-$(CONFIG_IR_MSM_GENI) += msm-geni-ir.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

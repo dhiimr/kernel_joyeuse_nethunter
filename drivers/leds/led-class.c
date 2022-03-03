@@ -54,7 +54,11 @@ static ssize_t brightness_store(struct device *dev,
 	if (ret)
 		goto unlock;
 
+<<<<<<< HEAD
 	if (state == LED_OFF && !(led_cdev->flags & LED_KEEP_TRIGGER))
+=======
+	if (state == LED_OFF)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		led_trigger_remove(led_cdev);
 	led_set_brightness(led_cdev, state);
 
@@ -173,6 +177,10 @@ void led_classdev_suspend(struct led_classdev *led_cdev)
 {
 	led_cdev->flags |= LED_SUSPENDED;
 	led_set_brightness_nopm(led_cdev, 0);
+<<<<<<< HEAD
+=======
+	flush_work(&led_cdev->set_brightness_work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(led_classdev_suspend);
 

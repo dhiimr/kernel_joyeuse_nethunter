@@ -10,25 +10,33 @@ clk-qcom-y += clk-rcg2.o
 clk-qcom-y += clk-branch.o
 clk-qcom-y += clk-regmap-divider.o
 clk-qcom-y += clk-regmap-mux.o
+<<<<<<< HEAD
 clk-qcom-y += clk-regmap-mux-div.o
 clk-qcom-y += reset.o clk-voter.o
 clk-qcom-y += clk-dummy.o clk-debug.o
 clk-qcom-y += gdsc-regulator.o
+=======
+clk-qcom-y += reset.o
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 clk-qcom-$(CONFIG_QCOM_GDSC) += gdsc.o
 
 # Keep alphabetically sorted by config
 obj-$(CONFIG_APQ_GCC_8084) += gcc-apq8084.o
 obj-$(CONFIG_APQ_MMCC_8084) += mmcc-apq8084.o
+<<<<<<< HEAD
 obj-$(CONFIG_CLOCK_CPU_OSM) += clk-cpu-osm.o
 obj-$(CONFIG_CLOCK_CPU_QCS405) += clk-cpu-qcs405.o
 obj-$(CONFIG_CLOCK_CPU_SDXPRAIRIE) += clk-cpu-sdxprairie.o
 obj-$(CONFIG_DEBUGCC_SDXPRAIRIE) += debugcc-sdxprairie.o
 obj-$(CONFIG_GCC_SDXPRAIRIE) += gcc-sdxprairie.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-$(CONFIG_IPQ_GCC_4019) += gcc-ipq4019.o
 obj-$(CONFIG_IPQ_GCC_806X) += gcc-ipq806x.o
 obj-$(CONFIG_IPQ_GCC_8074) += gcc-ipq8074.o
 obj-$(CONFIG_IPQ_LCC_806X) += lcc-ipq806x.o
 obj-$(CONFIG_MDM_GCC_9615) += gcc-mdm9615.o
+<<<<<<< HEAD
 obj-$(CONFIG_MDM_GCC_QCS405) += gcc-qcs405.o
 obj-$(CONFIG_MDM_LCC_9615) += lcc-mdm9615.o
 obj-$(CONFIG_MSM_CAMCC_SM6150) += camcc-sm6150.o
@@ -44,12 +52,16 @@ obj-$(CONFIG_MSM_DISPCC_SM8150) += dispcc-sm8150.o
 obj-$(CONFIG_MSM_DISPCC_SDMMAGPIE) += dispcc-sdmmagpie.o
 obj-$(CONFIG_MDM_DEBUGCC_QCS405) += debugcc-qcs405.o
 obj-$(CONFIG_MSM_DEBUGCC_SDMMAGPIE) += debugcc-sdmmagpie.o
+=======
+obj-$(CONFIG_MDM_LCC_9615) += lcc-mdm9615.o
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-$(CONFIG_MSM_GCC_8660) += gcc-msm8660.o
 obj-$(CONFIG_MSM_GCC_8916) += gcc-msm8916.o
 obj-$(CONFIG_MSM_GCC_8960) += gcc-msm8960.o
 obj-$(CONFIG_MSM_GCC_8974) += gcc-msm8974.o
 obj-$(CONFIG_MSM_GCC_8994) += gcc-msm8994.o
 obj-$(CONFIG_MSM_GCC_8996) += gcc-msm8996.o
+<<<<<<< HEAD
 obj-$(CONFIG_MSM_GCC_SM6150) += gcc-sm6150.o
 obj-$(CONFIG_MSM_GCC_SM8150) += gcc-sm8150.o
 obj-$(CONFIG_MSM_GCC_SDMMAGPIE) += gcc-sdmmagpie.o
@@ -57,10 +69,13 @@ obj-$(CONFIG_MSM_GCC_SDMSHRIKE) += gcc-sdmshrike.o
 obj-$(CONFIG_MSM_GPUCC_SDMMAGPIE) += gpucc-sdmmagpie.o
 obj-$(CONFIG_MSM_GPUCC_SM6150) += gpucc-sm6150.o
 obj-$(CONFIG_MSM_GPUCC_SM8150) += gpucc-sm8150.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-$(CONFIG_MSM_LCC_8960) += lcc-msm8960.o
 obj-$(CONFIG_MSM_MMCC_8960) += mmcc-msm8960.o
 obj-$(CONFIG_MSM_MMCC_8974) += mmcc-msm8974.o
 obj-$(CONFIG_MSM_MMCC_8996) += mmcc-msm8996.o
+<<<<<<< HEAD
 obj-$(CONFIG_MSM_NPUCC_SDMMAGPIE) += npucc-sdmmagpie.o
 obj-$(CONFIG_MSM_NPUCC_SM8150) += npucc-sm8150.o
 obj-$(CONFIG_MSM_SCC_SM6150) += scc-sm6150.o
@@ -87,3 +102,7 @@ obj-$(CONFIG_SPMI_PMIC_CLKDIV) += clk-spmi-pmic-div.o
 obj-$(CONFIG_VIRTIO_CLK) += virtio_clk.o virtio_clk_sm8150.o virtio_clk_sm6150.o virtio_clk_sa8195p.o
 
 obj-y += mdss/
+=======
+obj-$(CONFIG_QCOM_CLK_RPM) += clk-rpm.o
+obj-$(CONFIG_QCOM_CLK_SMD_RPM) += clk-smd-rpm.o
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

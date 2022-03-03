@@ -607,16 +607,30 @@
 
 			mcde {
 				lcd_default_mode: lcd_default {
+<<<<<<< HEAD
 					default_mux {
+=======
+					default_mux1 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						/* Mux in VSI0 and all the data lines */
 						function = "lcd";
 						groups =
 						"lcdvsi0_a_1", /* VSI0 for LCD */
 						"lcd_d0_d7_a_1", /* Data lines */
 						"lcd_d8_d11_a_1", /* TV-out */
+<<<<<<< HEAD
 						"lcdaclk_b_1", /* Clock line for TV-out */
 						"lcdvsi1_a_1"; /* VSI1 for HDMI */
 					};
+=======
+						"lcdvsi1_a_1"; /* VSI1 for HDMI */
+					};
+					default_mux2 {
+						function = "lcda";
+						groups =
+						"lcdaclk_b_1"; /* Clock line for TV-out */
+					};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					default_cfg1 {
 						pins =
 						"GPIO68_E1", /* VSI0 */

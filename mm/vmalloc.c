@@ -31,6 +31,10 @@
 #include <linux/compiler.h>
 #include <linux/llist.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
+=======
+#include <linux/overflow.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <linux/uaccess.h>
 #include <asm/tlbflush.h>
@@ -340,6 +344,7 @@ static unsigned long cached_align;
 
 static unsigned long vmap_area_pcpu_hole;
 
+<<<<<<< HEAD
 static atomic_long_t nr_vmalloc_pages;
 
 unsigned long vmalloc_nr_pages(void)
@@ -347,6 +352,8 @@ unsigned long vmalloc_nr_pages(void)
 	return atomic_long_read(&nr_vmalloc_pages);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct vmap_area *__find_vmap_area(unsigned long addr)
 {
 	struct rb_node *n = vmap_area_root.rb_node;
@@ -1550,7 +1557,10 @@ static void __vunmap(const void *addr, int deallocate_pages)
 			BUG_ON(!page);
 			__free_pages(page, 0);
 		}
+<<<<<<< HEAD
 		atomic_long_sub(area->nr_pages, &nr_vmalloc_pages);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		kvfree(area->pages);
 	}
@@ -1690,7 +1700,10 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
 	nr_pages = get_vm_area_size(area) >> PAGE_SHIFT;
 	array_size = (nr_pages * sizeof(struct page *));
 
+<<<<<<< HEAD
 	area->nr_pages = nr_pages;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Please note that the recursion is strictly bounded. */
 	if (array_size > PAGE_SIZE) {
 		pages = __vmalloc_node(array_size, 1, nested_gfp|highmem_mask,
@@ -1698,13 +1711,24 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
 	} else {
 		pages = kmalloc_node(array_size, nested_gfp, node);
 	}
+<<<<<<< HEAD
 	area->pages = pages;
 	if (!area->pages) {
+=======
+
+	if (!pages) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		remove_vm_area(area->addr);
 		kfree(area);
 		return NULL;
 	}
 
+<<<<<<< HEAD
+=======
+	area->pages = pages;
+	area->nr_pages = nr_pages;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (i = 0; i < area->nr_pages; i++) {
 		struct page *page;
 
@@ -1716,14 +1740,20 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
 		if (unlikely(!page)) {
 			/* Successfully allocated i pages, free them in __vunmap() */
 			area->nr_pages = i;
+<<<<<<< HEAD
 			atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto fail;
 		}
 		area->pages[i] = page;
 		if (gfpflags_allow_blocking(gfp_mask|highmem_mask))
 			cond_resched();
 	}
+<<<<<<< HEAD
 	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (map_vm_area(area, prot, pages))
 		goto fail;
@@ -1776,6 +1806,15 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
 		return NULL;
 
 	/*
+<<<<<<< HEAD
+=======
+	 * First make sure the mappings are removed from all page-tables
+	 * before they are freed.
+	 */
+	vmalloc_sync_unmappings();
+
+	/*
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * In this function, newly allocated vm_struct has VM_UNINITIALIZED
 	 * flag. It means that vm_struct is not fully initialized.
 	 * Now, it is fully initialized, so remove this flag here.
@@ -2248,6 +2287,10 @@ finished:
  *	@vma:		vma to cover
  *	@uaddr:		target user address to start at
  *	@kaddr:		virtual address of vmalloc kernel memory
+<<<<<<< HEAD
+=======
+ *	@pgoff:		offset from @kaddr to start at
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *	@size:		size of map area
  *
  *	Returns:	0 for success, -Exxx on failure
@@ -2260,9 +2303,21 @@ finished:
  *	Similar to remap_pfn_range() (see mm/memory.c)
  */
 int remap_vmalloc_range_partial(struct vm_area_struct *vma, unsigned long uaddr,
+<<<<<<< HEAD
 				void *kaddr, unsigned long size)
 {
 	struct vm_struct *area;
+=======
+				void *kaddr, unsigned long pgoff,
+				unsigned long size)
+{
+	struct vm_struct *area;
+	unsigned long off;
+	unsigned long end_index;
+
+	if (check_shl_overflow(pgoff, PAGE_SHIFT, &off))
+		return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	size = PAGE_ALIGN(size);
 
@@ -2276,8 +2331,15 @@ int remap_vmalloc_range_partial(struct vm_area_struct *vma, unsigned long uaddr,
 	if (!(area->flags & VM_USERMAP))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (kaddr + size > area->addr + get_vm_area_size(area))
 		return -EINVAL;
+=======
+	if (check_add_overflow(size, off, &end_index) ||
+	    end_index > get_vm_area_size(area))
+		return -EINVAL;
+	kaddr += off;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	do {
 		struct page *page = vmalloc_to_page(kaddr);
@@ -2316,12 +2378,17 @@ int remap_vmalloc_range(struct vm_area_struct *vma, void *addr,
 						unsigned long pgoff)
 {
 	return remap_vmalloc_range_partial(vma, vma->vm_start,
+<<<<<<< HEAD
 					   addr + (pgoff << PAGE_SHIFT),
+=======
+					   addr, pgoff,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					   vma->vm_end - vma->vm_start);
 }
 EXPORT_SYMBOL(remap_vmalloc_range);
 
 /*
+<<<<<<< HEAD
  * Implement a stub for vmalloc_sync_all() if the architecture chose not to
  * have one.
  */
@@ -2329,6 +2396,21 @@ void __weak vmalloc_sync_all(void)
 {
 }
 
+=======
+ * Implement stubs for vmalloc_sync_[un]mappings () if the architecture chose
+ * not to have one.
+ *
+ * The purpose of this function is to make sure the vmalloc area
+ * mappings are identical in all page-tables in the system.
+ */
+void __weak vmalloc_sync_mappings(void)
+{
+}
+
+void __weak vmalloc_sync_unmappings(void)
+{
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int f(pte_t *pte, pgtable_t table, unsigned long addr, void *data)
 {

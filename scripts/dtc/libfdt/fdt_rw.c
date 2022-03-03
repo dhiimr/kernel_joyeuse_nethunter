@@ -393,7 +393,11 @@ int fdt_del_node(void *fdt, int nodeoffset)
 static void _fdt_packblocks(const char *old, char *new,
 			    int mem_rsv_size, int struct_size)
 {
+<<<<<<< HEAD
 	uint32_t mem_rsv_off, struct_off, strings_off;
+=======
+	int mem_rsv_off, struct_off, strings_off;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mem_rsv_off = FDT_ALIGN(sizeof(struct fdt_header), 8);
 	struct_off = mem_rsv_off + mem_rsv_size;

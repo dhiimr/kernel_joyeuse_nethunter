@@ -631,6 +631,10 @@ asm(
 "cmpb	$0, " __stringify(KVM_STEAL_TIME_preempted) "+steal_time(%rax);"
 "setne	%al;"
 "ret;"
+<<<<<<< HEAD
+=======
+".size __raw_callee_save___kvm_vcpu_is_preempted, .-__raw_callee_save___kvm_vcpu_is_preempted;"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 ".popsection");
 
 #endif

@@ -103,7 +103,11 @@ struct hilse_node {
 
 /* Methods for back-end drivers, e.g. hp_sdc_mlc */
 typedef int	(hil_mlc_cts) (hil_mlc *mlc);
+<<<<<<< HEAD
 typedef void	(hil_mlc_out) (hil_mlc *mlc);
+=======
+typedef int	(hil_mlc_out) (hil_mlc *mlc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 typedef int	(hil_mlc_in)  (hil_mlc *mlc, suseconds_t timeout);
 
 struct hil_mlc_devinfo {

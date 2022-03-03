@@ -1320,9 +1320,16 @@ static irqreturn_t mmci_irq(int irq, void *dev_id)
 		}
 
 		/*
+<<<<<<< HEAD
 		 * Don't poll for busy completion in irq context.
 		 */
 		if (host->variant->busy_detect && host->busy_status)
+=======
+		 * Busy detection has been handled by mmci_cmd_irq() above.
+		 * Clear the status bit to prevent polling in IRQ context.
+		 */
+		if (host->variant->busy_detect_flag)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			status &= ~host->variant->busy_detect_flag;
 
 		ret = 1;

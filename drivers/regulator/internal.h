@@ -29,7 +29,10 @@ struct regulator {
 	int uA_load;
 	int min_uV;
 	int max_uV;
+<<<<<<< HEAD
 	int enabled;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	const char *supply_name;
 	struct device_attribute dev_attr;
 	struct regulator_dev *rdev;

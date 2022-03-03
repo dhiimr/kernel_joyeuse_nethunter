@@ -566,7 +566,12 @@ static irqreturn_t dt282x_interrupt(int irq, void *d)
 	}
 #endif
 	comedi_handle_events(dev, s);
+<<<<<<< HEAD
 	comedi_handle_events(dev, s_ao);
+=======
+	if (s_ao)
+		comedi_handle_events(dev, s_ao);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return IRQ_RETVAL(handled);
 }

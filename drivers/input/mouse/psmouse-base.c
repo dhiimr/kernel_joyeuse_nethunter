@@ -2012,7 +2012,11 @@ static int psmouse_get_maxproto(char *buffer, const struct kernel_param *kp)
 {
 	int type = *((unsigned int *)kp->arg);
 
+<<<<<<< HEAD
 	return sprintf(buffer, "%s", psmouse_protocol_by_type(type)->name);
+=======
+	return sprintf(buffer, "%s\n", psmouse_protocol_by_type(type)->name);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int __init psmouse_init(void)

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2017, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2015, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -14,7 +18,10 @@
 #include "hdmi.h"
 #include <linux/qcom_scm.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_DRM_MSM_HDCP
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define HDCP_REG_ENABLE 0x01
 #define HDCP_REG_DISABLE 0x00
 #define HDCP_PORT_ADDR 0x74
@@ -1436,6 +1443,7 @@ void msm_hdmi_hdcp_destroy(struct hdmi *hdmi)
 		hdmi->hdcp_ctrl = NULL;
 	}
 }
+<<<<<<< HEAD
 
 #else
 struct hdmi_hdcp_ctrl *msm_hdmi_hdcp_init(struct hdmi *hdmi)
@@ -1459,3 +1467,5 @@ void msm_hdmi_hdcp_irq(struct hdmi_hdcp_ctrl *hdcp_ctrl)
 {
 }
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

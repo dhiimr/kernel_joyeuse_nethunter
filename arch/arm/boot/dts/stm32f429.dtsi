@@ -597,7 +597,11 @@
 			status = "disabled";
 		};
 
+<<<<<<< HEAD
 		rcc: rcc@40023810 {
+=======
+		rcc: rcc@40023800 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			#reset-cells = <1>;
 			#clock-cells = <2>;
 			compatible = "st,stm32f42xx-rcc", "st,stm32-rcc";

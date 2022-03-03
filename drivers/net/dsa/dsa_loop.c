@@ -357,6 +357,10 @@ static void __exit dsa_loop_exit(void)
 }
 module_exit(dsa_loop_exit);
 
+<<<<<<< HEAD
+=======
+MODULE_SOFTDEP("pre: dsa_loop_bdinfo");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Florian Fainelli");
 MODULE_DESCRIPTION("DSA loopback driver");

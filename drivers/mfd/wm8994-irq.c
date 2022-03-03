@@ -159,7 +159,11 @@ static irqreturn_t wm8994_edge_irq(int irq, void *data)
 	struct wm8994 *wm8994 = data;
 
 	while (gpio_get_value_cansleep(wm8994->pdata.irq_gpio))
+<<<<<<< HEAD
 		handle_nested_irq(irq_create_mapping(wm8994->edge_irq, 0));
+=======
+		handle_nested_irq(irq_find_mapping(wm8994->edge_irq, 0));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return IRQ_HANDLED;
 }

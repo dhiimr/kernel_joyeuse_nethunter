@@ -2,8 +2,13 @@
 # Phy drivers for Marvell platforms
 #
 config ARMADA375_USBCLUSTER_PHY
+<<<<<<< HEAD
 	def_bool y
 	depends on MACH_ARMADA_375 || COMPILE_TEST
+=======
+	bool "Armada 375 USB cluster PHY support" if COMPILE_TEST
+	default y if MACH_ARMADA_375
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	depends on OF && HAS_IOMEM
 	select GENERIC_PHY
 

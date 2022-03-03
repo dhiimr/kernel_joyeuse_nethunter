@@ -939,8 +939,13 @@ out:
 	return error;
 }
 
+<<<<<<< HEAD
 static char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
 					   u64 subvol_objectid)
+=======
+char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
+					  u64 subvol_objectid)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct btrfs_root *root = fs_info->tree_root;
 	struct btrfs_root *fs_root;
@@ -1221,6 +1226,10 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
 {
 	struct btrfs_fs_info *info = btrfs_sb(dentry->d_sb);
 	char *compress_type;
+<<<<<<< HEAD
+=======
+	const char *subvol_name;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (btrfs_test_opt(info, DEGRADED))
 		seq_puts(seq, ",degraded");
@@ -1307,8 +1316,18 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
 #endif
 	seq_printf(seq, ",subvolid=%llu",
 		  BTRFS_I(d_inode(dentry))->root->root_key.objectid);
+<<<<<<< HEAD
 	seq_puts(seq, ",subvol=");
 	seq_dentry(seq, dentry, " \t\n\\");
+=======
+	subvol_name = btrfs_get_subvol_name_from_objectid(info,
+			BTRFS_I(d_inode(dentry))->root->root_key.objectid);
+	if (!IS_ERR(subvol_name)) {
+		seq_puts(seq, ",subvol=");
+		seq_escape(seq, subvol_name, " \t\n\\");
+		kfree(subvol_name);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -1427,8 +1446,13 @@ static struct dentry *mount_subvol(const char *subvol_name, u64 subvol_objectid,
 				goto out;
 			}
 		}
+<<<<<<< HEAD
 		subvol_name = get_subvol_name_from_objectid(btrfs_sb(mnt->mnt_sb),
 							    subvol_objectid);
+=======
+		subvol_name = btrfs_get_subvol_name_from_objectid(
+					btrfs_sb(mnt->mnt_sb), subvol_objectid);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (IS_ERR(subvol_name)) {
 			root = ERR_CAST(subvol_name);
 			subvol_name = NULL;
@@ -1778,6 +1802,17 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
 		btrfs_scrub_cancel(fs_info);
 		btrfs_pause_balance(fs_info);
 
+<<<<<<< HEAD
+=======
+		/*
+		 * Pause the qgroup rescan worker if it is running. We don't want
+		 * it to be still running after we are in RO mode, as after that,
+		 * by the time we unmount, it might have left a transaction open,
+		 * so we would leak the transaction and/or crash.
+		 */
+		btrfs_qgroup_wait_for_completion(fs_info, false);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = btrfs_commit_super(fs_info);
 		if (ret)
 			goto restore;
@@ -1801,6 +1836,11 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
 		}
 
 		if (btrfs_super_log_root(fs_info->super_copy) != 0) {
+<<<<<<< HEAD
+=======
+			btrfs_warn(fs_info,
+		"mount required to replay tree-log, cannot remount read-write");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ret = -EINVAL;
 			goto restore;
 		}
@@ -1863,7 +1903,11 @@ restore:
 }
 
 /* Used to sort the devices by max_avail(descending sort) */
+<<<<<<< HEAD
 static int btrfs_cmp_device_free_bytes(const void *dev_info1,
+=======
+static inline int btrfs_cmp_device_free_bytes(const void *dev_info1,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				       const void *dev_info2)
 {
 	if (((struct btrfs_device_info *)dev_info1)->max_avail >
@@ -1892,8 +1936,13 @@ static inline void btrfs_descending_sort_devices(
  * The helper to calc the free space on the devices that can be used to store
  * file data.
  */
+<<<<<<< HEAD
 static int btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
 				       u64 *free_bytes)
+=======
+static inline int btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
+					      u64 *free_bytes)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct btrfs_device_info *devices_info;
 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
@@ -2114,7 +2163,19 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	 */
 	thresh = 4 * 1024 * 1024;
 
+<<<<<<< HEAD
 	if (!mixed && total_free_meta - thresh < block_rsv->size)
+=======
+	/*
+	 * We only want to claim there's no available space if we can no longer
+	 * allocate chunks for our metadata profile and our global reserve will
+	 * not fit in the free metadata space.  If we aren't ->full then we
+	 * still can allocate chunks and thus are fine using the currently
+	 * calculated f_bavail.
+	 */
+	if (!mixed && block_rsv->space_info->full &&
+	    total_free_meta - thresh < block_rsv->size)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		buf->f_bavail = 0;
 
 	buf->f_type = BTRFS_SUPER_MAGIC;

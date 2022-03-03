@@ -65,6 +65,7 @@ mode_show(struct device *dev, struct device_attribute *attr, char *buf)
 		       : "disabled");
 }
 
+<<<<<<< HEAD
 static int thermal_zone_device_clear(struct thermal_zone_device *tz)
 {
 	struct thermal_instance *pos;
@@ -87,6 +88,8 @@ static int thermal_zone_device_clear(struct thermal_zone_device *tz)
 	return ret;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static ssize_t
 mode_store(struct device *dev, struct device_attribute *attr,
 	   const char *buf, size_t count)
@@ -100,7 +103,11 @@ mode_store(struct device *dev, struct device_attribute *attr,
 	if (!strncmp(buf, "enabled", sizeof("enabled") - 1))
 		result = tz->ops->set_mode(tz, THERMAL_DEVICE_ENABLED);
 	else if (!strncmp(buf, "disabled", sizeof("disabled") - 1))
+<<<<<<< HEAD
 		result = thermal_zone_device_clear(tz);
+=======
+		result = tz->ops->set_mode(tz, THERMAL_DEVICE_DISABLED);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	else
 		result = -EINVAL;
 
@@ -372,6 +379,7 @@ sustainable_power_store(struct device *dev, struct device_attribute *devattr,
 	return count;
 }
 
+<<<<<<< HEAD
 static ssize_t
 polling_delay_show(struct device *dev, struct device_attribute *attr,
 		   char *buf)
@@ -430,6 +438,8 @@ passive_delay_store(struct device *dev, struct device_attribute *attr,
 	return count;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define create_s32_tzp_attr(name)					\
 	static ssize_t							\
 	name##_show(struct device *dev, struct device_attribute *devattr, \
@@ -482,10 +492,13 @@ static DEVICE_ATTR(policy, S_IRUGO | S_IWUSR, policy_show, policy_store);
 static DEVICE_ATTR(available_policies, S_IRUGO, available_policies_show, NULL);
 static DEVICE_ATTR(sustainable_power, S_IWUSR | S_IRUGO, sustainable_power_show,
 		   sustainable_power_store);
+<<<<<<< HEAD
 static DEVICE_ATTR(passive_delay, 0644, passive_delay_show,
 			passive_delay_store);
 static DEVICE_ATTR(polling_delay, 0644, polling_delay_show,
 			polling_delay_store);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* These thermal zone device attributes are created based on conditions */
 static DEVICE_ATTR(mode, 0644, mode_show, mode_store);
@@ -501,8 +514,11 @@ static struct attribute *thermal_zone_dev_attrs[] = {
 	&dev_attr_policy.attr,
 	&dev_attr_available_policies.attr,
 	&dev_attr_sustainable_power.attr,
+<<<<<<< HEAD
 	&dev_attr_passive_delay.attr,
 	&dev_attr_polling_delay.attr,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	&dev_attr_k_po.attr,
 	&dev_attr_k_pu.attr,
 	&dev_attr_k_i.attr,
@@ -791,6 +807,7 @@ thermal_cooling_device_cur_state_show(struct device *dev,
 }
 
 static ssize_t
+<<<<<<< HEAD
 thermal_cooling_device_min_state_show(struct device *dev,
 				      struct device_attribute *attr, char *buf)
 {
@@ -810,12 +827,18 @@ thermal_cooling_device_min_state_show(struct device *dev,
 }
 
 static ssize_t
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 thermal_cooling_device_cur_state_store(struct device *dev,
 				       struct device_attribute *attr,
 				       const char *buf, size_t count)
 {
 	struct thermal_cooling_device *cdev = to_cooling_device(dev);
 	unsigned long state;
+<<<<<<< HEAD
+=======
+	int result;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (sscanf(buf, "%ld\n", &state) != 1)
 		return -EINVAL;
@@ -823,6 +846,7 @@ thermal_cooling_device_cur_state_store(struct device *dev,
 	if ((long)state < 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	mutex_lock(&cdev->lock);
 	cdev->sysfs_cur_state_req = state;
 
@@ -856,6 +880,11 @@ thermal_cooling_device_min_state_store(struct device *dev,
 	mutex_unlock(&cdev->lock);
 	thermal_cdev_update(cdev);
 
+=======
+	result = cdev->ops->set_cur_state(cdev, state);
+	if (result)
+		return result;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return count;
 }
 
@@ -866,15 +895,21 @@ static DEVICE_ATTR(max_state, 0444,
 static DEVICE_ATTR(cur_state, 0644,
 		   thermal_cooling_device_cur_state_show,
 		   thermal_cooling_device_cur_state_store);
+<<<<<<< HEAD
 static DEVICE_ATTR(min_state, 0644,
 		   thermal_cooling_device_min_state_show,
 		   thermal_cooling_device_min_state_store);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct attribute *cooling_device_attrs[] = {
 	&dev_attr_cdev_type.attr,
 	&dev_attr_max_state.attr,
 	&dev_attr_cur_state.attr,
+<<<<<<< HEAD
 	&dev_attr_min_state.attr,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	NULL,
 };
 
@@ -892,6 +927,7 @@ void thermal_cooling_device_setup_sysfs(struct thermal_cooling_device *cdev)
 	cdev->device.groups = cooling_device_attr_groups;
 }
 
+<<<<<<< HEAD
 ssize_t
 thermal_cooling_device_lower_limit_show(struct device *dev,
 				       struct device_attribute *attr, char *buf)
@@ -916,6 +952,8 @@ thermal_cooling_device_upper_limit_show(struct device *dev,
 	return snprintf(buf, PAGE_SIZE, "%lu\n", instance->upper);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* these helper will be used only at the time of bindig */
 ssize_t
 thermal_cooling_device_trip_point_show(struct device *dev,
@@ -960,6 +998,7 @@ thermal_cooling_device_weight_store(struct device *dev,
 
 	return count;
 }
+<<<<<<< HEAD
 
 ssize_t
 thermal_cooling_device_upper_limit_store(struct device *dev,
@@ -1008,3 +1047,5 @@ thermal_cooling_device_lower_limit_store(struct device *dev,
 
 	return count;
 }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

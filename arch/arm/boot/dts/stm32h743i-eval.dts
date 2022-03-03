@@ -71,6 +71,10 @@
 };
 
 &adc_12 {
+<<<<<<< HEAD
+=======
+	vdda-supply = <&vdda>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	vref-supply = <&vdda>;
 	status = "okay";
 	adc1: adc@0 {

@@ -205,6 +205,10 @@ static inline int cvm_enc_dec(struct ablkcipher_request *req, u32 enc)
 	int status;
 
 	memset(req_info, 0, sizeof(struct cpt_request_info));
+<<<<<<< HEAD
+=======
+	req_info->may_sleep = (req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP) != 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	memset(fctx, 0, sizeof(struct fc_context));
 	create_input_list(req, enc, enc_iv_len);
 	create_output_list(req, enc_iv_len);

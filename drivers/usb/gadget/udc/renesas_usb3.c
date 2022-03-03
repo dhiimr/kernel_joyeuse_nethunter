@@ -21,6 +21,10 @@
 #include <linux/pm_runtime.h>
 #include <linux/sizes.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/string.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/sys_soc.h>
 #include <linux/uaccess.h>
 #include <linux/usb/ch9.h>
@@ -1441,7 +1445,11 @@ static void usb3_start_pipen(struct renesas_usb3_ep *usb3_ep,
 			     struct renesas_usb3_request *usb3_req)
 {
 	struct renesas_usb3 *usb3 = usb3_ep_to_usb3(usb3_ep);
+<<<<<<< HEAD
 	struct renesas_usb3_request *usb3_req_first = usb3_get_request(usb3_ep);
+=======
+	struct renesas_usb3_request *usb3_req_first;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long flags;
 	int ret = -EAGAIN;
 	u32 enable_bits = 0;
@@ -1449,7 +1457,12 @@ static void usb3_start_pipen(struct renesas_usb3_ep *usb3_ep,
 	spin_lock_irqsave(&usb3->lock, flags);
 	if (usb3_ep->halt || usb3_ep->started)
 		goto out;
+<<<<<<< HEAD
 	if (usb3_req != usb3_req_first)
+=======
+	usb3_req_first = __usb3_get_request(usb3_ep);
+	if (!usb3_req_first || usb3_req != usb3_req_first)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out;
 
 	if (usb3_pn_change(usb3, usb3_ep->num) < 0)
@@ -2315,9 +2328,15 @@ static ssize_t role_store(struct device *dev, struct device_attribute *attr,
 	if (usb3->forced_b_device)
 		return -EBUSY;
 
+<<<<<<< HEAD
 	if (!strncmp(buf, "host", strlen("host")))
 		new_mode_is_host = true;
 	else if (!strncmp(buf, "peripheral", strlen("peripheral")))
+=======
+	if (sysfs_streq(buf, "host"))
+		new_mode_is_host = true;
+	else if (sysfs_streq(buf, "peripheral"))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		new_mode_is_host = false;
 	else
 		return -EINVAL;

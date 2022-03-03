@@ -49,8 +49,13 @@ struct urb_list {
 struct udl_fbdev;
 
 struct udl_device {
+<<<<<<< HEAD
 	struct device *dev;
 	struct drm_device *ddev;
+=======
+	struct drm_device drm;
+	struct device *dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct usb_device *udev;
 	struct drm_crtc *crtc;
 
@@ -68,6 +73,11 @@ struct udl_device {
 	atomic_t cpu_kcycles_used; /* transpired during pixel processing */
 };
 
+<<<<<<< HEAD
+=======
+#define to_udl(x) container_of(x, struct udl_device, drm)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct udl_gem_object {
 	struct drm_gem_object base;
 	struct page **pages;
@@ -99,9 +109,14 @@ struct urb *udl_get_urb(struct drm_device *dev);
 int udl_submit_urb(struct drm_device *dev, struct urb *urb, size_t len);
 void udl_urb_completion(struct urb *urb);
 
+<<<<<<< HEAD
 int udl_driver_load(struct drm_device *dev, unsigned long flags);
 void udl_driver_unload(struct drm_device *dev);
 void udl_driver_release(struct drm_device *dev);
+=======
+int udl_init(struct udl_device *udl);
+void udl_fini(struct drm_device *dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 int udl_fbdev_init(struct drm_device *dev);
 void udl_fbdev_cleanup(struct drm_device *dev);

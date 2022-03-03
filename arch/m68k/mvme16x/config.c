@@ -51,11 +51,14 @@ extern void mvme16x_reset (void);
 
 int bcd2int (unsigned char b);
 
+<<<<<<< HEAD
 /* Save tick handler routine pointer, will point to xtime_update() in
  * kernel/time/timekeeping.c, called via mvme16x_process_int() */
 
 static irq_handler_t tick_handler;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 unsigned short mvme16x_config;
 EXPORT_SYMBOL(mvme16x_config);
@@ -354,8 +357,20 @@ static irqreturn_t mvme16x_abort_int (int irq, void *dev_id)
 
 static irqreturn_t mvme16x_timer_int (int irq, void *dev_id)
 {
+<<<<<<< HEAD
     *(volatile unsigned char *)0xfff4201b |= 8;
     return tick_handler(irq, dev_id);
+=======
+	irq_handler_t timer_routine = dev_id;
+	unsigned long flags;
+
+	local_irq_save(flags);
+	*(volatile unsigned char *)0xfff4201b |= 8;
+	timer_routine(0, NULL);
+	local_irq_restore(flags);
+
+	return IRQ_HANDLED;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void mvme16x_sched_init (irq_handler_t timer_routine)
@@ -363,14 +378,22 @@ void mvme16x_sched_init (irq_handler_t timer_routine)
     uint16_t brdno = be16_to_cpu(mvme_bdid.brdno);
     int irq;
 
+<<<<<<< HEAD
     tick_handler = timer_routine;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
     /* Using PCCchip2 or MC2 chip tick timer 1 */
     *(volatile unsigned long *)0xfff42008 = 0;
     *(volatile unsigned long *)0xfff42004 = 10000;	/* 10ms */
     *(volatile unsigned char *)0xfff42017 |= 3;
     *(volatile unsigned char *)0xfff4201b = 0x16;
+<<<<<<< HEAD
     if (request_irq(MVME16x_IRQ_TIMER, mvme16x_timer_int, 0,
 				"timer", mvme16x_timer_int))
+=======
+    if (request_irq(MVME16x_IRQ_TIMER, mvme16x_timer_int, 0, "timer",
+                    timer_routine))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	panic ("Couldn't register timer int");
 
     if (brdno == 0x0162 || brdno == 0x172)

@@ -43,10 +43,23 @@ static const struct file_operations udl_driver_fops = {
 	.llseek = noop_llseek,
 };
 
+<<<<<<< HEAD
 static struct drm_driver driver = {
 	.driver_features = DRIVER_MODESET | DRIVER_GEM | DRIVER_PRIME,
 	.load = udl_driver_load,
 	.unload = udl_driver_unload,
+=======
+static void udl_driver_release(struct drm_device *dev)
+{
+	udl_fini(dev);
+	udl_modeset_cleanup(dev);
+	drm_dev_fini(dev);
+	kfree(dev);
+}
+
+static struct drm_driver driver = {
+	.driver_features = DRIVER_MODESET | DRIVER_GEM | DRIVER_PRIME,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.release = udl_driver_release,
 
 	/* gem hooks */
@@ -70,6 +83,7 @@ static struct drm_driver driver = {
 	.patchlevel = DRIVER_PATCHLEVEL,
 };
 
+<<<<<<< HEAD
 static int udl_usb_probe(struct usb_interface *interface,
 			 const struct usb_device_id *id)
 {
@@ -87,11 +101,62 @@ static int udl_usb_probe(struct usb_interface *interface,
 
 	usb_set_intfdata(interface, dev);
 	DRM_INFO("Initialized udl on minor %d\n", dev->primary->index);
+=======
+static struct udl_device *udl_driver_create(struct usb_interface *interface)
+{
+	struct usb_device *udev = interface_to_usbdev(interface);
+	struct udl_device *udl;
+	int r;
+
+	udl = kzalloc(sizeof(*udl), GFP_KERNEL);
+	if (!udl)
+		return ERR_PTR(-ENOMEM);
+
+	r = drm_dev_init(&udl->drm, &driver, &interface->dev);
+	if (r) {
+		kfree(udl);
+		return ERR_PTR(r);
+	}
+
+	udl->udev = udev;
+	udl->drm.dev_private = udl;
+
+	r = udl_init(udl);
+	if (r) {
+		drm_dev_fini(&udl->drm);
+		kfree(udl);
+		return ERR_PTR(r);
+	}
+
+	usb_set_intfdata(interface, udl);
+	return udl;
+}
+
+static int udl_usb_probe(struct usb_interface *interface,
+			 const struct usb_device_id *id)
+{
+	int r;
+	struct udl_device *udl;
+
+	udl = udl_driver_create(interface);
+	if (IS_ERR(udl))
+		return PTR_ERR(udl);
+
+	r = drm_dev_register(&udl->drm, 0);
+	if (r)
+		goto err_free;
+
+	DRM_INFO("Initialized udl on minor %d\n", udl->drm.primary->index);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 
 err_free:
+<<<<<<< HEAD
 	drm_dev_unref(dev);
+=======
+	drm_dev_unref(&udl->drm);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return r;
 }
 

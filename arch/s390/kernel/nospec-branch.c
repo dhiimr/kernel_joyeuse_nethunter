@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: GPL-2.0
 #include <linux/module.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/cpu.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/facility.h>
 #include <asm/nospec-branch.h>
 
@@ -55,8 +59,22 @@ static int __init nospectre_v2_setup_early(char *str)
 }
 early_param("nospectre_v2", nospectre_v2_setup_early);
 
+<<<<<<< HEAD
 void __init nospec_auto_detect(void)
 {
+=======
+
+void __init nospec_auto_detect(void)
+{
+	if (cpu_mitigations_off()) {
+		/*
+		 * Disable expolines and disable nobp.
+		 */
+		if (IS_ENABLED(CC_USING_EXPOLINE))
+			nospec_disable = 1;
+		__clear_facility(82, S390_lowcore.alt_stfle_fac_list);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (IS_ENABLED(CC_USING_EXPOLINE)) {
 		/*
 		 * The kernel has been compiled with expolines.

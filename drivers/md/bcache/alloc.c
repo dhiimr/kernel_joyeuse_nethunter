@@ -325,10 +325,18 @@ static int bch_allocator_thread(void *arg)
 		 * possibly issue discards to them, then we add the bucket to
 		 * the free list:
 		 */
+<<<<<<< HEAD
 		while (!fifo_empty(&ca->free_inc)) {
 			long bucket;
 
 			fifo_pop(&ca->free_inc, bucket);
+=======
+		while (1) {
+			long bucket;
+
+			if (!fifo_pop(&ca->free_inc, bucket))
+				break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			if (ca->discard) {
 				mutex_unlock(&ca->set->bucket_lock);

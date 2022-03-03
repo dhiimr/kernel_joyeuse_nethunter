@@ -2241,8 +2241,11 @@ static int cxgb_up(struct adapter *adap)
 #if IS_ENABLED(CONFIG_IPV6)
 	update_clip(adap);
 #endif
+<<<<<<< HEAD
 	/* Initialize hash mac addr list*/
 	INIT_LIST_HEAD(&adap->mac_hlist);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return err;
 
  irq_err:
@@ -2264,6 +2267,10 @@ static void cxgb_down(struct adapter *adapter)
 
 	t4_sge_stop(adapter);
 	t4_free_sge_resources(adapter);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	adapter->flags &= ~FULL_INIT_DONE;
 }
 
@@ -4962,6 +4969,12 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 			     (is_t5(adapter->params.chip) ? STATMODE_V(0) :
 			      T6_STATMODE_V(0)));
 
+<<<<<<< HEAD
+=======
+	/* Initialize hash mac addr list */
+	INIT_LIST_HEAD(&adapter->mac_hlist);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for_each_port(adapter, i) {
 		netdev = alloc_etherdev_mq(sizeof(struct port_info),
 					   MAX_ETH_QSETS);
@@ -5252,6 +5265,10 @@ free_mbox_log:
 static void remove_one(struct pci_dev *pdev)
 {
 	struct adapter *adapter = pci_get_drvdata(pdev);
+<<<<<<< HEAD
+=======
+	struct hash_mac_addr *entry, *tmp;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!adapter) {
 		pci_release_regions(pdev);
@@ -5295,6 +5312,15 @@ static void remove_one(struct pci_dev *pdev)
 		if (adapter->num_uld || adapter->num_ofld_uld)
 			t4_uld_mem_free(adapter);
 		free_some_resources(adapter);
+<<<<<<< HEAD
+=======
+		list_for_each_entry_safe(entry, tmp, &adapter->mac_hlist,
+					 list) {
+			list_del(&entry->list);
+			kfree(entry);
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #if IS_ENABLED(CONFIG_IPV6)
 		t4_cleanup_clip_tbl(adapter);
 #endif
@@ -5399,6 +5425,7 @@ static int __init cxgb4_init_module(void)
 
 	ret = pci_register_driver(&cxgb4_driver);
 	if (ret < 0)
+<<<<<<< HEAD
 		debugfs_remove(cxgb4_debugfs_root);
 
 #if IS_ENABLED(CONFIG_IPV6)
@@ -5408,6 +5435,26 @@ static int __init cxgb4_init_module(void)
 	}
 #endif
 
+=======
+		goto err_pci;
+
+#if IS_ENABLED(CONFIG_IPV6)
+	if (!inet6addr_registered) {
+		ret = register_inet6addr_notifier(&cxgb4_inet6addr_notifier);
+		if (ret)
+			pci_unregister_driver(&cxgb4_driver);
+		else
+			inet6addr_registered = true;
+	}
+#endif
+
+	if (ret == 0)
+		return ret;
+
+err_pci:
+	debugfs_remove(cxgb4_debugfs_root);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 

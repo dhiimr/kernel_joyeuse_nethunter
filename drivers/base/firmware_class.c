@@ -2,7 +2,10 @@
  * firmware_class.c - Multi purpose firmware loading support
  *
  * Copyright (c) 2003 Manuel Estrada Sainz
+<<<<<<< HEAD
  * Copyright (C) 2020 XiaoMi, Inc.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Please see Documentation/firmware_class/ for more information.
  *
@@ -282,7 +285,10 @@ static struct firmware_buf *__allocate_fw_buf(const char *fw_name,
 	buf->data = dbuf;
 	buf->allocated_size = size;
 	fw_state_init(&buf->fw_st);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&buf->list);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_FW_LOADER_USER_HELPER
 	INIT_LIST_HEAD(&buf->pending_list);
 #endif
@@ -307,11 +313,16 @@ static struct firmware_buf *__fw_lookup_buf(const char *fw_name)
 static int fw_lookup_and_allocate_buf(const char *fw_name,
 				      struct firmware_cache *fwc,
 				      struct firmware_buf **buf, void *dbuf,
+<<<<<<< HEAD
 				      size_t size, unsigned int opt_flags)
+=======
+				      size_t size)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct firmware_buf *tmp;
 
 	spin_lock(&fwc->lock);
+<<<<<<< HEAD
 	if (!(opt_flags & FW_OPT_NOCACHE)) {
 		tmp = __fw_lookup_buf(fw_name);
 		if (tmp) {
@@ -322,6 +333,8 @@ static int fw_lookup_and_allocate_buf(const char *fw_name,
 		}
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tmp = __fw_lookup_buf(fw_name);
 	if (tmp) {
 		kref_get(&tmp->ref);
@@ -331,7 +344,11 @@ static int fw_lookup_and_allocate_buf(const char *fw_name,
 		return 1;
 	}
 	tmp = __allocate_fw_buf(fw_name, fwc, dbuf, size);
+<<<<<<< HEAD
 	if (tmp && !(opt_flags & FW_OPT_NOCACHE))
+=======
+	if (tmp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		list_add(&tmp->list, &fwc->head);
 	spin_unlock(&fwc->lock);
 
@@ -351,9 +368,12 @@ static void __fw_free_buf(struct kref *ref)
 		 (unsigned int)buf->size);
 
 	list_del(&buf->list);
+<<<<<<< HEAD
 #ifdef CONFIG_FW_LOADER_USER_HELPER
 	list_del(&buf->pending_list);
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_unlock(&fwc->lock);
 
 #ifdef CONFIG_FW_LOADER_USER_HELPER
@@ -383,8 +403,11 @@ static void fw_free_buf(struct firmware_buf *buf)
 static char fw_path_para[256];
 static const char * const fw_path[] = {
 	fw_path_para,
+<<<<<<< HEAD
 	"/system/vendor/firmware",
 	"/system/etc/firmware",
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	"/lib/firmware/updates/" UTS_RELEASE,
 	"/lib/firmware/updates",
 	"/lib/firmware/" UTS_RELEASE,
@@ -1069,8 +1092,11 @@ static int _request_firmware_load(struct firmware_priv *fw_priv,
 
 	retval = fw_state_wait_timeout(&buf->fw_st, timeout);
 	if (retval < 0) {
+<<<<<<< HEAD
 		dev_err(f_dev, "%s: firmware state wait timeout: rc = %d\n",
 				__func__, retval);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mutex_lock(&fw_lock);
 		fw_load_abort(fw_priv);
 		mutex_unlock(&fw_lock);
@@ -1151,8 +1177,12 @@ static inline void kill_pending_fw_fallback_reqs(bool only_kill_custom) { }
  */
 static int
 _request_firmware_prepare(struct firmware **firmware_p, const char *name,
+<<<<<<< HEAD
 			  struct device *device, void *dbuf, size_t size,
 			  unsigned int opt_flags)
+=======
+			  struct device *device, void *dbuf, size_t size)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct firmware *firmware;
 	struct firmware_buf *buf;
@@ -1170,8 +1200,12 @@ _request_firmware_prepare(struct firmware **firmware_p, const char *name,
 		return 0; /* assigned */
 	}
 
+<<<<<<< HEAD
 	ret = fw_lookup_and_allocate_buf(name, &fw_cache, &buf, dbuf, size,
 					opt_flags);
+=======
+	ret = fw_lookup_and_allocate_buf(name, &fw_cache, &buf, dbuf, size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * bind with 'buf' now to avoid warning in failure path
@@ -1231,19 +1265,31 @@ _request_firmware(const struct firmware **firmware_p, const char *name,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	ret = _request_firmware_prepare(&fw, name, device, buf, size,
 					opt_flags);
+=======
+	ret = _request_firmware_prepare(&fw, name, device, buf, size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret <= 0) /* error or already assigned */
 		goto out;
 
 	ret = fw_get_filesystem_firmware(device, fw->priv);
 	if (ret) {
 		if (!(opt_flags & FW_OPT_NO_WARN))
+<<<<<<< HEAD
 			dev_dbg(device,
 				 "Firmware %s was not found in kernel paths. rc:%d\n",
 				 name, ret);
 		if (opt_flags & FW_OPT_USERHELPER) {
 			dev_dbg(device, "Falling back to user helper\n");
+=======
+			dev_warn(device,
+				 "Direct firmware load for %s failed with error %d\n",
+				 name, ret);
+		if (opt_flags & FW_OPT_USERHELPER) {
+			dev_warn(device, "Falling back to user helper\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ret = fw_load_from_user_helper(fw, name, device,
 						       opt_flags);
 		}
@@ -1452,7 +1498,11 @@ request_firmware_nowait(
 }
 EXPORT_SYMBOL(request_firmware_nowait);
 
+<<<<<<< HEAD
 #ifdef CONFIG_FW_CACHE
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static ASYNC_DOMAIN_EXCLUSIVE(fw_cache_domain);
 
 /**
@@ -1802,7 +1852,11 @@ static void __init fw_cache_init(void)
 	INIT_LIST_HEAD(&fw_cache.head);
 	fw_cache.state = FW_LOADER_NO_CACHE;
 
+<<<<<<< HEAD
 #ifdef CONFIG_FW_CACHE
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_init(&fw_cache.name_lock);
 	INIT_LIST_HEAD(&fw_cache.fw_names);
 
@@ -1845,7 +1899,11 @@ static int __init firmware_class_init(void)
 
 static void __exit firmware_class_exit(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_FW_CACHE
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unregister_syscore_ops(&fw_syscore_ops);
 	unregister_pm_notifier(&fw_cache.pm_notify);
 #endif

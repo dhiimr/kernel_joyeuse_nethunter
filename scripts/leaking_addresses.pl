@@ -262,8 +262,14 @@ sub parse_file
 
 	open my $fh, "<", $file or return;
 	while ( <$fh> ) {
+<<<<<<< HEAD
 		if (may_leak_address($_)) {
 			print $file . ': ' . $_;
+=======
+		chomp;
+		if (may_leak_address($_)) {
+			printf("$file: $_\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 	close $fh;

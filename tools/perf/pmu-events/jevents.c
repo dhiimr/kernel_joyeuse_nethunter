@@ -342,11 +342,20 @@ static struct fixed {
 	const char *name;
 	const char *event;
 } fixed[] = {
+<<<<<<< HEAD
 	{ "inst_retired.any", "event=0xc0" },
 	{ "inst_retired.any_p", "event=0xc0" },
 	{ "cpu_clk_unhalted.ref", "event=0x0,umask=0x03" },
 	{ "cpu_clk_unhalted.thread", "event=0x3c" },
 	{ "cpu_clk_unhalted.thread_any", "event=0x3c,any=1" },
+=======
+	{ "inst_retired.any", "event=0xc0,period=2000003" },
+	{ "inst_retired.any_p", "event=0xc0,period=2000003" },
+	{ "cpu_clk_unhalted.ref", "event=0x0,umask=0x03,period=2000003" },
+	{ "cpu_clk_unhalted.thread", "event=0x3c,period=2000003" },
+	{ "cpu_clk_unhalted.core", "event=0x3c,period=2000003" },
+	{ "cpu_clk_unhalted.thread_any", "event=0x3c,any=1,period=2000003" },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ NULL, NULL},
 };
 
@@ -694,7 +703,11 @@ static int get_maxfds(void)
 	struct rlimit rlim;
 
 	if (getrlimit(RLIMIT_NOFILE, &rlim) == 0)
+<<<<<<< HEAD
 		return min((int)rlim.rlim_max / 2, 512);
+=======
+		return min(rlim.rlim_max / 2, (rlim_t)512);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 512;
 }

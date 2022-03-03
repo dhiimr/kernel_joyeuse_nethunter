@@ -69,6 +69,10 @@ static int arizona_gpio_get(struct gpio_chip *chip, unsigned offset)
 		ret = pm_runtime_get_sync(chip->parent);
 		if (ret < 0) {
 			dev_err(chip->parent, "Failed to resume: %d\n", ret);
+<<<<<<< HEAD
+=======
+			pm_runtime_put_autosuspend(chip->parent);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return ret;
 		}
 
@@ -77,12 +81,23 @@ static int arizona_gpio_get(struct gpio_chip *chip, unsigned offset)
 		if (ret < 0) {
 			dev_err(chip->parent, "Failed to drop cache: %d\n",
 				ret);
+<<<<<<< HEAD
+=======
+			pm_runtime_put_autosuspend(chip->parent);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return ret;
 		}
 
 		ret = regmap_read(arizona->regmap, reg, &val);
+<<<<<<< HEAD
 		if (ret < 0)
 			return ret;
+=======
+		if (ret < 0) {
+			pm_runtime_put_autosuspend(chip->parent);
+			return ret;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		pm_runtime_mark_last_busy(chip->parent);
 		pm_runtime_put_autosuspend(chip->parent);
@@ -111,6 +126,10 @@ static int arizona_gpio_direction_out(struct gpio_chip *chip,
 		ret = pm_runtime_get_sync(chip->parent);
 		if (ret < 0) {
 			dev_err(chip->parent, "Failed to resume: %d\n", ret);
+<<<<<<< HEAD
+=======
+			pm_runtime_put(chip->parent);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return ret;
 		}
 	}

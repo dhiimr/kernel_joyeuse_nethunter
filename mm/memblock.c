@@ -174,6 +174,7 @@ __memblock_find_range_top_down(phys_addr_t start, phys_addr_t end,
  *
  * Find @size free area aligned to @align in the specified range and node.
  *
+<<<<<<< HEAD
  * When allocation direction is bottom-up, the @start should be greater
  * than the end of the kernel image. Otherwise, it will be trimmed. The
  * reason is that we want the bottom-up allocation just near the kernel
@@ -182,6 +183,8 @@ __memblock_find_range_top_down(phys_addr_t start, phys_addr_t end,
  *
  * If bottom-up allocation failed, will try to allocate memory top-down.
  *
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * RETURNS:
  * Found address on success, 0 on failure.
  */
@@ -189,8 +192,11 @@ phys_addr_t __init_memblock memblock_find_in_range_node(phys_addr_t size,
 					phys_addr_t align, phys_addr_t start,
 					phys_addr_t end, int nid, ulong flags)
 {
+<<<<<<< HEAD
 	phys_addr_t kernel_end, ret;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* pump up @end */
 	if (end == MEMBLOCK_ALLOC_ACCESSIBLE)
 		end = memblock.current_limit;
@@ -198,6 +204,7 @@ phys_addr_t __init_memblock memblock_find_in_range_node(phys_addr_t size,
 	/* avoid allocating the first page */
 	start = max_t(phys_addr_t, start, PAGE_SIZE);
 	end = max(start, end);
+<<<<<<< HEAD
 	kernel_end = __pa_symbol(_end);
 
 	/*
@@ -231,6 +238,15 @@ phys_addr_t __init_memblock memblock_find_in_range_node(phys_addr_t size,
 
 	return __memblock_find_range_top_down(start, end, size, align, nid,
 					      flags);
+=======
+
+	if (memblock_bottom_up())
+		return __memblock_find_range_bottom_up(start, end, size, align,
+						       nid, flags);
+	else
+		return __memblock_find_range_top_down(start, end, size, align,
+						      nid, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -296,14 +312,28 @@ void __init memblock_discard(void)
 		addr = __pa(memblock.reserved.regions);
 		size = PAGE_ALIGN(sizeof(struct memblock_region) *
 				  memblock.reserved.max);
+<<<<<<< HEAD
 		__memblock_free_late(addr, size);
+=======
+		if (memblock_reserved_in_slab)
+			kfree(memblock.reserved.regions);
+		else
+			__memblock_free_late(addr, size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (memblock.memory.regions != memblock_memory_init_regions) {
 		addr = __pa(memblock.memory.regions);
 		size = PAGE_ALIGN(sizeof(struct memblock_region) *
 				  memblock.memory.max);
+<<<<<<< HEAD
 		__memblock_free_late(addr, size);
+=======
+		if (memblock_memory_in_slab)
+			kfree(memblock.memory.regions);
+		else
+			__memblock_free_late(addr, size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 #endif
@@ -707,8 +737,12 @@ int __init_memblock memblock_free(phys_addr_t base, phys_addr_t size)
 	memblock_dbg("   memblock_free: [%pa-%pa] %pF\n",
 		     &base, &end, (void *)_RET_IP_);
 
+<<<<<<< HEAD
 	if (base < memblock.current_limit)
 		kmemleak_free_part(__va(base), size);
+=======
+	kmemleak_free_part_phys(base, size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return memblock_remove_range(&memblock.reserved, base, size);
 }
 
@@ -925,7 +959,11 @@ void __init_memblock __next_mem_range(u64 *idx, int nid, ulong flags,
 			r = &type_b->regions[idx_b];
 			r_start = idx_b ? r[-1].base + r[-1].size : 0;
 			r_end = idx_b < type_b->cnt ?
+<<<<<<< HEAD
 				r->base : (phys_addr_t)ULLONG_MAX;
+=======
+				r->base : ULLONG_MAX;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			/*
 			 * if idx_b advanced past idx_a,
@@ -1041,7 +1079,11 @@ void __init_memblock __next_mem_range_rev(u64 *idx, int nid, ulong flags,
 			r = &type_b->regions[idx_b];
 			r_start = idx_b ? r[-1].base + r[-1].size : 0;
 			r_end = idx_b < type_b->cnt ?
+<<<<<<< HEAD
 				r->base : (phys_addr_t)ULLONG_MAX;
+=======
+				r->base : ULLONG_MAX;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/*
 			 * if idx_b advanced past idx_a,
 			 * break out to advance idx_a
@@ -1149,9 +1191,13 @@ static phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
 		 * The min_count is set to 0 so that memblock allocations are
 		 * never reported as leaks.
 		 */
+<<<<<<< HEAD
 		if (found < memblock.current_limit)
 			kmemleak_alloc(__va(found), size, 0, 0);
 
+=======
+		kmemleak_alloc_phys(found, size, 0, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return found;
 	}
 	return 0;
@@ -1491,11 +1537,14 @@ static phys_addr_t __init_memblock __find_max_addr(phys_addr_t limit)
 	return max_addr;
 }
 
+<<<<<<< HEAD
 phys_addr_t __init_memblock memblock_max_addr(phys_addr_t limit)
 {
 	return __find_max_addr(limit);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void __init memblock_enforce_memory_limit(phys_addr_t limit)
 {
 	phys_addr_t max_addr = (phys_addr_t)ULLONG_MAX;
@@ -1560,8 +1609,12 @@ void __init memblock_mem_limit_remove_map(phys_addr_t limit)
 	memblock_cap_memory_range(0, max_addr);
 }
 
+<<<<<<< HEAD
 static int __init_memblock memblock_search(struct memblock_type *type,
 					phys_addr_t addr)
+=======
+static int __init_memblock memblock_search(struct memblock_type *type, phys_addr_t addr)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned int left = 0, right = type->cnt;
 
@@ -1579,7 +1632,11 @@ static int __init_memblock memblock_search(struct memblock_type *type,
 	return -1;
 }
 
+<<<<<<< HEAD
 bool __init_memblock memblock_is_reserved(phys_addr_t addr)
+=======
+bool __init memblock_is_reserved(phys_addr_t addr)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return memblock_search(&memblock.reserved, addr) != -1;
 }
@@ -1636,6 +1693,7 @@ int __init_memblock memblock_is_region_memory(phys_addr_t base, phys_addr_t size
 		 memblock.memory.regions[idx].size) >= end;
 }
 
+<<<<<<< HEAD
 bool __init_memblock memblock_overlaps_memory(phys_addr_t base,
 					      phys_addr_t size)
 {
@@ -1644,6 +1702,8 @@ bool __init_memblock memblock_overlaps_memory(phys_addr_t base,
 	return memblock_overlaps_region(&memblock.memory, base, size);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * memblock_is_region_reserved - check if a region intersects reserved memory
  * @base: base of region to check

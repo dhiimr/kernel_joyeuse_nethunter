@@ -10,8 +10,13 @@
 
 #define FONTDATAMAX 4096
 
+<<<<<<< HEAD
 static const unsigned char fontdata_8x16[FONTDATAMAX] = {
 
+=======
+static const struct font_data fontdata_8x16 = {
+	{ 0, 0, FONTDATAMAX, 0 }, {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* 0 0x00 '^@' */
 	0x00, /* 00000000 */
 	0x00, /* 00000000 */
@@ -4619,8 +4624,12 @@ static const unsigned char fontdata_8x16[FONTDATAMAX] = {
 	0x00, /* 00000000 */
 	0x00, /* 00000000 */
 	0x00, /* 00000000 */
+<<<<<<< HEAD
 
 };
+=======
+} };
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 
 const struct font_desc font_vga_8x16 = {
@@ -4628,7 +4637,11 @@ const struct font_desc font_vga_8x16 = {
 	.name	= "VGA8x16",
 	.width	= 8,
 	.height	= 16,
+<<<<<<< HEAD
 	.data	= fontdata_8x16,
+=======
+	.data	= fontdata_8x16.data,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.pref	= 0,
 };
 EXPORT_SYMBOL(font_vga_8x16);

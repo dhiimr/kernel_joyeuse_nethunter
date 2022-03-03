@@ -451,6 +451,7 @@ enum {
 
 #define IFLA_MACSEC_MAX (__IFLA_MACSEC_MAX - 1)
 
+<<<<<<< HEAD
 /* XFRM section */
 enum {
 	IFLA_XFRM_UNSPEC,
@@ -461,6 +462,8 @@ enum {
 
 #define IFLA_XFRM_MAX (__IFLA_XFRM_MAX - 1)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 enum macsec_validation_type {
 	MACSEC_VALIDATE_DISABLED = 0,
 	MACSEC_VALIDATE_CHECK = 1,
@@ -938,6 +941,7 @@ enum {
 	IFLA_EVENT_BONDING_OPTIONS,	/* change in bonding options */
 };
 
+<<<<<<< HEAD
 /* rmnet section */
 
 #define RMNET_FLAGS_INGRESS_DEAGGREGATION         (1U << 0)
@@ -962,4 +966,6 @@ struct ifla_rmnet_flags {
 	__u32   mask;
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _UAPI_LINUX_IF_LINK_H */

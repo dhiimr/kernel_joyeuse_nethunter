@@ -187,6 +187,10 @@ enum chips { lm90, adm1032, lm99, lm86, max6657, max6659, adt7461, max6680,
 #define LM90_HAVE_EMERGENCY_ALARM (1 << 5)/* emergency alarm		*/
 #define LM90_HAVE_TEMP3		(1 << 6) /* 3rd temperature sensor	*/
 #define LM90_HAVE_BROKEN_ALERT	(1 << 7) /* Broken alert		*/
+<<<<<<< HEAD
+=======
+#define LM90_PAUSE_FOR_CONFIG	(1 << 8) /* Pause conversion for config	*/
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* LM90 status */
 #define LM90_STATUS_LTHRM	(1 << 0) /* local THERM limit tripped */
@@ -196,6 +200,10 @@ enum chips { lm90, adm1032, lm99, lm86, max6657, max6659, adt7461, max6680,
 #define LM90_STATUS_RHIGH	(1 << 4) /* remote high temp limit tripped */
 #define LM90_STATUS_LLOW	(1 << 5) /* local low temp limit tripped */
 #define LM90_STATUS_LHIGH	(1 << 6) /* local high temp limit tripped */
+<<<<<<< HEAD
+=======
+#define LM90_STATUS_BUSY	(1 << 7) /* conversion is ongoing */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define MAX6696_STATUS2_R2THRM	(1 << 1) /* remote2 THERM limit tripped */
 #define MAX6696_STATUS2_R2OPEN	(1 << 2) /* remote2 is an open circuit */
@@ -357,7 +365,11 @@ static const struct lm90_params lm90_params[] = {
 		.flags = LM90_HAVE_OFFSET | LM90_HAVE_REM_LIMIT_EXT
 		  | LM90_HAVE_BROKEN_ALERT,
 		.alert_alarms = 0x7c,
+<<<<<<< HEAD
 		.max_convrate = 8,
+=======
+		.max_convrate = 7,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	[lm86] = {
 		.flags = LM90_HAVE_OFFSET | LM90_HAVE_REM_LIMIT_EXT,
@@ -380,6 +392,10 @@ static const struct lm90_params lm90_params[] = {
 		.reg_local_ext = MAX6657_REG_R_LOCAL_TEMPL,
 	},
 	[max6657] = {
+<<<<<<< HEAD
+=======
+		.flags = LM90_PAUSE_FOR_CONFIG,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.alert_alarms = 0x7c,
 		.max_convrate = 8,
 		.reg_local_ext = MAX6657_REG_R_LOCAL_TEMPL,
@@ -580,6 +596,41 @@ static inline int lm90_select_remote_channel(struct i2c_client *client,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int lm90_write_convrate(struct i2c_client *client,
+			       struct lm90_data *data, int val)
+{
+	int err;
+	int config_orig, config_stop;
+
+	/* Save config and pause conversion */
+	if (data->flags & LM90_PAUSE_FOR_CONFIG) {
+		config_orig = lm90_read_reg(client, LM90_REG_R_CONFIG1);
+		if (config_orig < 0)
+			return config_orig;
+		config_stop = config_orig | 0x40;
+		if (config_orig != config_stop) {
+			err = i2c_smbus_write_byte_data(client,
+							LM90_REG_W_CONFIG1,
+							config_stop);
+			if (err < 0)
+				return err;
+		}
+	}
+
+	/* Set conv rate */
+	err = i2c_smbus_write_byte_data(client, LM90_REG_W_CONVRATE, val);
+
+	/* Revert change to config */
+	if (data->flags & LM90_PAUSE_FOR_CONFIG && config_orig != config_stop)
+		i2c_smbus_write_byte_data(client, LM90_REG_W_CONFIG1,
+					  config_orig);
+
+	return err;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Set conversion rate.
  * client->update_lock must be held when calling this function (unless we are
@@ -600,7 +651,11 @@ static int lm90_set_convrate(struct i2c_client *client, struct lm90_data *data,
 		if (interval >= update_interval * 3 / 4)
 			break;
 
+<<<<<<< HEAD
 	err = i2c_smbus_write_byte_data(client, LM90_REG_W_CONVRATE, i);
+=======
+	err = lm90_write_convrate(client, data, i);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	data->update_interval = DIV_ROUND_CLOSEST(update_interval, 64);
 	return err;
 }
@@ -752,7 +807,11 @@ static int lm90_update_device(struct device *dev)
 		val = lm90_read_reg(client, LM90_REG_R_STATUS);
 		if (val < 0)
 			return val;
+<<<<<<< HEAD
 		data->alarms = val;	/* lower 8 bit of alarms */
+=======
+		data->alarms = val & ~LM90_STATUS_BUSY;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (data->kind == max6696) {
 			val = lm90_select_remote_channel(client, data, 1);
@@ -1405,12 +1464,20 @@ static int lm90_detect(struct i2c_client *client,
 	if (man_id < 0 || chip_id < 0 || config1 < 0 || convrate < 0)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	if (man_id == 0x01 || man_id == 0x5C || man_id == 0x41) {
 		config2 = i2c_smbus_read_byte_data(client, LM90_REG_R_CONFIG2);
 		if (config2 < 0)
 			return -ENODEV;
 	} else
 		config2 = 0;		/* Make compiler happy */
+=======
+	if (man_id == 0x01 || man_id == 0x5C || man_id == 0xA1) {
+		config2 = i2c_smbus_read_byte_data(client, LM90_REG_R_CONFIG2);
+		if (config2 < 0)
+			return -ENODEV;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if ((address == 0x4C || address == 0x4D)
 	 && man_id == 0x01) { /* National Semiconductor */
@@ -1606,8 +1673,12 @@ static void lm90_restore_conf(void *_data)
 	struct i2c_client *client = data->client;
 
 	/* Restore initial configuration */
+<<<<<<< HEAD
 	i2c_smbus_write_byte_data(client, LM90_REG_W_CONVRATE,
 				  data->convrate_orig);
+=======
+	lm90_write_convrate(client, data, data->convrate_orig);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	i2c_smbus_write_byte_data(client, LM90_REG_W_CONFIG1,
 				  data->config_orig);
 }
@@ -1624,12 +1695,20 @@ static int lm90_init_client(struct i2c_client *client, struct lm90_data *data)
 	/*
 	 * Start the conversions.
 	 */
+<<<<<<< HEAD
 	lm90_set_convrate(client, data, 500);	/* 500ms; 2Hz conversion rate */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	config = lm90_read_reg(client, LM90_REG_R_CONFIG1);
 	if (config < 0)
 		return config;
 	data->config_orig = config;
 
+<<<<<<< HEAD
+=======
+	lm90_set_convrate(client, data, 500); /* 500ms; 2Hz conversion rate */
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Check Temperature Range Select */
 	if (data->kind == adt7461 || data->kind == tmp451) {
 		if (config & 0x04)

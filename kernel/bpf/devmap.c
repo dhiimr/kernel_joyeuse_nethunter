@@ -50,9 +50,12 @@
 #include <linux/bpf.h>
 #include <linux/filter.h>
 
+<<<<<<< HEAD
 #define DEV_CREATE_FLAG_MASK \
 	(BPF_F_NUMA_NODE | BPF_F_RDONLY | BPF_F_WRONLY)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct bpf_dtab_netdev {
 	struct net_device *dev;
 	struct bpf_dtab *dtab;
@@ -86,7 +89,11 @@ static struct bpf_map *dev_map_alloc(union bpf_attr *attr)
 
 	/* check sanity of attributes */
 	if (attr->max_entries == 0 || attr->key_size != 4 ||
+<<<<<<< HEAD
 	    attr->value_size != 4 || attr->map_flags & ~DEV_CREATE_FLAG_MASK)
+=======
+	    attr->value_size != 4 || attr->map_flags & ~BPF_F_NUMA_NODE)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ERR_PTR(-EINVAL);
 
 	dtab = kzalloc(sizeof(*dtab), GFP_USER);
@@ -159,6 +166,12 @@ static void dev_map_free(struct bpf_map *map)
 
 	synchronize_rcu();
 
+<<<<<<< HEAD
+=======
+	/* Make sure prior __dev_map_entry_free() have completed. */
+	rcu_barrier();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* To ensure all pending flush operations have completed wait for flush
 	 * bitmap to indicate all flush_needed bits to be zero on _all_ cpus.
 	 * Because the above synchronize_rcu() ensures the map is disconnected
@@ -388,8 +401,12 @@ static int dev_map_notification(struct notifier_block *notifier,
 				struct bpf_dtab_netdev *dev, *odev;
 
 				dev = READ_ONCE(dtab->netdev_map[i]);
+<<<<<<< HEAD
 				if (!dev ||
 				    dev->dev->ifindex != netdev->ifindex)
+=======
+				if (!dev || netdev != dev->dev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					continue;
 				odev = cmpxchg(&dtab->netdev_map[i], dev, NULL);
 				if (dev == odev)

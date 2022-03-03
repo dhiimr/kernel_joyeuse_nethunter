@@ -1118,6 +1118,11 @@
 				ti,hwmods = "dss_dispc";
 				clocks = <&disp_clk>;
 				clock-names = "fck";
+<<<<<<< HEAD
+=======
+
+				max-memory-bandwidth = <230000000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			};
 
 			rfbi: rfbi@4832a800 {

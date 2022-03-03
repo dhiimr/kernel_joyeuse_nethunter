@@ -30,12 +30,20 @@ EXPORT_SYMBOL_GPL(pnfs_generic_rw_release);
 /* Fake up some data that will cause nfs_commit_release to retry the writes. */
 void pnfs_generic_prepare_to_resend_writes(struct nfs_commit_data *data)
 {
+<<<<<<< HEAD
 	struct nfs_page *first = nfs_list_entry(data->pages.next);
 
 	data->task.tk_status = 0;
 	memcpy(&data->verf.verifier, &first->wb_verf,
 	       sizeof(data->verf.verifier));
 	data->verf.verifier.data[0]++; /* ensure verifier mismatch */
+=======
+	struct nfs_writeverf *verf = data->res.verf;
+
+	data->task.tk_status = 0;
+	memset(&verf->verifier, 0, sizeof(verf->verifier));
+	verf->committed = NFS_UNSTABLE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(pnfs_generic_prepare_to_resend_writes);
 
@@ -556,19 +564,30 @@ out:
 }
 EXPORT_SYMBOL_GPL(nfs4_pnfs_ds_add);
 
+<<<<<<< HEAD
 static void nfs4_wait_ds_connect(struct nfs4_pnfs_ds *ds)
 {
 	might_sleep();
 	wait_on_bit(&ds->ds_state, NFS4DS_CONNECTING,
 			TASK_KILLABLE);
+=======
+static int nfs4_wait_ds_connect(struct nfs4_pnfs_ds *ds)
+{
+	might_sleep();
+	return wait_on_bit(&ds->ds_state, NFS4DS_CONNECTING, TASK_KILLABLE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void nfs4_clear_ds_conn_bit(struct nfs4_pnfs_ds *ds)
 {
 	smp_mb__before_atomic();
+<<<<<<< HEAD
 	clear_bit(NFS4DS_CONNECTING, &ds->ds_state);
 	smp_mb__after_atomic();
 	wake_up_bit(&ds->ds_state, NFS4DS_CONNECTING);
+=======
+	clear_and_wake_up_bit(NFS4DS_CONNECTING, &ds->ds_state);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct nfs_client *(*get_v3_ds_connect)(
@@ -639,7 +658,11 @@ static int _nfs4_pnfs_v3_ds_connect(struct nfs_server *mds_srv,
 	}
 
 	smp_wmb();
+<<<<<<< HEAD
 	ds->ds_clp = clp;
+=======
+	WRITE_ONCE(ds->ds_clp, clp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dprintk("%s [new] addr: %s\n", __func__, ds->ds_remotestr);
 out:
 	return status;
@@ -712,7 +735,11 @@ static int _nfs4_pnfs_v4_ds_connect(struct nfs_server *mds_srv,
 	}
 
 	smp_wmb();
+<<<<<<< HEAD
 	ds->ds_clp = clp;
+=======
+	WRITE_ONCE(ds->ds_clp, clp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dprintk("%s [new] addr: %s\n", __func__, ds->ds_remotestr);
 out:
 	return status;
@@ -729,6 +756,7 @@ int nfs4_pnfs_ds_connect(struct nfs_server *mds_srv, struct nfs4_pnfs_ds *ds,
 {
 	int err;
 
+<<<<<<< HEAD
 again:
 	err = 0;
 	if (test_and_set_bit(NFS4DS_CONNECTING, &ds->ds_state) == 0) {
@@ -753,6 +781,35 @@ again:
 			goto again;
 	}
 
+=======
+	do {
+		err = nfs4_wait_ds_connect(ds);
+		if (err || ds->ds_clp)
+			goto out;
+		if (nfs4_test_deviceid_unavailable(devid))
+			return -ENODEV;
+	} while (test_and_set_bit(NFS4DS_CONNECTING, &ds->ds_state) != 0);
+
+	if (ds->ds_clp)
+		goto connect_done;
+
+	switch (version) {
+	case 3:
+		err = _nfs4_pnfs_v3_ds_connect(mds_srv, ds, timeo, retrans);
+		break;
+	case 4:
+		err = _nfs4_pnfs_v4_ds_connect(mds_srv, ds, timeo, retrans,
+					       minor_version);
+		break;
+	default:
+		dprintk("%s: unsupported DS version %d\n", __func__, version);
+		err = -EPROTONOSUPPORT;
+	}
+
+connect_done:
+	nfs4_clear_ds_conn_bit(ds);
+out:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * At this point the ds->ds_clp should be ready, but it might have
 	 * hit an error.

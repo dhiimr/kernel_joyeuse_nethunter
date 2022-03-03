@@ -1118,7 +1118,11 @@ void clear_user_page(void *to, unsigned long u_vaddr, struct page *page)
 	clear_page(to);
 	clear_bit(PG_dc_clean, &page->flags);
 }
+<<<<<<< HEAD
 
+=======
+EXPORT_SYMBOL(clear_user_page);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**********************************************************************
  * Explicit Cache flush request from user space via syscall

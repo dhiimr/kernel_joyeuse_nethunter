@@ -345,8 +345,15 @@ static int elo_connect(struct serio *serio, struct serio_driver *drv)
 	switch (elo->id) {
 
 	case 0: /* 10-byte protocol */
+<<<<<<< HEAD
 		if (elo_setup_10(elo))
 			goto fail3;
+=======
+		if (elo_setup_10(elo)) {
+			err = -EIO;
+			goto fail3;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		break;
 

@@ -487,6 +487,7 @@ int extcon_sync(struct extcon_dev *edev, unsigned int id)
 }
 EXPORT_SYMBOL_GPL(extcon_sync);
 
+<<<<<<< HEAD
 int extcon_blocking_sync(struct extcon_dev *edev, unsigned int id, u8 val)
 {
 	int index;
@@ -502,6 +503,8 @@ int extcon_blocking_sync(struct extcon_dev *edev, unsigned int id, u8 val)
 }
 EXPORT_SYMBOL(extcon_blocking_sync);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * extcon_get_state() - Get the state of an external connector.
  * @edev:	the extcon device
@@ -881,6 +884,7 @@ int extcon_set_property_capability(struct extcon_dev *edev, unsigned int id,
 }
 EXPORT_SYMBOL_GPL(extcon_set_property_capability);
 
+<<<<<<< HEAD
 int extcon_set_mutually_exclusive(struct extcon_dev *edev,
 				const u32 *exclusive)
 {
@@ -892,6 +896,8 @@ int extcon_set_mutually_exclusive(struct extcon_dev *edev,
 }
 EXPORT_SYMBOL(extcon_set_mutually_exclusive);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * extcon_get_extcon_dev() - Get the extcon device instance from the name.
  * @extcon_name:	the extcon name provided with extcon_dev_register()
@@ -951,6 +957,7 @@ int extcon_register_notifier(struct extcon_dev *edev, unsigned int id,
 }
 EXPORT_SYMBOL_GPL(extcon_register_notifier);
 
+<<<<<<< HEAD
 int extcon_register_blocking_notifier(struct extcon_dev *edev, unsigned int id,
 			struct notifier_block *nb)
 {
@@ -983,6 +990,8 @@ int extcon_unregister_blocking_notifier(struct extcon_dev *edev,
 }
 EXPORT_SYMBOL(extcon_unregister_blocking_notifier);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * extcon_unregister_notifier() - Unregister a notifier block from the extcon.
  * @edev:	the extcon device
@@ -1310,6 +1319,7 @@ int extcon_dev_register(struct extcon_dev *edev)
 				sizeof(*edev->nh), GFP_KERNEL);
 	if (!edev->nh) {
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto err_dev;
 	}
 
@@ -1317,6 +1327,9 @@ int extcon_dev_register(struct extcon_dev *edev)
 			sizeof(*edev->bnh) * edev->max_supported, GFP_KERNEL);
 	if (!edev->bnh) {
 		ret = -ENOMEM;
+=======
+		device_unregister(&edev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto err_dev;
 	}
 

@@ -320,6 +320,10 @@ struct dentry *kernfs_mount_ns(struct file_system_type *fs_type, int flags,
 
 	info->root = root;
 	info->ns = ns;
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&info->node);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	sb = sget_userns(fs_type, kernfs_test_super, kernfs_set_super, flags,
 			 &init_user_ns, info);

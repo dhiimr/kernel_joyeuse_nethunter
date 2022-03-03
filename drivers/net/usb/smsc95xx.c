@@ -1301,11 +1301,21 @@ static int smsc95xx_bind(struct usbnet *dev, struct usb_interface *intf)
 
 	/* Init all registers */
 	ret = smsc95xx_reset(dev);
+<<<<<<< HEAD
+=======
+	if (ret)
+		goto free_pdata;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* detect device revision as different features may be available */
 	ret = smsc95xx_read_reg(dev, ID_REV, &val);
 	if (ret < 0)
+<<<<<<< HEAD
 		return ret;
+=======
+		goto free_pdata;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	val >>= 16;
 	pdata->chip_id = val;
 	pdata->mdix_ctrl = get_mdix_status(dev->net);
@@ -1331,6 +1341,13 @@ static int smsc95xx_bind(struct usbnet *dev, struct usb_interface *intf)
 	schedule_delayed_work(&pdata->carrier_check, CARRIER_CHECK_DELAY);
 
 	return 0;
+<<<<<<< HEAD
+=======
+
+free_pdata:
+	kfree(pdata);
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void smsc95xx_unbind(struct usbnet *dev, struct usb_interface *intf)
@@ -1338,7 +1355,11 @@ static void smsc95xx_unbind(struct usbnet *dev, struct usb_interface *intf)
 	struct smsc95xx_priv *pdata = (struct smsc95xx_priv *)(dev->data[0]);
 
 	if (pdata) {
+<<<<<<< HEAD
 		cancel_delayed_work(&pdata->carrier_check);
+=======
+		cancel_delayed_work_sync(&pdata->carrier_check);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		netif_dbg(dev, ifdown, dev->net, "free pdata\n");
 		kfree(pdata);
 		pdata = NULL;

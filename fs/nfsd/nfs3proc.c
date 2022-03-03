@@ -199,6 +199,14 @@ nfsd3_proc_write(struct svc_rqst *rqstp)
 				(unsigned long long) argp->offset,
 				argp->stable? " stable" : "");
 
+<<<<<<< HEAD
+=======
+	resp->status = nfserr_fbig;
+	if (argp->offset > (u64)OFFSET_MAX ||
+	    argp->offset + argp->len > (u64)OFFSET_MAX)
+		return rpc_success;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	fh_copy(&resp->fh, &argp->fh);
 	resp->committed = argp->stable;
 	nfserr = nfsd_write(rqstp, &resp->fh, argp->offset,

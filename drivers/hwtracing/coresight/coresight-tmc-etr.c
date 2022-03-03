@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Copyright(C) 2016 Linaro Limited. All rights reserved.
  * Author: Mathieu Poirier <mathieu.poirier@linaro.org>
  *
@@ -21,6 +24,7 @@
 #include "coresight-priv.h"
 #include "coresight-tmc.h"
 
+<<<<<<< HEAD
 static void tmc_etr_sg_tbl_free(uint32_t *vaddr, uint32_t size, uint32_t ents)
 {
 	uint32_t i = 0, pte_n = 0, last_pte;
@@ -418,11 +422,18 @@ static void tmc_etr_mem_reset(struct tmc_drvdata *drvdata)
 }
 
 void tmc_etr_enable_hw(struct tmc_drvdata *drvdata)
+=======
+static void tmc_etr_enable_hw(struct tmc_drvdata *drvdata)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u32 axictl, sts;
 
 	/* Zero out the memory to help with debug */
+<<<<<<< HEAD
 	tmc_etr_mem_reset(drvdata);
+=======
+	memset(drvdata->vaddr, 0, drvdata->size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	CS_UNLOCK(drvdata->base);
 
@@ -434,10 +445,13 @@ void tmc_etr_enable_hw(struct tmc_drvdata *drvdata)
 
 	axictl = readl_relaxed(drvdata->base + TMC_AXICTL);
 	axictl &= ~TMC_AXICTL_CLEAR_MASK;
+<<<<<<< HEAD
 	if (drvdata->memtype == TMC_ETR_MEM_TYPE_CONTIG)
 		axictl &= ~TMC_AXICTL_SCT_GAT_MODE;
 	else
 		axictl |= TMC_AXICTL_SCT_GAT_MODE;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	axictl |= (TMC_AXICTL_PROT_CTL_B1 | TMC_AXICTL_WR_BURST_16);
 	axictl |= TMC_AXICTL_AXCACHE_OS;
 
@@ -446,10 +460,13 @@ void tmc_etr_enable_hw(struct tmc_drvdata *drvdata)
 		axictl |= TMC_AXICTL_ARCACHE_OS;
 	}
 
+<<<<<<< HEAD
 	axictl = (axictl &
 		  ~(TMC_AXICTL_CACHE_CTL_B0 | TMC_AXICTL_CACHE_CTL_B1 |
 		  TMC_AXICTL_CACHE_CTL_B2 | TMC_AXICTL_CACHE_CTL_B3)) |
 		  TMC_AXICTL_CACHE_CTL_B0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	writel_relaxed(axictl, drvdata->base + TMC_AXICTL);
 	tmc_write_dba(drvdata, drvdata->paddr);
 	/*
@@ -464,10 +481,13 @@ void tmc_etr_enable_hw(struct tmc_drvdata *drvdata)
 		writel_relaxed(sts, drvdata->base + TMC_STS);
 	}
 
+<<<<<<< HEAD
 	writel_relaxed(drvdata->paddr, drvdata->base + TMC_DBALO);
 	writel_relaxed(((u64)drvdata->paddr >> 32) & 0xFF,
 		       drvdata->base + TMC_DBAHI);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	writel_relaxed(TMC_FFCR_EN_FMT | TMC_FFCR_EN_TI |
 		       TMC_FFCR_FON_FLIN | TMC_FFCR_FON_TRIG_EVT |
 		       TMC_FFCR_TRIGON_TRIGIN,
@@ -488,6 +508,7 @@ static void tmc_etr_dump_hw(struct tmc_drvdata *drvdata)
 	rwp = tmc_read_rwp(drvdata);
 	val = readl_relaxed(drvdata->base + TMC_STS);
 
+<<<<<<< HEAD
 	if (drvdata->memtype == TMC_ETR_MEM_TYPE_CONTIG) {
 		/*
 		 * Adjust the buffer to point to the beginning of the trace data
@@ -527,6 +548,32 @@ static void tmc_etr_dump_hw(struct tmc_drvdata *drvdata)
 }
 
 void tmc_etr_disable_hw(struct tmc_drvdata *drvdata)
+=======
+	/*
+	 * Adjust the buffer to point to the beginning of the trace data
+	 * and update the available trace data.
+	 */
+	if (val & TMC_STS_FULL) {
+		drvdata->buf = drvdata->vaddr + rwp - drvdata->paddr;
+		drvdata->len = drvdata->size;
+
+		barrier = barrier_pkt;
+		temp = (u32 *)drvdata->buf;
+
+		while (*barrier) {
+			*temp = *barrier;
+			temp++;
+			barrier++;
+		}
+
+	} else {
+		drvdata->buf = drvdata->vaddr;
+		drvdata->len = rwp - drvdata->paddr;
+	}
+}
+
+static void tmc_etr_disable_hw(struct tmc_drvdata *drvdata)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	CS_UNLOCK(drvdata->base);
 
@@ -542,6 +589,7 @@ void tmc_etr_disable_hw(struct tmc_drvdata *drvdata)
 	CS_LOCK(drvdata->base);
 }
 
+<<<<<<< HEAD
 int tmc_etr_alloc_mem(struct tmc_drvdata *drvdata)
 {
 	int ret;
@@ -854,13 +902,19 @@ int tmc_etr_bam_init(struct amba_device *adev,
 	return sps_register_bam_device(&bamdata->props, &bamdata->handle);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int tmc_enable_etr_sink_sysfs(struct coresight_device *csdev)
 {
 	int ret = 0;
 	bool used = false;
 	unsigned long flags;
 	void __iomem *vaddr = NULL;
+<<<<<<< HEAD
 	dma_addr_t paddr = 0;
+=======
+	dma_addr_t paddr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct tmc_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
 
 
@@ -868,11 +922,15 @@ static int tmc_enable_etr_sink_sysfs(struct coresight_device *csdev)
 	 * If we don't have a buffer release the lock and allocate memory.
 	 * Otherwise keep the lock and move along.
 	 */
+<<<<<<< HEAD
 	mutex_lock(&drvdata->mem_lock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&drvdata->spinlock, flags);
 	if (!drvdata->vaddr) {
 		spin_unlock_irqrestore(&drvdata->spinlock, flags);
 
+<<<<<<< HEAD
 		if (drvdata->out_mode == TMC_ETR_OUT_MODE_MEM) {
 			/*
 			 * ETR DDR memory is not allocated until user enables
@@ -905,6 +963,19 @@ static int tmc_enable_etr_sink_sysfs(struct coresight_device *csdev)
 				return ret;
 			}
 		}
+=======
+		/*
+		 * Contiguous  memory can't be allocated while a spinlock is
+		 * held.  As such allocate memory here and free it if a buffer
+		 * has already been allocated (from a previous session).
+		 */
+		vaddr = dma_alloc_coherent(drvdata->dev, drvdata->size,
+					   &paddr, GFP_KERNEL);
+		if (!vaddr)
+			return -ENOMEM;
+
+		/* Let's try again */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		spin_lock_irqsave(&drvdata->spinlock, flags);
 	}
 
@@ -934,20 +1005,28 @@ static int tmc_enable_etr_sink_sysfs(struct coresight_device *csdev)
 	}
 
 	drvdata->mode = CS_MODE_SYSFS;
+<<<<<<< HEAD
 	if (drvdata->out_mode == TMC_ETR_OUT_MODE_MEM)
 		tmc_etr_enable_hw(drvdata);
 
 	drvdata->enable = true;
+=======
+	tmc_etr_enable_hw(drvdata);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	spin_unlock_irqrestore(&drvdata->spinlock, flags);
 
 	/* Free memory outside the spinlock if need be */
 	if (!used && vaddr)
+<<<<<<< HEAD
 		tmc_etr_free_mem(drvdata);
 
 	if (drvdata->out_mode == TMC_ETR_OUT_MODE_MEM)
 		tmc_etr_byte_cntr_start(drvdata->byte_cntr);
 	mutex_unlock(&drvdata->mem_lock);
+=======
+		dma_free_coherent(drvdata->dev, drvdata->size, vaddr, paddr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!ret)
 		dev_info(drvdata->dev, "TMC-ETR enabled\n");
@@ -1003,16 +1082,23 @@ static void tmc_disable_etr_sink(struct coresight_device *csdev)
 	unsigned long flags;
 	struct tmc_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
 
+<<<<<<< HEAD
 	mutex_lock(&drvdata->mem_lock);
 	spin_lock_irqsave(&drvdata->spinlock, flags);
 	if (drvdata->reading) {
 		spin_unlock_irqrestore(&drvdata->spinlock, flags);
 		mutex_unlock(&drvdata->mem_lock);
+=======
+	spin_lock_irqsave(&drvdata->spinlock, flags);
+	if (drvdata->reading) {
+		spin_unlock_irqrestore(&drvdata->spinlock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 	}
 
 	/* Disable the TMC only if it needs to */
 	if (drvdata->mode != CS_MODE_DISABLED) {
+<<<<<<< HEAD
 		if (drvdata->out_mode == TMC_ETR_OUT_MODE_USB) {
 			__tmc_etr_disable_to_bam(drvdata);
 			spin_unlock_irqrestore(&drvdata->spinlock, flags);
@@ -1023,11 +1109,15 @@ static void tmc_disable_etr_sink(struct coresight_device *csdev)
 		} else {
 			tmc_etr_disable_hw(drvdata);
 		}
+=======
+		tmc_etr_disable_hw(drvdata);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		drvdata->mode = CS_MODE_DISABLED;
 	}
 
 	spin_unlock_irqrestore(&drvdata->spinlock, flags);
 
+<<<<<<< HEAD
 	if (drvdata->out_mode == TMC_ETR_OUT_MODE_MEM) {
 		coresight_cti_unmap_trigin(drvdata->cti_reset, 2, 0);
 		coresight_cti_unmap_trigout(drvdata->cti_flush, 3, 0);
@@ -1063,6 +1153,14 @@ static const struct coresight_ops_sink tmc_etr_sink_ops = {
 	.enable		= tmc_enable_etr_sink,
 	.disable	= tmc_disable_etr_sink,
 	.abort		= tmc_abort_etr_sink,
+=======
+	dev_info(drvdata->dev, "TMC-ETR disabled\n");
+}
+
+static const struct coresight_ops_sink tmc_etr_sink_ops = {
+	.enable		= tmc_enable_etr_sink,
+	.disable	= tmc_disable_etr_sink,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 const struct coresight_ops tmc_etr_cs_ops = {
@@ -1078,17 +1176,23 @@ int tmc_read_prepare_etr(struct tmc_drvdata *drvdata)
 	if (WARN_ON_ONCE(drvdata->config_type != TMC_CONFIG_TYPE_ETR))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	mutex_lock(&drvdata->mem_lock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&drvdata->spinlock, flags);
 	if (drvdata->reading) {
 		ret = -EBUSY;
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (drvdata->out_mode == TMC_ETR_OUT_MODE_USB) {
 		ret = -EINVAL;
 		goto out;
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Don't interfere if operated from Perf */
 	if (drvdata->mode == CS_MODE_PERF) {
 		ret = -EINVAL;
@@ -1101,11 +1205,14 @@ int tmc_read_prepare_etr(struct tmc_drvdata *drvdata)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (drvdata->byte_cntr && drvdata->byte_cntr->enable) {
 		ret = -EINVAL;
 		goto out;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Disable the TMC if need be */
 	if (drvdata->mode == CS_MODE_SYSFS)
 		tmc_etr_disable_hw(drvdata);
@@ -1113,7 +1220,10 @@ int tmc_read_prepare_etr(struct tmc_drvdata *drvdata)
 	drvdata->reading = true;
 out:
 	spin_unlock_irqrestore(&drvdata->spinlock, flags);
+<<<<<<< HEAD
 	mutex_unlock(&drvdata->mem_lock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }
@@ -1127,7 +1237,11 @@ int tmc_read_unprepare_etr(struct tmc_drvdata *drvdata)
 	/* config types are set a boot time and never change */
 	if (WARN_ON_ONCE(drvdata->config_type != TMC_CONFIG_TYPE_ETR))
 		return -EINVAL;
+<<<<<<< HEAD
 	mutex_lock(&drvdata->mem_lock);
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&drvdata->spinlock, flags);
 
 	/* RE-enable the TMC if need be */
@@ -1154,9 +1268,14 @@ int tmc_read_unprepare_etr(struct tmc_drvdata *drvdata)
 
 	/* Free allocated memory out side of the spinlock */
 	if (vaddr)
+<<<<<<< HEAD
 		tmc_etr_free_mem(drvdata);
 
 
 	mutex_unlock(&drvdata->mem_lock);
+=======
+		dma_free_coherent(drvdata->dev, drvdata->size, vaddr, paddr);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }

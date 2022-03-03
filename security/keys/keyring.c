@@ -432,7 +432,10 @@ static int keyring_read_iterator(const void *object, void *data)
 {
 	struct keyring_read_iterator_context *ctx = data;
 	const struct key *key = keyring_ptr_to_key(object);
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	kenter("{%s,%d},,{%zu/%zu}",
 	       key->type->name, key->serial, ctx->count, ctx->buflen);
@@ -440,10 +443,14 @@ static int keyring_read_iterator(const void *object, void *data)
 	if (ctx->count >= ctx->buflen)
 		return 1;
 
+<<<<<<< HEAD
 	ret = put_user(key->serial, ctx->buffer);
 	if (ret < 0)
 		return ret;
 	ctx->buffer++;
+=======
+	*ctx->buffer++ = key->serial;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ctx->count += sizeof(key->serial);
 	return 0;
 }

@@ -307,6 +307,11 @@ static int __xts_crypt(struct skcipher_request *req,
 	int err;
 
 	err = skcipher_walk_virt(&walk, req, true);
+<<<<<<< HEAD
+=======
+	if (err)
+		return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	kernel_neon_begin();
 

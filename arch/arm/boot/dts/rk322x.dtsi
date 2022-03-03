@@ -950,7 +950,11 @@
 			};
 		};
 
+<<<<<<< HEAD
 		spi-0 {
+=======
+		spi0 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			spi0_clk: spi0-clk {
 				rockchip,pins = <0 9 RK_FUNC_2 &pcfg_pull_up>;
 			};
@@ -968,7 +972,11 @@
 			};
 		};
 
+<<<<<<< HEAD
 		spi-1 {
+=======
+		spi1 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			spi1_clk: spi1-clk {
 				rockchip,pins = <0 23 RK_FUNC_2 &pcfg_pull_up>;
 			};

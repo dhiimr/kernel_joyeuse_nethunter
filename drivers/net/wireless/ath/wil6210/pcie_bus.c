@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2012-2017 Qualcomm Atheros, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -22,6 +25,7 @@
 #include <linux/suspend.h>
 #include "wil6210.h"
 #include <linux/rtnetlink.h>
+<<<<<<< HEAD
 #include <linux/pm_runtime.h>
 
 static int n_msi = 3;
@@ -29,6 +33,14 @@ module_param(n_msi, int, 0444);
 MODULE_PARM_DESC(n_msi, " Use MSI interrupt: 0 - use INTx, 1 - single, or 3 - (default) ");
 
 bool ftm_mode;
+=======
+
+static bool use_msi = true;
+module_param(use_msi, bool, 0444);
+MODULE_PARM_DESC(use_msi, " Use MSI interrupt, default - true");
+
+static bool ftm_mode;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 module_param(ftm_mode, bool, 0444);
 MODULE_PARM_DESC(ftm_mode, " Set factory test mode, default - false");
 
@@ -40,26 +52,39 @@ static int wil6210_pm_notify(struct notifier_block *notify_block,
 #endif /* CONFIG_PM */
 
 static
+<<<<<<< HEAD
 int wil_set_capabilities(struct wil6210_priv *wil)
+=======
+void wil_set_capabilities(struct wil6210_priv *wil)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	const char *wil_fw_name;
 	u32 jtag_id = wil_r(wil, RGF_USER_JTAG_DEV_ID);
 	u8 chip_revision = (wil_r(wil, RGF_USER_REVISION_ID) &
 			    RGF_USER_REVISION_ID_MASK);
+<<<<<<< HEAD
 	int platform_capa;
 	struct fw_map *iccm_section, *sct;
 
 	bitmap_zero(wil->hw_capa, hw_capa_last);
 	bitmap_zero(wil->fw_capabilities, WMI_FW_CAPABILITY_MAX);
 	bitmap_zero(wil->platform_capa, WIL_PLATFORM_CAPA_MAX);
+=======
+
+	bitmap_zero(wil->hw_capabilities, hw_capability_last);
+	bitmap_zero(wil->fw_capabilities, WMI_FW_CAPABILITY_MAX);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	wil->wil_fw_name = ftm_mode ? WIL_FW_NAME_FTM_DEFAULT :
 			   WIL_FW_NAME_DEFAULT;
 	wil->chip_revision = chip_revision;
 
 	switch (jtag_id) {
 	case JTAG_DEV_ID_SPARROW:
+<<<<<<< HEAD
 		memcpy(fw_mapping, sparrow_fw_mapping,
 		       sizeof(sparrow_fw_mapping));
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		switch (chip_revision) {
 		case REVISION_ID_SPARROW_D0:
 			wil->hw_name = "Sparrow D0";
@@ -69,12 +94,15 @@ int wil_set_capabilities(struct wil6210_priv *wil)
 
 			if (wil_fw_verify_file_exists(wil, wil_fw_name))
 				wil->wil_fw_name = wil_fw_name;
+<<<<<<< HEAD
 			sct = wil_find_fw_mapping("mac_rgf_ext");
 			if (!sct) {
 				wil_err(wil, "mac_rgf_ext section not found in fw_mapping\n");
 				return -EINVAL;
 			}
 			memcpy(sct, &sparrow_d0_mac_rgf_ext, sizeof(*sct));
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		case REVISION_ID_SPARROW_B0:
 			wil->hw_name = "Sparrow B0";
@@ -85,6 +113,7 @@ int wil_set_capabilities(struct wil6210_priv *wil)
 			wil->hw_version = HW_VER_UNKNOWN;
 			break;
 		}
+<<<<<<< HEAD
 		wil->rgf_fw_assert_code_addr = SPARROW_RGF_FW_ASSERT_CODE;
 		wil->rgf_ucode_assert_code_addr = SPARROW_RGF_UCODE_ASSERT_CODE;
 		break;
@@ -117,12 +146,15 @@ int wil_set_capabilities(struct wil6210_priv *wil)
 			      WIL_FW_NAME_TALYN;
 		if (wil_fw_verify_file_exists(wil, wil_fw_name))
 			wil->wil_fw_name = wil_fw_name;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	default:
 		wil_err(wil, "Unknown board hardware, chip_id 0x%08x, chip_revision 0x%08x\n",
 			jtag_id, chip_revision);
 		wil->hw_name = "Unknown";
 		wil->hw_version = HW_VER_UNKNOWN;
+<<<<<<< HEAD
 		return -EINVAL;
 	}
 
@@ -151,10 +183,22 @@ int wil_set_capabilities(struct wil6210_priv *wil)
 	wil_refresh_fw_capabilities(wil);
 
 	return 0;
+=======
+	}
+
+	wil_info(wil, "Board hardware is %s\n", wil->hw_name);
+
+	/* extract FW capabilities from file without loading the FW */
+	wil_request_firmware(wil, wil->wil_fw_name, false);
+
+	if (test_bit(WMI_FW_CAPABILITY_RSSI_REPORTING, wil->fw_capabilities))
+		wil_to_wiphy(wil)->signal_type = CFG80211_SIGNAL_TYPE_MBM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void wil_disable_irq(struct wil6210_priv *wil)
 {
+<<<<<<< HEAD
 	int irq = wil->pdev->irq;
 
 	disable_irq(irq);
@@ -162,10 +206,14 @@ void wil_disable_irq(struct wil6210_priv *wil)
 		disable_irq(irq + 1);
 		disable_irq(irq + 2);
 	}
+=======
+	disable_irq(wil->pdev->irq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void wil_enable_irq(struct wil6210_priv *wil)
 {
+<<<<<<< HEAD
 	int irq = wil->pdev->irq;
 
 	enable_irq(irq);
@@ -187,6 +235,9 @@ static void wil_remove_all_additional_vifs(struct wil6210_priv *wil)
 			wil_vif_remove(wil, vif->mid);
 		}
 	}
+=======
+	enable_irq(wil->pdev->irq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Bus ops */
@@ -199,6 +250,7 @@ static int wil_if_pcie_enable(struct wil6210_priv *wil)
 	 * and only MSI should be used
 	 */
 	int msi_only = pdev->msi_enabled;
+<<<<<<< HEAD
 
 	wil_dbg_misc(wil, "if_pcie_enable\n");
 
@@ -232,11 +284,30 @@ static int wil_if_pcie_enable(struct wil6210_priv *wil)
 	wil->n_msi = n_msi;
 
 	if (wil->n_msi == 0 && msi_only) {
+=======
+	bool _use_msi = use_msi;
+	bool wmi_only = test_bit(WMI_FW_CAPABILITY_WMI_ONLY,
+				 wil->fw_capabilities);
+
+	wil_dbg_misc(wil, "if_pcie_enable, wmi_only %d\n", wmi_only);
+
+	pci_set_master(pdev);
+
+	wil_dbg_misc(wil, "Setup %s interrupt\n", use_msi ? "MSI" : "INTx");
+
+	if (use_msi && pci_enable_msi(pdev)) {
+		wil_err(wil, "pci_enable_msi failed, use INTx\n");
+		_use_msi = false;
+	}
+
+	if (!_use_msi && msi_only) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		wil_err(wil, "Interrupt pin not routed, unable to use INTx\n");
 		rc = -ENODEV;
 		goto stop_master;
 	}
 
+<<<<<<< HEAD
 	rc = wil6210_init_irq(wil, pdev->irq);
 	if (rc)
 		goto release_vectors;
@@ -244,6 +315,17 @@ static int wil_if_pcie_enable(struct wil6210_priv *wil)
 	/* need reset here to obtain MAC */
 	mutex_lock(&wil->mutex);
 	rc = wil_reset(wil, false);
+=======
+	rc = wil6210_init_irq(wil, pdev->irq, _use_msi);
+	if (rc)
+		goto stop_master;
+
+	/* need reset here to obtain MAC or in case of WMI-only FW, full reset
+	 * and fw loading takes place
+	 */
+	mutex_lock(&wil->mutex);
+	rc = wil_reset(wil, wmi_only);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(&wil->mutex);
 	if (rc)
 		goto release_irq;
@@ -252,9 +334,14 @@ static int wil_if_pcie_enable(struct wil6210_priv *wil)
 
  release_irq:
 	wil6210_fini_irq(wil, pdev->irq);
+<<<<<<< HEAD
  release_vectors:
 	/* safe to call if no allocation */
 	pci_free_irq_vectors(pdev);
+=======
+	/* safe to call if no MSI */
+	pci_disable_msi(pdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  stop_master:
 	pci_clear_master(pdev);
 	return rc;
@@ -298,6 +385,7 @@ static int wil_platform_rop_fw_recovery(void *wil_handle)
 	return 0;
 }
 
+<<<<<<< HEAD
 void wil_pci_linkdown_recovery_worker(struct work_struct *work)
 {
 	struct wil6210_priv *wil = container_of(work, struct wil6210_priv,
@@ -400,6 +488,8 @@ static int wil_platform_rop_notify(void *wil_handle,
 	return 0;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void wil_platform_ops_uninit(struct wil6210_priv *wil)
 {
 	if (wil->platform_ops.uninit)
@@ -415,11 +505,16 @@ static int wil_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	const struct wil_platform_rops rops = {
 		.ramdump = wil_platform_rop_ramdump,
 		.fw_recovery = wil_platform_rop_fw_recovery,
+<<<<<<< HEAD
 		.notify = wil_platform_rop_notify,
 	};
 	u32 bar_size = pci_resource_len(pdev, 0);
 	int dma_addr_size[] = {64, 48, 40, 32}; /* keep descending order */
 	int i, start_idx;
+=======
+	};
+	u32 bar_size = pci_resource_len(pdev, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* check HW */
 	dev_info(&pdev->dev, WIL_NAME
@@ -454,6 +549,25 @@ static int wil_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 		goto if_free;
 	}
 	/* rollback to err_plat */
+<<<<<<< HEAD
+=======
+
+	/* device supports 48bit addresses */
+	rc = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(48));
+	if (rc) {
+		dev_err(dev, "dma_set_mask_and_coherent(48) failed: %d\n", rc);
+		rc = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
+		if (rc) {
+			dev_err(dev,
+				"dma_set_mask_and_coherent(32) failed: %d\n",
+				rc);
+			goto err_plat;
+		}
+	} else {
+		wil->use_extended_dma_addr = 1;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rc = pci_enable_device(pdev);
 	if (rc && pdev->msi_enabled == 0) {
 		wil_err(wil,
@@ -488,6 +602,7 @@ static int wil_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	/* rollback to err_iounmap */
 	wil_info(wil, "CSR at %pR -> 0x%p\n", &pdev->resource[0], wil->csr);
 
+<<<<<<< HEAD
 	rc = wil_set_capabilities(wil);
 	if (rc) {
 		wil_err(wil, "wil_set_capabilities failed, rc %d\n", rc);
@@ -516,6 +631,19 @@ static int wil_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 		goto err_iounmap;
 
 	wil6210_clear_irq(wil);
+=======
+	wil_set_capabilities(wil);
+	wil6210_clear_irq(wil);
+
+	wil->keep_radio_on_during_sleep =
+		wil->platform_ops.keep_radio_on_during_sleep &&
+		wil->platform_ops.keep_radio_on_during_sleep(
+			wil->platform_handle) &&
+		test_bit(WMI_FW_CAPABILITY_D3_SUSPEND, wil->fw_capabilities);
+
+	wil_info(wil, "keep_radio_on_during_sleep (%d)\n",
+		 wil->keep_radio_on_during_sleep);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* FW should raise IRQ when ready */
 	rc = wil_if_pcie_enable(wil);
@@ -533,6 +661,7 @@ static int wil_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 
 #ifdef CONFIG_PM
 #ifdef CONFIG_PM_SLEEP
+<<<<<<< HEAD
 	/* in case of WMI-only FW, perform full reset and FW loading */
 	if (test_bit(WMI_FW_CAPABILITY_WMI_ONLY, wil->fw_capabilities)) {
 		wil_dbg_misc(wil, "Loading WMI only FW\n");
@@ -545,6 +674,8 @@ static int wil_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 		}
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	wil->pm_notify.notifier_call = wil6210_pm_notify;
 	rc = register_pm_notifier(&wil->pm_notify);
 	if (rc)
@@ -556,6 +687,7 @@ static int wil_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 #endif /* CONFIG_PM */
 
 	wil6210_debugfs_init(wil);
+<<<<<<< HEAD
 	wil6210_sysfs_init(wil);
 
 	wil_pm_runtime_allow(wil);
@@ -564,6 +696,12 @@ static int wil_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 
 if_remove:
 	wil_if_remove(wil);
+=======
+
+
+	return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 bus_disable:
 	wil_if_pcie_disable(wil);
 err_iounmap:
@@ -593,6 +731,7 @@ static void wil_pcie_remove(struct pci_dev *pdev)
 #endif /* CONFIG_PM_SLEEP */
 #endif /* CONFIG_PM */
 
+<<<<<<< HEAD
 	wil_pm_runtime_forbid(wil);
 
 	wil6210_sysfs_remove(wil);
@@ -600,6 +739,11 @@ static void wil_pcie_remove(struct pci_dev *pdev)
 	rtnl_lock();
 	wil_p2p_wdev_free(wil);
 	wil_remove_all_additional_vifs(wil);
+=======
+	wil6210_debugfs_remove(wil);
+	rtnl_lock();
+	wil_p2p_wdev_free(wil);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rtnl_unlock();
 	wil_if_remove(wil);
 	wil_if_pcie_disable(wil);
@@ -613,7 +757,10 @@ static void wil_pcie_remove(struct pci_dev *pdev)
 static const struct pci_device_id wil6210_pcie_ids[] = {
 	{ PCI_DEVICE(0x1ae9, 0x0310) },
 	{ PCI_DEVICE(0x1ae9, 0x0302) }, /* same as above, firmware broken */
+<<<<<<< HEAD
 	{ PCI_DEVICE(0x17cb, 0x1201) }, /* Talyn */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ /* end: all zeroes */	},
 };
 MODULE_DEVICE_TABLE(pci, wil6210_pcie_ids);
@@ -626,6 +773,7 @@ static int wil6210_suspend(struct device *dev, bool is_runtime)
 	int rc = 0;
 	struct pci_dev *pdev = to_pci_dev(dev);
 	struct wil6210_priv *wil = pci_get_drvdata(pdev);
+<<<<<<< HEAD
 	bool keep_radio_on, active_ifaces;
 
 	wil_dbg_pm(wil, "suspend: %s\n", is_runtime ? "runtime" : "system");
@@ -635,12 +783,21 @@ static int wil6210_suspend(struct device *dev, bool is_runtime)
 	mutex_unlock(&wil->vif_mutex);
 	keep_radio_on = active_ifaces && wil->keep_radio_on_during_sleep;
 
+=======
+	struct net_device *ndev = wil_to_ndev(wil);
+	bool keep_radio_on = ndev->flags & IFF_UP &&
+			     wil->keep_radio_on_during_sleep;
+
+	wil_dbg_pm(wil, "suspend: %s\n", is_runtime ? "runtime" : "system");
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rc = wil_can_suspend(wil, is_runtime);
 	if (rc)
 		goto out;
 
 	rc = wil_suspend(wil, is_runtime, keep_radio_on);
 	if (!rc) {
+<<<<<<< HEAD
 		/* In case radio stays on, platform device will control
 		 * PCIe master
 		 */
@@ -651,6 +808,16 @@ static int wil6210_suspend(struct device *dev, bool is_runtime)
 		} else {
 			wil->suspend_stats.r_on.successful_suspends++;
 		}
+=======
+		wil->suspend_stats.successful_suspends++;
+
+		/* In case radio stays on, platform device will control
+		 * PCIe master
+		 */
+		if (!keep_radio_on)
+			/* disable bus mastering */
+			pci_clear_master(pdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 out:
 	return rc;
@@ -661,6 +828,7 @@ static int wil6210_resume(struct device *dev, bool is_runtime)
 	int rc = 0;
 	struct pci_dev *pdev = to_pci_dev(dev);
 	struct wil6210_priv *wil = pci_get_drvdata(pdev);
+<<<<<<< HEAD
 	bool keep_radio_on, active_ifaces;
 
 	if (test_bit(wil_status_pci_linkdown, wil->status)) {
@@ -675,6 +843,14 @@ static int wil6210_resume(struct device *dev, bool is_runtime)
 	mutex_unlock(&wil->vif_mutex);
 	keep_radio_on = active_ifaces && wil->keep_radio_on_during_sleep;
 
+=======
+	struct net_device *ndev = wil_to_ndev(wil);
+	bool keep_radio_on = ndev->flags & IFF_UP &&
+			     wil->keep_radio_on_during_sleep;
+
+	wil_dbg_pm(wil, "resume: %s\n", is_runtime ? "runtime" : "system");
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* In case radio stays on, platform device will control
 	 * PCIe master
 	 */
@@ -684,6 +860,7 @@ static int wil6210_resume(struct device *dev, bool is_runtime)
 	rc = wil_resume(wil, is_runtime, keep_radio_on);
 	if (rc) {
 		wil_err(wil, "device failed to resume (%d)\n", rc);
+<<<<<<< HEAD
 		if (!keep_radio_on) {
 			pci_clear_master(pdev);
 			wil->suspend_stats.r_off.failed_resumes++;
@@ -695,6 +872,13 @@ static int wil6210_resume(struct device *dev, bool is_runtime)
 			wil->suspend_stats.r_on.successful_resumes++;
 		else
 			wil->suspend_stats.r_off.successful_resumes++;
+=======
+		wil->suspend_stats.failed_resumes++;
+		if (!keep_radio_on)
+			pci_clear_master(pdev);
+	} else {
+		wil->suspend_stats.successful_resumes++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return rc;
@@ -750,6 +934,7 @@ static int wil6210_pm_resume(struct device *dev)
 }
 #endif /* CONFIG_PM_SLEEP */
 
+<<<<<<< HEAD
 static int wil6210_pm_runtime_idle(struct device *dev)
 {
 	struct pci_dev *pdev = to_pci_dev(dev);
@@ -777,13 +962,18 @@ static int wil6210_pm_runtime_suspend(struct device *dev)
 
 	return wil6210_suspend(dev, true);
 }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* CONFIG_PM */
 
 static const struct dev_pm_ops wil6210_pm_ops = {
 	SET_SYSTEM_SLEEP_PM_OPS(wil6210_pm_suspend, wil6210_pm_resume)
+<<<<<<< HEAD
 	SET_RUNTIME_PM_OPS(wil6210_pm_runtime_suspend,
 			   wil6210_pm_runtime_resume,
 			   wil6210_pm_runtime_idle)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static struct pci_driver wil6210_driver = {

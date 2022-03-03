@@ -85,12 +85,16 @@ int log_policy = SMACK_AUDIT_DENIED;
 int smk_access_entry(char *subject_label, char *object_label,
 			struct list_head *rule_list)
 {
+<<<<<<< HEAD
 	int may = -ENOENT;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct smack_rule *srp;
 
 	list_for_each_entry_rcu(srp, rule_list, list) {
 		if (srp->smk_object->smk_known == object_label &&
 		    srp->smk_subject->smk_known == subject_label) {
+<<<<<<< HEAD
 			may = srp->smk_access;
 			break;
 		}
@@ -102,6 +106,19 @@ int smk_access_entry(char *subject_label, char *object_label,
 	if ((may & MAY_WRITE) == MAY_WRITE)
 		may |= MAY_LOCK;
 	return may;
+=======
+			int may = srp->smk_access;
+			/*
+			 * MAY_WRITE implies MAY_LOCK.
+			 */
+			if ((may & MAY_WRITE) == MAY_WRITE)
+				may |= MAY_LOCK;
+			return may;
+		}
+	}
+
+	return -ENOENT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -469,7 +486,11 @@ char *smk_parse_smack(const char *string, int len)
 	if (i == 0 || i >= SMK_LONGLABEL)
 		return ERR_PTR(-EINVAL);
 
+<<<<<<< HEAD
 	smack = kzalloc(i + 1, GFP_KERNEL);
+=======
+	smack = kzalloc(i + 1, GFP_NOFS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (smack == NULL)
 		return ERR_PTR(-ENOMEM);
 
@@ -504,7 +525,11 @@ int smk_netlbl_mls(int level, char *catset, struct netlbl_lsm_secattr *sap,
 			if ((m & *cp) == 0)
 				continue;
 			rc = netlbl_catmap_setbit(&sap->attr.mls.cat,
+<<<<<<< HEAD
 						  cat, GFP_KERNEL);
+=======
+						  cat, GFP_NOFS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (rc < 0) {
 				netlbl_catmap_free(sap->attr.mls.cat);
 				return rc;
@@ -540,7 +565,11 @@ struct smack_known *smk_import_entry(const char *string, int len)
 	if (skp != NULL)
 		goto freeout;
 
+<<<<<<< HEAD
 	skp = kzalloc(sizeof(*skp), GFP_KERNEL);
+=======
+	skp = kzalloc(sizeof(*skp), GFP_NOFS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (skp == NULL) {
 		skp = ERR_PTR(-ENOMEM);
 		goto freeout;

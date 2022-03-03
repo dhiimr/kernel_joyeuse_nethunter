@@ -50,7 +50,11 @@ static unsigned long sun4i_tmds_calc_divider(unsigned long rate,
 			    (rate - tmp_rate) < (rate - best_rate)) {
 				best_rate = tmp_rate;
 				best_m = m;
+<<<<<<< HEAD
 				is_double = d;
+=======
+				is_double = (d == 2) ? true : false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 		}
 	}

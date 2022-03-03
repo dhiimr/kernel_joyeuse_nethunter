@@ -13,6 +13,7 @@
 #define POLY1305_KEY_SIZE	32
 #define POLY1305_DIGEST_SIZE	16
 
+<<<<<<< HEAD
 struct poly1305_key {
 	u32 r[5];	/* key, base 2^26 */
 };
@@ -28,6 +29,15 @@ struct poly1305_desc_ctx {
 	u32 s[4];
 	/* accumulator */
 	struct poly1305_state h;
+=======
+struct poly1305_desc_ctx {
+	/* key */
+	u32 r[5];
+	/* finalize key */
+	u32 s[4];
+	/* accumulator */
+	u32 h[5];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* partial buffer */
 	u8 buf[POLY1305_BLOCK_SIZE];
 	/* bytes used in partial buffer */
@@ -38,6 +48,7 @@ struct poly1305_desc_ctx {
 	bool sset;
 };
 
+<<<<<<< HEAD
 /*
  * Poly1305 core functions.  These implement the ε-almost-∆-universal hash
  * function underlying the Poly1305 MAC, i.e. they don't add an encrypted nonce
@@ -54,6 +65,8 @@ void poly1305_core_blocks(struct poly1305_state *state,
 void poly1305_core_emit(const struct poly1305_state *state, void *dst);
 
 /* Crypto API helper functions for the Poly1305 MAC */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int crypto_poly1305_init(struct shash_desc *desc);
 unsigned int crypto_poly1305_setdesckey(struct poly1305_desc_ctx *dctx,
 					const u8 *src, unsigned int srclen);

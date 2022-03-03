@@ -412,7 +412,11 @@
 	   | CN6XXX_INTR_M0UNWI_ERR             \
 	   | CN6XXX_INTR_M1UPB0_ERR             \
 	   | CN6XXX_INTR_M1UPWI_ERR             \
+<<<<<<< HEAD
 	   | CN6XXX_INTR_M1UPB0_ERR             \
+=======
+	   | CN6XXX_INTR_M1UNB0_ERR             \
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	   | CN6XXX_INTR_M1UNWI_ERR             \
 	   | CN6XXX_INTR_INSTR_DB_OF_ERR        \
 	   | CN6XXX_INTR_SLIST_DB_OF_ERR        \

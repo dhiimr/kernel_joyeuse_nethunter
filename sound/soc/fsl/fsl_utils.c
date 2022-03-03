@@ -75,6 +75,10 @@ int fsl_asoc_get_dma_channel(struct device_node *ssi_np,
 	iprop = of_get_property(dma_np, "cell-index", NULL);
 	if (!iprop) {
 		of_node_put(dma_np);
+<<<<<<< HEAD
+=======
+		of_node_put(dma_channel_np);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 	}
 	*dma_id = be32_to_cpup(iprop);

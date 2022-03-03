@@ -301,7 +301,11 @@ SystemCall:
 /* On the MPC8xx, this is a software emulation interrupt.  It occurs
  * for all unimplemented and illegal instructions.
  */
+<<<<<<< HEAD
 	EXCEPTION(0x1000, SoftEmu, program_check_exception, EXC_XFER_STD)
+=======
+	EXCEPTION(0x1000, SoftEmu, emulation_assist_interrupt, EXC_XFER_STD)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	. = 0x1100
 /*
@@ -398,11 +402,17 @@ _ENTRY(ITLBMiss_cmp)
 #if defined (CONFIG_HUGETLB_PAGE) && defined (CONFIG_PPC_4K_PAGES)
 	rlwimi	r10, r11, 1, MI_SPS16K
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_SWAP
 	rlwinm	r11, r10, 32-5, _PAGE_PRESENT
 	and	r11, r11, r10
 	rlwimi	r10, r11, 0, _PAGE_PRESENT
 #endif
+=======
+	rlwinm	r11, r10, 32-11, _PAGE_PRESENT
+	and	r11, r11, r10
+	rlwimi	r10, r11, 0, _PAGE_PRESENT
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	li	r11, RPN_PATTERN
 	/* The Linux PTE won't go exactly into the MMU TLB.
 	 * Software indicator bits 20-23 and 28 must be clear.
@@ -528,11 +538,17 @@ _ENTRY(DTLBMiss_jmp)
 	 * r11 = ((r10 & PRESENT) & ((r10 & ACCESSED) >> 5));
 	 * r10 = (r10 & ~PRESENT) | r11;
 	 */
+<<<<<<< HEAD
 #ifdef CONFIG_SWAP
 	rlwinm	r11, r10, 32-5, _PAGE_PRESENT
 	and	r11, r11, r10
 	rlwimi	r10, r11, 0, _PAGE_PRESENT
 #endif
+=======
+	rlwinm	r11, r10, 32-11, _PAGE_PRESENT
+	and	r11, r11, r10
+	rlwimi	r10, r11, 0, _PAGE_PRESENT
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* The Linux PTE won't go exactly into the MMU TLB.
 	 * Software indicator bits 22 and 28 must be clear.
 	 * Software indicator bits 24, 25, 26, and 27 must be

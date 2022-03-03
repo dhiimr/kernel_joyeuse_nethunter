@@ -883,6 +883,10 @@ int qedf_post_io_req(struct qedf_rport *fcport, struct qedf_ioreq *io_req)
 	if (!test_bit(QEDF_RPORT_SESSION_READY, &fcport->flags)) {
 		QEDF_ERR(&(qedf->dbg_ctx), "Session not offloaded yet.\n");
 		kref_put(&io_req->refcount, qedf_release_cmd);
+<<<<<<< HEAD
+=======
+		return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Obtain free SQE */

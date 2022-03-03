@@ -780,7 +780,11 @@ struct fb_info *fbtft_framebuffer_alloc(struct fbtft_display *display,
 	fbdefio->deferred_io =     fbtft_deferred_io;
 	fb_deferred_io_init(info);
 
+<<<<<<< HEAD
 	strncpy(info->fix.id, dev->driver->name, 16);
+=======
+	snprintf(info->fix.id, sizeof(info->fix.id), "%s", dev->driver->name);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	info->fix.type =           FB_TYPE_PACKED_PIXELS;
 	info->fix.visual =         FB_VISUAL_TRUECOLOR;
 	info->fix.xpanstep =	   0;
@@ -828,7 +832,11 @@ struct fb_info *fbtft_framebuffer_alloc(struct fbtft_display *display,
 	if (par->gamma.curves && gamma) {
 		if (fbtft_gamma_parse_str(par,
 			par->gamma.curves, gamma, strlen(gamma)))
+<<<<<<< HEAD
 			goto alloc_fail;
+=======
+			goto release_framebuf;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Transmit buffer */
@@ -845,7 +853,11 @@ struct fb_info *fbtft_framebuffer_alloc(struct fbtft_display *display,
 	if (txbuflen > 0) {
 		txbuf = devm_kzalloc(par->info->device, txbuflen, GFP_KERNEL);
 		if (!txbuf)
+<<<<<<< HEAD
 			goto alloc_fail;
+=======
+			goto release_framebuf;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		par->txbuf.buf = txbuf;
 		par->txbuf.len = txbuflen;
 	}
@@ -881,6 +893,12 @@ struct fb_info *fbtft_framebuffer_alloc(struct fbtft_display *display,
 
 	return info;
 
+<<<<<<< HEAD
+=======
+release_framebuf:
+	framebuffer_release(info);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 alloc_fail:
 	vfree(vmem);
 

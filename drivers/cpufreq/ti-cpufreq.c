@@ -205,6 +205,10 @@ static int ti_cpufreq_init(void)
 
 	np = of_find_node_by_path("/");
 	match = of_match_node(ti_cpufreq_of_match, np);
+<<<<<<< HEAD
+=======
+	of_node_put(np);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!match)
 		return -ENODEV;
 

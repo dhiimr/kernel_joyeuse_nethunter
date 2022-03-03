@@ -25,6 +25,7 @@
 static const struct sdio_device_id sdio_ids[] =
 {
 	{ SDIO_DEVICE(0x024c, 0x0523), },
+<<<<<<< HEAD
 	{ SDIO_DEVICE(0x024c, 0x0623), },
 	{ SDIO_DEVICE(0x024c, 0x0626), },
 	{ SDIO_DEVICE(0x024c, 0xb723), },
@@ -37,6 +38,16 @@ static const struct acpi_device_id acpi_ids[] = {
 
 MODULE_DEVICE_TABLE(sdio, sdio_ids);
 MODULE_DEVICE_TABLE(acpi, acpi_ids);
+=======
+	{ SDIO_DEVICE(0x024c, 0x0525), },
+	{ SDIO_DEVICE(0x024c, 0x0623), },
+	{ SDIO_DEVICE(0x024c, 0x0626), },
+	{ SDIO_DEVICE(0x024c, 0x0627), },
+	{ SDIO_DEVICE(0x024c, 0xb723), },
+	{ /* end: all zeroes */				},
+};
+MODULE_DEVICE_TABLE(sdio, sdio_ids);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int rtw_drv_init(struct sdio_func *func, const struct sdio_device_id *id);
 static void rtw_dev_remove(struct sdio_func *func);

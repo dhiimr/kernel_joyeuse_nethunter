@@ -17,6 +17,7 @@ processor ID) and a string identifier.
 	Value type: <prop-encoded-array>
 	Definition: one entry specifying the smp2p notification interrupt
 
+<<<<<<< HEAD
 - mboxes:
 	Usage: required
 	Value type: <prop-encoded-array>
@@ -25,6 +26,10 @@ processor ID) and a string identifier.
 
 - qcom,ipc:
 	Usage: required, unless mboxes is specified
+=======
+- qcom,ipc:
+	Usage: required
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	Value type: <prop-encoded-array>
 	Definition: three entries specifying the outgoing ipc bit used for
 		    signaling the remote end of the smp2p edge:

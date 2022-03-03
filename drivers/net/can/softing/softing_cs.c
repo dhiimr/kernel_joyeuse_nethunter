@@ -304,7 +304,11 @@ static int softingcs_probe(struct pcmcia_device *pcmcia)
 	return 0;
 
 platform_failed:
+<<<<<<< HEAD
 	kfree(dev);
+=======
+	platform_device_put(pdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 mem_failed:
 pcmcia_bad:
 pcmcia_failed:

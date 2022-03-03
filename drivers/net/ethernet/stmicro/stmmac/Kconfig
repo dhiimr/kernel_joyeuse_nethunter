@@ -97,6 +97,7 @@ config DWMAC_OXNAS
 	  This selects the Oxford Semiconductor OXNASSoC glue layer support for
 	  the stmmac device driver. This driver is used for OX820.
 
+<<<<<<< HEAD
 config DWMAC_QCOM_ETHQOS
 	tristate "Qualcomm Technologies, Inc. ETHQOS support"
 	default ARCH_QCOM
@@ -107,6 +108,8 @@ config DWMAC_QCOM_ETHQOS
 	  This selects the Qualcomm Technologies, Inc. ETHQOS glue layer support for the
 	  stmmac device driver.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config DWMAC_ROCKCHIP
 	tristate "Rockchip dwmac support"
 	default ARCH_ROCKCHIP

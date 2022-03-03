@@ -121,8 +121,13 @@ static int nfs4_validate_fspath(struct dentry *dentry,
 	return 0;
 }
 
+<<<<<<< HEAD
 static size_t nfs_parse_server_name(char *string, size_t len,
 		struct sockaddr *sa, size_t salen, struct net *net)
+=======
+size_t nfs_parse_server_name(char *string, size_t len, struct sockaddr *sa,
+			     size_t salen, struct net *net)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	ssize_t ret;
 

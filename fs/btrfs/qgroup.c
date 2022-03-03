@@ -424,13 +424,20 @@ next2:
 			break;
 	}
 out:
+<<<<<<< HEAD
+=======
+	btrfs_free_path(path);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	fs_info->qgroup_flags |= flags;
 	if (!(fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_ON))
 		clear_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
 	else if (fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN &&
 		 ret >= 0)
 		ret = qgroup_rescan_init(fs_info, rescan_progress, 0);
+<<<<<<< HEAD
 	btrfs_free_path(path);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (ret < 0) {
 		ulist_free(fs_info->qgroup_ulist);
@@ -722,10 +729,17 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int update_qgroup_status_item(struct btrfs_trans_handle *trans,
 				     struct btrfs_fs_info *fs_info,
 				    struct btrfs_root *root)
 {
+=======
+static int update_qgroup_status_item(struct btrfs_trans_handle *trans)
+{
+	struct btrfs_fs_info *fs_info = trans->fs_info;
+	struct btrfs_root *quota_root = fs_info->quota_root;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct btrfs_path *path;
 	struct btrfs_key key;
 	struct extent_buffer *l;
@@ -741,7 +755,11 @@ static int update_qgroup_status_item(struct btrfs_trans_handle *trans,
 	if (!path)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	ret = btrfs_search_slot(trans, root, &key, path, 0, 1);
+=======
+	ret = btrfs_search_slot(trans, quota_root, &key, path, 0, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret > 0)
 		ret = -ENOENT;
 
@@ -1928,8 +1946,17 @@ btrfs_qgroup_account_extent(struct btrfs_trans_handle *trans,
 	u64 nr_old_roots = 0;
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags))
 		return 0;
+=======
+	/*
+	 * If quotas get disabled meanwhile, the resouces need to be freed and
+	 * we can't just exit here.
+	 */
+	if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags))
+		goto out_free;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (new_roots) {
 		if (!maybe_fs_roots(new_roots))
@@ -2110,7 +2137,11 @@ int btrfs_run_qgroups(struct btrfs_trans_handle *trans,
 		fs_info->qgroup_flags &= ~BTRFS_QGROUP_STATUS_FLAG_ON;
 	spin_unlock(&fs_info->qgroup_lock);
 
+<<<<<<< HEAD
 	ret = update_qgroup_status_item(trans, fs_info, quota_root);
+=======
+	ret = update_qgroup_status_item(trans);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		fs_info->qgroup_flags |= BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
 
@@ -2610,6 +2641,15 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static bool rescan_should_stop(struct btrfs_fs_info *fs_info)
+{
+	return btrfs_fs_closing(fs_info) ||
+		test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
 {
 	struct btrfs_fs_info *fs_info = container_of(work, struct btrfs_fs_info,
@@ -2618,13 +2658,21 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
 	struct btrfs_trans_handle *trans = NULL;
 	int err = -ENOMEM;
 	int ret = 0;
+<<<<<<< HEAD
+=======
+	bool stopped = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	path = btrfs_alloc_path();
 	if (!path)
 		goto out;
 
 	err = 0;
+<<<<<<< HEAD
 	while (!err && !btrfs_fs_closing(fs_info)) {
+=======
+	while (!err && !(stopped = rescan_should_stop(fs_info))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		trans = btrfs_start_transaction(fs_info->fs_root, 0);
 		if (IS_ERR(trans)) {
 			err = PTR_ERR(trans);
@@ -2645,9 +2693,12 @@ out:
 	btrfs_free_path(path);
 
 	mutex_lock(&fs_info->qgroup_rescan_lock);
+<<<<<<< HEAD
 	if (!btrfs_fs_closing(fs_info))
 		fs_info->qgroup_flags &= ~BTRFS_QGROUP_STATUS_FLAG_RESCAN;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (err > 0 &&
 	    fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT) {
 		fs_info->qgroup_flags &= ~BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
@@ -2663,6 +2714,7 @@ out:
 	trans = btrfs_start_transaction(fs_info->quota_root, 1);
 	if (IS_ERR(trans)) {
 		err = PTR_ERR(trans);
+<<<<<<< HEAD
 		btrfs_err(fs_info,
 			  "fail to start transaction for status update: %d",
 			  err);
@@ -2676,6 +2728,35 @@ out:
 	btrfs_end_transaction(trans);
 
 	if (btrfs_fs_closing(fs_info)) {
+=======
+		trans = NULL;
+		btrfs_err(fs_info,
+			  "fail to start transaction for status update: %d",
+			  err);
+	}
+
+	mutex_lock(&fs_info->qgroup_rescan_lock);
+	if (!stopped)
+		fs_info->qgroup_flags &= ~BTRFS_QGROUP_STATUS_FLAG_RESCAN;
+	if (trans) {
+		ret = update_qgroup_status_item(trans);
+		if (ret < 0) {
+			err = ret;
+			btrfs_err(fs_info, "fail to update qgroup status: %d",
+				  err);
+		}
+	}
+	fs_info->qgroup_rescan_running = false;
+	complete_all(&fs_info->qgroup_rescan_completion);
+	mutex_unlock(&fs_info->qgroup_rescan_lock);
+
+	if (!trans)
+		return;
+
+	btrfs_end_transaction(trans);
+
+	if (stopped) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		btrfs_info(fs_info, "qgroup scan paused");
 	} else if (err >= 0) {
 		btrfs_info(fs_info, "qgroup scan completed%s",
@@ -2683,12 +2764,15 @@ out:
 	} else {
 		btrfs_err(fs_info, "qgroup scan failed with %d", err);
 	}
+<<<<<<< HEAD
 
 done:
 	mutex_lock(&fs_info->qgroup_rescan_lock);
 	fs_info->qgroup_rescan_running = false;
 	mutex_unlock(&fs_info->qgroup_rescan_lock);
 	complete_all(&fs_info->qgroup_rescan_completion);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -2951,7 +3035,11 @@ static int qgroup_free_reserved_data(struct inode *inode,
 		 * EXTENT_QGROUP_RESERVED, we won't double free.
 		 * So not need to rush.
 		 */
+<<<<<<< HEAD
 		ret = clear_record_extent_bits(&BTRFS_I(inode)->io_failure_tree,
+=======
+		ret = clear_record_extent_bits(&BTRFS_I(inode)->io_tree,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				free_start, free_start + free_len - 1,
 				EXTENT_QGROUP_RESERVED, &changeset);
 		if (ret < 0)

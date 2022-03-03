@@ -75,7 +75,11 @@ modpost = scripts/mod/modpost                    \
  $(if $(CONFIG_MODULE_SRCVERSION_ALL),-a,)       \
  $(if $(KBUILD_EXTMOD),-i,-o) $(kernelsymfile)   \
  $(if $(KBUILD_EXTMOD),-I $(modulesymfile))      \
+<<<<<<< HEAD
  $(if $(KBUILD_EXTRA_SYMBOLS), $(patsubst %, -e %,$(KBUILD_EXTRA_SYMBOLS))) \
+=======
+ $(if $(KBUILD_EXTMOD),$(addprefix -e ,$(KBUILD_EXTRA_SYMBOLS))) \
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  $(if $(KBUILD_EXTMOD),-o $(modulesymfile))      \
  $(if $(CONFIG_DEBUG_SECTION_MISMATCH),,-S)      \
  $(if $(CONFIG_SECTION_MISMATCH_WARN_ONLY),,-E)  \
@@ -83,6 +87,7 @@ modpost = scripts/mod/modpost                    \
 
 MODPOST_OPT=$(subst -i,-n,$(filter -i,$(MAKEFLAGS)))
 
+<<<<<<< HEAD
 # If CONFIG_LTO_CLANG is enabled, .o files are either LLVM IR, or empty, so we
 # need to link them into actual objects before passing them to modpost
 modpost-ext = $(if $(CONFIG_LTO_CLANG),.lto,)
@@ -105,6 +110,14 @@ quiet_cmd_modpost = MODPOST $(words $(filter-out vmlinux FORCE, $^)) modules
 
 PHONY += __modpost
 __modpost: $(modules:.ko=$(modpost-ext).o) FORCE
+=======
+# We can go over command line length here, so be careful.
+quiet_cmd_modpost = MODPOST $(words $(filter-out vmlinux FORCE, $^)) modules
+      cmd_modpost = $(MODLISTCMD) | sed 's/\.ko$$/.o/' | $(modpost) $(MODPOST_OPT) -s -T -
+
+PHONY += __modpost
+__modpost: $(modules:.ko=.o) FORCE
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	$(call cmd,modpost) $(wildcard vmlinux)
 
 quiet_cmd_kernel-mod = MODPOST $@
@@ -114,7 +127,12 @@ vmlinux.o: FORCE
 	$(call cmd,kernel-mod)
 
 # Declare generated files as targets for modpost
+<<<<<<< HEAD
 $(modules:.ko=$(modpost-ext).mod.c): __modpost ;
+=======
+$(modules:.ko=.mod.c): __modpost ;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 # Step 5), compile all *.mod.c files
 
@@ -125,15 +143,23 @@ quiet_cmd_cc_o_c = CC      $@
       cmd_cc_o_c = $(CC) $(c_flags) $(KBUILD_CFLAGS_MODULE) $(CFLAGS_MODULE) \
 		   -c -o $@ $<
 
+<<<<<<< HEAD
 $(modules:.ko=.mod.o): %.mod.o: %$(modpost-ext).mod.c FORCE
 	$(call if_changed_dep,cc_o_c)
 
 targets += $(modules:.ko=$(modpost-ext).mod.o)
+=======
+$(modules:.ko=.mod.o): %.mod.o: %.mod.c FORCE
+	$(call if_changed_dep,cc_o_c)
+
+targets += $(modules:.ko=.mod.o)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
 
 # Step 6), final link of the modules with optional arch pass after final link
 quiet_cmd_ld_ko_o = LD [M]  $@
+<<<<<<< HEAD
 
 ifdef CONFIG_LTO_CLANG
       cmd_ld_ko_o = 							\
@@ -148,14 +174,21 @@ ifdef CONFIG_LTO_CLANG
       cmd_ld_ko_o += ; $(objtree)/scripts/recordmcount $(RECORDMCOUNT_FLAGS) $@
   endif
 else
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
       cmd_ld_ko_o =                                                     \
 	$(LD) -r $(LDFLAGS)                                             \
                  $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)             \
                  -o $@ $(filter-out FORCE,$^) ;                         \
 	$(if $(ARCH_POSTLINK), $(MAKE) -f $(ARCH_POSTLINK) $@, true)
+<<<<<<< HEAD
 endif
 
 $(modules): %.ko: %$(modpost-ext).o %.mod.o FORCE
+=======
+
+$(modules): %.ko :%.o %.mod.o FORCE
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	+$(call if_changed,ld_ko_o)
 
 targets += $(modules)

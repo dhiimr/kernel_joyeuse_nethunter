@@ -561,8 +561,11 @@ void __do_irq(struct pt_regs *regs)
 
 	trace_irq_entry(regs);
 
+<<<<<<< HEAD
 	check_stack_overflow();
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Query the platform PIC for the interrupt & ack it.
 	 *
@@ -594,6 +597,11 @@ void do_IRQ(struct pt_regs *regs)
 	irqtp = hardirq_ctx[raw_smp_processor_id()];
 	sirqtp = softirq_ctx[raw_smp_processor_id()];
 
+<<<<<<< HEAD
+=======
+	check_stack_overflow();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Already there ? */
 	if (unlikely(curtp == irqtp || curtp == sirqtp)) {
 		__do_irq(regs);

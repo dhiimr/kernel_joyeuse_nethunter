@@ -984,7 +984,12 @@ static int pcpu_alloc_area(struct pcpu_chunk *chunk, int alloc_bits,
 	/*
 	 * Search to find a fit.
 	 */
+<<<<<<< HEAD
 	end = start + alloc_bits + PCPU_BITMAP_BLOCK_BITS;
+=======
+	end = min_t(int, start + alloc_bits + PCPU_BITMAP_BLOCK_BITS,
+		    pcpu_chunk_map_bits(chunk));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bit_off = bitmap_find_next_zero_area(chunk->alloc_map, end, start,
 					     alloc_bits, align_mask);
 	if (bit_off >= end)
@@ -1098,7 +1103,11 @@ static struct pcpu_chunk * __init pcpu_alloc_first_chunk(unsigned long tmp_addr,
 
 	/* allocate chunk */
 	chunk = memblock_virt_alloc(sizeof(struct pcpu_chunk) +
+<<<<<<< HEAD
 				    BITS_TO_LONGS(region_size >> PAGE_SHIFT),
+=======
+				    BITS_TO_LONGS(region_size >> PAGE_SHIFT) * sizeof(unsigned long),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				    0);
 
 	INIT_LIST_HEAD(&chunk->list);
@@ -1702,6 +1711,10 @@ void free_percpu(void __percpu *ptr)
 	struct pcpu_chunk *chunk;
 	unsigned long flags;
 	int off;
+<<<<<<< HEAD
+=======
+	bool need_balance = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!ptr)
 		return;
@@ -1723,7 +1736,11 @@ void free_percpu(void __percpu *ptr)
 
 		list_for_each_entry(pos, &pcpu_slot[pcpu_nr_slots - 1], list)
 			if (pos != chunk) {
+<<<<<<< HEAD
 				pcpu_schedule_balance_work();
+=======
+				need_balance = true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				break;
 			}
 	}
@@ -1731,6 +1748,12 @@ void free_percpu(void __percpu *ptr)
 	trace_percpu_free_percpu(chunk->base_addr, off, ptr);
 
 	spin_unlock_irqrestore(&pcpu_lock, flags);
+<<<<<<< HEAD
+=======
+
+	if (need_balance)
+		pcpu_schedule_balance_work();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(free_percpu);
 

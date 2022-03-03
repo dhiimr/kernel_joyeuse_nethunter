@@ -32,6 +32,11 @@
 #include <linux/iio/trigger_consumer.h>
 #include <linux/iio/triggered_buffer.h>
 
+<<<<<<< HEAD
+=======
+#include <linux/time.h>
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define HDC100X_REG_TEMP			0x00
 #define HDC100X_REG_HUMIDITY			0x01
 
@@ -46,6 +51,14 @@ struct hdc100x_data {
 
 	/* integration time of the sensor */
 	int adc_int_us[2];
+<<<<<<< HEAD
+=======
+	/* Ensure natural alignment of timestamp */
+	struct {
+		__be16 channels[2];
+		s64 ts __aligned(8);
+	} scan;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* integration time in us */
@@ -168,7 +181,11 @@ static int hdc100x_get_measurement(struct hdc100x_data *data,
 				   struct iio_chan_spec const *chan)
 {
 	struct i2c_client *client = data->client;
+<<<<<<< HEAD
 	int delay = data->adc_int_us[chan->address];
+=======
+	int delay = data->adc_int_us[chan->address] + 1*USEC_PER_MSEC;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 	__be16 val;
 
@@ -237,7 +254,11 @@ static int hdc100x_read_raw(struct iio_dev *indio_dev,
 			*val2 = 65536;
 			return IIO_VAL_FRACTIONAL;
 		} else {
+<<<<<<< HEAD
 			*val = 100;
+=======
+			*val = 100000;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			*val2 = 65536;
 			return IIO_VAL_FRACTIONAL;
 		}
@@ -325,9 +346,14 @@ static irqreturn_t hdc100x_trigger_handler(int irq, void *p)
 	struct iio_dev *indio_dev = pf->indio_dev;
 	struct hdc100x_data *data = iio_priv(indio_dev);
 	struct i2c_client *client = data->client;
+<<<<<<< HEAD
 	int delay = data->adc_int_us[0] + data->adc_int_us[1];
 	int ret;
 	s16 buf[8];  /* 2x s16 + padding + 8 byte timestamp */
+=======
+	int delay = data->adc_int_us[0] + data->adc_int_us[1] + 2*USEC_PER_MSEC;
+	int ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* dual read starts at temp register */
 	mutex_lock(&data->lock);
@@ -338,13 +364,21 @@ static irqreturn_t hdc100x_trigger_handler(int irq, void *p)
 	}
 	usleep_range(delay, delay + 1000);
 
+<<<<<<< HEAD
 	ret = i2c_master_recv(client, (u8 *)buf, 4);
+=======
+	ret = i2c_master_recv(client, (u8 *)data->scan.channels, 4);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret < 0) {
 		dev_err(&client->dev, "cannot read sensor data\n");
 		goto err;
 	}
 
+<<<<<<< HEAD
 	iio_push_to_buffers_with_timestamp(indio_dev, buf,
+=======
+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					   iio_get_time_ns(indio_dev));
 err:
 	mutex_unlock(&data->lock);

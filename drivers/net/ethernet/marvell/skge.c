@@ -3122,7 +3122,11 @@ static struct sk_buff *skge_rx_get(struct net_device *dev,
 	skb_put(skb, len);
 
 	if (dev->features & NETIF_F_RXCSUM) {
+<<<<<<< HEAD
 		skb->csum = csum;
+=======
+		skb->csum = le16_to_cpu(csum);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		skb->ip_summed = CHECKSUM_COMPLETE;
 	}
 

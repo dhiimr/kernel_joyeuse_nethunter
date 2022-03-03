@@ -20,6 +20,11 @@
 #include <linux/keyctl.h>
 #include <linux/refcount.h>
 #include <linux/compat.h>
+<<<<<<< HEAD
+=======
+#include <linux/mm.h>
+#include <linux/vmalloc.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct iovec;
 
@@ -304,5 +309,8 @@ static inline void key_check(const struct key *key)
 #define key_check(key) do {} while(0)
 
 #endif
+<<<<<<< HEAD
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _INTERNAL_H */

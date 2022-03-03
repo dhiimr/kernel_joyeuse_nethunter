@@ -545,15 +545,25 @@ static int atm_tc_init(struct Qdisc *sch, struct nlattr *opt)
 	if (!p->link.q)
 		p->link.q = &noop_qdisc;
 	pr_debug("atm_tc_init: link (%p) qdisc %p\n", &p->link, p->link.q);
+<<<<<<< HEAD
+=======
+	p->link.vcc = NULL;
+	p->link.sock = NULL;
+	p->link.common.classid = sch->handle;
+	p->link.ref = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = tcf_block_get(&p->link.block, &p->link.filter_list);
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 	p->link.vcc = NULL;
 	p->link.sock = NULL;
 	p->link.common.classid = sch->handle;
 	p->link.ref = 1;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tasklet_init(&p->task, sch_atm_dequeue, (unsigned long)sch);
 	return 0;
 }

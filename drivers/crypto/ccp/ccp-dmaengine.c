@@ -341,6 +341,10 @@ static struct ccp_dma_desc *ccp_alloc_dma_desc(struct ccp_dma_chan *chan,
 	desc->tx_desc.flags = flags;
 	desc->tx_desc.tx_submit = ccp_tx_submit;
 	desc->ccp = chan->ccp;
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&desc->entry);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	INIT_LIST_HEAD(&desc->pending);
 	INIT_LIST_HEAD(&desc->active);
 	desc->status = DMA_IN_PROGRESS;

@@ -40,7 +40,12 @@ struct profile_hit {
 #define NR_PROFILE_GRP		(NR_PROFILE_HIT/PROFILE_GRPSZ)
 
 static atomic_t *prof_buffer;
+<<<<<<< HEAD
 static unsigned long prof_len, prof_shift;
+=======
+static unsigned long prof_len;
+static unsigned short int prof_shift;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 int prof_on __read_mostly;
 EXPORT_SYMBOL_GPL(prof_on);
@@ -66,8 +71,13 @@ int profile_setup(char *str)
 		if (str[strlen(sleepstr)] == ',')
 			str += strlen(sleepstr) + 1;
 		if (get_option(&str, &par))
+<<<<<<< HEAD
 			prof_shift = par;
 		pr_info("kernel sleep profiling enabled (shift: %ld)\n",
+=======
+			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
+		pr_info("kernel sleep profiling enabled (shift: %u)\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			prof_shift);
 #else
 		pr_warn("kernel sleep profiling requires CONFIG_SCHEDSTATS\n");
@@ -77,14 +87,20 @@ int profile_setup(char *str)
 		if (str[strlen(schedstr)] == ',')
 			str += strlen(schedstr) + 1;
 		if (get_option(&str, &par))
+<<<<<<< HEAD
 			prof_shift = par;
 		pr_info("kernel schedule profiling enabled (shift: %ld)\n",
+=======
+			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
+		pr_info("kernel schedule profiling enabled (shift: %u)\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			prof_shift);
 	} else if (!strncmp(str, kvmstr, strlen(kvmstr))) {
 		prof_on = KVM_PROFILING;
 		if (str[strlen(kvmstr)] == ',')
 			str += strlen(kvmstr) + 1;
 		if (get_option(&str, &par))
+<<<<<<< HEAD
 			prof_shift = par;
 		pr_info("kernel KVM profiling enabled (shift: %ld)\n",
 			prof_shift);
@@ -92,6 +108,15 @@ int profile_setup(char *str)
 		prof_shift = par;
 		prof_on = CPU_PROFILING;
 		pr_info("kernel profiling enabled (shift: %ld)\n",
+=======
+			prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
+		pr_info("kernel KVM profiling enabled (shift: %u)\n",
+			prof_shift);
+	} else if (get_option(&str, &par)) {
+		prof_shift = clamp(par, 0, BITS_PER_LONG - 1);
+		prof_on = CPU_PROFILING;
+		pr_info("kernel profiling enabled (shift: %u)\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			prof_shift);
 	}
 	return 1;
@@ -467,7 +492,11 @@ read_profile(struct file *file, char __user *buf, size_t count, loff_t *ppos)
 	unsigned long p = *ppos;
 	ssize_t read;
 	char *pnt;
+<<<<<<< HEAD
 	unsigned int sample_step = 1 << prof_shift;
+=======
+	unsigned long sample_step = 1UL << prof_shift;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	profile_flip_buffers();
 	if (p >= (prof_len+1)*sizeof(unsigned int))

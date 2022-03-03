@@ -20,6 +20,7 @@
 #define RWSEM_ANONYMOUSLY_OWNED	(1UL << 0)
 #define RWSEM_READER_OWNED	((struct task_struct *)RWSEM_ANONYMOUSLY_OWNED)
 
+<<<<<<< HEAD
 enum rwsem_waiter_type {
 	RWSEM_WAITING_FOR_WRITE,
 	RWSEM_WAITING_FOR_READ
@@ -31,6 +32,8 @@ struct rwsem_waiter {
 	enum rwsem_waiter_type type;
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_RWSEM_SPIN_ON_OWNER
 /*
  * All writes to owner are protected by WRITE_ONCE() to make sure that
@@ -90,6 +93,7 @@ static inline void rwsem_set_reader_owned(struct rw_semaphore *sem)
 {
 }
 #endif
+<<<<<<< HEAD
 
 #ifdef CONFIG_RWSEM_PRIO_AWARE
 
@@ -147,3 +151,5 @@ static inline bool rwsem_list_add_per_prio(struct rwsem_waiter *waiter_in,
 	return false;
 }
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

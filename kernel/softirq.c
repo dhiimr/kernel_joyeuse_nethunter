@@ -57,6 +57,7 @@ static struct softirq_action softirq_vec[NR_SOFTIRQS] __cacheline_aligned_in_smp
 
 DEFINE_PER_CPU(struct task_struct *, ksoftirqd);
 
+<<<<<<< HEAD
 /*
  * active_softirqs -- per cpu, a mask of softirqs that are being handled,
  * with the expectation that approximate answers are acceptable and therefore
@@ -64,6 +65,8 @@ DEFINE_PER_CPU(struct task_struct *, ksoftirqd);
  */
 DEFINE_PER_CPU(__u32, active_softirqs);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 const char * const softirq_to_name[NR_SOFTIRQS] = {
 	"HI", "TIMER", "NET_TX", "NET_RX", "BLOCK", "IRQ_POLL",
 	"TASKLET", "SCHED", "HRTIMER", "RCU"
@@ -85,6 +88,24 @@ static void wakeup_softirqd(void)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * If ksoftirqd is scheduled, we do not want to process pending softirqs
+ * right now. Let ksoftirqd handle this at its own rate, to get fairness,
+ * unless we're doing some of the synchronous softirqs.
+ */
+#define SOFTIRQ_NOW_MASK ((1 << HI_SOFTIRQ) | (1 << TASKLET_SOFTIRQ))
+static bool ksoftirqd_running(unsigned long pending)
+{
+	struct task_struct *tsk = __this_cpu_read(ksoftirqd);
+
+	if (pending & SOFTIRQ_NOW_MASK)
+		return false;
+	return tsk && (tsk->state == TASK_RUNNING);
+}
+
+/*
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * preempt_count and SOFTIRQ_OFFSET usage:
  * - preempt_count is changed by SOFTIRQ_OFFSET on entering or leaving
  *   softirq processing.
@@ -234,6 +255,7 @@ static inline bool lockdep_softirq_start(void) { return false; }
 static inline void lockdep_softirq_end(bool in_hardirq) { }
 #endif
 
+<<<<<<< HEAD
 #define softirq_deferred_for_rt(pending)		\
 ({							\
 	__u32 deferred = 0;				\
@@ -244,6 +266,8 @@ static inline void lockdep_softirq_end(bool in_hardirq) { }
 	deferred;					\
 })
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 asmlinkage __visible void __softirq_entry __do_softirq(void)
 {
 	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
@@ -251,7 +275,10 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
 	int max_restart = MAX_SOFTIRQ_RESTART;
 	struct softirq_action *h;
 	bool in_hardirq;
+<<<<<<< HEAD
 	__u32 deferred;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__u32 pending;
 	int softirq_bit;
 
@@ -263,15 +290,24 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
 	current->flags &= ~PF_MEMALLOC;
 
 	pending = local_softirq_pending();
+<<<<<<< HEAD
 	deferred = softirq_deferred_for_rt(pending);
 	account_irq_enter_time(current);
+=======
+	account_irq_enter_time(current);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
 	in_hardirq = lockdep_softirq_start();
 
 restart:
 	/* Reset the pending bitmask before enabling irqs */
+<<<<<<< HEAD
 	set_softirq_pending(deferred);
 	__this_cpu_write(active_softirqs, pending);
+=======
+	set_softirq_pending(0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	local_irq_enable();
 
@@ -301,21 +337,34 @@ restart:
 		pending >>= softirq_bit;
 	}
 
+<<<<<<< HEAD
 	__this_cpu_write(active_softirqs, 0);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rcu_bh_qs();
 	local_irq_disable();
 
 	pending = local_softirq_pending();
+<<<<<<< HEAD
 	deferred = softirq_deferred_for_rt(pending);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (pending) {
 		if (time_before(jiffies, end) && !need_resched() &&
 		    --max_restart)
 			goto restart;
+<<<<<<< HEAD
 	}
 
 	if (pending | deferred)
 		wakeup_softirqd();
+=======
+
+		wakeup_softirqd();
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	lockdep_softirq_end(in_hardirq);
 	account_irq_exit_time(current);
 	__local_bh_enable(SOFTIRQ_OFFSET);
@@ -335,7 +384,11 @@ asmlinkage __visible void do_softirq(void)
 
 	pending = local_softirq_pending();
 
+<<<<<<< HEAD
 	if (pending)
+=======
+	if (pending && !ksoftirqd_running(pending))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		do_softirq_own_stack();
 
 	local_irq_restore(flags);
@@ -362,6 +415,12 @@ void irq_enter(void)
 
 static inline void invoke_softirq(void)
 {
+<<<<<<< HEAD
+=======
+	if (ksoftirqd_running(local_softirq_pending()))
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!force_irqthreads) {
 #ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
 		/*
@@ -514,9 +573,13 @@ static __latent_entropy void tasklet_action(struct softirq_action *a)
 				if (!test_and_clear_bit(TASKLET_STATE_SCHED,
 							&t->state))
 					BUG();
+<<<<<<< HEAD
 				trace_tasklet_entry(t->func);
 				t->func(t->data);
 				trace_tasklet_exit(t->func);
+=======
+				t->func(t->data);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				tasklet_unlock(t);
 				continue;
 			}
@@ -552,9 +615,13 @@ static __latent_entropy void tasklet_hi_action(struct softirq_action *a)
 				if (!test_and_clear_bit(TASKLET_STATE_SCHED,
 							&t->state))
 					BUG();
+<<<<<<< HEAD
 				trace_tasklet_hi_entry(t->func);
 				t->func(t->data);
 				trace_tasklet_hi_exit(t->func);
+=======
+				t->func(t->data);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				tasklet_unlock(t);
 				continue;
 			}

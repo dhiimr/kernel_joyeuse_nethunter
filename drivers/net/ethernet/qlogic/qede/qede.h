@@ -156,6 +156,11 @@ struct qede_rdma_dev {
 	struct list_head entry;
 	struct list_head rdma_event_list;
 	struct workqueue_struct *rdma_wq;
+<<<<<<< HEAD
+=======
+	struct kref refcnt;
+	struct completion event_comp;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct qede_ptp;
@@ -526,12 +531,20 @@ void qede_update_rx_prod(struct qede_dev *edev, struct qede_rx_queue *rxq);
 #define RX_RING_SIZE		((u16)BIT(RX_RING_SIZE_POW))
 #define NUM_RX_BDS_MAX		(RX_RING_SIZE - 1)
 #define NUM_RX_BDS_MIN		128
+<<<<<<< HEAD
+=======
+#define NUM_RX_BDS_KDUMP_MIN	63
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define NUM_RX_BDS_DEF		((u16)BIT(10) - 1)
 
 #define TX_RING_SIZE_POW	13
 #define TX_RING_SIZE		((u16)BIT(TX_RING_SIZE_POW))
 #define NUM_TX_BDS_MAX		(TX_RING_SIZE - 1)
 #define NUM_TX_BDS_MIN		128
+<<<<<<< HEAD
+=======
+#define NUM_TX_BDS_KDUMP_MIN	63
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define NUM_TX_BDS_DEF		NUM_TX_BDS_MAX
 
 #define QEDE_MIN_PKT_LEN		64

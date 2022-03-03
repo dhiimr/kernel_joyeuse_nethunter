@@ -8,6 +8,10 @@ config DW_DMAC_CORE
 
 config DW_DMAC
 	tristate "Synopsys DesignWare AHB DMA platform driver"
+<<<<<<< HEAD
+=======
+	depends on HAS_IOMEM
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select DW_DMAC_CORE
 	help
 	  Support the Synopsys DesignWare AHB DMA controller. This
@@ -16,6 +20,10 @@ config DW_DMAC
 config DW_DMAC_PCI
 	tristate "Synopsys DesignWare AHB DMA PCI driver"
 	depends on PCI
+<<<<<<< HEAD
+=======
+	depends on HAS_IOMEM
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select DW_DMAC_CORE
 	help
 	  Support the Synopsys DesignWare AHB DMA controller on the

@@ -1,6 +1,10 @@
 config VFIO_PCI
 	tristate "VFIO support for PCI devices"
 	depends on VFIO && PCI && EVENTFD
+<<<<<<< HEAD
+=======
+	depends on MMU
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select VFIO_VIRQFD
 	select IRQ_BYPASS_MANAGER
 	help

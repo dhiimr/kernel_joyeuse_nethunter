@@ -2489,10 +2489,19 @@ EXPORT_SYMBOL(blk_mq_init_allocated_queue);
 
 void blk_mq_free_queue(struct request_queue *q)
 {
+<<<<<<< HEAD
 	struct blk_mq_tag_set	*set = q->tag_set;
 
 	blk_mq_del_queue_tag_set(q);
 	blk_mq_exit_hw_queues(q, set, set->nr_hw_queues);
+=======
+	struct blk_mq_tag_set *set = q->tag_set;
+
+	/* Checks hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED. */
+	blk_mq_exit_hw_queues(q, set, set->nr_hw_queues);
+	/* May clear BLK_MQ_F_TAG_QUEUE_SHARED in hctx->flags. */
+	blk_mq_del_queue_tag_set(q);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Basically redo blk_mq_init_queue with queue frozen */
@@ -2738,6 +2747,13 @@ static void __blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set,
 
 	list_for_each_entry(q, &set->tag_list, tag_set_list)
 		blk_mq_freeze_queue(q);
+<<<<<<< HEAD
+=======
+	/*
+	 * Sync with blk_mq_queue_tag_busy_iter.
+	 */
+	synchronize_rcu();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	set->nr_hw_queues = nr_hw_queues;
 	blk_mq_update_queue_map(set);

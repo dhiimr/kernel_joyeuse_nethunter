@@ -1972,10 +1972,17 @@ static int enic_stop(struct net_device *netdev)
 		napi_disable(&enic->napi[i]);
 
 	netif_carrier_off(netdev);
+<<<<<<< HEAD
 	netif_tx_disable(netdev);
 	if (vnic_dev_get_intr_mode(enic->vdev) == VNIC_DEV_INTR_MODE_MSIX)
 		for (i = 0; i < enic->wq_count; i++)
 			napi_disable(&enic->napi[enic_cq_wq(enic, i)]);
+=======
+	if (vnic_dev_get_intr_mode(enic->vdev) == VNIC_DEV_INTR_MODE_MSIX)
+		for (i = 0; i < enic->wq_count; i++)
+			napi_disable(&enic->napi[enic_cq_wq(enic, i)]);
+	netif_tx_disable(netdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!enic_is_dynamic(enic) && !enic_is_sriov_vf(enic))
 		enic_dev_del_station_addr(enic);
@@ -2101,8 +2108,11 @@ static int enic_dev_wait(struct vnic_dev *vdev,
 	int done;
 	int err;
 
+<<<<<<< HEAD
 	BUG_ON(in_interrupt());
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = start(vdev, arg);
 	if (err)
 		return err;
@@ -2279,6 +2289,16 @@ static int enic_set_rss_nic_cfg(struct enic *enic)
 		rss_hash_bits, rss_base_cpu, rss_enable);
 }
 
+<<<<<<< HEAD
+=======
+static void enic_set_api_busy(struct enic *enic, bool busy)
+{
+	spin_lock(&enic->enic_api_lock);
+	enic->enic_api_busy = busy;
+	spin_unlock(&enic->enic_api_lock);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void enic_reset(struct work_struct *work)
 {
 	struct enic *enic = container_of(work, struct enic, reset);
@@ -2288,7 +2308,13 @@ static void enic_reset(struct work_struct *work)
 
 	rtnl_lock();
 
+<<<<<<< HEAD
 	spin_lock(&enic->enic_api_lock);
+=======
+	/* Stop any activity from infiniband */
+	enic_set_api_busy(enic, true);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	enic_stop(enic->netdev);
 	enic_dev_soft_reset(enic);
 	enic_reset_addr_lists(enic);
@@ -2296,7 +2322,14 @@ static void enic_reset(struct work_struct *work)
 	enic_set_rss_nic_cfg(enic);
 	enic_dev_set_ig_vlan_rewrite_mode(enic);
 	enic_open(enic->netdev);
+<<<<<<< HEAD
 	spin_unlock(&enic->enic_api_lock);
+=======
+
+	/* Allow infiniband to fiddle with the device again */
+	enic_set_api_busy(enic, false);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	call_netdevice_notifiers(NETDEV_REBOOT, enic->netdev);
 
 	rtnl_unlock();
@@ -2308,7 +2341,13 @@ static void enic_tx_hang_reset(struct work_struct *work)
 
 	rtnl_lock();
 
+<<<<<<< HEAD
 	spin_lock(&enic->enic_api_lock);
+=======
+	/* Stop any activity from infiniband */
+	enic_set_api_busy(enic, true);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	enic_dev_hang_notify(enic);
 	enic_stop(enic->netdev);
 	enic_dev_hang_reset(enic);
@@ -2317,7 +2356,14 @@ static void enic_tx_hang_reset(struct work_struct *work)
 	enic_set_rss_nic_cfg(enic);
 	enic_dev_set_ig_vlan_rewrite_mode(enic);
 	enic_open(enic->netdev);
+<<<<<<< HEAD
 	spin_unlock(&enic->enic_api_lock);
+=======
+
+	/* Allow infiniband to fiddle with the device again */
+	enic_set_api_busy(enic, false);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	call_netdevice_notifiers(NETDEV_REBOOT, enic->netdev);
 
 	rtnl_unlock();

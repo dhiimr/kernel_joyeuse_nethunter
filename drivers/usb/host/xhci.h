@@ -447,8 +447,13 @@ struct xhci_op_regs {
 #define PORT_L1_TIMEOUT(p)(((p) & 0xff) << 2)
 #define PORT_BESLD(p)(((p) & 0xf) << 10)
 
+<<<<<<< HEAD
 /* use 128 microseconds as USB2 LPM L1 default timeout. */
 #define XHCI_L1_TIMEOUT		128
+=======
+/* use 512 microseconds as USB2 LPM L1 default timeout. */
+#define XHCI_L1_TIMEOUT		512
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Set default HIRD/BESL value to 4 (350/400us) for USB2 L1 LPM resume latency.
  * Safe to use with mixed HIRD and BESL systems (host and device) and is used
@@ -718,7 +723,11 @@ struct xhci_ep_ctx {
  * 4 - TRB error
  * 5-7 - reserved
  */
+<<<<<<< HEAD
 #define EP_STATE_MASK		(0xf)
+=======
+#define EP_STATE_MASK		(0x7)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define EP_STATE_DISABLED	0
 #define EP_STATE_RUNNING	1
 #define EP_STATE_HALTED		2
@@ -991,6 +1000,10 @@ struct xhci_interval_bw_table {
 	unsigned int		ss_bw_out;
 };
 
+<<<<<<< HEAD
+=======
+#define EP_CTX_PER_DEV		31
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct xhci_virt_device {
 	struct usb_device		*udev;
@@ -1005,7 +1018,11 @@ struct xhci_virt_device {
 	struct xhci_container_ctx       *out_ctx;
 	/* Used for addressing devices and configuration changes */
 	struct xhci_container_ctx       *in_ctx;
+<<<<<<< HEAD
 	struct xhci_virt_ep		eps[31];
+=======
+	struct xhci_virt_ep		eps[EP_CTX_PER_DEV];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8				fake_port;
 	u8				real_port;
 	struct xhci_interval_bw_table	*bw_table;
@@ -1713,10 +1730,13 @@ struct xhci_hcd {
 	struct xhci_doorbell_array __iomem *dba;
 	/* Our HCD's current interrupter register set */
 	struct	xhci_intr_reg __iomem *ir_set;
+<<<<<<< HEAD
 	/* secondary interrupter */
 	struct	xhci_intr_reg __iomem **sec_ir_set;
 
 	int		core_id;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Cached register copies of read-only HC data */
 	__u32		hcs_params1;
@@ -1757,11 +1777,14 @@ struct xhci_hcd {
 	struct xhci_command	*current_cmd;
 	struct xhci_ring	*event_ring;
 	struct xhci_erst	erst;
+<<<<<<< HEAD
 
 	/* secondary event ring and erst */
 	struct xhci_ring	**sec_event_ring;
 	struct xhci_erst	*sec_erst;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Scratchpad */
 	struct xhci_scratchpad  *scratchpad;
 	/* Store LPM test failed devices' information */
@@ -2021,20 +2044,30 @@ struct xhci_command *xhci_alloc_command(struct xhci_hcd *xhci,
 void xhci_urb_free_priv(struct urb_priv *urb_priv);
 void xhci_free_command(struct xhci_hcd *xhci,
 		struct xhci_command *command);
+<<<<<<< HEAD
 int xhci_sec_event_ring_setup(struct usb_hcd *hcd, unsigned int intr_num);
 int xhci_sec_event_ring_cleanup(struct usb_hcd *hcd, unsigned int intr_num);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* xHCI host controller glue */
 typedef void (*xhci_get_quirks_t)(struct device *, struct xhci_hcd *);
 int xhci_handshake(void __iomem *ptr, u32 mask, u32 done, int usec);
+<<<<<<< HEAD
 int xhci_handshake_check_state(struct xhci_hcd *xhci,
 		void __iomem *ptr, u32 mask, u32 done, int usec);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void xhci_quiesce(struct xhci_hcd *xhci);
 int xhci_halt(struct xhci_hcd *xhci);
 int xhci_start(struct xhci_hcd *xhci);
 int xhci_reset(struct xhci_hcd *xhci);
 int xhci_run(struct usb_hcd *hcd);
 int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks);
+<<<<<<< HEAD
+=======
+void xhci_shutdown(struct usb_hcd *hcd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void xhci_init_driver(struct hc_driver *drv,
 		      const struct xhci_driver_overrides *over);
 int xhci_disable_slot(struct xhci_hcd *xhci, u32 slot_id);
@@ -2109,7 +2142,10 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue, u16 wIndex,
 int xhci_hub_status_data(struct usb_hcd *hcd, char *buf);
 int xhci_find_raw_port_number(struct usb_hcd *hcd, int port1);
 void xhci_hc_died(struct xhci_hcd *xhci);
+<<<<<<< HEAD
 int xhci_get_core_id(struct usb_hcd *hcd);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_PM
 int xhci_bus_suspend(struct usb_hcd *hcd);
@@ -2601,8 +2637,11 @@ static inline const char *xhci_decode_ep_context(u32 info, u32 info2, u64 deq,
 	return str;
 }
 
+<<<<<<< HEAD
 /* EHSET */
 int xhci_submit_single_step_set_feature(struct usb_hcd *hcd, struct urb *urb,
 					int is_setup);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* __LINUX_XHCI_HCD_H */

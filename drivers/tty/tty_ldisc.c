@@ -348,6 +348,14 @@ int tty_ldisc_lock(struct tty_struct *tty, unsigned long timeout)
 {
 	int ret;
 
+<<<<<<< HEAD
+=======
+	/* Kindly asking blocked readers to release the read side */
+	set_bit(TTY_LDISC_CHANGING, &tty->flags);
+	wake_up_interruptible_all(&tty->read_wait);
+	wake_up_interruptible_all(&tty->write_wait);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = __tty_ldisc_lock(tty, timeout);
 	if (!ret)
 		return -EBUSY;
@@ -358,6 +366,11 @@ int tty_ldisc_lock(struct tty_struct *tty, unsigned long timeout)
 void tty_ldisc_unlock(struct tty_struct *tty)
 {
 	clear_bit(TTY_LDISC_HALTED, &tty->flags);
+<<<<<<< HEAD
+=======
+	/* Can be cleared here - ldisc_unlock will wake up writers firstly */
+	clear_bit(TTY_LDISC_CHANGING, &tty->flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__tty_ldisc_unlock(tty);
 }
 
@@ -638,12 +651,15 @@ static void tty_ldisc_kill(struct tty_struct *tty)
 {
 	if (!tty->ldisc)
 		return;
+<<<<<<< HEAD
 
 #if defined(CONFIG_TTY_FLUSH_LOCAL_ECHO)
 	if (tty->echo_delayed_work.work.func)
 		cancel_delayed_work_sync(&tty->echo_delayed_work);
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Now kill off the ldisc
 	 */
@@ -852,6 +868,7 @@ int tty_ldisc_init(struct tty_struct *tty)
  */
 void tty_ldisc_deinit(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	if (tty->ldisc) {
 #if defined(CONFIG_TTY_FLUSH_LOCAL_ECHO)
 		if (tty->echo_delayed_work.work.func)
@@ -859,6 +876,10 @@ void tty_ldisc_deinit(struct tty_struct *tty)
 #endif
 		tty_ldisc_put(tty->ldisc);
 	}
+=======
+	if (tty->ldisc)
+		tty_ldisc_put(tty->ldisc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tty->ldisc = NULL;
 }
 

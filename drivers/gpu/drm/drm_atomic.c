@@ -729,7 +729,11 @@ static int drm_atomic_plane_set_property(struct drm_plane *plane,
 	struct drm_mode_config *config = &dev->mode_config;
 
 	if (property == config->prop_fb_id) {
+<<<<<<< HEAD
 		struct drm_framebuffer *fb = drm_framebuffer_lookup(dev, NULL, val);
+=======
+		struct drm_framebuffer *fb = drm_framebuffer_lookup(dev, val);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		drm_atomic_set_fb_for_plane(state, fb);
 		if (fb)
 			drm_framebuffer_put(fb);
@@ -745,7 +749,11 @@ static int drm_atomic_plane_set_property(struct drm_plane *plane,
 			return -EINVAL;
 
 	} else if (property == config->prop_crtc_id) {
+<<<<<<< HEAD
 		struct drm_crtc *crtc = drm_crtc_find(dev, NULL, val);
+=======
+		struct drm_crtc *crtc = drm_crtc_find(dev, val);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return drm_atomic_set_crtc_for_plane(state, crtc);
 	} else if (property == config->prop_crtc_x) {
 		state->crtc_x = U642I64(val);
@@ -1160,7 +1168,11 @@ static int drm_atomic_connector_set_property(struct drm_connector *connector,
 	struct drm_mode_config *config = &dev->mode_config;
 
 	if (property == config->prop_crtc_id) {
+<<<<<<< HEAD
 		struct drm_crtc *crtc = drm_crtc_find(dev, NULL, val);
+=======
+		struct drm_crtc *crtc = drm_crtc_find(dev, val);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return drm_atomic_set_crtc_for_connector(state, crtc);
 	} else if (property == config->dpms_property) {
 		/* setting DPMS property requires special handling, which
@@ -2272,7 +2284,11 @@ retry:
 			goto out;
 		}
 
+<<<<<<< HEAD
 		obj = drm_mode_object_find(dev, file_priv, obj_id, DRM_MODE_OBJECT_ANY);
+=======
+		obj = drm_mode_object_find(dev, obj_id, DRM_MODE_OBJECT_ANY);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!obj) {
 			ret = -ENOENT;
 			goto out;

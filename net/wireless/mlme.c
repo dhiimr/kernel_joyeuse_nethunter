@@ -872,7 +872,11 @@ void cfg80211_cac_event(struct net_device *netdev,
 
 	trace_cfg80211_cac_event(netdev, event);
 
+<<<<<<< HEAD
 	if (WARN_ON(!wdev->cac_started && event != NL80211_RADAR_CAC_STARTED))
+=======
+	if (WARN_ON(!wdev->cac_started))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 
 	if (WARN_ON(!wdev->chandef.chan))
@@ -888,17 +892,26 @@ void cfg80211_cac_event(struct net_device *netdev,
 		       sizeof(struct cfg80211_chan_def));
 		queue_work(cfg80211_wq, &rdev->propagate_cac_done_wk);
 		cfg80211_sched_dfs_chan_update(rdev);
+<<<<<<< HEAD
 		/* fall through */
 	case NL80211_RADAR_CAC_ABORTED:
 		wdev->cac_started = false;
 		break;
 	case NL80211_RADAR_CAC_STARTED:
 		wdev->cac_started = true;
+=======
+		break;
+	case NL80211_RADAR_CAC_ABORTED:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	default:
 		WARN_ON(1);
 		return;
 	}
+<<<<<<< HEAD
+=======
+	wdev->cac_started = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	nl80211_radar_notify(rdev, chandef, event, netdev, gfp);
 }

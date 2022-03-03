@@ -67,7 +67,11 @@
 	do { \
 		if ((__dcb)->dcb_version == FW_PORT_DCB_VER_IEEE) \
 			cxgb4_dcb_state_fsm((__dev), \
+<<<<<<< HEAD
 					    CXGB4_DCB_STATE_FW_ALLSYNCED); \
+=======
+					    CXGB4_DCB_INPUT_FW_ALLSYNCED); \
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} while (0)
 
 /* States we can be in for a port's Data Center Bridging.

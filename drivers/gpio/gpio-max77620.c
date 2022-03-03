@@ -163,6 +163,7 @@ static int max77620_gpio_set_debounce(struct max77620_gpio *mgpio,
 	case 0:
 		val = MAX77620_CNFG_GPIO_DBNC_None;
 		break;
+<<<<<<< HEAD
 	case 1 ... 8:
 		val = MAX77620_CNFG_GPIO_DBNC_8ms;
 		break;
@@ -170,6 +171,15 @@ static int max77620_gpio_set_debounce(struct max77620_gpio *mgpio,
 		val = MAX77620_CNFG_GPIO_DBNC_16ms;
 		break;
 	case 17 ... 32:
+=======
+	case 1 ... 8000:
+		val = MAX77620_CNFG_GPIO_DBNC_8ms;
+		break;
+	case 8001 ... 16000:
+		val = MAX77620_CNFG_GPIO_DBNC_16ms;
+		break;
+	case 16001 ... 32000:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		val = MAX77620_CNFG_GPIO_DBNC_32ms;
 		break;
 	default:

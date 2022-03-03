@@ -55,6 +55,7 @@ ENTRY(__bp_harden_hyp_vecs_start)
 	.endr
 ENTRY(__bp_harden_hyp_vecs_end)
 
+<<<<<<< HEAD
 ENTRY(__qcom_hyp_sanitize_link_stack_start)
 	stp     x29, x30, [sp, #-16]!
 	.rept	16
@@ -64,10 +65,15 @@ ENTRY(__qcom_hyp_sanitize_link_stack_start)
 ENTRY(__qcom_hyp_sanitize_link_stack_end)
 
 .macro smccc_workaround_1 inst
+=======
+
+ENTRY(__smccc_workaround_1_smc_start)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sub	sp, sp, #(8 * 4)
 	stp	x2, x3, [sp, #(8 * 0)]
 	stp	x0, x1, [sp, #(8 * 2)]
 	mov	w0, #ARM_SMCCC_ARCH_WORKAROUND_1
+<<<<<<< HEAD
 	\inst	#0
 	ldp	x2, x3, [sp, #(8 * 0)]
 	ldp	x0, x1, [sp, #(8 * 2)]
@@ -81,3 +87,10 @@ ENTRY(__smccc_workaround_1_smc_end)
 ENTRY(__smccc_workaround_1_hvc_start)
 	smccc_workaround_1	hvc
 ENTRY(__smccc_workaround_1_hvc_end)
+=======
+	smc	#0
+	ldp	x2, x3, [sp, #(8 * 0)]
+	ldp	x0, x1, [sp, #(8 * 2)]
+	add	sp, sp, #(8 * 4)
+ENTRY(__smccc_workaround_1_smc_end)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

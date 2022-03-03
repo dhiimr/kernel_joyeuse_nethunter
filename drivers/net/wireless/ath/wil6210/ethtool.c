@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2014,2017 Qualcomm Atheros, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -48,6 +51,7 @@ static int wil_ethtoolops_get_coalesce(struct net_device *ndev,
 	struct wil6210_priv *wil = ndev_to_wil(ndev);
 	u32 tx_itr_en, tx_itr_val = 0;
 	u32 rx_itr_en, rx_itr_val = 0;
+<<<<<<< HEAD
 	int ret;
 
 	wil_dbg_misc(wil, "ethtoolops_get_coalesce\n");
@@ -56,6 +60,11 @@ static int wil_ethtoolops_get_coalesce(struct net_device *ndev,
 	if (ret < 0)
 		return ret;
 
+=======
+
+	wil_dbg_misc(wil, "ethtoolops_get_coalesce\n");
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tx_itr_en = wil_r(wil, RGF_DMA_ITR_TX_CNT_CTL);
 	if (tx_itr_en & BIT_DMA_ITR_TX_CNT_CTL_EN)
 		tx_itr_val = wil_r(wil, RGF_DMA_ITR_TX_CNT_TRSH);
@@ -64,8 +73,11 @@ static int wil_ethtoolops_get_coalesce(struct net_device *ndev,
 	if (rx_itr_en & BIT_DMA_ITR_RX_CNT_CTL_EN)
 		rx_itr_val = wil_r(wil, RGF_DMA_ITR_RX_CNT_TRSH);
 
+<<<<<<< HEAD
 	wil_pm_runtime_put(wil);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cp->tx_coalesce_usecs = tx_itr_val;
 	cp->rx_coalesce_usecs = rx_itr_val;
 	return 0;
@@ -75,13 +87,20 @@ static int wil_ethtoolops_set_coalesce(struct net_device *ndev,
 				       struct ethtool_coalesce *cp)
 {
 	struct wil6210_priv *wil = ndev_to_wil(ndev);
+<<<<<<< HEAD
 	struct wireless_dev *wdev = ndev->ieee80211_ptr;
 	int ret;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	wil_dbg_misc(wil, "ethtoolops_set_coalesce: rx %d usec, tx %d usec\n",
 		     cp->rx_coalesce_usecs, cp->tx_coalesce_usecs);
 
+<<<<<<< HEAD
 	if (wdev->iftype == NL80211_IFTYPE_MONITOR) {
+=======
+	if (wil->wdev->iftype == NL80211_IFTYPE_MONITOR) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		wil_dbg_misc(wil, "No IRQ coalescing in monitor mode\n");
 		return -EINVAL;
 	}
@@ -96,6 +115,7 @@ static int wil_ethtoolops_set_coalesce(struct net_device *ndev,
 
 	wil->tx_max_burst_duration = cp->tx_coalesce_usecs;
 	wil->rx_max_burst_duration = cp->rx_coalesce_usecs;
+<<<<<<< HEAD
 
 	ret = wil_pm_runtime_get(wil);
 	if (ret < 0)
@@ -104,6 +124,9 @@ static int wil_ethtoolops_set_coalesce(struct net_device *ndev,
 	wil->txrx_ops.configure_interrupt_moderation(wil);
 
 	wil_pm_runtime_put(wil);
+=======
+	wil_configure_interrupt_moderation(wil);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 

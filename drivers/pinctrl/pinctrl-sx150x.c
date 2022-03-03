@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2019, The Linux Foundation. All rights reserved.
  *
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Copyright (c) 2016, BayLibre, SAS. All rights reserved.
  * Author: Neil Armstrong <narmstrong@baylibre.com>
  *
@@ -1253,6 +1256,7 @@ static int sx150x_probe(struct i2c_client *client,
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM_SLEEP
 static int sx150x_restore(struct device *dev)
 {
@@ -1287,13 +1291,18 @@ static const struct dev_pm_ops sx150x_pm = {
 };
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct i2c_driver sx150x_driver = {
 	.driver = {
 		.name = "sx150x-pinctrl",
 		.of_match_table = of_match_ptr(sx150x_of_match),
+<<<<<<< HEAD
 #ifdef CONFIG_PM_SLEEP
 		.pm = &sx150x_pm,
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	.probe    = sx150x_probe,
 	.id_table = sx150x_id,

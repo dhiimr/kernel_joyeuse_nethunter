@@ -311,7 +311,11 @@ static int __bprm_mm_init(struct linux_binprm *bprm)
 	vma->vm_start = vma->vm_end - PAGE_SIZE;
 	vma->vm_flags = VM_SOFTDIRTY | VM_STACK_FLAGS | VM_STACK_INCOMPLETE_SETUP;
 	vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
+<<<<<<< HEAD
 	INIT_VMA(vma);
+=======
+	INIT_LIST_HEAD(&vma->anon_vma_chain);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = insert_vm_struct(mm, vma);
 	if (err)
@@ -980,7 +984,11 @@ int kernel_read_file_from_fd(int fd, void **buf, loff_t *size, loff_t max_size,
 	struct fd f = fdget(fd);
 	int ret = -EBADF;
 
+<<<<<<< HEAD
 	if (!f.file)
+=======
+	if (!f.file || !(f.file->f_mode & FMODE_READ))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out;
 
 	ret = kernel_read_file(f.file, buf, size, max_size, id);
@@ -1007,7 +1015,11 @@ static int exec_mmap(struct mm_struct *mm)
 	/* Notify parent that we're no longer interested in the old VM */
 	tsk = current;
 	old_mm = current->mm;
+<<<<<<< HEAD
 	mm_release(tsk, old_mm);
+=======
+	exec_mm_release(tsk, old_mm);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (old_mm) {
 		sync_mm_rss(old_mm);
@@ -1024,10 +1036,30 @@ static int exec_mmap(struct mm_struct *mm)
 		}
 	}
 	task_lock(tsk);
+<<<<<<< HEAD
 	active_mm = tsk->active_mm;
 	tsk->mm = mm;
 	tsk->active_mm = mm;
 	activate_mm(active_mm, mm);
+=======
+
+	local_irq_disable();
+	active_mm = tsk->active_mm;
+	tsk->active_mm = mm;
+	tsk->mm = mm;
+	/*
+	 * This prevents preemption while active_mm is being loaded and
+	 * it and mm are being updated, which could cause problems for
+	 * lazy tlb mm refcounting when these are updated by context
+	 * switches. Not all architectures can handle irqs off over
+	 * activate_mm yet.
+	 */
+	if (!IS_ENABLED(CONFIG_ARCH_WANT_IRQS_OFF_ACTIVATE_MM))
+		local_irq_enable();
+	activate_mm(active_mm, mm);
+	if (IS_ENABLED(CONFIG_ARCH_WANT_IRQS_OFF_ACTIVATE_MM))
+		local_irq_enable();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tsk->mm->vmacache_seqnum = 0;
 	vmacache_flush(tsk);
 	task_unlock(tsk);
@@ -1264,6 +1296,11 @@ int flush_old_exec(struct linux_binprm * bprm)
 	 */
 	set_mm_exe_file(bprm->mm, bprm->file);
 
+<<<<<<< HEAD
+=======
+	would_dump(bprm, bprm->file);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Release all of the old mmap stuff
 	 */
@@ -1303,7 +1340,11 @@ EXPORT_SYMBOL(flush_old_exec);
 void would_dump(struct linux_binprm *bprm, struct file *file)
 {
 	struct inode *inode = file_inode(file);
+<<<<<<< HEAD
 	if (inode_permission2(file->f_path.mnt, inode, MAY_READ) < 0) {
+=======
+	if (inode_permission(inode, MAY_READ) < 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct user_namespace *old, *user_ns;
 		bprm->interp_flags |= BINPRM_FLAGS_ENFORCE_NONDUMP;
 
@@ -1373,7 +1414,11 @@ void setup_new_exec(struct linux_binprm * bprm)
 
 	/* An exec changes our domain. We are no longer part of the thread
 	   group */
+<<<<<<< HEAD
 	current->self_exec_id++;
+=======
+	WRITE_ONCE(current->self_exec_id, current->self_exec_id + 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	flush_signal_handlers(current, 0);
 }
 EXPORT_SYMBOL(setup_new_exec);
@@ -1797,8 +1842,11 @@ static int do_execveat_common(int fd, struct filename *filename,
 	if (retval < 0)
 		goto out;
 
+<<<<<<< HEAD
 	would_dump(bprm, bprm->file);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	retval = exec_binprm(bprm);
 	if (retval < 0)
 		goto out;
@@ -1808,7 +1856,11 @@ static int do_execveat_common(int fd, struct filename *filename,
 	current->in_execve = 0;
 	membarrier_execve(current);
 	acct_update_integrals(current);
+<<<<<<< HEAD
 	task_numa_free(current);
+=======
+	task_numa_free(current, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	free_bprm(bprm);
 	kfree(pathbuf);
 	putname(filename);

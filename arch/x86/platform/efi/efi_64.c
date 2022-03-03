@@ -390,11 +390,20 @@ int __init efi_setup_page_tables(unsigned long pa_memmap, unsigned num_pages)
 		return 0;
 
 	page = alloc_page(GFP_KERNEL|__GFP_DMA32);
+<<<<<<< HEAD
 	if (!page)
 		panic("Unable to allocate EFI runtime stack < 4GB\n");
 
 	efi_scratch.phys_stack = virt_to_phys(page_address(page));
 	efi_scratch.phys_stack += PAGE_SIZE; /* stack grows down */
+=======
+	if (!page) {
+		pr_err("Unable to allocate EFI runtime stack < 4GB\n");
+		return 1;
+	}
+
+	efi_scratch.phys_stack = page_to_phys(page + 1); /* stack grows down */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	npages = (_etext - _text) >> PAGE_SHIFT;
 	text = __pa(_text);

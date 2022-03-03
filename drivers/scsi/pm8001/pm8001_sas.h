@@ -529,6 +529,10 @@ struct pm8001_hba_info {
 	u32			logging_level;
 	u32			fw_status;
 	u32			smp_exp_mode;
+<<<<<<< HEAD
+=======
+	bool			controller_fatal_error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	const struct firmware 	*fw_image;
 	struct isr_param irq_vector[PM8001_MAX_MSIX_VEC];
 };

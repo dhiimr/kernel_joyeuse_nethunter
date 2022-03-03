@@ -985,6 +985,12 @@ void start_secondary(void *unused)
 
 	vdso_getcpu_init();
 #endif
+<<<<<<< HEAD
+=======
+	set_numa_node(numa_cpu_lookup_table[cpu]);
+	set_numa_mem(local_memory_node(numa_cpu_lookup_table[cpu]));
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Update topology CPU masks */
 	add_cpu_to_masks(cpu);
 
@@ -995,9 +1001,12 @@ void start_secondary(void *unused)
 	if (!cpumask_equal(cpu_l2_cache_mask(cpu), cpu_sibling_mask(cpu)))
 		shared_caches = true;
 
+<<<<<<< HEAD
 	set_numa_node(numa_cpu_lookup_table[cpu]);
 	set_numa_mem(local_memory_node(numa_cpu_lookup_table[cpu]));
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	smp_wmb();
 	notify_cpu_starting(cpu);
 	set_cpu_online(cpu, true);
@@ -1009,10 +1018,18 @@ void start_secondary(void *unused)
 	BUG();
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PROFILING
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int setup_profiling_timer(unsigned int multiplier)
 {
 	return 0;
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_SCHED_SMT
 /* cpumask of CPUs with asymetric SMT dependancy */

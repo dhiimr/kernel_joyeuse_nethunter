@@ -19,7 +19,10 @@
 #include "msm_gem.h"
 
 #include <linux/dma-buf.h>
+<<<<<<< HEAD
 #include <linux/ion.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct sg_table *msm_gem_prime_get_sg_table(struct drm_gem_object *obj)
 {
@@ -78,6 +81,7 @@ struct reservation_object *msm_gem_prime_res_obj(struct drm_gem_object *obj)
 
 	return msm_obj->resv;
 }
+<<<<<<< HEAD
 
 
 struct drm_gem_object *msm_gem_prime_import(struct drm_device *dev,
@@ -166,3 +170,5 @@ fail_put:
 
 	return ERR_PTR(ret);
 }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

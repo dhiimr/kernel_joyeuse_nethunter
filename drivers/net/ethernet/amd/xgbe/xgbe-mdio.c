@@ -1355,7 +1355,11 @@ static void xgbe_phy_status(struct xgbe_prv_data *pdata)
 							     &an_restart);
 	if (an_restart) {
 		xgbe_phy_config_aneg(pdata);
+<<<<<<< HEAD
 		return;
+=======
+		goto adjust_link;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (pdata->phy.link) {

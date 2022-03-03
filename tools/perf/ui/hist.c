@@ -468,6 +468,21 @@ struct perf_hpp_list perf_hpp_list = {
 #undef __HPP_SORT_ACC_FN
 #undef __HPP_SORT_RAW_FN
 
+<<<<<<< HEAD
+=======
+static void fmt_free(struct perf_hpp_fmt *fmt)
+{
+	/*
+	 * At this point fmt should be completely
+	 * unhooked, if not it's a bug.
+	 */
+	BUG_ON(!list_empty(&fmt->list));
+	BUG_ON(!list_empty(&fmt->sort_list));
+
+	if (fmt->free)
+		fmt->free(fmt);
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 void perf_hpp__init(void)
 {
@@ -531,9 +546,16 @@ void perf_hpp_list__prepend_sort_field(struct perf_hpp_list *list,
 	list_add(&format->sort_list, &list->sorts);
 }
 
+<<<<<<< HEAD
 void perf_hpp__column_unregister(struct perf_hpp_fmt *format)
 {
 	list_del_init(&format->list);
+=======
+static void perf_hpp__column_unregister(struct perf_hpp_fmt *format)
+{
+	list_del_init(&format->list);
+	fmt_free(format);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void perf_hpp__cancel_cumulate(void)
@@ -605,6 +627,7 @@ next:
 }
 
 
+<<<<<<< HEAD
 static void fmt_free(struct perf_hpp_fmt *fmt)
 {
 	/*
@@ -618,6 +641,8 @@ static void fmt_free(struct perf_hpp_fmt *fmt)
 		fmt->free(fmt);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void perf_hpp__reset_output_field(struct perf_hpp_list *list)
 {
 	struct perf_hpp_fmt *fmt, *tmp;

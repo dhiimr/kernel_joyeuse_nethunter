@@ -181,7 +181,11 @@
 	flash: flash@0 {
 		#address-cells = <1>;
 		#size-cells = <1>;
+<<<<<<< HEAD
 		compatible = "n25q00";
+=======
+		compatible = "micron,mt25qu02g", "jedec,spi-nor";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		reg = <0>;
 		spi-max-frequency = <100000000>;
 

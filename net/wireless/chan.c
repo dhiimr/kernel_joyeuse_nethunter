@@ -581,10 +581,13 @@ static bool cfg80211_get_chans_dfs_available(struct wiphy *wiphy,
 {
 	struct ieee80211_channel *c;
 	u32 freq, start_freq, end_freq;
+<<<<<<< HEAD
 	bool dfs_offload;
 
 	dfs_offload = wiphy_ext_feature_isset(wiphy,
 					      NL80211_EXT_FEATURE_DFS_OFFLOAD);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	start_freq = cfg80211_get_start_freq(center_freq, bandwidth);
 	end_freq = cfg80211_get_end_freq(center_freq, bandwidth);
@@ -602,9 +605,14 @@ static bool cfg80211_get_chans_dfs_available(struct wiphy *wiphy,
 		if (c->flags & IEEE80211_CHAN_DISABLED)
 			return false;
 
+<<<<<<< HEAD
 		if ((c->flags & IEEE80211_CHAN_RADAR) &&
 		    (c->dfs_state != NL80211_DFS_AVAILABLE) &&
 		    !(c->dfs_state == NL80211_DFS_USABLE && dfs_offload))
+=======
+		if ((c->flags & IEEE80211_CHAN_RADAR)  &&
+		    (c->dfs_state != NL80211_DFS_AVAILABLE))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return false;
 	}
 
@@ -982,10 +990,15 @@ int cfg80211_set_monitor_channel(struct cfg80211_registered_device *rdev,
 {
 	if (!rdev->ops->set_monitor_channel)
 		return -EOPNOTSUPP;
+<<<<<<< HEAD
 	// Always allow user to change channel, even if there is another normal
 	// virtual interface using the device.
 	// if (!cfg80211_has_monitors_only(rdev))
 	//	return -EBUSY;
+=======
+	if (!cfg80211_has_monitors_only(rdev))
+		return -EBUSY;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return rdev_set_monitor_channel(rdev, chandef);
 }

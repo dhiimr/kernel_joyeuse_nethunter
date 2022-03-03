@@ -30,6 +30,10 @@ __handle_preemption:
 		 wrpr			%g0, RTRAP_PSTATE_IRQOFF, %pstate
 
 __handle_user_windows:
+<<<<<<< HEAD
+=======
+		add			%sp, PTREGS_OFF, %o0
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		call			fault_in_user_windows
 		 wrpr			%g0, RTRAP_PSTATE, %pstate
 		ba,pt			%xcc, __handle_preemption_continue

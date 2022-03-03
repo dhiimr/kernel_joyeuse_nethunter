@@ -544,8 +544,13 @@ static int qce_ahash_register_one(const struct qce_ahash_def *def,
 
 	ret = crypto_register_ahash(alg);
 	if (ret) {
+<<<<<<< HEAD
 		kfree(tmpl);
 		dev_err(qce->dev, "%s registration failed\n", base->cra_name);
+=======
+		dev_err(qce->dev, "%s registration failed\n", base->cra_name);
+		kfree(tmpl);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ret;
 	}
 

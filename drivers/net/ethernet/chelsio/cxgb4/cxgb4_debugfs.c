@@ -66,8 +66,12 @@ static void *seq_tab_start(struct seq_file *seq, loff_t *pos)
 static void *seq_tab_next(struct seq_file *seq, void *v, loff_t *pos)
 {
 	v = seq_tab_get_idx(seq->private, *pos + 1);
+<<<<<<< HEAD
 	if (v)
 		++*pos;
+=======
+	++(*pos);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return v;
 }
 
@@ -2447,7 +2451,11 @@ do { \
 	seq_printf(seq, "%-12s", s); \
 	for (i = 0; i < n; ++i) \
 		seq_printf(seq, " %16" fmt_spec, v); \
+<<<<<<< HEAD
 		seq_putc(seq, '\n'); \
+=======
+	seq_putc(seq, '\n'); \
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 } while (0)
 #define S(s, v) S3("s", s, v)
 #define T3(fmt_spec, s, v) S3(fmt_spec, s, tx[i].v)
@@ -2777,8 +2785,15 @@ static ssize_t blocked_fl_write(struct file *filp, const char __user *ubuf,
 		return -ENOMEM;
 
 	err = bitmap_parse_user(ubuf, count, t, adap->sge.egr_sz);
+<<<<<<< HEAD
 	if (err)
 		return err;
+=======
+	if (err) {
+		kvfree(t);
+		return err;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	bitmap_copy(adap->sge.blocked_fl, t, adap->sge.egr_sz);
 	kvfree(t);

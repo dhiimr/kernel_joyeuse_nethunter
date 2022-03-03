@@ -183,11 +183,19 @@ static const char emac_version_string[] = "TI DaVinci EMAC Linux v6.1";
 /* EMAC mac_status register */
 #define EMAC_MACSTATUS_TXERRCODE_MASK	(0xF00000)
 #define EMAC_MACSTATUS_TXERRCODE_SHIFT	(20)
+<<<<<<< HEAD
 #define EMAC_MACSTATUS_TXERRCH_MASK	(0x7)
 #define EMAC_MACSTATUS_TXERRCH_SHIFT	(16)
 #define EMAC_MACSTATUS_RXERRCODE_MASK	(0xF000)
 #define EMAC_MACSTATUS_RXERRCODE_SHIFT	(12)
 #define EMAC_MACSTATUS_RXERRCH_MASK	(0x7)
+=======
+#define EMAC_MACSTATUS_TXERRCH_MASK	(0x70000)
+#define EMAC_MACSTATUS_TXERRCH_SHIFT	(16)
+#define EMAC_MACSTATUS_RXERRCODE_MASK	(0xF000)
+#define EMAC_MACSTATUS_RXERRCODE_SHIFT	(12)
+#define EMAC_MACSTATUS_RXERRCH_MASK	(0x700)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define EMAC_MACSTATUS_RXERRCH_SHIFT	(8)
 
 /* EMAC RX register masks */
@@ -426,8 +434,25 @@ static int emac_set_coalesce(struct net_device *ndev,
 	u32 int_ctrl, num_interrupts = 0;
 	u32 prescale = 0, addnl_dvdr = 1, coal_intvl = 0;
 
+<<<<<<< HEAD
 	if (!coal->rx_coalesce_usecs)
 		return -EINVAL;
+=======
+	if (!coal->rx_coalesce_usecs) {
+		priv->coal_intvl = 0;
+
+		switch (priv->version) {
+		case EMAC_VERSION_2:
+			emac_ctrl_write(EMAC_DM646X_CMINTCTRL, 0);
+			break;
+		default:
+			emac_ctrl_write(EMAC_CTRL_EWINTTCNT, 0);
+			break;
+		}
+
+		return 0;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	coal_intvl = coal->rx_coalesce_usecs;
 
@@ -1240,7 +1265,11 @@ static int emac_poll(struct napi_struct *napi, int budget)
 	struct net_device *ndev = priv->ndev;
 	struct device *emac_dev = &ndev->dev;
 	u32 status = 0;
+<<<<<<< HEAD
 	u32 num_tx_pkts = 0, num_rx_pkts = 0;
+=======
+	u32 num_rx_pkts = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Check interrupt vectors and call packet processing */
 	status = emac_read(EMAC_MACINVECTOR);
@@ -1251,8 +1280,12 @@ static int emac_poll(struct napi_struct *napi, int budget)
 		mask = EMAC_DM646X_MAC_IN_VECTOR_TX_INT_VEC;
 
 	if (status & mask) {
+<<<<<<< HEAD
 		num_tx_pkts = cpdma_chan_process(priv->txchan,
 					      EMAC_DEF_TX_MAX_SERVICE);
+=======
+		cpdma_chan_process(priv->txchan, EMAC_DEF_TX_MAX_SERVICE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} /* TX processing */
 
 	mask = EMAC_DM644X_MAC_IN_VECTOR_RX_INT_VEC;

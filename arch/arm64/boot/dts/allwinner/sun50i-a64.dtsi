@@ -274,7 +274,12 @@
 			interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
 				     <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>,
 				     <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+<<<<<<< HEAD
 			clocks = <&ccu 58>;
+=======
+			clocks = <&ccu 58>, <&osc24M>, <&rtc 0>;
+			clock-names = "apb", "hosc", "losc";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			gpio-controller;
 			#gpio-cells = <3>;
 			interrupt-controller;

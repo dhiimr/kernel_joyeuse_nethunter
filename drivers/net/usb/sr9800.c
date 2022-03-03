@@ -336,7 +336,11 @@ static void sr_set_multicast(struct net_device *net)
 static int sr_mdio_read(struct net_device *net, int phy_id, int loc)
 {
 	struct usbnet *dev = netdev_priv(net);
+<<<<<<< HEAD
 	__le16 res;
+=======
+	__le16 res = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_lock(&dev->phy_mutex);
 	sr_set_sw_mii(dev);

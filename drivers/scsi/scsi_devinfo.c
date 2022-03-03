@@ -392,8 +392,13 @@ EXPORT_SYMBOL(scsi_dev_info_list_add_keyed);
 
 /**
  * scsi_dev_info_list_find - find a matching dev_info list entry.
+<<<<<<< HEAD
  * @vendor:	vendor string
  * @model:	model (product) string
+=======
+ * @vendor:	full vendor string
+ * @model:	full model (product) string
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @key:	specify list to use
  *
  * Description:
@@ -408,7 +413,11 @@ static struct scsi_dev_info_list *scsi_dev_info_list_find(const char *vendor,
 	struct scsi_dev_info_list *devinfo;
 	struct scsi_dev_info_list_table *devinfo_table =
 		scsi_devinfo_lookup_by_key(key);
+<<<<<<< HEAD
 	size_t vmax, mmax;
+=======
+	size_t vmax, mmax, mlen;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	const char *vskip, *mskip;
 
 	if (IS_ERR(devinfo_table))
@@ -447,6 +456,7 @@ static struct scsi_dev_info_list *scsi_dev_info_list_find(const char *vendor,
 			    dev_info_list) {
 		if (devinfo->compatible) {
 			/*
+<<<<<<< HEAD
 			 * Behave like the older version of get_device_flags.
 			 */
 			if (memcmp(devinfo->vendor, vskip, vmax) ||
@@ -456,6 +466,21 @@ static struct scsi_dev_info_list *scsi_dev_info_list_find(const char *vendor,
 			if (memcmp(devinfo->model, mskip, mmax) ||
 					(mmax < sizeof(devinfo->model) &&
 						devinfo->model[mmax]))
+=======
+			 * vendor strings must be an exact match
+			 */
+			if (vmax != strnlen(devinfo->vendor,
+					    sizeof(devinfo->vendor)) ||
+			    memcmp(devinfo->vendor, vskip, vmax))
+				continue;
+
+			/*
+			 * @model specifies the full string, and
+			 * must be larger or equal to devinfo->model
+			 */
+			mlen = strnlen(devinfo->model, sizeof(devinfo->model));
+			if (mmax < mlen || memcmp(devinfo->model, mskip, mlen))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				continue;
 			return devinfo;
 		} else {

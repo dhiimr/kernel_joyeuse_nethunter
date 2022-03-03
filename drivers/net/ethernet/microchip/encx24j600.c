@@ -1032,10 +1032,20 @@ static int encx24j600_spi_probe(struct spi_device *spi)
 	priv->speed = SPEED_100;
 
 	priv->ctx.spi = spi;
+<<<<<<< HEAD
 	devm_regmap_init_encx24j600(&spi->dev, &priv->ctx);
 	ndev->irq = spi->irq;
 	ndev->netdev_ops = &encx24j600_netdev_ops;
 
+=======
+	ndev->irq = spi->irq;
+	ndev->netdev_ops = &encx24j600_netdev_ops;
+
+	ret = devm_regmap_init_encx24j600(&spi->dev, &priv->ctx);
+	if (ret)
+		goto out_free;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_init(&priv->lock);
 
 	/* Reset device and check if it is connected */
@@ -1075,7 +1085,11 @@ static int encx24j600_spi_probe(struct spi_device *spi)
 	if (unlikely(ret)) {
 		netif_err(priv, probe, ndev, "Error %d initializing card encx24j600 card\n",
 			  ret);
+<<<<<<< HEAD
 		goto out_free;
+=======
+		goto out_stop;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	eidled = encx24j600_read_reg(priv, EIDLED);
@@ -1093,6 +1107,11 @@ static int encx24j600_spi_probe(struct spi_device *spi)
 
 out_unregister:
 	unregister_netdev(priv->ndev);
+<<<<<<< HEAD
+=======
+out_stop:
+	kthread_stop(priv->kworker_task);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out_free:
 	free_netdev(ndev);
 
@@ -1105,6 +1124,10 @@ static int encx24j600_spi_remove(struct spi_device *spi)
 	struct encx24j600_priv *priv = dev_get_drvdata(&spi->dev);
 
 	unregister_netdev(priv->ndev);
+<<<<<<< HEAD
+=======
+	kthread_stop(priv->kworker_task);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	free_netdev(priv->ndev);
 

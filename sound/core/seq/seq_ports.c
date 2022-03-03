@@ -532,10 +532,18 @@ static int check_and_subscribe_port(struct snd_seq_client *client,
 	return err;
 }
 
+<<<<<<< HEAD
 static void delete_and_unsubscribe_port(struct snd_seq_client *client,
 					struct snd_seq_client_port *port,
 					struct snd_seq_subscribers *subs,
 					bool is_src, bool ack)
+=======
+/* called with grp->list_mutex held */
+static void __delete_and_unsubscribe_port(struct snd_seq_client *client,
+					  struct snd_seq_client_port *port,
+					  struct snd_seq_subscribers *subs,
+					  bool is_src, bool ack)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct snd_seq_port_subs_info *grp;
 	struct list_head *list;
@@ -543,19 +551,41 @@ static void delete_and_unsubscribe_port(struct snd_seq_client *client,
 
 	grp = is_src ? &port->c_src : &port->c_dest;
 	list = is_src ? &subs->src_list : &subs->dest_list;
+<<<<<<< HEAD
 	down_write(&grp->list_mutex);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	write_lock_irq(&grp->list_lock);
 	empty = list_empty(list);
 	if (!empty)
 		list_del_init(list);
 	grp->exclusive = 0;
 	write_unlock_irq(&grp->list_lock);
+<<<<<<< HEAD
 	up_write(&grp->list_mutex);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!empty)
 		unsubscribe_port(client, port, grp, &subs->info, ack);
 }
 
+<<<<<<< HEAD
+=======
+static void delete_and_unsubscribe_port(struct snd_seq_client *client,
+					struct snd_seq_client_port *port,
+					struct snd_seq_subscribers *subs,
+					bool is_src, bool ack)
+{
+	struct snd_seq_port_subs_info *grp;
+
+	grp = is_src ? &port->c_src : &port->c_dest;
+	down_write(&grp->list_mutex);
+	__delete_and_unsubscribe_port(client, port, subs, is_src, ack);
+	up_write(&grp->list_mutex);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* connect two ports */
 int snd_seq_port_connect(struct snd_seq_client *connector,
 			 struct snd_seq_client *src_client,
@@ -608,6 +638,7 @@ int snd_seq_port_disconnect(struct snd_seq_client *connector,
 			    struct snd_seq_client_port *dest_port,
 			    struct snd_seq_port_subscribe *info)
 {
+<<<<<<< HEAD
 	struct snd_seq_port_subs_info *src = &src_port->c_src;
 	struct snd_seq_subscribers *subs;
 	int err = -ENOENT;
@@ -617,38 +648,79 @@ int snd_seq_port_disconnect(struct snd_seq_client *connector,
 	list_for_each_entry(subs, &src->list_head, src_list) {
 		if (match_subs_info(info, &subs->info)) {
 			atomic_dec(&subs->ref_count); /* mark as not ready */
+=======
+	struct snd_seq_port_subs_info *dest = &dest_port->c_dest;
+	struct snd_seq_subscribers *subs;
+	int err = -ENOENT;
+
+	/* always start from deleting the dest port for avoiding concurrent
+	 * deletions
+	 */
+	down_write(&dest->list_mutex);
+	/* look for the connection */
+	list_for_each_entry(subs, &dest->list_head, dest_list) {
+		if (match_subs_info(info, &subs->info)) {
+			__delete_and_unsubscribe_port(dest_client, dest_port,
+						      subs, false,
+						      connector->number != dest_client->number);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			err = 0;
 			break;
 		}
 	}
+<<<<<<< HEAD
 	up_write(&src->list_mutex);
+=======
+	up_write(&dest->list_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (err < 0)
 		return err;
 
 	delete_and_unsubscribe_port(src_client, src_port, subs, true,
 				    connector->number != src_client->number);
+<<<<<<< HEAD
 	delete_and_unsubscribe_port(dest_client, dest_port, subs, false,
 				    connector->number != dest_client->number);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(subs);
 	return 0;
 }
 
 
 /* get matched subscriber */
+<<<<<<< HEAD
 struct snd_seq_subscribers *snd_seq_port_get_subscription(struct snd_seq_port_subs_info *src_grp,
 							  struct snd_seq_addr *dest_addr)
 {
 	struct snd_seq_subscribers *s, *found = NULL;
+=======
+int snd_seq_port_get_subscription(struct snd_seq_port_subs_info *src_grp,
+				  struct snd_seq_addr *dest_addr,
+				  struct snd_seq_port_subscribe *subs)
+{
+	struct snd_seq_subscribers *s;
+	int err = -ENOENT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	down_read(&src_grp->list_mutex);
 	list_for_each_entry(s, &src_grp->list_head, src_list) {
 		if (addr_match(dest_addr, &s->info.dest)) {
+<<<<<<< HEAD
 			found = s;
+=======
+			*subs = s->info;
+			err = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		}
 	}
 	up_read(&src_grp->list_mutex);
+<<<<<<< HEAD
 	return found;
+=======
+	return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*

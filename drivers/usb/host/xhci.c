@@ -21,6 +21,10 @@
  */
 
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/iopoll.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/irq.h>
 #include <linux/log2.h>
 #include <linux/module.h>
@@ -62,7 +66,10 @@ static bool td_on_ring(struct xhci_td *td, struct xhci_ring *ring)
 	return false;
 }
 
+<<<<<<< HEAD
 /* TODO: copied from ehci-hcd.c - can this be refactored? */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * xhci_handshake - spin reading hc until handshake completes or fails
  * @ptr: address of hc register to be read
@@ -79,6 +86,7 @@ static bool td_on_ring(struct xhci_td *td, struct xhci_ring *ring)
 int xhci_handshake(void __iomem *ptr, u32 mask, u32 done, int usec)
 {
 	u32	result;
+<<<<<<< HEAD
 
 	do {
 		result = readl(ptr);
@@ -112,6 +120,18 @@ int xhci_handshake_check_state(struct xhci_hcd *xhci,
 		usec--;
 	} while (usec > 0);
 	return -ETIMEDOUT;
+=======
+	int	ret;
+
+	ret = readl_poll_timeout_atomic(ptr, result,
+					(result & mask) == done ||
+					result == U32_MAX,
+					1, usec);
+	if (result == U32_MAX)		/* card removed */
+		return -ENODEV;
+
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -165,6 +185,7 @@ int xhci_start(struct xhci_hcd *xhci)
 {
 	u32 temp;
 	int ret;
+<<<<<<< HEAD
 	struct usb_hcd *hcd = xhci_to_hcd(xhci);
 
 	/*
@@ -172,6 +193,9 @@ int xhci_start(struct xhci_hcd *xhci)
 	 * change event in halt state, as soon as xhci_start clears halt bit
 	 */
 	disable_irq(hcd->irq);
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	temp = readl(&xhci->op_regs->command);
 	temp |= (CMD_RUN);
 	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "// Turn on HC, cmd = 0x%x.",
@@ -192,8 +216,11 @@ int xhci_start(struct xhci_hcd *xhci)
 		/* clear state flags. Including dying, halted or removing */
 		xhci->xhc_state = 0;
 
+<<<<<<< HEAD
 	enable_irq(hcd->irq);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -237,7 +264,11 @@ int xhci_reset(struct xhci_hcd *xhci)
 	if (xhci->quirks & XHCI_INTEL_HOST)
 		udelay(1000);
 
+<<<<<<< HEAD
 	ret = xhci_handshake_check_state(xhci, &xhci->op_regs->command,
+=======
+	ret = xhci_handshake(&xhci->op_regs->command,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			CMD_RESET, 0, 10 * 1000 * 1000);
 	if (ret)
 		return ret;
@@ -657,7 +688,11 @@ int xhci_run(struct usb_hcd *hcd)
 
 	temp = readl(&xhci->ir_set->irq_pending);
 	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+<<<<<<< HEAD
 			"// Enabling event ring interrupter %pK by writing 0x%x to irq_pending",
+=======
+			"// Enabling event ring interrupter %p by writing 0x%x to irq_pending",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			xhci->ir_set, (unsigned int) ER_IRQ_ENABLE(temp));
 	writel(ER_IRQ_ENABLE(temp), &xhci->ir_set->irq_pending);
 	xhci_print_ir_set(xhci, 0);
@@ -748,7 +783,11 @@ static void xhci_stop(struct usb_hcd *hcd)
  *
  * This will only ever be called with the main usb_hcd (the USB3 roothub).
  */
+<<<<<<< HEAD
 static void xhci_shutdown(struct usb_hcd *hcd)
+=======
+void xhci_shutdown(struct usb_hcd *hcd)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
 
@@ -767,11 +806,16 @@ static void xhci_shutdown(struct usb_hcd *hcd)
 	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
 			"xhci_shutdown completed - status = %x",
 			readl(&xhci->op_regs->status));
+<<<<<<< HEAD
 
 	/* Yet another workaround for spurious wakeups at shutdown with HSW */
 	if (xhci->quirks & XHCI_SPURIOUS_WAKEUP)
 		pci_set_power_state(to_pci_dev(hcd->self.sysdev), PCI_D3hot);
 }
+=======
+}
+EXPORT_SYMBOL_GPL(xhci_shutdown);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_PM
 static void xhci_save_registers(struct xhci_hcd *xhci)
@@ -942,7 +986,11 @@ static bool xhci_pending_portevent(struct xhci_hcd *xhci)
 int xhci_suspend(struct xhci_hcd *xhci, bool do_wakeup)
 {
 	int			rc = 0;
+<<<<<<< HEAD
 	unsigned int		delay = XHCI_MAX_HALT_USEC;
+=======
+	unsigned int		delay = XHCI_MAX_HALT_USEC * 2;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct usb_hcd		*hcd = xhci_to_hcd(xhci);
 	u32			command;
 	u32			res;
@@ -985,12 +1033,15 @@ int xhci_suspend(struct xhci_hcd *xhci, bool do_wakeup)
 	if (xhci_handshake(&xhci->op_regs->status,
 		      STS_HALT, STS_HALT, delay)) {
 		xhci_warn(xhci, "WARN: xHC CMD_RUN timeout\n");
+<<<<<<< HEAD
 		/* Set the HW_ACCESSIBLE so that any pending interrupts are
 		 * served.
 		 */
 		set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
 		set_bit(HCD_FLAG_HW_ACCESSIBLE, &xhci->shared_hcd->flags);
 		xhci_hc_died(xhci);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		spin_unlock_irq(&xhci->lock);
 		return -ETIMEDOUT;
 	}
@@ -1005,7 +1056,11 @@ int xhci_suspend(struct xhci_hcd *xhci, bool do_wakeup)
 	writel(command, &xhci->op_regs->command);
 	xhci->broken_suspend = 0;
 	if (xhci_handshake(&xhci->op_regs->status,
+<<<<<<< HEAD
 				STS_SAVE, 0, 10 * 1000)) {
+=======
+				STS_SAVE, 0, 20 * 1000)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * AMD SNPS xHC 3.0 occasionally does not clear the
 	 * SSS bit of USBSTS and when driver tries to poll
@@ -1061,6 +1116,11 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
 	struct usb_hcd		*secondary_hcd;
 	int			retval = 0;
 	bool			comp_timer_running = false;
+<<<<<<< HEAD
+=======
+	bool			pending_portevent = false;
+	bool			reinit_xhc = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!hcd->state)
 		return 0;
@@ -1077,10 +1137,30 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
 	set_bit(HCD_FLAG_HW_ACCESSIBLE, &xhci->shared_hcd->flags);
 
 	spin_lock_irq(&xhci->lock);
+<<<<<<< HEAD
 	if ((xhci->quirks & XHCI_RESET_ON_RESUME) || xhci->broken_suspend)
 		hibernated = true;
 
 	if (!hibernated) {
+=======
+
+	if (hibernated || xhci->quirks & XHCI_RESET_ON_RESUME || xhci->broken_suspend)
+		reinit_xhc = true;
+
+	if (!reinit_xhc) {
+		/*
+		 * Some controllers might lose power during suspend, so wait
+		 * for controller not ready bit to clear, just as in xHC init.
+		 */
+		retval = xhci_handshake(&xhci->op_regs->status,
+					STS_CNR, 0, 10 * 1000 * 1000);
+		if (retval) {
+			xhci_warn(xhci, "Controller not ready at resume %d\n",
+				  retval);
+			spin_unlock_irq(&xhci->lock);
+			return retval;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* step 1: restore register */
 		xhci_restore_registers(xhci);
 		/* step 2: initialize command ring buffer */
@@ -1101,12 +1181,26 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
 			spin_unlock_irq(&xhci->lock);
 			return -ETIMEDOUT;
 		}
+<<<<<<< HEAD
 		temp = readl(&xhci->op_regs->status);
 	}
 
 	/* If restore operation fails, re-initialize the HC during resume */
 	if ((temp & STS_SRE) || hibernated) {
 
+=======
+	}
+
+	temp = readl(&xhci->op_regs->status);
+
+	/* re-initialize the HC on Restore Error, or Host Controller Error */
+	if (temp & (STS_SRE | STS_HCE)) {
+		reinit_xhc = true;
+		xhci_warn(xhci, "xHC error in resume, USBSTS 0x%x, Reinit\n", temp);
+	}
+
+	if (reinit_xhc) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if ((xhci->quirks & XHCI_COMP_MODE_QUIRK) &&
 				!(xhci_all_ports_seen_u0(xhci))) {
 			del_timer_sync(&xhci->comp_mode_recovery_timer);
@@ -1182,13 +1276,31 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
 
  done:
 	if (retval == 0) {
+<<<<<<< HEAD
 		/* Resume root hubs only when have pending events. */
 		if (xhci_pending_portevent(xhci)) {
+=======
+		/*
+		 * Resume roothubs only if there are pending events.
+		 * USB 3 devices resend U3 LFPS wake after a 100ms delay if
+		 * the first wake signalling failed, give it that chance.
+		 */
+		pending_portevent = xhci_pending_portevent(xhci);
+		if (!pending_portevent) {
+			msleep(120);
+			pending_portevent = xhci_pending_portevent(xhci);
+		}
+
+		if (pending_portevent) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			usb_hcd_resume_root_hub(xhci->shared_hcd);
 			usb_hcd_resume_root_hub(hcd);
 		}
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * If system is subject to the Quirk, Compliance Mode Timer needs to
 	 * be re-initialized Always after a system resume. Ports are subject
@@ -1326,7 +1438,11 @@ static int xhci_configure_endpoint(struct xhci_hcd *xhci,
  * we need to issue an evaluate context command and wait on it.
  */
 static int xhci_check_maxpacket(struct xhci_hcd *xhci, unsigned int slot_id,
+<<<<<<< HEAD
 		unsigned int ep_index, struct urb *urb)
+=======
+		unsigned int ep_index, struct urb *urb, gfp_t mem_flags)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct xhci_container_ctx *out_ctx;
 	struct xhci_input_control_ctx *ctrl_ctx;
@@ -1357,7 +1473,11 @@ static int xhci_check_maxpacket(struct xhci_hcd *xhci, unsigned int slot_id,
 		 * changes max packet sizes.
 		 */
 
+<<<<<<< HEAD
 		command = xhci_alloc_command(xhci, false, true, GFP_KERNEL);
+=======
+		command = xhci_alloc_command(xhci, false, true, mem_flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!command)
 			return -ENOMEM;
 
@@ -1374,6 +1494,10 @@ static int xhci_check_maxpacket(struct xhci_hcd *xhci, unsigned int slot_id,
 				xhci->devs[slot_id]->out_ctx, ep_index);
 
 		ep_ctx = xhci_get_ep_ctx(xhci, command->in_ctx, ep_index);
+<<<<<<< HEAD
+=======
+		ep_ctx->ep_info &= cpu_to_le32(~EP_STATE_MASK);/* must clear */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ep_ctx->ep_info2 &= cpu_to_le32(~MAX_PACKET_MASK);
 		ep_ctx->ep_info2 |= cpu_to_le32(MAX_PACKET(max_packet_size));
 
@@ -1407,9 +1531,18 @@ static int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flag
 	struct urb_priv	*urb_priv;
 	int num_tds;
 
+<<<<<<< HEAD
 	if (!urb || xhci_check_args(hcd, urb->dev, urb->ep,
 					true, true, __func__) <= 0)
 		return -EINVAL;
+=======
+	if (!urb)
+		return -EINVAL;
+	ret = xhci_check_args(hcd, urb->dev, urb->ep,
+					true, true, __func__);
+	if (ret <= 0)
+		return ret ? ret : -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	slot_id = urb->dev->slot_id;
 	ep_index = xhci_get_endpoint_index(&urb->ep->desc);
@@ -1447,7 +1580,11 @@ static int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flag
 		 */
 		if (urb->dev->speed == USB_SPEED_FULL) {
 			ret = xhci_check_maxpacket(xhci, slot_id,
+<<<<<<< HEAD
 					ep_index, urb);
+=======
+					ep_index, urb, mem_flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (ret < 0) {
 				xhci_urb_free_priv(urb_priv);
 				urb->hcpriv = NULL;
@@ -1610,7 +1747,11 @@ static int xhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 	i = urb_priv->num_tds_done;
 	if (i < urb_priv->num_tds)
 		xhci_dbg_trace(xhci, trace_xhci_dbg_cancel_urb,
+<<<<<<< HEAD
 				"Cancel URB %pK, dev %s, ep 0x%x, "
+=======
+				"Cancel URB %p, dev %s, ep 0x%x, "
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				"starting at offset 0x%llx",
 				urb, urb->dev->devpath,
 				urb->ep->desc.bEndpointAddress,
@@ -1685,7 +1826,11 @@ static int xhci_drop_endpoint(struct usb_hcd *hcd, struct usb_device *udev,
 	if (xhci->xhc_state & XHCI_STATE_DYING)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	xhci_dbg(xhci, "%s called for udev %pK\n", __func__, udev);
+=======
+	xhci_dbg(xhci, "%s called for udev %p\n", __func__, udev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	drop_flag = xhci_get_endpoint_flag(&ep->desc);
 	if (drop_flag == SLOT_FLAG || drop_flag == EP0_FLAG) {
 		xhci_dbg(xhci, "xHCI %s - can't drop slot or ep 0 %#x\n",
@@ -1712,7 +1857,11 @@ static int xhci_drop_endpoint(struct usb_hcd *hcd, struct usb_device *udev,
 	    xhci_get_endpoint_flag(&ep->desc)) {
 		/* Do not warn when called after a usb_device_reset */
 		if (xhci->devs[udev->slot_id]->eps[ep_index].ring != NULL)
+<<<<<<< HEAD
 			xhci_warn(xhci, "xHCI %s called with disabled ep %pK\n",
+=======
+			xhci_warn(xhci, "xHCI %s called with disabled ep %p\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				  __func__, ep);
 		return 0;
 	}
@@ -1807,7 +1956,11 @@ static int xhci_add_endpoint(struct usb_hcd *hcd, struct usb_device *udev,
 	 * ignore this request.
 	 */
 	if (le32_to_cpu(ctrl_ctx->add_flags) & added_ctxs) {
+<<<<<<< HEAD
 		xhci_warn(xhci, "xHCI %s called with enabled ep %pK\n",
+=======
+		xhci_warn(xhci, "xHCI %s called with enabled ep %p\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				__func__, ep);
 		return 0;
 	}
@@ -2801,7 +2954,11 @@ static int xhci_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
 		(xhci->xhc_state & XHCI_STATE_REMOVING))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	xhci_dbg(xhci, "%s called for udev %pK\n", __func__, udev);
+=======
+	xhci_dbg(xhci, "%s called for udev %p\n", __func__, udev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	virt_dev = xhci->devs[udev->slot_id];
 
 	command = xhci_alloc_command(xhci, false, true, GFP_KERNEL);
@@ -2891,7 +3048,11 @@ static void xhci_reset_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
 		return;
 	xhci = hcd_to_xhci(hcd);
 
+<<<<<<< HEAD
 	xhci_dbg(xhci, "%s called for udev %pK\n", __func__, udev);
+=======
+	xhci_dbg(xhci, "%s called for udev %p\n", __func__, udev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	virt_dev = xhci->devs[udev->slot_id];
 	/* Free any rings allocated for added endpoints */
 	for (i = 0; i < 31; i++) {
@@ -2941,7 +3102,11 @@ static void xhci_setup_input_ctx_for_quirk(struct xhci_hcd *xhci,
 	if (addr == 0) {
 		xhci_warn(xhci, "WARN Cannot submit config ep after "
 				"reset ep command\n");
+<<<<<<< HEAD
 		xhci_warn(xhci, "WARN deq seg = %pK, deq ptr = %pK\n",
+=======
+		xhci_warn(xhci, "WARN deq seg = %p, deq ptr = %p\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				deq_state->new_deq_seg,
 				deq_state->new_deq_ptr);
 		return;
@@ -3036,7 +3201,11 @@ static int xhci_check_streams_endpoint(struct xhci_hcd *xhci,
 		return -EINVAL;
 	ret = xhci_check_args(xhci_to_hcd(xhci), udev, ep, 1, true, __func__);
 	if (ret <= 0)
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		return ret ? ret : -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (usb_ss_max_streams(&ep->ss_ep_comp) == 0) {
 		xhci_warn(xhci, "WARN: SuperSpeed Endpoint Companion"
 				" descriptor for ep 0x%x does not support streams\n",
@@ -3644,7 +3813,10 @@ static void xhci_free_dev(struct usb_hcd *hcd, struct usb_device *udev)
 	struct xhci_slot_ctx *slot_ctx;
 	int i, ret;
 
+<<<<<<< HEAD
 #ifndef CONFIG_USB_DEFAULT_PERSIST
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * We called pm_runtime_get_noresume when the device was attached.
 	 * Decrement the counter here to allow controller to runtime suspend
@@ -3652,7 +3824,10 @@ static void xhci_free_dev(struct usb_hcd *hcd, struct usb_device *udev)
 	 */
 	if (xhci->quirks & XHCI_RESET_ON_RESUME)
 		pm_runtime_put_noidle(hcd->self.controller);
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = xhci_check_args(hcd, udev, NULL, 0, true, __func__);
 	/* If the host is halted due to driver unload, we still need to free the
@@ -3807,14 +3982,20 @@ int xhci_alloc_dev(struct usb_hcd *hcd, struct usb_device *udev)
 
 	udev->slot_id = slot_id;
 
+<<<<<<< HEAD
 #ifndef CONFIG_USB_DEFAULT_PERSIST
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * If resetting upon resume, we can't put the controller into runtime
 	 * suspend if there is a device attached.
 	 */
 	if (xhci->quirks & XHCI_RESET_ON_RESUME)
 		pm_runtime_get_noresume(hcd->self.controller);
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Is this a LS or FS device under a HS hub? */
 	/* Hub or peripherial? */
@@ -3970,7 +4151,11 @@ static int xhci_setup_device(struct usb_hcd *hcd, struct usb_device *udev,
 	xhci_dbg_trace(xhci, trace_xhci_dbg_address,
 			"Op regs DCBAA ptr = %#016llx", temp_64);
 	xhci_dbg_trace(xhci, trace_xhci_dbg_address,
+<<<<<<< HEAD
 		"Slot ID %d dcbaa entry @%pK = %#016llx",
+=======
+		"Slot ID %d dcbaa entry @%p = %#016llx",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		udev->slot_id,
 		&xhci->dcbaa->dev_context_ptrs[udev->slot_id],
 		(unsigned long long)
@@ -4190,7 +4375,10 @@ static int xhci_set_usb2_hardware_lpm(struct usb_hcd *hcd,
 	pm_addr = port_array[port_num] + PORTPMSC;
 	pm_val = readl(pm_addr);
 	hlpm_addr = port_array[port_num] + PORTHLPMC;
+<<<<<<< HEAD
 	field = le32_to_cpu(udev->bos->ext_cap->bmAttributes);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	xhci_dbg(xhci, "%s port %d USB2 hardware LPM\n",
 			enable ? "enable" : "disable", port_num + 1);
@@ -4202,6 +4390,10 @@ static int xhci_set_usb2_hardware_lpm(struct usb_hcd *hcd,
 			 * default one which works with mixed HIRD and BESL
 			 * systems. See XHCI_DEFAULT_BESL definition in xhci.h
 			 */
+<<<<<<< HEAD
+=======
+			field = le32_to_cpu(udev->bos->ext_cap->bmAttributes);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if ((field & USB_BESL_SUPPORT) &&
 			    (field & USB_BESL_BASELINE_VALID))
 				hird = USB_GET_BESL_BASELINE(field);
@@ -4253,6 +4445,12 @@ static int xhci_set_usb2_hardware_lpm(struct usb_hcd *hcd,
 			mutex_lock(hcd->bandwidth_mutex);
 			xhci_change_max_exit_latency(xhci, udev, 0);
 			mutex_unlock(hcd->bandwidth_mutex);
+<<<<<<< HEAD
+=======
+			readl_poll_timeout(port_array[port_num], pm_val,
+					   (pm_val & PORT_PLS_MASK) == XDEV_U0,
+					   100, 10000);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return 0;
 		}
 	}
@@ -4528,12 +4726,21 @@ static int xhci_update_timeout_for_endpoint(struct xhci_hcd *xhci,
 	alt_timeout = xhci_call_host_update_timeout_for_endpoint(xhci, udev,
 		desc, state, timeout);
 
+<<<<<<< HEAD
 	/* If we found we can't enable hub-initiated LPM, or
 	 * the U1 or U2 exit latency was too high to allow
 	 * device-initiated LPM as well, just stop searching.
 	 */
 	if (alt_timeout == USB3_LPM_DISABLED ||
 			alt_timeout == USB3_LPM_DEVICE_INITIATED) {
+=======
+	/* If we found we can't enable hub-initiated LPM, and
+	 * the U1 or U2 exit latency was too high to allow
+	 * device-initiated LPM as well, then we will disable LPM
+	 * for this device, so stop searching any further.
+	 */
+	if (alt_timeout == USB3_LPM_DISABLED) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		*timeout = alt_timeout;
 		return -E2BIG;
 	}
@@ -4644,10 +4851,19 @@ static u16 xhci_calculate_lpm_timeout(struct usb_hcd *hcd,
 		if (intf->dev.driver) {
 			driver = to_usb_driver(intf->dev.driver);
 			if (driver && driver->disable_hub_initiated_lpm) {
+<<<<<<< HEAD
 				dev_dbg(&udev->dev, "Hub-initiated %s disabled "
 						"at request of driver %s\n",
 						state_name, driver->name);
 				return xhci_get_timeout_no_hub_lpm(udev, state);
+=======
+				dev_dbg(&udev->dev, "Hub-initiated %s disabled at request of driver %s\n",
+					state_name, driver->name);
+				timeout = xhci_get_timeout_no_hub_lpm(udev,
+								      state);
+				if (timeout == USB3_LPM_DISABLED)
+					return timeout;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 		}
 
@@ -5030,6 +5246,7 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
 }
 EXPORT_SYMBOL_GPL(xhci_gen_setup);
 
+<<<<<<< HEAD
 static phys_addr_t xhci_get_sec_event_ring_phys_addr(struct usb_hcd *hcd,
 	unsigned int intr_num, dma_addr_t *dma)
 {
@@ -5165,6 +5382,8 @@ free_cmd:
 
 
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static const struct hc_driver xhci_hc_driver = {
 	.description =		"xhci-hcd",
 	.product_desc =		"xHCI Host Controller",
@@ -5224,12 +5443,15 @@ static const struct hc_driver xhci_hc_driver = {
 	.enable_usb3_lpm_timeout =	xhci_enable_usb3_lpm_timeout,
 	.disable_usb3_lpm_timeout =	xhci_disable_usb3_lpm_timeout,
 	.find_raw_port_number =	xhci_find_raw_port_number,
+<<<<<<< HEAD
 	.sec_event_ring_setup =		xhci_sec_event_ring_setup,
 	.sec_event_ring_cleanup =	xhci_sec_event_ring_cleanup,
 	.get_sec_event_ring_phys_addr =	xhci_get_sec_event_ring_phys_addr,
 	.get_xfer_ring_phys_addr =	xhci_get_xfer_ring_phys_addr,
 	.get_core_id =			xhci_get_core_id,
 	.stop_endpoint =		xhci_stop_endpoint,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 void xhci_init_driver(struct hc_driver *drv,

@@ -188,7 +188,11 @@ static int lp87565_regulator_probe(struct platform_device *pdev)
 	struct lp87565 *lp87565 = dev_get_drvdata(pdev->dev.parent);
 	struct regulator_config config = { };
 	struct regulator_dev *rdev;
+<<<<<<< HEAD
 	int i, min_idx = LP87565_BUCK_1, max_idx = LP87565_BUCK_3;
+=======
+	int i, min_idx = LP87565_BUCK_0, max_idx = LP87565_BUCK_3;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	platform_set_drvdata(pdev, lp87565);
 

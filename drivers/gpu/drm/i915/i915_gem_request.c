@@ -252,6 +252,13 @@ static void mark_busy(struct drm_i915_private *i915)
 	GEM_BUG_ON(!i915->gt.active_requests);
 
 	intel_runtime_pm_get_noresume(i915);
+<<<<<<< HEAD
+=======
+
+	if (NEEDS_RC6_CTX_CORRUPTION_WA(i915))
+		intel_uncore_forcewake_get(i915, FORCEWAKE_ALL);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	i915->gt.awake = true;
 
 	intel_enable_gt_powersave(i915);

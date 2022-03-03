@@ -38,6 +38,21 @@
 
 #include "../dmaengine.h"
 
+<<<<<<< HEAD
+=======
+int completion_timeout = 200;
+module_param(completion_timeout, int, 0644);
+MODULE_PARM_DESC(completion_timeout,
+		"set ioat completion timeout [msec] (default 200 [msec])");
+int idle_timeout = 2000;
+module_param(idle_timeout, int, 0644);
+MODULE_PARM_DESC(idle_timeout,
+		"set ioat idel timeout [msec] (default 2000 [msec])");
+
+#define IDLE_TIMEOUT msecs_to_jiffies(idle_timeout)
+#define COMPLETION_TIMEOUT msecs_to_jiffies(completion_timeout)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static char *chanerr_str[] = {
 	"DMA Transfer Source Address Error",
 	"DMA Transfer Destination Address Error",
@@ -388,10 +403,18 @@ ioat_alloc_ring(struct dma_chan *c, int order, gfp_t flags)
 
 		descs->virt = dma_alloc_coherent(to_dev(ioat_chan),
 						 SZ_2M, &descs->hw, flags);
+<<<<<<< HEAD
 		if (!descs->virt && (i > 0)) {
 			int idx;
 
 			for (idx = 0; idx < i; idx++) {
+=======
+		if (!descs->virt) {
+			int idx;
+
+			for (idx = 0; idx < i; idx++) {
+				descs = &ioat_chan->descs[idx];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				dma_free_coherent(to_dev(ioat_chan), SZ_2M,
 						  descs->virt, descs->hw);
 				descs->virt = NULL;

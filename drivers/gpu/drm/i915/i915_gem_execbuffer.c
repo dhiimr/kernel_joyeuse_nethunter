@@ -268,6 +268,16 @@ static inline u64 gen8_noncanonical_addr(u64 address)
 	return address & GENMASK_ULL(GEN8_HIGH_ADDRESS_BIT, 0);
 }
 
+<<<<<<< HEAD
+=======
+static inline bool eb_use_cmdparser(const struct i915_execbuffer *eb)
+{
+	return intel_engine_requires_cmd_parser(eb->engine) ||
+		(intel_engine_using_cmd_parser(eb->engine) &&
+		 eb->args->batch_len);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int eb_create(struct i915_execbuffer *eb)
 {
 	if (!(eb->args->flags & I915_EXEC_HANDLE_LUT)) {
@@ -334,7 +344,11 @@ eb_vma_misplaced(const struct drm_i915_gem_exec_object2 *entry,
 		return true;
 
 	if (!(flags & EXEC_OBJECT_SUPPORTS_48B_ADDRESS) &&
+<<<<<<< HEAD
 	    (vma->node.start + vma->node.size - 1) >> 32)
+=======
+	    (vma->node.start + vma->node.size + 4095) >> 32)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return true;
 
 	if (flags & __EXEC_OBJECT_NEEDS_MAP &&
@@ -1165,6 +1179,13 @@ static u32 *reloc_gpu(struct i915_execbuffer *eb,
 	if (unlikely(!cache->rq)) {
 		int err;
 
+<<<<<<< HEAD
+=======
+		/* If we need to copy for the cmdparser, we will stall anyway */
+		if (eb_use_cmdparser(eb))
+			return ERR_PTR(-EWOULDBLOCK);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		err = __reloc_gpu_alloc(eb, vma, len);
 		if (unlikely(err))
 			return ERR_PTR(err);
@@ -1555,7 +1576,13 @@ static int eb_copy_relocations(const struct i915_execbuffer *eb)
 		 * happened we would make the mistake of assuming that the
 		 * relocations were valid.
 		 */
+<<<<<<< HEAD
 		user_access_begin();
+=======
+		if (!user_access_begin(VERIFY_WRITE, urelocs, size))
+			goto end_user;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		for (copied = 0; copied < nreloc; copied++)
 			unsafe_put_user(-1,
 					&urelocs[copied].presumed_offset,
@@ -1902,10 +1929,45 @@ static int i915_reset_gen7_sol_offsets(struct drm_i915_gem_request *req)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct i915_vma *eb_parse(struct i915_execbuffer *eb, bool is_master)
 {
 	struct drm_i915_gem_object *shadow_batch_obj;
 	struct i915_vma *vma;
+=======
+static struct i915_vma *
+shadow_batch_pin(struct i915_execbuffer *eb, struct drm_i915_gem_object *obj)
+{
+	struct drm_i915_private *dev_priv = eb->i915;
+	struct i915_address_space *vm;
+	u64 flags;
+
+	/*
+	 * PPGTT backed shadow buffers must be mapped RO, to prevent
+	 * post-scan tampering
+	 */
+	if (CMDPARSER_USES_GGTT(dev_priv)) {
+		flags = PIN_GLOBAL;
+		vm = &dev_priv->ggtt.base;
+	} else if (eb->vm->has_read_only) {
+		flags = PIN_USER;
+		vm = eb->vm;
+		i915_gem_object_set_readonly(obj);
+	} else {
+		DRM_DEBUG("Cannot prevent post-scan tampering without RO capable vm\n");
+		return ERR_PTR(-EINVAL);
+	}
+
+	return i915_gem_object_pin(obj, vm, NULL, 0, 0, flags);
+}
+
+static struct i915_vma *eb_parse(struct i915_execbuffer *eb)
+{
+	struct drm_i915_gem_object *shadow_batch_obj;
+	struct i915_vma *vma;
+	u64 batch_start;
+	u64 shadow_batch_start;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err;
 
 	shadow_batch_obj = i915_gem_batch_pool_get(&eb->engine->batch_pool,
@@ -1913,6 +1975,7 @@ static struct i915_vma *eb_parse(struct i915_execbuffer *eb, bool is_master)
 	if (IS_ERR(shadow_batch_obj))
 		return ERR_CAST(shadow_batch_obj);
 
+<<<<<<< HEAD
 	err = intel_engine_cmd_parser(eb->engine,
 				      eb->batch->obj,
 				      shadow_batch_obj,
@@ -1930,12 +1993,58 @@ static struct i915_vma *eb_parse(struct i915_execbuffer *eb, bool is_master)
 	vma = i915_gem_object_ggtt_pin(shadow_batch_obj, NULL, 0, 0, 0);
 	if (IS_ERR(vma))
 		goto out;
+=======
+	vma = shadow_batch_pin(eb, shadow_batch_obj);
+	if (IS_ERR(vma))
+		goto out;
+
+	batch_start = gen8_canonical_addr(eb->batch->node.start) +
+		      eb->batch_start_offset;
+
+	shadow_batch_start = gen8_canonical_addr(vma->node.start);
+
+	err = intel_engine_cmd_parser(eb->ctx,
+				      eb->engine,
+				      eb->batch->obj,
+				      batch_start,
+				      eb->batch_start_offset,
+				      eb->batch_len,
+				      shadow_batch_obj,
+				      shadow_batch_start);
+
+	if (err) {
+		i915_vma_unpin(vma);
+
+		/*
+		 * Unsafe GGTT-backed buffers can still be submitted safely
+		 * as non-secure.
+		 * For PPGTT backing however, we have no choice but to forcibly
+		 * reject unsafe buffers
+		 */
+		if (CMDPARSER_USES_GGTT(eb->i915) && (err == -EACCES))
+			/* Execute original buffer non-secure */
+			vma = NULL;
+		else
+			vma = ERR_PTR(err);
+
+		goto out;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	eb->vma[eb->buffer_count] = i915_vma_get(vma);
 	eb->flags[eb->buffer_count] =
 		__EXEC_OBJECT_HAS_PIN | __EXEC_OBJECT_HAS_REF;
 	vma->exec_flags = &eb->flags[eb->buffer_count];
 	eb->buffer_count++;
+<<<<<<< HEAD
+=======
+	eb->batch_start_offset = 0;
+	eb->batch = vma;
+	/* eb->batch_len unchanged */
+
+	if (CMDPARSER_USES_GGTT(eb->i915))
+		eb->batch_flags |= I915_DISPATCH_SECURE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 out:
 	i915_gem_object_unpin_pages(shadow_batch_obj);
@@ -2186,6 +2295,10 @@ i915_gem_do_execbuffer(struct drm_device *dev,
 		       struct drm_i915_gem_exec_object2 *exec,
 		       struct drm_syncobj **fences)
 {
+<<<<<<< HEAD
+=======
+	struct drm_i915_private *dev_priv = to_i915(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct i915_execbuffer eb;
 	struct dma_fence *in_fence = NULL;
 	struct sync_file *out_fence = NULL;
@@ -2195,7 +2308,11 @@ i915_gem_do_execbuffer(struct drm_device *dev,
 	BUILD_BUG_ON(__EXEC_OBJECT_INTERNAL_FLAGS &
 		     ~__EXEC_OBJECT_UNKNOWN_FLAGS);
 
+<<<<<<< HEAD
 	eb.i915 = to_i915(dev);
+=======
+	eb.i915 = dev_priv;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	eb.file = file;
 	eb.args = args;
 	if (DBG_FORCE_RELOC || !(args->flags & I915_EXEC_NO_RELOC))
@@ -2217,8 +2334,20 @@ i915_gem_do_execbuffer(struct drm_device *dev,
 
 	eb.batch_flags = 0;
 	if (args->flags & I915_EXEC_SECURE) {
+<<<<<<< HEAD
 		if (!drm_is_current_master(file) || !capable(CAP_SYS_ADMIN))
 		    return -EPERM;
+=======
+		if (INTEL_GEN(dev_priv) >= 11)
+			return -ENODEV;
+
+		/* Return -EPERM to trigger fallback code on old binaries. */
+		if (!HAS_SECURE_BATCHES(dev_priv))
+			return -EPERM;
+
+		if (!drm_is_current_master(file) || !capable(CAP_SYS_ADMIN))
+			return -EPERM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		eb.batch_flags |= I915_DISPATCH_SECURE;
 	}
@@ -2305,14 +2434,25 @@ i915_gem_do_execbuffer(struct drm_device *dev,
 		goto err_vma;
 	}
 
+<<<<<<< HEAD
 	if (eb.engine->needs_cmd_parser && eb.batch_len) {
 		struct i915_vma *vma;
 
 		vma = eb_parse(&eb, drm_is_current_master(file));
+=======
+	if (eb.batch_len == 0)
+		eb.batch_len = eb.batch->size - eb.batch_start_offset;
+
+	if (eb_use_cmdparser(&eb)) {
+		struct i915_vma *vma;
+
+		vma = eb_parse(&eb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (IS_ERR(vma)) {
 			err = PTR_ERR(vma);
 			goto err_vma;
 		}
+<<<<<<< HEAD
 
 		if (vma) {
 			/*
@@ -2333,6 +2473,10 @@ i915_gem_do_execbuffer(struct drm_device *dev,
 	if (eb.batch_len == 0)
 		eb.batch_len = eb.batch->size - eb.batch_start_offset;
 
+=======
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * snb/ivb/vlv conflate the "batch in ppgtt" bit with the "non-secure
 	 * batch" bit. Hence we need to pin secure batches into the global gtt.
@@ -2545,6 +2689,10 @@ i915_gem_execbuffer2(struct drm_device *dev, void *data,
 	struct drm_i915_gem_execbuffer2 *args = data;
 	struct drm_i915_gem_exec_object2 *exec2_list;
 	struct drm_syncobj **fences = NULL;
+<<<<<<< HEAD
+=======
+	const size_t count = args->buffer_count;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err;
 
 	if (args->buffer_count < 1 || args->buffer_count > SIZE_MAX / sz - 1) {
@@ -2593,7 +2741,21 @@ i915_gem_execbuffer2(struct drm_device *dev, void *data,
 		unsigned int i;
 
 		/* Copy the new buffer offsets back to the user's exec list. */
+<<<<<<< HEAD
 		user_access_begin();
+=======
+		/*
+		 * Note: count * sizeof(*user_exec_list) does not overflow,
+		 * because we checked 'count' in check_buffer_count().
+		 *
+		 * And this range already got effectively checked earlier
+		 * when we did the "copy_from_user()" above.
+		 */
+		if (!user_access_begin(VERIFY_WRITE, user_exec_list,
+				       count * sizeof(*user_exec_list)))
+			goto end_user;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		for (i = 0; i < args->buffer_count; i++) {
 			if (!(exec2_list[i].offset & UPDATE))
 				continue;

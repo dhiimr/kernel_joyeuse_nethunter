@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2015-2017, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -34,6 +38,11 @@
 #include "dsi_cfg.h"
 #include "msm_kms.h"
 
+<<<<<<< HEAD
+=======
+#define DSI_RESET_TOGGLE_DELAY_MS 20
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int dsi_get_version(const void __iomem *base, u32 *major, u32 *minor)
 {
 	u32 ver;
@@ -440,7 +449,11 @@ static int dsi_bus_clk_enable(struct msm_dsi_host *msm_host)
 
 	return 0;
 err:
+<<<<<<< HEAD
 	for (; i > 0; i--)
+=======
+	while (--i >= 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		clk_disable_unprepare(msm_host->bus_clks[i]);
 
 	return ret;
@@ -906,7 +919,11 @@ static void dsi_sw_reset(struct msm_dsi_host *msm_host)
 	wmb(); /* clocks need to be enabled before reset */
 
 	dsi_write(msm_host, REG_DSI_RESET, 1);
+<<<<<<< HEAD
 	wmb(); /* make sure reset happen */
+=======
+	msleep(DSI_RESET_TOGGLE_DELAY_MS); /* make sure reset happen */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dsi_write(msm_host, REG_DSI_RESET, 0);
 }
 
@@ -994,6 +1011,10 @@ static int dsi_tx_buf_alloc(struct msm_dsi_host *msm_host, int size)
 
 		ret = msm_gem_get_iova(msm_host->tx_gem_obj,
 				priv->kms->aspace, &iova);
+<<<<<<< HEAD
+=======
+		mutex_unlock(&dev->struct_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (ret) {
 			pr_err("%s: failed to get iova, %d\n", __func__, ret);
 			return ret;
@@ -1287,7 +1308,11 @@ static void dsi_sw_reset_restore(struct msm_dsi_host *msm_host)
 
 	/* dsi controller can only be reset while clocks are running */
 	dsi_write(msm_host, REG_DSI_RESET, 1);
+<<<<<<< HEAD
 	wmb();	/* make sure reset happen */
+=======
+	msleep(DSI_RESET_TOGGLE_DELAY_MS); /* make sure reset happen */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dsi_write(msm_host, REG_DSI_RESET, 0);
 	wmb();	/* controller out of reset */
 	dsi_write(msm_host, REG_DSI_CTRL, data0);
@@ -1560,6 +1585,11 @@ static int dsi_host_parse_lane_data(struct msm_dsi_host *msm_host,
 	if (!prop) {
 		dev_dbg(dev,
 			"failed to find data lane mapping, using default\n");
+<<<<<<< HEAD
+=======
+		/* Set the number of date lanes to 4 by default. */
+		msm_host->num_data_lanes = 4;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 	}
 

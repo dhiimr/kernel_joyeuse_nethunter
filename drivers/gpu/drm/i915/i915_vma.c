@@ -272,6 +272,13 @@ int i915_vma_bind(struct i915_vma *vma, enum i915_cache_level cache_level,
 		return ret;
 
 	vma->flags |= bind_flags;
+<<<<<<< HEAD
+=======
+
+	if (vma->obj)
+		set_bit(I915_BO_WAS_BOUND_BIT, &vma->obj->flags);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 

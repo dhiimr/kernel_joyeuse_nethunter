@@ -872,13 +872,27 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
 			goto fail;
 		}
 
+<<<<<<< HEAD
+=======
+		if (radix_tree_preload(GFP_KERNEL)) {
+			blkg_free(new_blkg);
+			ret = -ENOMEM;
+			goto fail;
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rcu_read_lock();
 		spin_lock_irq(q->queue_lock);
 
 		blkg = blkg_lookup_check(pos, pol, q);
 		if (IS_ERR(blkg)) {
 			ret = PTR_ERR(blkg);
+<<<<<<< HEAD
 			goto fail_unlock;
+=======
+			blkg_free(new_blkg);
+			goto fail_preloaded;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		if (blkg) {
@@ -887,10 +901,19 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
 			blkg = blkg_create(pos, q, new_blkg);
 			if (unlikely(IS_ERR(blkg))) {
 				ret = PTR_ERR(blkg);
+<<<<<<< HEAD
 				goto fail_unlock;
 			}
 		}
 
+=======
+				goto fail_preloaded;
+			}
+		}
+
+		radix_tree_preload_end();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (pos == blkcg)
 			goto success;
 	}
@@ -900,6 +923,11 @@ success:
 	ctx->body = body;
 	return 0;
 
+<<<<<<< HEAD
+=======
+fail_preloaded:
+	radix_tree_preload_end();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 fail_unlock:
 	spin_unlock_irq(q->queue_lock);
 	rcu_read_unlock();

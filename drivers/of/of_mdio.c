@@ -256,8 +256,19 @@ int of_mdiobus_register(struct mii_bus *mdio, struct device_node *np)
 				 child->name, addr);
 
 			if (of_mdiobus_child_is_phy(child)) {
+<<<<<<< HEAD
 				rc = of_mdiobus_register_phy(mdio, child, addr);
 				if (rc && rc != -ENODEV)
+=======
+				/* -ENODEV is the return code that PHYLIB has
+				 * standardized on to indicate that bus
+				 * scanning should continue.
+				 */
+				rc = of_mdiobus_register_phy(mdio, child, addr);
+				if (!rc)
+					break;
+				if (rc != -ENODEV)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					goto unregister;
 			}
 		}
@@ -358,7 +369,11 @@ struct phy_device *of_phy_get_and_connect(struct net_device *dev,
 	struct phy_device *phy;
 
 	iface = of_get_phy_mode(np);
+<<<<<<< HEAD
 	if (iface < 0)
+=======
+	if ((int)iface < 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return NULL;
 
 	phy_np = of_parse_phandle(np, "phy-handle", 0);

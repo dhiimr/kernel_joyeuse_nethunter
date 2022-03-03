@@ -162,6 +162,17 @@ static const struct spi_device_id ks8995_id[] = {
 };
 MODULE_DEVICE_TABLE(spi, ks8995_id);
 
+<<<<<<< HEAD
+=======
+static const struct of_device_id ks8895_spi_of_match[] = {
+        { .compatible = "micrel,ks8995" },
+        { .compatible = "micrel,ksz8864" },
+        { .compatible = "micrel,ksz8795" },
+        { },
+ };
+MODULE_DEVICE_TABLE(of, ks8895_spi_of_match);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline u8 get_chip_id(u8 val)
 {
 	return (val >> ID1_CHIPID_S) & ID1_CHIPID_M;
@@ -529,6 +540,10 @@ static int ks8995_remove(struct spi_device *spi)
 static struct spi_driver ks8995_driver = {
 	.driver = {
 		.name	    = "spi-ks8995",
+<<<<<<< HEAD
+=======
+		.of_match_table = of_match_ptr(ks8895_spi_of_match),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	.probe	  = ks8995_probe,
 	.remove	  = ks8995_remove,

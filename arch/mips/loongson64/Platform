@@ -43,6 +43,13 @@ else
       $(call cc-option,-march=mips64r2,-mips64r2 -U_MIPS_ISA -D_MIPS_ISA=_MIPS_ISA_MIPS64)
 endif
 
+<<<<<<< HEAD
+=======
+# Some -march= flags enable MMI instructions, and GCC complains about that
+# support being enabled alongside -msoft-float. Thus explicitly disable MMI.
+cflags-y += $(call cc-option,-mno-loongson-mmi)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #
 # Loongson Machines' Support
 #

@@ -36,7 +36,10 @@
 	@ and an offset to the irq acknowledgment word
 
 ENTRY(s3c24xx_spi_fiq_rx)
+<<<<<<< HEAD
 s3c24xx_spi_fix_rx:
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.word	fiq_rx_end - fiq_rx_start
 	.word	fiq_rx_irq_ack - fiq_rx_start
 fiq_rx_start:
@@ -50,7 +53,11 @@ fiq_rx_start:
 	strb	fiq_rtmp, [ fiq_rspi, # S3C2410_SPTDAT ]
 
 	subs	fiq_rcount, fiq_rcount, #1
+<<<<<<< HEAD
 	subnes	pc, lr, #4		@@ return, still have work to do
+=======
+	subsne	pc, lr, #4		@@ return, still have work to do
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	@@ set IRQ controller so that next op will trigger IRQ
 	mov	fiq_rtmp, #0
@@ -62,7 +69,10 @@ fiq_rx_irq_ack:
 fiq_rx_end:
 
 ENTRY(s3c24xx_spi_fiq_txrx)
+<<<<<<< HEAD
 s3c24xx_spi_fiq_txrx:
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.word	fiq_txrx_end - fiq_txrx_start
 	.word	fiq_txrx_irq_ack - fiq_txrx_start
 fiq_txrx_start:
@@ -77,7 +87,11 @@ fiq_txrx_start:
 	strb	fiq_rtmp, [ fiq_rspi, # S3C2410_SPTDAT ]
 
 	subs	fiq_rcount, fiq_rcount, #1
+<<<<<<< HEAD
 	subnes	pc, lr, #4		@@ return, still have work to do
+=======
+	subsne	pc, lr, #4		@@ return, still have work to do
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mov	fiq_rtmp, #0
 	str	fiq_rtmp, [ fiq_rirq, # S3C2410_INTMOD  - S3C24XX_VA_IRQ ]
@@ -89,7 +103,10 @@ fiq_txrx_irq_ack:
 fiq_txrx_end:
 
 ENTRY(s3c24xx_spi_fiq_tx)
+<<<<<<< HEAD
 s3c24xx_spi_fix_tx:
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.word	fiq_tx_end - fiq_tx_start
 	.word	fiq_tx_irq_ack - fiq_tx_start
 fiq_tx_start:
@@ -102,7 +119,11 @@ fiq_tx_start:
 	strb	fiq_rtmp, [ fiq_rspi, # S3C2410_SPTDAT ]
 
 	subs	fiq_rcount, fiq_rcount, #1
+<<<<<<< HEAD
 	subnes	pc, lr, #4		@@ return, still have work to do
+=======
+	subsne	pc, lr, #4		@@ return, still have work to do
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mov	fiq_rtmp, #0
 	str	fiq_rtmp, [ fiq_rirq, # S3C2410_INTMOD  - S3C24XX_VA_IRQ ]

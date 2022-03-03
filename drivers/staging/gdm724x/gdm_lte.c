@@ -614,10 +614,19 @@ static void gdm_lte_netif_rx(struct net_device *dev, char *buf,
 						  * bytes (99,130,83,99 dec)
 						  */
 			} __packed;
+<<<<<<< HEAD
 			void *addr = buf + sizeof(struct iphdr) +
 				sizeof(struct udphdr) +
 				offsetof(struct dhcp_packet, chaddr);
 			ether_addr_copy(nic->dest_mac_addr, addr);
+=======
+			int offset = sizeof(struct iphdr) +
+				     sizeof(struct udphdr) +
+				     offsetof(struct dhcp_packet, chaddr);
+			if (offset + ETH_ALEN > len)
+				return;
+			ether_addr_copy(nic->dest_mac_addr, buf + offset);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 
@@ -680,6 +689,10 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
 	struct sdu *sdu = NULL;
 	struct gdm_endian *endian = phy_dev->get_endian(phy_dev->priv_dev);
 	u8 *data = (u8 *)multi_sdu->data;
+<<<<<<< HEAD
+=======
+	int copied;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u16 i = 0;
 	u16 num_packet;
 	u16 hci_len;
@@ -691,6 +704,15 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
 	num_packet = gdm_dev16_to_cpu(endian, multi_sdu->num_packet);
 
 	for (i = 0; i < num_packet; i++) {
+<<<<<<< HEAD
+=======
+		copied = data - multi_sdu->data;
+		if (len < copied + sizeof(*sdu)) {
+			pr_err("rx prevent buffer overflow");
+			return;
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		sdu = (struct sdu *)data;
 
 		cmd_evt  = gdm_dev16_to_cpu(endian, sdu->cmd_evt);
@@ -701,7 +723,12 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
 			pr_err("rx sdu wrong hci %04x\n", cmd_evt);
 			return;
 		}
+<<<<<<< HEAD
 		if (hci_len < 12) {
+=======
+		if (hci_len < 12 ||
+		    len < copied + sizeof(*sdu) + (hci_len - 12)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			pr_err("rx sdu invalid len %d\n", hci_len);
 			return;
 		}

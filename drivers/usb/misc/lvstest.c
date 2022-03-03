@@ -184,6 +184,7 @@ static ssize_t warm_reset_store(struct device *dev,
 	struct usb_interface *intf = to_usb_interface(dev);
 	struct usb_device *hdev = interface_to_usbdev(intf);
 	struct lvs_rh *lvs = usb_get_intfdata(intf);
+<<<<<<< HEAD
 	int port;
 	int ret;
 
@@ -191,6 +192,12 @@ static ssize_t warm_reset_store(struct device *dev,
 		port = lvs->portnum;
 
 	ret = lvs_rh_set_port_feature(hdev, port, USB_PORT_FEAT_BH_PORT_RESET);
+=======
+	int ret;
+
+	ret = lvs_rh_set_port_feature(hdev, lvs->portnum,
+			USB_PORT_FEAT_BH_PORT_RESET);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret < 0) {
 		dev_err(dev, "can't issue warm reset %d\n", ret);
 		return ret;
@@ -302,6 +309,7 @@ static ssize_t enable_compliance_store(struct device *dev,
 	struct usb_interface *intf = to_usb_interface(dev);
 	struct usb_device *hdev = interface_to_usbdev(intf);
 	struct lvs_rh *lvs = usb_get_intfdata(intf);
+<<<<<<< HEAD
 	int port;
 	int ret;
 
@@ -310,6 +318,12 @@ static ssize_t enable_compliance_store(struct device *dev,
 
 	ret = lvs_rh_set_port_feature(hdev,
 			port | (USB_SS_PORT_LS_COMP_MOD << 3),
+=======
+	int ret;
+
+	ret = lvs_rh_set_port_feature(hdev,
+			lvs->portnum | USB_SS_PORT_LS_COMP_MOD << 3,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			USB_PORT_FEAT_LINK_STATE);
 	if (ret < 0) {
 		dev_err(dev, "can't enable compliance mode %d\n", ret);
@@ -439,7 +453,11 @@ static int lvs_rh_probe(struct usb_interface *intf,
 			USB_DT_SS_HUB_SIZE, USB_CTRL_GET_TIMEOUT);
 	if (ret < (USB_DT_HUB_NONVAR_SIZE + 2)) {
 		dev_err(&hdev->dev, "wrong root hub descriptor read %d\n", ret);
+<<<<<<< HEAD
 		return ret;
+=======
+		return ret < 0 ? ret : -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* submit urb to poll interrupt endpoint */

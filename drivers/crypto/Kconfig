@@ -592,6 +592,7 @@ config CRYPTO_DEV_QCE
 	  hardware. To compile this driver as a module, choose M here. The
 	  module will be called qcrypto.
 
+<<<<<<< HEAD
 config CRYPTO_DEV_QCOM_MSM_QCE
 	tristate "QTI Crypto Engine (QCE) module"
 	depends on ARCH_QCOM
@@ -634,6 +635,8 @@ config CRYPTO_DEV_OTA_CRYPTO
 	  module will be called ota_crypto. Please select Y here
 	  to enable.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config CRYPTO_DEV_VMX
 	bool "Support for VMX cryptographic acceleration instructions"
 	depends on PPC64 && VSX
@@ -771,8 +774,11 @@ config CRYPTO_DEV_ARTPEC6
 
 	  To compile this driver as a module, choose M here.
 
+<<<<<<< HEAD
 if ARCH_QCOM
 source drivers/crypto/msm/Kconfig
 endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif # CRYPTO_HW

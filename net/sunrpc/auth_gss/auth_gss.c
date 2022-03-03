@@ -53,6 +53,10 @@
 #include <linux/uaccess.h>
 #include <linux/hashtable.h>
 
+<<<<<<< HEAD
+=======
+#include "auth_gss_internal.h"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "../netns.h"
 
 static const struct rpc_authops authgss_ops;
@@ -147,6 +151,7 @@ gss_cred_set_ctx(struct rpc_cred *cred, struct gss_cl_ctx *ctx)
 	clear_bit(RPCAUTH_CRED_NEW, &cred->cr_flags);
 }
 
+<<<<<<< HEAD
 static const void *
 simple_get_bytes(const void *p, const void *end, void *res, size_t len)
 {
@@ -176,6 +181,8 @@ simple_get_netobj(const void *p, const void *end, struct xdr_netobj *dest)
 	return q;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct gss_cl_ctx *
 gss_cred_get_ctx(struct rpc_cred *cred)
 {

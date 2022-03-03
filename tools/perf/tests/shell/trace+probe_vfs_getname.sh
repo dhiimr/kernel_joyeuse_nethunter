@@ -30,6 +30,13 @@ if [ $err -ne 0 ] ; then
 	exit $err
 fi
 
+<<<<<<< HEAD
+=======
+# Do not use whatever ~/.perfconfig file, it may change the output
+# via trace.{show_timestamp,show_prefix,etc}
+export PERF_CONFIG=/dev/null
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 trace_open_vfs_getname
 err=$?
 rm -f ${file}

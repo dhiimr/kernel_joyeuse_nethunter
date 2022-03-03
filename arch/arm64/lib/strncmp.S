@@ -64,7 +64,11 @@ limit_wd	.req	x13
 mask		.req	x14
 endloop		.req	x15
 
+<<<<<<< HEAD
 ENTRY(strncmp)
+=======
+WEAK(strncmp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cbz	limit, .Lret0
 	eor	tmp1, src1, src2
 	mov	zeroones, #REP8_01

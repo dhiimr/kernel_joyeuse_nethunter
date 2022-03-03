@@ -149,7 +149,10 @@ struct dentry_operations {
 	int (*d_manage)(const struct path *, bool);
 	struct dentry *(*d_real)(struct dentry *, const struct inode *,
 				 unsigned int, unsigned int);
+<<<<<<< HEAD
 	void (*d_canonical_path)(const struct path *, struct path *);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 } ____cacheline_aligned;
 
 /*

@@ -245,6 +245,11 @@ acpi_ev_default_region_setup(acpi_handle handle,
 
 acpi_status acpi_ev_initialize_region(union acpi_operand_object *region_obj);
 
+<<<<<<< HEAD
+=======
+u8 acpi_ev_is_pci_root_bridge(struct acpi_namespace_node *node);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * evsci - SCI (System Control Interrupt) handling/dispatch
  */

@@ -2706,6 +2706,10 @@ int rpc_clnt_add_xprt(struct rpc_clnt *clnt,
 	xprt = xprt_iter_xprt(&clnt->cl_xpi);
 	if (xps == NULL || xprt == NULL) {
 		rcu_read_unlock();
+<<<<<<< HEAD
+=======
+		xprt_switch_put(xps);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EAGAIN;
 	}
 	resvport = xprt->resvport;

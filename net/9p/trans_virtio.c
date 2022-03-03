@@ -602,7 +602,11 @@ static int p9_virtio_probe(struct virtio_device *vdev)
 	chan->vc_wq = kmalloc(sizeof(wait_queue_head_t), GFP_KERNEL);
 	if (!chan->vc_wq) {
 		err = -ENOMEM;
+<<<<<<< HEAD
 		goto out_free_tag;
+=======
+		goto out_remove_file;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	init_waitqueue_head(chan->vc_wq);
 	chan->ring_bufs_avail = 1;
@@ -620,6 +624,11 @@ static int p9_virtio_probe(struct virtio_device *vdev)
 
 	return 0;
 
+<<<<<<< HEAD
+=======
+out_remove_file:
+	sysfs_remove_file(&vdev->dev.kobj, &dev_attr_mount_tag.attr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out_free_tag:
 	kfree(tag);
 out_free_vq:
@@ -764,10 +773,23 @@ static struct p9_trans_module p9_virtio_trans = {
 /* The standard init function */
 static int __init p9_virtio_init(void)
 {
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&virtio_chan_list);
 
 	v9fs_register_trans(&p9_virtio_trans);
 	return register_virtio_driver(&p9_virtio_drv);
+=======
+	int rc;
+
+	INIT_LIST_HEAD(&virtio_chan_list);
+
+	v9fs_register_trans(&p9_virtio_trans);
+	rc = register_virtio_driver(&p9_virtio_drv);
+	if (rc)
+		v9fs_unregister_trans(&p9_virtio_trans);
+
+	return rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void __exit p9_virtio_cleanup(void)

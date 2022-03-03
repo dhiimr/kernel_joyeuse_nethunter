@@ -28,6 +28,7 @@
 #include <linux/suspend.h>
 #include <linux/syscore_ops.h>
 #include <linux/ftrace.h>
+<<<<<<< HEAD
 #include <linux/rtc.h>
 #include <trace/events/power.h>
 #include <linux/compiler.h>
@@ -35,6 +36,13 @@
 #include <linux/wakeup_reason.h>
 #include "power.h"
 #include <soc/qcom/boot_stats.h>
+=======
+#include <trace/events/power.h>
+#include <linux/compiler.h>
+#include <linux/moduleparam.h>
+
+#include "power.h"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 const char * const pm_labels[] = {
 	[PM_SUSPEND_TO_IDLE] = "freeze",
@@ -382,8 +390,11 @@ void __weak arch_suspend_enable_irqs(void)
 	local_irq_enable();
 }
 
+<<<<<<< HEAD
 extern void system_sleep_status_print_enabled(void);
 extern void rpmh_status_print_enabled(void);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * suspend_enter - Make the system enter the given sleep state.
  * @state: System sleep state to enter.
@@ -393,8 +404,12 @@ extern void rpmh_status_print_enabled(void);
  */
 static int suspend_enter(suspend_state_t state, bool *wakeup)
 {
+<<<<<<< HEAD
 	char suspend_abort[MAX_SUSPEND_ABORT_LEN];
 	int error, last_dev;
+=======
+	int error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	error = platform_suspend_prepare(state);
 	if (error)
@@ -402,11 +417,15 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
 
 	error = dpm_suspend_late(PMSG_SUSPEND);
 	if (error) {
+<<<<<<< HEAD
 		last_dev = suspend_stats.last_failed_dev + REC_FAILED_NUM - 1;
 		last_dev %= REC_FAILED_NUM;
 		pr_err("late suspend of devices failed\n");
 		log_suspend_abort_reason("%s device failed to power down",
 			suspend_stats.failed_devs[last_dev]);
+=======
+		pr_err("late suspend of devices failed\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto Platform_finish;
 	}
 	error = platform_suspend_prepare_late(state);
@@ -420,11 +439,15 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
 
 	error = dpm_suspend_noirq(PMSG_SUSPEND);
 	if (error) {
+<<<<<<< HEAD
 		last_dev = suspend_stats.last_failed_dev + REC_FAILED_NUM - 1;
 		last_dev %= REC_FAILED_NUM;
 		pr_err("noirq suspend of devices failed\n");
 		log_suspend_abort_reason("noirq suspend of %s device failed",
 			suspend_stats.failed_devs[last_dev]);
+=======
+		pr_err("noirq suspend of devices failed\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto Platform_early_resume;
 	}
 	error = platform_suspend_prepare_noirq(state);
@@ -435,6 +458,7 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
 		goto Platform_wake;
 
 	error = disable_nonboot_cpus();
+<<<<<<< HEAD
 	if (error || suspend_test(TEST_CPUS)) {
 		log_suspend_abort_reason("Disabling non-boot cpus failed");
 		goto Enable_cpus;
@@ -442,6 +466,11 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
 
 	rpmh_status_print_enabled();
 	system_sleep_status_print_enabled();
+=======
+	if (error || suspend_test(TEST_CPUS))
+		goto Enable_cpus;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	arch_suspend_disable_irqs();
 	BUG_ON(!irqs_disabled());
 
@@ -455,9 +484,12 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
 			trace_suspend_resume(TPS("machine_suspend"),
 				state, false);
 		} else if (*wakeup) {
+<<<<<<< HEAD
 			pm_get_active_wakeup_sources(suspend_abort,
 				MAX_SUSPEND_ABORT_LEN);
 			log_suspend_abort_reason(suspend_abort);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			error = -EBUSY;
 		}
 		syscore_resume();
@@ -507,7 +539,10 @@ int suspend_devices_and_enter(suspend_state_t state)
 	error = dpm_suspend_start(PMSG_SUSPEND);
 	if (error) {
 		pr_err("Some devices failed to suspend, or early wake event detected\n");
+<<<<<<< HEAD
 		log_suspend_abort_reason("Some devices failed to suspend, or early wake event detected");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto Recover_platform;
 	}
 	suspend_test_finish("suspend devices");
@@ -610,6 +645,7 @@ static int enter_state(suspend_state_t state)
 	return error;
 }
 
+<<<<<<< HEAD
 static void pm_suspend_marker(char *annotation)
 {
 	struct timespec ts;
@@ -622,6 +658,8 @@ static void pm_suspend_marker(char *annotation)
 		tm.tm_hour, tm.tm_min, tm.tm_sec, ts.tv_nsec);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * pm_suspend - Externally visible function for suspending the system.
  * @state: System sleep state to enter.
@@ -636,7 +674,10 @@ int pm_suspend(suspend_state_t state)
 	if (state <= PM_SUSPEND_ON || state >= PM_SUSPEND_MAX)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	pm_suspend_marker("entry");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pr_info("suspend entry (%s)\n", mem_sleep_labels[state]);
 	error = enter_state(state);
 	if (error) {
@@ -645,9 +686,13 @@ int pm_suspend(suspend_state_t state)
 	} else {
 		suspend_stats.success++;
 	}
+<<<<<<< HEAD
 	pm_suspend_marker("exit");
 	pr_info("suspend exit\n");
 	measure_wake_up_time();
+=======
+	pr_info("suspend exit\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return error;
 }
 EXPORT_SYMBOL(pm_suspend);

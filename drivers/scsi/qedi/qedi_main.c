@@ -628,7 +628,11 @@ static struct qedi_ctx *qedi_host_alloc(struct pci_dev *pdev)
 		goto exit_setup_shost;
 	}
 
+<<<<<<< HEAD
 	shost->max_id = QEDI_MAX_ISCSI_CONNS_PER_HBA;
+=======
+	shost->max_id = QEDI_MAX_ISCSI_CONNS_PER_HBA - 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	shost->max_channel = 0;
 	shost->max_lun = ~0;
 	shost->max_cmd_len = 16;
@@ -1302,7 +1306,11 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
 {
 	u32 *list;
 	int i;
+<<<<<<< HEAD
 	int status = 0, rc;
+=======
+	int status;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 *pbl;
 	dma_addr_t page;
 	int num_pages;
@@ -1313,14 +1321,22 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
 	 */
 	if (!qedi->num_queues) {
 		QEDI_ERR(&qedi->dbg_ctx, "No MSI-X vectors available!\n");
+<<<<<<< HEAD
 		return 1;
+=======
+		return -ENOMEM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Make sure we allocated the PBL that will contain the physical
 	 * addresses of our queues
 	 */
 	if (!qedi->p_cpuq) {
+<<<<<<< HEAD
 		status = 1;
+=======
+		status = -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto mem_alloc_failure;
 	}
 
@@ -1335,6 +1351,7 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
 		  "qedi->global_queues=%p.\n", qedi->global_queues);
 
 	/* Allocate DMA coherent buffers for BDQ */
+<<<<<<< HEAD
 	rc = qedi_alloc_bdq(qedi);
 	if (rc)
 		goto mem_alloc_failure;
@@ -1342,6 +1359,15 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
 	/* Allocate DMA coherent buffers for NVM_ISCSI_CFG */
 	rc = qedi_alloc_nvm_iscsi_cfg(qedi);
 	if (rc)
+=======
+	status = qedi_alloc_bdq(qedi);
+	if (status)
+		goto mem_alloc_failure;
+
+	/* Allocate DMA coherent buffers for NVM_ISCSI_CFG */
+	status = qedi_alloc_nvm_iscsi_cfg(qedi);
+	if (status)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto mem_alloc_failure;
 
 	/* Allocate a CQ and an associated PBL for each MSI-X
@@ -1354,6 +1380,10 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
 		if (!qedi->global_queues[i]) {
 			QEDI_ERR(&qedi->dbg_ctx,
 				 "Unable to allocation global queue %d.\n", i);
+<<<<<<< HEAD
+=======
+			status = -ENOMEM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto mem_alloc_failure;
 		}
 
@@ -2387,7 +2417,11 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
 			QEDI_ERR(&qedi->dbg_ctx,
 				 "Unable to start offload thread!\n");
 			rc = -ENODEV;
+<<<<<<< HEAD
 			goto free_cid_que;
+=======
+			goto free_tmf_thread;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		/* F/w needs 1st task context memory entry for performance */
@@ -2407,6 +2441,11 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
 
 	return 0;
 
+<<<<<<< HEAD
+=======
+free_tmf_thread:
+	destroy_workqueue(qedi->tmf_thread);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 free_cid_que:
 	qedi_release_cid_que(qedi);
 free_uio:

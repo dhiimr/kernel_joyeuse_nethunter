@@ -12,6 +12,7 @@ use File::Basename;
 use Cwd 'abs_path';
 use Term::ANSIColor qw(:constants);
 
+<<<<<<< HEAD
 use constant BEFORE_SHORTTEXT => 0;
 use constant IN_SHORTTEXT_BLANKLINE => 1;
 use constant IN_SHORTTEXT => 2;
@@ -19,6 +20,8 @@ use constant AFTER_SHORTTEXT => 3;
 use constant CHECK_NEXT_SHORTTEXT => 4;
 use constant SHORTTEXT_LIMIT => 75;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 my $P = $0;
 my $D = dirname(abs_path($P));
 
@@ -30,7 +33,10 @@ my $quiet = 0;
 my $tree = 1;
 my $chk_signoff = 1;
 my $chk_patch = 1;
+<<<<<<< HEAD
 my $chk_author = 1;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 my $tst_only;
 my $emacs = 0;
 my $terse = 0;
@@ -56,7 +62,11 @@ my %ignore_type = ();
 my @ignore = ();
 my $help = 0;
 my $configuration_file = ".checkpatch.conf";
+<<<<<<< HEAD
 my $max_line_length = 128;
+=======
+my $max_line_length = 80;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 my $ignore_perl_version = 0;
 my $minimum_perl_version = 5.10.0;
 my $min_conf_desc_length = 4;
@@ -79,7 +89,10 @@ Options:
   -q, --quiet                quiet
   --no-tree                  run without a kernel tree
   --no-signoff               do not check for 'Signed-off-by' line
+<<<<<<< HEAD
   --no-author                do not check for unexpected authors
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
   --patch                    treat FILE as patchfile (default)
   --emacs                    emacs compile window format
   --terse                    one line per report
@@ -206,7 +219,10 @@ GetOptions(
 	'tree!'		=> \$tree,
 	'signoff!'	=> \$chk_signoff,
 	'patch!'	=> \$chk_patch,
+<<<<<<< HEAD
 	'author!'	=> \$chk_author,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	'emacs!'	=> \$emacs,
 	'terse!'	=> \$terse,
 	'showfile!'	=> \$showfile,
@@ -472,7 +488,10 @@ our $logFunctions = qr{(?x:
 
 our $signature_tags = qr{(?xi:
 	Signed-off-by:|
+<<<<<<< HEAD
 	Co-developed-by:|
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	Acked-by:|
 	Tested-by:|
 	Reviewed-by:|
@@ -2141,6 +2160,7 @@ sub tabify {
 	return "$leading";
 }
 
+<<<<<<< HEAD
 sub cleanup_continuation_headers {
 	# Collapse any header-continuation lines into a single line so they
 	# can be parsed meaningfully, as the parser only has one line
@@ -2168,6 +2188,8 @@ sub cleanup_continuation_headers {
 	} while ($again);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 sub pos_last_openparen {
 	my ($line) = @_;
 
@@ -2206,8 +2228,11 @@ sub process {
 	my $prevrawline="";
 	my $stashline="";
 	my $stashrawline="";
+<<<<<<< HEAD
 	my $subjectline="";
 	my $sublinenr="";
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	my $length;
 	my $indent;
@@ -2263,6 +2288,7 @@ sub process {
 	my $setup_docs = 0;
 
 	my $camelcase_file_seeded = 0;
+<<<<<<< HEAD
 	my $shorttext = BEFORE_SHORTTEXT;
 	my $shorttext_exspc = 0;
 	my $commit_text_present = 0;
@@ -2271,6 +2297,11 @@ sub process {
 	cleanup_continuation_headers();
 	my $line;
 
+=======
+
+	sanitise_line_reset();
+	my $line;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	foreach my $rawline (@rawlines) {
 		$linenr++;
 		$line = $rawline;
@@ -2462,12 +2493,17 @@ sub process {
 			}
 			next;
 		}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		$here .= "FILE: $realfile:$realline:" if ($realcnt != 0);
 
 		my $hereline = "$here\n$rawline\n";
 		my $herecurr = "$here\n$rawline\n";
 		my $hereprev = "$here\n$prevrawline\n$rawline\n";
 
+<<<<<<< HEAD
 		if ($shorttext != AFTER_SHORTTEXT) {
 			if ($shorttext == IN_SHORTTEXT_BLANKLINE && $line=~/\S/) {
 				# the subject line was just processed,
@@ -2562,12 +2598,19 @@ sub process {
 			}
 		}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		$cnt_lines++ if ($realcnt != 0);
 
 # Check if the commit log has what seems like a diff which can confuse patch
 		if ($in_commit_log && !$commit_log_has_diff &&
+<<<<<<< HEAD
 		    (($line =~ m@^\s+diff\b.*a/[\w/]+@ &&
 		      $line =~ m@^\s+diff\b.*a/([\w/]+)\s+b/$1\b@) ||
+=======
+		    (($line =~ m@^\s+diff\b.*a/([\w/]+)@ &&
+		      $line =~ m@^\s+diff\b.*a/[\w/]+\s+b/$1\b@) ||
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		     $line =~ m@^\s*(?:\-\-\-\s+a/|\+\+\+\s+b/)@ ||
 		     $line =~ m/^\s*\@\@ \-\d+,\d+ \+\d+,\d+ \@\@/)) {
 			ERROR("DIFF_IN_COMMIT_MSG",
@@ -2654,17 +2697,24 @@ sub process {
 					     "email address '$email' might be better as '$suggested_email$comment'\n" . $herecurr);
 				}
 			}
+<<<<<<< HEAD
 			if ($chk_author && $line =~ /^\s*signed-off-by:.*(quicinc|qualcomm)\.com/i) {
 				WARN("BAD_SIGN_OFF",
 				     "invalid Signed-off-by identity\n" . $line );
 			}			
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 # Check for duplicate signatures
 			my $sig_nospace = $line;
 			$sig_nospace =~ s/\s//g;
 			$sig_nospace = lc($sig_nospace);
 			if (defined $signatures{$sig_nospace}) {
+<<<<<<< HEAD
 				WARN("DUPLICATE_SIGN_OFF",
+=======
+				WARN("BAD_SIGN_OFF",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				     "Duplicate signature\n" . $herecurr);
 			} else {
 				$signatures{$sig_nospace} = 1;
@@ -2684,6 +2734,15 @@ sub process {
 			      "The 'stable' address should be 'stable\@vger.kernel.org'\n" . $herecurr);
 		}
 
+<<<<<<< HEAD
+=======
+# Check for unwanted Gerrit info
+		if ($in_commit_log && $line =~ /^\s*change-id:/i) {
+			ERROR("GERRIT_CHANGE_ID",
+			      "Remove Gerrit Change-Id's before submitting upstream.\n" . $herecurr);
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # Check if the commit log is in a possible stack dump
 		if ($in_commit_log && !$commit_log_possible_stack_dump &&
 		    ($line =~ /^\s*(?:WARNING:|BUG:)/ ||
@@ -2786,11 +2845,14 @@ sub process {
 			     "added, moved or deleted file(s), does MAINTAINERS need updating?\n" . $herecurr);
 		}
 
+<<<<<<< HEAD
 #check the patch for invalid author credentials
 		if ($chk_author && $line =~ /^From:.*(quicinc|qualcomm)\.com/) {
 			WARN("BAD_AUTHOR", "invalid author identity\n" . $line );
 		}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # Check for wrappage within a valid hunk of the file
 		if ($realcnt != 0 && $line !~ m{^(?:\+|-| |\\ No newline|$)}) {
 			ERROR("CORRUPTED_PATCH",
@@ -3023,7 +3085,12 @@ sub process {
 #
 # if LONG_LINE is ignored, the other 2 types are also ignored
 #
+<<<<<<< HEAD
 		if ($line =~ /^\+/ && $length > $max_line_length && $realfile ne "scripts/checkpatch.pl") {
+=======
+
+		if ($line =~ /^\+/ && $length > $max_line_length) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			my $msg_type = "LONG_LINE";
 
 			# Check the allowed long line types first
@@ -3044,10 +3111,13 @@ sub process {
 			} elsif ($line =~ /^\+.*\bEFI_GUID\s*\(/) {
 				$msg_type = "";
 
+<<<<<<< HEAD
 			# Long copyright statements are another special case
 			} elsif ($rawline =~ /^\+.\*.*copyright.*\(c\).*$/i) {
 				$msg_type = "";
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			# Otherwise set the alternate message types
 
 			# a comment starts before $max_line_length
@@ -4042,7 +4112,11 @@ sub process {
 			    $fix) {
 				fix_delete_line($fixlinenr, $rawline);
 				my $fixed_line = $rawline;
+<<<<<<< HEAD
 				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*){(.*)$/;
+=======
+				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*)\{(.*)$/;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				my $line1 = $1;
 				my $line2 = $2;
 				fix_insert_line($fixlinenr, ltrim($line1));
@@ -4596,7 +4670,11 @@ sub process {
 
 # check spacing on parentheses
 		if ($line =~ /\(\s/ && $line !~ /\(\s*(?:\\)?$/ &&
+<<<<<<< HEAD
 		    $line !~ /for\s*\(\s+;/ && $line !~ /^\+\s*[A-Z_][A-Z\d_]*\(\s*\d+(\,.*)?\)\,?$/) {
+=======
+		    $line !~ /for\s*\(\s+;/) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (ERROR("SPACING",
 				  "space prohibited after that open parenthesis '('\n" . $herecurr) &&
 			    $fix) {
@@ -4991,7 +5069,11 @@ sub process {
 		if ($realfile !~ m@/vmlinux.lds.h$@ &&
 		    $line =~ /^.\s*\#\s*define\s*$Ident(\()?/) {
 			my $ln = $linenr;
+<<<<<<< HEAD
 			my $cnt = $realcnt - 1;
+=======
+			my $cnt = $realcnt;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			my ($off, $dstat, $dcond, $rest);
 			my $ctx = '';
 			my $has_flow_statement = 0;
@@ -5028,12 +5110,15 @@ sub process {
 			{
 			}
 
+<<<<<<< HEAD
 			# Extremely long macros may fall off the end of the
 			# available context without closing.  Give a dangling
 			# backslash the benefit of the doubt and allow it
 			# to gobble any hanging open-parens.
 			$dstat =~ s/\(.+\\$/1/;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			# Flatten any obvious string concatentation.
 			while ($dstat =~ s/($String)\s*$Ident/$1/ ||
 			       $dstat =~ s/$Ident\s*($String)/$1/)
@@ -5049,7 +5134,10 @@ sub process {
 				MODULE_PARM_DESC|
 				DECLARE_PER_CPU|
 				DEFINE_PER_CPU|
+<<<<<<< HEAD
 				CLK_[A-Z\d_]+|
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				__typeof__\(|
 				union|
 				struct|
@@ -5472,6 +5560,7 @@ sub process {
 			     "Avoid line continuations in quoted strings\n" . $herecurr);
 		}
 
+<<<<<<< HEAD
 # sys_open/read/write/close are not allowed in the kernel
 		if ($line =~ /\b(sys_(?:open|read|write|close))\b/) {
 			ERROR("FILE_OPS",
@@ -5560,6 +5649,13 @@ sub process {
 			WARN("IF_1",
 			     "if this code is required consider removing"
 				. " #if 1\n" .  $herecurr);
+=======
+# warn about #if 0
+		if ($line =~ /^.\s*\#\s*if\s+0\b/) {
+			CHK("REDUNDANT_CODE",
+			    "if this code is redundant consider removing it\n" .
+				$herecurr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 # check for needless "if (<foo>) fn(<foo>)" uses
@@ -5755,12 +5851,15 @@ sub process {
 			     "Comparing get_jiffies_64() is almost always wrong; prefer time_after64, time_before64 and friends\n" . $herecurr);
 		}
 
+<<<<<<< HEAD
 # check the patch for use of mdelay
 		if ($line =~ /\bmdelay\s*\(/) {
 			WARN("MDELAY",
 			     "use of mdelay() found: msleep() is the preferred API.\n" . $herecurr );
 		}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # warn about #ifdefs in C files
 #		if ($line =~ /^.\s*\#\s*if(|n)def/ && ($realfile =~ /\.c$/)) {
 #			print "#ifdef in C files should be avoided\n";
@@ -6002,7 +6101,11 @@ sub process {
 		        for (my $count = $linenr; $count <= $lc; $count++) {
 				my $fmt = get_quoted_string($lines[$count - 1], raw_line($count, 0));
 				$fmt =~ s/%%//g;
+<<<<<<< HEAD
 				if ($fmt =~ /(\%[\*\d\.]*p(?![\WFfSsBKRraEhMmIiUDdgVCbGNOx]).)/) {
+=======
+				if ($fmt =~ /(\%[\*\d\.]*p(?![\WFfSsBKRraEhMmIiUDdgVCbGNO]).)/) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					$bad_extension = $1;
 					last;
 				}
@@ -6371,12 +6474,15 @@ sub process {
 			     "switch default: should use break\n" . $herectx);
 		}
 
+<<<<<<< HEAD
 # check for return codes on error paths
 		if ($line =~ /\breturn\s+-\d+/) {
 			ERROR("NO_ERROR_CODE",
 			      "illegal return value, please use an error code\n" . $herecurr);
 		}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # check for gcc specific __FUNCTION__
 		if ($line =~ /\b__FUNCTION__\b/) {
 			if (WARN("USE_FUNC",

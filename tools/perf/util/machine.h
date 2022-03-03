@@ -213,7 +213,11 @@ struct symbol *machine__find_kernel_function_by_name(struct machine *machine,
 
 struct map *machine__findnew_module_map(struct machine *machine, u64 start,
 					const char *filename);
+<<<<<<< HEAD
 int arch__fix_module_text_start(u64 *start, const char *name);
+=======
+int arch__fix_module_text_start(u64 *start, u64 *size, const char *name);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 int __machine__load_kallsyms(struct machine *machine, const char *filename,
 			     enum map_type type, bool no_kcore);

@@ -327,8 +327,11 @@ static int __fill_vb2_buffer(struct vb2_buffer *vb,
 					b->m.planes[plane].m.userptr;
 				planes[plane].length =
 					b->m.planes[plane].length;
+<<<<<<< HEAD
 				planes[plane].data_offset =
 					b->m.planes[plane].data_offset;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 		}
 		if (b->memory == VB2_MEMORY_DMABUF) {
@@ -337,8 +340,11 @@ static int __fill_vb2_buffer(struct vb2_buffer *vb,
 					b->m.planes[plane].m.fd;
 				planes[plane].length =
 					b->m.planes[plane].length;
+<<<<<<< HEAD
 				planes[plane].data_offset =
 					b->m.planes[plane].data_offset;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 		}
 

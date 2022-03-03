@@ -2261,8 +2261,12 @@ static int __do_request(struct ceph_mds_client *mdsc,
 		if (!(mdsc->fsc->mount_options->flags &
 		      CEPH_MOUNT_OPT_MOUNTWAIT) &&
 		    !ceph_mdsmap_is_cluster_available(mdsc->mdsmap)) {
+<<<<<<< HEAD
 			err = -ENOENT;
 			pr_info("probably no mds server is up\n");
+=======
+			err = -EHOSTUNREACH;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto finish;
 		}
 	}
@@ -3519,6 +3523,12 @@ static void delayed_work(struct work_struct *work)
 	dout("mdsc delayed_work\n");
 	ceph_check_delayed_caps(mdsc);
 
+<<<<<<< HEAD
+=======
+	if (mdsc->stopping)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_lock(&mdsc->mutex);
 	renew_interval = mdsc->mdsmap->m_session_timeout >> 2;
 	renew_caps = time_after_eq(jiffies, HZ*renew_interval +
@@ -3543,7 +3553,13 @@ static void delayed_work(struct work_struct *work)
 				pr_info("mds%d hung\n", s->s_mds);
 			}
 		}
+<<<<<<< HEAD
 		if (s->s_state < CEPH_MDS_SESSION_OPEN) {
+=======
+		if (s->s_state == CEPH_MDS_SESSION_NEW ||
+		    s->s_state == CEPH_MDS_SESSION_RESTARTING ||
+		    s->s_state == CEPH_MDS_SESSION_REJECTED) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/* this mds is failed or recovering, just wait */
 			ceph_put_mds_session(s);
 			continue;
@@ -3850,7 +3866,20 @@ void ceph_mdsc_force_umount(struct ceph_mds_client *mdsc)
 static void ceph_mdsc_stop(struct ceph_mds_client *mdsc)
 {
 	dout("stop\n");
+<<<<<<< HEAD
 	cancel_delayed_work_sync(&mdsc->delayed_work); /* cancel timer */
+=======
+	/*
+	 * Make sure the delayed work stopped before releasing
+	 * the resources.
+	 *
+	 * Because the cancel_delayed_work_sync() will only
+	 * guarantee that the work finishes executing. But the
+	 * delayed work will re-arm itself again after that.
+	 */
+	flush_delayed_work(&mdsc->delayed_work);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (mdsc->mdsmap)
 		ceph_mdsmap_destroy(mdsc->mdsmap);
 	kfree(mdsc->sessions);

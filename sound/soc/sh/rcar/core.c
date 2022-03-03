@@ -676,6 +676,10 @@ static int rsnd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	}
 
 	/* set format */
+<<<<<<< HEAD
+=======
+	rdai->bit_clk_inv = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
 	case SND_SOC_DAIFMT_I2S:
 		rdai->sys_delay = 0;
@@ -1277,6 +1281,21 @@ int rsnd_kctrl_new(struct rsnd_mod *mod,
 	};
 	int ret;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * 1) Avoid duplicate register for DVC with MIX case
+	 * 2) Allow duplicate register for MIX
+	 * 3) re-register if card was rebinded
+	 */
+	list_for_each_entry(kctrl, &card->controls, list) {
+		struct rsnd_kctrl_cfg *c = kctrl->private_data;
+
+		if (c == cfg)
+			return 0;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (size > RSND_MAX_CHANNELS)
 		return -EINVAL;
 

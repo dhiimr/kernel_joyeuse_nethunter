@@ -702,21 +702,33 @@ out:
 /*
  * Read the superblock from the OSD and fill in the fields
  */
+<<<<<<< HEAD
 static int exofs_fill_super(struct super_block *sb, void *data, int silent)
 {
 	struct inode *root;
 	struct exofs_mountopt *opts = data;
 	struct exofs_sb_info *sbi;	/*extended info                  */
+=======
+static int exofs_fill_super(struct super_block *sb,
+				struct exofs_mountopt *opts,
+				struct exofs_sb_info *sbi,
+				int silent)
+{
+	struct inode *root;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct osd_dev *od;		/* Master device                 */
 	struct exofs_fscb fscb;		/*on-disk superblock info        */
 	struct ore_comp comp;
 	unsigned table_count;
 	int ret;
 
+<<<<<<< HEAD
 	sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
 	if (!sbi)
 		return -ENOMEM;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* use mount options to fill superblock */
 	if (opts->is_osdname) {
 		struct osd_dev_info odi = {.systemid_len = 0};
@@ -860,7 +872,13 @@ static struct dentry *exofs_mount(struct file_system_type *type,
 			  int flags, const char *dev_name,
 			  void *data)
 {
+<<<<<<< HEAD
 	struct exofs_mountopt opts;
+=======
+	struct super_block *s;
+	struct exofs_mountopt opts;
+	struct exofs_sb_info *sbi;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 
 	ret = parse_options(data, &opts);
@@ -869,9 +887,37 @@ static struct dentry *exofs_mount(struct file_system_type *type,
 		return ERR_PTR(ret);
 	}
 
+<<<<<<< HEAD
 	if (!opts.dev_name)
 		opts.dev_name = dev_name;
 	return mount_nodev(type, flags, &opts, exofs_fill_super);
+=======
+	sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
+	if (!sbi) {
+		kfree(opts.dev_name);
+		return ERR_PTR(-ENOMEM);
+	}
+
+	s = sget(type, NULL, set_anon_super, flags, NULL);
+
+	if (IS_ERR(s)) {
+		kfree(opts.dev_name);
+		kfree(sbi);
+		return ERR_CAST(s);
+	}
+
+	if (!opts.dev_name)
+		opts.dev_name = dev_name;
+
+
+	ret = exofs_fill_super(s, &opts, sbi, flags & SB_SILENT ? 1 : 0);
+	if (ret) {
+		deactivate_locked_super(s);
+		return ERR_PTR(ret);
+	}
+	s->s_flags |= SB_ACTIVE;
+	return dget(s->s_root);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*

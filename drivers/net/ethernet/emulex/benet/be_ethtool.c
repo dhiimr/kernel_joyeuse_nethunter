@@ -893,7 +893,11 @@ static void be_self_test(struct net_device *netdev, struct ethtool_test *test,
 			 u64 *data)
 {
 	struct be_adapter *adapter = netdev_priv(netdev);
+<<<<<<< HEAD
 	int status;
+=======
+	int status, cnt;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8 link_status = 0;
 
 	if (adapter->function_caps & BE_FUNCTION_CAPS_SUPER_NIC) {
@@ -904,6 +908,12 @@ static void be_self_test(struct net_device *netdev, struct ethtool_test *test,
 
 	memset(data, 0, sizeof(u64) * ETHTOOL_TESTS_NUM);
 
+<<<<<<< HEAD
+=======
+	/* check link status before offline tests */
+	link_status = netif_carrier_ok(netdev);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (test->flags & ETH_TEST_FL_OFFLINE) {
 		if (be_loopback_test(adapter, BE_MAC_LOOPBACK, &data[0]) != 0)
 			test->flags |= ETH_TEST_FL_FAILED;
@@ -924,6 +934,7 @@ static void be_self_test(struct net_device *netdev, struct ethtool_test *test,
 		test->flags |= ETH_TEST_FL_FAILED;
 	}
 
+<<<<<<< HEAD
 	status = be_cmd_link_status_query(adapter, NULL, &link_status, 0);
 	if (status) {
 		test->flags |= ETH_TEST_FL_FAILED;
@@ -931,6 +942,28 @@ static void be_self_test(struct net_device *netdev, struct ethtool_test *test,
 	} else if (!link_status) {
 		test->flags |= ETH_TEST_FL_FAILED;
 		data[4] = 1;
+=======
+	/* link status was down prior to test */
+	if (!link_status) {
+		test->flags |= ETH_TEST_FL_FAILED;
+		data[4] = 1;
+		return;
+	}
+
+	for (cnt = 10; cnt; cnt--) {
+		status = be_cmd_link_status_query(adapter, NULL, &link_status,
+						  0);
+		if (status) {
+			test->flags |= ETH_TEST_FL_FAILED;
+			data[4] = -1;
+			break;
+		}
+
+		if (link_status)
+			break;
+
+		msleep_interruptible(500);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 
@@ -1103,7 +1136,11 @@ static int be_get_rxnfc(struct net_device *netdev, struct ethtool_rxnfc *cmd,
 		cmd->data = be_get_rss_hash_opts(adapter, cmd->flow_type);
 		break;
 	case ETHTOOL_GRXRINGS:
+<<<<<<< HEAD
 		cmd->data = adapter->num_rx_qs - 1;
+=======
+		cmd->data = adapter->num_rx_qs;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	default:
 		return -EINVAL;

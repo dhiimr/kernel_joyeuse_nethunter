@@ -1445,6 +1445,7 @@ static int altera_tse_probe(struct platform_device *pdev)
 		priv->rxdescmem_busaddr = dma_res->start;
 
 	} else {
+<<<<<<< HEAD
 		goto err_free_netdev;
 	}
 
@@ -1455,6 +1456,21 @@ static int altera_tse_probe(struct platform_device *pdev)
 		dma_set_coherent_mask(priv->device, DMA_BIT_MASK(32));
 	else
 		goto err_free_netdev;
+=======
+		ret = -ENODEV;
+		goto err_free_netdev;
+	}
+
+	if (!dma_set_mask(priv->device, DMA_BIT_MASK(priv->dmaops->dmamask))) {
+		dma_set_coherent_mask(priv->device,
+				      DMA_BIT_MASK(priv->dmaops->dmamask));
+	} else if (!dma_set_mask(priv->device, DMA_BIT_MASK(32))) {
+		dma_set_coherent_mask(priv->device, DMA_BIT_MASK(32));
+	} else {
+		ret = -EIO;
+		goto err_free_netdev;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* MAC address space */
 	ret = request_and_map(pdev, "control_port", &control_port,

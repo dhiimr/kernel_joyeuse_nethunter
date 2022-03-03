@@ -73,7 +73,10 @@
 #define EPOLL_PACKED
 #endif
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct epoll_event {
 	__u32 events;
 	__u64 data;
@@ -91,5 +94,8 @@ static inline void ep_take_care_of_epollwakeup(struct epoll_event *epev)
 	epev->events &= ~EPOLLWAKEUP;
 }
 #endif
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _UAPI_LINUX_EVENTPOLL_H */

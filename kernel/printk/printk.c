@@ -59,10 +59,13 @@
 #include "braille.h"
 #include "internal.h"
 
+<<<<<<< HEAD
 #ifdef CONFIG_EARLY_PRINTK_DIRECT
 extern void printascii(char *);
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int console_printk[4] = {
 	CONSOLE_LOGLEVEL_DEFAULT,	/* console_loglevel */
 	MESSAGE_LOGLEVEL_DEFAULT,	/* default_message_loglevel */
@@ -436,6 +439,10 @@ static u32 clear_idx;
 /* record buffer */
 #define LOG_ALIGN __alignof__(struct printk_log)
 #define __LOG_BUF_LEN (1 << CONFIG_LOG_BUF_SHIFT)
+<<<<<<< HEAD
+=======
+#define LOG_BUF_LEN_MAX (u32)(1 << 31)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static char __log_buf[__LOG_BUF_LEN] __aligned(LOG_ALIGN);
 static char *log_buf = __log_buf;
 static u32 log_buf_len = __LOG_BUF_LEN;
@@ -1036,18 +1043,36 @@ void log_buf_vmcoreinfo_setup(void)
 static unsigned long __initdata new_log_buf_len;
 
 /* we practice scaling the ring buffer by powers of 2 */
+<<<<<<< HEAD
 static void __init log_buf_len_update(unsigned size)
 {
 	if (size)
 		size = roundup_pow_of_two(size);
 	if (size > log_buf_len)
 		new_log_buf_len = size;
+=======
+static void __init log_buf_len_update(u64 size)
+{
+	if (size > (u64)LOG_BUF_LEN_MAX) {
+		size = (u64)LOG_BUF_LEN_MAX;
+		pr_err("log_buf over 2G is not supported.\n");
+	}
+
+	if (size)
+		size = roundup_pow_of_two(size);
+	if (size > log_buf_len)
+		new_log_buf_len = (unsigned long)size;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* save requested log_buf_len since it's too early to process it */
 static int __init log_buf_len_setup(char *str)
 {
+<<<<<<< HEAD
 	unsigned int size;
+=======
+	u64 size;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!str)
 		return -EINVAL;
@@ -1097,7 +1122,11 @@ void __init setup_log_buf(int early)
 {
 	unsigned long flags;
 	char *new_log_buf;
+<<<<<<< HEAD
 	int free;
+=======
+	unsigned int free;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (log_buf != __log_buf)
 		return;
@@ -1117,7 +1146,11 @@ void __init setup_log_buf(int early)
 	}
 
 	if (unlikely(!new_log_buf)) {
+<<<<<<< HEAD
 		pr_err("log_buf_len: %ld bytes not available\n",
+=======
+		pr_err("log_buf_len: %lu bytes not available\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			new_log_buf_len);
 		return;
 	}
@@ -1130,8 +1163,13 @@ void __init setup_log_buf(int early)
 	memcpy(log_buf, __log_buf, __LOG_BUF_LEN);
 	logbuf_unlock_irqrestore(flags);
 
+<<<<<<< HEAD
 	pr_info("log_buf_len: %d bytes\n", log_buf_len);
 	pr_info("early log buf free: %d(%d%%)\n",
+=======
+	pr_info("log_buf_len: %u bytes\n", log_buf_len);
+	pr_info("early log buf free: %u(%u%%)\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		free, (free * 100) / __LOG_BUF_LEN);
 }
 
@@ -1873,10 +1911,13 @@ int vprintk_store(int facility, int level,
 		}
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_EARLY_PRINTK_DIRECT
 	printascii(text);
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (level == LOGLEVEL_DEFAULT)
 		level = default_message_loglevel;
 
@@ -2094,6 +2135,19 @@ static int __init console_setup(char *str)
 	char *s, *options, *brl_options = NULL;
 	int idx;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * console="" or console=null have been suggested as a way to
+	 * disable console output. Use ttynull that has been created
+	 * for exacly this purpose.
+	 */
+	if (str[0] == 0 || strcmp(str, "null") == 0) {
+		__add_preferred_console("ttynull", 0, NULL, NULL);
+		return 1;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (_braille_console_setup(&str, &brl_options))
 		return 1;
 
@@ -2184,8 +2238,11 @@ void resume_console(void)
 	console_unlock();
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_CONSOLE_FLUSH_ON_HOTPLUG
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * console_cpu_notify - print deferred console messages after CPU hotplug
  * @cpu: unused
@@ -2205,8 +2262,11 @@ static int console_cpu_notify(unsigned int cpu)
 	return 0;
 }
 
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * console_lock - lock the console system for exclusive use.
  *
@@ -2822,7 +2882,11 @@ void __init console_init(void)
 static int __init printk_late_init(void)
 {
 	struct console *con;
+<<<<<<< HEAD
 	int ret = 0;
+=======
+	int ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for_each_console(con) {
 		if (!(con->flags & CON_BOOT))
@@ -2844,15 +2908,22 @@ static int __init printk_late_init(void)
 			unregister_console(con);
 		}
 	}
+<<<<<<< HEAD
 #ifdef CONFIG_CONSOLE_FLUSH_ON_HOTPLUG
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = cpuhp_setup_state_nocalls(CPUHP_PRINTK_DEAD, "printk:dead", NULL,
 					console_cpu_notify);
 	WARN_ON(ret < 0);
 	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "printk:online",
 					console_cpu_notify, NULL);
 	WARN_ON(ret < 0);
+<<<<<<< HEAD
 #endif
 	return ret;
+=======
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 late_initcall(printk_late_init);
 
@@ -3203,7 +3274,11 @@ bool kmsg_dump_get_buffer(struct kmsg_dumper *dumper, bool syslog,
 	/* move first record forward until length fits into the buffer */
 	seq = dumper->cur_seq;
 	idx = dumper->cur_idx;
+<<<<<<< HEAD
 	while (l > size && seq < dumper->next_seq) {
+=======
+	while (l >= size && seq < dumper->next_seq) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct printk_log *msg = log_from_idx(idx);
 
 		l -= msg_print_text(msg, true, NULL, 0);

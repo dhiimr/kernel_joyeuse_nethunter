@@ -852,7 +852,11 @@ static int a3700_spi_probe(struct platform_device *pdev)
 	return 0;
 
 error_clk:
+<<<<<<< HEAD
 	clk_disable_unprepare(spi->clk);
+=======
+	clk_unprepare(spi->clk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 error:
 	spi_master_put(master);
 out:

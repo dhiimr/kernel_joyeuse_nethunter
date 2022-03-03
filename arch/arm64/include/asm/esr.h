@@ -43,8 +43,12 @@
 #define ESR_ELx_EC_HVC64	(0x16)
 #define ESR_ELx_EC_SMC64	(0x17)
 #define ESR_ELx_EC_SYS64	(0x18)
+<<<<<<< HEAD
 #define ESR_ELx_EC_SVE		(0x19)
 /* Unallocated EC: 0x1A - 0x1E */
+=======
+/* Unallocated EC: 0x19 - 0x1E */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define ESR_ELx_EC_IMP_DEF	(0x1f)
 #define ESR_ELx_EC_IABT_LOW	(0x20)
 #define ESR_ELx_EC_IABT_CUR	(0x21)
@@ -219,6 +223,7 @@
 		 ESR_ELx_SYS64_ISS_CRM_SHIFT),			\
 		(((e) & ESR_ELx_SYS64_ISS_OP2_MASK) >>		\
 		 ESR_ELx_SYS64_ISS_OP2_SHIFT))
+<<<<<<< HEAD
 /* ISS field definitions for CP15 AArch32 access traps */
 #define ESR_ELx_CP15_32_ISS_CV_SHIFT	24
 #define ESR_ELx_CP15_32_ISS_CV_MASK \
@@ -297,6 +302,8 @@
 #define ESR_ELx_CP15_64_ISS_SYS_CNTVCT	\
 				(ESR_ELx_CP15_64_ISS_SYS_VAL(1, 14) | \
 				 ESR_ELx_CP15_64_ISS_DIR_READ)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifndef __ASSEMBLY__
 #include <asm/types.h>

@@ -199,7 +199,11 @@ extern void clockevents_suspend(void);
 extern void clockevents_resume(void);
 
 # ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
+<<<<<<< HEAD
 #  if defined(CONFIG_ARCH_HAS_TICK_BROADCAST) && defined(CONFIG_SMP)
+=======
+#  ifdef CONFIG_ARCH_HAS_TICK_BROADCAST
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void tick_broadcast(const struct cpumask *mask);
 #  else
 #   define tick_broadcast	NULL

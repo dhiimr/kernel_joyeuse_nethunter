@@ -24,7 +24,10 @@
 #include <linux/sched/signal.h>
 #include <linux/slab.h>
 #include <linux/string.h>
+<<<<<<< HEAD
 #include <linux/completion.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "internal.h"
 
 LIST_HEAD(crypto_alg_list);
@@ -340,13 +343,20 @@ static unsigned int crypto_ctxsize(struct crypto_alg *alg, u32 type, u32 mask)
 	return len;
 }
 
+<<<<<<< HEAD
 void crypto_shoot_alg(struct crypto_alg *alg)
+=======
+static void crypto_shoot_alg(struct crypto_alg *alg)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	down_write(&crypto_alg_sem);
 	alg->cra_flags |= CRYPTO_ALG_DYING;
 	up_write(&crypto_alg_sem);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(crypto_shoot_alg);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct crypto_tfm *__crypto_alloc_tfm(struct crypto_alg *alg, u32 type,
 				      u32 mask)
@@ -569,7 +579,11 @@ void crypto_destroy_tfm(void *mem, struct crypto_tfm *tfm)
 {
 	struct crypto_alg *alg;
 
+<<<<<<< HEAD
 	if (unlikely(!mem))
+=======
+	if (IS_ERR_OR_NULL(mem))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 
 	alg = tfm->__crt_alg;
@@ -596,6 +610,7 @@ int crypto_has_alg(const char *name, u32 type, u32 mask)
 }
 EXPORT_SYMBOL_GPL(crypto_has_alg);
 
+<<<<<<< HEAD
 void crypto_req_done(struct crypto_async_request *req, int err)
 {
 	struct crypto_wait *wait = req->data;
@@ -608,5 +623,7 @@ void crypto_req_done(struct crypto_async_request *req, int err)
 }
 EXPORT_SYMBOL_GPL(crypto_req_done);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 MODULE_DESCRIPTION("Cryptographic core API");
 MODULE_LICENSE("GPL");

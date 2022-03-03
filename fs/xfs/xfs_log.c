@@ -608,6 +608,10 @@ xfs_log_mount(
 	xfs_daddr_t	blk_offset,
 	int		num_bblks)
 {
+<<<<<<< HEAD
+=======
+	bool		fatal = xfs_sb_version_hascrc(&mp->m_sb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int		error = 0;
 	int		min_logfsbs;
 
@@ -659,9 +663,26 @@ xfs_log_mount(
 			 XFS_FSB_TO_B(mp, mp->m_sb.sb_logblocks),
 			 XFS_MAX_LOG_BYTES);
 		error = -EINVAL;
+<<<<<<< HEAD
 	}
 	if (error) {
 		if (xfs_sb_version_hascrc(&mp->m_sb)) {
+=======
+	} else if (mp->m_sb.sb_logsunit > 1 &&
+		   mp->m_sb.sb_logsunit % mp->m_sb.sb_blocksize) {
+		xfs_warn(mp,
+		"log stripe unit %u bytes must be a multiple of block size",
+			 mp->m_sb.sb_logsunit);
+		error = -EINVAL;
+		fatal = true;
+	}
+	if (error) {
+		/*
+		 * Log check errors are always fatal on v5; or whenever bad
+		 * metadata leads to a crash.
+		 */
+		if (fatal) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			xfs_crit(mp, "AAIEEE! Log failed size checks. Abort!");
 			ASSERT(0);
 			goto out_free_log;
@@ -1539,6 +1560,11 @@ out_free_iclog:
 		if (iclog->ic_bp)
 			xfs_buf_free(iclog->ic_bp);
 		kmem_free(iclog);
+<<<<<<< HEAD
+=======
+		if (prev_iclog == log->l_iclog)
+			break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	spinlock_destroy(&log->l_icloglock);
 	xfs_buf_free(log->l_xbuf);
@@ -2670,7 +2696,10 @@ xlog_state_do_callback(
 	int		   funcdidcallbacks; /* flag: function did callbacks */
 	int		   repeats;	/* for issuing console warnings if
 					 * looping too many times */
+<<<<<<< HEAD
 	int		   wake = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	spin_lock(&log->l_icloglock);
 	first_iclog = iclog = log->l_iclog;
@@ -2872,11 +2901,17 @@ xlog_state_do_callback(
 #endif
 
 	if (log->l_iclog->ic_state & (XLOG_STATE_ACTIVE|XLOG_STATE_IOERROR))
+<<<<<<< HEAD
 		wake = 1;
 	spin_unlock(&log->l_icloglock);
 
 	if (wake)
 		wake_up_all(&log->l_flush_wait);
+=======
+		wake_up_all(&log->l_flush_wait);
+
+	spin_unlock(&log->l_icloglock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 
@@ -4038,7 +4073,13 @@ xfs_log_force_umount(
 	 * item committed callback functions will do this again under lock to
 	 * avoid races.
 	 */
+<<<<<<< HEAD
 	wake_up_all(&log->l_cilp->xc_commit_wait);
+=======
+	spin_lock(&log->l_cilp->xc_push_lock);
+	wake_up_all(&log->l_cilp->xc_commit_wait);
+	spin_unlock(&log->l_cilp->xc_push_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	xlog_state_do_callback(log, XFS_LI_ABORTED, NULL);
 
 #ifdef XFSERRORDEBUG

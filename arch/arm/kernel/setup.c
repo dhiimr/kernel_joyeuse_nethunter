@@ -113,6 +113,7 @@ unsigned int elf_hwcap2 __read_mostly;
 EXPORT_SYMBOL(elf_hwcap2);
 
 
+<<<<<<< HEAD
 char* (*arch_read_hardware_id)(void);
 EXPORT_SYMBOL(arch_read_hardware_id);
 
@@ -122,6 +123,8 @@ EXPORT_SYMBOL(boot_reason);
 unsigned int cold_boot;
 EXPORT_SYMBOL(cold_boot);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef MULTI_CPU
 struct processor processor __ro_after_init;
 #if defined(CONFIG_BIG_LITTLE) && defined(CONFIG_HARDEN_BRANCH_PREDICTOR)
@@ -556,9 +559,17 @@ void notrace cpu_init(void)
 	 * In Thumb-2, msr with an immediate value is not allowed.
 	 */
 #ifdef CONFIG_THUMB2_KERNEL
+<<<<<<< HEAD
 #define PLC	"r"
 #else
 #define PLC	"I"
+=======
+#define PLC_l	"l"
+#define PLC_r	"r"
+#else
+#define PLC_l	"I"
+#define PLC_r	"I"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 	/*
@@ -580,6 +591,7 @@ void notrace cpu_init(void)
 	"msr	cpsr_c, %9"
 	    :
 	    : "r" (stk),
+<<<<<<< HEAD
 	      PLC (PSR_F_BIT | PSR_I_BIT | IRQ_MODE),
 	      "I" (offsetof(struct stack, irq[0])),
 	      PLC (PSR_F_BIT | PSR_I_BIT | ABT_MODE),
@@ -589,6 +601,17 @@ void notrace cpu_init(void)
 	      PLC (PSR_F_BIT | PSR_I_BIT | FIQ_MODE),
 	      "I" (offsetof(struct stack, fiq[0])),
 	      PLC (PSR_F_BIT | PSR_I_BIT | SVC_MODE)
+=======
+	      PLC_r (PSR_F_BIT | PSR_I_BIT | IRQ_MODE),
+	      "I" (offsetof(struct stack, irq[0])),
+	      PLC_r (PSR_F_BIT | PSR_I_BIT | ABT_MODE),
+	      "I" (offsetof(struct stack, abt[0])),
+	      PLC_r (PSR_F_BIT | PSR_I_BIT | UND_MODE),
+	      "I" (offsetof(struct stack, und[0])),
+	      PLC_r (PSR_F_BIT | PSR_I_BIT | FIQ_MODE),
+	      "I" (offsetof(struct stack, fiq[0])),
+	      PLC_l (PSR_F_BIT | PSR_I_BIT | SVC_MODE)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    : "r14");
 #endif
 }
@@ -1080,8 +1103,11 @@ void __init hyp_mode_check(void)
 #endif
 }
 
+<<<<<<< HEAD
 void __init __weak init_random_pool(void) { }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void __init setup_arch(char **cmdline_p)
 {
 	const struct machine_desc *mdesc;
@@ -1170,8 +1196,11 @@ void __init setup_arch(char **cmdline_p)
 
 	if (mdesc->init_early)
 		mdesc->init_early();
+<<<<<<< HEAD
 
 	init_random_pool();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 
@@ -1296,10 +1325,14 @@ static int c_show(struct seq_file *m, void *v)
 		seq_printf(m, "CPU revision\t: %d\n\n", cpuid & 15);
 	}
 
+<<<<<<< HEAD
 	if (!arch_read_hardware_id)
 		seq_printf(m, "Hardware\t: %s\n", machine_name);
 	else
 		seq_printf(m, "Hardware\t: %s\n", arch_read_hardware_id());
+=======
+	seq_printf(m, "Hardware\t: %s\n", machine_name);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	seq_printf(m, "Revision\t: %04x\n", system_rev);
 	seq_printf(m, "Serial\t\t: %s\n", system_serial);
 

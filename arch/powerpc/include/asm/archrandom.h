@@ -28,7 +28,11 @@ static inline int arch_get_random_seed_int(unsigned int *v)
 	unsigned long val;
 	int rc;
 
+<<<<<<< HEAD
 	rc = arch_get_random_long(&val);
+=======
+	rc = arch_get_random_seed_long(&val);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (rc)
 		*v = val;
 

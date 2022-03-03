@@ -35,6 +35,10 @@
 #include <linux/spinlock.h>
 #include <linux/mm.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/cpu.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <asm/cpufeature.h>
 #include <asm/hypervisor.h>
@@ -91,7 +95,12 @@ void __init pti_check_boottime_disable(void)
 			goto autosel;
 	}
 
+<<<<<<< HEAD
 	if (cmdline_find_option_bool(boot_command_line, "nopti")) {
+=======
+	if (cmdline_find_option_bool(boot_command_line, "nopti") ||
+	    cpu_mitigations_off()) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pti_print_if_insecure("disabled on command line.");
 		return;
 	}

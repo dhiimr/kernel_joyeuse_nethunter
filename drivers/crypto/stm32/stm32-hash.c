@@ -361,7 +361,11 @@ static int stm32_hash_xmit_cpu(struct stm32_hash_dev *hdev,
 		return -ETIMEDOUT;
 
 	if ((hdev->flags & HASH_FLAGS_HMAC) &&
+<<<<<<< HEAD
 	    (hdev->flags & ~HASH_FLAGS_HMAC_KEY)) {
+=======
+	    (!(hdev->flags & HASH_FLAGS_HMAC_KEY))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		hdev->flags |= HASH_FLAGS_HMAC_KEY;
 		stm32_hash_write_key(hdev);
 		if (stm32_hash_wait_busy(hdev))

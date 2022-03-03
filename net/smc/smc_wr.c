@@ -223,12 +223,21 @@ int smc_wr_tx_put_slot(struct smc_link *link,
 
 	pend = container_of(wr_pend_priv, struct smc_wr_tx_pend, priv);
 	if (pend->idx < link->wr_tx_cnt) {
+<<<<<<< HEAD
+=======
+		u32 idx = pend->idx;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* clear the full struct smc_wr_tx_pend including .priv */
 		memset(&link->wr_tx_pends[pend->idx], 0,
 		       sizeof(link->wr_tx_pends[pend->idx]));
 		memset(&link->wr_tx_bufs[pend->idx], 0,
 		       sizeof(link->wr_tx_bufs[pend->idx]));
+<<<<<<< HEAD
 		test_and_clear_bit(pend->idx, link->wr_tx_mask);
+=======
+		test_and_clear_bit(idx, link->wr_tx_mask);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 1;
 	}
 

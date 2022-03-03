@@ -259,8 +259,12 @@ int perf_trace_add(struct perf_event *p_event, int flags)
 void perf_trace_del(struct perf_event *p_event, int flags)
 {
 	struct trace_event_call *tp_event = p_event->tp_event;
+<<<<<<< HEAD
 	if (!hlist_unhashed(&p_event->hlist_entry))
 		hlist_del_rcu(&p_event->hlist_entry);
+=======
+	hlist_del_rcu(&p_event->hlist_entry);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tp_event->class->reg(tp_event, TRACE_REG_PERF_DEL, p_event);
 }
 

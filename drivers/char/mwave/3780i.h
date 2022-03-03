@@ -68,7 +68,11 @@ typedef struct {
 	unsigned char ClockControl:1;	/* RW: Clock control: 0=normal, 1=stop 3780i clocks */
 	unsigned char SoftReset:1;	/* RW: Soft reset 0=normal, 1=soft reset active */
 	unsigned char ConfigMode:1;	/* RW: Configuration mode, 0=normal, 1=config mode */
+<<<<<<< HEAD
 	unsigned char Reserved:5;	/* 0: Reserved */
+=======
+	unsigned short Reserved:13;	/* 0: Reserved */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 } DSP_ISA_SLAVE_CONTROL;
 
 

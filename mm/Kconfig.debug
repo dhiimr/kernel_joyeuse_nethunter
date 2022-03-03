@@ -31,6 +31,7 @@ config DEBUG_PAGEALLOC
 	  enabled by DEBUG_PAGEALLOC_ENABLE_DEFAULT or the debug_pagealloc
 	  command line parameter.
 
+<<<<<<< HEAD
 config SLUB_DEBUG_PANIC_ON
 	bool "Enable to Panic on SLUB corruption detection"
 	depends on SLUB_DEBUG
@@ -41,6 +42,8 @@ config SLUB_DEBUG_PANIC_ON
 	  investigating the root cause which may be rooted within cache
 	  or memory.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config DEBUG_PAGEALLOC_ENABLE_DEFAULT
 	bool "Enable debug page memory allocations by default?"
 	default n
@@ -63,6 +66,7 @@ config PAGE_POISONING
 
 	  If unsure, say N
 
+<<<<<<< HEAD
 config PAGE_POISONING_ENABLE_DEFAULT
 	bool "Enable page poisoning by default?"
 	default n
@@ -73,6 +77,8 @@ config PAGE_POISONING_ENABLE_DEFAULT
 	  to avoid passing the kernel parameter and let page poisoning
 	  feature enabled by default.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config PAGE_POISONING_NO_SANITY
 	depends on PAGE_POISONING
 	bool "Only poison, don't sanity check"

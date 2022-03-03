@@ -398,7 +398,15 @@ struct sk_buff *__netdev_alloc_skb(struct net_device *dev, unsigned int len,
 
 	len += NET_SKB_PAD;
 
+<<<<<<< HEAD
 	if ((len > SKB_WITH_OVERHEAD(PAGE_SIZE)) ||
+=======
+	/* If requested length is either too small or too big,
+	 * we use kmalloc() for skb->head allocation.
+	 */
+	if (len <= SKB_WITH_OVERHEAD(1024) ||
+	    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
 		skb = __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);
 		if (!skb)
@@ -459,13 +467,25 @@ EXPORT_SYMBOL(__netdev_alloc_skb);
 struct sk_buff *__napi_alloc_skb(struct napi_struct *napi, unsigned int len,
 				 gfp_t gfp_mask)
 {
+<<<<<<< HEAD
 	struct napi_alloc_cache *nc = this_cpu_ptr(&napi_alloc_cache);
+=======
+	struct napi_alloc_cache *nc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct sk_buff *skb;
 	void *data;
 
 	len += NET_SKB_PAD + NET_IP_ALIGN;
 
+<<<<<<< HEAD
 	if ((len > SKB_WITH_OVERHEAD(PAGE_SIZE)) ||
+=======
+	/* If requested length is either too small or too big,
+	 * we use kmalloc() for skb->head allocation.
+	 */
+	if (len <= SKB_WITH_OVERHEAD(1024) ||
+	    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
 		skb = __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);
 		if (!skb)
@@ -473,6 +493,10 @@ struct sk_buff *__napi_alloc_skb(struct napi_struct *napi, unsigned int len,
 		goto skb_success;
 	}
 
+<<<<<<< HEAD
+=======
+	nc = this_cpu_ptr(&napi_alloc_cache);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	len += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
 	len = SKB_DATA_ALIGN(len);
 
@@ -875,10 +899,13 @@ static struct sk_buff *__skb_clone(struct sk_buff *n, struct sk_buff *skb)
 	atomic_inc(&(skb_shinfo(skb)->dataref));
 	skb->cloned = 1;
 
+<<<<<<< HEAD
 #ifdef CONFIG_IPV6_NDISC_NODETYPE
 	C(ndisc_nodetype);
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return n;
 #undef C
 }
@@ -1854,6 +1881,15 @@ int pskb_trim_rcsum_slow(struct sk_buff *skb, unsigned int len)
 		skb->csum = csum_block_sub(skb->csum,
 					   skb_checksum(skb, len, delta, 0),
 					   len);
+<<<<<<< HEAD
+=======
+	} else if (skb->ip_summed == CHECKSUM_PARTIAL) {
+		int hdlen = (len > skb_headlen(skb)) ? skb_headlen(skb) : len;
+		int offset = skb_checksum_start_offset(skb) + skb->csum_offset;
+
+		if (offset + sizeof(__sum16) > hdlen)
+			return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return __pskb_trim(skb, len);
 }
@@ -1963,7 +1999,11 @@ void *__pskb_pull_tail(struct sk_buff *skb, int delta)
 		/* Free pulled out fragments. */
 		while ((list = skb_shinfo(skb)->frag_list) != insp) {
 			skb_shinfo(skb)->frag_list = list->next;
+<<<<<<< HEAD
 			kfree_skb(list);
+=======
+			consume_skb(list);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		/* And insert new clone at head. */
 		if (clone) {
@@ -2303,6 +2343,10 @@ do_frag_list:
 		kv.iov_base = skb->data + offset;
 		kv.iov_len = slen;
 		memset(&msg, 0, sizeof(msg));
+<<<<<<< HEAD
+=======
+		msg.msg_flags = MSG_DONTWAIT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		ret = kernel_sendmsg_locked(sk, &msg, &kv, 1, slen);
 		if (ret <= 0)
@@ -2690,8 +2734,16 @@ skb_zerocopy_headlen(const struct sk_buff *from)
 
 	if (!from->head_frag ||
 	    skb_headlen(from) < L1_CACHE_BYTES ||
+<<<<<<< HEAD
 	    skb_shinfo(from)->nr_frags >= MAX_SKB_FRAGS)
 		hlen = skb_headlen(from);
+=======
+	    skb_shinfo(from)->nr_frags >= MAX_SKB_FRAGS) {
+		hlen = skb_headlen(from);
+		if (!hlen)
+			hlen = from->len;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (skb_has_frag_list(from))
 		hlen = from->len;
@@ -3077,7 +3129,23 @@ EXPORT_SYMBOL(skb_split);
  */
 static int skb_prepare_for_shift(struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	return skb_cloned(skb) && pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
+=======
+	int ret = 0;
+
+	if (skb_cloned(skb)) {
+		/* Save and restore truesize: pskb_expand_head() may reallocate
+		 * memory where ksize(kmalloc(S)) != ksize(kmalloc(S)), but we
+		 * cannot change truesize at this point.
+		 */
+		unsigned int save_truesize = skb->truesize;
+
+		ret = pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
+		skb->truesize = save_truesize;
+	}
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -3517,6 +3585,28 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
 	int pos;
 	int dummy;
 
+<<<<<<< HEAD
+=======
+	if (list_skb && !list_skb->head_frag && skb_headlen(list_skb) &&
+	    (skb_shinfo(head_skb)->gso_type & SKB_GSO_DODGY)) {
+		/* gso_size is untrusted, and we have a frag_list with a linear
+		 * non head_frag head.
+		 *
+		 * (we assume checking the first list_skb member suffices;
+		 * i.e if either of the list_skb members have non head_frag
+		 * head, then the first one has too).
+		 *
+		 * If head_skb's headlen does not fit requested gso_size, it
+		 * means that the frag_list members do NOT terminate on exact
+		 * gso_size boundaries. Hence we cannot perform skb_frag_t page
+		 * sharing. Therefore we must fallback to copying the frag_list
+		 * skbs; we do so by disabling SG.
+		 */
+		if (mss != GSO_BY_FRAGS && mss != skb_headlen(head_skb))
+			features &= ~NETIF_F_SG;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__skb_push(head_skb, doffset);
 	proto = skb_network_protocol(head_skb, &dummy);
 	if (unlikely(!proto))
@@ -4223,7 +4313,11 @@ struct sk_buff *sock_dequeue_err_skb(struct sock *sk)
 	if (skb && (skb_next = skb_peek(q))) {
 		icmp_next = is_icmp_err_skb(skb_next);
 		if (icmp_next)
+<<<<<<< HEAD
 			sk->sk_err = SKB_EXT_ERR(skb_next)->ee.ee_origin;
+=======
+			sk->sk_err = SKB_EXT_ERR(skb_next)->ee.ee_errno;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	spin_unlock_irqrestore(&q->lock, flags);
 
@@ -4928,8 +5022,11 @@ unsigned int skb_gso_transport_seglen(const struct sk_buff *skb)
 		thlen = tcp_hdrlen(skb);
 	} else if (unlikely(shinfo->gso_type & SKB_GSO_SCTP)) {
 		thlen = sizeof(struct sctphdr);
+<<<<<<< HEAD
 	} else if (shinfo->gso_type & SKB_GSO_UDP_L4) {
 		thlen = sizeof(struct udphdr);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	/* UFO sets gso_size to the size of the fragmentation
 	 * payload, i.e. the size of the L4 (UDP) header is already
@@ -5039,8 +5136,13 @@ struct sk_buff *skb_vlan_untag(struct sk_buff *skb)
 	skb = skb_share_check(skb, GFP_ATOMIC);
 	if (unlikely(!skb))
 		goto err_free;
+<<<<<<< HEAD
 
 	if (unlikely(!pskb_may_pull(skb, VLAN_HLEN)))
+=======
+	/* We may access the two bytes after vlan_hdr in vlan_set_encap_proto(). */
+	if (unlikely(!pskb_may_pull(skb, VLAN_HLEN + sizeof(unsigned short))))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto err_free;
 
 	vhdr = (struct vlan_hdr *)skb->data;
@@ -5364,7 +5466,11 @@ static int pskb_carve_frag_list(struct sk_buff *skb,
 	/* Free pulled out fragments. */
 	while ((list = shinfo->frag_list) != insp) {
 		shinfo->frag_list = list->next;
+<<<<<<< HEAD
 		kfree_skb(list);
+=======
+		consume_skb(list);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	/* And insert new clone at head. */
 	if (clone) {
@@ -5433,9 +5539,19 @@ static int pskb_carve_inside_nonlinear(struct sk_buff *skb, const u32 off,
 	if (skb_has_frag_list(skb))
 		skb_clone_fraglist(skb);
 
+<<<<<<< HEAD
 	if (k == 0) {
 		/* split line is in frag list */
 		pskb_carve_frag_list(skb, shinfo, off - pos, gfp_mask);
+=======
+	/* split line is in frag list */
+	if (k == 0 && pskb_carve_frag_list(skb, shinfo, off - pos, gfp_mask)) {
+		/* skb_frag_unref() is not needed here as shinfo->nr_frags = 0. */
+		if (skb_has_frag_list(skb))
+			kfree_skb_list(skb_shinfo(skb)->frag_list);
+		kfree(data);
+		return -ENOMEM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	skb_release_data(skb);
 

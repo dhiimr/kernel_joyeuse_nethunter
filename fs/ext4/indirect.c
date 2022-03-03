@@ -842,8 +842,12 @@ static int ext4_clear_blocks(handle_t *handle, struct inode *inode,
 	else if (ext4_should_journal_data(inode))
 		flags |= EXT4_FREE_BLOCKS_FORGET;
 
+<<<<<<< HEAD
 	if (!ext4_data_block_valid(EXT4_SB(inode->i_sb), block_to_free,
 				   count)) {
+=======
+	if (!ext4_inode_block_valid(inode, block_to_free, count)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		EXT4_ERROR_INODE(inode, "attempt to clear invalid "
 				 "blocks %llu len %lu",
 				 (unsigned long long) block_to_free, count);
@@ -1005,8 +1009,12 @@ static void ext4_free_branches(handle_t *handle, struct inode *inode,
 			if (!nr)
 				continue;		/* A hole */
 
+<<<<<<< HEAD
 			if (!ext4_data_block_valid(EXT4_SB(inode->i_sb),
 						   nr, 1)) {
+=======
+			if (!ext4_inode_block_valid(inode, nr, 1)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				EXT4_ERROR_INODE(inode,
 						 "invalid indirect mapped "
 						 "block %lu (level %d)",

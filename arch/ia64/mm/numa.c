@@ -49,6 +49,10 @@ paddr_to_nid(unsigned long paddr)
 
 	return (i < num_node_memblks) ? node_memblk[i].nid : (num_node_memblks ? -1 : 0);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(paddr_to_nid);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #if defined(CONFIG_SPARSEMEM) && defined(CONFIG_NUMA)
 /*

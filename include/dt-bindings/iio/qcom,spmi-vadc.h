@@ -1,6 +1,10 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2012-2014,2018 The Linux Foundation. All rights reserved.
  * Copyright (C) 2020 XiaoMi, Inc.
+=======
+ * Copyright (c) 2012-2014, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -117,6 +121,7 @@
 #define VADC_LR_MUX10_PU1_PU2_AMUX_USB_ID	0xf9
 #define VADC_LR_MUX3_BUF_PU1_PU2_XO_THERM	0xfc
 
+<<<<<<< HEAD
 /* ADC channels for SPMI VADC5*/
 
 #define ADC_REF_GND				0x00
@@ -250,4 +255,6 @@
 
 #define ADC_SCALE_HW_CALIB_MAX			0x20
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _DT_BINDINGS_QCOM_SPMI_VADC_H */

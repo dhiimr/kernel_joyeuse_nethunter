@@ -38,6 +38,11 @@ static void resend_irqs(unsigned long arg)
 		irq = find_first_bit(irqs_resend, nr_irqs);
 		clear_bit(irq, irqs_resend);
 		desc = irq_to_desc(irq);
+<<<<<<< HEAD
+=======
+		if (!desc)
+			continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		local_irq_disable();
 		desc->handle_irq(desc);
 		local_irq_enable();

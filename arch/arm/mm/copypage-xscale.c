@@ -36,13 +36,21 @@ static DEFINE_RAW_SPINLOCK(minicache_lock);
  * Dcache aliasing issue.  The writes will be forwarded to the write buffer,
  * and merged as appropriate.
  */
+<<<<<<< HEAD
 static void __naked
 mc_copy_user_page(void *from, void *to)
 {
+=======
+static void mc_copy_user_page(void *from, void *to)
+{
+	int tmp;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Strangely enough, best performance is achieved
 	 * when prefetching destination as well.  (NP)
 	 */
+<<<<<<< HEAD
 	asm volatile(
 	"stmfd	sp!, {r4, r5, lr}		\n\
 	mov	lr, %2				\n\
@@ -82,6 +90,45 @@ mc_copy_user_page(void *from, void *to)
 	ldmfd	sp!, {r4, r5, pc}		"
 	:
 	: "r" (from), "r" (to), "I" (PAGE_SIZE / 64 - 1));
+=======
+	asm volatile ("\
+	pld	[%0, #0]			\n\
+	pld	[%0, #32]			\n\
+	pld	[%1, #0]			\n\
+	pld	[%1, #32]			\n\
+1:	pld	[%0, #64]			\n\
+	pld	[%0, #96]			\n\
+	pld	[%1, #64]			\n\
+	pld	[%1, #96]			\n\
+2:	ldrd	r2, [%0], #8			\n\
+	ldrd	r4, [%0], #8			\n\
+	mov	ip, %1				\n\
+	strd	r2, [%1], #8			\n\
+	ldrd	r2, [%0], #8			\n\
+	strd	r4, [%1], #8			\n\
+	ldrd	r4, [%0], #8			\n\
+	strd	r2, [%1], #8			\n\
+	strd	r4, [%1], #8			\n\
+	mcr	p15, 0, ip, c7, c10, 1		@ clean D line\n\
+	ldrd	r2, [%0], #8			\n\
+	mcr	p15, 0, ip, c7, c6, 1		@ invalidate D line\n\
+	ldrd	r4, [%0], #8			\n\
+	mov	ip, %1				\n\
+	strd	r2, [%1], #8			\n\
+	ldrd	r2, [%0], #8			\n\
+	strd	r4, [%1], #8			\n\
+	ldrd	r4, [%0], #8			\n\
+	strd	r2, [%1], #8			\n\
+	strd	r4, [%1], #8			\n\
+	mcr	p15, 0, ip, c7, c10, 1		@ clean D line\n\
+	subs	%2, %2, #1			\n\
+	mcr	p15, 0, ip, c7, c6, 1		@ invalidate D line\n\
+	bgt	1b				\n\
+	beq	2b				"
+	: "+&r" (from), "+&r" (to), "=&r" (tmp)
+	: "2" (PAGE_SIZE / 64 - 1)
+	: "r2", "r3", "r4", "r5", "ip");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void xscale_mc_copy_user_highpage(struct page *to, struct page *from,

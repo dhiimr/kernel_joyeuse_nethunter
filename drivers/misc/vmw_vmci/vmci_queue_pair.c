@@ -639,6 +639,12 @@ static struct vmci_queue *qp_host_alloc_queue(u64 size)
 
 	queue_page_size = num_pages * sizeof(*queue->kernel_if->u.h.page);
 
+<<<<<<< HEAD
+=======
+	if (queue_size + queue_page_size > KMALLOC_MAX_SIZE)
+		return NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	queue = kzalloc(queue_size + queue_page_size, GFP_KERNEL);
 	if (queue) {
 		queue->q_header = NULL;
@@ -732,7 +738,11 @@ static void qp_release_pages(struct page **pages,
 
 	for (i = 0; i < num_pages; i++) {
 		if (dirty)
+<<<<<<< HEAD
 			set_page_dirty(pages[i]);
+=======
+			set_page_dirty_lock(pages[i]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		put_page(pages[i]);
 		pages[i] = NULL;
@@ -758,8 +768,14 @@ static int qp_host_get_user_memory(u64 produce_uva,
 	if (retval < (int)produce_q->kernel_if->num_pages) {
 		pr_debug("get_user_pages_fast(produce) failed (retval=%d)",
 			retval);
+<<<<<<< HEAD
 		qp_release_pages(produce_q->kernel_if->u.h.header_page,
 				 retval, false);
+=======
+		if (retval > 0)
+			qp_release_pages(produce_q->kernel_if->u.h.header_page,
+					retval, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		err = VMCI_ERROR_NO_MEM;
 		goto out;
 	}
@@ -770,8 +786,14 @@ static int qp_host_get_user_memory(u64 produce_uva,
 	if (retval < (int)consume_q->kernel_if->num_pages) {
 		pr_debug("get_user_pages_fast(consume) failed (retval=%d)",
 			retval);
+<<<<<<< HEAD
 		qp_release_pages(consume_q->kernel_if->u.h.header_page,
 				 retval, false);
+=======
+		if (retval > 0)
+			qp_release_pages(consume_q->kernel_if->u.h.header_page,
+					retval, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		qp_release_pages(produce_q->kernel_if->u.h.header_page,
 				 produce_q->kernel_if->num_pages, false);
 		err = VMCI_ERROR_NO_MEM;
@@ -2333,7 +2355,12 @@ int vmci_qp_broker_map(struct vmci_handle handle,
 	is_local = entry->qp.flags & VMCI_QPFLAG_LOCAL;
 	result = VMCI_SUCCESS;
 
+<<<<<<< HEAD
 	if (context_id != VMCI_HOST_CONTEXT_ID) {
+=======
+	if (context_id != VMCI_HOST_CONTEXT_ID &&
+	    !QPBROKERSTATE_HAS_MEM(entry)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct vmci_qp_page_store page_store;
 
 		page_store.pages = guest_mem;
@@ -2443,7 +2470,12 @@ int vmci_qp_broker_unmap(struct vmci_handle handle,
 
 	is_local = entry->qp.flags & VMCI_QPFLAG_LOCAL;
 
+<<<<<<< HEAD
 	if (context_id != VMCI_HOST_CONTEXT_ID) {
+=======
+	if (context_id != VMCI_HOST_CONTEXT_ID &&
+	    QPBROKERSTATE_HAS_MEM(entry)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		qp_acquire_queue_mutex(entry->produce_q);
 		result = qp_save_headers(entry);
 		if (result < VMCI_SUCCESS)

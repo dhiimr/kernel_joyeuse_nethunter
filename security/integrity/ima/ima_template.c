@@ -31,6 +31,10 @@ static struct ima_template_desc builtin_templates[] = {
 
 static LIST_HEAD(defined_templates);
 static DEFINE_SPINLOCK(template_list);
+<<<<<<< HEAD
+=======
+static int template_setup_done;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static struct ima_template_field supported_fields[] = {
 	{.field_id = "d", .field_init = ima_eventdigest_init,
@@ -57,10 +61,18 @@ static int __init ima_template_setup(char *str)
 	struct ima_template_desc *template_desc;
 	int template_len = strlen(str);
 
+<<<<<<< HEAD
 	if (ima_template)
 		return 1;
 
 	ima_init_template_list();
+=======
+	if (template_setup_done)
+		return 1;
+
+	if (!ima_template)
+		ima_init_template_list();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Verify that a template with the supplied name exists.
@@ -84,6 +96,10 @@ static int __init ima_template_setup(char *str)
 	}
 
 	ima_template = template_desc;
+<<<<<<< HEAD
+=======
+	template_setup_done = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 1;
 }
 __setup("ima_template=", ima_template_setup);
@@ -92,7 +108,11 @@ static int __init ima_template_fmt_setup(char *str)
 {
 	int num_templates = ARRAY_SIZE(builtin_templates);
 
+<<<<<<< HEAD
 	if (ima_template)
+=======
+	if (template_setup_done)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 1;
 
 	if (template_desc_init_fields(str, NULL, NULL) < 0) {
@@ -103,6 +123,10 @@ static int __init ima_template_fmt_setup(char *str)
 
 	builtin_templates[num_templates - 1].fmt = str;
 	ima_template = builtin_templates + num_templates - 1;
+<<<<<<< HEAD
+=======
+	template_setup_done = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 1;
 }

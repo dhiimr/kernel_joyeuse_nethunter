@@ -1099,6 +1099,7 @@ static struct ab8500_regulator_info
 		.update_val_idle	= 0x82,
 		.update_val_normal	= 0x02,
 	},
+<<<<<<< HEAD
 	[AB8505_LDO_USB] = {
 		.desc = {
 			.name           = "LDO-USB",
@@ -1116,6 +1117,8 @@ static struct ab8500_regulator_info
 		.update_val_idle	= 0x03,
 		.update_val_normal	= 0x01,
 	},
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	[AB8505_LDO_AUDIO] = {
 		.desc = {
 			.name		= "LDO-AUDIO",

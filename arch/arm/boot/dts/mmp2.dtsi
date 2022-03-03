@@ -180,7 +180,11 @@
 				clocks = <&soc_clocks MMP2_CLK_GPIO>;
 				resets = <&soc_clocks MMP2_CLK_GPIO>;
 				interrupt-controller;
+<<<<<<< HEAD
 				#interrupt-cells = <1>;
+=======
+				#interrupt-cells = <2>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				ranges;
 
 				gcb0: gpio@d4019000 {

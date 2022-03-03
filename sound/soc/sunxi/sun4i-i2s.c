@@ -80,8 +80,13 @@
 #define SUN4I_I2S_CLK_DIV_MCLK_MASK		GENMASK(3, 0)
 #define SUN4I_I2S_CLK_DIV_MCLK(mclk)			((mclk) << 0)
 
+<<<<<<< HEAD
 #define SUN4I_I2S_RX_CNT_REG		0x28
 #define SUN4I_I2S_TX_CNT_REG		0x2c
+=======
+#define SUN4I_I2S_TX_CNT_REG		0x28
+#define SUN4I_I2S_RX_CNT_REG		0x2c
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define SUN4I_I2S_TX_CHAN_SEL_REG	0x30
 #define SUN4I_I2S_CHAN_SEL(num_chan)		(((num_chan) - 1) << 0)
@@ -110,7 +115,11 @@
 
 #define SUN8I_I2S_TX_CHAN_MAP_REG	0x44
 #define SUN8I_I2S_TX_CHAN_SEL_REG	0x34
+<<<<<<< HEAD
 #define SUN8I_I2S_TX_CHAN_OFFSET_MASK		GENMASK(13, 11)
+=======
+#define SUN8I_I2S_TX_CHAN_OFFSET_MASK		GENMASK(13, 12)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define SUN8I_I2S_TX_CHAN_OFFSET(offset)	(offset << 12)
 #define SUN8I_I2S_TX_CHAN_EN_MASK		GENMASK(11, 4)
 #define SUN8I_I2S_TX_CHAN_EN(num_chan)		(((1 << num_chan) - 1) << 4)
@@ -442,6 +451,13 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 		regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
 				   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
 				   SUN8I_I2S_TX_CHAN_OFFSET(offset));
+<<<<<<< HEAD
+=======
+
+		regmap_update_bits(i2s->regmap, SUN8I_I2S_RX_CHAN_SEL_REG,
+				   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
+				   SUN8I_I2S_TX_CHAN_OFFSET(offset));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	regmap_field_write(i2s->field_fmt_mode, val);

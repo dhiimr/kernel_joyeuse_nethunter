@@ -374,6 +374,10 @@ static int finish_dma_single(struct cvm_mmc_host *host, struct mmc_data *data)
 {
 	data->bytes_xfered = data->blocks * data->blksz;
 	data->error = 0;
+<<<<<<< HEAD
+=======
+	dma_unmap_sg(host->dev, data->sg, data->sg_len, get_dma_dir(data));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 1;
 }
 
@@ -1046,7 +1050,12 @@ int cvm_mmc_of_slot_probe(struct device *dev, struct cvm_mmc_host *host)
 		mmc->max_segs = 1;
 
 	/* DMA size field can address up to 8 MB */
+<<<<<<< HEAD
 	mmc->max_seg_size = 8 * 1024 * 1024;
+=======
+	mmc->max_seg_size = min_t(unsigned int, 8 * 1024 * 1024,
+				  dma_get_max_seg_size(host->dev));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mmc->max_req_size = mmc->max_seg_size;
 	/* External DMA is in 512 byte blocks */
 	mmc->max_blk_size = 512;

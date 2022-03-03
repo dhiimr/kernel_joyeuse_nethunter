@@ -543,7 +543,12 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
 		goto nla_put_failure;
 
 	if (indev && entskb->dev &&
+<<<<<<< HEAD
 	    entskb->mac_header != entskb->network_header) {
+=======
+	    skb_mac_header_was_set(entskb) &&
+	    skb_mac_header_len(entskb) != 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct nfqnl_msg_packet_hw phw;
 		int len;
 

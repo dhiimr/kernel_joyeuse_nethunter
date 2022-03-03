@@ -41,6 +41,10 @@
 #include <linux/rbtree.h>
 #include <linux/spinlock.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/overflow.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "qib.h"
 #include "qib_user_sdma.h"
@@ -606,7 +610,11 @@ done:
 /*
  * How many pages in this iovec element?
  */
+<<<<<<< HEAD
 static int qib_user_sdma_num_pages(const struct iovec *iov)
+=======
+static size_t qib_user_sdma_num_pages(const struct iovec *iov)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	const unsigned long addr  = (unsigned long) iov->iov_base;
 	const unsigned long  len  = iov->iov_len;
@@ -662,7 +670,11 @@ static void qib_user_sdma_free_pkt_frag(struct device *dev,
 static int qib_user_sdma_pin_pages(const struct qib_devdata *dd,
 				   struct qib_user_sdma_queue *pq,
 				   struct qib_user_sdma_pkt *pkt,
+<<<<<<< HEAD
 				   unsigned long addr, int tlen, int npages)
+=======
+				   unsigned long addr, int tlen, size_t npages)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct page *pages[8];
 	int i, j;
@@ -726,7 +738,11 @@ static int qib_user_sdma_pin_pkt(const struct qib_devdata *dd,
 	unsigned long idx;
 
 	for (idx = 0; idx < niov; idx++) {
+<<<<<<< HEAD
 		const int npages = qib_user_sdma_num_pages(iov + idx);
+=======
+		const size_t npages = qib_user_sdma_num_pages(iov + idx);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		const unsigned long addr = (unsigned long) iov[idx].iov_base;
 
 		ret = qib_user_sdma_pin_pages(dd, pq, pkt, addr,
@@ -828,8 +844,13 @@ static int qib_user_sdma_queue_pkts(const struct qib_devdata *dd,
 		unsigned pktnw;
 		unsigned pktnwc;
 		int nfrags = 0;
+<<<<<<< HEAD
 		int npages = 0;
 		int bytes_togo = 0;
+=======
+		size_t npages = 0;
+		size_t bytes_togo = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		int tiddma = 0;
 		int cfur;
 
@@ -889,7 +910,15 @@ static int qib_user_sdma_queue_pkts(const struct qib_devdata *dd,
 
 			npages += qib_user_sdma_num_pages(&iov[idx]);
 
+<<<<<<< HEAD
 			bytes_togo += slen;
+=======
+			if (check_add_overflow(bytes_togo, slen, &bytes_togo) ||
+			    bytes_togo > type_max(typeof(pkt->bytes_togo))) {
+				ret = -EINVAL;
+				goto free_pbc;
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			pktnwc += slen >> 2;
 			idx++;
 			nfrags++;
@@ -908,10 +937,17 @@ static int qib_user_sdma_queue_pkts(const struct qib_devdata *dd,
 		}
 
 		if (frag_size) {
+<<<<<<< HEAD
 			int pktsize, tidsmsize, n;
 
 			n = npages*((2*PAGE_SIZE/frag_size)+1);
 			pktsize = sizeof(*pkt) + sizeof(pkt->addr[0])*n;
+=======
+			size_t tidsmsize, n, pktsize, sz, addrlimit;
+
+			n = npages*((2*PAGE_SIZE/frag_size)+1);
+			pktsize = struct_size(pkt, addr, n);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			/*
 			 * Determine if this is tid-sdma or just sdma.
@@ -926,14 +962,32 @@ static int qib_user_sdma_queue_pkts(const struct qib_devdata *dd,
 			else
 				tidsmsize = 0;
 
+<<<<<<< HEAD
 			pkt = kmalloc(pktsize+tidsmsize, GFP_KERNEL);
+=======
+			if (check_add_overflow(pktsize, tidsmsize, &sz)) {
+				ret = -EINVAL;
+				goto free_pbc;
+			}
+			pkt = kmalloc(sz, GFP_KERNEL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (!pkt) {
 				ret = -ENOMEM;
 				goto free_pbc;
 			}
 			pkt->largepkt = 1;
 			pkt->frag_size = frag_size;
+<<<<<<< HEAD
 			pkt->addrlimit = n + ARRAY_SIZE(pkt->addr);
+=======
+			if (check_add_overflow(n, ARRAY_SIZE(pkt->addr),
+					       &addrlimit) ||
+			    addrlimit > type_max(typeof(pkt->addrlimit))) {
+				ret = -EINVAL;
+				goto free_pkt;
+			}
+			pkt->addrlimit = addrlimit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			if (tiddma) {
 				char *tidsm = (char *)pkt + pktsize;

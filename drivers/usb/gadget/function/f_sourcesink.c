@@ -435,7 +435,12 @@ no_iso:
 	ss_iso_sink_desc.bEndpointAddress = fs_iso_sink_desc.bEndpointAddress;
 
 	ret = usb_assign_descriptors(f, fs_source_sink_descs,
+<<<<<<< HEAD
 			hs_source_sink_descs, ss_source_sink_descs, NULL);
+=======
+			hs_source_sink_descs, ss_source_sink_descs,
+			ss_source_sink_descs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		return ret;
 
@@ -586,6 +591,10 @@ static int source_sink_start_ep(struct f_sourcesink *ss, bool is_in,
 
 	if (is_iso) {
 		switch (speed) {
+<<<<<<< HEAD
+=======
+		case USB_SPEED_SUPER_PLUS:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		case USB_SPEED_SUPER:
 			size = ss->isoc_maxpacket *
 					(ss->isoc_mult + 1) *

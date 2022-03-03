@@ -61,6 +61,10 @@ config DUMP_CODE
 
 config DWARF_UNWINDER
 	bool "Enable the DWARF unwinder for stacktraces"
+<<<<<<< HEAD
+=======
+	depends on DEBUG_KERNEL
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select FRAME_POINTER
 	depends on SUPERH32
 	default n

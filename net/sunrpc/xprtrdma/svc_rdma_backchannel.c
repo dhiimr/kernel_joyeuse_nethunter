@@ -270,6 +270,10 @@ xprt_rdma_bc_put(struct rpc_xprt *xprt)
 {
 	dprintk("svcrdma: %s: xprt %p\n", __func__, xprt);
 
+<<<<<<< HEAD
+=======
+	xprt_rdma_free_addresses(xprt);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	xprt_free(xprt);
 	module_put(THIS_MODULE);
 }
@@ -320,9 +324,15 @@ xprt_setup_rdma_bc(struct xprt_create *args)
 	xprt->timeout = &xprt_rdma_bc_timeout;
 	xprt_set_bound(xprt);
 	xprt_set_connected(xprt);
+<<<<<<< HEAD
 	xprt->bind_timeout = RPCRDMA_BIND_TO;
 	xprt->reestablish_timeout = RPCRDMA_INIT_REEST_TO;
 	xprt->idle_timeout = RPCRDMA_IDLE_DISC_TO;
+=======
+	xprt->bind_timeout = 0;
+	xprt->reestablish_timeout = 0;
+	xprt->idle_timeout = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	xprt->prot = XPRT_TRANSPORT_BC_RDMA;
 	xprt->tsh_size = RPCRDMA_HDRLEN_MIN / sizeof(__be32);

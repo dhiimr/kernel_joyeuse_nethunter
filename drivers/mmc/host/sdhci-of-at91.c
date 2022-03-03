@@ -125,7 +125,12 @@ static void sdhci_at91_reset(struct sdhci_host *host, u8 mask)
 {
 	sdhci_reset(host, mask);
 
+<<<<<<< HEAD
 	if (host->mmc->caps & MMC_CAP_NONREMOVABLE)
+=======
+	if ((host->mmc->caps & MMC_CAP_NONREMOVABLE)
+	    || mmc_gpio_get_cd(host->mmc) >= 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		sdhci_at91_set_force_card_detect(host);
 }
 
@@ -331,19 +336,34 @@ static int sdhci_at91_probe(struct platform_device *pdev)
 	priv->mainck = devm_clk_get(&pdev->dev, "baseclk");
 	if (IS_ERR(priv->mainck)) {
 		dev_err(&pdev->dev, "failed to get baseclk\n");
+<<<<<<< HEAD
 		return PTR_ERR(priv->mainck);
+=======
+		ret = PTR_ERR(priv->mainck);
+		goto sdhci_pltfm_free;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	priv->hclock = devm_clk_get(&pdev->dev, "hclock");
 	if (IS_ERR(priv->hclock)) {
 		dev_err(&pdev->dev, "failed to get hclock\n");
+<<<<<<< HEAD
 		return PTR_ERR(priv->hclock);
+=======
+		ret = PTR_ERR(priv->hclock);
+		goto sdhci_pltfm_free;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	priv->gck = devm_clk_get(&pdev->dev, "multclk");
 	if (IS_ERR(priv->gck)) {
 		dev_err(&pdev->dev, "failed to get multclk\n");
+<<<<<<< HEAD
 		return PTR_ERR(priv->gck);
+=======
+		ret = PTR_ERR(priv->gck);
+		goto sdhci_pltfm_free;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ret = sdhci_at91_set_clks_presets(&pdev->dev);
@@ -364,6 +384,12 @@ static int sdhci_at91_probe(struct platform_device *pdev)
 	pm_runtime_set_autosuspend_delay(&pdev->dev, 50);
 	pm_runtime_use_autosuspend(&pdev->dev);
 
+<<<<<<< HEAD
+=======
+	/* HS200 is broken at this moment */
+	host->quirks2 |= SDHCI_QUIRK2_BROKEN_HS200;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = sdhci_add_host(host);
 	if (ret)
 		goto pm_runtime_disable;
@@ -398,8 +424,16 @@ static int sdhci_at91_probe(struct platform_device *pdev)
 	 * detection procedure using the SDMCC_CD signal is bypassed.
 	 * This bit is reset when a software reset for all command is performed
 	 * so we need to implement our own reset function to set back this bit.
+<<<<<<< HEAD
 	 */
 	if (host->mmc->caps & MMC_CAP_NONREMOVABLE)
+=======
+	 *
+	 * WA: SAMA5D2 doesn't drive CMD if using CD GPIO line.
+	 */
+	if ((host->mmc->caps & MMC_CAP_NONREMOVABLE)
+	    || mmc_gpio_get_cd(host->mmc) >= 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		sdhci_at91_set_force_card_detect(host);
 
 	pm_runtime_put_autosuspend(&pdev->dev);

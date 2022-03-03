@@ -179,7 +179,16 @@ static void sdhci_arasan_set_clock(struct sdhci_host *host, unsigned int clock)
 			 * through low speeds without power cycling.
 			 */
 			sdhci_set_clock(host, host->max_clk);
+<<<<<<< HEAD
 			phy_power_on(sdhci_arasan->phy);
+=======
+			if (phy_power_on(sdhci_arasan->phy)) {
+				pr_err("%s: Cannot power on phy.\n",
+				       mmc_hostname(host->mmc));
+				return;
+			}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			sdhci_arasan->is_phy_on = true;
 
 			/*
@@ -205,7 +214,16 @@ static void sdhci_arasan_set_clock(struct sdhci_host *host, unsigned int clock)
 	sdhci_set_clock(host, clock);
 
 	if (ctrl_phy) {
+<<<<<<< HEAD
 		phy_power_on(sdhci_arasan->phy);
+=======
+		if (phy_power_on(sdhci_arasan->phy)) {
+			pr_err("%s: Cannot power on phy.\n",
+			       mmc_hostname(host->mmc));
+			return;
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		sdhci_arasan->is_phy_on = true;
 	}
 }
@@ -305,7 +323,13 @@ static int sdhci_arasan_suspend(struct device *dev)
 		ret = phy_power_off(sdhci_arasan->phy);
 		if (ret) {
 			dev_err(dev, "Cannot power off phy.\n");
+<<<<<<< HEAD
 			sdhci_resume_host(host);
+=======
+			if (sdhci_resume_host(host))
+				dev_err(dev, "Cannot resume host.\n");
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return ret;
 		}
 		sdhci_arasan->is_phy_on = false;
@@ -638,7 +662,12 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
 
 	ret = mmc_of_parse(host->mmc);
 	if (ret) {
+<<<<<<< HEAD
 		dev_err(&pdev->dev, "parsing dt failed (%d)\n", ret);
+=======
+		if (ret != -EPROBE_DEFER)
+			dev_err(&pdev->dev, "parsing dt failed (%d)\n", ret);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto unreg_clk;
 	}
 

@@ -98,7 +98,10 @@
 			next-level-cache = <&A72_L2>;
 			clocks = <&scpi_dvfs 0>;
 			cpu-idle-states = <&CPU_SLEEP_0 &CLUSTER_SLEEP_0>;
+<<<<<<< HEAD
 			sched-energy-costs = <&CPU_COST_A72 &CLUSTER_COST_A72>;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			capacity-dmips-mhz = <1024>;
 		};
 
@@ -116,7 +119,10 @@
 			next-level-cache = <&A72_L2>;
 			clocks = <&scpi_dvfs 0>;
 			cpu-idle-states = <&CPU_SLEEP_0 &CLUSTER_SLEEP_0>;
+<<<<<<< HEAD
 			sched-energy-costs = <&CPU_COST_A72 &CLUSTER_COST_A72>;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			capacity-dmips-mhz = <1024>;
 		};
 
@@ -134,7 +140,10 @@
 			next-level-cache = <&A53_L2>;
 			clocks = <&scpi_dvfs 1>;
 			cpu-idle-states = <&CPU_SLEEP_0 &CLUSTER_SLEEP_0>;
+<<<<<<< HEAD
 			sched-energy-costs = <&CPU_COST_A53R2 &CLUSTER_COST_A53R2>;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			capacity-dmips-mhz = <485>;
 		};
 
@@ -152,7 +161,10 @@
 			next-level-cache = <&A53_L2>;
 			clocks = <&scpi_dvfs 1>;
 			cpu-idle-states = <&CPU_SLEEP_0 &CLUSTER_SLEEP_0>;
+<<<<<<< HEAD
 			sched-energy-costs = <&CPU_COST_A53R2 &CLUSTER_COST_A53R2>;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			capacity-dmips-mhz = <485>;
 		};
 
@@ -170,7 +182,10 @@
 			next-level-cache = <&A53_L2>;
 			clocks = <&scpi_dvfs 1>;
 			cpu-idle-states = <&CPU_SLEEP_0 &CLUSTER_SLEEP_0>;
+<<<<<<< HEAD
 			sched-energy-costs = <&CPU_COST_A53R2 &CLUSTER_COST_A53R2>;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			capacity-dmips-mhz = <485>;
 		};
 
@@ -188,7 +203,10 @@
 			next-level-cache = <&A53_L2>;
 			clocks = <&scpi_dvfs 1>;
 			cpu-idle-states = <&CPU_SLEEP_0 &CLUSTER_SLEEP_0>;
+<<<<<<< HEAD
 			sched-energy-costs = <&CPU_COST_A53R2 &CLUSTER_COST_A53R2>;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			capacity-dmips-mhz = <485>;
 		};
 
@@ -205,7 +223,10 @@
 			cache-line-size = <64>;
 			cache-sets = <1024>;
 		};
+<<<<<<< HEAD
 		/include/ "juno-sched-energy.dtsi"
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	pmu_a72 {

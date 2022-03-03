@@ -125,10 +125,13 @@
 	power-supply = <&backlight_regulator>;
 };
 
+<<<<<<< HEAD
 &emmc {
 	/delete-property/mmc-hs200-1_8v;
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 &gpio_keys {
 	pinctrl-0 = <&pwr_key_l &ap_lid_int_l &volum_down_l &volum_up_l>;
 

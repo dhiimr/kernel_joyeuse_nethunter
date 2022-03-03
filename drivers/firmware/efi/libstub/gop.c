@@ -86,6 +86,7 @@ setup_pixel_info(struct screen_info *si, u32 pixels_per_scan_line,
 }
 
 static efi_status_t
+<<<<<<< HEAD
 __gop_query32(efi_system_table_t *sys_table_arg,
 	      struct efi_graphics_output_protocol_32 *gop32,
 	      struct efi_graphics_output_mode_info **info,
@@ -110,6 +111,8 @@ __gop_query32(efi_system_table_t *sys_table_arg,
 }
 
 static efi_status_t
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 setup_gop32(efi_system_table_t *sys_table_arg, struct screen_info *si,
             efi_guid_t *proto, unsigned long size, void **gop_handle)
 {
@@ -121,7 +124,11 @@ setup_gop32(efi_system_table_t *sys_table_arg, struct screen_info *si,
 	u64 fb_base;
 	struct efi_pixel_bitmask pixel_info;
 	int pixel_format;
+<<<<<<< HEAD
 	efi_status_t status = EFI_NOT_FOUND;
+=======
+	efi_status_t status;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 *handles = (u32 *)(unsigned long)gop_handle;
 	int i;
 
@@ -130,6 +137,10 @@ setup_gop32(efi_system_table_t *sys_table_arg, struct screen_info *si,
 
 	nr_gops = size / sizeof(u32);
 	for (i = 0; i < nr_gops; i++) {
+<<<<<<< HEAD
+=======
+		struct efi_graphics_output_protocol_mode_32 *mode;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct efi_graphics_output_mode_info *info = NULL;
 		efi_guid_t conout_proto = EFI_CONSOLE_OUT_DEVICE_GUID;
 		bool conout_found = false;
@@ -147,9 +158,17 @@ setup_gop32(efi_system_table_t *sys_table_arg, struct screen_info *si,
 		if (status == EFI_SUCCESS)
 			conout_found = true;
 
+<<<<<<< HEAD
 		status = __gop_query32(sys_table_arg, gop32, &info, &size,
 				       &current_fb_base);
 		if (status == EFI_SUCCESS && (!first_gop || conout_found) &&
+=======
+		mode = (void *)(unsigned long)gop32->mode;
+		info = (void *)(unsigned long)mode->info;
+		current_fb_base = mode->frame_buffer_base;
+
+		if ((!first_gop || conout_found) &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    info->pixel_format != PIXEL_BLT_ONLY) {
 			/*
 			 * Systems that use the UEFI Console Splitter may
@@ -177,7 +196,11 @@ setup_gop32(efi_system_table_t *sys_table_arg, struct screen_info *si,
 
 	/* Did we find any GOPs? */
 	if (!first_gop)
+<<<<<<< HEAD
 		goto out;
+=======
+		return EFI_NOT_FOUND;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* EFI framebuffer */
 	si->orig_video_isVGA = VIDEO_TYPE_EFI;
@@ -199,6 +222,7 @@ setup_gop32(efi_system_table_t *sys_table_arg, struct screen_info *si,
 	si->lfb_size = si->lfb_linelength * si->lfb_height;
 
 	si->capabilities |= VIDEO_CAPABILITY_SKIP_QUIRKS;
+<<<<<<< HEAD
 out:
 	return status;
 }
@@ -225,6 +249,10 @@ __gop_query64(efi_system_table_t *sys_table_arg,
 
 	*fb_base = mode->frame_buffer_base;
 	return status;
+=======
+
+	return EFI_SUCCESS;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static efi_status_t
@@ -239,7 +267,11 @@ setup_gop64(efi_system_table_t *sys_table_arg, struct screen_info *si,
 	u64 fb_base;
 	struct efi_pixel_bitmask pixel_info;
 	int pixel_format;
+<<<<<<< HEAD
 	efi_status_t status = EFI_NOT_FOUND;
+=======
+	efi_status_t status;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u64 *handles = (u64 *)(unsigned long)gop_handle;
 	int i;
 
@@ -248,6 +280,10 @@ setup_gop64(efi_system_table_t *sys_table_arg, struct screen_info *si,
 
 	nr_gops = size / sizeof(u64);
 	for (i = 0; i < nr_gops; i++) {
+<<<<<<< HEAD
+=======
+		struct efi_graphics_output_protocol_mode_64 *mode;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct efi_graphics_output_mode_info *info = NULL;
 		efi_guid_t conout_proto = EFI_CONSOLE_OUT_DEVICE_GUID;
 		bool conout_found = false;
@@ -265,9 +301,17 @@ setup_gop64(efi_system_table_t *sys_table_arg, struct screen_info *si,
 		if (status == EFI_SUCCESS)
 			conout_found = true;
 
+<<<<<<< HEAD
 		status = __gop_query64(sys_table_arg, gop64, &info, &size,
 				       &current_fb_base);
 		if (status == EFI_SUCCESS && (!first_gop || conout_found) &&
+=======
+		mode = (void *)(unsigned long)gop64->mode;
+		info = (void *)(unsigned long)mode->info;
+		current_fb_base = mode->frame_buffer_base;
+
+		if ((!first_gop || conout_found) &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    info->pixel_format != PIXEL_BLT_ONLY) {
 			/*
 			 * Systems that use the UEFI Console Splitter may
@@ -295,7 +339,11 @@ setup_gop64(efi_system_table_t *sys_table_arg, struct screen_info *si,
 
 	/* Did we find any GOPs? */
 	if (!first_gop)
+<<<<<<< HEAD
 		goto out;
+=======
+		return EFI_NOT_FOUND;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* EFI framebuffer */
 	si->orig_video_isVGA = VIDEO_TYPE_EFI;
@@ -317,8 +365,13 @@ setup_gop64(efi_system_table_t *sys_table_arg, struct screen_info *si,
 	si->lfb_size = si->lfb_linelength * si->lfb_height;
 
 	si->capabilities |= VIDEO_CAPABILITY_SKIP_QUIRKS;
+<<<<<<< HEAD
 out:
 	return status;
+=======
+
+	return EFI_SUCCESS;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*

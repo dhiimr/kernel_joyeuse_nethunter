@@ -52,7 +52,11 @@ enum {
 
 #define HNS_ROCE_HEM_CHUNK_LEN	\
 	 ((256 - sizeof(struct list_head) - 2 * sizeof(int)) /	 \
+<<<<<<< HEAD
 	 (sizeof(struct scatterlist)))
+=======
+	 (sizeof(struct scatterlist) + sizeof(void *)))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 enum {
 	 HNS_ROCE_HEM_PAGE_SHIFT = 12,

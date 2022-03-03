@@ -1112,7 +1112,11 @@ static void brcmf_msgbuf_process_event(struct brcmf_msgbuf *msgbuf, void *buf)
 
 	skb->protocol = eth_type_trans(skb, ifp->ndev);
 
+<<<<<<< HEAD
 	brcmf_fweh_process_skb(ifp->drvr, skb);
+=======
+	brcmf_fweh_process_skb(ifp->drvr, skb, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 exit:
 	brcmu_pkt_buf_free_skb(skb);
@@ -1538,6 +1542,11 @@ fail:
 					  BRCMF_TX_IOCTL_MAX_MSG_SIZE,
 					  msgbuf->ioctbuf,
 					  msgbuf->ioctbuf_handle);
+<<<<<<< HEAD
+=======
+		if (msgbuf->txflow_wq)
+			destroy_workqueue(msgbuf->txflow_wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kfree(msgbuf);
 	}
 	return -ENOMEM;

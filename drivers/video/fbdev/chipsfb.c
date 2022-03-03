@@ -332,7 +332,11 @@ static const struct fb_var_screeninfo chipsfb_var = {
 
 static void init_chips(struct fb_info *p, unsigned long addr)
 {
+<<<<<<< HEAD
 	memset(p->screen_base, 0, 0x100000);
+=======
+	fb_memset(p->screen_base, 0, 0x100000);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	p->fix = chipsfb_fix;
 	p->fix.smem_start = addr;
@@ -350,7 +354,11 @@ static void init_chips(struct fb_info *p, unsigned long addr)
 static int chipsfb_pci_init(struct pci_dev *dp, const struct pci_device_id *ent)
 {
 	struct fb_info *p;
+<<<<<<< HEAD
 	unsigned long addr, size;
+=======
+	unsigned long addr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned short cmd;
 	int rc = -ENODEV;
 
@@ -362,7 +370,10 @@ static int chipsfb_pci_init(struct pci_dev *dp, const struct pci_device_id *ent)
 	if ((dp->resource[0].flags & IORESOURCE_MEM) == 0)
 		goto err_disable;
 	addr = pci_resource_start(dp, 0);
+<<<<<<< HEAD
 	size = pci_resource_len(dp, 0);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (addr == 0)
 		goto err_disable;
 

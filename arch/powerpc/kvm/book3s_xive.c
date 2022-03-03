@@ -1001,6 +1001,7 @@ void kvmppc_xive_cleanup_vcpu(struct kvm_vcpu *vcpu)
 	/* Mask the VP IPI */
 	xive_vm_esb_load(&xc->vp_ipi_data, XIVE_ESB_SET_PQ_01);
 
+<<<<<<< HEAD
 	/* Disable the VP */
 	xive_native_disable_vp(xc->vp_id);
 
@@ -1009,12 +1010,28 @@ void kvmppc_xive_cleanup_vcpu(struct kvm_vcpu *vcpu)
 		struct xive_q *q = &xc->queues[i];
 
 		/* Free the escalation irq */
+=======
+	/* Free escalations */
+	for (i = 0; i < KVMPPC_XIVE_Q_COUNT; i++) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (xc->esc_virq[i]) {
 			free_irq(xc->esc_virq[i], vcpu);
 			irq_dispose_mapping(xc->esc_virq[i]);
 			kfree(xc->esc_virq_names[i]);
 		}
+<<<<<<< HEAD
 		/* Free the queue */
+=======
+	}
+
+	/* Disable the VP */
+	xive_native_disable_vp(xc->vp_id);
+
+	/* Free the queues */
+	for (i = 0; i < KVMPPC_XIVE_Q_COUNT; i++) {
+		struct xive_q *q = &xc->queues[i];
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		xive_native_disable_queue(xc->vp_id, q, i);
 		if (q->qpage) {
 			free_pages((unsigned long)q->qpage,
@@ -1675,7 +1692,10 @@ static void kvmppc_xive_cleanup_irq(u32 hw_num, struct xive_irq_data *xd)
 {
 	xive_vm_esb_load(xd, XIVE_ESB_SET_PQ_01);
 	xive_native_configure_irq(hw_num, 0, MASKED, 0);
+<<<<<<< HEAD
 	xive_cleanup_irq_data(xd);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void kvmppc_xive_free_sources(struct kvmppc_xive_src_block *sb)
@@ -1689,9 +1709,16 @@ static void kvmppc_xive_free_sources(struct kvmppc_xive_src_block *sb)
 			continue;
 
 		kvmppc_xive_cleanup_irq(state->ipi_number, &state->ipi_data);
+<<<<<<< HEAD
 		xive_native_free_irq(state->ipi_number);
 
 		/* Pass-through, cleanup too */
+=======
+		xive_cleanup_irq_data(&state->ipi_data);
+		xive_native_free_irq(state->ipi_number);
+
+		/* Pass-through, cleanup too but keep IRQ hw data */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (state->pt_number)
 			kvmppc_xive_cleanup_irq(state->pt_number, state->pt_data);
 

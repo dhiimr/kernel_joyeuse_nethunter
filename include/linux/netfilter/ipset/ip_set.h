@@ -445,6 +445,7 @@ ip6addrptr(const struct sk_buff *skb, bool src, struct in6_addr *addr)
 	       sizeof(*addr));
 }
 
+<<<<<<< HEAD
 /* Calculate the bytes required to store the inclusive range of a-b */
 static inline int
 bitmap_bytes(u32 a, u32 b)
@@ -452,6 +453,8 @@ bitmap_bytes(u32 a, u32 b)
 	return 4 * ((((b - a + 8) / 8) + 3) / 4);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/netfilter/ipset/ip_set_timeout.h>
 #include <linux/netfilter/ipset/ip_set_comment.h>
 #include <linux/netfilter/ipset/ip_set_counter.h>

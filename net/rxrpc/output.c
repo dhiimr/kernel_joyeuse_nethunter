@@ -96,7 +96,11 @@ static size_t rxrpc_fill_out_ack(struct rxrpc_call *call,
  */
 int rxrpc_send_ack_packet(struct rxrpc_call *call, bool ping)
 {
+<<<<<<< HEAD
 	struct rxrpc_connection *conn = NULL;
+=======
+	struct rxrpc_connection *conn;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct rxrpc_ack_buffer *pkt;
 	struct msghdr msg;
 	struct kvec iov[2];
@@ -106,6 +110,7 @@ int rxrpc_send_ack_packet(struct rxrpc_call *call, bool ping)
 	int ret;
 	u8 reason;
 
+<<<<<<< HEAD
 	spin_lock_bh(&call->lock);
 	if (call->conn)
 		conn = rxrpc_get_connection_maybe(call->conn);
@@ -118,6 +123,16 @@ int rxrpc_send_ack_packet(struct rxrpc_call *call, bool ping)
 		rxrpc_put_connection(conn);
 		return -ENOMEM;
 	}
+=======
+	if (test_bit(RXRPC_CALL_DISCONNECTED, &call->flags))
+		return -ECONNRESET;
+
+	pkt = kzalloc(sizeof(*pkt), GFP_KERNEL);
+	if (!pkt)
+		return -ENOMEM;
+
+	conn = call->conn;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	msg.msg_name	= &call->peer->srx.transport;
 	msg.msg_namelen	= call->peer->srx.transport_len;
@@ -204,7 +219,10 @@ int rxrpc_send_ack_packet(struct rxrpc_call *call, bool ping)
 	}
 
 out:
+<<<<<<< HEAD
 	rxrpc_put_connection(conn);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(pkt);
 	return ret;
 }
@@ -214,13 +232,18 @@ out:
  */
 int rxrpc_send_abort_packet(struct rxrpc_call *call)
 {
+<<<<<<< HEAD
 	struct rxrpc_connection *conn = NULL;
+=======
+	struct rxrpc_connection *conn;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct rxrpc_abort_buffer pkt;
 	struct msghdr msg;
 	struct kvec iov[1];
 	rxrpc_serial_t serial;
 	int ret;
 
+<<<<<<< HEAD
 	spin_lock_bh(&call->lock);
 	if (call->conn)
 		conn = rxrpc_get_connection_maybe(call->conn);
@@ -228,6 +251,13 @@ int rxrpc_send_abort_packet(struct rxrpc_call *call)
 	if (!conn)
 		return -ECONNRESET;
 
+=======
+	if (test_bit(RXRPC_CALL_DISCONNECTED, &call->flags))
+		return -ECONNRESET;
+
+	conn = call->conn;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	msg.msg_name	= &call->peer->srx.transport;
 	msg.msg_namelen	= call->peer->srx.transport_len;
 	msg.msg_control	= NULL;
@@ -255,7 +285,10 @@ int rxrpc_send_abort_packet(struct rxrpc_call *call)
 	ret = kernel_sendmsg(conn->params.local->socket,
 			     &msg, iov, 1, sizeof(pkt));
 
+<<<<<<< HEAD
 	rxrpc_put_connection(conn);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -404,6 +437,12 @@ send_fragmentable:
 		}
 		break;
 #endif
+<<<<<<< HEAD
+=======
+
+	default:
+		BUG();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	up_write(&conn->params.local->defrag_sem);

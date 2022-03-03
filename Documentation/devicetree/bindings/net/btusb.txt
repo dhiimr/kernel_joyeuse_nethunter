@@ -36,7 +36,11 @@ Following example uses irq pin number 3 of gpio0 for out of band wake-on-bt:
 	compatible = "usb1286,204e";
 	reg = <1>;
 	interrupt-parent = <&gpio0>;
+<<<<<<< HEAD
 	interrupt-name = "wakeup";
+=======
+	interrupt-names = "wakeup";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
     };
 };

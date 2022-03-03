@@ -61,7 +61,11 @@ extern inline void set_hae(unsigned long new_hae)
  * Change virtual addresses to physical addresses and vv.
  */
 #ifdef USE_48_BIT_KSEG
+<<<<<<< HEAD
 static inline unsigned long virt_to_phys(void *address)
+=======
+static inline unsigned long virt_to_phys(volatile void *address)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return (unsigned long)address - IDENT_ADDR;
 }
@@ -71,7 +75,11 @@ static inline void * phys_to_virt(unsigned long address)
 	return (void *) (address + IDENT_ADDR);
 }
 #else
+<<<<<<< HEAD
 static inline unsigned long virt_to_phys(void *address)
+=======
+static inline unsigned long virt_to_phys(volatile void *address)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
         unsigned long phys = (unsigned long)address;
 
@@ -112,7 +120,11 @@ static inline dma_addr_t __deprecated isa_page_to_bus(struct page *page)
 extern unsigned long __direct_map_base;
 extern unsigned long __direct_map_size;
 
+<<<<<<< HEAD
 static inline unsigned long __deprecated virt_to_bus(void *address)
+=======
+static inline unsigned long __deprecated virt_to_bus(volatile void *address)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned long phys = virt_to_phys(address);
 	unsigned long bus = phys + __direct_map_base;
@@ -493,10 +505,17 @@ extern inline void writeq(u64 b, volatile void __iomem *addr)
 }
 #endif
 
+<<<<<<< HEAD
 #define ioread16be(p) be16_to_cpu(ioread16(p))
 #define ioread32be(p) be32_to_cpu(ioread32(p))
 #define iowrite16be(v,p) iowrite16(cpu_to_be16(v), (p))
 #define iowrite32be(v,p) iowrite32(cpu_to_be32(v), (p))
+=======
+#define ioread16be(p) swab16(ioread16(p))
+#define ioread32be(p) swab32(ioread32(p))
+#define iowrite16be(v,p) iowrite16(swab16(v), (p))
+#define iowrite32be(v,p) iowrite32(swab32(v), (p))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define inb_p		inb
 #define inw_p		inw

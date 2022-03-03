@@ -161,6 +161,12 @@ struct stm32_dcmi {
 	u32				misr;
 	int				errors_count;
 	int				buffers_count;
+<<<<<<< HEAD
+=======
+
+	/* Ensure DMA operations atomicity */
+	struct mutex			dma_lock;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static inline struct stm32_dcmi *notifier_to_dcmi(struct v4l2_async_notifier *n)
@@ -291,6 +297,16 @@ static int dcmi_start_dma(struct stm32_dcmi *dcmi,
 		return ret;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Avoid call of dmaengine_terminate_all() between
+	 * dmaengine_prep_slave_single() and dmaengine_submit()
+	 * by locking the whole DMA submission sequence
+	 */
+	mutex_lock(&dcmi->dma_lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Prepare a DMA transaction */
 	desc = dmaengine_prep_slave_single(dcmi->dma_chan, buf->paddr,
 					   buf->size,
@@ -298,6 +314,10 @@ static int dcmi_start_dma(struct stm32_dcmi *dcmi,
 	if (!desc) {
 		dev_err(dcmi->dev, "%s: DMA dmaengine_prep_slave_single failed for buffer size %zu\n",
 			__func__, buf->size);
+<<<<<<< HEAD
+=======
+		mutex_unlock(&dcmi->dma_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 	}
 
@@ -309,9 +329,18 @@ static int dcmi_start_dma(struct stm32_dcmi *dcmi,
 	dcmi->dma_cookie = dmaengine_submit(desc);
 	if (dma_submit_error(dcmi->dma_cookie)) {
 		dev_err(dcmi->dev, "%s: DMA submission failed\n", __func__);
+<<<<<<< HEAD
 		return -ENXIO;
 	}
 
+=======
+		mutex_unlock(&dcmi->dma_lock);
+		return -ENXIO;
+	}
+
+	mutex_unlock(&dcmi->dma_lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dma_async_issue_pending(dcmi->dma_chan);
 
 	return 0;
@@ -690,7 +719,13 @@ static void dcmi_stop_streaming(struct vb2_queue *vq)
 	spin_unlock_irq(&dcmi->irqlock);
 
 	/* Stop all pending DMA operations */
+<<<<<<< HEAD
 	dmaengine_terminate_all(dcmi->dma_chan);
+=======
+	mutex_lock(&dcmi->dma_lock);
+	dmaengine_terminate_all(dcmi->dma_chan);
+	mutex_unlock(&dcmi->dma_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	clk_disable(dcmi->mclk);
 
@@ -775,6 +810,12 @@ static int dcmi_try_fmt(struct stm32_dcmi *dcmi, struct v4l2_format *f,
 
 	sd_fmt = find_format_by_fourcc(dcmi, pix->pixelformat);
 	if (!sd_fmt) {
+<<<<<<< HEAD
+=======
+		if (!dcmi->num_of_sd_formats)
+			return -ENODATA;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		sd_fmt = dcmi->sd_formats[dcmi->num_of_sd_formats - 1];
 		pix->pixelformat = sd_fmt->fourcc;
 	}
@@ -946,6 +987,12 @@ static int dcmi_set_sensor_format(struct stm32_dcmi *dcmi,
 
 	sd_fmt = find_format_by_fourcc(dcmi, pix->pixelformat);
 	if (!sd_fmt) {
+<<<<<<< HEAD
+=======
+		if (!dcmi->num_of_sd_formats)
+			return -ENODATA;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		sd_fmt = dcmi->sd_formats[dcmi->num_of_sd_formats - 1];
 		pix->pixelformat = sd_fmt->fourcc;
 	}
@@ -1656,6 +1703,10 @@ static int dcmi_probe(struct platform_device *pdev)
 
 	spin_lock_init(&dcmi->irqlock);
 	mutex_init(&dcmi->lock);
+<<<<<<< HEAD
+=======
+	mutex_init(&dcmi->dma_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	init_completion(&dcmi->complete);
 	INIT_LIST_HEAD(&dcmi->buffers);
 

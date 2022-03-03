@@ -84,6 +84,7 @@ static int si2157_init(struct dvb_frontend *fe)
 	struct si2157_cmd cmd;
 	const struct firmware *fw;
 	const char *fw_name;
+<<<<<<< HEAD
 	unsigned int uitmp, chip_id;
 
 	dev_dbg(&client->dev, "\n");
@@ -102,6 +103,25 @@ static int si2157_init(struct dvb_frontend *fe)
 	if (uitmp == dev->if_frequency / 1000)
 		goto warm;
 
+=======
+	unsigned int chip_id, xtal_trim;
+
+	dev_dbg(&client->dev, "\n");
+
+	/* Try to get Xtal trim property, to verify tuner still running */
+	memcpy(cmd.args, "\x15\x00\x02\x04", 4);
+	cmd.wlen = 4;
+	cmd.rlen = 4;
+	ret = si2157_cmd_execute(client, &cmd);
+
+	xtal_trim = cmd.args[2] | (cmd.args[3] << 8);
+
+	if (ret == 0 && xtal_trim < 16)
+		goto warm;
+
+	dev->if_frequency = 0; /* we no longer know current tuner state */
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* power up */
 	if (dev->chiptype == SI2157_CHIPTYPE_SI2146) {
 		memcpy(cmd.args, "\xc0\x05\x01\x00\x00\x0b\x00\x00\x01", 9);

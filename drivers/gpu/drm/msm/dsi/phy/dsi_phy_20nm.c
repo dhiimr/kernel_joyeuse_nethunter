@@ -147,7 +147,11 @@ const struct msm_dsi_phy_cfg dsi_phy_20nm_cfgs = {
 		.disable = dsi_20nm_phy_disable,
 		.init = msm_dsi_phy_init_common,
 	},
+<<<<<<< HEAD
 	.io_start = { 0xfd998300, 0xfd9a0300 },
+=======
+	.io_start = { 0xfd998500, 0xfd9a0500 },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.num_dsi_phy = 2,
 };
 

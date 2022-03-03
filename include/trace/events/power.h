@@ -148,6 +148,7 @@ DEFINE_EVENT(cpu, cpu_frequency,
 	TP_ARGS(frequency, cpu_id)
 );
 
+<<<<<<< HEAD
 TRACE_EVENT(cpu_frequency_limits,
 
 	TP_PROTO(unsigned int max_freq, unsigned int min_freq,
@@ -215,6 +216,8 @@ TRACE_EVENT(cpu_frequency_switch_end,
 	TP_printk("cpu_id=%lu", (unsigned long)__entry->cpu_id)
 );
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 TRACE_EVENT(device_pm_callback_start,
 
 	TP_PROTO(struct device *dev, const char *pm_ops, int event),
@@ -368,6 +371,7 @@ DEFINE_EVENT(clock, clock_set_rate,
 	TP_ARGS(name, state, cpu_id)
 );
 
+<<<<<<< HEAD
 TRACE_EVENT(clock_set_parent,
 
 	TP_PROTO(const char *name, const char *parent_name),
@@ -387,6 +391,8 @@ TRACE_EVENT(clock_set_parent,
 	TP_printk("%s parent=%s", __get_str(name), __get_str(parent_name))
 );
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * The power domain events are used for power domains transitions
  */
@@ -590,6 +596,7 @@ DEFINE_EVENT(dev_pm_qos_request, dev_pm_qos_remove_request,
 
 	TP_ARGS(name, type, new_value)
 );
+<<<<<<< HEAD
 
 TRACE_EVENT(sugov_util_update,
 	    TP_PROTO(int cpu,
@@ -819,6 +826,8 @@ TRACE_EVENT(memlat_dev_update,
 		__entry->vote)
 );
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _TRACE_POWER_H */
 
 /* This part must be outside protection */

@@ -203,6 +203,10 @@ static int st1232_ts_probe(struct i2c_client *client,
 	input_dev->id.bustype = BUS_I2C;
 	input_dev->dev.parent = &client->dev;
 
+<<<<<<< HEAD
+=======
+	__set_bit(INPUT_PROP_DIRECT, input_dev->propbit);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__set_bit(EV_SYN, input_dev->evbit);
 	__set_bit(EV_KEY, input_dev->evbit);
 	__set_bit(EV_ABS, input_dev->evbit);

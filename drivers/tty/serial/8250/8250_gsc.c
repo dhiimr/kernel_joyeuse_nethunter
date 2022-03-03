@@ -30,7 +30,11 @@ static int __init serial_init_chip(struct parisc_device *dev)
 	unsigned long address;
 	int err;
 
+<<<<<<< HEAD
 #ifdef CONFIG_64BIT
+=======
+#if defined(CONFIG_64BIT) && defined(CONFIG_IOSAPIC)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!dev->irq && (dev->id.sversion == 0xad))
 		dev->irq = iosapic_serial_irq(dev);
 #endif

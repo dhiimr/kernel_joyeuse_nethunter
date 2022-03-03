@@ -204,6 +204,12 @@ static ssize_t regmap_read_debugfs(struct regmap *map, unsigned int from,
 	if (*ppos < 0 || !count)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if (count > (PAGE_SIZE << (MAX_ORDER - 1)))
+		count = PAGE_SIZE << (MAX_ORDER - 1);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	buf = kmalloc(count, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
@@ -269,7 +275,12 @@ static ssize_t regmap_map_read_file(struct file *file, char __user *user_buf,
 				   count, ppos);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_REGMAP_ALLOW_WRITE_DEBUGFS
+=======
+#undef REGMAP_ALLOW_WRITE_DEBUGFS
+#ifdef REGMAP_ALLOW_WRITE_DEBUGFS
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * This can be dangerous especially when we have clients such as
  * PMICs, therefore don't provide any real compile time configuration option
@@ -319,6 +330,7 @@ static const struct file_operations regmap_map_fops = {
 	.llseek = default_llseek,
 };
 
+<<<<<<< HEAD
 static ssize_t regmap_data_read_file(struct file *file, char __user *user_buf,
 				    size_t count, loff_t *ppos)
 {
@@ -380,6 +392,8 @@ static const struct file_operations regmap_data_fops = {
 	.llseek = default_llseek,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static ssize_t regmap_range_read_file(struct file *file, char __user *user_buf,
 				      size_t count, loff_t *ppos)
 {
@@ -412,6 +426,12 @@ static ssize_t regmap_reg_ranges_read_file(struct file *file,
 	if (*ppos < 0 || !count)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if (count > (PAGE_SIZE << (MAX_ORDER - 1)))
+		count = PAGE_SIZE << (MAX_ORDER - 1);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	buf = kmalloc(count, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
@@ -632,7 +652,11 @@ void regmap_debugfs_init(struct regmap *map, const char *name)
 	if (map->max_register || regmap_readable(map, 0)) {
 		umode_t registers_mode;
 
+<<<<<<< HEAD
 #ifdef CONFIG_REGMAP_ALLOW_WRITE_DEBUGFS
+=======
+#if defined(REGMAP_ALLOW_WRITE_DEBUGFS)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		registers_mode = 0600;
 #else
 		registers_mode = 0400;
@@ -640,6 +664,7 @@ void regmap_debugfs_init(struct regmap *map, const char *name)
 
 		debugfs_create_file("registers", registers_mode, map->debugfs,
 				    map, &regmap_map_fops);
+<<<<<<< HEAD
 
 		debugfs_create_x32("address", 0600, map->debugfs,
 				    &map->dump_address);
@@ -649,6 +674,8 @@ void regmap_debugfs_init(struct regmap *map, const char *name)
 		debugfs_create_file("data", registers_mode, map->debugfs,
 				    map, &regmap_data_fops);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		debugfs_create_file("access", 0400, map->debugfs,
 				    map, &regmap_access_fops);
 	}

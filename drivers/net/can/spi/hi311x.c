@@ -236,7 +236,11 @@ static int hi3110_spi_trans(struct spi_device *spi, int len)
 	return ret;
 }
 
+<<<<<<< HEAD
 static u8 hi3110_cmd(struct spi_device *spi, u8 command)
+=======
+static int hi3110_cmd(struct spi_device *spi, u8 command)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct hi3110_priv *priv = spi_get_drvdata(spi);
 

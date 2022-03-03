@@ -106,7 +106,11 @@ nfnl_cthelper_from_nlattr(struct nlattr *attr, struct nf_conn *ct)
 	if (help->helper->data_len == 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	nla_memcpy(help->data, nla_data(attr), sizeof(help->data));
+=======
+	nla_memcpy(help->data, attr, sizeof(help->data));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -240,6 +244,10 @@ nfnl_cthelper_create(const struct nlattr * const tb[],
 		ret = -ENOMEM;
 		goto err2;
 	}
+<<<<<<< HEAD
+=======
+	helper->data_len = size;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	helper->flags |= NF_CT_HELPER_F_USERSPACE;
 	memcpy(&helper->tuple, tuple, sizeof(struct nf_conntrack_tuple));
@@ -369,10 +377,21 @@ static int
 nfnl_cthelper_update(const struct nlattr * const tb[],
 		     struct nf_conntrack_helper *helper)
 {
+<<<<<<< HEAD
 	int ret;
 
 	if (tb[NFCTH_PRIV_DATA_LEN])
 		return -EBUSY;
+=======
+	u32 size;
+	int ret;
+
+	if (tb[NFCTH_PRIV_DATA_LEN]) {
+		size = ntohl(nla_get_be32(tb[NFCTH_PRIV_DATA_LEN]));
+		if (size != helper->data_len)
+			return -EBUSY;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (tb[NFCTH_POLICY]) {
 		ret = nfnl_cthelper_update_policy(helper, tb[NFCTH_POLICY]);
@@ -733,6 +752,11 @@ static const struct nla_policy nfnl_cthelper_policy[NFCTH_MAX+1] = {
 	[NFCTH_NAME] = { .type = NLA_NUL_STRING,
 			 .len = NF_CT_HELPER_NAME_LEN-1 },
 	[NFCTH_QUEUE_NUM] = { .type = NLA_U32, },
+<<<<<<< HEAD
+=======
+	[NFCTH_PRIV_DATA_LEN] = { .type = NLA_U32, },
+	[NFCTH_STATUS] = { .type = NLA_U32, },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const struct nfnl_callback nfnl_cthelper_cb[NFNL_MSG_CTHELPER_MAX] = {

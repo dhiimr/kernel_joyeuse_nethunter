@@ -93,7 +93,11 @@ bool irq_fpu_usable(void)
 }
 EXPORT_SYMBOL(irq_fpu_usable);
 
+<<<<<<< HEAD
 void __kernel_fpu_begin(void)
+=======
+static void __kernel_fpu_begin(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct fpu *fpu = &current->thread.fpu;
 
@@ -111,9 +115,14 @@ void __kernel_fpu_begin(void)
 		__cpu_invalidate_fpregs_state();
 	}
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(__kernel_fpu_begin);
 
 void __kernel_fpu_end(void)
+=======
+
+static void __kernel_fpu_end(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct fpu *fpu = &current->thread.fpu;
 
@@ -122,7 +131,10 @@ void __kernel_fpu_end(void)
 
 	kernel_fpu_enable();
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(__kernel_fpu_end);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 void kernel_fpu_begin(void)
 {

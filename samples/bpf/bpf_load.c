@@ -613,7 +613,11 @@ void read_trace_pipe(void)
 		static char buf[4096];
 		ssize_t sz;
 
+<<<<<<< HEAD
 		sz = read(trace_fd, buf, sizeof(buf));
+=======
+		sz = read(trace_fd, buf, sizeof(buf) - 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (sz > 0) {
 			buf[sz] = 0;
 			puts(buf);

@@ -388,6 +388,12 @@ static const struct usb_device_id blacklist_table[] = {
 	/* Additional Realtek 8822BE Bluetooth devices */
 	{ USB_DEVICE(0x0b05, 0x185c), .driver_info = BTUSB_REALTEK },
 
+<<<<<<< HEAD
+=======
+	/* Additional Realtek 8822CE Bluetooth devices */
+	{ USB_DEVICE(0x04ca, 0x4005), .driver_info = BTUSB_REALTEK },
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Silicon Wave based devices */
 	{ USB_DEVICE(0x0c10, 0x0000), .driver_info = BTUSB_SWAVE },
 
@@ -1120,6 +1126,7 @@ static int btusb_open(struct hci_dev *hdev)
 	if (data->setup_on_usb) {
 		err = data->setup_on_usb(hdev);
 		if (err < 0)
+<<<<<<< HEAD
 			return err;
 	}
 
@@ -1128,6 +1135,12 @@ static int btusb_open(struct hci_dev *hdev)
 	 * remote wakeup while host is suspended
 	 */
 	device_wakeup_enable(&data->udev->dev);
+=======
+			goto setup_fail;
+	}
+
+	data->intf->needs_remote_wakeup = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (test_and_set_bit(BTUSB_INTR_RUNNING, &data->flags))
 		goto done;
@@ -1156,6 +1169,10 @@ done:
 
 failed:
 	clear_bit(BTUSB_INTR_RUNNING, &data->flags);
+<<<<<<< HEAD
+=======
+setup_fail:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	usb_autopm_put_interface(data->intf);
 	return err;
 }
@@ -1191,7 +1208,10 @@ static int btusb_close(struct hci_dev *hdev)
 		goto failed;
 
 	data->intf->needs_remote_wakeup = 0;
+<<<<<<< HEAD
 	device_wakeup_disable(&data->udev->dev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	usb_autopm_put_interface(data->intf);
 
 failed:
@@ -2549,11 +2569,17 @@ static const struct qca_device_info qca_devices_table[] = {
 	{ 0x00000302, 28, 4, 18 }, /* Rome 3.2 */
 };
 
+<<<<<<< HEAD
 static int btusb_qca_send_vendor_req(struct hci_dev *hdev, u8 request,
 				     void *data, u16 size)
 {
 	struct btusb_data *btdata = hci_get_drvdata(hdev);
 	struct usb_device *udev = btdata->udev;
+=======
+static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
+				     void *data, u16 size)
+{
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int pipe, err;
 	u8 *buf;
 
@@ -2568,7 +2594,11 @@ static int btusb_qca_send_vendor_req(struct hci_dev *hdev, u8 request,
 	err = usb_control_msg(udev, pipe, request, USB_TYPE_VENDOR | USB_DIR_IN,
 			      0, 0, buf, size, USB_CTRL_SET_TIMEOUT);
 	if (err < 0) {
+<<<<<<< HEAD
 		BT_ERR("%s: Failed to access otp area (%d)", hdev->name, err);
+=======
+		dev_err(&udev->dev, "Failed to access otp area (%d)", err);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto done;
 	}
 
@@ -2615,6 +2645,14 @@ static int btusb_setup_qca_download_fw(struct hci_dev *hdev,
 	sent += size;
 	count -= size;
 
+<<<<<<< HEAD
+=======
+	/* ep2 need time to switch from function acl to function dfu,
+	 * so we add 20ms delay here.
+	 */
+	msleep(20);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	while (count) {
 		size = min_t(size_t, count, QCA_DFU_PACKET_LEN);
 
@@ -2719,20 +2757,50 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
 	return err;
 }
 
+<<<<<<< HEAD
 static int btusb_setup_qca(struct hci_dev *hdev)
 {
+=======
+/* identify the ROM version and check whether patches are needed */
+static bool btusb_qca_need_patch(struct usb_device *udev)
+{
+	struct qca_version ver;
+
+	if (btusb_qca_send_vendor_req(udev, QCA_GET_TARGET_VERSION, &ver,
+				      sizeof(ver)) < 0)
+		return false;
+	/* only low ROM versions need patches */
+	return !(le32_to_cpu(ver.rom_version) & ~0xffffU);
+}
+
+static int btusb_setup_qca(struct hci_dev *hdev)
+{
+	struct btusb_data *btdata = hci_get_drvdata(hdev);
+	struct usb_device *udev = btdata->udev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	const struct qca_device_info *info = NULL;
 	struct qca_version ver;
 	u32 ver_rom;
 	u8 status;
 	int i, err;
 
+<<<<<<< HEAD
 	err = btusb_qca_send_vendor_req(hdev, QCA_GET_TARGET_VERSION, &ver,
+=======
+	err = btusb_qca_send_vendor_req(udev, QCA_GET_TARGET_VERSION, &ver,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					sizeof(ver));
 	if (err < 0)
 		return err;
 
 	ver_rom = le32_to_cpu(ver.rom_version);
+<<<<<<< HEAD
+=======
+	/* Don't care about high ROM versions */
+	if (ver_rom & ~0xffffU)
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (i = 0; i < ARRAY_SIZE(qca_devices_table); i++) {
 		if (ver_rom == qca_devices_table[i].rom_version)
 			info = &qca_devices_table[i];
@@ -2743,7 +2811,11 @@ static int btusb_setup_qca(struct hci_dev *hdev)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	err = btusb_qca_send_vendor_req(hdev, QCA_CHECK_STATUS, &status,
+=======
+	err = btusb_qca_send_vendor_req(udev, QCA_CHECK_STATUS, &status,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					sizeof(status));
 	if (err < 0)
 		return err;
@@ -2970,7 +3042,12 @@ static int btusb_probe(struct usb_interface *intf,
 		/* Old firmware would otherwise let ath3k driver load
 		 * patch and sysconfig files
 		 */
+<<<<<<< HEAD
 		if (le16_to_cpu(udev->descriptor.bcdDevice) <= 0x0001)
+=======
+		if (le16_to_cpu(udev->descriptor.bcdDevice) <= 0x0001 &&
+		    !btusb_qca_need_patch(udev))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return -ENODEV;
 	}
 
@@ -3132,6 +3209,10 @@ static int btusb_probe(struct usb_interface *intf,
 	}
 
 	if (id->driver_info & BTUSB_ATH3012) {
+<<<<<<< HEAD
+=======
+		data->setup_on_usb = btusb_setup_qca;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		hdev->set_bdaddr = btusb_set_bdaddr_ath3012;
 		set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
 		set_bit(HCI_QUIRK_STRICT_DUPLICATE_FILTER, &hdev->quirks);

@@ -2,7 +2,10 @@
  *  linux/init/main.c
  *
  *  Copyright (C) 1991, 1992  Linus Torvalds
+<<<<<<< HEAD
  *  Copyright (C) 2020 XiaoMi, Inc.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  *  GK 2/5/95  -  Changed to support mounting root fs via NFS
  *  Added initrd & change_root: Werner Almesberger & Hans Lermen, Feb '96
@@ -95,12 +98,18 @@
 #include <asm/setup.h>
 #include <asm/sections.h>
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
 #include <soc/qcom/boot_stats.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int kernel_init(void *);
 
 extern void init_IRQ(void);
+<<<<<<< HEAD
 extern void fork_init(void);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void radix_tree_init(void);
 
 /*
@@ -512,13 +521,19 @@ static void __init mm_init(void)
 	pti_init();
 }
 
+<<<<<<< HEAD
 int fpsensor=1;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 asmlinkage __visible void __init start_kernel(void)
 {
 	char *command_line;
 	char *after_dashes;
+<<<<<<< HEAD
 	char *p=NULL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	set_task_stack_end_magic(&init_task);
 	smp_setup_processor_id();
@@ -555,6 +570,7 @@ asmlinkage __visible void __init start_kernel(void)
 	page_alloc_init();
 
 	pr_notice("Kernel command line: %s\n", boot_command_line);
+<<<<<<< HEAD
 
 	p = NULL;
 	p= strstr(command_line, "androidboot.fpsensor=fpc");
@@ -566,6 +582,10 @@ asmlinkage __visible void __init start_kernel(void)
 		printk("I am goodix fingerprint");
 	}
 
+=======
+	/* parameters may set static keys */
+	jump_label_init();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	parse_early_param();
 	after_dashes = parse_args("Booting kernel",
 				  static_command_line, __start___param,
@@ -575,8 +595,11 @@ asmlinkage __visible void __init start_kernel(void)
 		parse_args("Setting init args", after_dashes, NULL, 0, -1, -1,
 			   NULL, set_init_arg);
 
+<<<<<<< HEAD
 	jump_label_init();
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * These use large bootmem allocations and must precede
 	 * kmem_cache_init()
@@ -723,6 +746,11 @@ asmlinkage __visible void __init start_kernel(void)
 
 	/* Do the rest non-__init'ed, we're now alive */
 	rest_init();
+<<<<<<< HEAD
+=======
+
+	prevent_tail_call_optimization();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Call all constructor functions linked into the kernel. */
@@ -1022,7 +1050,10 @@ static int __ref kernel_init(void *unused)
 	numa_default_policy();
 
 	rcu_end_inkernel_boot();
+<<<<<<< HEAD
 	place_marker("M - DRIVER Kernel Boot Done");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (ramdisk_execute_command) {
 		ret = run_init_process(ramdisk_execute_command);
@@ -1070,7 +1101,11 @@ static noinline void __init kernel_init_freeable(void)
 	 */
 	set_mems_allowed(node_states[N_MEMORY]);
 
+<<<<<<< HEAD
 	cad_pid = task_pid(current);
+=======
+	cad_pid = get_pid(task_pid(current));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	smp_prepare_cpus(setup_max_cpus);
 

@@ -91,9 +91,12 @@ static int vnt_set_keymode(struct ieee80211_hw *hw, u8 *mac_addr,
 	case  VNT_KEY_PAIRWISE:
 		key_mode |= mode;
 		key_inx = 4;
+<<<<<<< HEAD
 		/* Don't save entry for pairwise key for station mode */
 		if (priv->op_mode == NL80211_IFTYPE_STATION)
 			clear_bit(entry, &priv->key_entry_inuse);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	default:
 		return -EINVAL;
@@ -117,7 +120,10 @@ static int vnt_set_keymode(struct ieee80211_hw *hw, u8 *mac_addr,
 int vnt_set_keys(struct ieee80211_hw *hw, struct ieee80211_sta *sta,
 		 struct ieee80211_vif *vif, struct ieee80211_key_conf *key)
 {
+<<<<<<< HEAD
 	struct ieee80211_bss_conf *conf = &vif->bss_conf;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct vnt_private *priv = hw->priv;
 	u8 *mac_addr = NULL;
 	u8 key_dec_mode = 0;
@@ -159,6 +165,7 @@ int vnt_set_keys(struct ieee80211_hw *hw, struct ieee80211_sta *sta,
 		key->flags |= IEEE80211_KEY_FLAG_GENERATE_IV;
 	}
 
+<<<<<<< HEAD
 	if (key->flags & IEEE80211_KEY_FLAG_PAIRWISE) {
 		vnt_set_keymode(hw, mac_addr, key, VNT_KEY_PAIRWISE,
 				key_dec_mode, true);
@@ -170,5 +177,14 @@ int vnt_set_keys(struct ieee80211_hw *hw, struct ieee80211_sta *sta,
 				VNT_KEY_GROUP_ADDRESS, key_dec_mode, true);
 	}
 
+=======
+	if (key->flags & IEEE80211_KEY_FLAG_PAIRWISE)
+		vnt_set_keymode(hw, mac_addr, key, VNT_KEY_PAIRWISE,
+				key_dec_mode, true);
+	else
+		vnt_set_keymode(hw, mac_addr, key, VNT_KEY_GROUP_ADDRESS,
+				key_dec_mode, true);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }

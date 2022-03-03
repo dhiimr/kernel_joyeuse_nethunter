@@ -64,6 +64,10 @@ static enum dso_binary_type binary_type_symtab[] = {
 	DSO_BINARY_TYPE__SYSTEM_PATH_KMODULE,
 	DSO_BINARY_TYPE__SYSTEM_PATH_KMODULE_COMP,
 	DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO,
+<<<<<<< HEAD
+=======
+	DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	DSO_BINARY_TYPE__NOT_FOUND,
 };
 
@@ -93,6 +97,14 @@ static int prefix_underscores_count(const char *str)
 	return tail - str;
 }
 
+<<<<<<< HEAD
+=======
+void __weak arch__symbols__fixup_end(struct symbol *p, struct symbol *c)
+{
+	p->end = c->start;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 const char * __weak arch__normalize_symbol_name(const char *name)
 {
 	return name;
@@ -219,7 +231,11 @@ void symbols__fixup_end(struct rb_root *symbols)
 		curr = rb_entry(nd, struct symbol, rb_node);
 
 		if (prev->end == prev->start && prev->end != curr->start)
+<<<<<<< HEAD
 			prev->end = curr->start;
+=======
+			arch__symbols__fixup_end(prev, curr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Last entry */
@@ -1407,6 +1423,10 @@ static bool dso__is_compatible_symtab_type(struct dso *dso, bool kmod,
 	case DSO_BINARY_TYPE__SYSTEM_PATH_DSO:
 	case DSO_BINARY_TYPE__FEDORA_DEBUGINFO:
 	case DSO_BINARY_TYPE__UBUNTU_DEBUGINFO:
+<<<<<<< HEAD
+=======
+	case DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	case DSO_BINARY_TYPE__BUILDID_DEBUGINFO:
 	case DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO:
 		return !kmod && dso->kernel == DSO_TYPE_USER;

@@ -19,7 +19,10 @@
 #include <asm/cpu.h>
 #include <asm/cputype.h>
 #include <asm/cpufeature.h>
+<<<<<<< HEAD
 #include <asm/elf.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <linux/bitops.h>
 #include <linux/bug.h>
@@ -34,12 +37,15 @@
 #include <linux/sched.h>
 #include <linux/smp.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/of_fdt.h>
 
 char* (*arch_read_hardware_id)(void);
 EXPORT_SYMBOL(arch_read_hardware_id);
 
 static const char *machine_name;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * In case the boot CPU is hotpluggable, we record its initial state and
@@ -81,6 +87,15 @@ static const char *const hwcap_str[] = {
 	"sm4",
 	"asimddp",
 	"sha512",
+<<<<<<< HEAD
+=======
+	"sve",
+	"asimdfhm",
+	"dit",
+	"uscat",
+	"ilrcpc",
+	"flagm",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	"ssbs",
 	NULL
 };
@@ -127,9 +142,13 @@ static int c_show(struct seq_file *m, void *v)
 	int i, j;
 	bool compat = personality(current->personality) == PER_LINUX32;
 
+<<<<<<< HEAD
 	seq_printf(m, "Processor\t: AArch64 Processor rev %d (%s)\n",
 		read_cpuid_id() & 15, ELF_PLATFORM);
 	for_each_present_cpu(i) {
+=======
+	for_each_online_cpu(i) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct cpuinfo_arm64 *cpuinfo = &per_cpu(cpu_data, i);
 		u32 midr = cpuinfo->reg_midr;
 
@@ -179,11 +198,14 @@ static int c_show(struct seq_file *m, void *v)
 		seq_printf(m, "CPU revision\t: %d\n\n", MIDR_REVISION(midr));
 	}
 
+<<<<<<< HEAD
 	if (!arch_read_hardware_id)
 		seq_printf(m, "Hardware\t: %s\n", machine_name);
 	else
 		seq_printf(m, "Hardware\t: %s\n", arch_read_hardware_id());
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -326,8 +348,12 @@ static void cpuinfo_detect_icache_policy(struct cpuinfo_arm64 *info)
 		set_bit(ICACHEF_ALIASING, &__icache_flags);
 	}
 
+<<<<<<< HEAD
 	pr_debug("Detected %s I-cache on CPU%d\n", icache_policy_str[l1ip],
 			cpu);
+=======
+	pr_info("Detected %s I-cache on CPU%d\n", icache_policy_str[l1ip], cpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void __cpuinfo_store_cpu(struct cpuinfo_arm64 *info)
@@ -386,7 +412,10 @@ void __init cpuinfo_store_boot_cpu(void)
 
 	boot_cpu_data = *info;
 	init_cpu_features(&boot_cpu_data);
+<<<<<<< HEAD
 	machine_name = of_flat_dt_get_machine_name();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 device_initcall(cpuinfo_regs_init);

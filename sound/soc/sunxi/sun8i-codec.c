@@ -71,6 +71,10 @@
 
 #define SUN8I_SYS_SR_CTRL_AIF1_FS_MASK		GENMASK(15, 12)
 #define SUN8I_SYS_SR_CTRL_AIF2_FS_MASK		GENMASK(11, 8)
+<<<<<<< HEAD
+=======
+#define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT_MASK	GENMASK(3, 2)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK	GENMASK(5, 4)
 #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK	GENMASK(8, 6)
 #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK	GENMASK(12, 9)
@@ -221,7 +225,11 @@ static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 		return -EINVAL;
 	}
 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+<<<<<<< HEAD
 			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT),
+=======
+			   SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT_MASK,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			   value << SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT);
 
 	return 0;

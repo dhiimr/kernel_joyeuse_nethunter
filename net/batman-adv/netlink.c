@@ -110,7 +110,11 @@ batadv_netlink_get_ifindex(const struct nlmsghdr *nlh, int attrtype)
 {
 	struct nlattr *attr = nlmsg_find_attr(nlh, GENL_HDRLEN, attrtype);
 
+<<<<<<< HEAD
 	return attr ? nla_get_u32(attr) : 0;
+=======
+	return (attr && nla_len(attr) == sizeof(u32)) ? nla_get_u32(attr) : 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**

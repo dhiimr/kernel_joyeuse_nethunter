@@ -4,12 +4,21 @@
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/jiffies.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/apicdef.h>
 #include <asm/nmi.h>
 
 #include "../perf_event.h"
 
+<<<<<<< HEAD
 static DEFINE_PER_CPU(unsigned int, perf_nmi_counter);
+=======
+static DEFINE_PER_CPU(unsigned long, perf_nmi_tstamp);
+static unsigned long perf_nmi_window;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static __initconst const u64 amd_hw_cache_event_ids
 				[PERF_COUNT_HW_CACHE_MAX]
@@ -243,6 +252,10 @@ static const u64 amd_f17h_perfmon_event_map[PERF_COUNT_HW_MAX] =
 	[PERF_COUNT_HW_CPU_CYCLES]		= 0x0076,
 	[PERF_COUNT_HW_INSTRUCTIONS]		= 0x00c0,
 	[PERF_COUNT_HW_CACHE_REFERENCES]	= 0xff60,
+<<<<<<< HEAD
+=======
+	[PERF_COUNT_HW_CACHE_MISSES]		= 0x0964,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS]	= 0x00c2,
 	[PERF_COUNT_HW_BRANCH_MISSES]		= 0x00c3,
 	[PERF_COUNT_HW_STALLED_CYCLES_FRONTEND]	= 0x0287,
@@ -640,11 +653,20 @@ static void amd_pmu_disable_event(struct perf_event *event)
  * handler when multiple PMCs are active or PMC overflow while handling some
  * other source of an NMI.
  *
+<<<<<<< HEAD
  * Attempt to mitigate this by using the number of active PMCs to determine
  * whether to return NMI_HANDLED if the perf NMI handler did not handle/reset
  * any PMCs. The per-CPU perf_nmi_counter variable is set to a minimum of the
  * number of active PMCs or 2. The value of 2 is used in case an NMI does not
  * arrive at the LAPIC in time to be collapsed into an already pending NMI.
+=======
+ * Attempt to mitigate this by creating an NMI window in which un-handled NMIs
+ * received during this window will be claimed. This prevents extending the
+ * window past when it is possible that latent NMIs should be received. The
+ * per-CPU perf_nmi_tstamp will be set to the window end time whenever perf has
+ * handled a counter. When an un-handled NMI is received, it will be claimed
+ * only if arriving within that window.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 static int amd_pmu_handle_irq(struct pt_regs *regs)
 {
@@ -662,21 +684,36 @@ static int amd_pmu_handle_irq(struct pt_regs *regs)
 	handled = x86_pmu_handle_irq(regs);
 
 	/*
+<<<<<<< HEAD
 	 * If a counter was handled, record the number of possible remaining
 	 * NMIs that can occur.
 	 */
 	if (handled) {
 		this_cpu_write(perf_nmi_counter,
 			       min_t(unsigned int, 2, active));
+=======
+	 * If a counter was handled, record a timestamp such that un-handled
+	 * NMIs will be claimed if arriving within that window.
+	 */
+	if (handled) {
+		this_cpu_write(perf_nmi_tstamp,
+			       jiffies + perf_nmi_window);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		return handled;
 	}
 
+<<<<<<< HEAD
 	if (!this_cpu_read(perf_nmi_counter))
 		return NMI_DONE;
 
 	this_cpu_dec(perf_nmi_counter);
 
+=======
+	if (time_after(jiffies, this_cpu_read(perf_nmi_tstamp)))
+		return NMI_DONE;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return NMI_HANDLED;
 }
 
@@ -908,6 +945,12 @@ static int __init amd_core_pmu_init(void)
 	if (!boot_cpu_has(X86_FEATURE_PERFCTR_CORE))
 		return 0;
 
+<<<<<<< HEAD
+=======
+	/* Avoid calulating the value each time in the NMI handler */
+	perf_nmi_window = msecs_to_jiffies(100);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	switch (boot_cpu_data.x86) {
 	case 0x15:
 		pr_cont("Fam15h ");

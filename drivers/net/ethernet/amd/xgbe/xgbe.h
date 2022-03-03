@@ -176,9 +176,15 @@
 #define XGBE_DMA_SYS_AWCR	0x30303030
 
 /* DMA cache settings - PCI device */
+<<<<<<< HEAD
 #define XGBE_DMA_PCI_ARCR	0x00000003
 #define XGBE_DMA_PCI_AWCR	0x13131313
 #define XGBE_DMA_PCI_AWARCR	0x00000313
+=======
+#define XGBE_DMA_PCI_ARCR	0x000f0f0f
+#define XGBE_DMA_PCI_AWCR	0x0f0f0f0f
+#define XGBE_DMA_PCI_AWARCR	0x00000f0f
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* DMA channel interrupt modes */
 #define XGBE_IRQ_MODE_EDGE	0

@@ -448,7 +448,11 @@ static int tmio_probe(struct platform_device *dev)
 	if (!retval)
 		return retval;
 
+<<<<<<< HEAD
 	nand_release(mtd);
+=======
+	nand_cleanup(nand_chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 err_irq:
 	tmio_hw_stop(dev, tmio);
@@ -459,7 +463,11 @@ static int tmio_remove(struct platform_device *dev)
 {
 	struct tmio_nand *tmio = platform_get_drvdata(dev);
 
+<<<<<<< HEAD
 	nand_release(nand_to_mtd(&tmio->chip));
+=======
+	nand_release(&tmio->chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tmio_hw_stop(dev, tmio);
 	return 0;
 }

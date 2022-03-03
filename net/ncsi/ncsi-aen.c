@@ -73,6 +73,12 @@ static int ncsi_aen_handler_lsc(struct ncsi_dev_priv *ndp,
 	ncm->data[2] = data;
 	ncm->data[4] = ntohl(lsc->oem_status);
 
+<<<<<<< HEAD
+=======
+	netdev_info(ndp->ndev.dev, "NCSI: LSC AEN - channel %u state %s\n",
+		    nc->id, data & 0x1 ? "up" : "down");
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	chained = !list_empty(&nc->link);
 	state = nc->state;
 	spin_unlock_irqrestore(&nc->lock, flags);
@@ -145,6 +151,11 @@ static int ncsi_aen_handler_hncdsc(struct ncsi_dev_priv *ndp,
 	ncm = &nc->modes[NCSI_MODE_LINK];
 	hncdsc = (struct ncsi_aen_hncdsc_pkt *)h;
 	ncm->data[3] = ntohl(hncdsc->status);
+<<<<<<< HEAD
+=======
+	netdev_info(ndp->ndev.dev, "NCSI: HNCDSC AEN - channel %u state %s\n",
+		    nc->id, ncm->data[3] & 0x3 ? "up" : "down");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!list_empty(&nc->link) ||
 	    nc->state != NCSI_CHANNEL_ACTIVE) {
 		spin_unlock_irqrestore(&nc->lock, flags);
@@ -212,10 +223,25 @@ int ncsi_aen_handler(struct ncsi_dev_priv *ndp, struct sk_buff *skb)
 	}
 
 	ret = ncsi_validate_aen_pkt(h, nah->payload);
+<<<<<<< HEAD
 	if (ret)
 		goto out;
 
 	ret = nah->handler(ndp, h);
+=======
+	if (ret) {
+		netdev_warn(ndp->ndev.dev,
+			    "NCSI: 'bad' packet ignored for AEN type 0x%x\n",
+			    h->type);
+		goto out;
+	}
+
+	ret = nah->handler(ndp, h);
+	if (ret)
+		netdev_err(ndp->ndev.dev,
+			   "NCSI: Handler for AEN type 0x%x returned %d\n",
+			   h->type, ret);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	consume_skb(skb);
 	return ret;

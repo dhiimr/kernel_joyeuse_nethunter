@@ -145,6 +145,7 @@ static ssize_t blk_mq_hw_sysfs_nr_reserved_tags_show(struct blk_mq_hw_ctx *hctx,
 
 static ssize_t blk_mq_hw_sysfs_cpus_show(struct blk_mq_hw_ctx *hctx, char *page)
 {
+<<<<<<< HEAD
 	unsigned int i, first = 1;
 	ssize_t ret = 0;
 
@@ -159,6 +160,27 @@ static ssize_t blk_mq_hw_sysfs_cpus_show(struct blk_mq_hw_ctx *hctx, char *page)
 
 	ret += sprintf(ret + page, "\n");
 	return ret;
+=======
+	const size_t size = PAGE_SIZE - 1;
+	unsigned int i, first = 1;
+	int ret = 0, pos = 0;
+
+	for_each_cpu(i, hctx->cpumask) {
+		if (first)
+			ret = snprintf(pos + page, size - pos, "%u", i);
+		else
+			ret = snprintf(pos + page, size - pos, ", %u", i);
+
+		if (ret >= size - pos)
+			break;
+
+		first = 0;
+		pos += ret;
+	}
+
+	ret = snprintf(pos + page, size + 1 - pos, "\n");
+	return pos + ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct attribute *default_ctx_attrs[] = {

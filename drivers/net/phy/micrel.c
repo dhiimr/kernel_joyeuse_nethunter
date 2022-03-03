@@ -29,8 +29,12 @@
 #include <linux/micrel_phy.h>
 #include <linux/of.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
+=======
+#include <linux/delay.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Operation Mode Strap Override */
 #define MII_KSZPHY_OMSO				0x16
@@ -76,6 +80,7 @@
 
 #define PS_TO_REG				200
 
+<<<<<<< HEAD
 /*Register 2.10. 15:14 PME Output Select*/
 #define MII_KSZPHY_OMSO_PME_N2                  BIT(10)
 /*Register 2.10. BITS 6, 1 and 0 to detect the type of WOL */
@@ -91,6 +96,8 @@
 /* MMD Address 2h, Register 10h Wake-On-LAN Control   */
 #define MII_KSZPHY_WOL_CTRL_REG                 0x10
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct kszphy_hw_stat {
 	const char *string;
 	u8 reg;
@@ -487,6 +494,7 @@ static int ksz9031_extended_read(struct phy_device *phydev,
 	return phy_read(phydev, MII_KSZ9031RN_MMD_REGDATA_REG);
 }
 
+<<<<<<< HEAD
 static int ksz9031_ack_interrupt(struct phy_device *phydev)
 {
 	/* bit[7..0] int status, which is a read and clear register. */
@@ -518,6 +526,8 @@ static int ksz9031_ack_interrupt(struct phy_device *phydev)
 	return (rc < 0) ? rc : 0;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int ksz9031_of_load_skew_values(struct phy_device *phydev,
 				       const struct device_node *of_node,
 				       u16 reg, size_t field_sz,
@@ -679,9 +689,13 @@ static int ksz9031_read_status(struct phy_device *phydev)
 	if ((regval & 0xFF) == 0xFF) {
 		phy_init_hw(phydev);
 		phydev->link = 0;
+<<<<<<< HEAD
 		if (phydev->drv->config_intr &&
 		    (phydev->irq == PHY_IGNORE_INTERRUPT ||
 		   phy_interrupt_is_valid(phydev)))
+=======
+		if (phydev->drv->config_intr && phy_interrupt_is_valid(phydev))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			phydev->drv->config_intr(phydev);
 		return genphy_config_aneg(phydev);
 	}
@@ -723,8 +737,13 @@ static void kszphy_get_strings(struct phy_device *phydev, u8 *data)
 	int i;
 
 	for (i = 0; i < ARRAY_SIZE(kszphy_hw_stats); i++) {
+<<<<<<< HEAD
 		memcpy(data + i * ETH_GSTRING_LEN,
 		       kszphy_hw_stats[i].string, ETH_GSTRING_LEN);
+=======
+		strlcpy(data + i * ETH_GSTRING_LEN,
+			kszphy_hw_stats[i].string, ETH_GSTRING_LEN);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 
@@ -777,6 +796,15 @@ static int kszphy_resume(struct phy_device *phydev)
 
 	genphy_resume(phydev);
 
+<<<<<<< HEAD
+=======
+	/* After switching from power-down to normal mode, an internal global
+	 * reset is automatically generated. Wait a minimum of 1 ms before
+	 * read/write access to the PHY registers.
+	 */
+	usleep_range(1000, 2000);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = kszphy_config_reset(phydev);
 	if (ret)
 		return ret;
@@ -852,6 +880,7 @@ static int kszphy_probe(struct phy_device *phydev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void ksz9031_set_wol_settings(struct phy_device *phydev)
 {
 	u32 reg_value;
@@ -952,6 +981,8 @@ static int ksz9031_resume(struct phy_device *phydev)
 	return 0;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct phy_driver ksphy_driver[] = {
 {
 	.phy_id		= PHY_ID_KS8737,
@@ -1019,8 +1050,14 @@ static struct phy_driver ksphy_driver[] = {
 	.get_sset_count = kszphy_get_sset_count,
 	.get_strings	= kszphy_get_strings,
 	.get_stats	= kszphy_get_stats,
+<<<<<<< HEAD
 	.suspend	= genphy_suspend,
 	.resume		= genphy_resume,
+=======
+	/* No suspend/resume callbacks because of errata DS80000700A,
+	 * receiver error following software power down.
+	 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }, {
 	.phy_id		= PHY_ID_KSZ8041RNLI,
 	.phy_id_mask	= MICREL_PHY_ID_MASK,
@@ -1130,22 +1167,35 @@ static struct phy_driver ksphy_driver[] = {
 	.phy_id		= PHY_ID_KSZ9031,
 	.phy_id_mask	= MICREL_PHY_ID_MASK,
 	.name		= "Micrel KSZ9031 Gigabit PHY",
+<<<<<<< HEAD
 	.features	= (PHY_GBIT_FEATURES | SUPPORTED_Pause),
+=======
+	.features	= PHY_GBIT_FEATURES,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.flags		= PHY_HAS_INTERRUPT,
 	.driver_data	= &ksz9021_type,
 	.probe		= kszphy_probe,
 	.config_init	= ksz9031_config_init,
 	.config_aneg	= genphy_config_aneg,
 	.read_status	= ksz9031_read_status,
+<<<<<<< HEAD
 	.ack_interrupt	= ksz9031_ack_interrupt,
+=======
+	.ack_interrupt	= kszphy_ack_interrupt,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.config_intr	= kszphy_config_intr,
 	.get_sset_count = kszphy_get_sset_count,
 	.get_strings	= kszphy_get_strings,
 	.get_stats	= kszphy_get_stats,
+<<<<<<< HEAD
 	.set_wol	= ksz9031_set_wol,
 	.get_wol	= ksz9031_get_wol,
 	.suspend	= ksz9031_suspend,
 	.resume		= ksz9031_resume,
+=======
+	.suspend	= genphy_suspend,
+	.resume		= kszphy_resume,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }, {
 	.phy_id		= PHY_ID_KSZ8873MLL,
 	.phy_id_mask	= MICREL_PHY_ID_MASK,

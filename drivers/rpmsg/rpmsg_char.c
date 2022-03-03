@@ -100,7 +100,11 @@ static int rpmsg_eptdev_destroy(struct device *dev, void *data)
 	/* wake up any blocked readers */
 	wake_up_interruptible(&eptdev->readq);
 
+<<<<<<< HEAD
 	device_del(&eptdev->dev);
+=======
+	cdev_device_del(&eptdev->cdev, &eptdev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	put_device(&eptdev->dev);
 
 	return 0;
@@ -336,7 +340,10 @@ static void rpmsg_eptdev_release_device(struct device *dev)
 
 	ida_simple_remove(&rpmsg_ept_ida, dev->id);
 	ida_simple_remove(&rpmsg_minor_ida, MINOR(eptdev->dev.devt));
+<<<<<<< HEAD
 	cdev_del(&eptdev->cdev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(eptdev);
 }
 
@@ -381,19 +388,26 @@ static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
 	dev->id = ret;
 	dev_set_name(dev, "rpmsg%d", ret);
 
+<<<<<<< HEAD
 	ret = cdev_add(&eptdev->cdev, dev->devt, 1);
+=======
+	ret = cdev_device_add(&eptdev->cdev, &eptdev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		goto free_ept_ida;
 
 	/* We can now rely on the release function for cleanup */
 	dev->release = rpmsg_eptdev_release_device;
 
+<<<<<<< HEAD
 	ret = device_add(dev);
 	if (ret) {
 		dev_err(dev, "device_add failed: %d\n", ret);
 		put_device(dev);
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 
 free_ept_ida:
@@ -461,7 +475,10 @@ static void rpmsg_ctrldev_release_device(struct device *dev)
 
 	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
 	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
+<<<<<<< HEAD
 	cdev_del(&ctrldev->cdev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(ctrldev);
 }
 
@@ -496,19 +513,26 @@ static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
 	dev->id = ret;
 	dev_set_name(&ctrldev->dev, "rpmsg_ctrl%d", ret);
 
+<<<<<<< HEAD
 	ret = cdev_add(&ctrldev->cdev, dev->devt, 1);
+=======
+	ret = cdev_device_add(&ctrldev->cdev, &ctrldev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		goto free_ctrl_ida;
 
 	/* We can now rely on the release function for cleanup */
 	dev->release = rpmsg_ctrldev_release_device;
 
+<<<<<<< HEAD
 	ret = device_add(dev);
 	if (ret) {
 		dev_err(&rpdev->dev, "device_add failed: %d\n", ret);
 		put_device(dev);
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev_set_drvdata(&rpdev->dev, ctrldev);
 
 	return ret;
@@ -534,7 +558,11 @@ static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
 	if (ret)
 		dev_warn(&rpdev->dev, "failed to nuke endpoints: %d\n", ret);
 
+<<<<<<< HEAD
 	device_del(&ctrldev->dev);
+=======
+	cdev_device_del(&ctrldev->cdev, &ctrldev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	put_device(&ctrldev->dev);
 }
 

@@ -21,9 +21,13 @@
 #include <linux/workqueue.h>
 #include <linux/kmod.h>
 #include <trace/events/power.h>
+<<<<<<< HEAD
 #include <linux/wakeup_reason.h>
 #include <linux/cpuset.h>
 #include <linux/wakeup_reason.h>
+=======
+#include <linux/cpuset.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Timeout for stopping processes
@@ -40,9 +44,12 @@ static int try_to_freeze_tasks(bool user_only)
 	unsigned int elapsed_msecs;
 	bool wakeup = false;
 	int sleep_usecs = USEC_PER_MSEC;
+<<<<<<< HEAD
 #ifdef CONFIG_PM_SLEEP
 	char suspend_abort[MAX_SUSPEND_ABORT_LEN];
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	start = ktime_get_boottime();
 
@@ -72,11 +79,14 @@ static int try_to_freeze_tasks(bool user_only)
 			break;
 
 		if (pm_wakeup_pending()) {
+<<<<<<< HEAD
 #ifdef CONFIG_PM_SLEEP
 			pm_get_active_wakeup_sources(suspend_abort,
 				MAX_SUSPEND_ABORT_LEN);
 			log_suspend_abort_reason(suspend_abort);
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			wakeup = true;
 			break;
 		}
@@ -95,6 +105,7 @@ static int try_to_freeze_tasks(bool user_only)
 	elapsed = ktime_sub(end, start);
 	elapsed_msecs = ktime_to_ms(elapsed);
 
+<<<<<<< HEAD
 	if (wakeup) {
 		pr_cont("\n");
 		pr_err("Freezing of tasks aborted after %d.%03d seconds",
@@ -103,12 +114,20 @@ static int try_to_freeze_tasks(bool user_only)
 		pr_cont("\n");
 		pr_err("Freezing of tasks failed after %d.%03d seconds"
 		       " (%d tasks refusing to freeze, wq_busy=%d):\n",
+=======
+	if (todo) {
+		pr_cont("\n");
+		pr_err("Freezing of tasks %s after %d.%03d seconds "
+		       "(%d tasks refusing to freeze, wq_busy=%d):\n",
+		       wakeup ? "aborted" : "failed",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		       elapsed_msecs / 1000, elapsed_msecs % 1000,
 		       todo - wq_busy, wq_busy);
 
 		if (wq_busy)
 			show_workqueue_state();
 
+<<<<<<< HEAD
 		read_lock(&tasklist_lock);
 		for_each_process_thread(g, p) {
 			if (p != current && !freezer_should_skip(p)
@@ -116,6 +135,17 @@ static int try_to_freeze_tasks(bool user_only)
 				sched_show_task(p);
 		}
 		read_unlock(&tasklist_lock);
+=======
+		if (!wakeup) {
+			read_lock(&tasklist_lock);
+			for_each_process_thread(g, p) {
+				if (p != current && !freezer_should_skip(p)
+				    && freezing(p) && !frozen(p))
+					sched_show_task(p);
+			}
+			read_unlock(&tasklist_lock);
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		pr_cont("(elapsed %d.%03d seconds) ", elapsed_msecs / 1000,
 			elapsed_msecs % 1000);

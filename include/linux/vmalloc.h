@@ -62,12 +62,18 @@ extern void vm_unmap_aliases(void);
 
 #ifdef CONFIG_MMU
 extern void __init vmalloc_init(void);
+<<<<<<< HEAD
 extern unsigned long vmalloc_nr_pages(void);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else
 static inline void vmalloc_init(void)
 {
 }
+<<<<<<< HEAD
 static inline unsigned long vmalloc_nr_pages(void) { return 0; }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 extern void *vmalloc(unsigned long size);
@@ -104,12 +110,22 @@ extern void vunmap(const void *addr);
 
 extern int remap_vmalloc_range_partial(struct vm_area_struct *vma,
 				       unsigned long uaddr, void *kaddr,
+<<<<<<< HEAD
 				       unsigned long size);
 
 extern int remap_vmalloc_range(struct vm_area_struct *vma, void *addr,
 							unsigned long pgoff);
 void vmalloc_sync_all(void);
  
+=======
+				       unsigned long pgoff, unsigned long size);
+
+extern int remap_vmalloc_range(struct vm_area_struct *vma, void *addr,
+							unsigned long pgoff);
+void vmalloc_sync_mappings(void);
+void vmalloc_sync_unmappings(void);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  *	Lowlevel-APIs (not for driver use!)
  */

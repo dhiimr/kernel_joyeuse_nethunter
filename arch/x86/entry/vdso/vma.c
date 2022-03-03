@@ -342,7 +342,11 @@ static void vgetcpu_cpu_init(void *arg)
 #ifdef CONFIG_NUMA
 	node = cpu_to_node(cpu);
 #endif
+<<<<<<< HEAD
 	if (static_cpu_has(X86_FEATURE_RDTSCP))
+=======
+	if (boot_cpu_has(X86_FEATURE_RDTSCP) || boot_cpu_has(X86_FEATURE_RDPID))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		write_rdtscp_aux((node << 12) | cpu);
 
 	/*

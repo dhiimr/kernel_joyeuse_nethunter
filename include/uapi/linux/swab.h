@@ -4,6 +4,10 @@
 
 #include <linux/types.h>
 #include <linux/compiler.h>
+<<<<<<< HEAD
+=======
+#include <asm/bitsperlong.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/swab.h>
 
 /*
@@ -132,6 +136,18 @@ static inline __attribute_const__ __u32 __fswahb32(__u32 val)
 	__fswab64(x))
 #endif
 
+<<<<<<< HEAD
+=======
+static __always_inline unsigned long __swab(const unsigned long y)
+{
+#if __BITS_PER_LONG == 64
+	return __swab64(y);
+#else /* __BITS_PER_LONG == 32 */
+	return __swab32(y);
+#endif
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * __swahw32 - return a word-swapped 32-bit value
  * @x: value to wordswap

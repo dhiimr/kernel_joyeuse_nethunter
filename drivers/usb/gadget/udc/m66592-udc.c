@@ -1672,7 +1672,11 @@ static int m66592_probe(struct platform_device *pdev)
 
 err_add_udc:
 	m66592_free_request(&m66592->ep[0].ep, m66592->ep0_req);
+<<<<<<< HEAD
 
+=======
+	m66592->ep0_req = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 clean_up3:
 	if (m66592->pdata->on_chip) {
 		clk_disable(m66592->clk);

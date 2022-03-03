@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+<<<<<<< HEAD
 #include <asm/kvm_hyp.h>
 #include <asm/tlbflush.h>
 
@@ -22,6 +23,20 @@ static void __hyp_text __tlb_switch_to_guest_vhe(struct kvm *kvm)
 {
 	u64 val;
 
+=======
+#include <linux/irqflags.h>
+
+#include <asm/kvm_hyp.h>
+#include <asm/tlbflush.h>
+
+static void __hyp_text __tlb_switch_to_guest_vhe(struct kvm *kvm,
+						 unsigned long *flags)
+{
+	u64 val;
+
+	local_irq_save(*flags);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * With VHE enabled, we have HCR_EL2.{E2H,TGE} = {1,1}, and
 	 * most TLB operations target EL2/EL0. In order to affect the
@@ -36,7 +51,12 @@ static void __hyp_text __tlb_switch_to_guest_vhe(struct kvm *kvm)
 	isb();
 }
 
+<<<<<<< HEAD
 static void __hyp_text __tlb_switch_to_guest_nvhe(struct kvm *kvm)
+=======
+static void __hyp_text __tlb_switch_to_guest_nvhe(struct kvm *kvm,
+						  unsigned long *flags)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	write_sysreg(kvm->arch.vttbr, vttbr_el2);
 	isb();
@@ -47,7 +67,12 @@ static hyp_alternate_select(__tlb_switch_to_guest,
 			    __tlb_switch_to_guest_vhe,
 			    ARM64_HAS_VIRT_HOST_EXTN);
 
+<<<<<<< HEAD
 static void __hyp_text __tlb_switch_to_host_vhe(struct kvm *kvm)
+=======
+static void __hyp_text __tlb_switch_to_host_vhe(struct kvm *kvm,
+						unsigned long flags)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	/*
 	 * We're done with the TLB operation, let's restore the host's
@@ -55,9 +80,18 @@ static void __hyp_text __tlb_switch_to_host_vhe(struct kvm *kvm)
 	 */
 	write_sysreg(0, vttbr_el2);
 	write_sysreg(HCR_HOST_VHE_FLAGS, hcr_el2);
+<<<<<<< HEAD
 }
 
 static void __hyp_text __tlb_switch_to_host_nvhe(struct kvm *kvm)
+=======
+	isb();
+	local_irq_restore(flags);
+}
+
+static void __hyp_text __tlb_switch_to_host_nvhe(struct kvm *kvm,
+						 unsigned long flags)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	write_sysreg(0, vttbr_el2);
 }
@@ -69,11 +103,20 @@ static hyp_alternate_select(__tlb_switch_to_host,
 
 void __hyp_text __kvm_tlb_flush_vmid_ipa(struct kvm *kvm, phys_addr_t ipa)
 {
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dsb(ishst);
 
 	/* Switch to requested VMID */
 	kvm = kern_hyp_va(kvm);
+<<<<<<< HEAD
 	__tlb_switch_to_guest()(kvm);
+=======
+	__tlb_switch_to_guest()(kvm, &flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * We could do so much better if we had the VA as well.
@@ -116,36 +159,64 @@ void __hyp_text __kvm_tlb_flush_vmid_ipa(struct kvm *kvm, phys_addr_t ipa)
 	if (!has_vhe() && icache_is_vpipt())
 		__flush_icache_all();
 
+<<<<<<< HEAD
 	__tlb_switch_to_host()(kvm);
+=======
+	__tlb_switch_to_host()(kvm, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void __hyp_text __kvm_tlb_flush_vmid(struct kvm *kvm)
 {
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dsb(ishst);
 
 	/* Switch to requested VMID */
 	kvm = kern_hyp_va(kvm);
+<<<<<<< HEAD
 	__tlb_switch_to_guest()(kvm);
+=======
+	__tlb_switch_to_guest()(kvm, &flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	__tlbi(vmalls12e1is);
 	dsb(ish);
 	isb();
 
+<<<<<<< HEAD
 	__tlb_switch_to_host()(kvm);
+=======
+	__tlb_switch_to_host()(kvm, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void __hyp_text __kvm_tlb_flush_local_vmid(struct kvm_vcpu *vcpu)
 {
 	struct kvm *kvm = kern_hyp_va(kern_hyp_va(vcpu)->kvm);
+<<<<<<< HEAD
 
 	/* Switch to requested VMID */
 	__tlb_switch_to_guest()(kvm);
+=======
+	unsigned long flags;
+
+	/* Switch to requested VMID */
+	__tlb_switch_to_guest()(kvm, &flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	__tlbi(vmalle1);
 	dsb(nsh);
 	isb();
 
+<<<<<<< HEAD
 	__tlb_switch_to_host()(kvm);
+=======
+	__tlb_switch_to_host()(kvm, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void __hyp_text __kvm_flush_vm_context(void)

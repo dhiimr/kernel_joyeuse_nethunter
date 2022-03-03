@@ -370,7 +370,10 @@ static int rockchip_pwm_probe(struct platform_device *pdev)
 
 	ret = pwmchip_add(&pc->chip);
 	if (ret < 0) {
+<<<<<<< HEAD
 		clk_unprepare(pc->clk);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_err(&pdev->dev, "pwmchip_add() failed: %d\n", ret);
 		goto err_pclk;
 	}
@@ -393,6 +396,7 @@ static int rockchip_pwm_remove(struct platform_device *pdev)
 {
 	struct rockchip_pwm_chip *pc = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	/*
 	 * Disable the PWM clk before unpreparing it if the PWM device is still
 	 * running. This should only happen when the last PWM user left it
@@ -407,6 +411,8 @@ static int rockchip_pwm_remove(struct platform_device *pdev)
 	if (pwm_is_enabled(pc->chip.pwms))
 		clk_disable(pc->clk);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	clk_unprepare(pc->pclk);
 	clk_unprepare(pc->clk);
 

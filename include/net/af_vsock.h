@@ -22,9 +22,12 @@
 
 #include "vsock_addr.h"
 
+<<<<<<< HEAD
 /* vsock-specific sock->sk_state constants */
 #define VSOCK_SS_LISTEN 255
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define LAST_RESERVED_PORT 1023
 
 #define vsock_sk(__sk)    ((struct vsock_sock *)__sk)

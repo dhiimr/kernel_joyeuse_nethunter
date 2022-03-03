@@ -63,6 +63,22 @@ static int ccp_aes_gcm_setkey(struct crypto_aead *tfm, const u8 *key,
 static int ccp_aes_gcm_setauthsize(struct crypto_aead *tfm,
 				   unsigned int authsize)
 {
+<<<<<<< HEAD
+=======
+	switch (authsize) {
+	case 16:
+	case 15:
+	case 14:
+	case 13:
+	case 12:
+	case 8:
+	case 4:
+		break;
+	default:
+		return -EINVAL;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -109,6 +125,10 @@ static int ccp_aes_gcm_crypt(struct aead_request *req, bool encrypt)
 	memset(&rctx->cmd, 0, sizeof(rctx->cmd));
 	INIT_LIST_HEAD(&rctx->cmd.entry);
 	rctx->cmd.engine = CCP_ENGINE_AES;
+<<<<<<< HEAD
+=======
+	rctx->cmd.u.aes.authsize = crypto_aead_authsize(tfm);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rctx->cmd.u.aes.type = ctx->u.aes.type;
 	rctx->cmd.u.aes.mode = ctx->u.aes.mode;
 	rctx->cmd.u.aes.action = encrypt;

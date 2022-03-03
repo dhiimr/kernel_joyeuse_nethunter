@@ -80,6 +80,10 @@ extern void gfs2_ail1_flush(struct gfs2_sbd *sdp, struct writeback_control *wbc)
 extern void gfs2_log_shutdown(struct gfs2_sbd *sdp);
 extern int gfs2_logd(void *data);
 extern void gfs2_add_revoke(struct gfs2_sbd *sdp, struct gfs2_bufdata *bd);
+<<<<<<< HEAD
+=======
+extern void gfs2_glock_remove_revoke(struct gfs2_glock *gl);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void gfs2_write_revokes(struct gfs2_sbd *sdp);
 
 #endif /* __LOG_DOT_H__ */

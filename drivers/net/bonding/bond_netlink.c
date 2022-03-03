@@ -451,11 +451,18 @@ static int bond_newlink(struct net *src_net, struct net_device *bond_dev,
 		return err;
 
 	err = register_netdevice(bond_dev);
+<<<<<<< HEAD
 
 	netif_carrier_off(bond_dev);
 	if (!err) {
 		struct bonding *bond = netdev_priv(bond_dev);
 
+=======
+	if (!err) {
+		struct bonding *bond = netdev_priv(bond_dev);
+
+		netif_carrier_off(bond_dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		bond_work_init_all(bond);
 	}
 

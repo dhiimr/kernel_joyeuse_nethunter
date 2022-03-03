@@ -241,6 +241,12 @@ static int mwifiex_update_vs_ie(const u8 *ies, int ies_len,
 		}
 
 		vs_ie = (struct ieee_types_header *)vendor_ie;
+<<<<<<< HEAD
+=======
+		if (le16_to_cpu(ie->ie_length) + vs_ie->len + 2 >
+			IEEE_MAX_IE_SIZE)
+			return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		memcpy(ie->ie_buffer + le16_to_cpu(ie->ie_length),
 		       vs_ie, vs_ie->len + 2);
 		le16_unaligned_add_cpu(&ie->ie_length, vs_ie->len + 2);
@@ -329,6 +335,11 @@ static int mwifiex_uap_parse_tail_ies(struct mwifiex_private *priv,
 	struct ieee80211_vendor_ie *vendorhdr;
 	u16 gen_idx = MWIFIEX_AUTO_IDX_MASK, ie_len = 0;
 	int left_len, parsed_len = 0;
+<<<<<<< HEAD
+=======
+	unsigned int token_len;
+	int err = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!info->tail || !info->tail_len)
 		return 0;
@@ -344,6 +355,15 @@ static int mwifiex_uap_parse_tail_ies(struct mwifiex_private *priv,
 	 */
 	while (left_len > sizeof(struct ieee_types_header)) {
 		hdr = (void *)(info->tail + parsed_len);
+<<<<<<< HEAD
+=======
+		token_len = hdr->len + sizeof(struct ieee_types_header);
+		if (token_len > left_len) {
+			err = -EINVAL;
+			goto out;
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		switch (hdr->element_id) {
 		case WLAN_EID_SSID:
 		case WLAN_EID_SUPP_RATES:
@@ -357,6 +377,7 @@ static int mwifiex_uap_parse_tail_ies(struct mwifiex_private *priv,
 		case WLAN_EID_VENDOR_SPECIFIC:
 			break;
 		default:
+<<<<<<< HEAD
 			memcpy(gen_ie->ie_buffer + ie_len, hdr,
 			       hdr->len + sizeof(struct ieee_types_header));
 			ie_len += hdr->len + sizeof(struct ieee_types_header);
@@ -364,6 +385,18 @@ static int mwifiex_uap_parse_tail_ies(struct mwifiex_private *priv,
 		}
 		left_len -= hdr->len + sizeof(struct ieee_types_header);
 		parsed_len += hdr->len + sizeof(struct ieee_types_header);
+=======
+			if (ie_len + token_len > IEEE_MAX_IE_SIZE) {
+				err = -EINVAL;
+				goto out;
+			}
+			memcpy(gen_ie->ie_buffer + ie_len, hdr, token_len);
+			ie_len += token_len;
+			break;
+		}
+		left_len -= token_len;
+		parsed_len += token_len;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* parse only WPA vendor IE from tail, WMM IE is configured by
@@ -373,6 +406,7 @@ static int mwifiex_uap_parse_tail_ies(struct mwifiex_private *priv,
 						    WLAN_OUI_TYPE_MICROSOFT_WPA,
 						    info->tail, info->tail_len);
 	if (vendorhdr) {
+<<<<<<< HEAD
 		memcpy(gen_ie->ie_buffer + ie_len, vendorhdr,
 		       vendorhdr->len + sizeof(struct ieee_types_header));
 		ie_len += vendorhdr->len + sizeof(struct ieee_types_header);
@@ -382,6 +416,19 @@ static int mwifiex_uap_parse_tail_ies(struct mwifiex_private *priv,
 		kfree(gen_ie);
 		return 0;
 	}
+=======
+		token_len = vendorhdr->len + sizeof(struct ieee_types_header);
+		if (ie_len + token_len > IEEE_MAX_IE_SIZE) {
+			err = -EINVAL;
+			goto out;
+		}
+		memcpy(gen_ie->ie_buffer + ie_len, vendorhdr, token_len);
+		ie_len += token_len;
+	}
+
+	if (!ie_len)
+		goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	gen_ie->ie_index = cpu_to_le16(gen_idx);
 	gen_ie->mgmt_subtype_mask = cpu_to_le16(MGMT_MASK_BEACON |
@@ -391,6 +438,7 @@ static int mwifiex_uap_parse_tail_ies(struct mwifiex_private *priv,
 
 	if (mwifiex_update_uap_custom_ie(priv, gen_ie, &gen_idx, NULL, NULL,
 					 NULL, NULL)) {
+<<<<<<< HEAD
 		kfree(gen_ie);
 		return -1;
 	}
@@ -398,6 +446,17 @@ static int mwifiex_uap_parse_tail_ies(struct mwifiex_private *priv,
 	priv->gen_idx = gen_idx;
 	kfree(gen_ie);
 	return 0;
+=======
+		err = -EINVAL;
+		goto out;
+	}
+
+	priv->gen_idx = gen_idx;
+
+ out:
+	kfree(gen_ie);
+	return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* This function parses different IEs-head & tail IEs, beacon IEs,

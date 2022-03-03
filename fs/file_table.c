@@ -42,6 +42,7 @@ static struct kmem_cache *filp_cachep __read_mostly;
 
 static struct percpu_counter nr_files __cacheline_aligned_in_smp;
 
+<<<<<<< HEAD
 #ifdef CONFIG_FILE_TABLE_DEBUG
 #include <linux/hashtable.h>
 #include <mount.h>
@@ -177,6 +178,8 @@ void global_filetable_delayed_print(struct mount *mnt)
 }
 #endif /* CONFIG_FILE_TABLE_DEBUG */
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void file_free_rcu(struct rcu_head *head)
 {
 	struct file *f = container_of(head, struct file, f_u.fu_rcuhead);
@@ -356,7 +359,10 @@ static void __fput(struct file *file)
 		put_write_access(inode);
 		__mnt_drop_write(mnt);
 	}
+<<<<<<< HEAD
 	global_filetable_del(file);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	file->f_path.dentry = NULL;
 	file->f_path.mnt = NULL;
 	file->f_inode = NULL;
@@ -397,6 +403,7 @@ void flush_delayed_fput(void)
 
 static DECLARE_DELAYED_WORK(delayed_fput_work, delayed_fput);
 
+<<<<<<< HEAD
 void flush_delayed_fput_wait(void)
 {
 	delayed_fput(NULL);
@@ -406,6 +413,11 @@ void flush_delayed_fput_wait(void)
 void fput(struct file *file)
 {
 	if (atomic_long_dec_and_test(&file->f_count)) {
+=======
+void fput_many(struct file *file, unsigned int refs)
+{
+	if (atomic_long_sub_and_test(refs, &file->f_count)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct task_struct *task = current;
 
 		if (likely(!in_interrupt() && !(task->flags & PF_KTHREAD))) {
@@ -424,6 +436,14 @@ void fput(struct file *file)
 	}
 }
 
+<<<<<<< HEAD
+=======
+void fput(struct file *file)
+{
+	fput_many(file, 1);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * synchronous analog of fput(); for kernel threads that might be needed
  * in some umount() (and thus can't use flush_delayed_fput() without
@@ -456,7 +476,10 @@ void __init files_init(void)
 	filp_cachep = kmem_cache_create("filp", sizeof(struct file), 0,
 			SLAB_HWCACHE_ALIGN | SLAB_PANIC, NULL);
 	percpu_counter_init(&nr_files, 0, GFP_KERNEL);
+<<<<<<< HEAD
 	global_filetable_print_warning_once();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*

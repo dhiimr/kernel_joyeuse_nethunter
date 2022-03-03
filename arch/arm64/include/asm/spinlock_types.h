@@ -36,6 +36,14 @@ typedef struct {
 
 #define __ARCH_SPIN_LOCK_UNLOCKED	{ 0 , 0 }
 
+<<<<<<< HEAD
 #include <asm-generic/qrwlock_types.h>
+=======
+typedef struct {
+	volatile unsigned int lock;
+} arch_rwlock_t;
+
+#define __ARCH_RW_LOCK_UNLOCKED		{ 0 }
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif

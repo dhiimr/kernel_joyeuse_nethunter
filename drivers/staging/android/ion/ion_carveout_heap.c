@@ -22,12 +22,16 @@
 #include <linux/scatterlist.h>
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
 #include <soc/qcom/secure_buffer.h>
 #include <linux/of.h>
 #include <linux/of_address.h>
 #include <linux/msm_ion.h>
 #include "ion.h"
 #include "ion_secure_util.h"
+=======
+#include "ion.h"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define ION_CARVEOUT_ALLOCATE_FAIL	-1
 
@@ -38,7 +42,11 @@ struct ion_carveout_heap {
 };
 
 static phys_addr_t ion_carveout_allocate(struct ion_heap *heap,
+<<<<<<< HEAD
 					     unsigned long size)
+=======
+					 unsigned long size)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct ion_carveout_heap *carveout_heap =
 		container_of(heap, struct ion_carveout_heap, heap);
@@ -69,7 +77,10 @@ static int ion_carveout_heap_allocate(struct ion_heap *heap,
 	struct sg_table *table;
 	phys_addr_t paddr;
 	int ret;
+<<<<<<< HEAD
 	struct device *dev = heap->priv;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	table = kmalloc(sizeof(*table), GFP_KERNEL);
 	if (!table)
@@ -87,10 +98,13 @@ static int ion_carveout_heap_allocate(struct ion_heap *heap,
 	sg_set_page(table->sgl, pfn_to_page(PFN_DOWN(paddr)), size, 0);
 	buffer->sg_table = table;
 
+<<<<<<< HEAD
 	if (ion_buffer_cached(buffer))
 		ion_pages_sync_for_device(dev, sg_page(table->sgl),
 					  buffer->size, DMA_FROM_DEVICE);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 
 err_free_table:
@@ -105,6 +119,7 @@ static void ion_carveout_heap_free(struct ion_buffer *buffer)
 	struct ion_heap *heap = buffer->heap;
 	struct sg_table *table = buffer->sg_table;
 	struct page *page = sg_page(table->sgl);
+<<<<<<< HEAD
 	phys_addr_t paddr = page_to_phys(page);
 	struct device *dev = (struct device *)heap->priv;
 
@@ -114,6 +129,12 @@ static void ion_carveout_heap_free(struct ion_buffer *buffer)
 		ion_pages_sync_for_device(dev, page, buffer->size,
 					  DMA_BIDIRECTIONAL);
 
+=======
+	phys_addr_t paddr = PFN_PHYS(page_to_pfn(page));
+
+	ion_heap_buffer_zero(buffer);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ion_carveout_free(heap, paddr, buffer->size);
 	sg_free_table(table);
 	kfree(table);
@@ -127,23 +148,33 @@ static struct ion_heap_ops carveout_heap_ops = {
 	.unmap_kernel = ion_heap_unmap_kernel,
 };
 
+<<<<<<< HEAD
 static struct ion_heap *__ion_carveout_heap_create(
 					struct ion_platform_heap *heap_data,
 					bool sync)
+=======
+struct ion_heap *ion_carveout_heap_create(struct ion_platform_heap *heap_data)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct ion_carveout_heap *carveout_heap;
 	int ret;
 
 	struct page *page;
 	size_t size;
+<<<<<<< HEAD
 	struct device *dev = (struct device *)heap_data->priv;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	page = pfn_to_page(PFN_DOWN(heap_data->base));
 	size = heap_data->size;
 
+<<<<<<< HEAD
 	if (sync)
 		ion_pages_sync_for_device(dev, page, size, DMA_BIDIRECTIONAL);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = ion_heap_pages_zero(page, size, pgprot_writecombine(PAGE_KERNEL));
 	if (ret)
 		return ERR_PTR(ret);
@@ -166,6 +197,7 @@ static struct ion_heap *__ion_carveout_heap_create(
 
 	return &carveout_heap->heap;
 }
+<<<<<<< HEAD
 
 struct ion_heap *ion_carveout_heap_create(struct ion_platform_heap *heap_data)
 {
@@ -365,3 +397,5 @@ err:
 	ion_secure_carveout_heap_destroy(&manager->heap);
 	return ERR_PTR(-EINVAL);
 }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

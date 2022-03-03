@@ -259,6 +259,20 @@ static void ktd2692_setup(struct ktd2692_context *led)
 				 | KTD2692_REG_FLASH_CURRENT_BASE);
 }
 
+<<<<<<< HEAD
+=======
+static void regulator_disable_action(void *_data)
+{
+	struct device *dev = _data;
+	struct ktd2692_context *led = dev_get_drvdata(dev);
+	int ret;
+
+	ret = regulator_disable(led->regulator);
+	if (ret)
+		dev_err(dev, "Failed to disable supply: %d\n", ret);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int ktd2692_parse_dt(struct ktd2692_context *led, struct device *dev,
 			    struct ktd2692_led_config_data *cfg)
 {
@@ -289,8 +303,19 @@ static int ktd2692_parse_dt(struct ktd2692_context *led, struct device *dev,
 
 	if (led->regulator) {
 		ret = regulator_enable(led->regulator);
+<<<<<<< HEAD
 		if (ret)
 			dev_err(dev, "Failed to enable supply: %d\n", ret);
+=======
+		if (ret) {
+			dev_err(dev, "Failed to enable supply: %d\n", ret);
+		} else {
+			ret = devm_add_action_or_reset(dev,
+						regulator_disable_action, dev);
+			if (ret)
+				return ret;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	child_node = of_get_next_available_child(np, NULL);
@@ -380,6 +405,7 @@ static int ktd2692_probe(struct platform_device *pdev)
 static int ktd2692_remove(struct platform_device *pdev)
 {
 	struct ktd2692_context *led = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 	int ret;
 
 	led_classdev_flash_unregister(&led->fled_cdev);
@@ -391,6 +417,11 @@ static int ktd2692_remove(struct platform_device *pdev)
 				"Failed to disable supply: %d\n", ret);
 	}
 
+=======
+
+	led_classdev_flash_unregister(&led->fled_cdev);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_destroy(&led->lock);
 
 	return 0;

@@ -478,8 +478,12 @@ static void ieee80211_report_ack_skb(struct ieee80211_local *local,
 		rcu_read_lock();
 		sdata = ieee80211_sdata_from_skb(local, skb);
 		if (sdata) {
+<<<<<<< HEAD
 			if (ieee80211_is_nullfunc(hdr->frame_control) ||
 			    ieee80211_is_qos_nullfunc(hdr->frame_control))
+=======
+			if (ieee80211_is_any_nullfunc(hdr->frame_control))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				cfg80211_probe_status(sdata->dev, hdr->addr1,
 						      cookie, acked,
 						      GFP_ATOMIC);
@@ -856,7 +860,12 @@ static void __ieee80211_tx_status(struct ieee80211_hw *hw,
 			I802_DEBUG_INC(local->dot11FailedCount);
 	}
 
+<<<<<<< HEAD
 	if (ieee80211_is_nullfunc(fc) && ieee80211_has_pm(fc) &&
+=======
+	if (ieee80211_is_any_nullfunc(fc) &&
+	    ieee80211_has_pm(fc) &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    ieee80211_hw_check(&local->hw, REPORTS_TX_ACK_STATUS) &&
 	    !(info->flags & IEEE80211_TX_CTL_INJECTED) &&
 	    local->ps_sdata && !(local->scanning)) {

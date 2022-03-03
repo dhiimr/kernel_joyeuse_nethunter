@@ -44,10 +44,22 @@ int squashfs_xattr_lookup(struct super_block *sb, unsigned int index,
 	struct squashfs_sb_info *msblk = sb->s_fs_info;
 	int block = SQUASHFS_XATTR_BLOCK(index);
 	int offset = SQUASHFS_XATTR_BLOCK_OFFSET(index);
+<<<<<<< HEAD
 	u64 start_block = le64_to_cpu(msblk->xattr_id_table[block]);
 	struct squashfs_xattr_id id;
 	int err;
 
+=======
+	u64 start_block;
+	struct squashfs_xattr_id id;
+	int err;
+
+	if (index >= msblk->xattr_ids)
+		return -EINVAL;
+
+	start_block = le64_to_cpu(msblk->xattr_id_table[block]);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = squashfs_read_metadata(sb, &id, &start_block, &offset,
 							sizeof(id));
 	if (err < 0)
@@ -63,6 +75,7 @@ int squashfs_xattr_lookup(struct super_block *sb, unsigned int index,
 /*
  * Read uncompressed xattr id lookup table indexes from disk into memory
  */
+<<<<<<< HEAD
 __le64 *squashfs_read_xattr_id_table(struct super_block *sb, u64 start,
 		u64 *xattr_table_start, int *xattr_ids)
 {
@@ -70,6 +83,19 @@ __le64 *squashfs_read_xattr_id_table(struct super_block *sb, u64 start,
 	struct squashfs_xattr_id_table *id_table;
 
 	id_table = squashfs_read_table(sb, start, sizeof(*id_table));
+=======
+__le64 *squashfs_read_xattr_id_table(struct super_block *sb, u64 table_start,
+		u64 *xattr_table_start, int *xattr_ids)
+{
+	struct squashfs_sb_info *msblk = sb->s_fs_info;
+	unsigned int len, indexes;
+	struct squashfs_xattr_id_table *id_table;
+	__le64 *table;
+	u64 start, end;
+	int n;
+
+	id_table = squashfs_read_table(sb, table_start, sizeof(*id_table));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (IS_ERR(id_table))
 		return (__le64 *) id_table;
 
@@ -83,6 +109,7 @@ __le64 *squashfs_read_xattr_id_table(struct super_block *sb, u64 start,
 	if (*xattr_ids == 0)
 		return ERR_PTR(-EINVAL);
 
+<<<<<<< HEAD
 	/* xattr_table should be less than start */
 	if (*xattr_table_start >= start)
 		return ERR_PTR(-EINVAL);
@@ -92,4 +119,56 @@ __le64 *squashfs_read_xattr_id_table(struct super_block *sb, u64 start,
 	TRACE("In read_xattr_index_table, length %d\n", len);
 
 	return squashfs_read_table(sb, start + sizeof(*id_table), len);
+=======
+	len = SQUASHFS_XATTR_BLOCK_BYTES(*xattr_ids);
+	indexes = SQUASHFS_XATTR_BLOCKS(*xattr_ids);
+
+	/*
+	 * The computed size of the index table (len bytes) should exactly
+	 * match the table start and end points
+	 */
+	start = table_start + sizeof(*id_table);
+	end = msblk->bytes_used;
+
+	if (len != (end - start))
+		return ERR_PTR(-EINVAL);
+
+	table = squashfs_read_table(sb, start, len);
+	if (IS_ERR(table))
+		return table;
+
+	/* table[0], table[1], ... table[indexes - 1] store the locations
+	 * of the compressed xattr id blocks.  Each entry should be less than
+	 * the next (i.e. table[0] < table[1]), and the difference between them
+	 * should be SQUASHFS_METADATA_SIZE or less.  table[indexes - 1]
+	 * should be less than table_start, and again the difference
+	 * shouls be SQUASHFS_METADATA_SIZE or less.
+	 *
+	 * Finally xattr_table_start should be less than table[0].
+	 */
+	for (n = 0; n < (indexes - 1); n++) {
+		start = le64_to_cpu(table[n]);
+		end = le64_to_cpu(table[n + 1]);
+
+		if (start >= end || (end - start) >
+				(SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
+			kfree(table);
+			return ERR_PTR(-EINVAL);
+		}
+	}
+
+	start = le64_to_cpu(table[indexes - 1]);
+	if (start >= table_start || (table_start - start) >
+				(SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
+		kfree(table);
+		return ERR_PTR(-EINVAL);
+	}
+
+	if (*xattr_table_start >= le64_to_cpu(table[0])) {
+		kfree(table);
+		return ERR_PTR(-EINVAL);
+	}
+
+	return table;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }

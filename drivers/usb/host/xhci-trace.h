@@ -103,7 +103,11 @@ DECLARE_EVENT_CLASS(xhci_log_ctx,
 			((HCC_64BYTE_CONTEXT(xhci->hcc_params) + 1) * 32) *
 			((ctx->type == XHCI_CTX_TYPE_INPUT) + ep_num + 1));
 	),
+<<<<<<< HEAD
 	TP_printk("\nctx_64=%d, ctx_type=%u, ctx_dma=@%llx, ctx_va=@%pK",
+=======
+	TP_printk("ctx_64=%d, ctx_type=%u, ctx_dma=@%llx, ctx_va=@%p",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			__entry->ctx_64, __entry->ctx_type,
 			(unsigned long long) __entry->ctx_dma, __entry->ctx_va
 	)
@@ -276,6 +280,7 @@ DECLARE_EVENT_CLASS(xhci_log_urb,
 	),
 	TP_printk("ep%d%s-%s: urb %p pipe %u slot %d length %d/%d sgs %d/%d stream %d flags %08x",
 			__entry->epnum, __entry->dir_in ? "in" : "out",
+<<<<<<< HEAD
 			({ char *s;
 			switch (__entry->type) {
 			case USB_ENDPOINT_XFER_INT:
@@ -293,6 +298,14 @@ DECLARE_EVENT_CLASS(xhci_log_urb,
 			default:
 				s = "UNKNOWN";
 			} s; }), __entry->urb, __entry->pipe, __entry->slot_id,
+=======
+			__print_symbolic(__entry->type,
+				   { USB_ENDPOINT_XFER_INT,	"intr" },
+				   { USB_ENDPOINT_XFER_CONTROL,	"control" },
+				   { USB_ENDPOINT_XFER_BULK,	"bulk" },
+				   { USB_ENDPOINT_XFER_ISOC,	"isoc" }),
+			__entry->urb, __entry->pipe, __entry->slot_id,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			__entry->actual, __entry->length, __entry->num_mapped_sgs,
 			__entry->num_sgs, __entry->stream, __entry->flags
 		)

@@ -92,7 +92,11 @@
 #define JZ_AIC_I2S_STATUS_BUSY BIT(2)
 
 #define JZ_AIC_CLK_DIV_MASK 0xf
+<<<<<<< HEAD
 #define I2SDIV_DV_SHIFT 8
+=======
+#define I2SDIV_DV_SHIFT 0
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define I2SDIV_DV_MASK (0xf << I2SDIV_DV_SHIFT)
 #define I2SDIV_IDV_SHIFT 8
 #define I2SDIV_IDV_MASK (0xf << I2SDIV_IDV_SHIFT)
@@ -318,10 +322,20 @@ static int jz4740_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
 	switch (clk_id) {
 	case JZ4740_I2S_CLKSRC_EXT:
 		parent = clk_get(NULL, "ext");
+<<<<<<< HEAD
+=======
+		if (IS_ERR(parent))
+			return PTR_ERR(parent);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		clk_set_parent(i2s->clk_i2s, parent);
 		break;
 	case JZ4740_I2S_CLKSRC_PLL:
 		parent = clk_get(NULL, "pll half");
+<<<<<<< HEAD
+=======
+		if (IS_ERR(parent))
+			return PTR_ERR(parent);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		clk_set_parent(i2s->clk_i2s, parent);
 		ret = clk_set_rate(i2s->clk_i2s, freq);
 		break;

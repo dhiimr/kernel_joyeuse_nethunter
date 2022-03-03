@@ -30,6 +30,10 @@
 #include <asm/unistd.h>
 #include <asm/tls.h>
 #include <asm/system_info.h>
+<<<<<<< HEAD
+=======
+#include <asm/uaccess-asm.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "entry-header.S"
 #include <asm/entry-macro-multi.S>
@@ -186,6 +190,7 @@ ENDPROC(__und_invalid)
 	stmia	r7, {r2 - r6}
 
 	get_thread_info tsk
+<<<<<<< HEAD
 	ldr	r0, [tsk, #TI_ADDR_LIMIT]
 	mov	r1, #TASK_SIZE
 	str	r1, [tsk, #TI_ADDR_LIMIT]
@@ -195,6 +200,9 @@ ENDPROC(__und_invalid)
 	.if \uaccess
 	uaccess_disable r0
 	.endif
+=======
+	uaccess_entry tsk, r0, r1, r2, \uaccess
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	.if \trace
 #ifdef CONFIG_TRACE_IRQFLAGS
@@ -631,11 +639,17 @@ call_fpe:
 	tstne	r0, #0x04000000			@ bit 26 set on both ARM and Thumb-2
 	reteq	lr
 	and	r8, r0, #0x00000f00		@ mask out CP number
+<<<<<<< HEAD
  THUMB(	lsr	r8, r8, #8		)
 	mov	r7, #1
 	add	r6, r10, #TI_USED_CP
  ARM(	strb	r7, [r6, r8, lsr #8]	)	@ set appropriate used_cp[]
  THUMB(	strb	r7, [r6, r8]		)	@ set appropriate used_cp[]
+=======
+	mov	r7, #1
+	add	r6, r10, r8, lsr #8		@ add used_cp[] array offset first
+	strb	r7, [r6, #TI_USED_CP]		@ set appropriate used_cp[]
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_IWMMXT
 	@ Test if we need to give access to iWMMXt coprocessors
 	ldr	r5, [r10, #TI_FLAGS]
@@ -644,7 +658,11 @@ call_fpe:
 	bcs	iwmmxt_task_enable
 #endif
  ARM(	add	pc, pc, r8, lsr #6	)
+<<<<<<< HEAD
  THUMB(	lsl	r8, r8, #2		)
+=======
+ THUMB(	lsr	r8, r8, #6		)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  THUMB(	add	pc, r8			)
 	nop
 

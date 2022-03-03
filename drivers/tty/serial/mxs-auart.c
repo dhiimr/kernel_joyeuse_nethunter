@@ -1638,8 +1638,14 @@ static int mxs_auart_request_gpio_irq(struct mxs_auart_port *s)
 
 	/*
 	 * If something went wrong, rollback.
+<<<<<<< HEAD
 	 */
 	while (err && (--i >= 0))
+=======
+	 * Be careful: i may be unsigned.
+	 */
+	while (err && (i-- > 0))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (irq[i] >= 0)
 			free_irq(irq[i], s);
 

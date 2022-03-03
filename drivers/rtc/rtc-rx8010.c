@@ -429,16 +429,36 @@ static int rx8010_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
 	}
 }
 
+<<<<<<< HEAD
 static struct rtc_class_ops rx8010_rtc_ops = {
+=======
+static const struct rtc_class_ops rx8010_rtc_ops_default = {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.read_time = rx8010_get_time,
 	.set_time = rx8010_set_time,
 	.ioctl = rx8010_ioctl,
 };
 
+<<<<<<< HEAD
+=======
+static const struct rtc_class_ops rx8010_rtc_ops_alarm = {
+	.read_time = rx8010_get_time,
+	.set_time = rx8010_set_time,
+	.ioctl = rx8010_ioctl,
+	.read_alarm = rx8010_read_alarm,
+	.set_alarm = rx8010_set_alarm,
+	.alarm_irq_enable = rx8010_alarm_irq_enable,
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int rx8010_probe(struct i2c_client *client,
 			const struct i2c_device_id *id)
 {
 	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
+<<<<<<< HEAD
+=======
+	const struct rtc_class_ops *rtc_ops;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct rx8010_data *rx8010;
 	int err = 0;
 
@@ -469,6 +489,7 @@ static int rx8010_probe(struct i2c_client *client,
 
 		if (err) {
 			dev_err(&client->dev, "unable to request IRQ\n");
+<<<<<<< HEAD
 			client->irq = 0;
 		} else {
 			rx8010_rtc_ops.read_alarm = rx8010_read_alarm;
@@ -479,6 +500,18 @@ static int rx8010_probe(struct i2c_client *client,
 
 	rx8010->rtc = devm_rtc_device_register(&client->dev, client->name,
 		&rx8010_rtc_ops, THIS_MODULE);
+=======
+			return err;
+		}
+
+		rtc_ops = &rx8010_rtc_ops_alarm;
+	} else {
+		rtc_ops = &rx8010_rtc_ops_default;
+	}
+
+	rx8010->rtc = devm_rtc_device_register(&client->dev, client->name,
+					       rtc_ops, THIS_MODULE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (IS_ERR(rx8010->rtc)) {
 		dev_err(&client->dev, "unable to register the class device\n");

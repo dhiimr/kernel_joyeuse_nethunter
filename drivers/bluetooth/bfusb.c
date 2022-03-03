@@ -644,6 +644,12 @@ static int bfusb_probe(struct usb_interface *intf, const struct usb_device_id *i
 	data->bulk_out_ep   = bulk_out_ep->desc.bEndpointAddress;
 	data->bulk_pkt_size = le16_to_cpu(bulk_out_ep->desc.wMaxPacketSize);
 
+<<<<<<< HEAD
+=======
+	if (!data->bulk_pkt_size)
+		goto done;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rwlock_init(&data->lock);
 
 	data->reassembly = NULL;

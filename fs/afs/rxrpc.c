@@ -173,7 +173,11 @@ void afs_put_call(struct afs_call *call)
 	int n = atomic_dec_return(&call->usage);
 	int o = atomic_read(&afs_outstanding_calls);
 
+<<<<<<< HEAD
 	trace_afs_call(call, afs_call_trace_put, n + 1, o,
+=======
+	trace_afs_call(call, afs_call_trace_put, n, o,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		       __builtin_return_address(0));
 
 	ASSERTCMP(n, >=, 0);
@@ -619,7 +623,11 @@ static void afs_wake_up_async_call(struct sock *sk, struct rxrpc_call *rxcall,
 
 	u = __atomic_add_unless(&call->usage, 1, 0);
 	if (u != 0) {
+<<<<<<< HEAD
 		trace_afs_call(call, afs_call_trace_wake, u,
+=======
+		trace_afs_call(call, afs_call_trace_wake, u + 1,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			       atomic_read(&afs_outstanding_calls),
 			       __builtin_return_address(0));
 

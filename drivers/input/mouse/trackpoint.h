@@ -27,10 +27,19 @@
  * 0x01 was the original IBM trackpoint, others implement very limited
  * subset of trackpoint features.
  */
+<<<<<<< HEAD
 #define TP_VARIANT_IBM		0x01
 #define TP_VARIANT_ALPS		0x02
 #define TP_VARIANT_ELAN		0x03
 #define TP_VARIANT_NXP		0x04
+=======
+#define TP_VARIANT_IBM			0x01
+#define TP_VARIANT_ALPS			0x02
+#define TP_VARIANT_ELAN			0x03
+#define TP_VARIANT_NXP			0x04
+#define TP_VARIANT_JYT_SYNAPTICS	0x05
+#define TP_VARIANT_SYNAPTICS		0x06
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Commands
@@ -161,7 +170,12 @@ struct trackpoint_data {
 #ifdef CONFIG_MOUSE_PS2_TRACKPOINT
 int trackpoint_detect(struct psmouse *psmouse, bool set_properties);
 #else
+<<<<<<< HEAD
 inline int trackpoint_detect(struct psmouse *psmouse, bool set_properties)
+=======
+static inline int trackpoint_detect(struct psmouse *psmouse,
+				    bool set_properties)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return -ENOSYS;
 }

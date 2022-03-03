@@ -3220,8 +3220,12 @@ static const unsigned int qspi_data4_b_pins[] = {
 	RCAR_GP_PIN(6, 4),
 };
 static const unsigned int qspi_data4_b_mux[] = {
+<<<<<<< HEAD
 	SPCLK_B_MARK, MOSI_IO0_B_MARK, MISO_IO1_B_MARK,
 	IO2_B_MARK, IO3_B_MARK, SSL_B_MARK,
+=======
+	MOSI_IO0_B_MARK, MISO_IO1_B_MARK, IO2_B_MARK, IO3_B_MARK,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 /* - SCIF0 ------------------------------------------------------------------ */
 static const unsigned int scif0_data_pins[] = {
@@ -4349,17 +4353,26 @@ static const unsigned int vin1_b_data18_pins[] = {
 };
 static const unsigned int vin1_b_data18_mux[] = {
 	/* B */
+<<<<<<< HEAD
 	VI1_DATA0_B_MARK, VI1_DATA1_B_MARK,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	VI1_DATA2_B_MARK, VI1_DATA3_B_MARK,
 	VI1_DATA4_B_MARK, VI1_DATA5_B_MARK,
 	VI1_DATA6_B_MARK, VI1_DATA7_B_MARK,
 	/* G */
+<<<<<<< HEAD
 	VI1_G0_B_MARK, VI1_G1_B_MARK,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	VI1_G2_B_MARK, VI1_G3_B_MARK,
 	VI1_G4_B_MARK, VI1_G5_B_MARK,
 	VI1_G6_B_MARK, VI1_G7_B_MARK,
 	/* R */
+<<<<<<< HEAD
 	VI1_R0_B_MARK, VI1_R1_B_MARK,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	VI1_R2_B_MARK, VI1_R3_B_MARK,
 	VI1_R4_B_MARK, VI1_R5_B_MARK,
 	VI1_R6_B_MARK, VI1_R7_B_MARK,
@@ -5213,7 +5226,11 @@ static const char * const scifb2_groups[] = {
 	"scifb2_data_b",
 	"scifb2_clk_b",
 	"scifb2_ctrl_b",
+<<<<<<< HEAD
 	"scifb0_data_c",
+=======
+	"scifb2_data_c",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	"scifb2_clk_c",
 	"scifb2_data_d",
 };

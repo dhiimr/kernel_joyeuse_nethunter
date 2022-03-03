@@ -483,7 +483,10 @@ static int atmel_pctl_dt_subnode_to_map(struct pinctrl_dev *pctldev,
 	unsigned num_pins, num_configs, reserve;
 	unsigned long *configs;
 	struct property	*pins;
+<<<<<<< HEAD
 	bool has_config;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 pinfunc;
 	int ret, i;
 
@@ -499,9 +502,12 @@ static int atmel_pctl_dt_subnode_to_map(struct pinctrl_dev *pctldev,
 		return ret;
 	}
 
+<<<<<<< HEAD
 	if (num_configs)
 		has_config = true;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	num_pins = pins->length / sizeof(u32);
 	if (!num_pins) {
 		dev_err(pctldev->dev, "no pins found in node %pOF\n", np);
@@ -514,7 +520,11 @@ static int atmel_pctl_dt_subnode_to_map(struct pinctrl_dev *pctldev,
 	 * map for each pin.
 	 */
 	reserve = 1;
+<<<<<<< HEAD
 	if (has_config && num_pins >= 1)
+=======
+	if (num_configs)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		reserve++;
 	reserve *= num_pins;
 	ret = pinctrl_utils_reserve_map(pctldev, map, reserved_maps, num_maps,
@@ -537,7 +547,11 @@ static int atmel_pctl_dt_subnode_to_map(struct pinctrl_dev *pctldev,
 		pinctrl_utils_add_map_mux(pctldev, map, reserved_maps, num_maps,
 					  group, func);
 
+<<<<<<< HEAD
 		if (has_config) {
+=======
+		if (num_configs) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ret = pinctrl_utils_add_map_configs(pctldev, map,
 					reserved_maps, num_maps, group,
 					configs, num_configs,

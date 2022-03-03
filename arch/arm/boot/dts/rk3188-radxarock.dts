@@ -130,6 +130,11 @@
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		gpio = <&gpio3 RK_PA1 GPIO_ACTIVE_LOW>;
+<<<<<<< HEAD
+=======
+		pinctrl-names = "default";
+		pinctrl-0 = <&sdmmc_pwr>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		startup-delay-us = <100000>;
 		vin-supply = <&vcc_io>;
 	};
@@ -348,6 +353,15 @@
 		};
 	};
 
+<<<<<<< HEAD
+=======
+	sd0 {
+		sdmmc_pwr: sdmmc-pwr {
+			rockchip,pins = <RK_GPIO3 1 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	usb {
 		host_vbus_drv: host-vbus-drv {
 			rockchip,pins = <0 3 RK_FUNC_GPIO &pcfg_pull_none>;

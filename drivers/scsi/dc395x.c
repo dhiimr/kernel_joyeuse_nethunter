@@ -1972,6 +1972,14 @@ static void sg_update_list(struct ScsiReqBlk *srb, u32 left)
 			xferred -= psge->length;
 		} else {
 			/* Partial SG entry done */
+<<<<<<< HEAD
+=======
+			pci_dma_sync_single_for_cpu(srb->dcb->
+					    acb->dev,
+					    srb->sg_bus_addr,
+					    SEGMENTX_LEN,
+					    PCI_DMA_TODEVICE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			psge->length -= xferred;
 			psge->address += xferred;
 			srb->sg_index = idx;
@@ -3450,14 +3458,22 @@ static void srb_done(struct AdapterCtlBlk *acb, struct DeviceCtlBlk *dcb,
 		}
 	}
 
+<<<<<<< HEAD
 	if (dir != PCI_DMA_NONE && scsi_sg_count(cmd))
 		pci_dma_sync_sg_for_cpu(acb->dev, scsi_sglist(cmd),
 					scsi_sg_count(cmd), dir);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ckc_only = 0;
 /* Check Error Conditions */
       ckc_e:
 
+<<<<<<< HEAD
+=======
+	pci_unmap_srb(acb, srb);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (cmd->cmnd[0] == INQUIRY) {
 		unsigned char *base = NULL;
 		struct ScsiInqData *ptr;
@@ -3511,7 +3527,10 @@ static void srb_done(struct AdapterCtlBlk *acb, struct DeviceCtlBlk *dcb,
 			cmd, cmd->result);
 		srb_free_insert(acb, srb);
 	}
+<<<<<<< HEAD
 	pci_unmap_srb(acb, srb);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cmd->scsi_done(cmd);
 	waiting_process_next(acb);
@@ -4807,6 +4826,10 @@ static int dc395x_init_one(struct pci_dev *dev, const struct pci_device_id *id)
 	/* initialise the adapter and everything we need */
  	if (adapter_init(acb, io_port_base, io_port_len, irq)) {
 		dprintkl(KERN_INFO, "adapter init failed\n");
+<<<<<<< HEAD
+=======
+		acb = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto fail;
 	}
 

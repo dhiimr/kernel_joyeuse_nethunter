@@ -100,7 +100,12 @@ static u64 dma_iommu_get_required_mask(struct device *dev)
 	if (!tbl)
 		return 0;
 
+<<<<<<< HEAD
 	mask = 1ULL < (fls_long(tbl->it_offset + tbl->it_size) - 1);
+=======
+	mask = 1ULL << (fls_long(tbl->it_offset + tbl->it_size) +
+			tbl->it_page_shift - 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mask += mask - 1;
 
 	return mask;

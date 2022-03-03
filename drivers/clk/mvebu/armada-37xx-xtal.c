@@ -15,8 +15,13 @@
 #include <linux/platform_device.h>
 #include <linux/regmap.h>
 
+<<<<<<< HEAD
 #define NB_GPIO1_LATCH	0xC
 #define XTAL_MODE	    BIT(31)
+=======
+#define NB_GPIO1_LATCH	0x8
+#define XTAL_MODE	    BIT(9)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int armada_3700_xtal_clock_probe(struct platform_device *pdev)
 {

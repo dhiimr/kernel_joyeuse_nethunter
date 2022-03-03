@@ -527,8 +527,11 @@ static noinline int create_subvol(struct inode *dir,
 	btrfs_set_root_otransid(root_item, trans->transid);
 
 	btrfs_tree_unlock(leaf);
+<<<<<<< HEAD
 	free_extent_buffer(leaf);
 	leaf = NULL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	btrfs_set_root_dirid(root_item, new_dirid);
 
@@ -537,8 +540,27 @@ static noinline int create_subvol(struct inode *dir,
 	key.type = BTRFS_ROOT_ITEM_KEY;
 	ret = btrfs_insert_root(trans, fs_info->tree_root, &key,
 				root_item);
+<<<<<<< HEAD
 	if (ret)
 		goto fail;
+=======
+	if (ret) {
+		/*
+		 * Since we don't abort the transaction in this case, free the
+		 * tree block so that we don't leak space and leave the
+		 * filesystem in an inconsistent state (an extent item in the
+		 * extent tree without backreferences). Also no need to have
+		 * the tree block locked since it is not in any tree at this
+		 * point, so no other task can find it and use it.
+		 */
+		btrfs_free_tree_block(trans, root, leaf, 0, 1);
+		free_extent_buffer(leaf);
+		goto fail;
+	}
+
+	free_extent_buffer(leaf);
+	leaf = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	key.offset = (u64)-1;
 	new_root = btrfs_read_fs_root_no_name(fs_info, &key);
@@ -580,12 +602,26 @@ static noinline int create_subvol(struct inode *dir,
 
 	btrfs_i_size_write(BTRFS_I(dir), dir->i_size + namelen * 2);
 	ret = btrfs_update_inode(trans, root, dir);
+<<<<<<< HEAD
 	BUG_ON(ret);
+=======
+	if (ret) {
+		btrfs_abort_transaction(trans, ret);
+		goto fail;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = btrfs_add_root_ref(trans, fs_info,
 				 objectid, root->root_key.objectid,
 				 btrfs_ino(BTRFS_I(dir)), index, name, namelen);
+<<<<<<< HEAD
 	BUG_ON(ret);
+=======
+	if (ret) {
+		btrfs_abort_transaction(trans, ret);
+		goto fail;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = btrfs_uuid_tree_add(trans, fs_info, root_item->uuid,
 				  BTRFS_UUID_KEY_SUBVOL, objectid);
@@ -649,6 +685,10 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
 	struct btrfs_pending_snapshot *pending_snapshot;
 	struct btrfs_trans_handle *trans;
 	int ret;
+<<<<<<< HEAD
+=======
+	bool snapshot_force_cow = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!test_bit(BTRFS_ROOT_REF_COWS, &root->state))
 		return -EINVAL;
@@ -665,6 +705,14 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
 		goto free_pending;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Force new buffered writes to reserve space even when NOCOW is
+	 * possible. This is to avoid later writeback (running dealloc) to
+	 * fallback to COW mode and unexpectedly fail with ENOSPC.
+	 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	atomic_inc(&root->will_be_snapshotted);
 	smp_mb__after_atomic();
 	btrfs_wait_for_no_snapshotting_writes(root);
@@ -673,6 +721,17 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
 	if (ret)
 		goto dec_and_free;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * All previous writes have started writeback in NOCOW mode, so now
+	 * we force future writes to fallback to COW mode during snapshot
+	 * creation.
+	 */
+	atomic_inc(&root->snapshot_force_cow);
+	snapshot_force_cow = true;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	btrfs_wait_ordered_extents(root, U64_MAX, 0, (u64)-1);
 
 	btrfs_init_block_rsv(&pending_snapshot->block_rsv,
@@ -738,6 +797,11 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
 fail:
 	btrfs_subvolume_release_metadata(fs_info, &pending_snapshot->block_rsv);
 dec_and_free:
+<<<<<<< HEAD
+=======
+	if (snapshot_force_cow)
+		atomic_dec(&root->snapshot_force_cow);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (atomic_dec_and_test(&root->will_be_snapshotted))
 		wake_up_atomic_t(&root->will_be_snapshotted);
 free_pending:
@@ -2015,9 +2079,20 @@ static noinline int copy_to_sk(struct btrfs_path *path,
 		sh.len = item_len;
 		sh.transid = found_transid;
 
+<<<<<<< HEAD
 		/* copy search result header */
 		if (copy_to_user(ubuf + *sk_offset, &sh, sizeof(sh))) {
 			ret = -EFAULT;
+=======
+		/*
+		 * Copy search result header. If we fault then loop again so we
+		 * can fault in the pages and -EFAULT there if there's a
+		 * problem. Otherwise we'll fault and then copy the buffer in
+		 * properly this next time through
+		 */
+		if (probe_user_write(ubuf + *sk_offset, &sh, sizeof(sh))) {
+			ret = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto out;
 		}
 
@@ -2025,10 +2100,21 @@ static noinline int copy_to_sk(struct btrfs_path *path,
 
 		if (item_len) {
 			char __user *up = ubuf + *sk_offset;
+<<<<<<< HEAD
 			/* copy the item */
 			if (read_extent_buffer_to_user(leaf, up,
 						       item_off, item_len)) {
 				ret = -EFAULT;
+=======
+			/*
+			 * Copy the item, same behavior as above, but reset the
+			 * * sk_offset so we copy the full thing again.
+			 */
+			if (read_extent_buffer_to_user_nofault(leaf, up,
+						item_off, item_len)) {
+				ret = 0;
+				*sk_offset -= sizeof(sh);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				goto out;
 			}
 
@@ -2116,6 +2202,14 @@ static noinline int search_ioctl(struct inode *inode,
 	key.offset = sk->min_offset;
 
 	while (1) {
+<<<<<<< HEAD
+=======
+		ret = fault_in_pages_writeable(ubuf + sk_offset,
+					       *buf_size - sk_offset);
+		if (ret)
+			break;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = btrfs_search_forward(root, &key, path, sk->min_transid);
 		if (ret != 0) {
 			if (ret > 0)
@@ -3827,6 +3921,11 @@ process_slot:
 			ret = -EINTR;
 			goto out;
 		}
+<<<<<<< HEAD
+=======
+
+		cond_resched();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	ret = 0;
 

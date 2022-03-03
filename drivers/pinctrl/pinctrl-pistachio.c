@@ -1368,6 +1368,10 @@ static int pistachio_gpio_register(struct pistachio_pinctrl *pctl)
 		if (!of_find_property(child, "gpio-controller", NULL)) {
 			dev_err(pctl->dev,
 				"No gpio-controller property for bank %u\n", i);
+<<<<<<< HEAD
+=======
+			of_node_put(child);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ret = -ENODEV;
 			goto err;
 		}
@@ -1375,6 +1379,10 @@ static int pistachio_gpio_register(struct pistachio_pinctrl *pctl)
 		irq = irq_of_parse_and_map(child, 0);
 		if (irq < 0) {
 			dev_err(pctl->dev, "No IRQ for bank %u: %d\n", i, irq);
+<<<<<<< HEAD
+=======
+			of_node_put(child);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ret = irq;
 			goto err;
 		}

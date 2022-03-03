@@ -67,8 +67,15 @@ raw_copy_from_user(void *to, const void __user *from, unsigned long n);
 unsigned long __must_check
 raw_copy_to_user(void __user *to, const void *from, unsigned long n);
 
+<<<<<<< HEAD
 #define INLINE_COPY_FROM_USER
 #define INLINE_COPY_TO_USER
+=======
+#ifndef CONFIG_KASAN
+#define INLINE_COPY_FROM_USER
+#define INLINE_COPY_TO_USER
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_HAVE_MARCH_Z10_FEATURES
 
@@ -93,7 +100,11 @@ raw_copy_to_user(void __user *to, const void *from, unsigned long n);
 	__rc;							\
 })
 
+<<<<<<< HEAD
 static inline int __put_user_fn(void *x, void __user *ptr, unsigned long size)
+=======
+static __always_inline int __put_user_fn(void *x, void __user *ptr, unsigned long size)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned long spec = 0x810000UL;
 	int rc;
@@ -123,7 +134,11 @@ static inline int __put_user_fn(void *x, void __user *ptr, unsigned long size)
 	return rc;
 }
 
+<<<<<<< HEAD
 static inline int __get_user_fn(void *x, const void __user *ptr, unsigned long size)
+=======
+static __always_inline int __get_user_fn(void *x, const void __user *ptr, unsigned long size)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned long spec = 0x81UL;
 	int rc;

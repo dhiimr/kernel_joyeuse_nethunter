@@ -108,8 +108,13 @@ static const char * const tegra_dt_board_compat[] = {
 };
 
 DT_MACHINE_START(TEGRA_DT, "NVIDIA Tegra SoC (Flattened Device Tree)")
+<<<<<<< HEAD
 	.l2c_aux_val	= 0x3c400001,
 	.l2c_aux_mask	= 0xc20fc3fe,
+=======
+	.l2c_aux_val	= 0x3c400000,
+	.l2c_aux_mask	= 0xc20fc3ff,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.smp		= smp_ops(tegra_smp_ops),
 	.map_io		= tegra_map_common_io,
 	.init_early	= tegra_init_early,

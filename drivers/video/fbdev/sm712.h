@@ -15,6 +15,7 @@
 
 #define FB_ACCEL_SMI_LYNX 88
 
+<<<<<<< HEAD
 #define SCREEN_X_RES      1024
 #define SCREEN_Y_RES      600
 #define SCREEN_BPP        16
@@ -23,6 +24,12 @@
 #define SM712_VIDEOMEMORYSIZE	  0x00400000
 /*Assume SM722 graphics chip has 8MB VRAM */
 #define SM722_VIDEOMEMORYSIZE	  0x00800000
+=======
+#define SCREEN_X_RES          1024
+#define SCREEN_Y_RES_PC       768
+#define SCREEN_Y_RES_NETBOOK  600
+#define SCREEN_BPP            16
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define dac_reg	(0x3c8)
 #define dac_val	(0x3c9)

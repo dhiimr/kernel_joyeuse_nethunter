@@ -20,4 +20,7 @@ obj-y += inv_mpu6050/
 obj-$(CONFIG_KMX61) += kmx61.o
 
 obj-y += st_lsm6dsx/
+<<<<<<< HEAD
 obj-y += st_asm330lhh/
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

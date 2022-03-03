@@ -319,6 +319,7 @@ void tulip_select_media(struct net_device *dev, int startup)
 			break;
 		}
 		case 5: case 6: {
+<<<<<<< HEAD
 			u16 setup[5];
 
 			new_csr6 = 0; /* FIXME */
@@ -326,6 +327,10 @@ void tulip_select_media(struct net_device *dev, int startup)
 			for (i = 0; i < 5; i++)
 				setup[i] = get_u16(&p[i*2 + 1]);
 
+=======
+			new_csr6 = 0; /* FIXME */
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (startup && mtable->has_reset) {
 				struct medialeaf *rleaf = &mtable->mleaf[mtable->has_reset];
 				unsigned char *rst = rleaf->leafdata;

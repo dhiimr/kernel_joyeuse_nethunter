@@ -3,6 +3,10 @@
 menuconfig SND_PCI
 	bool "PCI sound devices"
 	depends on PCI
+<<<<<<< HEAD
+=======
+	default y
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  Support for sound devices connected via the PCI bus.
 

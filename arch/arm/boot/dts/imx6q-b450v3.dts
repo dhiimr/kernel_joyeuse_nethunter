@@ -65,6 +65,7 @@
 	};
 };
 
+<<<<<<< HEAD
 &clks {
 	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
 			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>;
@@ -72,6 +73,8 @@
 				 <&clks IMX6QDL_CLK_PLL3_USB_OTG>;
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 &ldb {
 	status = "okay";
 

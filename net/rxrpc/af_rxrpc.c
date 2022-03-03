@@ -504,6 +504,10 @@ static int rxrpc_sendmsg(struct socket *sock, struct msghdr *m, size_t len)
 
 	switch (rx->sk.sk_state) {
 	case RXRPC_UNBOUND:
+<<<<<<< HEAD
+=======
+	case RXRPC_CLIENT_UNBOUND:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rx->srx.srx_family = AF_RXRPC;
 		rx->srx.srx_service = 0;
 		rx->srx.transport_type = SOCK_DGRAM;
@@ -528,10 +532,16 @@ static int rxrpc_sendmsg(struct socket *sock, struct msghdr *m, size_t len)
 		}
 
 		rx->local = local;
+<<<<<<< HEAD
 		rx->sk.sk_state = RXRPC_CLIENT_UNBOUND;
 		/* Fall through */
 
 	case RXRPC_CLIENT_UNBOUND:
+=======
+		rx->sk.sk_state = RXRPC_CLIENT_BOUND;
+		/* Fall through */
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	case RXRPC_CLIENT_BOUND:
 		if (!m->msg_name &&
 		    test_bit(RXRPC_SOCK_CONNECTED, &rx->flags)) {

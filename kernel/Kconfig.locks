@@ -248,7 +248,10 @@ config ARCH_USE_QUEUED_RWLOCKS
 config QUEUED_RWLOCKS
 	def_bool y if ARCH_USE_QUEUED_RWLOCKS
 	depends on SMP
+<<<<<<< HEAD
 
 config RWSEM_PRIO_AWARE
        def_bool y
        depends on RWSEM_XCHGADD_ALGORITHM
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

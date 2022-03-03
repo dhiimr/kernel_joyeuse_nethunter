@@ -115,10 +115,18 @@ struct sfp {
 	struct gpio_desc *gpio[GPIO_MAX];
 
 	bool attached;
+<<<<<<< HEAD
 	unsigned int state;
 	struct delayed_work poll;
 	struct delayed_work timeout;
 	struct mutex sm_mutex;
+=======
+	struct mutex st_mutex;			/* Protects state */
+	unsigned int state;
+	struct delayed_work poll;
+	struct delayed_work timeout;
+	struct mutex sm_mutex;			/* Protects state machine */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned char sm_mod_state;
 	unsigned char sm_dev_state;
 	unsigned short sm_state;
@@ -168,6 +176,10 @@ static int sfp__i2c_read(struct i2c_adapter *i2c, u8 bus_addr, u8 dev_addr,
 	void *buf, size_t len)
 {
 	struct i2c_msg msgs[2];
+<<<<<<< HEAD
+=======
+	size_t this_len;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 
 	msgs[0].addr = bus_addr;
@@ -179,11 +191,34 @@ static int sfp__i2c_read(struct i2c_adapter *i2c, u8 bus_addr, u8 dev_addr,
 	msgs[1].len = len;
 	msgs[1].buf = buf;
 
+<<<<<<< HEAD
 	ret = i2c_transfer(i2c, msgs, ARRAY_SIZE(msgs));
 	if (ret < 0)
 		return ret;
 
 	return ret == ARRAY_SIZE(msgs) ? len : 0;
+=======
+	while (len) {
+		this_len = len;
+		if (this_len > 16)
+			this_len = 16;
+
+		msgs[1].len = this_len;
+
+		ret = i2c_transfer(i2c, msgs, ARRAY_SIZE(msgs));
+		if (ret < 0)
+			return ret;
+
+		if (ret != ARRAY_SIZE(msgs))
+			break;
+
+		msgs[1].buf += this_len;
+		dev_addr += this_len;
+		len -= this_len;
+	}
+
+	return msgs[1].buf - (u8 *)buf;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int sfp_i2c_read(struct sfp *sfp, bool a2, u8 addr, void *buf,
@@ -722,6 +757,10 @@ static void sfp_check_state(struct sfp *sfp)
 {
 	unsigned int state, i, changed;
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&sfp->st_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	state = sfp_get_state(sfp);
 	changed = state ^ sfp->state;
 	changed &= SFP_F_PRESENT | SFP_F_LOS | SFP_F_TX_FAULT;
@@ -747,6 +786,10 @@ static void sfp_check_state(struct sfp *sfp)
 		sfp_sm_event(sfp, state & SFP_F_LOS ?
 				SFP_E_LOS_HIGH : SFP_E_LOS_LOW);
 	rtnl_unlock();
+<<<<<<< HEAD
+=======
+	mutex_unlock(&sfp->st_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static irqreturn_t sfp_irq(int irq, void *data)
@@ -777,6 +820,10 @@ static struct sfp *sfp_alloc(struct device *dev)
 	sfp->dev = dev;
 
 	mutex_init(&sfp->sm_mutex);
+<<<<<<< HEAD
+=======
+	mutex_init(&sfp->st_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	INIT_DELAYED_WORK(&sfp->poll, sfp_poll);
 	INIT_DELAYED_WORK(&sfp->timeout, sfp_timeout);
 
@@ -861,7 +908,12 @@ static int sfp_probe(struct platform_device *pdev)
 			continue;
 
 		irq = gpiod_to_irq(sfp->gpio[i]);
+<<<<<<< HEAD
 		if (!irq) {
+=======
+		if (irq < 0) {
+			irq = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			poll = true;
 			continue;
 		}

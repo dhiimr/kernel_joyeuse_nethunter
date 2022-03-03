@@ -101,7 +101,11 @@
 
 	arm-pmu {
 		compatible = "arm,cortex-a7-pmu";
+<<<<<<< HEAD
 		interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
+=======
+		interrupts = <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	timer {
@@ -522,7 +526,11 @@
 			compatible = "rockchip,gpio-bank";
 			reg = <0x20030000 0x100>;
 			interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
+<<<<<<< HEAD
 			clocks = <&xin24m>;
+=======
+			clocks = <&cru PCLK_GPIO0_PMU>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			gpio-controller;
 			#gpio-cells = <2>;
@@ -535,7 +543,11 @@
 			compatible = "rockchip,gpio-bank";
 			reg = <0x10310000 0x100>;
 			interrupts = <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+<<<<<<< HEAD
 			clocks = <&xin24m>;
+=======
+			clocks = <&cru PCLK_GPIO1>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			gpio-controller;
 			#gpio-cells = <2>;
@@ -548,7 +560,11 @@
 			compatible = "rockchip,gpio-bank";
 			reg = <0x10320000 0x100>;
 			interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
+<<<<<<< HEAD
 			clocks = <&xin24m>;
+=======
+			clocks = <&cru PCLK_GPIO2>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			gpio-controller;
 			#gpio-cells = <2>;
@@ -561,7 +577,11 @@
 			compatible = "rockchip,gpio-bank";
 			reg = <0x10330000 0x100>;
 			interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
+<<<<<<< HEAD
 			clocks = <&xin24m>;
+=======
+			clocks = <&cru PCLK_GPIO3>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			gpio-controller;
 			#gpio-cells = <2>;

@@ -168,6 +168,7 @@ a shared clock is forbidden.
 
 Configuration of common clocks, which affect multiple consumer devices can
 be similarly specified in the clock provider node.
+<<<<<<< HEAD
 
 ==Protected clocks==
 
@@ -184,3 +185,5 @@ only be specified in the node that is providing the clocks being protected:
         ...
         protected-clocks = <UART3_CLK>, <SPI5_CLK>;
    };
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

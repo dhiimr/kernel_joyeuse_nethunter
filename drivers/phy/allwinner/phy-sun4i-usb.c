@@ -549,12 +549,23 @@ static void sun4i_usb_phy0_id_vbus_det_scan(struct work_struct *work)
 	struct sun4i_usb_phy_data *data =
 		container_of(work, struct sun4i_usb_phy_data, detect.work);
 	struct phy *phy0 = data->phys[0].phy;
+<<<<<<< HEAD
 	bool force_session_end, id_notify = false, vbus_notify = false;
 	int id_det, vbus_det;
 
 	if (phy0 == NULL)
 		return;
 
+=======
+	struct sun4i_usb_phy *phy;
+	bool force_session_end, id_notify = false, vbus_notify = false;
+	int id_det, vbus_det;
+
+	if (!phy0)
+		return;
+
+	phy = phy_get_drvdata(phy0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	id_det = sun4i_usb_phy0_get_id_det(data);
 	vbus_det = sun4i_usb_phy0_get_vbus_det(data);
 
@@ -605,6 +616,12 @@ static void sun4i_usb_phy0_id_vbus_det_scan(struct work_struct *work)
 			mutex_unlock(&phy0->mutex);
 		}
 
+<<<<<<< HEAD
+=======
+		/* Enable PHY0 passby for host mode only. */
+		sun4i_usb_phy_passby(phy, !id_det);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* Re-route PHY0 if necessary */
 		if (data->cfg->phy0_dual_route)
 			sun4i_usb_phy0_reroute(data, id_det);

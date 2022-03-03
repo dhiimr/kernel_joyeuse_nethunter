@@ -693,8 +693,13 @@ static int setup_attrs(struct acpi_power_meter_resource *resource)
 
 	if (resource->caps.flags & POWER_METER_CAN_CAP) {
 		if (!can_cap_in_hardware()) {
+<<<<<<< HEAD
 			dev_err(&resource->acpi_dev->dev,
 				"Ignoring unsafe software power cap!\n");
+=======
+			dev_warn(&resource->acpi_dev->dev,
+				 "Ignoring unsafe software power cap!\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto skip_unsafe_cap;
 		}
 
@@ -895,7 +900,11 @@ static int acpi_power_meter_add(struct acpi_device *device)
 
 	res = setup_attrs(resource);
 	if (res)
+<<<<<<< HEAD
 		goto exit_free;
+=======
+		goto exit_free_capability;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	resource->hwmon_dev = hwmon_device_register(&device->dev);
 	if (IS_ERR(resource->hwmon_dev)) {
@@ -908,6 +917,11 @@ static int acpi_power_meter_add(struct acpi_device *device)
 
 exit_remove:
 	remove_attrs(resource);
+<<<<<<< HEAD
+=======
+exit_free_capability:
+	free_capabilities(resource);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 exit_free:
 	kfree(resource);
 exit:

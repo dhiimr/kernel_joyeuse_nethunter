@@ -24,6 +24,17 @@ static bool ubifs_crypt_empty_dir(struct inode *inode)
 	return ubifs_check_dir_empty(inode) == 0;
 }
 
+<<<<<<< HEAD
+=======
+static unsigned int ubifs_crypt_max_namelen(struct inode *inode)
+{
+	if (S_ISLNK(inode->i_mode))
+		return UBIFS_MAX_INO_DATA;
+	else
+		return UBIFS_MAX_NLEN;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int ubifs_encrypt(const struct inode *inode, struct ubifs_data_node *dn,
 		  unsigned int in_len, unsigned int *out_len, int block)
 {
@@ -80,6 +91,12 @@ const struct fscrypt_operations ubifs_crypt_operations = {
 	.key_prefix		= "ubifs:",
 	.get_context		= ubifs_crypt_get_context,
 	.set_context		= ubifs_crypt_set_context,
+<<<<<<< HEAD
 	.empty_dir		= ubifs_crypt_empty_dir,
 	.max_namelen		= UBIFS_MAX_NLEN,
+=======
+	.is_encrypted		= __ubifs_crypt_is_encrypted,
+	.empty_dir		= ubifs_crypt_empty_dir,
+	.max_namelen		= ubifs_crypt_max_namelen,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };

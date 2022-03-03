@@ -10,8 +10,12 @@
 
 #ifdef CONFIG_SMP
 static int
+<<<<<<< HEAD
 select_task_rq_idle(struct task_struct *p, int cpu, int sd_flag, int flags,
 		    int sibling_count_hint)
+=======
+select_task_rq_idle(struct task_struct *p, int cpu, int sd_flag, int flags)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return task_cpu(p); /* IDLE tasks as never migrated */
 }

@@ -89,7 +89,11 @@ config NFS_V4
 config NFS_SWAP
 	bool "Provide swap over NFS support"
 	default n
+<<<<<<< HEAD
 	depends on NFS_FS
+=======
+	depends on NFS_FS && SWAP
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select SUNRPC_SWAP
 	help
 	  This option enables swapon to work on files located on NFS mounts.
@@ -127,7 +131,11 @@ config PNFS_BLOCK
 config PNFS_FLEXFILE_LAYOUT
 	tristate
 	depends on NFS_V4_1 && NFS_V3
+<<<<<<< HEAD
 	default m
+=======
+	default NFS_V4
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config NFS_V4_1_IMPLEMENTATION_ID_DOMAIN
 	string "NFSv4.1 Implementation ID Domain"

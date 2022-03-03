@@ -17,8 +17,11 @@
 #include <net/netfilter/nf_nat_l3proto.h>
 #include <net/netfilter/nf_nat_l4proto.h>
 
+<<<<<<< HEAD
 static u16 udp_port_rover;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void
 udp_unique_tuple(const struct nf_nat_l3proto *l3proto,
 		 struct nf_conntrack_tuple *tuple,
@@ -26,8 +29,12 @@ udp_unique_tuple(const struct nf_nat_l3proto *l3proto,
 		 enum nf_nat_manip_type maniptype,
 		 const struct nf_conn *ct)
 {
+<<<<<<< HEAD
 	nf_nat_l4proto_unique_tuple(l3proto, tuple, range, maniptype, ct,
 				    &udp_port_rover);
+=======
+	nf_nat_l4proto_unique_tuple(l3proto, tuple, range, maniptype, ct);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void
@@ -66,21 +73,33 @@ static bool udp_manip_pkt(struct sk_buff *skb,
 			  enum nf_nat_manip_type maniptype)
 {
 	struct udphdr *hdr;
+<<<<<<< HEAD
 	bool do_csum;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!skb_make_writable(skb, hdroff + sizeof(*hdr)))
 		return false;
 
 	hdr = (struct udphdr *)(skb->data + hdroff);
+<<<<<<< HEAD
 	do_csum = hdr->check || skb->ip_summed == CHECKSUM_PARTIAL;
 
 	__udp_manip_pkt(skb, l3proto, iphdroff, hdr, tuple, maniptype, do_csum);
+=======
+	__udp_manip_pkt(skb, l3proto, iphdroff, hdr, tuple, maniptype,
+			!!hdr->check);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return true;
 }
 
 #ifdef CONFIG_NF_NAT_PROTO_UDPLITE
+<<<<<<< HEAD
 static u16 udplite_port_rover;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static bool udplite_manip_pkt(struct sk_buff *skb,
 			      const struct nf_nat_l3proto *l3proto,
 			      unsigned int iphdroff, unsigned int hdroff,
@@ -104,8 +123,12 @@ udplite_unique_tuple(const struct nf_nat_l3proto *l3proto,
 		     enum nf_nat_manip_type maniptype,
 		     const struct nf_conn *ct)
 {
+<<<<<<< HEAD
 	nf_nat_l4proto_unique_tuple(l3proto, tuple, range, maniptype, ct,
 				    &udplite_port_rover);
+=======
+	nf_nat_l4proto_unique_tuple(l3proto, tuple, range, maniptype, ct);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 const struct nf_nat_l4proto nf_nat_l4proto_udplite = {

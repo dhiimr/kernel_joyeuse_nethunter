@@ -688,9 +688,12 @@ static int acpi_data_prop_read_single(const struct acpi_device_data *data,
 	const union acpi_object *obj;
 	int ret;
 
+<<<<<<< HEAD
 	if (!val)
 		return -EINVAL;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (proptype >= DEV_PROP_U8 && proptype <= DEV_PROP_U64) {
 		ret = acpi_data_get_property(data, propname, ACPI_TYPE_INTEGER, &obj);
 		if (ret)
@@ -700,28 +703,64 @@ static int acpi_data_prop_read_single(const struct acpi_device_data *data,
 		case DEV_PROP_U8:
 			if (obj->integer.value > U8_MAX)
 				return -EOVERFLOW;
+<<<<<<< HEAD
 			*(u8 *)val = obj->integer.value;
+=======
+
+			if (val)
+				*(u8 *)val = obj->integer.value;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		case DEV_PROP_U16:
 			if (obj->integer.value > U16_MAX)
 				return -EOVERFLOW;
+<<<<<<< HEAD
 			*(u16 *)val = obj->integer.value;
+=======
+
+			if (val)
+				*(u16 *)val = obj->integer.value;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		case DEV_PROP_U32:
 			if (obj->integer.value > U32_MAX)
 				return -EOVERFLOW;
+<<<<<<< HEAD
 			*(u32 *)val = obj->integer.value;
 			break;
 		default:
 			*(u64 *)val = obj->integer.value;
 			break;
 		}
+=======
+
+			if (val)
+				*(u32 *)val = obj->integer.value;
+
+			break;
+		default:
+			if (val)
+				*(u64 *)val = obj->integer.value;
+
+			break;
+		}
+
+		if (!val)
+			return 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else if (proptype == DEV_PROP_STRING) {
 		ret = acpi_data_get_property(data, propname, ACPI_TYPE_STRING, &obj);
 		if (ret)
 			return ret;
 
+<<<<<<< HEAD
 		*(char **)val = obj->string.pointer;
+=======
+		if (val)
+			*(char **)val = obj->string.pointer;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		return 1;
 	} else {
@@ -735,7 +774,11 @@ int acpi_dev_prop_read_single(struct acpi_device *adev, const char *propname,
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!adev)
+=======
+	if (!adev || !val)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	ret = acpi_data_prop_read_single(&adev->data, propname, proptype, val);
@@ -829,10 +872,27 @@ static int acpi_data_prop_read(const struct acpi_device_data *data,
 	const union acpi_object *items;
 	int ret;
 
+<<<<<<< HEAD
 	if (val && nval == 1) {
 		ret = acpi_data_prop_read_single(data, propname, proptype, val);
 		if (ret >= 0)
 			return ret;
+=======
+	if (nval == 1 || !val) {
+		ret = acpi_data_prop_read_single(data, propname, proptype, val);
+		/*
+		 * The overflow error means that the property is there and it is
+		 * single-value, but its type does not match, so return.
+		 */
+		if (ret >= 0 || ret == -EOVERFLOW)
+			return ret;
+
+		/*
+		 * Reading this property as a single-value one failed, but its
+		 * value may still be represented as one-element array, so
+		 * continue.
+		 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ret = acpi_data_get_property_array(data, propname, ACPI_TYPE_ANY, &obj);
@@ -943,6 +1003,17 @@ struct fwnode_handle *acpi_get_next_subnode(const struct fwnode_handle *fwnode,
 		const struct acpi_data_node *data = to_acpi_data_node(fwnode);
 		struct acpi_data_node *dn;
 
+<<<<<<< HEAD
+=======
+		/*
+		 * We can have a combination of device and data nodes, e.g. with
+		 * hierarchical _DSD properties. Make sure the adev pointer is
+		 * restored before going through data nodes, otherwise we will
+		 * be looking for data_nodes below the last device found instead
+		 * of the common fwnode shared by device_nodes and data_nodes.
+		 */
+		adev = to_acpi_device_node(fwnode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (adev)
 			head = &adev->data.subnodes;
 		else if (data)

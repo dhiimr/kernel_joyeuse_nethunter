@@ -132,7 +132,11 @@ static int etnaviv_iommu_find_iova(struct etnaviv_iommu *mmu,
 		 */
 		if (mmu->last_iova) {
 			mmu->last_iova = 0;
+<<<<<<< HEAD
 			mmu->need_flush = true;
+=======
+			mmu->flush_seq++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			continue;
 		}
 
@@ -246,7 +250,11 @@ int etnaviv_iommu_map_gem(struct etnaviv_iommu *mmu,
 	}
 
 	list_add_tail(&mapping->mmu_node, &mmu->mappings);
+<<<<<<< HEAD
 	mmu->need_flush = true;
+=======
+	mmu->flush_seq++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(&mmu->lock);
 
 	return ret;
@@ -264,7 +272,11 @@ void etnaviv_iommu_unmap_gem(struct etnaviv_iommu *mmu,
 		etnaviv_iommu_remove_mapping(mmu, mapping);
 
 	list_del(&mapping->mmu_node);
+<<<<<<< HEAD
 	mmu->need_flush = true;
+=======
+	mmu->flush_seq++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_unlock(&mmu->lock);
 }
 
@@ -346,7 +358,11 @@ int etnaviv_iommu_get_suballoc_va(struct etnaviv_gpu *gpu, dma_addr_t paddr,
 			return ret;
 		}
 		mmu->last_iova = vram_node->start + size;
+<<<<<<< HEAD
 		gpu->mmu->need_flush = true;
+=======
+		mmu->flush_seq++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mutex_unlock(&mmu->lock);
 
 		*iova = (u32)vram_node->start;

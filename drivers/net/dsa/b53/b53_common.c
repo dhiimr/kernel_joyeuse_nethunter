@@ -501,6 +501,22 @@ static void b53_imp_vlan_setup(struct dsa_switch *ds, int cpu_port)
 	}
 }
 
+<<<<<<< HEAD
+=======
+static void b53_port_set_learning(struct b53_device *dev, int port,
+				  bool learning)
+{
+	u16 reg;
+
+	b53_read16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, &reg);
+	if (learning)
+		reg &= ~BIT(port);
+	else
+		reg |= BIT(port);
+	b53_write16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, reg);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int b53_enable_port(struct dsa_switch *ds, int port,
 			   struct phy_device *phy)
 {
@@ -508,6 +524,11 @@ static int b53_enable_port(struct dsa_switch *ds, int port,
 	unsigned int cpu_port = dev->cpu_port;
 	u16 pvlan;
 
+<<<<<<< HEAD
+=======
+	b53_port_set_learning(dev, port, false);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Clear the Rx and Tx disable bits and set to no spanning tree */
 	b53_write8(dev, B53_CTRL_PAGE, B53_PORT_CTRL(port), 0);
 
@@ -551,6 +572,11 @@ static void b53_enable_cpu_port(struct b53_device *dev)
 		    PORT_CTRL_RX_MCST_EN |
 		    PORT_CTRL_RX_UCST_EN;
 	b53_write8(dev, B53_CTRL_PAGE, B53_PORT_CTRL(cpu_port), port_ctrl);
+<<<<<<< HEAD
+=======
+
+	b53_port_set_learning(dev, cpu_port, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void b53_enable_mib(struct b53_device *dev)
@@ -970,7 +996,11 @@ int b53_vlan_prepare(struct dsa_switch *ds, int port,
 	if ((is5325(dev) || is5365(dev)) && vlan->vid_begin == 0)
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
 	if (vlan->vid_end > dev->num_vlans)
+=======
+	if (vlan->vid_end >= dev->num_vlans)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -ERANGE;
 
 	b53_enable_vlan(dev, true);
@@ -1094,6 +1124,10 @@ static int b53_arl_read(struct b53_device *dev, u64 mac,
 			u16 vid, struct b53_arl_entry *ent, u8 *idx,
 			bool is_valid)
 {
+<<<<<<< HEAD
+=======
+	DECLARE_BITMAP(free_bins, B53_ARLTBL_MAX_BIN_ENTRIES);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int i;
 	int ret;
 
@@ -1101,6 +1135,11 @@ static int b53_arl_read(struct b53_device *dev, u64 mac,
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
+=======
+	bitmap_zero(free_bins, dev->num_arl_entries);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Read the bins */
 	for (i = 0; i < dev->num_arl_entries; i++) {
 		u64 mac_vid;
@@ -1112,6 +1151,7 @@ static int b53_arl_read(struct b53_device *dev, u64 mac,
 			   B53_ARLTBL_DATA_ENTRY(i), &fwd_entry);
 		b53_arl_to_entry(ent, mac_vid, fwd_entry);
 
+<<<<<<< HEAD
 		if (!(fwd_entry & ARLTBL_VALID))
 			continue;
 		if ((mac_vid & ARLTBL_MAC_MASK) != mac)
@@ -1119,6 +1159,23 @@ static int b53_arl_read(struct b53_device *dev, u64 mac,
 		*idx = i;
 	}
 
+=======
+		if (!(fwd_entry & ARLTBL_VALID)) {
+			set_bit(i, free_bins);
+			continue;
+		}
+		if ((mac_vid & ARLTBL_MAC_MASK) != mac)
+			continue;
+		*idx = i;
+		return 0;
+	}
+
+	if (bitmap_weight(free_bins, dev->num_arl_entries) == 0)
+		return -ENOSPC;
+
+	*idx = find_first_bit(free_bins, dev->num_arl_entries);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return -ENOENT;
 }
 
@@ -1148,10 +1205,30 @@ static int b53_arl_op(struct b53_device *dev, int op, int port,
 	if (op)
 		return ret;
 
+<<<<<<< HEAD
 	/* We could not find a matching MAC, so reset to a new entry */
 	if (ret) {
 		fwd_entry = 0;
 		idx = 1;
+=======
+	switch (ret) {
+	case -ETIMEDOUT:
+		return ret;
+	case -ENOSPC:
+		dev_dbg(dev->dev, "{%pM,%.4d} no space left in ARL\n",
+			addr, vid);
+		return is_valid ? ret : 0;
+	case -ENOENT:
+		/* We could not find a matching MAC, so reset to a new entry */
+		dev_dbg(dev->dev, "{%pM,%.4d} not found, using idx: %d\n",
+			addr, vid, idx);
+		fwd_entry = 0;
+		break;
+	default:
+		dev_dbg(dev->dev, "{%pM,%.4d} found, using idx: %d\n",
+			addr, vid, idx);
+		break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	memset(&ent, 0, sizeof(ent));
@@ -1318,6 +1395,11 @@ int b53_br_join(struct dsa_switch *ds, int port, struct net_device *br)
 	b53_write16(dev, B53_PVLAN_PAGE, B53_PVLAN_PORT_MASK(port), pvlan);
 	dev->ports[port].vlan_ctl_mask = pvlan;
 
+<<<<<<< HEAD
+=======
+	b53_port_set_learning(dev, port, true);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 EXPORT_SYMBOL(b53_br_join);
@@ -1368,6 +1450,10 @@ void b53_br_leave(struct dsa_switch *ds, int port, struct net_device *br)
 		vl->untag |= BIT(port) | BIT(dev->cpu_port);
 		b53_set_vlan_entry(dev, pvid, vl);
 	}
+<<<<<<< HEAD
+=======
+	b53_port_set_learning(dev, port, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL(b53_br_leave);
 
@@ -1431,7 +1517,10 @@ int b53_mirror_add(struct dsa_switch *ds, int port,
 		loc = B53_EG_MIR_CTL;
 
 	b53_read16(dev, B53_MGMT_PAGE, loc, &reg);
+<<<<<<< HEAD
 	reg &= ~MIRROR_MASK;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	reg |= BIT(port);
 	b53_write16(dev, B53_MGMT_PAGE, loc, reg);
 
@@ -1800,9 +1889,14 @@ static int b53_switch_init(struct b53_device *dev)
 			dev->cpu_port = 5;
 	}
 
+<<<<<<< HEAD
 	/* cpu port is always last */
 	dev->num_ports = dev->cpu_port + 1;
 	dev->enabled_ports |= BIT(dev->cpu_port);
+=======
+	dev->enabled_ports |= BIT(dev->cpu_port);
+	dev->num_ports = fls(dev->enabled_ports);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dev->ports = devm_kzalloc(dev->dev,
 				  sizeof(struct b53_port) * dev->num_ports,

@@ -298,6 +298,7 @@ extern "C" {
  */
 #define DRM_FORMAT_MOD_SAMSUNG_64_32_TILE	fourcc_mod_code(SAMSUNG, 1)
 
+<<<<<<< HEAD
 /*
  * Qualcomm Compressed Format
  *
@@ -330,6 +331,8 @@ extern "C" {
  */
 #define DRM_FORMAT_MOD_QCOM_TILE	fourcc_mod_code(QCOM, 0x8)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Vivante framebuffer modifiers */
 
 /*

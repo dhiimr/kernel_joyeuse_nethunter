@@ -671,7 +671,11 @@ int dlm_ls_stop(struct dlm_ls *ls)
 int dlm_ls_start(struct dlm_ls *ls)
 {
 	struct dlm_recover *rv, *rv_old;
+<<<<<<< HEAD
 	struct dlm_config_node *nodes;
+=======
+	struct dlm_config_node *nodes = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int error, count;
 
 	rv = kzalloc(sizeof(*rv), GFP_NOFS);
@@ -680,7 +684,11 @@ int dlm_ls_start(struct dlm_ls *ls)
 
 	error = dlm_config_nodes(ls->ls_name, &nodes, &count);
 	if (error < 0)
+<<<<<<< HEAD
 		goto fail;
+=======
+		goto fail_rv;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	spin_lock(&ls->ls_recover_lock);
 
@@ -712,8 +720,14 @@ int dlm_ls_start(struct dlm_ls *ls)
 	return 0;
 
  fail:
+<<<<<<< HEAD
 	kfree(rv);
 	kfree(nodes);
+=======
+	kfree(nodes);
+ fail_rv:
+	kfree(rv);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return error;
 }
 

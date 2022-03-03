@@ -15,6 +15,10 @@
 #ifndef __MIPS_ASM_MIPS_CM_H__
 #define __MIPS_ASM_MIPS_CM_H__
 
+<<<<<<< HEAD
+=======
+#include <linux/bitfield.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/bitops.h>
 #include <linux/errno.h>
 
@@ -157,8 +161,13 @@ GCR_ACCESSOR_RO(32, 0x030, rev)
 #define CM_GCR_REV_MINOR			GENMASK(7, 0)
 
 #define CM_ENCODE_REV(major, minor) \
+<<<<<<< HEAD
 		(((major) << __ffs(CM_GCR_REV_MAJOR)) | \
 		 ((minor) << __ffs(CM_GCR_REV_MINOR)))
+=======
+		(FIELD_PREP(CM_GCR_REV_MAJOR, major) | \
+		 FIELD_PREP(CM_GCR_REV_MINOR, minor))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define CM_REV_CM2				CM_ENCODE_REV(6, 0)
 #define CM_REV_CM2_5				CM_ENCODE_REV(7, 0)
@@ -366,10 +375,17 @@ static inline int mips_cm_revision(void)
 static inline unsigned int mips_cm_max_vp_width(void)
 {
 	extern int smp_num_siblings;
+<<<<<<< HEAD
 	uint32_t cfg;
 
 	if (mips_cm_revision() >= CM_REV_CM3)
 		return read_gcr_sys_config2() & CM_GCR_SYS_CONFIG2_MAXVPW;
+=======
+
+	if (mips_cm_revision() >= CM_REV_CM3)
+		return FIELD_GET(CM_GCR_SYS_CONFIG2_MAXVPW,
+				 read_gcr_sys_config2());
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (mips_cm_present()) {
 		/*
@@ -377,8 +393,12 @@ static inline unsigned int mips_cm_max_vp_width(void)
 		 * number of VP(E)s, and if that ever changes then this will
 		 * need revisiting.
 		 */
+<<<<<<< HEAD
 		cfg = read_gcr_cl_config() & CM_GCR_Cx_CONFIG_PVPE;
 		return (cfg >> __ffs(CM_GCR_Cx_CONFIG_PVPE)) + 1;
+=======
+		return FIELD_GET(CM_GCR_Cx_CONFIG_PVPE, read_gcr_cl_config()) + 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (IS_ENABLED(CONFIG_SMP))

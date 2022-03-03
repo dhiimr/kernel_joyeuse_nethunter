@@ -10,8 +10,11 @@
 #include <linux/migrate.h>
 #include <linux/stackdepot.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
 #include <linux/sched.h>
 #include <linux/sched/clock.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "internal.h"
 
@@ -26,12 +29,18 @@ struct page_owner {
 	gfp_t gfp_mask;
 	int last_migrate_reason;
 	depot_stack_handle_t handle;
+<<<<<<< HEAD
 	int pid;
 	u64 ts_nsec;
 };
 
 static bool page_owner_disabled =
 	!IS_ENABLED(CONFIG_PAGE_OWNER_ENABLE_DEFAULT);
+=======
+};
+
+static bool page_owner_disabled = true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 DEFINE_STATIC_KEY_FALSE(page_owner_inited);
 
 static depot_stack_handle_t dummy_handle;
@@ -48,9 +57,12 @@ static int early_page_owner_param(char *buf)
 	if (strcmp(buf, "on") == 0)
 		page_owner_disabled = false;
 
+<<<<<<< HEAD
 	if (strcmp(buf, "off") == 0)
 		page_owner_disabled = true;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 early_param("page_owner", early_page_owner_param);
@@ -187,8 +199,11 @@ static inline void __set_page_owner_handle(struct page_ext *page_ext,
 	page_owner->order = order;
 	page_owner->gfp_mask = gfp_mask;
 	page_owner->last_migrate_reason = -1;
+<<<<<<< HEAD
 	page_owner->pid = current->pid;
 	page_owner->ts_nsec = local_clock();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	__set_bit(PAGE_EXT_OWNER, &page_ext->flags);
 }
@@ -249,8 +264,11 @@ void __copy_page_owner(struct page *oldpage, struct page *newpage)
 	new_page_owner->last_migrate_reason =
 		old_page_owner->last_migrate_reason;
 	new_page_owner->handle = old_page_owner->handle;
+<<<<<<< HEAD
 	new_page_owner->pid = old_page_owner->pid;
 	new_page_owner->ts_nsec = old_page_owner->ts_nsec;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * We don't clear the bit on the oldpage as it's going to be freed
@@ -285,7 +303,12 @@ void pagetypeinfo_showmixedcount_print(struct seq_file *m,
 	 * not matter as the mixed block count will still be correct
 	 */
 	for (; pfn < end_pfn; ) {
+<<<<<<< HEAD
 		if (!pfn_valid(pfn)) {
+=======
+		page = pfn_to_online_page(pfn);
+		if (!page) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			pfn = ALIGN(pfn + 1, MAX_ORDER_NR_PAGES);
 			continue;
 		}
@@ -293,13 +316,20 @@ void pagetypeinfo_showmixedcount_print(struct seq_file *m,
 		block_end_pfn = ALIGN(pfn + 1, pageblock_nr_pages);
 		block_end_pfn = min(block_end_pfn, end_pfn);
 
+<<<<<<< HEAD
 		page = pfn_to_page(pfn);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pageblock_mt = get_pageblock_migratetype(page);
 
 		for (; pfn < block_end_pfn; pfn++) {
 			if (!pfn_valid_within(pfn))
 				continue;
 
+<<<<<<< HEAD
+=======
+			/* The pageblock is online, no need to recheck. */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			page = pfn_to_page(pfn);
 
 			if (page_zone(page) != zone)
@@ -368,10 +398,16 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
 		return -ENOMEM;
 
 	ret = snprintf(kbuf, count,
+<<<<<<< HEAD
 			"Page allocated via order %u, mask %#x(%pGg), pid %d, ts %llu ns\n",
 			page_owner->order, page_owner->gfp_mask,
 			&page_owner->gfp_mask, page_owner->pid,
 			page_owner->ts_nsec);
+=======
+			"Page allocated via order %u, mask %#x(%pGg)\n",
+			page_owner->order, page_owner->gfp_mask,
+			&page_owner->gfp_mask);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (ret >= count)
 		goto err;
@@ -454,9 +490,14 @@ void __dump_page_owner(struct page *page)
 	}
 
 	depot_fetch_stack(handle, &trace);
+<<<<<<< HEAD
 	pr_alert("page allocated via order %u, migratetype %s, gfp_mask %#x(%pGg), pid %d, ts %llu ns\n",
 		 page_owner->order, migratetype_names[mt], gfp_mask, &gfp_mask,
 		 page_owner->pid, page_owner->ts_nsec);
+=======
+	pr_alert("page allocated via order %u, migratetype %s, gfp_mask %#x(%pGg)\n",
+		 page_owner->order, migratetype_names[mt], gfp_mask, &gfp_mask);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	print_stack_trace(&trace, 0);
 
 	if (page_owner->last_migrate_reason != -1)

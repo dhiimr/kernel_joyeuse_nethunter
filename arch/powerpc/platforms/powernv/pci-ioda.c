@@ -598,8 +598,13 @@ static int pnv_ioda_unfreeze_pe(struct pnv_phb *phb, int pe_no, int opt)
 static int pnv_ioda_get_pe_state(struct pnv_phb *phb, int pe_no)
 {
 	struct pnv_ioda_pe *slave, *pe;
+<<<<<<< HEAD
 	u8 fstate, state;
 	__be16 pcierr;
+=======
+	u8 fstate = 0, state;
+	__be16 pcierr = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	s64 rc;
 
 	/* Sanity check on PE number */
@@ -1523,6 +1528,13 @@ static void pnv_ioda_setup_vf_PE(struct pci_dev *pdev, u16 num_vfs)
 
 	/* Reserve PE for each VF */
 	for (vf_index = 0; vf_index < num_vfs; vf_index++) {
+<<<<<<< HEAD
+=======
+		int vf_devfn = pci_iov_virtfn_devfn(pdev, vf_index);
+		int vf_bus = pci_iov_virtfn_bus(pdev, vf_index);
+		struct pci_dn *vf_pdn;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (pdn->m64_single_mode)
 			pe_num = pdn->pe_num_map[vf_index];
 		else
@@ -1535,6 +1547,7 @@ static void pnv_ioda_setup_vf_PE(struct pci_dev *pdev, u16 num_vfs)
 		pe->pbus = NULL;
 		pe->parent_dev = pdev;
 		pe->mve_number = -1;
+<<<<<<< HEAD
 		pe->rid = (pci_iov_virtfn_bus(pdev, vf_index) << 8) |
 			   pci_iov_virtfn_devfn(pdev, vf_index);
 
@@ -1542,6 +1555,13 @@ static void pnv_ioda_setup_vf_PE(struct pci_dev *pdev, u16 num_vfs)
 			hose->global_number, pdev->bus->number,
 			PCI_SLOT(pci_iov_virtfn_devfn(pdev, vf_index)),
 			PCI_FUNC(pci_iov_virtfn_devfn(pdev, vf_index)), pe_num);
+=======
+		pe->rid = (vf_bus << 8) | vf_devfn;
+
+		pe_info(pe, "VF %04d:%02d:%02d.%d associated with PE#%x\n",
+			hose->global_number, pdev->bus->number,
+			PCI_SLOT(vf_devfn), PCI_FUNC(vf_devfn), pe_num);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (pnv_ioda_configure_pe(phb, pe)) {
 			/* XXX What do we do here ? */
@@ -1555,6 +1575,18 @@ static void pnv_ioda_setup_vf_PE(struct pci_dev *pdev, u16 num_vfs)
 		list_add_tail(&pe->list, &phb->ioda.pe_list);
 		mutex_unlock(&phb->ioda.pe_list_mutex);
 
+<<<<<<< HEAD
+=======
+		/* associate this pe to it's pdn */
+		list_for_each_entry(vf_pdn, &pdn->parent->child_list, list) {
+			if (vf_pdn->busno == vf_bus &&
+			    vf_pdn->devfn == vf_devfn) {
+				vf_pdn->pe_number = pe_num;
+				break;
+			}
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pnv_pci_ioda2_setup_dma_pe(phb, pe);
 	}
 }

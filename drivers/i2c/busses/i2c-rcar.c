@@ -144,6 +144,10 @@ struct rcar_i2c_priv {
 	enum dma_data_direction dma_direction;
 
 	struct reset_control *rstc;
+<<<<<<< HEAD
+=======
+	int irq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #define rcar_i2c_priv_to_dev(p)		((p)->adap.dev.parent)
@@ -537,13 +541,23 @@ static bool rcar_i2c_slave_irq(struct rcar_i2c_priv *priv)
 			rcar_i2c_write(priv, ICSIER, SDR | SSR | SAR);
 		}
 
+<<<<<<< HEAD
 		rcar_i2c_write(priv, ICSSR, ~SAR & 0xff);
+=======
+		/* Clear SSR, too, because of old STOPs to other clients than us */
+		rcar_i2c_write(priv, ICSSR, ~(SAR | SSR) & 0xff);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* master sent stop */
 	if (ssr_filtered & SSR) {
 		i2c_slave_event(priv->slave, I2C_SLAVE_STOP, &value);
+<<<<<<< HEAD
 		rcar_i2c_write(priv, ICSIER, SAR | SSR);
+=======
+		rcar_i2c_write(priv, ICSCR, SIE | SDBS); /* clear our NACK */
+		rcar_i2c_write(priv, ICSIER, SAR);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rcar_i2c_write(priv, ICSSR, ~SSR & 0xff);
 	}
 
@@ -801,7 +815,11 @@ static int rcar_reg_slave(struct i2c_client *slave)
 	priv->slave = slave;
 	rcar_i2c_write(priv, ICSAR, slave->addr);
 	rcar_i2c_write(priv, ICSSR, 0);
+<<<<<<< HEAD
 	rcar_i2c_write(priv, ICSIER, SAR | SSR);
+=======
+	rcar_i2c_write(priv, ICSIER, SAR);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rcar_i2c_write(priv, ICSCR, SIE | SDBS);
 
 	return 0;
@@ -813,8 +831,18 @@ static int rcar_unreg_slave(struct i2c_client *slave)
 
 	WARN_ON(!priv->slave);
 
+<<<<<<< HEAD
 	rcar_i2c_write(priv, ICSIER, 0);
 	rcar_i2c_write(priv, ICSCR, 0);
+=======
+	/* ensure no irq is running before clearing ptr */
+	disable_irq(priv->irq);
+	rcar_i2c_write(priv, ICSIER, 0);
+	rcar_i2c_write(priv, ICSSR, 0);
+	enable_irq(priv->irq);
+	rcar_i2c_write(priv, ICSCR, SDBS);
+	rcar_i2c_write(priv, ICSAR, 0); /* Gen2: must be 0 if not using slave */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	priv->slave = NULL;
 
@@ -866,7 +894,11 @@ static int rcar_i2c_probe(struct platform_device *pdev)
 	struct i2c_adapter *adap;
 	struct device *dev = &pdev->dev;
 	struct i2c_timings i2c_t;
+<<<<<<< HEAD
 	int irq, ret;
+=======
+	int ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	priv = devm_kzalloc(dev, sizeof(struct rcar_i2c_priv), GFP_KERNEL);
 	if (!priv)
@@ -911,6 +943,11 @@ static int rcar_i2c_probe(struct platform_device *pdev)
 	if (ret < 0)
 		goto out_pm_put;
 
+<<<<<<< HEAD
+=======
+	rcar_i2c_write(priv, ICSAR, 0); /* Gen2: must be 0 if not using slave */
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (priv->devtype == I2C_RCAR_GEN3) {
 		priv->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
 		if (!IS_ERR(priv->rstc)) {
@@ -927,10 +964,17 @@ static int rcar_i2c_probe(struct platform_device *pdev)
 		pm_runtime_put(dev);
 
 
+<<<<<<< HEAD
 	irq = platform_get_irq(pdev, 0);
 	ret = devm_request_irq(dev, irq, rcar_i2c_irq, 0, dev_name(dev), priv);
 	if (ret < 0) {
 		dev_err(dev, "cannot get irq %d\n", irq);
+=======
+	priv->irq = platform_get_irq(pdev, 0);
+	ret = devm_request_irq(dev, priv->irq, rcar_i2c_irq, 0, dev_name(dev), priv);
+	if (ret < 0) {
+		dev_err(dev, "cannot get irq %d\n", priv->irq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out_pm_disable;
 	}
 

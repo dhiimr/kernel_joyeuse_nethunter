@@ -102,7 +102,10 @@
 #define  SDIO_BUS_WIDTH_1BIT	0x00
 #define  SDIO_BUS_WIDTH_RESERVED 0x01
 #define  SDIO_BUS_WIDTH_4BIT	0x02
+<<<<<<< HEAD
 #define  SDIO_BUS_WIDTH_8BIT	0x03
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define  SDIO_BUS_ECSI		0x20	/* Enable continuous SPI interrupt */
 #define  SDIO_BUS_SCSI		0x40	/* Support continuous SPI interrupt */
 
@@ -164,10 +167,13 @@
 #define  SDIO_DTSx_SET_TYPE_A	(1 << SDIO_DRIVE_DTSx_SHIFT)
 #define  SDIO_DTSx_SET_TYPE_C	(2 << SDIO_DRIVE_DTSx_SHIFT)
 #define  SDIO_DTSx_SET_TYPE_D	(3 << SDIO_DRIVE_DTSx_SHIFT)
+<<<<<<< HEAD
 
 #define SDIO_CCCR_INTERRUPT_EXTENSION	0x16
 #define	SDIO_SUPPORT_ASYNC_INTR		(1<<0)
 #define	SDIO_ENABLE_ASYNC_INTR		(1<<1)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Function Basic Registers (FBR)
  */

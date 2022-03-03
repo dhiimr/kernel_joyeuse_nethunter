@@ -279,7 +279,10 @@ static int caif_xmit(struct sk_buff *skb, struct net_device *dev)
 {
 	struct ser_device *ser;
 
+<<<<<<< HEAD
 	BUG_ON(dev == NULL);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ser = netdev_priv(dev);
 
 	/* Send flow off once, on high water mark */
@@ -361,6 +364,10 @@ static int ldisc_open(struct tty_struct *tty)
 	rtnl_lock();
 	result = register_netdevice(dev);
 	if (result) {
+<<<<<<< HEAD
+=======
+		tty_kref_put(tty);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rtnl_unlock();
 		free_netdev(dev);
 		return -ENODEV;

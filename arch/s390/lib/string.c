@@ -227,6 +227,7 @@ EXPORT_SYMBOL(strcmp);
  */
 char * strrchr(const char * s, int c)
 {
+<<<<<<< HEAD
        size_t len = __strend(s) - s;
 
        if (len)
@@ -235,6 +236,15 @@ char * strrchr(const char * s, int c)
 			       return (char *) s + len;
 	       } while (--len > 0);
        return NULL;
+=======
+	ssize_t len = __strend(s) - s;
+
+	do {
+		if (s[len] == (char)c)
+			return (char *)s + len;
+	} while (--len >= 0);
+	return NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL(strrchr);
 

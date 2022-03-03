@@ -342,6 +342,7 @@ static int evdev_fasync(int fd, struct file *file, int on)
 	return fasync_helper(fd, file, on, &client->fasync);
 }
 
+<<<<<<< HEAD
 static int evdev_flush(struct file *file, fl_owner_t id)
 {
 	struct evdev_client *client = file->private_data;
@@ -356,6 +357,8 @@ static int evdev_flush(struct file *file, fl_owner_t id)
 	return 0;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void evdev_free(struct device *dev)
 {
 	struct evdev *evdev = container_of(dev, struct evdev, dev);
@@ -469,6 +472,13 @@ static int evdev_release(struct inode *inode, struct file *file)
 	unsigned int i;
 
 	mutex_lock(&evdev->mutex);
+<<<<<<< HEAD
+=======
+
+	if (evdev->exist && !client->revoked)
+		input_flush_device(&evdev->handle, file);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	evdev_ungrab(evdev, client);
 	mutex_unlock(&evdev->mutex);
 
@@ -1331,7 +1341,10 @@ static const struct file_operations evdev_fops = {
 	.compat_ioctl	= evdev_ioctl_compat,
 #endif
 	.fasync		= evdev_fasync,
+<<<<<<< HEAD
 	.flush		= evdev_flush,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.llseek		= no_llseek,
 };
 

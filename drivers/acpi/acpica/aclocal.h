@@ -429,9 +429,15 @@ struct acpi_simple_repair_info {
 /* Info for running the _REG methods */
 
 struct acpi_reg_walk_info {
+<<<<<<< HEAD
 	acpi_adr_space_type space_id;
 	u32 function;
 	u32 reg_run_count;
+=======
+	u32 function;
+	u32 reg_run_count;
+	acpi_adr_space_type space_id;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /*****************************************************************************

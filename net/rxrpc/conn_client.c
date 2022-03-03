@@ -762,9 +762,15 @@ void rxrpc_disconnect_client_call(struct rxrpc_call *call)
 	struct rxrpc_net *rxnet = rxrpc_net(sock_net(&call->socket->sk));
 
 	trace_rxrpc_client(conn, channel, rxrpc_client_chan_disconnect);
+<<<<<<< HEAD
 	call->conn = NULL;
 
 	spin_lock(&conn->channel_lock);
+=======
+
+	spin_lock(&conn->channel_lock);
+	set_bit(RXRPC_CALL_DISCONNECTED, &call->flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Calls that have never actually been assigned a channel can simply be
 	 * discarded.  If the conn didn't get used either, it will follow
@@ -863,7 +869,10 @@ out:
 	spin_unlock(&rxnet->client_conn_cache_lock);
 out_2:
 	spin_unlock(&conn->channel_lock);
+<<<<<<< HEAD
 	rxrpc_put_connection(conn);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	_leave("");
 	return;
 

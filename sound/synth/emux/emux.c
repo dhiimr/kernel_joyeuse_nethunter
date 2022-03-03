@@ -101,7 +101,11 @@ int snd_emux_register(struct snd_emux *emu, struct snd_card *card, int index, ch
 	emu->name = kstrdup(name, GFP_KERNEL);
 	emu->voices = kcalloc(emu->max_voices, sizeof(struct snd_emux_voice),
 			      GFP_KERNEL);
+<<<<<<< HEAD
 	if (emu->voices == NULL)
+=======
+	if (emu->name == NULL || emu->voices == NULL)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -ENOMEM;
 
 	/* create soundfont list */

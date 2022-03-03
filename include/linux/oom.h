@@ -45,6 +45,10 @@ struct oom_control {
 };
 
 extern struct mutex oom_lock;
+<<<<<<< HEAD
+=======
+extern struct mutex oom_adj_mutex;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static inline void set_current_oom_origin(void)
 {
@@ -113,17 +117,23 @@ extern void oom_killer_enable(void);
 
 extern struct task_struct *find_lock_task_mm(struct task_struct *p);
 
+<<<<<<< HEAD
 extern void dump_tasks(struct mem_cgroup *memcg,
 		const nodemask_t *nodemask);
 
 extern void wake_oom_reaper(struct task_struct *tsk);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* sysctls */
 extern int sysctl_oom_dump_tasks;
 extern int sysctl_oom_kill_allocating_task;
 extern int sysctl_panic_on_oom;
+<<<<<<< HEAD
 extern int sysctl_reap_mem_on_sigkill;
 
 /* calls for LMK reaper */
 extern void add_to_oom_reaper(struct task_struct *p);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _INCLUDE_LINUX_OOM_H */

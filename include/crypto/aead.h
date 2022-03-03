@@ -187,6 +187,11 @@ static inline struct crypto_tfm *crypto_aead_tfm(struct crypto_aead *tfm)
 /**
  * crypto_free_aead() - zeroize and free aead handle
  * @tfm: cipher handle to be freed
+<<<<<<< HEAD
+=======
+ *
+ * If @tfm is a NULL or error pointer, this function does nothing.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 static inline void crypto_free_aead(struct crypto_aead *tfm)
 {

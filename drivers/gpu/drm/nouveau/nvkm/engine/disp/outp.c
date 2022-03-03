@@ -22,6 +22,10 @@
  * Authors: Ben Skeggs
  */
 #include "outp.h"
+<<<<<<< HEAD
+=======
+#include "dp.h"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "ior.h"
 
 #include <subdev/bios.h>
@@ -207,6 +211,17 @@ nvkm_outp_init_route(struct nvkm_outp *outp)
 	if (!ior->arm.head || ior->arm.proto != proto) {
 		OUTP_DBG(outp, "no heads (%x %d %d)", ior->arm.head,
 			 ior->arm.proto, proto);
+<<<<<<< HEAD
+=======
+
+		/* The EFI GOP driver on Ampere can leave unused DP links routed,
+		 * which we don't expect.  The DisableLT IED script *should* get
+		 * us back to where we need to be.
+		 */
+		if (ior->func->route.get && !ior->arm.head && outp->info.type == DCB_OUTPUT_DP)
+			nvkm_dp_disable(outp, ior);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 	}
 

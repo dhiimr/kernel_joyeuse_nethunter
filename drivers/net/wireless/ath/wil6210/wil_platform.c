@@ -16,16 +16,26 @@
 
 #include <linux/device.h>
 #include "wil_platform.h"
+<<<<<<< HEAD
 #include "msm_11ad.h"
 
 int __init wil_platform_modinit(void)
 {
 	return msm_11ad_modinit();
+=======
+
+int __init wil_platform_modinit(void)
+{
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void wil_platform_modexit(void)
 {
+<<<<<<< HEAD
 	msm_11ad_modexit();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -38,7 +48,11 @@ void wil_platform_modexit(void)
 void *wil_platform_init(struct device *dev, struct wil_platform_ops *ops,
 			const struct wil_platform_rops *rops, void *wil_handle)
 {
+<<<<<<< HEAD
 	void *handle;
+=======
+	void *handle = ops; /* to return some non-NULL for 'void' impl. */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!ops) {
 		dev_err(dev,
@@ -46,7 +60,11 @@ void *wil_platform_init(struct device *dev, struct wil_platform_ops *ops,
 		return NULL;
 	}
 
+<<<<<<< HEAD
 	handle = msm_11ad_dev_init(dev, ops, rops, wil_handle);
+=======
+	/* platform specific init functions should be called here */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return handle;
 }

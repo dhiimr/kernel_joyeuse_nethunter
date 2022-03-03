@@ -757,6 +757,12 @@ int __init acpi_aml_init(void)
 		goto err_exit;
 	}
 
+<<<<<<< HEAD
+=======
+	if (acpi_disabled)
+		return -ENODEV;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Initialize AML IO interface */
 	mutex_init(&acpi_aml_io.lock);
 	init_waitqueue_head(&acpi_aml_io.wait);

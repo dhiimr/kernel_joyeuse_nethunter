@@ -686,7 +686,10 @@ static bool should_defer_flush(struct mm_struct *mm, enum ttu_flags flags)
  */
 unsigned long page_address_in_vma(struct page *page, struct vm_area_struct *vma)
 {
+<<<<<<< HEAD
 	unsigned long address;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (PageAnon(page)) {
 		struct anon_vma *page__anon_vma = page_anon_vma(page);
 		/*
@@ -696,6 +699,7 @@ unsigned long page_address_in_vma(struct page *page, struct vm_area_struct *vma)
 		if (!vma->anon_vma || !page__anon_vma ||
 		    vma->anon_vma->root != page__anon_vma->root)
 			return -EFAULT;
+<<<<<<< HEAD
 	} else if (page->mapping) {
 		if (!vma->vm_file || vma->vm_file->f_mapping != page->mapping)
 			return -EFAULT;
@@ -705,6 +709,15 @@ unsigned long page_address_in_vma(struct page *page, struct vm_area_struct *vma)
 	if (unlikely(address < vma->vm_start || address >= vma->vm_end))
 		return -EFAULT;
 	return address;
+=======
+	} else if (!vma->vm_file) {
+		return -EFAULT;
+	} else if (vma->vm_file->f_mapping != compound_head(page)->mapping) {
+		return -EFAULT;
+	}
+
+	return vma_address(page, vma);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 pmd_t *mm_find_pmd(struct mm_struct *mm, unsigned long address)
@@ -896,7 +909,11 @@ static bool page_mkclean_one(struct page *page, struct vm_area_struct *vma,
 	 * We have to assume the worse case ie pmd for invalidation. Note that
 	 * the page can not be free from this function.
 	 */
+<<<<<<< HEAD
 	end = min(vma->vm_end, start + (PAGE_SIZE << compound_order(page)));
+=======
+	end = vma_address_end(page, vma);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mmu_notifier_invalidate_range_start(vma->vm_mm, start, end);
 
 	while (page_vma_mapped_walk(&pvmw)) {
@@ -1134,7 +1151,11 @@ void do_page_add_anon_rmap(struct page *page,
 }
 
 /**
+<<<<<<< HEAD
  * __page_add_new_anon_rmap - add pte mapping to a new anonymous page
+=======
+ * page_add_new_anon_rmap - add pte mapping to a new anonymous page
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @page:	the page to add the mapping to
  * @vma:	the vm area in which the mapping is added
  * @address:	the user virtual address mapped
@@ -1144,11 +1165,19 @@ void do_page_add_anon_rmap(struct page *page,
  * This means the inc-and-test can be bypassed.
  * Page does not have to be locked.
  */
+<<<<<<< HEAD
 void __page_add_new_anon_rmap(struct page *page,
+=======
+void page_add_new_anon_rmap(struct page *page,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct vm_area_struct *vma, unsigned long address, bool compound)
 {
 	int nr = compound ? hpage_nr_pages(page) : 1;
 
+<<<<<<< HEAD
+=======
+	VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__SetPageSwapBacked(page);
 	if (compound) {
 		VM_BUG_ON_PAGE(!PageTransHuge(page), page);
@@ -1343,6 +1372,18 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
 	unsigned long start = address, end;
 	enum ttu_flags flags = (enum ttu_flags)arg;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * When racing against e.g. zap_pte_range() on another cpu,
+	 * in between its ptep_get_and_clear_full() and page_remove_rmap(),
+	 * try_to_unmap() may return false when it is about to become true,
+	 * if page table locking is skipped: use TTU_SYNC to wait for that.
+	 */
+	if (flags & TTU_SYNC)
+		pvmw.flags = PVMW_SYNC;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* munlock has nothing to gain from examining un-locked vmas */
 	if ((flags & TTU_MUNLOCK) && !(vma->vm_flags & VM_LOCKED))
 		return true;
@@ -1364,7 +1405,12 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
 	 * Note that the page can not be free in this function as call of
 	 * try_to_unmap() must hold a reference on the page.
 	 */
+<<<<<<< HEAD
 	end = min(vma->vm_end, start + (PAGE_SIZE << compound_order(page)));
+=======
+	end = PageKsm(page) ?
+			address + PAGE_SIZE : vma_address_end(page, vma);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (PageHuge(page)) {
 		/*
 		 * If sharing is possible, start and end will be adjusted
@@ -1623,15 +1669,22 @@ static bool invalid_migration_vma(struct vm_area_struct *vma, void *arg)
 	return is_vma_temporary_stack(vma);
 }
 
+<<<<<<< HEAD
 static int page_mapcount_is_zero(struct page *page)
 {
 	return !total_mapcount(page);
+=======
+static int page_not_mapped(struct page *page)
+{
+	return !page_mapped(page);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
  * try_to_unmap - try to remove all page table mappings to a page
  * @page: the page to get unmapped
  * @flags: action and flags
+<<<<<<< HEAD
  * @vma : target vma for reclaim
  *
  * Tries to remove all the page table entries which are mapping this
@@ -1643,13 +1696,27 @@ static int page_mapcount_is_zero(struct page *page)
  */
 bool try_to_unmap(struct page *page, enum ttu_flags flags,
 				struct vm_area_struct *vma)
+=======
+ *
+ * Tries to remove all the page table entries which are mapping this
+ * page, used in the pageout path.  Caller must hold the page lock.
+ *
+ * If unmap is successful, return true. Otherwise, false.
+ */
+bool try_to_unmap(struct page *page, enum ttu_flags flags)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct rmap_walk_control rwc = {
 		.rmap_one = try_to_unmap_one,
 		.arg = (void *)flags,
+<<<<<<< HEAD
 		.done = page_mapcount_is_zero,
 		.anon_lock = page_lock_anon_vma_read,
 		.target_vma = vma,
+=======
+		.done = page_not_mapped,
+		.anon_lock = page_lock_anon_vma_read,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	/*
@@ -1669,6 +1736,7 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags,
 	else
 		rmap_walk(page, &rwc);
 
+<<<<<<< HEAD
 	return !page_mapcount(page) ? true : false;
 }
 
@@ -1677,6 +1745,17 @@ static int page_not_mapped(struct page *page)
 	return !page_mapped(page);
 };
 
+=======
+	/*
+	 * When racing against e.g. zap_pte_range() on another cpu,
+	 * in between its ptep_get_and_clear_full() and page_remove_rmap(),
+	 * try_to_unmap() may return false when it is about to become true,
+	 * if page table locking is skipped: use TTU_SYNC to wait for that.
+	 */
+	return !page_mapcount(page);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * try_to_munlock - try to munlock a page
  * @page: the page to be munlocked
@@ -1693,7 +1772,10 @@ void try_to_munlock(struct page *page)
 		.arg = (void *)TTU_MUNLOCK,
 		.done = page_not_mapped,
 		.anon_lock = page_lock_anon_vma_read,
+<<<<<<< HEAD
 		.target_vma = NULL,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	};
 
@@ -1755,6 +1837,7 @@ static void rmap_walk_anon(struct page *page, struct rmap_walk_control *rwc,
 	pgoff_t pgoff_start, pgoff_end;
 	struct anon_vma_chain *avc;
 
+<<<<<<< HEAD
 	if (rwc->target_vma) {
 		unsigned long address = vma_address(page, rwc->target_vma);
 
@@ -1762,6 +1845,8 @@ static void rmap_walk_anon(struct page *page, struct rmap_walk_control *rwc,
 		return;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (locked) {
 		anon_vma = page_anon_vma(page);
 		/* anon_vma disappear under us? */
@@ -1769,7 +1854,10 @@ static void rmap_walk_anon(struct page *page, struct rmap_walk_control *rwc,
 	} else {
 		anon_vma = rmap_walk_anon_lock(page, rwc);
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!anon_vma)
 		return;
 
@@ -1780,6 +1868,10 @@ static void rmap_walk_anon(struct page *page, struct rmap_walk_control *rwc,
 		struct vm_area_struct *vma = avc->vma;
 		unsigned long address = vma_address(page, vma);
 
+<<<<<<< HEAD
+=======
+		VM_BUG_ON_VMA(address == -EFAULT, vma);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cond_resched();
 
 		if (rwc->invalid_vma && rwc->invalid_vma(vma, rwc->arg))
@@ -1814,7 +1906,10 @@ static void rmap_walk_file(struct page *page, struct rmap_walk_control *rwc,
 	struct address_space *mapping = page_mapping(page);
 	pgoff_t pgoff_start, pgoff_end;
 	struct vm_area_struct *vma;
+<<<<<<< HEAD
 	unsigned long address;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * The page lock not only makes sure that page->mapping cannot
@@ -1831,6 +1926,7 @@ static void rmap_walk_file(struct page *page, struct rmap_walk_control *rwc,
 	pgoff_end = pgoff_start + hpage_nr_pages(page) - 1;
 	if (!locked)
 		i_mmap_lock_read(mapping);
+<<<<<<< HEAD
 
 	if (rwc->target_vma) {
 		address = vma_address(page, rwc->target_vma);
@@ -1838,10 +1934,16 @@ static void rmap_walk_file(struct page *page, struct rmap_walk_control *rwc,
 		goto done;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	vma_interval_tree_foreach(vma, &mapping->i_mmap,
 			pgoff_start, pgoff_end) {
 		unsigned long address = vma_address(page, vma);
 
+<<<<<<< HEAD
+=======
+		VM_BUG_ON_VMA(address == -EFAULT, vma);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cond_resched();
 
 		if (rwc->invalid_vma && rwc->invalid_vma(vma, rwc->arg))

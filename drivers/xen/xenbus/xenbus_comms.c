@@ -57,6 +57,7 @@ DEFINE_MUTEX(xs_response_mutex);
 static int xenbus_irq;
 static struct task_struct *xenbus_task;
 
+<<<<<<< HEAD
 static DECLARE_WORK(probe_work, xenbus_probe);
 
 
@@ -67,6 +68,10 @@ static irqreturn_t wake_waiting(int irq, void *unused)
 		schedule_work(&probe_work);
 	}
 
+=======
+static irqreturn_t wake_waiting(int irq, void *unused)
+{
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	wake_up(&xb_waitq);
 	return IRQ_HANDLED;
 }
@@ -313,6 +318,11 @@ static int process_msg(void)
 			req->msg.type = state.msg.type;
 			req->msg.len = state.msg.len;
 			req->body = state.body;
+<<<<<<< HEAD
+=======
+			/* write body, then update state */
+			virt_wmb();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			req->state = xb_req_state_got_reply;
 			req->cb(req);
 		} else
@@ -395,6 +405,11 @@ static int process_writes(void)
 	if (state.req->state == xb_req_state_aborted)
 		kfree(state.req);
 	else {
+<<<<<<< HEAD
+=======
+		/* write err, then update state */
+		virt_wmb();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		state.req->state = xb_req_state_got_reply;
 		wake_up(&state.req->wq);
 	}

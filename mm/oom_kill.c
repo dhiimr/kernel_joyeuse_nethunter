@@ -41,8 +41,11 @@
 #include <linux/kthread.h>
 #include <linux/init.h>
 #include <linux/mmu_notifier.h>
+<<<<<<< HEAD
 #include <linux/memory_hotplug.h>
 #include <linux/show_mem_notifier.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <asm/tlb.h>
 #include "internal.h"
@@ -53,9 +56,16 @@
 int sysctl_panic_on_oom;
 int sysctl_oom_kill_allocating_task;
 int sysctl_oom_dump_tasks = 1;
+<<<<<<< HEAD
 int sysctl_reap_mem_on_sigkill;
 
 DEFINE_MUTEX(oom_lock);
+=======
+
+DEFINE_MUTEX(oom_lock);
+/* Serializes oom_score_adj and oom_score_adj_min updates */
+DEFINE_MUTEX(oom_adj_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_NUMA
 /**
@@ -207,6 +217,16 @@ unsigned long oom_badness(struct task_struct *p, struct mem_cgroup *memcg,
 		atomic_long_read(&p->mm->nr_ptes) + mm_nr_pmds(p->mm);
 	task_unlock(p);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Root processes get 3% bonus, just like the __vm_enough_memory()
+	 * implementation used by LSMs.
+	 */
+	if (has_capability_noaudit(p, CAP_SYS_ADMIN))
+		points -= (points * 3) / 100;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Normalize to oom_score_adj units */
 	adj *= totalpages / 1000;
 	points += adj;
@@ -368,7 +388,11 @@ static void select_bad_process(struct oom_control *oc)
  * State information includes task's pid, uid, tgid, vm size, rss, nr_ptes,
  * swapents, oom_score_adj value, and name.
  */
+<<<<<<< HEAD
 void dump_tasks(struct mem_cgroup *memcg, const nodemask_t *nodemask)
+=======
+static void dump_tasks(struct mem_cgroup *memcg, const nodemask_t *nodemask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct task_struct *p;
 	struct task_struct *task;
@@ -418,11 +442,16 @@ static void dump_header(struct oom_control *oc, struct task_struct *p)
 	dump_stack();
 	if (oc->memcg)
 		mem_cgroup_print_oom_info(oc->memcg, p);
+<<<<<<< HEAD
 	else {
 		show_mem(SHOW_MEM_FILTER_NODES, oc->nodemask);
 		show_mem_call_notifiers();
 	}
 
+=======
+	else
+		show_mem(SHOW_MEM_FILTER_NODES, oc->nodemask);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (sysctl_oom_dump_tasks)
 		dump_tasks(oc->memcg, oc->nodemask);
 }
@@ -504,9 +533,34 @@ void __oom_reap_task_mm(struct mm_struct *mm)
 
 static bool oom_reap_task_mm(struct task_struct *tsk, struct mm_struct *mm)
 {
+<<<<<<< HEAD
 	if (!down_read_trylock(&mm->mmap_sem)) {
 		trace_skip_task_reaping(tsk->pid);
 		return false;
+=======
+	bool ret = true;
+
+	/*
+	 * We have to make sure to not race with the victim exit path
+	 * and cause premature new oom victim selection:
+	 * oom_reap_task_mm		exit_mm
+	 *   mmget_not_zero
+	 *				  mmput
+	 *				    atomic_dec_and_test
+	 *				  exit_oom_victim
+	 *				[...]
+	 *				out_of_memory
+	 *				  select_bad_process
+	 *				    # no TIF_MEMDIE task selects new victim
+	 *  unmap_page_range # frees some memory
+	 */
+	mutex_lock(&oom_lock);
+
+	if (!down_read_trylock(&mm->mmap_sem)) {
+		ret = false;
+		trace_skip_task_reaping(tsk->pid);
+		goto unlock_oom;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/*
@@ -521,7 +575,11 @@ static bool oom_reap_task_mm(struct task_struct *tsk, struct mm_struct *mm)
 	if (mm_has_notifiers(mm)) {
 		up_read(&mm->mmap_sem);
 		schedule_timeout_idle(HZ);
+<<<<<<< HEAD
 		return true;
+=======
+		goto unlock_oom;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/*
@@ -533,7 +591,11 @@ static bool oom_reap_task_mm(struct task_struct *tsk, struct mm_struct *mm)
 	if (test_bit(MMF_OOM_SKIP, &mm->flags)) {
 		up_read(&mm->mmap_sem);
 		trace_skip_task_reaping(tsk->pid);
+<<<<<<< HEAD
 		return true;
+=======
+		goto unlock_oom;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	trace_start_task_reaping(tsk->pid);
@@ -548,7 +610,13 @@ static bool oom_reap_task_mm(struct task_struct *tsk, struct mm_struct *mm)
 	up_read(&mm->mmap_sem);
 
 	trace_finish_task_reaping(tsk->pid);
+<<<<<<< HEAD
 	return true;
+=======
+unlock_oom:
+	mutex_unlock(&oom_lock);
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #define MAX_OOM_REAP_RETRIES 10
@@ -601,11 +669,16 @@ static int oom_reaper(void *unused)
 	return 0;
 }
 
+<<<<<<< HEAD
 void wake_oom_reaper(struct task_struct *tsk)
+=======
+static void wake_oom_reaper(struct task_struct *tsk)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (!oom_reaper_th)
 		return;
 
+<<<<<<< HEAD
 	/*
 	 * Move the lock here to avoid scenario of queuing
 	 * the same task by both OOM killer and any other SIGKILL
@@ -621,6 +694,15 @@ void wake_oom_reaper(struct task_struct *tsk)
 
 	get_task_struct(tsk);
 
+=======
+	/* mm is already queued? */
+	if (test_and_set_bit(MMF_OOM_REAP_QUEUED, &tsk->signal->oom_mm->flags))
+		return;
+
+	get_task_struct(tsk);
+
+	spin_lock(&oom_reaper_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tsk->oom_reaper_list = oom_reaper_list;
 	oom_reaper_list = tsk;
 	spin_unlock(&oom_reaper_lock);
@@ -645,6 +727,7 @@ static inline void wake_oom_reaper(struct task_struct *tsk)
 }
 #endif /* CONFIG_MMU */
 
+<<<<<<< HEAD
 static void __mark_oom_victim(struct task_struct *tsk)
 {
 	struct mm_struct *mm = tsk->mm;
@@ -655,6 +738,8 @@ static void __mark_oom_victim(struct task_struct *tsk)
 	}
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * mark_oom_victim - mark the given task as OOM victim
  * @tsk: task to mark
@@ -667,13 +752,25 @@ static void __mark_oom_victim(struct task_struct *tsk)
  */
 static void mark_oom_victim(struct task_struct *tsk)
 {
+<<<<<<< HEAD
+=======
+	struct mm_struct *mm = tsk->mm;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	WARN_ON(oom_killer_disabled);
 	/* OOM killer might race with memcg OOM */
 	if (test_and_set_tsk_thread_flag(tsk, TIF_MEMDIE))
 		return;
 
 	/* oom_mm is bound to the signal struct life time. */
+<<<<<<< HEAD
 	__mark_oom_victim(tsk);
+=======
+	if (!cmpxchg(&tsk->signal->oom_mm, NULL, mm)) {
+		mmgrab(tsk->signal->oom_mm);
+		set_bit(MMF_OOM_VICTIM, &mm->flags);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Make sure that the task is woken up from uninterruptible sleep
@@ -906,7 +1003,11 @@ static void oom_kill_process(struct oom_control *oc, const char *message)
 
 	/* Raise event before sending signal: task reaper must see this */
 	count_vm_event(OOM_KILL);
+<<<<<<< HEAD
 	count_memcg_event_mm(mm, OOM_KILL);
+=======
+	memcg_memory_event_mm(mm, MEMCG_OOM_KILL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * We should send SIGKILL before granting access to memory reserves
@@ -1019,12 +1120,15 @@ bool out_of_memory(struct oom_control *oc)
 	if (oom_killer_disabled)
 		return false;
 
+<<<<<<< HEAD
 	if (try_online_one_block(numa_node_id())) {
 		/* Got some memory back */
 		WARN(1, "OOM killer had to online a memory block\n");
 		return true;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!is_memcg_oom(oc)) {
 		blocking_notifier_call_chain(&oom_notify_list, 0, &freed);
 		if (freed > 0)
@@ -1047,9 +1151,16 @@ bool out_of_memory(struct oom_control *oc)
 	 * The OOM killer does not compensate for IO-less reclaim.
 	 * pagefault_out_of_memory lost its gfp context so we have to
 	 * make sure exclude 0 mask - all other users should have at least
+<<<<<<< HEAD
 	 * ___GFP_DIRECT_RECLAIM to get here.
 	 */
 	if (oc->gfp_mask && !(oc->gfp_mask & __GFP_FS))
+=======
+	 * ___GFP_DIRECT_RECLAIM to get here. But mem_cgroup_oom() has to
+	 * invoke the OOM killer even if it is a GFP_NOFS allocation.
+	 */
+	if (oc->gfp_mask && !(oc->gfp_mask & __GFP_FS) && !is_memcg_oom(oc))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return true;
 
 	/*
@@ -1089,6 +1200,7 @@ bool out_of_memory(struct oom_control *oc)
 }
 
 /*
+<<<<<<< HEAD
  * The pagefault handler calls here because it is out of memory, so kill a
  * memory-hogging task. If oom_lock is held by somebody else, a parallel oom
  * killing is already in progress so do nothing.
@@ -1105,10 +1217,22 @@ void pagefault_out_of_memory(void)
 
 	if (IS_ENABLED(CONFIG_HAVE_LOW_MEMORY_KILLER))
 		return;
+=======
+ * The pagefault handler calls here because some allocation has failed. We have
+ * to take care of the memcg OOM here because this is the only safe context without
+ * any locks held but let the oom killer triggered from the allocation context care
+ * about the global OOM.
+ */
+void pagefault_out_of_memory(void)
+{
+	static DEFINE_RATELIMIT_STATE(pfoom_rs, DEFAULT_RATELIMIT_INTERVAL,
+				      DEFAULT_RATELIMIT_BURST);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (mem_cgroup_oom_synchronize(true))
 		return;
 
+<<<<<<< HEAD
 	if (!mutex_trylock(&oom_lock))
 		return;
 	out_of_memory(&oc);
@@ -1168,4 +1292,11 @@ void add_to_oom_reaper(struct task_struct *p)
 	}
 
 	put_task_struct(p);
+=======
+	if (fatal_signal_pending(current))
+		return;
+
+	if (__ratelimit(&pfoom_rs))
+		pr_warn("Huh VM_FAULT_OOM leaked out to the #PF handler. Retrying PF\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }

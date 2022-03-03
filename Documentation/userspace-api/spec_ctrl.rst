@@ -47,6 +47,11 @@ If PR_SPEC_PRCTL is set, then the per-task control of the mitigation is
 available. If not set, prctl(PR_SET_SPECULATION_CTRL) for the speculation
 misfeature will fail.
 
+<<<<<<< HEAD
+=======
+.. _set_spec_ctrl:
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 PR_SET_SPECULATION_CTRL
 -----------------------
 

@@ -97,7 +97,11 @@ int __skb_wait_for_more_packets(struct sock *sk, int *err, long *timeo_p,
 	if (error)
 		goto out_err;
 
+<<<<<<< HEAD
 	if (sk->sk_receive_queue.prev != skb)
+=======
+	if (READ_ONCE(sk->sk_receive_queue.prev) != skb)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out;
 
 	/* Socket shut down? */
@@ -281,7 +285,11 @@ struct sk_buff *__skb_try_recv_datagram(struct sock *sk, unsigned int flags,
 			break;
 
 		sk_busy_loop(sk, flags & MSG_DONTWAIT);
+<<<<<<< HEAD
 	} while (sk->sk_receive_queue.prev != *last);
+=======
+	} while (READ_ONCE(sk->sk_receive_queue.prev) != *last);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	error = -EAGAIN;
 
@@ -844,7 +852,11 @@ unsigned int datagram_poll(struct file *file, struct socket *sock,
 	mask = 0;
 
 	/* exceptional events? */
+<<<<<<< HEAD
 	if (sk->sk_err || !skb_queue_empty(&sk->sk_error_queue))
+=======
+	if (sk->sk_err || !skb_queue_empty_lockless(&sk->sk_error_queue))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mask |= POLLERR |
 			(sock_flag(sk, SOCK_SELECT_ERR_QUEUE) ? POLLPRI : 0);
 
@@ -854,7 +866,11 @@ unsigned int datagram_poll(struct file *file, struct socket *sock,
 		mask |= POLLHUP;
 
 	/* readable? */
+<<<<<<< HEAD
 	if (!skb_queue_empty(&sk->sk_receive_queue))
+=======
+	if (!skb_queue_empty_lockless(&sk->sk_receive_queue))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mask |= POLLIN | POLLRDNORM;
 
 	/* Connection-based need to check for termination and startup */

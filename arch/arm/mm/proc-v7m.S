@@ -135,7 +135,10 @@ __v7m_setup_cont:
 	dsb
 	mov	r6, lr			@ save LR
 	ldr	sp, =init_thread_union + THREAD_START_SP
+<<<<<<< HEAD
 	stmia	sp, {r0-r3, r12}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cpsie	i
 	svc	#0
 1:	cpsid	i

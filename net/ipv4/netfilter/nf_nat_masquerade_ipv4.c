@@ -69,6 +69,7 @@ nf_nat_masquerade_ipv4(struct sk_buff *skb, unsigned int hooknum,
 	newrange.max_proto   = range->max_proto;
 
 	/* Hand modified range to generic setup. */
+<<<<<<< HEAD
 #if defined(CONFIG_IP_NF_TARGET_NATTYPE_MODULE)
 	nf_nat_setup_info(ct, &newrange, NF_NAT_MANIP_SRC);
 	return XT_CONTINUE;
@@ -76,6 +77,9 @@ nf_nat_masquerade_ipv4(struct sk_buff *skb, unsigned int hooknum,
 	return nf_nat_setup_info(ct, &newrange, NF_NAT_MANIP_SRC);
 #endif
 
+=======
+	return nf_nat_setup_info(ct, &newrange, NF_NAT_MANIP_SRC);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(nf_nat_masquerade_ipv4);
 
@@ -111,12 +115,33 @@ static int masq_device_event(struct notifier_block *this,
 	return NOTIFY_DONE;
 }
 
+<<<<<<< HEAD
+=======
+static int inet_cmp(struct nf_conn *ct, void *ptr)
+{
+	struct in_ifaddr *ifa = (struct in_ifaddr *)ptr;
+	struct net_device *dev = ifa->ifa_dev->dev;
+	struct nf_conntrack_tuple *tuple;
+
+	if (!device_cmp(ct, (void *)(long)dev->ifindex))
+		return 0;
+
+	tuple = &ct->tuplehash[IP_CT_DIR_REPLY].tuple;
+
+	return ifa->ifa_address == tuple->dst.u3.ip;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int masq_inet_event(struct notifier_block *this,
 			   unsigned long event,
 			   void *ptr)
 {
 	struct in_device *idev = ((struct in_ifaddr *)ptr)->ifa_dev;
+<<<<<<< HEAD
 	struct netdev_notifier_info info;
+=======
+	struct net *net = dev_net(idev->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* The masq_dev_notifier will catch the case of the device going
 	 * down.  So if the inetdev is dead and being destroyed we have
@@ -126,8 +151,15 @@ static int masq_inet_event(struct notifier_block *this,
 	if (idev->dead)
 		return NOTIFY_DONE;
 
+<<<<<<< HEAD
 	netdev_notifier_info_init(&info, idev->dev);
 	return masq_device_event(this, event, &info);
+=======
+	if (event == NETDEV_DOWN)
+		nf_ct_iterate_cleanup_net(net, inet_cmp, ptr, 0, 0);
+
+	return NOTIFY_DONE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct notifier_block masq_dev_notifier = {

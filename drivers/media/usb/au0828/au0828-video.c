@@ -758,6 +758,12 @@ static int au0828_analog_stream_enable(struct au0828_dev *d)
 
 	dprintk(1, "au0828_analog_stream_enable called\n");
 
+<<<<<<< HEAD
+=======
+	if (test_bit(DEV_DISCONNECTED, &d->dev_state))
+		return -ENODEV;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	iface = usb_ifnum_to_if(d->usbdev, 0);
 	if (iface && iface->cur_altsetting->desc.bAlternateSetting != 5) {
 		dprintk(1, "Changing intf#0 to alt 5\n");
@@ -839,9 +845,15 @@ int au0828_start_analog_streaming(struct vb2_queue *vq, unsigned int count)
 			return rc;
 		}
 
+<<<<<<< HEAD
 		if (vq->type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
 			v4l2_device_call_all(&dev->v4l2_dev, 0, video,
 						s_stream, 1);
+=======
+		v4l2_device_call_all(&dev->v4l2_dev, 0, video, s_stream, 1);
+
+		if (vq->type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			dev->vid_timeout_running = 1;
 			mod_timer(&dev->vid_timeout, jiffies + (HZ / 10));
 		} else if (vq->type == V4L2_BUF_TYPE_VBI_CAPTURE) {
@@ -861,10 +873,18 @@ static void au0828_stop_streaming(struct vb2_queue *vq)
 
 	dprintk(1, "au0828_stop_streaming called %d\n", dev->streaming_users);
 
+<<<<<<< HEAD
 	if (dev->streaming_users-- == 1)
 		au0828_uninit_isoc(dev);
 
 	v4l2_device_call_all(&dev->v4l2_dev, 0, video, s_stream, 0);
+=======
+	if (dev->streaming_users-- == 1) {
+		au0828_uninit_isoc(dev);
+		v4l2_device_call_all(&dev->v4l2_dev, 0, video, s_stream, 0);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev->vid_timeout_running = 0;
 	del_timer_sync(&dev->vid_timeout);
 
@@ -893,8 +913,15 @@ void au0828_stop_vbi_streaming(struct vb2_queue *vq)
 	dprintk(1, "au0828_stop_vbi_streaming called %d\n",
 		dev->streaming_users);
 
+<<<<<<< HEAD
 	if (dev->streaming_users-- == 1)
 		au0828_uninit_isoc(dev);
+=======
+	if (dev->streaming_users-- == 1) {
+		au0828_uninit_isoc(dev);
+		v4l2_device_call_all(&dev->v4l2_dev, 0, video, s_stream, 0);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	spin_lock_irqsave(&dev->slock, flags);
 	if (dev->isoc_ctl.vbi_buf != NULL) {

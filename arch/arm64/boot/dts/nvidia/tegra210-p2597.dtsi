@@ -1584,7 +1584,11 @@
 			regulator-name = "VDD_HDMI_5V0";
 			regulator-min-microvolt = <5000000>;
 			regulator-max-microvolt = <5000000>;
+<<<<<<< HEAD
 			gpio = <&exp1 12 GPIO_ACTIVE_LOW>;
+=======
+			gpio = <&exp1 12 GPIO_ACTIVE_HIGH>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			enable-active-high;
 			vin-supply = <&vdd_5v0_sys>;
 		};

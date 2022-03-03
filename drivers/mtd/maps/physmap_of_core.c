@@ -30,7 +30,10 @@
 struct of_flash_list {
 	struct mtd_info *mtd;
 	struct map_info map;
+<<<<<<< HEAD
 	struct resource *res;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct of_flash {
@@ -55,6 +58,7 @@ static int of_flash_remove(struct platform_device *dev)
 			mtd_concat_destroy(info->cmtd);
 	}
 
+<<<<<<< HEAD
 	for (i = 0; i < info->list_size; i++) {
 		if (info->list[i].mtd)
 			map_destroy(info->list[i].mtd);
@@ -67,6 +71,12 @@ static int of_flash_remove(struct platform_device *dev)
 			kfree(info->list[i].res);
 		}
 	}
+=======
+	for (i = 0; i < info->list_size; i++)
+		if (info->list[i].mtd)
+			map_destroy(info->list[i].mtd);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -214,10 +224,18 @@ static int of_flash_probe(struct platform_device *dev)
 
 		err = -EBUSY;
 		res_size = resource_size(&res);
+<<<<<<< HEAD
 		info->list[i].res = request_mem_region(res.start, res_size,
 						       dev_name(&dev->dev));
 		if (!info->list[i].res)
 			goto err_out;
+=======
+		info->list[i].map.virt = devm_ioremap_resource(&dev->dev, &res);
+		if (IS_ERR(info->list[i].map.virt)) {
+			err = PTR_ERR(info->list[i].map.virt);
+			goto err_out;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		err = -ENXIO;
 		width = of_get_property(dp, "bank-width", NULL);
@@ -240,6 +258,7 @@ static int of_flash_probe(struct platform_device *dev)
 		if (err)
 			goto err_out;
 
+<<<<<<< HEAD
 		err = -ENOMEM;
 		info->list[i].map.virt = ioremap(info->list[i].map.phys,
 						 info->list[i].map.size);
@@ -249,6 +268,8 @@ static int of_flash_probe(struct platform_device *dev)
 			goto err_out;
 		}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		simple_map_init(&info->list[i].map);
 
 		/*

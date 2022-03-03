@@ -35,7 +35,11 @@
 #include "list.h"
 #include "sysfs_utils.h"
 
+<<<<<<< HEAD
 struct udev *udev_context;
+=======
+extern struct udev *udev_context;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int32_t read_attr_usbip_status(struct usbip_usb_device *udev)
 {
@@ -43,7 +47,11 @@ static int32_t read_attr_usbip_status(struct usbip_usb_device *udev)
 	int size;
 	int fd;
 	int length;
+<<<<<<< HEAD
 	char status;
+=======
+	char status[2] = { 0 };
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int value = 0;
 
 	size = snprintf(status_attr_path, sizeof(status_attr_path),
@@ -61,15 +69,24 @@ static int32_t read_attr_usbip_status(struct usbip_usb_device *udev)
 		return -1;
 	}
 
+<<<<<<< HEAD
 	length = read(fd, &status, 1);
+=======
+	length = read(fd, status, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (length < 0) {
 		err("error reading attribute %s", status_attr_path);
 		close(fd);
 		return -1;
 	}
 
+<<<<<<< HEAD
 	value = atoi(&status);
 
+=======
+	value = atoi(status);
+	close(fd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return value;
 }
 

@@ -431,12 +431,18 @@ NESTED(nmi_handler, PT_SIZE, sp)
 	.endm
 
 	.macro	__build_clear_fpe
+<<<<<<< HEAD
+=======
+	CLI
+	TRACE_IRQS_OFF
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.set	push
 	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
 	.set	mips1
 	SET_HARDFLOAT
 	cfc1	a1, fcr31
 	.set	pop
+<<<<<<< HEAD
 	CLI
 	TRACE_IRQS_OFF
 	.endm
@@ -445,6 +451,14 @@ NESTED(nmi_handler, PT_SIZE, sp)
 	_cfcmsa	a1, MSA_CSR
 	CLI
 	TRACE_IRQS_OFF
+=======
+	.endm
+
+	.macro	__build_clear_msa_fpe
+	CLI
+	TRACE_IRQS_OFF
+	_cfcmsa	a1, MSA_CSR
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.endm
 
 	.macro	__build_clear_ade

@@ -65,10 +65,16 @@ static int chksum_final(struct shash_desc *desc, u8 *out)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __chksum_finup(__u16 *crcp, const u8 *data, unsigned int len,
 			u8 *out)
 {
 	*(__u16 *)out = crc_t10dif_generic(*crcp, data, len);
+=======
+static int __chksum_finup(__u16 crc, const u8 *data, unsigned int len, u8 *out)
+{
+	*(__u16 *)out = crc_t10dif_generic(crc, data, len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -77,15 +83,23 @@ static int chksum_finup(struct shash_desc *desc, const u8 *data,
 {
 	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
 
+<<<<<<< HEAD
 	return __chksum_finup(&ctx->crc, data, len, out);
+=======
+	return __chksum_finup(ctx->crc, data, len, out);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int chksum_digest(struct shash_desc *desc, const u8 *data,
 			 unsigned int length, u8 *out)
 {
+<<<<<<< HEAD
 	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
 
 	return __chksum_finup(&ctx->crc, data, length, out);
+=======
+	return __chksum_finup(0, data, length, out);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct shash_alg alg = {

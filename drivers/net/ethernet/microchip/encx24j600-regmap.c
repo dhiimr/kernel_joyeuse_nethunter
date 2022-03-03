@@ -505,13 +505,28 @@ static struct regmap_bus phymap_encx24j600 = {
 	.reg_read = regmap_encx24j600_phy_reg_read,
 };
 
+<<<<<<< HEAD
 void devm_regmap_init_encx24j600(struct device *dev,
 				 struct encx24j600_context *ctx)
+=======
+int devm_regmap_init_encx24j600(struct device *dev,
+				struct encx24j600_context *ctx)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	mutex_init(&ctx->mutex);
 	regcfg.lock_arg = ctx;
 	ctx->regmap = devm_regmap_init(dev, &regmap_encx24j600, ctx, &regcfg);
+<<<<<<< HEAD
 	ctx->phymap = devm_regmap_init(dev, &phymap_encx24j600, ctx, &phycfg);
+=======
+	if (IS_ERR(ctx->regmap))
+		return PTR_ERR(ctx->regmap);
+	ctx->phymap = devm_regmap_init(dev, &phymap_encx24j600, ctx, &phycfg);
+	if (IS_ERR(ctx->phymap))
+		return PTR_ERR(ctx->phymap);
+
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(devm_regmap_init_encx24j600);
 

@@ -281,7 +281,11 @@ struct _scsi_io_transfer {
  * Note: The logging levels are defined in mpt3sas_debug.h.
  */
 static int
+<<<<<<< HEAD
 _scsih_set_debug_level(const char *val, const struct kernel_param *kp)
+=======
+_scsih_set_debug_level(const char *val, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int ret = param_set_int(val, kp);
 	struct MPT3SAS_ADAPTER *ioc;
@@ -2955,7 +2959,11 @@ _scsih_ublock_io_device(struct MPT3SAS_ADAPTER *ioc, u64 sas_address)
 
 	shost_for_each_device(sdev, ioc->shost) {
 		sas_device_priv_data = sdev->hostdata;
+<<<<<<< HEAD
 		if (!sas_device_priv_data)
+=======
+		if (!sas_device_priv_data || !sas_device_priv_data->sas_target)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			continue;
 		if (sas_device_priv_data->sas_target->sas_address
 		    != sas_address)
@@ -3328,6 +3336,43 @@ _scsih_tm_tr_complete(struct MPT3SAS_ADAPTER *ioc, u16 smid, u8 msix_index,
 	return _scsih_check_for_pending_tm(ioc, smid);
 }
 
+<<<<<<< HEAD
+=======
+/** _scsih_allow_scmd_to_device - check whether scmd needs to
+ *				 issue to IOC or not.
+ * @ioc: per adapter object
+ * @scmd: pointer to scsi command object
+ *
+ * Returns true if scmd can be issued to IOC otherwise returns false.
+ */
+inline bool _scsih_allow_scmd_to_device(struct MPT3SAS_ADAPTER *ioc,
+	struct scsi_cmnd *scmd)
+{
+
+	if (ioc->pci_error_recovery)
+		return false;
+
+	if (ioc->hba_mpi_version_belonged == MPI2_VERSION) {
+		if (ioc->remove_host)
+			return false;
+
+		return true;
+	}
+
+	if (ioc->remove_host) {
+
+		switch (scmd->cmnd[0]) {
+		case SYNCHRONIZE_CACHE:
+		case START_STOP:
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	return true;
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**
  * _scsih_sas_control_complete - completion routine
@@ -4100,7 +4145,11 @@ scsih_qcmd(struct Scsi_Host *shost, struct scsi_cmnd *scmd)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	if (ioc->pci_error_recovery || ioc->remove_host) {
+=======
+	if (!(_scsih_allow_scmd_to_device(ioc, scmd))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		scmd->result = DID_NO_CONNECT << 16;
 		scmd->scsi_done(scmd);
 		return 0;
@@ -5202,8 +5251,15 @@ _scsih_expander_add(struct MPT3SAS_ADAPTER *ioc, u16 handle)
 	    handle, parent_handle, (unsigned long long)
 	    sas_expander->sas_address, sas_expander->num_phys);
 
+<<<<<<< HEAD
 	if (!sas_expander->num_phys)
 		goto out_fail;
+=======
+	if (!sas_expander->num_phys) {
+		rc = -1;
+		goto out_fail;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sas_expander->phy = kcalloc(sas_expander->num_phys,
 	    sizeof(struct _sas_phy), GFP_KERNEL);
 	if (!sas_expander->phy) {
@@ -8246,8 +8302,13 @@ static void scsih_remove(struct pci_dev *pdev)
 
 	ioc->remove_host = 1;
 
+<<<<<<< HEAD
 	mpt3sas_wait_for_commands_to_complete(ioc);
 	_scsih_flush_running_cmds(ioc);
+=======
+	if (!pci_device_is_present(pdev))
+		_scsih_flush_running_cmds(ioc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	_scsih_fw_event_cleanup_queue(ioc);
 
@@ -8320,8 +8381,13 @@ scsih_shutdown(struct pci_dev *pdev)
 
 	ioc->remove_host = 1;
 
+<<<<<<< HEAD
 	mpt3sas_wait_for_commands_to_complete(ioc);
 	_scsih_flush_running_cmds(ioc);
+=======
+	if (!pci_device_is_present(pdev))
+		_scsih_flush_running_cmds(ioc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	_scsih_fw_event_cleanup_queue(ioc);
 

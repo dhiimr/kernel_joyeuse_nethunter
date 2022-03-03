@@ -22,10 +22,14 @@
 #include <linux/power_supply.h>
 #include <linux/thermal.h>
 #include "power_supply.h"
+<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_USB
 #undef dev_dbg
 #define dev_dbg dev_err
 #endif
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* exported for the APM Power driver, APM emulation */
 struct class *power_supply_class;
 EXPORT_SYMBOL_GPL(power_supply_class);
@@ -128,7 +132,10 @@ void power_supply_changed(struct power_supply *psy)
 }
 EXPORT_SYMBOL_GPL(power_supply_changed);
 
+<<<<<<< HEAD
 static int psy_register_cooler(struct device *dev, struct power_supply *psy);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Notify that power supply was registered after parent finished the probing.
  *
@@ -136,8 +143,11 @@ static int psy_register_cooler(struct device *dev, struct power_supply *psy);
  * calling power_supply_changed() directly from power_supply_register()
  * would lead to execution of get_property() function provided by the driver
  * too early - before the probe ends.
+<<<<<<< HEAD
  * Also, registering cooling device from the probe will execute the
  * get_property() function. So register the cooling device after the probe.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Avoid that by waiting on parent's mutex.
  */
@@ -154,7 +164,10 @@ static void power_supply_deferred_register_work(struct work_struct *work)
 		}
 	}
 
+<<<<<<< HEAD
 	psy_register_cooler(psy->dev.parent, psy);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	power_supply_changed(psy);
 
 	if (psy->dev.parent)
@@ -805,7 +818,11 @@ static const struct thermal_cooling_device_ops psy_tcd_ops = {
 	.set_cur_state = ps_set_cur_charge_cntl_limit,
 };
 
+<<<<<<< HEAD
 static int psy_register_cooler(struct device *dev, struct power_supply *psy)
+=======
+static int psy_register_cooler(struct power_supply *psy)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int i;
 
@@ -813,6 +830,7 @@ static int psy_register_cooler(struct device *dev, struct power_supply *psy)
 	for (i = 0; i < psy->desc->num_properties; i++) {
 		if (psy->desc->properties[i] ==
 				POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT) {
+<<<<<<< HEAD
 			if (dev)
 				psy->tcd = thermal_of_cooling_device_register(
 							dev_of_node(dev),
@@ -820,6 +838,9 @@ static int psy_register_cooler(struct device *dev, struct power_supply *psy)
 							psy, &psy_tcd_ops);
 			else
 				psy->tcd = thermal_cooling_device_register(
+=======
+			psy->tcd = thermal_cooling_device_register(
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 							(char *)psy->desc->name,
 							psy, &psy_tcd_ops);
 			return PTR_ERR_OR_ZERO(psy->tcd);
@@ -844,7 +865,11 @@ static void psy_unregister_thermal(struct power_supply *psy)
 {
 }
 
+<<<<<<< HEAD
 static int psy_register_cooler(struct device *dev, struct power_supply *psy)
+=======
+static int psy_register_cooler(struct power_supply *psy)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return 0;
 }
@@ -904,18 +929,35 @@ __power_supply_register(struct device *parent,
 	}
 
 	spin_lock_init(&psy->changed_lock);
+<<<<<<< HEAD
 	rc = device_init_wakeup(dev, ws);
 	if (rc)
 		goto wakeup_init_failed;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rc = device_add(dev);
 	if (rc)
 		goto device_add_failed;
 
+<<<<<<< HEAD
+=======
+	rc = device_init_wakeup(dev, ws);
+	if (rc)
+		goto wakeup_init_failed;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rc = psy_register_thermal(psy);
 	if (rc)
 		goto register_thermal_failed;
 
+<<<<<<< HEAD
+=======
+	rc = psy_register_cooler(psy);
+	if (rc)
+		goto register_cooler_failed;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rc = power_supply_create_triggers(psy);
 	if (rc)
 		goto create_triggers_failed;
@@ -939,11 +981,21 @@ __power_supply_register(struct device *parent,
 	return psy;
 
 create_triggers_failed:
+<<<<<<< HEAD
 	psy_unregister_thermal(psy);
 register_thermal_failed:
 	device_del(dev);
 device_add_failed:
 wakeup_init_failed:
+=======
+	psy_unregister_cooler(psy);
+register_cooler_failed:
+	psy_unregister_thermal(psy);
+register_thermal_failed:
+	device_del(dev);
+wakeup_init_failed:
+device_add_failed:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 check_supplies_failed:
 dev_set_name_failed:
 	put_device(dev);

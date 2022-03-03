@@ -16,7 +16,10 @@ generic-y += mcs_spinlock.h
 generic-y += mm-arch-hooks.h
 generic-y += msi.h
 generic-y += preempt.h
+<<<<<<< HEAD
 generic-y += qrwlock.h
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 generic-y += rwsem.h
 generic-y += segment.h
 generic-y += serial.h

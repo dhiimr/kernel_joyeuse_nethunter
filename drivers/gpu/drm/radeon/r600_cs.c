@@ -887,7 +887,11 @@ int r600_cs_common_vline_parse(struct radeon_cs_parser *p,
 	crtc_id = radeon_get_ib_value(p, h_idx + 2 + 7 + 1);
 	reg = R600_CP_PACKET0_GET_REG(header);
 
+<<<<<<< HEAD
 	crtc = drm_crtc_find(p->rdev->ddev, p->filp, crtc_id);
+=======
+	crtc = drm_crtc_find(p->rdev->ddev, crtc_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!crtc) {
 		DRM_ERROR("cannot find crtc %d\n", crtc_id);
 		return -ENOENT;

@@ -1054,7 +1054,12 @@ static int pm8001_pci_probe(struct pci_dev *pdev,
 
 	pm8001_init_sas_add(pm8001_ha);
 	/* phy setting support for motherboard controller */
+<<<<<<< HEAD
 	if (pm8001_configure_phy_settings(pm8001_ha))
+=======
+	rc = pm8001_configure_phy_settings(pm8001_ha);
+	if (rc)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto err_out_shost;
 
 	pm8001_post_sas_ha_init(shost, chip);

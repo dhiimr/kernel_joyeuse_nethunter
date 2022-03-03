@@ -1231,6 +1231,7 @@ static void hvcs_close(struct tty_struct *tty, struct file *filp)
 
 		tty_wait_until_sent(tty, HVCS_CLOSE_WAIT);
 
+<<<<<<< HEAD
 		/*
 		 * This line is important because it tells hvcs_open that this
 		 * device needs to be re-configured the next time hvcs_open is
@@ -1238,6 +1239,8 @@ static void hvcs_close(struct tty_struct *tty, struct file *filp)
 		 */
 		tty->driver_data = NULL;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		free_irq(irq, hvcsd);
 		return;
 	} else if (hvcsd->port.count < 0) {
@@ -1252,6 +1255,16 @@ static void hvcs_cleanup(struct tty_struct * tty)
 {
 	struct hvcs_struct *hvcsd = tty->driver_data;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * This line is important because it tells hvcs_open that this
+	 * device needs to be re-configured the next time hvcs_open is
+	 * called.
+	 */
+	tty->driver_data = NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tty_port_put(&hvcsd->port);
 }
 

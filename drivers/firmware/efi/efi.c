@@ -221,7 +221,11 @@ static void generic_ops_unregister(void)
 	efivars_unregister(&generic_efivars);
 }
 
+<<<<<<< HEAD
 #if IS_ENABLED(CONFIG_ACPI)
+=======
+#ifdef CONFIG_EFI_CUSTOM_SSDT_OVERLAYS
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define EFIVAR_SSDT_NAME_MAX	16
 static char efivar_ssdt[EFIVAR_SSDT_NAME_MAX] __initdata;
 static int __init efivar_ssdt_setup(char *str)
@@ -266,6 +270,12 @@ static __init int efivar_ssdt_load(void)
 	void *data;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (!efivar_ssdt[0])
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = efivar_init(efivar_ssdt_iter, &entries, true, &entries);
 
 	list_for_each_entry_safe(entry, aux, &entries, list) {
@@ -547,7 +557,11 @@ int __init efi_config_parse_tables(void *config_tables, int count, int sz,
 		}
 	}
 
+<<<<<<< HEAD
 	if (efi_enabled(EFI_MEMMAP))
+=======
+	if (!IS_ENABLED(CONFIG_X86_32) && efi_enabled(EFI_MEMMAP))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		efi_memattr_init();
 
 	/* Parse the EFI Properties table if it exists */

@@ -240,6 +240,11 @@ static int bmips_boot_secondary(int cpu, struct task_struct *idle)
  */
 static void bmips_init_secondary(void)
 {
+<<<<<<< HEAD
+=======
+	bmips_cpu_setup();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	switch (current_cpu_type()) {
 	case CPU_BMIPS4350:
 	case CPU_BMIPS4380:
@@ -457,10 +462,17 @@ static void bmips_wr_vec(unsigned long dst, char *start, char *end)
 
 static inline void bmips_nmi_handler_setup(void)
 {
+<<<<<<< HEAD
 	bmips_wr_vec(BMIPS_NMI_RESET_VEC, &bmips_reset_nmi_vec,
 		&bmips_reset_nmi_vec_end);
 	bmips_wr_vec(BMIPS_WARM_RESTART_VEC, &bmips_smp_int_vec,
 		&bmips_smp_int_vec_end);
+=======
+	bmips_wr_vec(BMIPS_NMI_RESET_VEC, bmips_reset_nmi_vec,
+		bmips_reset_nmi_vec_end);
+	bmips_wr_vec(BMIPS_WARM_RESTART_VEC, bmips_smp_int_vec,
+		bmips_smp_int_vec_end);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 struct reset_vec_info {
@@ -572,7 +584,11 @@ asmlinkage void __weak plat_wired_tlb_setup(void)
 	 */
 }
 
+<<<<<<< HEAD
 void __init bmips_cpu_setup(void)
+=======
+void bmips_cpu_setup(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	void __iomem __maybe_unused *cbr = BMIPS_GET_CBR();
 	u32 __maybe_unused cfg;

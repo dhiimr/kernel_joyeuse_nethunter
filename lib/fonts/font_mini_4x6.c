@@ -43,8 +43,13 @@ __END__;
 
 #define FONTDATAMAX 1536
 
+<<<<<<< HEAD
 static const unsigned char fontdata_mini_4x6[FONTDATAMAX] = {
 
+=======
+static const struct font_data fontdata_mini_4x6 = {
+	{ 0, 0, FONTDATAMAX, 0 }, {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*{*/
 	  	/*   Char 0: ' '  */
 	0xee,	/*=  [*** ]       */
@@ -2145,14 +2150,22 @@ static const unsigned char fontdata_mini_4x6[FONTDATAMAX] = {
 	0xee,	/*=   [*** ]        */
 	0x00,	/*=   [    ]        */
 	/*}*/
+<<<<<<< HEAD
 };
+=======
+} };
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 const struct font_desc font_mini_4x6 = {
 	.idx	= MINI4x6_IDX,
 	.name	= "MINI4x6",
 	.width	= 4,
 	.height	= 6,
+<<<<<<< HEAD
 	.data	= fontdata_mini_4x6,
+=======
+	.data	= fontdata_mini_4x6.data,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.pref	= 3,
 };
 

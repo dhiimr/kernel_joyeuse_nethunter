@@ -1,6 +1,10 @@
 /**
  * extcon-qcom-spmi-misc.c - Qualcomm USB extcon driver to support USB ID
+<<<<<<< HEAD
  *			and VBUS detection based on extcon-usb-gpio.c.
+=======
+ *				detection based on extcon-usb-gpio.c.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Copyright (C) 2016 Linaro, Ltd.
  * Stephen Boyd <stephen.boyd@linaro.org>
@@ -28,27 +32,40 @@
 
 struct qcom_usb_extcon_info {
 	struct extcon_dev *edev;
+<<<<<<< HEAD
 	int id_irq;
 	int vbus_irq;
+=======
+	int irq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct delayed_work wq_detcable;
 	unsigned long debounce_jiffies;
 };
 
 static const unsigned int qcom_usb_extcon_cable[] = {
+<<<<<<< HEAD
 	EXTCON_USB,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	EXTCON_USB_HOST,
 	EXTCON_NONE,
 };
 
 static void qcom_usb_extcon_detect_cable(struct work_struct *work)
 {
+<<<<<<< HEAD
 	bool state = 0;
 	int ret;
 	union extcon_property_value val;
+=======
+	bool id;
+	int ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct qcom_usb_extcon_info *info = container_of(to_delayed_work(work),
 						    struct qcom_usb_extcon_info,
 						    wq_detcable);
 
+<<<<<<< HEAD
 	if (info->id_irq > 0) {
 		/* check ID and update cable state */
 		ret = irq_get_irqchip_state(info->id_irq,
@@ -78,6 +95,14 @@ static void qcom_usb_extcon_detect_cable(struct work_struct *work)
 		}
 		extcon_set_state_sync(info->edev, EXTCON_USB, state);
 	}
+=======
+	/* check ID and update cable state */
+	ret = irq_get_irqchip_state(info->irq, IRQCHIP_STATE_LINE_LEVEL, &id);
+	if (ret)
+		return;
+
+	extcon_set_state_sync(info->edev, EXTCON_USB_HOST, !id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static irqreturn_t qcom_usb_irq_handler(int irq, void *dev_id)
@@ -112,6 +137,7 @@ static int qcom_usb_extcon_probe(struct platform_device *pdev)
 		return ret;
 	}
 
+<<<<<<< HEAD
 	ret = extcon_set_property_capability(info->edev,
 			EXTCON_USB, EXTCON_PROP_USB_SS);
 	ret |= extcon_set_property_capability(info->edev,
@@ -141,10 +167,21 @@ static int qcom_usb_extcon_probe(struct platform_device *pdev)
 	info->vbus_irq = platform_get_irq_byname(pdev, "usb_vbus");
 	if (info->vbus_irq > 0) {
 		ret = devm_request_threaded_irq(dev, info->vbus_irq, NULL,
+=======
+	info->debounce_jiffies = msecs_to_jiffies(USB_ID_DEBOUNCE_MS);
+	INIT_DELAYED_WORK(&info->wq_detcable, qcom_usb_extcon_detect_cable);
+
+	info->irq = platform_get_irq_byname(pdev, "usb_id");
+	if (info->irq < 0)
+		return info->irq;
+
+	ret = devm_request_threaded_irq(dev, info->irq, NULL,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					qcom_usb_irq_handler,
 					IRQF_TRIGGER_RISING |
 					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
 					pdev->name, info);
+<<<<<<< HEAD
 		if (ret < 0) {
 			dev_err(dev, "failed to request handler for VBUS IRQ\n");
 			return ret;
@@ -154,6 +191,11 @@ static int qcom_usb_extcon_probe(struct platform_device *pdev)
 	if (info->id_irq < 0 && info->vbus_irq < 0) {
 		dev_err(dev, "ID and VBUS IRQ not found\n");
 		return -EINVAL;
+=======
+	if (ret < 0) {
+		dev_err(dev, "failed to request handler for ID IRQ\n");
+		return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	platform_set_drvdata(pdev, info);
@@ -180,12 +222,17 @@ static int qcom_usb_extcon_suspend(struct device *dev)
 	struct qcom_usb_extcon_info *info = dev_get_drvdata(dev);
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (device_may_wakeup(dev)) {
 		if (info->id_irq > 0)
 			ret = enable_irq_wake(info->id_irq);
 		if (info->vbus_irq > 0)
 			ret = enable_irq_wake(info->vbus_irq);
 	}
+=======
+	if (device_may_wakeup(dev))
+		ret = enable_irq_wake(info->irq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }
@@ -195,12 +242,17 @@ static int qcom_usb_extcon_resume(struct device *dev)
 	struct qcom_usb_extcon_info *info = dev_get_drvdata(dev);
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (device_may_wakeup(dev)) {
 		if (info->id_irq > 0)
 			ret = disable_irq_wake(info->id_irq);
 		if (info->vbus_irq > 0)
 			ret = disable_irq_wake(info->vbus_irq);
 	}
+=======
+	if (device_may_wakeup(dev))
+		ret = disable_irq_wake(info->irq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }
@@ -211,7 +263,10 @@ static SIMPLE_DEV_PM_OPS(qcom_usb_extcon_pm_ops,
 
 static const struct of_device_id qcom_usb_extcon_dt_match[] = {
 	{ .compatible = "qcom,pm8941-misc", },
+<<<<<<< HEAD
 	{ .compatible = "qcom,pmd-vbus-det", },
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ }
 };
 MODULE_DEVICE_TABLE(of, qcom_usb_extcon_dt_match);

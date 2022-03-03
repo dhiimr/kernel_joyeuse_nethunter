@@ -31,7 +31,11 @@ static struct kmem_cache *fuse_inode_cachep;
 struct list_head fuse_conn_list;
 DEFINE_MUTEX(fuse_mutex);
 
+<<<<<<< HEAD
 static int set_global_limit(const char *val, const struct kernel_param *kp);
+=======
+static int set_global_limit(const char *val, struct kernel_param *kp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 unsigned max_user_bgreq;
 module_param_call(max_user_bgreq, set_global_limit, param_get_uint,
@@ -317,7 +321,11 @@ struct inode *fuse_iget(struct super_block *sb, u64 nodeid,
 		unlock_new_inode(inode);
 	} else if ((inode->i_mode ^ attr->mode) & S_IFMT) {
 		/* Inode has changed type, any I/O on the old should fail */
+<<<<<<< HEAD
 		make_bad_inode(inode);
+=======
+		fuse_make_bad(inode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		iput(inode);
 		goto retry;
 	}
@@ -826,7 +834,11 @@ static void sanitize_global_limit(unsigned *limit)
 		*limit = (1 << 16) - 1;
 }
 
+<<<<<<< HEAD
 static int set_global_limit(const char *val, const struct kernel_param *kp)
+=======
+static int set_global_limit(const char *val, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int rv;
 

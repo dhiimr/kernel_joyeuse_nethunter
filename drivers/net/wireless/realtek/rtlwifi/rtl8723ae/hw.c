@@ -1699,6 +1699,10 @@ static void _rtl8723e_read_adapter_info(struct ieee80211_hw *hw,
 					rtlhal->oem_id = RT_CID_819X_LENOVO;
 					break;
 				}
+<<<<<<< HEAD
+=======
+				break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			case 0x1025:
 				rtlhal->oem_id = RT_CID_819X_ACER;
 				break;

@@ -218,6 +218,10 @@ static void dvb_media_device_free(struct dvb_device *dvbdev)
 
 	if (dvbdev->adapter->conn) {
 		media_device_unregister_entity(dvbdev->adapter->conn);
+<<<<<<< HEAD
+=======
+		kfree(dvbdev->adapter->conn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dvbdev->adapter->conn = NULL;
 		kfree(dvbdev->adapter->conn_pads);
 		dvbdev->adapter->conn_pads = NULL;
@@ -316,8 +320,15 @@ static int dvb_create_media_entity(struct dvb_device *dvbdev,
 	if (npads) {
 		dvbdev->pads = kcalloc(npads, sizeof(*dvbdev->pads),
 				       GFP_KERNEL);
+<<<<<<< HEAD
 		if (!dvbdev->pads)
 			return -ENOMEM;
+=======
+		if (!dvbdev->pads) {
+			kfree(dvbdev->entity);
+			return -ENOMEM;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	switch (type) {

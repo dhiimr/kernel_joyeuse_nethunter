@@ -758,6 +758,22 @@ void nvme_stop_keep_alive(struct nvme_ctrl *ctrl)
 }
 EXPORT_SYMBOL_GPL(nvme_stop_keep_alive);
 
+<<<<<<< HEAD
+=======
+/*
+ * In NVMe 1.0 the CNS field was just a binary controller or namespace
+ * flag, thus sending any new CNS opcodes has a big chance of not working.
+ * Qemu unfortunately had that bug after reporting a 1.1 version compliance
+ * (but not for any later version).
+ */
+static bool nvme_ctrl_limited_cns(struct nvme_ctrl *ctrl)
+{
+	if (ctrl->quirks & NVME_QUIRK_IDENTIFY_CNS)
+		return ctrl->vs < NVME_VS(1, 2, 0);
+	return ctrl->vs < NVME_VS(1, 1, 0);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int nvme_identify_ctrl(struct nvme_ctrl *dev, struct nvme_id_ctrl **id)
 {
 	struct nvme_command c = { };
@@ -889,8 +905,13 @@ static struct nvme_id_ns *nvme_identify_ns(struct nvme_ctrl *ctrl,
 static int nvme_set_features(struct nvme_ctrl *dev, unsigned fid, unsigned dword11,
 		      void *buffer, size_t buflen, u32 *result)
 {
+<<<<<<< HEAD
 	struct nvme_command c;
 	union nvme_result res;
+=======
+	union nvme_result res = { 0 };
+	struct nvme_command c;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 
 	memset(&c, 0, sizeof(c));
@@ -1042,10 +1063,15 @@ static int nvme_ioctl(struct block_device *bdev, fmode_t mode,
 	case NVME_IOCTL_SUBMIT_IO:
 		return nvme_submit_io(ns, (void __user *)arg);
 	default:
+<<<<<<< HEAD
 #ifdef CONFIG_NVM
 		if (ns->ndev)
 			return nvme_nvm_ioctl(ns, cmd, arg);
 #endif
+=======
+		if (ns->ndev)
+			return nvme_nvm_ioctl(ns, cmd, arg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (is_sed_ioctl(cmd))
 			return sed_ioctl(ns->ctrl->opal_dev, cmd,
 					 (void __user *) arg);
@@ -1333,7 +1359,11 @@ static int nvme_pr_reserve(struct block_device *bdev, u64 key,
 static int nvme_pr_preempt(struct block_device *bdev, u64 old, u64 new,
 		enum pr_type type, bool abort)
 {
+<<<<<<< HEAD
 	u32 cdw10 = nvme_pr_type(type) << 8 | abort ? 2 : 1;
+=======
+	u32 cdw10 = nvme_pr_type(type) << 8 | (abort ? 2 : 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return nvme_pr_command(bdev, cdw10, old, new, nvme_cmd_resv_acquire);
 }
 
@@ -1345,7 +1375,11 @@ static int nvme_pr_clear(struct block_device *bdev, u64 key)
 
 static int nvme_pr_release(struct block_device *bdev, u64 key, enum pr_type type)
 {
+<<<<<<< HEAD
 	u32 cdw10 = nvme_pr_type(type) << 8 | key ? 1 << 3 : 0;
+=======
+	u32 cdw10 = nvme_pr_type(type) << 8 | (key ? 1 << 3 : 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return nvme_pr_command(bdev, cdw10, key, 0, nvme_cmd_resv_release);
 }
 
@@ -2479,7 +2513,12 @@ static int nvme_scan_ns_list(struct nvme_ctrl *ctrl, unsigned nn)
 {
 	struct nvme_ns *ns;
 	__le32 *ns_list;
+<<<<<<< HEAD
 	unsigned i, j, nsid, prev = 0, num_lists = DIV_ROUND_UP(nn, 1024);
+=======
+	unsigned i, j, nsid, prev = 0;
+	unsigned num_lists = DIV_ROUND_UP_ULL((u64)nn, 1024);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret = 0;
 
 	ns_list = kzalloc(0x1000, GFP_KERNEL);
@@ -2539,8 +2578,12 @@ static void nvme_scan_work(struct work_struct *work)
 		return;
 
 	nn = le32_to_cpu(id->nn);
+<<<<<<< HEAD
 	if (ctrl->vs >= NVME_VS(1, 1, 0) &&
 	    !(ctrl->quirks & NVME_QUIRK_IDENTIFY_CNS)) {
+=======
+	if (!nvme_ctrl_limited_cns(ctrl)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!nvme_scan_ns_list(ctrl, nn))
 			goto done;
 	}

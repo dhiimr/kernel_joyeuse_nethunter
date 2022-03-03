@@ -184,7 +184,12 @@ int register_ip_vs_scheduler(struct ip_vs_scheduler *scheduler)
 	}
 
 	/* increase the module use count */
+<<<<<<< HEAD
 	ip_vs_use_count_inc();
+=======
+	if (!ip_vs_use_count_inc())
+		return -ENOENT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_lock(&ip_vs_sched_mutex);
 

@@ -39,7 +39,11 @@ enum pwm_polarity {
  * current PWM hardware state.
  */
 struct pwm_args {
+<<<<<<< HEAD
 	u64 period;
+=======
+	unsigned int period;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	enum pwm_polarity polarity;
 };
 
@@ -48,6 +52,7 @@ enum {
 	PWMF_EXPORTED = 1 << 1,
 };
 
+<<<<<<< HEAD
 /**
  * enum pwm_output_type - output type of the PWM signal
  * @PWM_OUTPUT_FIXED: PWM output is fixed until a change request
@@ -71,6 +76,8 @@ struct pwm_output_pattern {
 	u64 cycles_per_duty;
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * struct pwm_state - state of a PWM channel
  * @period: PWM period (in nanoseconds)
@@ -79,11 +86,17 @@ struct pwm_output_pattern {
  * @enabled: PWM enabled status
  */
 struct pwm_state {
+<<<<<<< HEAD
 	u64 period;
 	u64 duty_cycle;
 	enum pwm_polarity polarity;
 	enum pwm_output_type output_type;
 	struct pwm_output_pattern *output_pattern;
+=======
+	unsigned int period;
+	unsigned int duty_cycle;
+	enum pwm_polarity polarity;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool enabled;
 };
 
@@ -136,18 +149,22 @@ static inline void pwm_set_period(struct pwm_device *pwm, unsigned int period)
 		pwm->state.period = period;
 }
 
+<<<<<<< HEAD
 static inline void pwm_set_period_extend(struct pwm_device *pwm, u64 period)
 {
 	if (pwm)
 		pwm->state.period = period;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline unsigned int pwm_get_period(const struct pwm_device *pwm)
 {
 	struct pwm_state state;
 
 	pwm_get_state(pwm, &state);
 
+<<<<<<< HEAD
 	if (state.period > UINT_MAX)
 		pr_warn("PWM period %llu is truncated\n", state.period);
 
@@ -160,6 +177,8 @@ static inline u64 pwm_get_period_extend(const struct pwm_device *pwm)
 
 	pwm_get_state(pwm, &state);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return state.period;
 }
 
@@ -169,18 +188,22 @@ static inline void pwm_set_duty_cycle(struct pwm_device *pwm, unsigned int duty)
 		pwm->state.duty_cycle = duty;
 }
 
+<<<<<<< HEAD
 static inline void pwm_set_duty_cycle_extend(struct pwm_device *pwm, u64 duty)
 {
 	if (pwm)
 		pwm->state.duty_cycle = duty;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline unsigned int pwm_get_duty_cycle(const struct pwm_device *pwm)
 {
 	struct pwm_state state;
 
 	pwm_get_state(pwm, &state);
 
+<<<<<<< HEAD
 	if (state.duty_cycle > UINT_MAX)
 		pr_warn("PWM duty cycle %llu is truncated\n", state.duty_cycle);
 
@@ -193,6 +216,8 @@ static inline u64 pwm_get_duty_cycle_extend(const struct pwm_device *pwm)
 
 	pwm_get_state(pwm, &state);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return state.duty_cycle;
 }
 
@@ -205,6 +230,7 @@ static inline enum pwm_polarity pwm_get_polarity(const struct pwm_device *pwm)
 	return state.polarity;
 }
 
+<<<<<<< HEAD
 static inline enum pwm_output_type pwm_get_output_type(
 		const struct pwm_device *pwm)
 {
@@ -225,6 +251,8 @@ static inline struct pwm_output_pattern *pwm_get_output_pattern(
 	return pwm->state.output_pattern ?: NULL;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline void pwm_get_args(const struct pwm_device *pwm,
 				struct pwm_args *args)
 {
@@ -324,15 +352,21 @@ pwm_set_relative_duty_cycle(struct pwm_state *state, unsigned int duty_cycle,
  * @request: optional hook for requesting a PWM
  * @free: optional hook for freeing a PWM
  * @config: configure duty cycles and period length for this PWM
+<<<<<<< HEAD
  * @config_extend: configure duty cycles and period length for this
  *	PWM with u64 data type
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @set_polarity: configure the polarity of this PWM
  * @capture: capture and report PWM signal
  * @enable: enable PWM output toggling
  * @disable: disable PWM output toggling
+<<<<<<< HEAD
  * @get_output_type_supported: get the supported output type
  * @set_output_type: set PWM output type
  * @set_output_pattern: set the pattern for the modulated output
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @apply: atomically apply a new PWM config. The state argument
  *	   should be adjusted with the real hardware config (if the
  *	   approximate the period or duty_cycle value, state should
@@ -348,14 +382,18 @@ struct pwm_ops {
 	void (*free)(struct pwm_chip *chip, struct pwm_device *pwm);
 	int (*config)(struct pwm_chip *chip, struct pwm_device *pwm,
 		      int duty_ns, int period_ns);
+<<<<<<< HEAD
 	int (*config_extend)(struct pwm_chip *chip, struct pwm_device *pwm,
 		      u64 duty_ns, u64 period_ns);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int (*set_polarity)(struct pwm_chip *chip, struct pwm_device *pwm,
 			    enum pwm_polarity polarity);
 	int (*capture)(struct pwm_chip *chip, struct pwm_device *pwm,
 		       struct pwm_capture *result, unsigned long timeout);
 	int (*enable)(struct pwm_chip *chip, struct pwm_device *pwm);
 	void (*disable)(struct pwm_chip *chip, struct pwm_device *pwm);
+<<<<<<< HEAD
 	int (*get_output_type_supported)(struct pwm_chip *chip,
 			struct pwm_device *pwm);
 	int (*set_output_type)(struct pwm_chip *chip, struct pwm_device *pwm,
@@ -363,6 +401,8 @@ struct pwm_ops {
 	int (*set_output_pattern)(struct pwm_chip *chip,
 			struct pwm_device *pwm,
 			struct pwm_output_pattern *output_pattern);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int (*apply)(struct pwm_chip *chip, struct pwm_device *pwm,
 		     struct pwm_state *state);
 	void (*get_state)(struct pwm_chip *chip, struct pwm_device *pwm,
@@ -404,8 +444,13 @@ struct pwm_chip {
  * @duty_cycle: duty cycle of the PWM signal (in nanoseconds)
  */
 struct pwm_capture {
+<<<<<<< HEAD
 	u64 period;
 	u64 duty_cycle;
+=======
+	unsigned int period;
+	unsigned int duty_cycle;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #if IS_ENABLED(CONFIG_PWM)
@@ -416,6 +461,7 @@ int pwm_apply_state(struct pwm_device *pwm, struct pwm_state *state);
 int pwm_adjust_config(struct pwm_device *pwm);
 
 /**
+<<<<<<< HEAD
  * pwm_output_type_support()
  * @pwm: PWM device
  *
@@ -431,6 +477,8 @@ static inline int pwm_get_output_type_supported(struct pwm_device *pwm)
 }
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * pwm_config() - change a PWM device configuration
  * @pwm: PWM device
  * @duty_ns: "on" time (in nanoseconds)
@@ -459,6 +507,7 @@ static inline int pwm_config(struct pwm_device *pwm, int duty_ns,
 }
 
 /**
+<<<<<<< HEAD
  * pwm_config_extend() - change PWM period and duty length with u64 data type
  * @pwm: PWM device
  * @duty_ns: "on" time (in nanoseconds)
@@ -484,6 +533,8 @@ static inline int pwm_config_extend(struct pwm_device *pwm, u64 duty_ns,
 }
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * pwm_set_polarity() - configure the polarity of a PWM signal
  * @pwm: PWM device
  * @polarity: new polarity of the PWM signal
@@ -774,7 +825,10 @@ static inline void pwm_remove_table(struct pwm_lookup *table, size_t num)
 #ifdef CONFIG_PWM_SYSFS
 void pwmchip_sysfs_export(struct pwm_chip *chip);
 void pwmchip_sysfs_unexport(struct pwm_chip *chip);
+<<<<<<< HEAD
 void pwmchip_sysfs_unexport_children(struct pwm_chip *chip);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else
 static inline void pwmchip_sysfs_export(struct pwm_chip *chip)
 {
@@ -783,10 +837,13 @@ static inline void pwmchip_sysfs_export(struct pwm_chip *chip)
 static inline void pwmchip_sysfs_unexport(struct pwm_chip *chip)
 {
 }
+<<<<<<< HEAD
 
 static inline void pwmchip_sysfs_unexport_children(struct pwm_chip *chip)
 {
 }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* CONFIG_PWM_SYSFS */
 
 #endif /* __LINUX_PWM_H */

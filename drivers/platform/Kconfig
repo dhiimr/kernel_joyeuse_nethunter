@@ -8,5 +8,8 @@ endif
 source "drivers/platform/goldfish/Kconfig"
 
 source "drivers/platform/chrome/Kconfig"
+<<<<<<< HEAD
 
 source "drivers/platform/msm/Kconfig"
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

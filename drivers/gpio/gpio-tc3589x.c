@@ -209,7 +209,11 @@ static void tc3589x_gpio_irq_sync_unlock(struct irq_data *d)
 				continue;
 
 			tc3589x_gpio->oldregs[i][j] = new;
+<<<<<<< HEAD
 			tc3589x_reg_write(tc3589x, regmap[i] + j * 8, new);
+=======
+			tc3589x_reg_write(tc3589x, regmap[i] + j, new);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 

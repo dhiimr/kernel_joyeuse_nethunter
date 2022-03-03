@@ -137,6 +137,7 @@ static int uldrx_handler(struct sge_rspq *q, const __be64 *rsp,
 static int alloc_uld_rxqs(struct adapter *adap,
 			  struct sge_uld_rxq_info *rxq_info, bool lro)
 {
+<<<<<<< HEAD
 	struct sge *s = &adap->sge;
 	unsigned int nq = rxq_info->nrxq + rxq_info->nciq;
 	struct sge_ofld_rxq *q = rxq_info->uldrxq;
@@ -144,6 +145,14 @@ static int alloc_uld_rxqs(struct adapter *adap,
 	unsigned int bmap_idx = 0;
 	unsigned int per_chan;
 	int i, err, msi_idx, que_idx = 0;
+=======
+	unsigned int nq = rxq_info->nrxq + rxq_info->nciq;
+	int i, err, msi_idx, que_idx = 0, bmap_idx = 0;
+	struct sge_ofld_rxq *q = rxq_info->uldrxq;
+	unsigned short *ids = rxq_info->rspq_id;
+	struct sge *s = &adap->sge;
+	unsigned int per_chan;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	per_chan = rxq_info->nrxq / adap->params.nports;
 
@@ -161,6 +170,13 @@ static int alloc_uld_rxqs(struct adapter *adap,
 
 		if (msi_idx >= 0) {
 			bmap_idx = get_msix_idx_from_bmap(adap);
+<<<<<<< HEAD
+=======
+			if (bmap_idx < 0) {
+				err = -ENOSPC;
+				goto freeout;
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			msi_idx = adap->msix_info_ulds[bmap_idx].idx;
 		}
 		err = t4_sge_alloc_rxq(adap, &q->rspq, false,
@@ -667,10 +683,17 @@ static void uld_init(struct adapter *adap, struct cxgb4_lld_info *lld)
 	lld->fr_nsmr_tpte_wr_support = adap->params.fr_nsmr_tpte_wr_support;
 }
 
+<<<<<<< HEAD
 static void uld_attach(struct adapter *adap, unsigned int uld)
 {
 	void *handle;
 	struct cxgb4_lld_info lli;
+=======
+static int uld_attach(struct adapter *adap, unsigned int uld)
+{
+	struct cxgb4_lld_info lli;
+	void *handle;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	uld_init(adap, &lli);
 	uld_queue_init(adap, uld, &lli);
@@ -680,7 +703,11 @@ static void uld_attach(struct adapter *adap, unsigned int uld)
 		dev_warn(adap->pdev_dev,
 			 "could not attach to the %s driver, error %ld\n",
 			 adap->uld[uld].name, PTR_ERR(handle));
+<<<<<<< HEAD
 		return;
+=======
+		return PTR_ERR(handle);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	adap->uld[uld].handle = handle;
@@ -688,6 +715,7 @@ static void uld_attach(struct adapter *adap, unsigned int uld)
 
 	if (adap->flags & FULL_INIT_DONE)
 		adap->uld[uld].state_change(handle, CXGB4_STATE_UP);
+<<<<<<< HEAD
 }
 
 /**
@@ -698,13 +726,32 @@ static void uld_attach(struct adapter *adap, unsigned int uld)
  *	Registers an upper-layer driver with this driver and notifies the ULD
  *	about any presently available devices that support its type.  Returns
  *	%-EBUSY if a ULD of the same type is already registered.
+=======
+
+	return 0;
+}
+
+/* cxgb4_register_uld - register an upper-layer driver
+ * @type: the ULD type
+ * @p: the ULD methods
+ *
+ * Registers an upper-layer driver with this driver and notifies the ULD
+ * about any presently available devices that support its type.  Returns
+ * %-EBUSY if a ULD of the same type is already registered.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 int cxgb4_register_uld(enum cxgb4_uld type,
 		       const struct cxgb4_uld_info *p)
 {
+<<<<<<< HEAD
 	int ret = 0;
 	unsigned int adap_idx = 0;
 	struct adapter *adap;
+=======
+	unsigned int adap_idx = 0;
+	struct adapter *adap;
+	int ret = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (type >= CXGB4_ULD_MAX)
 		return -EINVAL;
@@ -738,12 +785,23 @@ int cxgb4_register_uld(enum cxgb4_uld type,
 		if (ret)
 			goto free_irq;
 		adap->uld[type] = *p;
+<<<<<<< HEAD
 		uld_attach(adap, type);
+=======
+		ret = uld_attach(adap, type);
+		if (ret)
+			goto free_txq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		adap_idx++;
 	}
 	mutex_unlock(&uld_mutex);
 	return 0;
 
+<<<<<<< HEAD
+=======
+free_txq:
+	release_sge_txq_uld(adap, type);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 free_irq:
 	if (adap->flags & FULL_INIT_DONE)
 		quiesce_rx_uld(adap, type);

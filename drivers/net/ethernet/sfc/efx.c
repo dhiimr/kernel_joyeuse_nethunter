@@ -505,6 +505,10 @@ efx_copy_channel(const struct efx_channel *old_channel)
 		if (tx_queue->channel)
 			tx_queue->channel = channel;
 		tx_queue->buffer = NULL;
+<<<<<<< HEAD
+=======
+		tx_queue->cb_page = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		memset(&tx_queue->txd, 0, sizeof(tx_queue->txd));
 	}
 

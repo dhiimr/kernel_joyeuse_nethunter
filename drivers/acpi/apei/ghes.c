@@ -33,7 +33,10 @@
 #include <linux/interrupt.h>
 #include <linux/timer.h>
 #include <linux/cper.h>
+<<<<<<< HEAD
 #include <linux/kdebug.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/platform_device.h>
 #include <linux/mutex.h>
 #include <linux/ratelimit.h>
@@ -171,29 +174,46 @@ static int ghes_estatus_pool_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void ghes_estatus_pool_free_chunk_page(struct gen_pool *pool,
 					      struct gen_pool_chunk *chunk,
 					      void *data)
 {
 	free_page(chunk->start_addr);
+=======
+static void ghes_estatus_pool_free_chunk(struct gen_pool *pool,
+					      struct gen_pool_chunk *chunk,
+					      void *data)
+{
+	vfree((void *)chunk->start_addr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void ghes_estatus_pool_exit(void)
 {
 	gen_pool_for_each_chunk(ghes_estatus_pool,
+<<<<<<< HEAD
 				ghes_estatus_pool_free_chunk_page, NULL);
+=======
+				ghes_estatus_pool_free_chunk, NULL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	gen_pool_destroy(ghes_estatus_pool);
 }
 
 static int ghes_estatus_pool_expand(unsigned long len)
 {
+<<<<<<< HEAD
 	unsigned long i, pages, size, addr;
 	int ret;
+=======
+	unsigned long size, addr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ghes_estatus_pool_size_request += PAGE_ALIGN(len);
 	size = gen_pool_size(ghes_estatus_pool);
 	if (size >= ghes_estatus_pool_size_request)
 		return 0;
+<<<<<<< HEAD
 	pages = (ghes_estatus_pool_size_request - size) / PAGE_SIZE;
 	for (i = 0; i < pages; i++) {
 		addr = __get_free_page(GFP_KERNEL);
@@ -205,6 +225,20 @@ static int ghes_estatus_pool_expand(unsigned long len)
 	}
 
 	return 0;
+=======
+
+	addr = (unsigned long)vmalloc(PAGE_ALIGN(len));
+	if (!addr)
+		return -ENOMEM;
+
+	/*
+	 * New allocation must be visible in all pgd before it can be found by
+	 * an NMI allocating from the pool.
+	 */
+	vmalloc_sync_mappings();
+
+	return gen_pool_add(ghes_estatus_pool, addr, PAGE_ALIGN(len), -1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int map_gen_v2(struct ghes *ghes)
@@ -936,7 +970,10 @@ static int ghes_notify_nmi(unsigned int cmd, struct pt_regs *regs)
 
 		sev = ghes_severity(ghes->estatus->error_severity);
 		if (sev >= GHES_SEV_PANIC) {
+<<<<<<< HEAD
 			oops_begin();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ghes_print_queued_estatus();
 			__ghes_panic(ghes);
 		}

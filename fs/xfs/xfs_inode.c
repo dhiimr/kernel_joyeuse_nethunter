@@ -3035,7 +3035,12 @@ xfs_rename(
 					&dfops, &first_block, spaceres);
 
 	/*
+<<<<<<< HEAD
 	 * Set up the target.
+=======
+	 * Check for expected errors before we dirty the transaction
+	 * so we can return an error without a transaction abort.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 */
 	if (target_ip == NULL) {
 		/*
@@ -3047,6 +3052,49 @@ xfs_rename(
 			if (error)
 				goto out_trans_cancel;
 		}
+<<<<<<< HEAD
+=======
+	} else {
+		/*
+		 * If target exists and it's a directory, check that whether
+		 * it can be destroyed.
+		 */
+		if (S_ISDIR(VFS_I(target_ip)->i_mode) &&
+		    (!xfs_dir_isempty(target_ip) ||
+		     (VFS_I(target_ip)->i_nlink > 2))) {
+			error = -EEXIST;
+			goto out_trans_cancel;
+		}
+	}
+
+	/*
+	 * Directory entry creation below may acquire the AGF. Remove
+	 * the whiteout from the unlinked list first to preserve correct
+	 * AGI/AGF locking order. This dirties the transaction so failures
+	 * after this point will abort and log recovery will clean up the
+	 * mess.
+	 *
+	 * For whiteouts, we need to bump the link count on the whiteout
+	 * inode. After this point, we have a real link, clear the tmpfile
+	 * state flag from the inode so it doesn't accidentally get misused
+	 * in future.
+	 */
+	if (wip) {
+		ASSERT(VFS_I(wip)->i_nlink == 0);
+		error = xfs_iunlink_remove(tp, wip);
+		if (error)
+			goto out_trans_cancel;
+
+		xfs_bumplink(tp, wip);
+		xfs_trans_log_inode(tp, wip, XFS_ILOG_CORE);
+		VFS_I(wip)->i_state &= ~I_LINKABLE;
+	}
+
+	/*
+	 * Set up the target.
+	 */
+	if (target_ip == NULL) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/*
 		 * If target does not exist and the rename crosses
 		 * directories, adjust the target directory link count
@@ -3068,6 +3116,7 @@ xfs_rename(
 		}
 	} else { /* target_ip != NULL */
 		/*
+<<<<<<< HEAD
 		 * If target exists and it's a directory, check that both
 		 * target and source are directories and that target can be
 		 * destroyed, or that neither is a directory.
@@ -3084,6 +3133,8 @@ xfs_rename(
 		}
 
 		/*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		 * Link the source inode under the target name.
 		 * If the source inode is a directory and we are moving
 		 * it across directories, its ".." entry will be
@@ -3175,6 +3226,7 @@ xfs_rename(
 	if (error)
 		goto out_bmap_cancel;
 
+<<<<<<< HEAD
 	/*
 	 * For whiteouts, we need to bump the link count on the whiteout inode.
 	 * This means that failures all the way up to this point leave the inode
@@ -3201,6 +3253,8 @@ xfs_rename(
 		VFS_I(wip)->i_state &= ~I_LINKABLE;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	xfs_trans_ichgtime(tp, src_dp, XFS_ICHGTIME_MOD | XFS_ICHGTIME_CHG);
 	xfs_trans_log_inode(tp, src_dp, XFS_ILOG_CORE);
 	if (new_parent)

@@ -207,7 +207,11 @@ static int altera_ps_write_complete(struct fpga_manager *mgr,
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 	if (!IS_ERR(conf->confd)) {
+=======
+	if (conf->confd) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!gpiod_get_raw_value_cansleep(conf->confd)) {
 			dev_err(&mgr->dev, "CONF_DONE is inactive!\n");
 			return -EIO;
@@ -263,10 +267,20 @@ static int altera_ps_probe(struct spi_device *spi)
 		return PTR_ERR(conf->status);
 	}
 
+<<<<<<< HEAD
 	conf->confd = devm_gpiod_get(&spi->dev, "confd", GPIOD_IN);
 	if (IS_ERR(conf->confd)) {
 		dev_warn(&spi->dev, "Not using confd gpio: %ld\n",
 			 PTR_ERR(conf->confd));
+=======
+	conf->confd = devm_gpiod_get_optional(&spi->dev, "confd", GPIOD_IN);
+	if (IS_ERR(conf->confd)) {
+		dev_err(&spi->dev, "Failed to get confd gpio: %ld\n",
+			PTR_ERR(conf->confd));
+		return PTR_ERR(conf->confd);
+	} else if (!conf->confd) {
+		dev_warn(&spi->dev, "Not using confd gpio");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Register manager with unique name */

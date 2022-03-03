@@ -348,8 +348,15 @@ static int reconn_set_ipaddr(struct TCP_Server_Info *server)
 		return rc;
 	}
 
+<<<<<<< HEAD
 	rc = cifs_convert_address((struct sockaddr *)&server->dstaddr, ipaddr,
 				  strlen(ipaddr));
+=======
+	spin_lock(&cifs_tcp_ses_lock);
+	rc = cifs_convert_address((struct sockaddr *)&server->dstaddr, ipaddr,
+				  strlen(ipaddr));
+	spin_unlock(&cifs_tcp_ses_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(ipaddr);
 
 	return !rc ? -1 : 0;
@@ -554,10 +561,17 @@ static bool
 server_unresponsive(struct TCP_Server_Info *server)
 {
 	/*
+<<<<<<< HEAD
 	 * We need to wait 2 echo intervals to make sure we handle such
 	 * situations right:
 	 * 1s  client sends a normal SMB request
 	 * 2s  client gets a response
+=======
+	 * We need to wait 3 echo intervals to make sure we handle such
+	 * situations right:
+	 * 1s  client sends a normal SMB request
+	 * 3s  client gets a response
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * 30s echo workqueue job pops, and decides we got a response recently
 	 *     and don't need to send another
 	 * ...
@@ -566,9 +580,15 @@ server_unresponsive(struct TCP_Server_Info *server)
 	 */
 	if ((server->tcpStatus == CifsGood ||
 	    server->tcpStatus == CifsNeedNegotiate) &&
+<<<<<<< HEAD
 	    time_after(jiffies, server->lstrp + 2 * server->echo_interval)) {
 		cifs_dbg(VFS, "Server %s has not responded in %lu seconds. Reconnecting...\n",
 			 server->hostname, (2 * server->echo_interval) / HZ);
+=======
+	    time_after(jiffies, server->lstrp + 3 * server->echo_interval)) {
+		cifs_dbg(VFS, "Server %s has not responded in %lu seconds. Reconnecting...\n",
+			 server->hostname, (3 * server->echo_interval) / HZ);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cifs_reconnect(server);
 		wake_up(&server->response_q);
 		return true;
@@ -754,6 +774,11 @@ static void clean_demultiplex_info(struct TCP_Server_Info *server)
 	list_del_init(&server->tcp_ses_list);
 	spin_unlock(&cifs_tcp_ses_lock);
 
+<<<<<<< HEAD
+=======
+	cancel_delayed_work_sync(&server->echo);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock(&GlobalMid_Lock);
 	server->tcpStatus = CifsExiting;
 	spin_unlock(&GlobalMid_Lock);
@@ -921,6 +946,10 @@ cifs_demultiplex_thread(void *p)
 		mempool_resize(cifs_req_poolp, length + cifs_min_rcv);
 
 	set_freezable();
+<<<<<<< HEAD
+=======
+	allow_kernel_signal(SIGKILL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	while (server->tcpStatus != CifsExiting) {
 		if (try_to_freeze())
 			continue;
@@ -2320,7 +2349,11 @@ cifs_put_tcp_session(struct TCP_Server_Info *server, int from_reconnect)
 
 	task = xchg(&server->tsk, NULL);
 	if (task)
+<<<<<<< HEAD
 		force_sig(SIGKILL, task);
+=======
+		send_sig(SIGKILL, task, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct TCP_Server_Info *
@@ -2542,6 +2575,10 @@ static int
 cifs_set_cifscreds(struct smb_vol *vol, struct cifs_ses *ses)
 {
 	int rc = 0;
+<<<<<<< HEAD
+=======
+	int is_domain = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	const char *delim, *payload;
 	char *desc;
 	ssize_t len;
@@ -2589,6 +2626,10 @@ cifs_set_cifscreds(struct smb_vol *vol, struct cifs_ses *ses)
 			rc = PTR_ERR(key);
 			goto out_err;
 		}
+<<<<<<< HEAD
+=======
+		is_domain = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	down_read(&key->sem);
@@ -2646,6 +2687,29 @@ cifs_set_cifscreds(struct smb_vol *vol, struct cifs_ses *ses)
 		goto out_key_put;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * If we have a domain key then we must set the domainName in the
+	 * for the request.
+	 */
+	if (is_domain && ses->domainName) {
+		vol->domainname = kstrndup(ses->domainName,
+					   strlen(ses->domainName),
+					   GFP_KERNEL);
+		if (!vol->domainname) {
+			cifs_dbg(FYI, "Unable to allocate %zd bytes for "
+				 "domain\n", len);
+			rc = -ENOMEM;
+			kfree(vol->username);
+			vol->username = NULL;
+			kzfree(vol->password);
+			vol->password = NULL;
+			goto out_key_put;
+		}
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out_key_put:
 	up_read(&key->sem);
 	key_put(key);
@@ -3024,8 +3088,15 @@ match_prepath(struct super_block *sb, struct cifs_mnt_data *mnt_data)
 {
 	struct cifs_sb_info *old = CIFS_SB(sb);
 	struct cifs_sb_info *new = mnt_data->cifs_sb;
+<<<<<<< HEAD
 	bool old_set = old->mnt_cifs_flags & CIFS_MOUNT_USE_PREFIX_PATH;
 	bool new_set = new->mnt_cifs_flags & CIFS_MOUNT_USE_PREFIX_PATH;
+=======
+	bool old_set = (old->mnt_cifs_flags & CIFS_MOUNT_USE_PREFIX_PATH) &&
+		old->prepath;
+	bool new_set = (new->mnt_cifs_flags & CIFS_MOUNT_USE_PREFIX_PATH) &&
+		new->prepath;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (old_set && new_set && !strcmp(new->prepath, old->prepath))
 		return 1;
@@ -3050,9 +3121,16 @@ cifs_match_super(struct super_block *sb, void *data)
 	spin_lock(&cifs_tcp_ses_lock);
 	cifs_sb = CIFS_SB(sb);
 	tlink = cifs_get_tlink(cifs_sb_master_tlink(cifs_sb));
+<<<<<<< HEAD
 	if (IS_ERR(tlink)) {
 		spin_unlock(&cifs_tcp_ses_lock);
 		return rc;
+=======
+	if (tlink == NULL) {
+		/* can not match superblock if tlink were ever null */
+		spin_unlock(&cifs_tcp_ses_lock);
+		return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	tcon = tlink_tcon(tlink);
 	ses = tcon->ses;
@@ -3496,7 +3574,11 @@ int cifs_setup_cifs_sb(struct smb_vol *pvolume_info,
 	cifs_sb->mnt_gid = pvolume_info->linux_gid;
 	cifs_sb->mnt_file_mode = pvolume_info->file_mode;
 	cifs_sb->mnt_dir_mode = pvolume_info->dir_mode;
+<<<<<<< HEAD
 	cifs_dbg(FYI, "file mode: 0x%hx  dir mode: 0x%hx\n",
+=======
+	cifs_dbg(FYI, "file mode: %04ho  dir mode: %04ho\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		 cifs_sb->mnt_file_mode, cifs_sb->mnt_dir_mode);
 
 	cifs_sb->actimeo = pvolume_info->actimeo;
@@ -4297,9 +4379,18 @@ cifs_construct_tcon(struct cifs_sb_info *cifs_sb, kuid_t fsuid)
 	vol_info->retry = master_tcon->retry;
 	vol_info->nocase = master_tcon->nocase;
 	vol_info->local_lease = master_tcon->local_lease;
+<<<<<<< HEAD
 	vol_info->no_linux_ext = !master_tcon->unix_ext;
 	vol_info->sectype = master_tcon->ses->sectype;
 	vol_info->sign = master_tcon->ses->sign;
+=======
+	vol_info->resilient = master_tcon->use_resilient;
+	vol_info->persistent = master_tcon->use_persistent;
+	vol_info->no_linux_ext = !master_tcon->unix_ext;
+	vol_info->sectype = master_tcon->ses->sectype;
+	vol_info->sign = master_tcon->ses->sign;
+	vol_info->seal = master_tcon->seal;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rc = cifs_set_vol_auth(vol_info, master_tcon->ses);
 	if (rc) {

@@ -31,7 +31,10 @@
 #include <linux/dma-mapping.h>
 #include <linux/fs.h>
 #include <linux/dma-fence.h>
+<<<<<<< HEAD
 #include <linux/dma-buf-ref.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/wait.h>
 
 struct device;
@@ -190,6 +193,7 @@ struct dma_buf_ops {
 	int (*begin_cpu_access)(struct dma_buf *, enum dma_data_direction);
 
 	/**
+<<<<<<< HEAD
 	 * @begin_cpu_access_umapped:
 	 *
 	 * This is called as a result of the DMA_BUF_IOCTL_SYNC IOCTL being
@@ -252,6 +256,8 @@ struct dma_buf_ops {
 					unsigned int, unsigned int);
 
 	/**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * @end_cpu_access:
 	 *
 	 * This is called from dma_buf_end_cpu_access() when the importer is
@@ -269,6 +275,7 @@ struct dma_buf_ops {
 	 * to be restarted.
 	 */
 	int (*end_cpu_access)(struct dma_buf *, enum dma_data_direction);
+<<<<<<< HEAD
 
 	/**
 	 * @end_cpu_access_umapped:
@@ -313,6 +320,8 @@ struct dma_buf_ops {
 	int (*end_cpu_access_partial)(struct dma_buf *, enum dma_data_direction,
 				      unsigned int, unsigned int);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	void *(*map_atomic)(struct dma_buf *, unsigned long);
 	void (*unmap_atomic)(struct dma_buf *, unsigned long, void *);
 	void *(*map)(struct dma_buf *, unsigned long);
@@ -357,6 +366,7 @@ struct dma_buf_ops {
 
 	void *(*vmap)(struct dma_buf *);
 	void (*vunmap)(struct dma_buf *, void *vaddr);
+<<<<<<< HEAD
 
 	/**
 	 * @get_flags:
@@ -371,6 +381,8 @@ struct dma_buf_ops {
 	 * will be populated with the buffer's flags.
 	 */
 	int (*get_flags)(struct dma_buf *, unsigned long *flags);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -383,8 +395,11 @@ struct dma_buf_ops {
  * @vmapping_counter: used internally to refcnt the vmaps
  * @vmap_ptr: the current vmap ptr if vmapping_counter > 0
  * @exp_name: name of the exporter; useful for debugging.
+<<<<<<< HEAD
  * @name: unique name for the buffer
  * @ktime: time (in jiffies) at which the buffer was born
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @owner: pointer to exporter module; used for refcounting when exporter is a
  *         kernel module.
  * @list_node: node for dma_buf accounting and debugging.
@@ -412,8 +427,11 @@ struct dma_buf {
 	unsigned vmapping_counter;
 	void *vmap_ptr;
 	const char *exp_name;
+<<<<<<< HEAD
 	char *name;
 	ktime_t ktime;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct module *owner;
 	struct list_head list_node;
 	void *priv;
@@ -428,8 +446,11 @@ struct dma_buf {
 
 		unsigned long active;
 	} cb_excl, cb_shared;
+<<<<<<< HEAD
 
 	struct list_head refs;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -453,7 +474,10 @@ struct dma_buf_attachment {
 	struct device *dev;
 	struct list_head node;
 	void *priv;
+<<<<<<< HEAD
 	unsigned long dma_map_attrs;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -502,7 +526,10 @@ struct dma_buf_export_info {
 static inline void get_dma_buf(struct dma_buf *dmabuf)
 {
 	get_file(dmabuf->file);
+<<<<<<< HEAD
 	dma_buf_ref_mod(dmabuf, 1);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 struct dma_buf_attachment *dma_buf_attach(struct dma_buf *dmabuf,
@@ -522,6 +549,7 @@ void dma_buf_unmap_attachment(struct dma_buf_attachment *, struct sg_table *,
 				enum dma_data_direction);
 int dma_buf_begin_cpu_access(struct dma_buf *dma_buf,
 			     enum dma_data_direction dir);
+<<<<<<< HEAD
 int dma_buf_begin_cpu_access_partial(struct dma_buf *dma_buf,
 				     enum dma_data_direction dir,
 				     unsigned int offset,
@@ -531,6 +559,10 @@ int dma_buf_end_cpu_access(struct dma_buf *dma_buf,
 int dma_buf_end_cpu_access_partial(struct dma_buf *dma_buf,
 				   enum dma_data_direction dir,
 				   unsigned int offset, unsigned int len);
+=======
+int dma_buf_end_cpu_access(struct dma_buf *dma_buf,
+			   enum dma_data_direction dir);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void *dma_buf_kmap_atomic(struct dma_buf *, unsigned long);
 void dma_buf_kunmap_atomic(struct dma_buf *, unsigned long, void *);
 void *dma_buf_kmap(struct dma_buf *, unsigned long);
@@ -540,5 +572,8 @@ int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
 		 unsigned long);
 void *dma_buf_vmap(struct dma_buf *);
 void dma_buf_vunmap(struct dma_buf *, void *vaddr);
+<<<<<<< HEAD
 int dma_buf_get_flags(struct dma_buf *dma_buf, unsigned long *flags);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* __DMA_BUF_H__ */

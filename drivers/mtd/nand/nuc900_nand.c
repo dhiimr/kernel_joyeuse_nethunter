@@ -284,7 +284,11 @@ static int nuc900_nand_remove(struct platform_device *pdev)
 {
 	struct nuc900_nand *nuc900_nand = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	nand_release(nand_to_mtd(&nuc900_nand->chip));
+=======
+	nand_release(&nuc900_nand->chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	clk_disable(nuc900_nand->clk);
 
 	return 0;

@@ -727,6 +727,13 @@ static int isp_pipeline_enable(struct isp_pipeline *pipe,
 					s_stream, mode);
 			pipe->do_propagation = true;
 		}
+<<<<<<< HEAD
+=======
+
+		/* Stop at the first external sub-device. */
+		if (subdev->dev != isp->dev)
+			break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return 0;
@@ -841,6 +848,13 @@ static int isp_pipeline_disable(struct isp_pipeline *pipe)
 						      &subdev->entity);
 			failure = -ETIMEDOUT;
 		}
+<<<<<<< HEAD
+=======
+
+		/* Stop at the first external sub-device. */
+		if (subdev->dev != isp->dev)
+			break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return failure;
@@ -2296,8 +2310,15 @@ static int isp_probe(struct platform_device *pdev)
 		mem = platform_get_resource(pdev, IORESOURCE_MEM, i);
 		isp->mmio_base[map_idx] =
 			devm_ioremap_resource(isp->dev, mem);
+<<<<<<< HEAD
 		if (IS_ERR(isp->mmio_base[map_idx]))
 			return PTR_ERR(isp->mmio_base[map_idx]);
+=======
+		if (IS_ERR(isp->mmio_base[map_idx])) {
+			ret = PTR_ERR(isp->mmio_base[map_idx]);
+			goto error;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ret = isp_get_clocks(isp);

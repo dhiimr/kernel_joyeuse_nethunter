@@ -328,11 +328,19 @@ static struct pci_ops rcar_pcie_ops = {
 };
 
 static void rcar_pcie_setup_window(int win, struct rcar_pcie *pcie,
+<<<<<<< HEAD
 				   struct resource *res)
+=======
+				   struct resource_entry *window)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	/* Setup PCIe address space mappings for each resource */
 	resource_size_t size;
 	resource_size_t res_start;
+<<<<<<< HEAD
+=======
+	struct resource *res = window->res;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 mask;
 
 	rcar_pci_write_reg(pcie, 0x00000000, PCIEPTCTLR(win));
@@ -346,9 +354,15 @@ static void rcar_pcie_setup_window(int win, struct rcar_pcie *pcie,
 	rcar_pci_write_reg(pcie, mask << 7, PCIEPAMR(win));
 
 	if (res->flags & IORESOURCE_IO)
+<<<<<<< HEAD
 		res_start = pci_pio_to_address(res->start);
 	else
 		res_start = res->start;
+=======
+		res_start = pci_pio_to_address(res->start) - window->offset;
+	else
+		res_start = res->start - window->offset;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rcar_pci_write_reg(pcie, upper_32_bits(res_start), PCIEPAUR(win));
 	rcar_pci_write_reg(pcie, lower_32_bits(res_start) & ~0x7F,
@@ -377,7 +391,11 @@ static int rcar_pcie_setup(struct list_head *resource, struct rcar_pcie *pci)
 		switch (resource_type(res)) {
 		case IORESOURCE_IO:
 		case IORESOURCE_MEM:
+<<<<<<< HEAD
 			rcar_pcie_setup_window(i, pci, res);
+=======
+			rcar_pcie_setup_window(i, pci, win);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			i++;
 			break;
 		case IORESOURCE_BUS:
@@ -849,7 +867,11 @@ static int rcar_pcie_enable_msi(struct rcar_pcie *pcie)
 {
 	struct device *dev = pcie->dev;
 	struct rcar_msi *msi = &pcie->msi;
+<<<<<<< HEAD
 	unsigned long base;
+=======
+	phys_addr_t base;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err, i;
 
 	mutex_init(&msi->lock);
@@ -888,10 +910,21 @@ static int rcar_pcie_enable_msi(struct rcar_pcie *pcie)
 
 	/* setup MSI data target */
 	msi->pages = __get_free_pages(GFP_KERNEL, 0);
+<<<<<<< HEAD
 	base = virt_to_phys((void *)msi->pages);
 
 	rcar_pci_write_reg(pcie, base | MSIFE, PCIEMSIALR);
 	rcar_pci_write_reg(pcie, 0, PCIEMSIAUR);
+=======
+	if (!msi->pages) {
+		err = -ENOMEM;
+		goto err;
+	}
+	base = virt_to_phys((void *)msi->pages);
+
+	rcar_pci_write_reg(pcie, lower_32_bits(base) | MSIFE, PCIEMSIALR);
+	rcar_pci_write_reg(pcie, upper_32_bits(base), PCIEMSIAUR);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* enable all MSI interrupts */
 	rcar_pci_write_reg(pcie, 0xffffffff, PCIEMSIIER);

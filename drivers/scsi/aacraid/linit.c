@@ -736,7 +736,15 @@ static int aac_eh_abort(struct scsi_cmnd* cmd)
 		status = aac_hba_send(HBA_IU_TYPE_SCSI_TM_REQ, fib,
 				  (fib_callback) aac_hba_callback,
 				  (void *) cmd);
+<<<<<<< HEAD
 
+=======
+		if (status != -EINPROGRESS) {
+			aac_fib_complete(fib);
+			aac_fib_free(fib);
+			return ret;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* Wait up to 15 secs for completion */
 		for (count = 0; count < 15; ++count) {
 			if (cmd->SCp.sent_command) {
@@ -915,11 +923,19 @@ static int aac_eh_dev_reset(struct scsi_cmnd *cmd)
 
 	info = &aac->hba_map[bus][cid];
 
+<<<<<<< HEAD
 	if (info->devtype != AAC_DEVTYPE_NATIVE_RAW &&
 	    info->reset_state > 0)
 		return FAILED;
 
 	pr_err("%s: Host adapter reset request. SCSI hang ?\n",
+=======
+	if (!(info->devtype == AAC_DEVTYPE_NATIVE_RAW &&
+	 !(info->reset_state > 0)))
+		return FAILED;
+
+	pr_err("%s: Host device reset request. SCSI hang ?\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	       AAC_DRIVERNAME);
 
 	fib = aac_fib_alloc(aac);
@@ -934,7 +950,16 @@ static int aac_eh_dev_reset(struct scsi_cmnd *cmd)
 	status = aac_hba_send(command, fib,
 			      (fib_callback) aac_tmf_callback,
 			      (void *) info);
+<<<<<<< HEAD
 
+=======
+	if (status != -EINPROGRESS) {
+		info->reset_state = 0;
+		aac_fib_complete(fib);
+		aac_fib_free(fib);
+		return ret;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Wait up to 15 seconds for completion */
 	for (count = 0; count < 15; ++count) {
 		if (info->reset_state == 0) {
@@ -973,11 +998,19 @@ static int aac_eh_target_reset(struct scsi_cmnd *cmd)
 
 	info = &aac->hba_map[bus][cid];
 
+<<<<<<< HEAD
 	if (info->devtype != AAC_DEVTYPE_NATIVE_RAW &&
 	    info->reset_state > 0)
 		return FAILED;
 
 	pr_err("%s: Host adapter reset request. SCSI hang ?\n",
+=======
+	if (!(info->devtype == AAC_DEVTYPE_NATIVE_RAW &&
+	 !(info->reset_state > 0)))
+		return FAILED;
+
+	pr_err("%s: Host target reset request. SCSI hang ?\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	       AAC_DRIVERNAME);
 
 	fib = aac_fib_alloc(aac);
@@ -994,6 +1027,16 @@ static int aac_eh_target_reset(struct scsi_cmnd *cmd)
 			      (fib_callback) aac_tmf_callback,
 			      (void *) info);
 
+<<<<<<< HEAD
+=======
+	if (status != -EINPROGRESS) {
+		info->reset_state = 0;
+		aac_fib_complete(fib);
+		aac_fib_free(fib);
+		return ret;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Wait up to 15 seconds for completion */
 	for (count = 0; count < 15; ++count) {
 		if (info->reset_state <= 0) {
@@ -1046,7 +1089,11 @@ static int aac_eh_bus_reset(struct scsi_cmnd* cmd)
 		}
 	}
 
+<<<<<<< HEAD
 	pr_err("%s: Host adapter reset request. SCSI hang ?\n", AAC_DRIVERNAME);
+=======
+	pr_err("%s: Host bus reset request. SCSI hang ?\n", AAC_DRIVERNAME);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Check the health of the controller

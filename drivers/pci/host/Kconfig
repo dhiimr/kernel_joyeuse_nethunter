@@ -40,6 +40,7 @@ config PCI_TEGRA
 	  Say Y here if you want support for the PCIe host controller found
 	  on NVIDIA Tegra SoCs.
 
+<<<<<<< HEAD
 config PCI_MSM
 	bool "MSM PCIe Controller driver"
 	depends on ARCH_QCOM && PCI
@@ -65,6 +66,8 @@ config PCI_MSM_MSI
 	  message signaled interrupts (MSI) allocation, routing,
 	  masking, and affinity assigning for PCIe devices.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config PCI_RCAR_GEN2
 	bool "Renesas R-Car Gen2 Internal PCI controller"
 	depends on ARM

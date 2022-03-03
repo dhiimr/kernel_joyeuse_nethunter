@@ -16,8 +16,11 @@
 #include <asm/nospec-branch.h>
 #include <linux/bpf.h>
 
+<<<<<<< HEAD
 int bpf_jit_enable __read_mostly;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * assembly code in arch/x86/net/bpf_jit.S
  */
@@ -155,6 +158,22 @@ static bool is_ereg(u32 reg)
 			     BIT(BPF_REG_AX));
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * is_ereg_8l() == true if BPF register 'reg' is mapped to access x86-64
+ * lower 8-bit registers dil,sil,bpl,spl,r8b..r15b, which need extra byte
+ * of encoding. al,cl,dl,bl have simpler encoding.
+ */
+static bool is_ereg_8l(u32 reg)
+{
+	return is_ereg(reg) ||
+	    (1 << reg) & (BIT(BPF_REG_1) |
+			  BIT(BPF_REG_2) |
+			  BIT(BPF_REG_FP));
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* add modifiers if 'reg' maps to x64 registers r8..r15 */
 static u8 add_1mod(u8 byte, u32 reg)
 {
@@ -772,9 +791,14 @@ st:			if (is_imm8(insn->off))
 			/* STX: *(u8*)(dst_reg + off) = src_reg */
 		case BPF_STX | BPF_MEM | BPF_B:
 			/* emit 'mov byte ptr [rax + off], al' */
+<<<<<<< HEAD
 			if (is_ereg(dst_reg) || is_ereg(src_reg) ||
 			    /* have to add extra byte for x86 SIL, DIL regs */
 			    src_reg == BPF_REG_1 || src_reg == BPF_REG_2)
+=======
+			if (is_ereg(dst_reg) || is_ereg_8l(src_reg))
+				/* Add extra byte for eregs or SIL,DIL,BPL in src_reg */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				EMIT2(add_2mod(0x40, dst_reg, src_reg), 0x88);
 			else
 				EMIT1(0x88);
@@ -1097,7 +1121,20 @@ common_load:
 		}
 
 		if (image) {
+<<<<<<< HEAD
 			if (unlikely(proglen + ilen > oldproglen)) {
+=======
+			/*
+			 * When populating the image, assert that:
+			 *
+			 *  i) We do not write beyond the allocated space, and
+			 * ii) addrs[i] did not change from the prior run, in order
+			 *     to validate assumptions made for computing branch
+			 *     displacements.
+			 */
+			if (unlikely(proglen + ilen > oldproglen ||
+				     proglen + ilen != addrs[i])) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				pr_err("bpf_jit: fatal error\n");
 				return -EFAULT;
 			}

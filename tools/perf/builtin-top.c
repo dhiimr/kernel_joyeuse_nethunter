@@ -652,7 +652,13 @@ repeat:
 	delay_msecs = top->delay_secs * MSEC_PER_SEC;
 	set_term_quiet_input(&save);
 	/* trash return*/
+<<<<<<< HEAD
 	getc(stdin);
+=======
+	clearerr(stdin);
+	if (poll(&stdin_poll, 1, 0) > 0)
+		getc(stdin);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	while (!done) {
 		perf_top__print_sym_table(top);

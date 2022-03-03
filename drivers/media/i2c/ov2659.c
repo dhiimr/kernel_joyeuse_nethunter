@@ -419,10 +419,20 @@ static struct sensor_register ov2659_720p[] = {
 	{ REG_TIMING_YINC, 0x11 },
 	{ REG_TIMING_VERT_FORMAT, 0x80 },
 	{ REG_TIMING_HORIZ_FORMAT, 0x00 },
+<<<<<<< HEAD
+=======
+	{ 0x370a, 0x12 },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ 0x3a03, 0xe8 },
 	{ 0x3a09, 0x6f },
 	{ 0x3a0b, 0x5d },
 	{ 0x3a15, 0x9a },
+<<<<<<< HEAD
+=======
+	{ REG_VFIFO_READ_START_H, 0x00 },
+	{ REG_VFIFO_READ_START_L, 0x80 },
+	{ REG_ISP_CTRL02, 0x00 },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ REG_NULL, 0x00 },
 };
 
@@ -1117,8 +1127,15 @@ static int ov2659_set_fmt(struct v4l2_subdev *sd,
 		if (ov2659_formats[index].code == mf->code)
 			break;
 
+<<<<<<< HEAD
 	if (index < 0)
 		return -EINVAL;
+=======
+	if (index < 0) {
+		index = 0;
+		mf->code = ov2659_formats[index].code;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mf->colorspace = V4L2_COLORSPACE_SRGB;
 	mf->field = V4L2_FIELD_NONE;
@@ -1130,7 +1147,11 @@ static int ov2659_set_fmt(struct v4l2_subdev *sd,
 		mf = v4l2_subdev_get_try_format(sd, cfg, fmt->pad);
 		*mf = fmt->format;
 #else
+<<<<<<< HEAD
 		return -ENOTTY;
+=======
+		ret = -ENOTTY;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 	} else {
 		s64 val;
@@ -1201,11 +1222,23 @@ static int ov2659_s_stream(struct v4l2_subdev *sd, int on)
 		goto unlock;
 	}
 
+<<<<<<< HEAD
 	ov2659_set_pixel_clock(ov2659);
 	ov2659_set_frame_size(ov2659);
 	ov2659_set_format(ov2659);
 	ov2659_set_streaming(ov2659, 1);
 	ov2659->streaming = on;
+=======
+	ret = ov2659_set_pixel_clock(ov2659);
+	if (!ret)
+		ret = ov2659_set_frame_size(ov2659);
+	if (!ret)
+		ret = ov2659_set_format(ov2659);
+	if (!ret) {
+		ov2659_set_streaming(ov2659, 1);
+		ov2659->streaming = on;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 unlock:
 	mutex_unlock(&ov2659->lock);

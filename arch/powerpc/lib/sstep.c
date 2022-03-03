@@ -2652,12 +2652,20 @@ void emulate_update_regs(struct pt_regs *regs, struct instruction_op *op)
 		case BARRIER_EIEIO:
 			eieio();
 			break;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC64
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		case BARRIER_LWSYNC:
 			asm volatile("lwsync" : : : "memory");
 			break;
 		case BARRIER_PTESYNC:
 			asm volatile("ptesync" : : : "memory");
 			break;
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		break;
 

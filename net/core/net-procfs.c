@@ -159,12 +159,21 @@ static int softnet_seq_show(struct seq_file *seq, void *v)
 	rcu_read_unlock();
 #endif
 
+<<<<<<< HEAD
 	seq_printf
 	(seq, "%08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x\n",
 	 sd->processed, sd->dropped, sd->time_squeeze, 0,
 	 0, 0, 0, 0, /* was fastroute */
 	 0, /* was cpu_collision */
 	 sd->received_rps, flow_limit_count, sd->gro_coalesced);
+=======
+	seq_printf(seq,
+		   "%08x %08x %08x %08x %08x %08x %08x %08x %08x %08x %08x\n",
+		   sd->processed, sd->dropped, sd->time_squeeze, 0,
+		   0, 0, 0, 0, /* was fastroute */
+		   0,	/* was cpu_collision */
+		   sd->received_rps, flow_limit_count);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -209,12 +218,32 @@ static const struct file_operations softnet_seq_fops = {
 	.release = seq_release,
 };
 
+<<<<<<< HEAD
 static void *ptype_get_idx(loff_t pos)
 {
 	struct packet_type *pt = NULL;
 	loff_t i = 0;
 	int t;
 
+=======
+static void *ptype_get_idx(struct seq_file *seq, loff_t pos)
+{
+	struct list_head *ptype_list = NULL;
+	struct packet_type *pt = NULL;
+	struct net_device *dev;
+	loff_t i = 0;
+	int t;
+
+	for_each_netdev_rcu(seq_file_net(seq), dev) {
+		ptype_list = &dev->ptype_all;
+		list_for_each_entry_rcu(pt, ptype_list, list) {
+			if (i == pos)
+				return pt;
+			++i;
+		}
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	list_for_each_entry_rcu(pt, &ptype_all, list) {
 		if (i == pos)
 			return pt;
@@ -235,22 +264,55 @@ static void *ptype_seq_start(struct seq_file *seq, loff_t *pos)
 	__acquires(RCU)
 {
 	rcu_read_lock();
+<<<<<<< HEAD
 	return *pos ? ptype_get_idx(*pos - 1) : SEQ_START_TOKEN;
+=======
+	return *pos ? ptype_get_idx(seq, *pos - 1) : SEQ_START_TOKEN;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void *ptype_seq_next(struct seq_file *seq, void *v, loff_t *pos)
 {
+<<<<<<< HEAD
+=======
+	struct net_device *dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct packet_type *pt;
 	struct list_head *nxt;
 	int hash;
 
 	++*pos;
 	if (v == SEQ_START_TOKEN)
+<<<<<<< HEAD
 		return ptype_get_idx(0);
 
 	pt = v;
 	nxt = pt->list.next;
 	if (pt->type == htons(ETH_P_ALL)) {
+=======
+		return ptype_get_idx(seq, 0);
+
+	pt = v;
+	nxt = pt->list.next;
+	if (pt->dev) {
+		if (nxt != &pt->dev->ptype_all)
+			goto found;
+
+		dev = pt->dev;
+		for_each_netdev_continue_rcu(seq_file_net(seq), dev) {
+			if (!list_empty(&dev->ptype_all)) {
+				nxt = dev->ptype_all.next;
+				goto found;
+			}
+		}
+
+		nxt = ptype_all.next;
+		goto ptype_all;
+	}
+
+	if (pt->type == htons(ETH_P_ALL)) {
+ptype_all:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (nxt != &ptype_all)
 			goto found;
 		hash = 0;
@@ -279,7 +341,12 @@ static int ptype_seq_show(struct seq_file *seq, void *v)
 
 	if (v == SEQ_START_TOKEN)
 		seq_puts(seq, "Type Device      Function\n");
+<<<<<<< HEAD
 	else if (pt->dev == NULL || dev_net(pt->dev) == seq_file_net(seq)) {
+=======
+	else if ((!pt->af_packet_net || net_eq(pt->af_packet_net, seq_file_net(seq))) &&
+		 (!pt->dev || net_eq(dev_net(pt->dev), seq_file_net(seq)))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (pt->type == htons(ETH_P_ALL))
 			seq_puts(seq, "ALL ");
 		else

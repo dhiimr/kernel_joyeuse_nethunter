@@ -248,8 +248,13 @@ static void __init sme_clear_pgd(struct sme_populate_pgd_data *ppd)
 #define PMD_FLAGS_LARGE		(__PAGE_KERNEL_LARGE_EXEC & ~_PAGE_GLOBAL)
 
 #define PMD_FLAGS_DEC		PMD_FLAGS_LARGE
+<<<<<<< HEAD
 #define PMD_FLAGS_DEC_WP	((PMD_FLAGS_DEC & ~_PAGE_CACHE_MASK) | \
 				 (_PAGE_PAT | _PAGE_PWT))
+=======
+#define PMD_FLAGS_DEC_WP	((PMD_FLAGS_DEC & ~_PAGE_LARGE_CACHE_MASK) | \
+				 (_PAGE_PAT_LARGE | _PAGE_PWT))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define PMD_FLAGS_ENC		(PMD_FLAGS_LARGE | _PAGE_ENC)
 

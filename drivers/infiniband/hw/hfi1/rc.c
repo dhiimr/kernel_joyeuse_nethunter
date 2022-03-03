@@ -2309,7 +2309,11 @@ send_last:
 			update_ack_queue(qp, next);
 		}
 		e = &qp->s_ack_queue[qp->r_head_ack_queue];
+<<<<<<< HEAD
 		if (e->opcode == OP(RDMA_READ_REQUEST) && e->rdma_sge.mr) {
+=======
+		if (e->rdma_sge.mr) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			rvt_put_mr(e->rdma_sge.mr);
 			e->rdma_sge.mr = NULL;
 		}
@@ -2383,7 +2387,11 @@ send_last:
 			update_ack_queue(qp, next);
 		}
 		e = &qp->s_ack_queue[qp->r_head_ack_queue];
+<<<<<<< HEAD
 		if (e->opcode == OP(RDMA_READ_REQUEST) && e->rdma_sge.mr) {
+=======
+		if (e->rdma_sge.mr) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			rvt_put_mr(e->rdma_sge.mr);
 			e->rdma_sge.mr = NULL;
 		}

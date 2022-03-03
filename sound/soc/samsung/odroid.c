@@ -66,11 +66,19 @@ static int odroid_card_hw_params(struct snd_pcm_substream *substream,
 		return ret;
 
 	/*
+<<<<<<< HEAD
 	 *  We add 1 to the rclk_freq value in order to avoid too low clock
 	 *  frequency values due to the EPLL output frequency not being exact
 	 *  multiple of the audio sampling rate.
 	 */
 	rclk_freq = params_rate(params) * rfs + 1;
+=======
+	 *  We add 2 to the rclk_freq value in order to avoid too low clock
+	 *  frequency values due to the EPLL output frequency not being exact
+	 *  multiple of the audio sampling rate.
+	 */
+	rclk_freq = params_rate(params) * rfs + 2;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = clk_set_rate(priv->sclk_i2s, rclk_freq);
 	if (ret < 0)

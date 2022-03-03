@@ -87,6 +87,11 @@ $(addprefix $(obj)/,$(libfdt_objs) atags_to_fdt.o): \
 	$(addprefix $(obj)/,$(libfdt_hdrs))
 
 ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
+<<<<<<< HEAD
+=======
+CFLAGS_REMOVE_atags_to_fdt.o += -Wframe-larger-than=${CONFIG_FRAME_WARN}
+CFLAGS_atags_to_fdt.o += -Wframe-larger-than=1280
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 OBJS	+= $(libfdt_objs) atags_to_fdt.o
 endif
 
@@ -127,8 +132,11 @@ endif
 ifeq ($(CONFIG_CPU_ENDIAN_BE8),y)
 LDFLAGS_vmlinux += --be8
 endif
+<<<<<<< HEAD
 # ?
 LDFLAGS_vmlinux += -p
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # Report unresolved symbol references
 LDFLAGS_vmlinux += --no-undefined
 # Delete all temporary local symbols

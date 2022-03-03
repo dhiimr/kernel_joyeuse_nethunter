@@ -15,6 +15,10 @@
 #include <linux/module.h>
 #include <linux/bit_spinlock.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/swab.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/bitops.h>
 #include <linux/slab.h>
 #include "slab.h"
@@ -248,7 +252,11 @@ static inline void *freelist_ptr(const struct kmem_cache *s, void *ptr,
 				 unsigned long ptr_addr)
 {
 #ifdef CONFIG_SLAB_FREELIST_HARDENED
+<<<<<<< HEAD
 	return (void *)((unsigned long)ptr ^ s->random ^ ptr_addr);
+=======
+	return (void *)((unsigned long)ptr ^ s->random ^ swab(ptr_addr));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else
 	return ptr;
 #endif
@@ -269,8 +277,12 @@ static inline void *get_freepointer(struct kmem_cache *s, void *object)
 
 static void prefetch_freepointer(const struct kmem_cache *s, void *object)
 {
+<<<<<<< HEAD
 	if (object)
 		prefetch(freelist_dereference(s, object + s->offset));
+=======
+	prefetch(object + s->offset);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void *get_freepointer_safe(struct kmem_cache *s, void *object)
@@ -659,6 +671,23 @@ static void slab_fix(struct kmem_cache *s, char *fmt, ...)
 	va_end(args);
 }
 
+<<<<<<< HEAD
+=======
+static bool freelist_corrupted(struct kmem_cache *s, struct page *page,
+			       void **freelist, void *nextfree)
+{
+	if ((s->flags & SLAB_CONSISTENCY_CHECKS) &&
+	    !check_valid_pointer(s, page, nextfree) && freelist) {
+		object_err(s, page, *freelist, "Freechain corrupt");
+		*freelist = NULL;
+		slab_fix(s, "Isolate corrupted freechain");
+		return true;
+	}
+
+	return false;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void print_trailer(struct kmem_cache *s, struct page *page, u8 *p)
 {
 	unsigned int off;	/* Offset of last byte */
@@ -701,6 +730,7 @@ static void print_trailer(struct kmem_cache *s, struct page *page, u8 *p)
 	dump_stack();
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_SLUB_DEBUG_PANIC_ON
 static void slab_panic(const char *cause)
 {
@@ -710,12 +740,17 @@ static void slab_panic(const char *cause)
 static inline void slab_panic(const char *cause) {}
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void object_err(struct kmem_cache *s, struct page *page,
 			u8 *object, char *reason)
 {
 	slab_bug(s, "%s", reason);
 	print_trailer(s, page, object);
+<<<<<<< HEAD
 	slab_panic(reason);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static __printf(3, 4) void slab_err(struct kmem_cache *s, struct page *page,
@@ -730,7 +765,10 @@ static __printf(3, 4) void slab_err(struct kmem_cache *s, struct page *page,
 	slab_bug(s, "%s", buf);
 	print_page_info(page);
 	dump_stack();
+<<<<<<< HEAD
 	slab_panic("slab error");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void init_object(struct kmem_cache *s, void *object, u8 val)
@@ -752,7 +790,10 @@ static void init_object(struct kmem_cache *s, void *object, u8 val)
 static void restore_bytes(struct kmem_cache *s, char *message, u8 data,
 						void *from, void *to)
 {
+<<<<<<< HEAD
 	slab_panic("object poison overwritten");
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	slab_fix(s, "Restoring 0x%p-0x%p=0x%x\n", from, to - 1, data);
 	memset(from, data, to - from);
 }
@@ -1352,6 +1393,14 @@ static inline void inc_slabs_node(struct kmem_cache *s, int node,
 static inline void dec_slabs_node(struct kmem_cache *s, int node,
 							int objects) {}
 
+<<<<<<< HEAD
+=======
+static bool freelist_corrupted(struct kmem_cache *s, struct page *page,
+			       void **freelist, void *nextfree)
+{
+	return false;
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* CONFIG_SLUB_DEBUG */
 
 /*
@@ -1364,6 +1413,7 @@ static inline void kmalloc_large_node_hook(void *ptr, size_t size, gfp_t flags)
 	kasan_kmalloc_large(ptr, size, flags);
 }
 
+<<<<<<< HEAD
 static __always_inline void kfree_hook(void *x)
 {
 	kmemleak_free(x);
@@ -1371,6 +1421,15 @@ static __always_inline void kfree_hook(void *x)
 }
 
 static __always_inline void *slab_free_hook(struct kmem_cache *s, void *x)
+=======
+static inline void kfree_hook(const void *x)
+{
+	kmemleak_free(x);
+	kasan_kfree_large(x);
+}
+
+static inline void *slab_free_hook(struct kmem_cache *s, void *x)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	void *freeptr;
 
@@ -1398,7 +1457,11 @@ static __always_inline void *slab_free_hook(struct kmem_cache *s, void *x)
 	 * kasan_slab_free() may put x into memory quarantine, delaying its
 	 * reuse. In this case the object's freelist pointer is changed.
 	 */
+<<<<<<< HEAD
 	kasan_slab_free(s, x, _RET_IP_);
+=======
+	kasan_slab_free(s, x);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return freeptr;
 }
 
@@ -1690,7 +1753,10 @@ static void __free_slab(struct kmem_cache *s, struct page *page)
 	if (current->reclaim_state)
 		current->reclaim_state->reclaimed_slab += pages;
 	memcg_uncharge_slab(page, order, s);
+<<<<<<< HEAD
 	kasan_alloc_pages(page, order);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__free_pages(page, order);
 }
 
@@ -1936,8 +2002,11 @@ static void *get_partial(struct kmem_cache *s, gfp_t flags, int node,
 
 	if (node == NUMA_NO_NODE)
 		searchnode = numa_mem_id();
+<<<<<<< HEAD
 	else if (!node_present_pages(node))
 		searchnode = node_to_mem_node(node);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	object = get_partial_node(s, get_node(s, searchnode), c, flags);
 	if (object || node != NUMA_NO_NODE)
@@ -2045,6 +2114,17 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
 		void *prior;
 		unsigned long counters;
 
+<<<<<<< HEAD
+=======
+		/*
+		 * If 'nextfree' is invalid, it is possible that the object at
+		 * 'freelist' is already corrupted.  So isolate all objects
+		 * starting at 'freelist'.
+		 */
+		if (freelist_corrupted(s, page, &freelist, nextfree))
+			break;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		do {
 			prior = page->freelist;
 			counters = page->counters;
@@ -2534,6 +2614,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
 	struct page *page;
 
 	page = c->page;
+<<<<<<< HEAD
 	if (!page)
 		goto new_slab;
 redo:
@@ -2545,6 +2626,29 @@ redo:
 			searchnode = node_to_mem_node(node);
 
 		if (unlikely(!node_match(page, searchnode))) {
+=======
+	if (!page) {
+		/*
+		 * if the node is not online or has no normal memory, just
+		 * ignore the node constraint
+		 */
+		if (unlikely(node != NUMA_NO_NODE &&
+			     !node_state(node, N_NORMAL_MEMORY)))
+			node = NUMA_NO_NODE;
+		goto new_slab;
+	}
+redo:
+
+	if (unlikely(!node_match(page, node))) {
+		/*
+		 * same as above but node_match() being false already
+		 * implies node != NUMA_NO_NODE
+		 */
+		if (!node_state(node, N_NORMAL_MEMORY)) {
+			node = NUMA_NO_NODE;
+			goto redo;
+		} else {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			stat(s, ALLOC_NODE_MISMATCH);
 			deactivate_slab(s, page, c->freelist, c);
 			goto new_slab;
@@ -2956,11 +3060,21 @@ redo:
 	barrier();
 
 	if (likely(page == c->page)) {
+<<<<<<< HEAD
 		set_freepointer(s, tail_obj, c->freelist);
 
 		if (unlikely(!this_cpu_cmpxchg_double(
 				s->cpu_slab->freelist, s->cpu_slab->tid,
 				c->freelist, tid,
+=======
+		void **freelist = READ_ONCE(c->freelist);
+
+		set_freepointer(s, tail_obj, freelist);
+
+		if (unlikely(!this_cpu_cmpxchg_double(
+				s->cpu_slab->freelist, s->cpu_slab->tid,
+				freelist, tid,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				head, next_tid(tid)))) {
 
 			note_cmpxchg_failure("slab_free", s, tid);
@@ -3136,6 +3250,18 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
 
 		if (unlikely(!object)) {
 			/*
+<<<<<<< HEAD
+=======
+			 * We may have removed an object from c->freelist using
+			 * the fastpath in the previous iteration; in that case,
+			 * c->tid has not been bumped yet.
+			 * Since ___slab_alloc() may reenable interrupts while
+			 * allocating memory, we should bump c->tid now.
+			 */
+			c->tid = next_tid(c->tid);
+
+			/*
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			 * Invoking slow path likely have side-effect
 			 * of re-populating per CPU c->freelist
 			 */
@@ -3903,8 +4029,12 @@ void kfree(const void *x)
 	page = virt_to_head_page(x);
 	if (unlikely(!PageSlab(page))) {
 		BUG_ON(!PageCompound(page));
+<<<<<<< HEAD
 		kfree_hook(object);
 		kasan_alloc_pages(page, compound_order(page));
+=======
+		kfree_hook(x);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__free_pages(page, compound_order(page));
 		return;
 	}
@@ -4804,7 +4934,21 @@ static ssize_t show_slab_objects(struct kmem_cache *s,
 		}
 	}
 
+<<<<<<< HEAD
 	get_online_mems();
+=======
+	/*
+	 * It is impossible to take "mem_hotplug_lock" here with "kernfs_mutex"
+	 * already held which will conflict with an existing lock order:
+	 *
+	 * mem_hotplug_lock->slab_mutex->kernfs_mutex
+	 *
+	 * We don't really need mem_hotplug_lock (to hold off
+	 * slab_mem_going_offline_callback) here because slab's memory hot
+	 * unplug code doesn't destroy the kmem_cache->node[] data.
+	 */
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_SLUB_DEBUG
 	if (flags & SO_ALL) {
 		struct kmem_cache_node *n;
@@ -4845,7 +4989,10 @@ static ssize_t show_slab_objects(struct kmem_cache *s,
 			x += sprintf(buf + x, " N%d=%lu",
 					node, nodes[node]);
 #endif
+<<<<<<< HEAD
 	put_online_mems();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(nodes);
 	return x + sprintf(buf + x, "\n");
 }
@@ -5561,7 +5708,12 @@ static void memcg_propagate_slab_attrs(struct kmem_cache *s)
 		 */
 		if (buffer)
 			buf = buffer;
+<<<<<<< HEAD
 		else if (root_cache->max_attr_size < ARRAY_SIZE(mbuf))
+=======
+		else if (root_cache->max_attr_size < ARRAY_SIZE(mbuf) &&
+			 !IS_ENABLED(CONFIG_SLUB_STATS))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			buf = mbuf;
 		else {
 			buffer = (char *) get_zeroed_page(GFP_KERNEL);

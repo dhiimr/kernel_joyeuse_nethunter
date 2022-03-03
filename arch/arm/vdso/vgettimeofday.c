@@ -18,9 +18,15 @@
 #include <linux/compiler.h>
 #include <linux/hrtimer.h>
 #include <linux/time.h>
+<<<<<<< HEAD
 #include <asm/arch_timer.h>
 #include <asm/barrier.h>
 #include <asm/bug.h>
+=======
+#include <asm/barrier.h>
+#include <asm/bug.h>
+#include <asm/cp15.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/page.h>
 #include <asm/unistd.h>
 #include <asm/vdso_datapage.h>
@@ -123,7 +129,12 @@ static notrace u64 get_ns(struct vdso_data *vdata)
 	u64 cycle_now;
 	u64 nsec;
 
+<<<<<<< HEAD
 	cycle_now = arch_counter_get_cntvct();
+=======
+	isb();
+	cycle_now = read_sysreg(CNTVCT);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cycle_delta = (cycle_now - vdata->cs_cycle_last) & vdata->cs_mask;
 

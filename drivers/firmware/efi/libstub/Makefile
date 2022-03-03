@@ -12,9 +12,12 @@ cflags-$(CONFIG_X86)		+= -m$(BITS) -D__KERNEL__ -O2 \
 				   -mno-mmx -mno-sse
 
 cflags-$(CONFIG_ARM64)		:= $(subst -pg,,$(KBUILD_CFLAGS)) -fpie
+<<<<<<< HEAD
 ifeq ($(cc-name),clang)
 cflags-$(CONFIG_ARM64)		+= -fpic
 endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 cflags-$(CONFIG_ARM)		:= $(subst -pg,,$(KBUILD_CFLAGS)) \
 				   -fno-builtin -fpic \
 				   $(call cc-option,-mno-single-pic-base)
@@ -24,8 +27,12 @@ cflags-$(CONFIG_EFI_ARMSTUB)	+= -I$(srctree)/scripts/dtc/libfdt
 KBUILD_CFLAGS			:= $(cflags-y) -DDISABLE_BRANCH_PROFILING \
 				   -D__NO_FORTIFY \
 				   $(call cc-option,-ffreestanding) \
+<<<<<<< HEAD
 				   $(call cc-option,-fno-stack-protector) \
 				   $(DISABLE_LTO)
+=======
+				   $(call cc-option,-fno-stack-protector)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 GCOV_PROFILE			:= n
 KASAN_SANITIZE			:= n
@@ -51,9 +58,12 @@ lib-$(CONFIG_EFI_ARMSTUB)	+= arm-stub.o fdt.o string.o random.o \
 lib-$(CONFIG_ARM)		+= arm32-stub.o
 lib-$(CONFIG_ARM64)		+= arm64-stub.o
 CFLAGS_arm64-stub.o 		:= -DTEXT_OFFSET=$(TEXT_OFFSET)
+<<<<<<< HEAD
 ifeq ($(cc-name),clang)
 CFLAGS_arm64-stub.o		+= -fno-pic
 endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #
 # arm64 puts the stub in the kernel proper, which will unnecessarily retain all

@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2012-2018, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2012-2015, 2017, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -99,7 +103,11 @@ enum pmic_arb_channel {
 
 /* Maximum number of support PMIC peripherals */
 #define PMIC_ARB_MAX_PERIPHS		512
+<<<<<<< HEAD
 #define PMIC_ARB_TIMEOUT_US		1000
+=======
+#define PMIC_ARB_TIMEOUT_US		100
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define PMIC_ARB_MAX_TRANS_BYTES	(8)
 
 #define PMIC_ARB_APID_MASK		0xFF
@@ -497,15 +505,34 @@ static void cleanup_irq(struct spmi_pmic_arb *pmic_arb, u16 apid, int id)
 	u8 per = ppid & 0xFF;
 	u8 irq_mask = BIT(id);
 
+<<<<<<< HEAD
 	dev_err_ratelimited(&pmic_arb->spmic->dev, "%s apid=%d sid=0x%x per=0x%x irq=%d\n",
 			__func__, apid, sid, per, id);
 	writel_relaxed(irq_mask, pmic_arb->ver_ops->irq_clear(pmic_arb, apid));
+=======
+	writel_relaxed(irq_mask, pmic_arb->ver_ops->irq_clear(pmic_arb, apid));
+
+	if (pmic_arb_write_cmd(pmic_arb->spmic, SPMI_CMD_EXT_WRITEL, sid,
+			(per << 8) + QPNPINT_REG_LATCHED_CLR, &irq_mask, 1))
+		dev_err_ratelimited(&pmic_arb->spmic->dev, "failed to ack irq_mask = 0x%x for ppid = %x\n",
+				irq_mask, ppid);
+
+	if (pmic_arb_write_cmd(pmic_arb->spmic, SPMI_CMD_EXT_WRITEL, sid,
+			       (per << 8) + QPNPINT_REG_EN_CLR, &irq_mask, 1))
+		dev_err_ratelimited(&pmic_arb->spmic->dev, "failed to ack irq_mask = 0x%x for ppid = %x\n",
+				irq_mask, ppid);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void periph_interrupt(struct spmi_pmic_arb *pmic_arb, u16 apid)
 {
 	unsigned int irq;
+<<<<<<< HEAD
 	u32 status, id;
+=======
+	u32 status;
+	int id;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8 sid = (pmic_arb->apid_data[apid].ppid >> 8) & 0xF;
 	u8 per = pmic_arb->apid_data[apid].ppid & 0xFF;
 
@@ -533,28 +560,37 @@ static void pmic_arb_chained_irq(struct irq_desc *desc)
 	u8 ee = pmic_arb->ee;
 	u32 status, enable;
 	int i, id, apid;
+<<<<<<< HEAD
 	/* status based dispatch */
 	bool acc_valid = false;
 	u32 irq_status = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	chained_irq_enter(chip, desc);
 
 	for (i = first; i <= last; ++i) {
 		status = readl_relaxed(
 				ver_ops->owner_acc_status(pmic_arb, ee, i));
+<<<<<<< HEAD
 		if (status)
 			acc_valid = true;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		while (status) {
 			id = ffs(status) - 1;
 			status &= ~BIT(id);
 			apid = id + i * 32;
+<<<<<<< HEAD
 			if (apid < pmic_arb->min_apid
 			    || apid > pmic_arb->max_apid) {
 				WARN_ONCE(true, "spurious spmi irq received for apid=%d\n",
 					apid);
 				continue;
 			}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			enable = readl_relaxed(
 					ver_ops->acc_enable(pmic_arb, apid));
 			if (enable & SPMI_PIC_ACC_ENABLE_BIT)
@@ -562,6 +598,7 @@ static void pmic_arb_chained_irq(struct irq_desc *desc)
 		}
 	}
 
+<<<<<<< HEAD
 	/* ACC_STATUS is empty but IRQ fired check IRQ_STATUS */
 	if (!acc_valid) {
 		for (i = pmic_arb->min_apid; i <= pmic_arb->max_apid; i++) {
@@ -584,6 +621,8 @@ static void pmic_arb_chained_irq(struct irq_desc *desc)
 		}
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	chained_irq_exit(chip, desc);
 }
 
@@ -644,12 +683,17 @@ static int qpnpint_irq_set_type(struct irq_data *d, unsigned int flow_type)
 		type.type |= BIT(irq);
 		if (flow_type & IRQF_TRIGGER_RISING)
 			type.polarity_high |= BIT(irq);
+<<<<<<< HEAD
 		else
 			type.polarity_high &= ~BIT(irq);
 		if (flow_type & IRQF_TRIGGER_FALLING)
 			type.polarity_low  |= BIT(irq);
 		else
 			type.polarity_low  &= ~BIT(irq);
+=======
+		if (flow_type & IRQF_TRIGGER_FALLING)
+			type.polarity_low  |= BIT(irq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		flow_handler = handle_edge_irq;
 	} else {
@@ -658,6 +702,7 @@ static int qpnpint_irq_set_type(struct irq_data *d, unsigned int flow_type)
 			return -EINVAL;
 
 		type.type &= ~BIT(irq); /* level trig */
+<<<<<<< HEAD
 		if (flow_type & IRQF_TRIGGER_HIGH) {
 			type.polarity_high |= BIT(irq);
 			type.polarity_low  &= ~BIT(irq);
@@ -665,6 +710,12 @@ static int qpnpint_irq_set_type(struct irq_data *d, unsigned int flow_type)
 			type.polarity_low  |= BIT(irq);
 			type.polarity_high &= ~BIT(irq);
 		}
+=======
+		if (flow_type & IRQF_TRIGGER_HIGH)
+			type.polarity_high |= BIT(irq);
+		else
+			type.polarity_low  |= BIT(irq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		flow_handler = handle_level_irq;
 	}
@@ -728,6 +779,7 @@ static struct irq_chip pmic_arb_irqchip = {
 	.flags		= IRQCHIP_MASK_ON_SUSPEND,
 };
 
+<<<<<<< HEAD
 static void qpnpint_irq_domain_activate(struct irq_domain *domain,
 					struct irq_data *d)
 {
@@ -739,6 +791,8 @@ static void qpnpint_irq_domain_activate(struct irq_domain *domain,
 	qpnpint_spmi_write(d, QPNPINT_REG_LATCHED_CLR, &buf, 1);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int qpnpint_irq_domain_dt_translate(struct irq_domain *d,
 					   struct device_node *controller,
 					   const u32 *intspec,
@@ -910,8 +964,12 @@ static int pmic_arb_read_apid_map_v5(struct spmi_pmic_arb *pmic_arb)
 	 * version 5, there is more than one APID mapped to each PPID.
 	 * The owner field for each of these mappings specifies the EE which is
 	 * allowed to write to the APID.  The owner of the last (highest) APID
+<<<<<<< HEAD
 	 * which has the IRQ owner bit set for a given PPID will receive
 	 * interrupts from the PPID.
+=======
+	 * for a given PPID will receive interrupts from the PPID.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 */
 	for (i = 0; ; i++, apidd++) {
 		offset = pmic_arb->ver_ops->apid_map_offset(i);
@@ -934,16 +992,27 @@ static int pmic_arb_read_apid_map_v5(struct spmi_pmic_arb *pmic_arb)
 		apid = pmic_arb->ppid_to_apid[ppid] & ~PMIC_ARB_APID_VALID;
 		prev_apidd = &pmic_arb->apid_data[apid];
 
+<<<<<<< HEAD
 		if (!valid || apidd->write_ee == pmic_arb->ee) {
 			/* First PPID mapping or one for this EE */
 			pmic_arb->ppid_to_apid[ppid] = i | PMIC_ARB_APID_VALID;
 		} else if (valid && is_irq_ee &&
 			   prev_apidd->write_ee == pmic_arb->ee) {
+=======
+		if (valid && is_irq_ee &&
+				prev_apidd->write_ee == pmic_arb->ee) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/*
 			 * Duplicate PPID mapping after the one for this EE;
 			 * override the irq owner
 			 */
 			prev_apidd->irq_ee = apidd->irq_ee;
+<<<<<<< HEAD
+=======
+		} else if (!valid || is_irq_ee) {
+			/* First PPID mapping or duplicate for another EE */
+			pmic_arb->ppid_to_apid[ppid] = i | PMIC_ARB_APID_VALID;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		apidd->ppid = ppid;
@@ -1012,11 +1081,14 @@ static int pmic_arb_offset_v5(struct spmi_pmic_arb *pmic_arb, u8 sid, u16 addr,
 		offset = 0x10000 * pmic_arb->ee + 0x80 * apid;
 		break;
 	case PMIC_ARB_CHANNEL_RW:
+<<<<<<< HEAD
 		if (pmic_arb->apid_data[apid].write_ee != pmic_arb->ee) {
 			dev_err(&pmic_arb->spmic->dev, "disallowed SPMI write to sid=%u, addr=0x%04X\n",
 				sid, addr);
 			return -EPERM;
 		}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		offset = 0x10000 * apid;
 		break;
 	}
@@ -1177,7 +1249,10 @@ static const struct pmic_arb_ver_ops pmic_arb_v5 = {
 static const struct irq_domain_ops pmic_arb_irq_domain_ops = {
 	.map	= qpnpint_irq_domain_map,
 	.xlate	= qpnpint_irq_domain_dt_translate,
+<<<<<<< HEAD
 	.activate	= qpnpint_irq_domain_activate,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static int spmi_pmic_arb_probe(struct platform_device *pdev)
@@ -1375,6 +1450,7 @@ static struct platform_driver spmi_pmic_arb_driver = {
 	.driver		= {
 		.name	= "spmi_pmic_arb",
 		.of_match_table = spmi_pmic_arb_match_table,
+<<<<<<< HEAD
 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
 	},
 };
@@ -1384,6 +1460,11 @@ int __init spmi_pmic_arb_init(void)
 	return platform_driver_register(&spmi_pmic_arb_driver);
 }
 arch_initcall(spmi_pmic_arb_init);
+=======
+	},
+};
+module_platform_driver(spmi_pmic_arb_driver);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 MODULE_LICENSE("GPL v2");
 MODULE_ALIAS("platform:spmi_pmic_arb");

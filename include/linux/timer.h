@@ -202,9 +202,12 @@ extern void add_timer_on(struct timer_list *timer, int cpu);
 extern int del_timer(struct timer_list * timer);
 extern int mod_timer(struct timer_list *timer, unsigned long expires);
 extern int mod_timer_pending(struct timer_list *timer, unsigned long expires);
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 extern bool check_pending_deferrable_timers(int cpu);
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * The jiffies value which is added to now, when there is no timer
@@ -212,15 +215,21 @@ extern bool check_pending_deferrable_timers(int cpu);
  */
 #define NEXT_TIMER_MAX_DELTA	((1UL << 30) - 1)
 
+<<<<<<< HEAD
 /* To be used from cpusets, only */
 extern void timer_quiesce_cpu(void *cpup);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void add_timer(struct timer_list *timer);
 
 extern int try_to_del_timer_sync(struct timer_list *timer);
 
+<<<<<<< HEAD
 extern struct timer_base timer_base_deferrable;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_SMP
   extern int del_timer_sync(struct timer_list *timer);
 #else

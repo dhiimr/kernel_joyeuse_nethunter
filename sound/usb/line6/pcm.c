@@ -552,6 +552,7 @@ int line6_init_pcm(struct usb_line6 *line6,
 	line6pcm->volume_monitor = 255;
 	line6pcm->line6 = line6;
 
+<<<<<<< HEAD
 	line6pcm->max_packet_size_in =
 		usb_maxpacket(line6->usbdev,
 			usb_rcvisocpipe(line6->usbdev, ep_read), 0);
@@ -559,6 +560,8 @@ int line6_init_pcm(struct usb_line6 *line6,
 		usb_maxpacket(line6->usbdev,
 			usb_sndisocpipe(line6->usbdev, ep_write), 1);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_init(&line6pcm->out.lock);
 	spin_lock_init(&line6pcm->in.lock);
 	line6pcm->impulse_period = LINE6_IMPULSE_DEFAULT_PERIOD;
@@ -568,6 +571,21 @@ int line6_init_pcm(struct usb_line6 *line6,
 	pcm->private_data = line6pcm;
 	pcm->private_free = line6_cleanup_pcm;
 
+<<<<<<< HEAD
+=======
+	line6pcm->max_packet_size_in =
+		usb_maxpacket(line6->usbdev,
+			usb_rcvisocpipe(line6->usbdev, ep_read), 0);
+	line6pcm->max_packet_size_out =
+		usb_maxpacket(line6->usbdev,
+			usb_sndisocpipe(line6->usbdev, ep_write), 1);
+	if (!line6pcm->max_packet_size_in || !line6pcm->max_packet_size_out) {
+		dev_err(line6pcm->line6->ifcdev,
+			"cannot get proper max packet size\n");
+		return -EINVAL;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = line6_create_audio_out_urbs(line6pcm);
 	if (err < 0)
 		return err;

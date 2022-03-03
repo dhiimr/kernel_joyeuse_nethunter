@@ -10,7 +10,10 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 #include <linux/cpu.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/module.h>
 #include <linux/highmem.h>
 #include <linux/interrupt.h>
@@ -148,6 +151,7 @@ void *kmap_atomic_pfn(unsigned long pfn)
 
 	return (void *)vaddr;
 }
+<<<<<<< HEAD
 
 #ifdef CONFIG_ARCH_WANT_KMAP_ATOMIC_FLUSH
 int kmap_remove_unused_cpu(unsigned int cpu)
@@ -181,3 +185,5 @@ void kmap_atomic_flush_unused(void)
 }
 
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

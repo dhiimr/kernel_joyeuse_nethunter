@@ -46,7 +46,11 @@ enum {
 
 /* Type structure */
 struct bitmap_ipmac {
+<<<<<<< HEAD
 	void *members;		/* the set members */
+=======
+	unsigned long *members;	/* the set members */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 first_ip;		/* host byte order, included in range */
 	u32 last_ip;		/* host byte order, included in range */
 	u32 elements;		/* number of max elements in the set */
@@ -299,7 +303,11 @@ static bool
 init_map_ipmac(struct ip_set *set, struct bitmap_ipmac *map,
 	       u32 first_ip, u32 last_ip, u32 elements)
 {
+<<<<<<< HEAD
 	map->members = ip_set_alloc(map->memsize);
+=======
+	map->members = bitmap_zalloc(elements, GFP_KERNEL | __GFP_NOWARN);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!map->members)
 		return false;
 	map->first_ip = first_ip;
@@ -363,7 +371,11 @@ bitmap_ipmac_create(struct net *net, struct ip_set *set, struct nlattr *tb[],
 	if (!map)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	map->memsize = bitmap_bytes(0, elements - 1);
+=======
+	map->memsize = BITS_TO_LONGS(elements) * sizeof(unsigned long);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	set->variant = &bitmap_ipmac;
 	if (!init_map_ipmac(set, map, first_ip, last_ip, elements)) {
 		kfree(map);

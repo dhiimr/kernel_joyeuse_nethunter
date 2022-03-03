@@ -200,7 +200,11 @@ config ATM_NICSTAR_USE_SUNI
 	  make the card work).
 
 config ATM_NICSTAR_USE_IDT77105
+<<<<<<< HEAD
 	bool "Use IDT77015 PHY driver (25Mbps)"
+=======
+	bool "Use IDT77105 PHY driver (25Mbps)"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	depends on ATM_NICSTAR
 	help
 	  Support for the PHYsical layer chip in ForeRunner LE25 cards. In

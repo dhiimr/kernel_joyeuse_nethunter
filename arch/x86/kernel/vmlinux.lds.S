@@ -36,6 +36,7 @@ OUTPUT_FORMAT(CONFIG_OUTPUT_FORMAT, CONFIG_OUTPUT_FORMAT, CONFIG_OUTPUT_FORMAT)
 #ifdef CONFIG_X86_32
 OUTPUT_ARCH(i386)
 ENTRY(phys_startup_32)
+<<<<<<< HEAD
 jiffies = jiffies_64;
 #else
 OUTPUT_ARCH(i386:x86-64)
@@ -43,6 +44,15 @@ ENTRY(phys_startup_64)
 jiffies_64 = jiffies;
 #endif
 
+=======
+#else
+OUTPUT_ARCH(i386:x86-64)
+ENTRY(phys_startup_64)
+#endif
+
+jiffies = jiffies_64;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #if defined(CONFIG_X86_64)
 /*
  * On 64-bit, align RODATA to 2MB so we retain large page mappings for
@@ -352,7 +362,12 @@ SECTIONS
 	.bss : AT(ADDR(.bss) - LOAD_OFFSET) {
 		__bss_start = .;
 		*(.bss..page_aligned)
+<<<<<<< HEAD
 		*(.bss)
+=======
+		. = ALIGN(PAGE_SIZE);
+		*(BSS_MAIN)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		. = ALIGN(PAGE_SIZE);
 		__bss_stop = .;
 	}

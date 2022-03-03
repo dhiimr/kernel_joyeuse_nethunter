@@ -95,7 +95,11 @@ REQUEST(__field(0,	8,	partition_id)
 
 #define REQUEST_NAME system_performance_capabilities
 #define REQUEST_NUM 0x40
+<<<<<<< HEAD
 #define REQUEST_IDX_KIND "starting_index=0xffffffffffffffff"
+=======
+#define REQUEST_IDX_KIND "starting_index=0xffffffff"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include I(REQUEST_BEGIN)
 REQUEST(__field(0,	1,	perf_collect_privileged)
 	__field(0x1,	1,	capability_mask)
@@ -223,7 +227,11 @@ REQUEST(__field(0,	2, partition_id)
 
 #define REQUEST_NAME system_hypervisor_times
 #define REQUEST_NUM 0xF0
+<<<<<<< HEAD
 #define REQUEST_IDX_KIND "starting_index=0xffffffffffffffff"
+=======
+#define REQUEST_IDX_KIND "starting_index=0xffffffff"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include I(REQUEST_BEGIN)
 REQUEST(__count(0,	8,	time_spent_to_dispatch_virtual_processors)
 	__count(0x8,	8,	time_spent_processing_virtual_processor_timers)
@@ -234,7 +242,11 @@ REQUEST(__count(0,	8,	time_spent_to_dispatch_virtual_processors)
 
 #define REQUEST_NAME system_tlbie_count_and_time
 #define REQUEST_NUM 0xF4
+<<<<<<< HEAD
 #define REQUEST_IDX_KIND "starting_index=0xffffffffffffffff"
+=======
+#define REQUEST_IDX_KIND "starting_index=0xffffffff"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include I(REQUEST_BEGIN)
 REQUEST(__count(0,	8,	tlbie_instructions_issued)
 	/*

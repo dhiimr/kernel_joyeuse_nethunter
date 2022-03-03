@@ -71,6 +71,11 @@
 
 /* timeout (ms) for pm runtime autosuspend */
 #define SPRD_I2C_PM_TIMEOUT	1000
+<<<<<<< HEAD
+=======
+/* timeout (ms) for transfer message */
+#define I2C_XFER_TIMEOUT	1000
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* SPRD i2c data structure */
 struct sprd_i2c {
@@ -244,6 +249,10 @@ static int sprd_i2c_handle_msg(struct i2c_adapter *i2c_adap,
 			       struct i2c_msg *msg, bool is_last_msg)
 {
 	struct sprd_i2c *i2c_dev = i2c_adap->algo_data;
+<<<<<<< HEAD
+=======
+	unsigned long time_left;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	i2c_dev->msg = msg;
 	i2c_dev->buf = msg->buf;
@@ -273,7 +282,14 @@ static int sprd_i2c_handle_msg(struct i2c_adapter *i2c_adap,
 
 	sprd_i2c_opt_start(i2c_dev);
 
+<<<<<<< HEAD
 	wait_for_completion(&i2c_dev->complete);
+=======
+	time_left = wait_for_completion_timeout(&i2c_dev->complete,
+				msecs_to_jiffies(I2C_XFER_TIMEOUT));
+	if (!time_left)
+		return -ETIMEDOUT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return i2c_dev->err;
 }

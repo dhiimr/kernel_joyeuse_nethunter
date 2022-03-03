@@ -51,8 +51,11 @@ compatible (optional) - standard definition
           used as a shared pool of DMA buffers for a set of devices. It can
           be used by an operating system to instanciate the necessary pool
           management subsystem if necessary.
+<<<<<<< HEAD
 	- removed-dma-pool: This indicates a region of memory which is meant to
 	  be carved out and not exposed to kernel.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
         - vendor specific string in the form <vendor>,[<device>-]<usage>
 no-map (optional) - empty property
     - Indicates the operating system must not create a virtual mapping

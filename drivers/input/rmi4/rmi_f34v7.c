@@ -1192,6 +1192,12 @@ int rmi_f34v7_do_reflash(struct f34_data *f34, const struct firmware *fw)
 {
 	int ret;
 
+<<<<<<< HEAD
+=======
+	f34->fn->rmi_dev->driver->set_irq_bits(f34->fn->rmi_dev,
+					       f34->fn->irq_mask);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rmi_f34v7_read_queries_bl_version(f34);
 
 	f34->v7.image = fw->data;

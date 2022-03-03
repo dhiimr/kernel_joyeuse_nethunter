@@ -261,6 +261,11 @@ MODULE_PARM_DESC(debug, "activate debug info");
 #define FD1_IP_H3_ES1			0x02010101
 #define FD1_IP_M3W			0x02010202
 #define FD1_IP_H3			0x02010203
+<<<<<<< HEAD
+=======
+#define FD1_IP_M3N			0x02010204
+#define FD1_IP_E3			0x02010205
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* LUTs */
 #define FD1_LUT_DIF_ADJ			0x1000
@@ -2308,7 +2313,11 @@ static int fdp1_probe(struct platform_device *pdev)
 		fdp1->fcp = rcar_fcp_get(fcp_node);
 		of_node_put(fcp_node);
 		if (IS_ERR(fdp1->fcp)) {
+<<<<<<< HEAD
 			dev_err(&pdev->dev, "FCP not found (%ld)\n",
+=======
+			dev_dbg(&pdev->dev, "FCP not found (%ld)\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				PTR_ERR(fdp1->fcp));
 			return PTR_ERR(fdp1->fcp);
 		}
@@ -2369,6 +2378,15 @@ static int fdp1_probe(struct platform_device *pdev)
 	case FD1_IP_H3:
 		dprintk(fdp1, "FDP1 Version R-Car H3\n");
 		break;
+<<<<<<< HEAD
+=======
+	case FD1_IP_M3N:
+		dprintk(fdp1, "FDP1 Version R-Car M3-N\n");
+		break;
+	case FD1_IP_E3:
+		dprintk(fdp1, "FDP1 Version R-Car E3\n");
+		break;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	default:
 		dev_err(fdp1->dev, "FDP1 Unidentifiable (0x%08x)\n",
 				hw_version);

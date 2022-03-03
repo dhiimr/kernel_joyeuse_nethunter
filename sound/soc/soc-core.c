@@ -319,7 +319,11 @@ static void soc_init_component_debugfs(struct snd_soc_component *component)
 	}
 
 	if (!component->debugfs_root) {
+<<<<<<< HEAD
 		dev_dbg(component->dev,
+=======
+		dev_warn(component->dev,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			"ASoC: Failed to create component debugfs directory\n");
 		return;
 	}
@@ -345,7 +349,11 @@ static void soc_init_codec_debugfs(struct snd_soc_component *component)
 					  codec->component.debugfs_root,
 					  codec, &codec_reg_fops);
 	if (!debugfs_reg)
+<<<<<<< HEAD
 		dev_dbg(codec->dev,
+=======
+		dev_warn(codec->dev,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			"ASoC: Failed to create codec register debugfs file\n");
 }
 
@@ -976,6 +984,7 @@ EXPORT_SYMBOL_GPL(snd_soc_resume);
 static const struct snd_soc_dai_ops null_dai_ops = {
 };
 
+<<<<<<< HEAD
 /**
  * soc_find_component: find a component from component_list in ASoC core
  *
@@ -987,16 +996,22 @@ static const struct snd_soc_dai_ops null_dai_ops = {
  * Returns component handle for success, else NULL error.
  */
 struct snd_soc_component *soc_find_component(
+=======
+static struct snd_soc_component *soc_find_component(
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	const struct device_node *of_node, const char *name)
 {
 	struct snd_soc_component *component;
 
+<<<<<<< HEAD
 	if (!of_node && !name) {
 		pr_err("%s: Either of_node or name must be valid\n",
 			__func__);
 		return NULL;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	lockdep_assert_held(&client_mutex);
 
 	list_for_each_entry(component, &component_list, list) {
@@ -1010,6 +1025,7 @@ struct snd_soc_component *soc_find_component(
 
 	return NULL;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(soc_find_component);
 
 /**
@@ -1033,6 +1049,8 @@ struct snd_soc_component *soc_find_component_locked(
 	return component;
 }
 EXPORT_SYMBOL(soc_find_component_locked);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**
  * snd_soc_find_dai - Find a registered DAI
@@ -1227,8 +1245,12 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
 	}
 	if (!rtd->platform) {
 		dev_err(card->dev, "ASoC: platform %s not registered\n",
+<<<<<<< HEAD
 			((platform_name) ? platform_name :
 			  dai_link->platform_of_node->full_name));
+=======
+			dai_link->platform_name);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto _err_defer;
 	}
 
@@ -3022,7 +3044,10 @@ int snd_soc_register_card(struct snd_soc_card *card)
 	card->instantiated = 0;
 	mutex_init(&card->mutex);
 	mutex_init(&card->dapm_mutex);
+<<<<<<< HEAD
 	mutex_init(&card->dapm_power_mutex);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = snd_soc_instantiate_card(card);
 	if (ret != 0)
@@ -3737,6 +3762,7 @@ static int snd_soc_codec_set_bias_level(struct snd_soc_dapm_context *dapm,
 }
 
 /**
+<<<<<<< HEAD
  * snd_soc_card_change_online_state - Mark if soc card is online/offline
  *
  * @soc_card : soc_card to mark
@@ -3749,6 +3775,8 @@ void snd_soc_card_change_online_state(struct snd_soc_card *soc_card, int online)
 EXPORT_SYMBOL(snd_soc_card_change_online_state);
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * snd_soc_register_codec - Register a codec with the ASoC core
  *
  * @dev: The parent device for this codec
@@ -4099,7 +4127,11 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
 	if (!routes) {
 		dev_err(card->dev,
 			"ASoC: Could not allocate DAPM route table\n");
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		return -ENOMEM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	for (i = 0; i < num_routes; i++) {
@@ -4283,6 +4315,7 @@ int snd_soc_get_dai_id(struct device_node *ep)
 }
 EXPORT_SYMBOL_GPL(snd_soc_get_dai_id);
 
+<<<<<<< HEAD
 /**
  * snd_soc_info_multi_ext - external single mixer info callback
  * @kcontrol: mixer control
@@ -4340,6 +4373,8 @@ int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
 }
 EXPORT_SYMBOL(snd_soc_dai_get_channel_map);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int snd_soc_get_dai_name(struct of_phandle_args *args,
 				const char **dai_name)
 {

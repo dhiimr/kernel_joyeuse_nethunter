@@ -460,7 +460,11 @@ unsigned int bt_sock_poll(struct file *file, struct socket *sock,
 	if (sk->sk_state == BT_LISTEN)
 		return bt_accept_poll(sk);
 
+<<<<<<< HEAD
 	if (sk->sk_err || !skb_queue_empty(&sk->sk_error_queue))
+=======
+	if (sk->sk_err || !skb_queue_empty_lockless(&sk->sk_error_queue))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mask |= POLLERR |
 			(sock_flag(sk, SOCK_SELECT_ERR_QUEUE) ? POLLPRI : 0);
 
@@ -470,7 +474,11 @@ unsigned int bt_sock_poll(struct file *file, struct socket *sock,
 	if (sk->sk_shutdown == SHUTDOWN_MASK)
 		mask |= POLLHUP;
 
+<<<<<<< HEAD
 	if (!skb_queue_empty(&sk->sk_receive_queue))
+=======
+	if (!skb_queue_empty_lockless(&sk->sk_receive_queue))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mask |= POLLIN | POLLRDNORM;
 
 	if (sk->sk_state == BT_CLOSED)

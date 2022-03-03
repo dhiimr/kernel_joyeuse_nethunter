@@ -81,8 +81,13 @@ static void __init do_one_pass(u64 pattern, phys_addr_t start, phys_addr_t end)
 }
 
 /* default is disabled */
+<<<<<<< HEAD
 static unsigned int memtest_pattern __initdata =
 		CONFIG_MEMTEST_ENABLE_DEFAULT;
+=======
+static unsigned int memtest_pattern __initdata;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int __init parse_memtest(char *arg)
 {
 	int ret = 0;

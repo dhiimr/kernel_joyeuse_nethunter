@@ -552,6 +552,10 @@ static int pmac_cpufreq_init_7447A(struct device_node *cpunode)
 	volt_gpio_np = of_find_node_by_name(NULL, "cpu-vcore-select");
 	if (volt_gpio_np)
 		voltage_gpio = read_gpio(volt_gpio_np);
+<<<<<<< HEAD
+=======
+	of_node_put(volt_gpio_np);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!voltage_gpio){
 		pr_err("missing cpu-vcore-select gpio\n");
 		return 1;
@@ -588,6 +592,10 @@ static int pmac_cpufreq_init_750FX(struct device_node *cpunode)
 	if (volt_gpio_np)
 		voltage_gpio = read_gpio(volt_gpio_np);
 
+<<<<<<< HEAD
+=======
+	of_node_put(volt_gpio_np);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pvr = mfspr(SPRN_PVR);
 	has_cpu_l2lve = !((pvr & 0xf00) == 0x100);
 

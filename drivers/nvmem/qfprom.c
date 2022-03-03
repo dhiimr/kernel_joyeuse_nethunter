@@ -30,6 +30,7 @@ static int qfprom_reg_read(void *context,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int qfprom_reg_write(void *context,
 			 unsigned int reg, void *_val, size_t bytes)
 {
@@ -43,6 +44,8 @@ static int qfprom_reg_write(void *context,
 	return 0;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int qfprom_remove(struct platform_device *pdev)
 {
 	struct nvmem_device *nvmem = platform_get_drvdata(pdev);
@@ -56,7 +59,10 @@ static struct nvmem_config econfig = {
 	.stride = 1,
 	.word_size = 1,
 	.reg_read = qfprom_reg_read,
+<<<<<<< HEAD
 	.reg_write = qfprom_reg_write,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static int qfprom_probe(struct platform_device *pdev)

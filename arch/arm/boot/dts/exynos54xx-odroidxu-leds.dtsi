@@ -25,7 +25,11 @@
 			 * Green LED is much brighter than the others
 			 * so limit its max brightness
 			 */
+<<<<<<< HEAD
 			max_brightness = <127>;
+=======
+			max-brightness = <127>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			linux,default-trigger = "mmc0";
 		};
 
@@ -33,7 +37,11 @@
 			label = "blue:heartbeat";
 			pwms = <&pwm 2 2000000 0>;
 			pwm-names = "pwm2";
+<<<<<<< HEAD
 			max_brightness = <255>;
+=======
+			max-brightness = <255>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			linux,default-trigger = "heartbeat";
 		};
 	};

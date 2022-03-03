@@ -110,6 +110,7 @@ static void ns_giga_speed_fallback(struct phy_device *phydev, int mode)
 
 static void ns_10_base_t_hdx_loopack(struct phy_device *phydev, int disable)
 {
+<<<<<<< HEAD
 	if (disable)
 		ns_exp_write(phydev, 0x1c0, ns_exp_read(phydev, 0x1c0) | 1);
 	else
@@ -118,6 +119,19 @@ static void ns_10_base_t_hdx_loopack(struct phy_device *phydev, int disable)
 
 	pr_debug("10BASE-T HDX loopback %s\n",
 		 (ns_exp_read(phydev, 0x1c0) & 0x0001) ? "off" : "on");
+=======
+	u16 lb_dis = BIT(1);
+
+	if (disable)
+		ns_exp_write(phydev, 0x1c0,
+			     ns_exp_read(phydev, 0x1c0) | lb_dis);
+	else
+		ns_exp_write(phydev, 0x1c0,
+			     ns_exp_read(phydev, 0x1c0) & ~lb_dis);
+
+	pr_debug("10BASE-T HDX loopback %s\n",
+		 (ns_exp_read(phydev, 0x1c0) & lb_dis) ? "off" : "on");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int ns_config_init(struct phy_device *phydev)

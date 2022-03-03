@@ -782,12 +782,26 @@ static void bnxt_re_dispatch_event(struct ib_device *ibdev, struct ib_qp *qp,
 	struct ib_event ib_event;
 
 	ib_event.device = ibdev;
+<<<<<<< HEAD
 	if (qp)
 		ib_event.element.qp = qp;
 	else
 		ib_event.element.port_num = port_num;
 	ib_event.event = event;
 	ib_dispatch_event(&ib_event);
+=======
+	if (qp) {
+		ib_event.element.qp = qp;
+		ib_event.event = event;
+		if (qp->event_handler)
+			qp->event_handler(&ib_event, qp->qp_context);
+
+	} else {
+		ib_event.element.port_num = port_num;
+		ib_event.event = event;
+		ib_dispatch_event(&ib_event);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #define HWRM_QUEUE_PRI2COS_QCFG_INPUT_FLAGS_IVLAN      0x02

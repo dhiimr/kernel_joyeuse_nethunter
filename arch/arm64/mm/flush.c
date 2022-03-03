@@ -82,7 +82,10 @@ EXPORT_SYMBOL(flush_dcache_page);
 /*
  * Additional functions defined in assembly.
  */
+<<<<<<< HEAD
 EXPORT_SYMBOL(flush_cache_all);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 EXPORT_SYMBOL(flush_icache_range);
 
 #ifdef CONFIG_ARCH_HAS_PMEM_API

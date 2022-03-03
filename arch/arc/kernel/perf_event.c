@@ -488,8 +488,13 @@ static int arc_pmu_device_probe(struct platform_device *pdev)
 	/* loop thru all available h/w condition indexes */
 	for (j = 0; j < cc_bcr.c; j++) {
 		write_aux_reg(ARC_REG_CC_INDEX, j);
+<<<<<<< HEAD
 		cc_name.indiv.word0 = read_aux_reg(ARC_REG_CC_NAME0);
 		cc_name.indiv.word1 = read_aux_reg(ARC_REG_CC_NAME1);
+=======
+		cc_name.indiv.word0 = le32_to_cpu(read_aux_reg(ARC_REG_CC_NAME0));
+		cc_name.indiv.word1 = le32_to_cpu(read_aux_reg(ARC_REG_CC_NAME1));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* See if it has been mapped to a perf event_id */
 		for (i = 0; i < ARRAY_SIZE(arc_pmu_ev_hw_map); i++) {

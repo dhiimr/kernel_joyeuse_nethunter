@@ -345,7 +345,11 @@ qla2x00_sysfs_write_optrom_ctl(struct file *filp, struct kobject *kobj,
 		}
 
 		ha->optrom_region_start = start;
+<<<<<<< HEAD
 		ha->optrom_region_size = start + size;
+=======
+		ha->optrom_region_size = size;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		ha->optrom_state = QLA_SREADING;
 		ha->optrom_buffer = vmalloc(ha->optrom_region_size);
@@ -418,7 +422,11 @@ qla2x00_sysfs_write_optrom_ctl(struct file *filp, struct kobject *kobj,
 		}
 
 		ha->optrom_region_start = start;
+<<<<<<< HEAD
 		ha->optrom_region_size = start + size;
+=======
+		ha->optrom_region_size = size;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		ha->optrom_state = QLA_SWRITING;
 		ha->optrom_buffer = vmalloc(ha->optrom_region_size);
@@ -652,7 +660,12 @@ qla2x00_sysfs_write_reset(struct file *filp, struct kobject *kobj,
 			break;
 		} else {
 			/* Make sure FC side is not in reset */
+<<<<<<< HEAD
 			qla2x00_wait_for_hba_online(vha);
+=======
+			WARN_ON_ONCE(qla2x00_wait_for_hba_online(vha) !=
+				     QLA_SUCCESS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			/* Issue MPI reset */
 			scsi_block_requests(vha->host);
@@ -1913,6 +1926,11 @@ qla2x00_reset_host_stats(struct Scsi_Host *shost)
 	vha->qla_stats.jiffies_at_last_reset = get_jiffies_64();
 
 	if (IS_FWI2_CAPABLE(ha)) {
+<<<<<<< HEAD
+=======
+		int rval;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		stats = dma_alloc_coherent(&ha->pdev->dev,
 		    sizeof(*stats), &stats_dma, GFP_KERNEL);
 		if (!stats) {
@@ -1922,7 +1940,15 @@ qla2x00_reset_host_stats(struct Scsi_Host *shost)
 		}
 
 		/* reset firmware statistics */
+<<<<<<< HEAD
 		qla24xx_get_isp_stats(base_vha, stats, stats_dma, BIT_0);
+=======
+		rval = qla24xx_get_isp_stats(base_vha, stats, stats_dma, BIT_0);
+		if (rval != QLA_SUCCESS)
+			ql_log(ql_log_warn, vha, 0x70de,
+			       "Resetting ISP statistics failed: rval = %d\n",
+			       rval);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		dma_free_coherent(&ha->pdev->dev, sizeof(*stats),
 		    stats, stats_dma);

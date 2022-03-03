@@ -772,12 +772,21 @@ static void mld_del_delrec(struct inet6_dev *idev, struct ifmcaddr6 *im)
 		im->idev = pmc->idev;
 		im->mca_crcount = idev->mc_qrv;
 		if (im->mca_sfmode == MCAST_INCLUDE) {
+<<<<<<< HEAD
 			im->mca_tomb = pmc->mca_tomb;
 			im->mca_sources = pmc->mca_sources;
+=======
+			swap(im->mca_tomb, pmc->mca_tomb);
+			swap(im->mca_sources, pmc->mca_sources);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			for (psf = im->mca_sources; psf; psf = psf->sf_next)
 				psf->sf_crcount = im->mca_crcount;
 		}
 		in6_dev_put(pmc->idev);
+<<<<<<< HEAD
+=======
+		ip6_mc_clear_src(pmc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kfree(pmc);
 	}
 	spin_unlock_bh(&im->mca_lock);
@@ -1579,10 +1588,14 @@ static struct sk_buff *mld_newpack(struct inet6_dev *idev, unsigned int mtu)
 		     IPV6_TLV_PADN, 0 };
 
 	/* we assume size > sizeof(ra) here */
+<<<<<<< HEAD
 	/* limit our allocations to order-0 page */
 	size = min_t(int, size, SKB_MAX_ORDER(0, 0));
 	skb = sock_alloc_send_skb(sk, size, 1, &err);
 
+=======
+	skb = sock_alloc_send_skb(sk, size, 1, &err);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!skb)
 		return NULL;
 
@@ -2598,6 +2611,10 @@ void ipv6_mc_destroy_dev(struct inet6_dev *idev)
 		idev->mc_list = i->next;
 
 		write_unlock_bh(&idev->lock);
+<<<<<<< HEAD
+=======
+		ip6_mc_clear_src(i);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ma_put(i);
 		write_lock_bh(&idev->lock);
 	}

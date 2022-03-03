@@ -37,6 +37,10 @@
 int mpi_powm(MPI res, MPI base, MPI exp, MPI mod)
 {
 	mpi_ptr_t mp_marker = NULL, bp_marker = NULL, ep_marker = NULL;
+<<<<<<< HEAD
+=======
+	struct karatsuba_ctx karactx = {};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mpi_ptr_t xp_marker = NULL;
 	mpi_ptr_t tspace = NULL;
 	mpi_ptr_t rp, ep, mp, bp;
@@ -164,13 +168,19 @@ int mpi_powm(MPI res, MPI base, MPI exp, MPI mod)
 		int c;
 		mpi_limb_t e;
 		mpi_limb_t carry_limb;
+<<<<<<< HEAD
 		struct karatsuba_ctx karactx;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		xp = xp_marker = mpi_alloc_limb_space(2 * (msize + 1));
 		if (!xp)
 			goto enomem;
 
+<<<<<<< HEAD
 		memset(&karactx, 0, sizeof karactx);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		negative_result = (ep[0] & 1) && base->sign;
 
 		i = esize - 1;
@@ -295,8 +305,11 @@ int mpi_powm(MPI res, MPI base, MPI exp, MPI mod)
 		if (mod_shift_cnt)
 			mpihelp_rshift(rp, rp, rsize, mod_shift_cnt);
 		MPN_NORMALIZE(rp, rsize);
+<<<<<<< HEAD
 
 		mpihelp_release_karatsuba_ctx(&karactx);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (negative_result && rsize) {
@@ -313,6 +326,10 @@ int mpi_powm(MPI res, MPI base, MPI exp, MPI mod)
 leave:
 	rc = 0;
 enomem:
+<<<<<<< HEAD
+=======
+	mpihelp_release_karatsuba_ctx(&karactx);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (assign_rp)
 		mpi_assign_limb_space(res, rp, size);
 	if (mp_marker)

@@ -345,7 +345,11 @@ static int sunxi_rsb_read(struct sunxi_rsb *rsb, u8 rtaddr, u8 addr,
 	if (ret)
 		goto unlock;
 
+<<<<<<< HEAD
 	*buf = readl(rsb->regs + RSB_DATA);
+=======
+	*buf = readl(rsb->regs + RSB_DATA) & GENMASK(len * 8 - 1, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 unlock:
 	mutex_unlock(&rsb->lock);

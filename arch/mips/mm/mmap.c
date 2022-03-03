@@ -203,6 +203,14 @@ unsigned long arch_randomize_brk(struct mm_struct *mm)
 
 int __virt_addr_valid(const volatile void *kaddr)
 {
+<<<<<<< HEAD
+=======
+	unsigned long vaddr = (unsigned long)kaddr;
+
+	if ((vaddr < PAGE_OFFSET) || (vaddr >= MAP_BASE))
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return pfn_valid(PFN_DOWN(virt_to_phys(kaddr)));
 }
 EXPORT_SYMBOL_GPL(__virt_addr_valid);

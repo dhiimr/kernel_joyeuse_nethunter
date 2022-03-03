@@ -623,10 +623,23 @@ static int au0828_usb_probe(struct usb_interface *interface,
 	/* Setup */
 	au0828_card_setup(dev);
 
+<<<<<<< HEAD
 	/* Analog TV */
 	retval = au0828_analog_register(dev, interface);
 	if (retval) {
 		pr_err("%s() au0282_dev_register failed to register on V4L2\n",
+=======
+	/*
+	 * Store the pointer to the au0828_dev so it can be accessed in
+	 * au0828_usb_disconnect
+	 */
+	usb_set_intfdata(interface, dev);
+
+	/* Analog TV */
+	retval = au0828_analog_register(dev, interface);
+	if (retval) {
+		pr_err("%s() au0828_analog_register failed to register on V4L2\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			__func__);
 		mutex_unlock(&dev->lock);
 		goto done;
@@ -635,18 +648,25 @@ static int au0828_usb_probe(struct usb_interface *interface,
 	/* Digital TV */
 	retval = au0828_dvb_register(dev);
 	if (retval)
+<<<<<<< HEAD
 		pr_err("%s() au0282_dev_register failed\n",
+=======
+		pr_err("%s() au0828_dvb_register failed\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		       __func__);
 
 	/* Remote controller */
 	au0828_rc_register(dev);
 
+<<<<<<< HEAD
 	/*
 	 * Store the pointer to the au0828_dev so it can be accessed in
 	 * au0828_usb_disconnect
 	 */
 	usb_set_intfdata(interface, dev);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pr_info("Registered device AU0828 [%s]\n",
 		dev->board.name == NULL ? "Unset" : dev->board.name);
 

@@ -44,6 +44,7 @@ struct alt_region {
  */
 static bool branch_insn_requires_update(struct alt_instr *alt, unsigned long pc)
 {
+<<<<<<< HEAD
 	unsigned long replptr;
 
 	if (kernel_text_address(pc))
@@ -58,6 +59,10 @@ static bool branch_insn_requires_update(struct alt_instr *alt, unsigned long pc)
 	 * we're not even trying to fix it up.
 	 */
 	BUG();
+=======
+	unsigned long replptr = (unsigned long)ALT_REPL_PTR(alt);
+	return !(pc >= replptr && pc <= (replptr + alt->alt_len));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #define align_down(x, a)	((unsigned long)(x) & ~(((unsigned long)(a)) - 1))

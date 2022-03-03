@@ -727,6 +727,10 @@ static int amdgpu_ttm_tt_pin_userptr(struct ttm_tt *ttm)
 
 release_sg:
 	kfree(ttm->sg);
+<<<<<<< HEAD
+=======
+	ttm->sg = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return r;
 }
 
@@ -741,7 +745,11 @@ static void amdgpu_ttm_tt_unpin_userptr(struct ttm_tt *ttm)
 		DMA_BIDIRECTIONAL : DMA_TO_DEVICE;
 
 	/* double check that we don't free the table twice */
+<<<<<<< HEAD
 	if (!ttm->sg->sgl)
+=======
+	if (!ttm->sg || !ttm->sg->sgl)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 
 	/* free the sg table and pages again */
@@ -1009,6 +1017,10 @@ static void amdgpu_ttm_tt_unpopulate(struct ttm_tt *ttm)
 
 	if (gtt && gtt->userptr) {
 		kfree(ttm->sg);
+<<<<<<< HEAD
+=======
+		ttm->sg = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ttm->page_flags &= ~TTM_PAGE_FLAG_SG;
 		return;
 	}

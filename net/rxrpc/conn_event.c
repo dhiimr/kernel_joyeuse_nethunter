@@ -316,18 +316,30 @@ static int rxrpc_process_event(struct rxrpc_connection *conn,
 			return ret;
 
 		spin_lock(&conn->channel_lock);
+<<<<<<< HEAD
 		spin_lock(&conn->state_lock);
 
 		if (conn->state == RXRPC_CONN_SERVICE_CHALLENGING) {
 			conn->state = RXRPC_CONN_SERVICE;
 			spin_unlock(&conn->state_lock);
+=======
+		spin_lock_bh(&conn->state_lock);
+
+		if (conn->state == RXRPC_CONN_SERVICE_CHALLENGING) {
+			conn->state = RXRPC_CONN_SERVICE;
+			spin_unlock_bh(&conn->state_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			for (loop = 0; loop < RXRPC_MAXCALLS; loop++)
 				rxrpc_call_is_secure(
 					rcu_dereference_protected(
 						conn->channels[loop].call,
 						lockdep_is_held(&conn->channel_lock)));
 		} else {
+<<<<<<< HEAD
 			spin_unlock(&conn->state_lock);
+=======
+			spin_unlock_bh(&conn->state_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		spin_unlock(&conn->channel_lock);

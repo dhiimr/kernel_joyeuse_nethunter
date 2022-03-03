@@ -2717,9 +2717,15 @@ enum sci_status sci_controller_continue_io(struct isci_request *ireq)
  *    the task management request.
  * @task_request: the handle to the task request object to start.
  */
+<<<<<<< HEAD
 enum sci_task_status sci_controller_start_task(struct isci_host *ihost,
 					       struct isci_remote_device *idev,
 					       struct isci_request *ireq)
+=======
+enum sci_status sci_controller_start_task(struct isci_host *ihost,
+					  struct isci_remote_device *idev,
+					  struct isci_request *ireq)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	enum sci_status status;
 
@@ -2728,7 +2734,11 @@ enum sci_task_status sci_controller_start_task(struct isci_host *ihost,
 			 "%s: SCIC Controller starting task from invalid "
 			 "state\n",
 			 __func__);
+<<<<<<< HEAD
 		return SCI_TASK_FAILURE_INVALID_STATE;
+=======
+		return SCI_FAILURE_INVALID_STATE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	status = sci_remote_device_start_task(ihost, idev, ireq);

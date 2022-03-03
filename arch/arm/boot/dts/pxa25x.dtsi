@@ -80,6 +80,13 @@
 			#pwm-cells = <1>;
 			clocks = <&clks CLK_PWM1>;
 		};
+<<<<<<< HEAD
+=======
+
+		rtc@40900000 {
+			clocks = <&clks CLK_OSC32k768>;
+		};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	timer@40a00000 {

@@ -254,6 +254,12 @@ static ssize_t chp_status_write(struct device *dev,
 	if (!num_args)
 		return count;
 
+<<<<<<< HEAD
+=======
+	/* Wait until previous actions have settled. */
+	css_wait_for_slow_path();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!strncasecmp(cmd, "on", 2) || !strcmp(cmd, "1")) {
 		mutex_lock(&cp->lock);
 		error = s390_vary_chpid(cp->chpid, 1);

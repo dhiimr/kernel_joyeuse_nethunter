@@ -666,9 +666,12 @@ struct Scsi_Host {
 	/* The controller does not support WRITE SAME */
 	unsigned no_write_same:1;
 
+<<<<<<< HEAD
 	/* Inline encryption support? */
 	unsigned inlinecrypt_support:1;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned use_blk_mq:1;
 	unsigned use_cmd_list:1;
 
@@ -676,12 +679,15 @@ struct Scsi_Host {
 	unsigned short_inquiry:1;
 
 	/*
+<<<<<<< HEAD
 	 * Set "DBD" field in mode_sense caching mode page in case it is
 	 * mandatory by LLD standard.
 	 */
 	unsigned set_dbd_for_caching:1;
 
 	/*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * Optional work queue to be utilized by the transport
 	 */
 	char work_q_name[20];

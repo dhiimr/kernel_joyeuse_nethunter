@@ -2169,9 +2169,19 @@ nfp_net_tx_ring_alloc(struct nfp_net_dp *dp, struct nfp_net_tx_ring *tx_ring)
 
 	tx_ring->size = sizeof(*tx_ring->txds) * tx_ring->cnt;
 	tx_ring->txds = dma_zalloc_coherent(dp->dev, tx_ring->size,
+<<<<<<< HEAD
 					    &tx_ring->dma, GFP_KERNEL);
 	if (!tx_ring->txds)
 		goto err_alloc;
+=======
+					    &tx_ring->dma,
+					    GFP_KERNEL | __GFP_NOWARN);
+	if (!tx_ring->txds) {
+		netdev_warn(dp->netdev, "failed to allocate TX descriptor ring memory, requested descriptor count: %d, consider lowering descriptor count\n",
+			    tx_ring->cnt);
+		goto err_alloc;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	sz = sizeof(*tx_ring->txbufs) * tx_ring->cnt;
 	tx_ring->txbufs = kzalloc(sz, GFP_KERNEL);
@@ -2314,9 +2324,19 @@ nfp_net_rx_ring_alloc(struct nfp_net_dp *dp, struct nfp_net_rx_ring *rx_ring)
 	rx_ring->cnt = dp->rxd_cnt;
 	rx_ring->size = sizeof(*rx_ring->rxds) * rx_ring->cnt;
 	rx_ring->rxds = dma_zalloc_coherent(dp->dev, rx_ring->size,
+<<<<<<< HEAD
 					    &rx_ring->dma, GFP_KERNEL);
 	if (!rx_ring->rxds)
 		goto err_alloc;
+=======
+					    &rx_ring->dma,
+					    GFP_KERNEL | __GFP_NOWARN);
+	if (!rx_ring->rxds) {
+		netdev_warn(dp->netdev, "failed to allocate RX descriptor ring memory, requested descriptor count: %d, consider lowering descriptor count\n",
+			    rx_ring->cnt);
+		goto err_alloc;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	sz = sizeof(*rx_ring->rxbufs) * rx_ring->cnt;
 	rx_ring->rxbufs = kzalloc(sz, GFP_KERNEL);

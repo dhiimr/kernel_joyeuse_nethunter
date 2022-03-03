@@ -73,6 +73,10 @@
 #include <net/icmp.h>
 #include <net/checksum.h>
 #include <net/inetpeer.h>
+<<<<<<< HEAD
+=======
+#include <net/inet_ecn.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <net/lwtunnel.h>
 #include <linux/bpf-cgroup.h>
 #include <linux/igmp.h>
@@ -159,12 +163,27 @@ int ip_build_and_send_pkt(struct sk_buff *skb, const struct sock *sk,
 	iph->daddr    = (opt && opt->opt.srr ? opt->opt.faddr : daddr);
 	iph->saddr    = saddr;
 	iph->protocol = sk->sk_protocol;
+<<<<<<< HEAD
 	if (ip_dont_fragment(sk, &rt->dst)) {
+=======
+	/* Do not bother generating IPID for small packets (eg SYNACK) */
+	if (skb->len <= IPV4_MIN_MTU || ip_dont_fragment(sk, &rt->dst)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		iph->frag_off = htons(IP_DF);
 		iph->id = 0;
 	} else {
 		iph->frag_off = 0;
+<<<<<<< HEAD
 		__ip_select_ident(net, iph, 1);
+=======
+		/* TCP packets here are SYNACK with fat IPv4/TCP options.
+		 * Avoid using the hashed IP ident generator.
+		 */
+		if (sk->sk_protocol == IPPROTO_TCP)
+			iph->id = (__force __be16)prandom_u32();
+		else
+			__ip_select_ident(net, iph, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (opt && opt->opt.optlen) {
@@ -311,7 +330,11 @@ static int ip_finish_output(struct net *net, struct sock *sk, struct sk_buff *sk
 	if (skb_is_gso(skb))
 		return ip_finish_output_gso(net, sk, skb, mtu);
 
+<<<<<<< HEAD
 	if (skb->len > mtu || (IPCB(skb)->flags & IPSKB_FRAG_PMTU))
+=======
+	if (skb->len > mtu || IPCB(skb)->frag_max_size)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ip_fragment(net, sk, skb, mtu, ip_finish_output2);
 
 	return ip_finish_output2(net, sk, skb);
@@ -418,8 +441,14 @@ static void ip_copy_addrs(struct iphdr *iph, const struct flowi4 *fl4)
 {
 	BUILD_BUG_ON(offsetof(typeof(*fl4), daddr) !=
 		     offsetof(typeof(*fl4), saddr) + sizeof(fl4->saddr));
+<<<<<<< HEAD
 	memcpy(&iph->saddr, &fl4->saddr,
 	       sizeof(fl4->saddr) + sizeof(fl4->daddr));
+=======
+
+	iph->saddr = fl4->saddr;
+	iph->daddr = fl4->daddr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Note: skb->sk can be different from sk, in case of tunnels */
@@ -880,14 +909,21 @@ static int __ip_append_data(struct sock *sk,
 	int csummode = CHECKSUM_NONE;
 	struct rtable *rt = (struct rtable *)cork->dst;
 	u32 tskey = 0;
+<<<<<<< HEAD
 	bool paged;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	skb = skb_peek_tail(queue);
 
 	exthdrlen = !skb ? rt->dst.header_len : 0;
+<<<<<<< HEAD
 	mtu = cork->gso_size ? IP_MAX_MTU : cork->fragsize;
 	paged = !!cork->gso_size;
 
+=======
+	mtu = cork->fragsize;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (cork->tx_flags & SKBTX_ANY_SW_TSTAMP &&
 	    sk->sk_tsflags & SOF_TIMESTAMPING_OPT_ID)
 		tskey = sk->sk_tskey++;
@@ -911,7 +947,11 @@ static int __ip_append_data(struct sock *sk,
 	if (transhdrlen &&
 	    length + fragheaderlen <= mtu &&
 	    rt->dst.dev->features & (NETIF_F_HW_CSUM | NETIF_F_IP_CSUM) &&
+<<<<<<< HEAD
 	    (!(flags & MSG_MORE) || cork->gso_size) &&
+=======
+	    !(flags & MSG_MORE) &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    !exthdrlen)
 		csummode = CHECKSUM_PARTIAL;
 
@@ -938,7 +978,10 @@ static int __ip_append_data(struct sock *sk,
 			unsigned int fraglen;
 			unsigned int fraggap;
 			unsigned int alloclen;
+<<<<<<< HEAD
 			unsigned int pagedlen = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			struct sk_buff *skb_prev;
 alloc_new_skb:
 			skb_prev = skb;
@@ -959,12 +1002,17 @@ alloc_new_skb:
 			if ((flags & MSG_MORE) &&
 			    !(rt->dst.dev->features&NETIF_F_SG))
 				alloclen = mtu;
+<<<<<<< HEAD
 			else if (!paged)
 				alloclen = fraglen;
 			else {
 				alloclen = min_t(int, fraglen, MAX_HEADER);
 				pagedlen = fraglen - alloclen;
 			}
+=======
+			else
+				alloclen = fraglen;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			alloclen += exthdrlen;
 
@@ -1009,7 +1057,11 @@ alloc_new_skb:
 			/*
 			 *	Find where to start putting bytes.
 			 */
+<<<<<<< HEAD
 			data = skb_put(skb, fraglen + exthdrlen - pagedlen);
+=======
+			data = skb_put(skb, fraglen + exthdrlen);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			skb_set_network_header(skb, exthdrlen);
 			skb->transport_header = (skb->network_header +
 						 fragheaderlen);
@@ -1025,7 +1077,11 @@ alloc_new_skb:
 				pskb_trim_unique(skb_prev, maxfraglen);
 			}
 
+<<<<<<< HEAD
 			copy = datalen - transhdrlen - fraggap - pagedlen;
+=======
+			copy = datalen - transhdrlen - fraggap;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (copy > 0 && getfrag(from, data + transhdrlen, offset, copy, fraggap, skb) < 0) {
 				err = -EFAULT;
 				kfree_skb(skb);
@@ -1033,7 +1089,11 @@ alloc_new_skb:
 			}
 
 			offset += copy;
+<<<<<<< HEAD
 			length -= copy + transhdrlen;
+=======
+			length -= datalen - fraggap;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			transhdrlen = 0;
 			exthdrlen = 0;
 			csummode = CHECKSUM_NONE;
@@ -1131,6 +1191,7 @@ static int ip_setup_cork(struct sock *sk, struct inet_cork *cork,
 	rt = *rtp;
 	if (unlikely(!rt))
 		return -EFAULT;
+<<<<<<< HEAD
 	/*
 	 * We steal reference to this route, caller should not release it
 	 */
@@ -1141,6 +1202,19 @@ static int ip_setup_cork(struct sock *sk, struct inet_cork *cork,
 	cork->gso_size = sk->sk_type == SOCK_DGRAM &&
 			 sk->sk_protocol == IPPROTO_UDP ? ipc->gso_size : 0;
 	cork->dst = &rt->dst;
+=======
+
+	cork->fragsize = ip_sk_use_pmtu(sk) ?
+			 dst_mtu(&rt->dst) : READ_ONCE(rt->dst.dev->mtu);
+
+	if (!inetdev_valid_mtu(cork->fragsize))
+		return -ENETUNREACH;
+
+	cork->dst = &rt->dst;
+	/* We stole this route, caller should not release it. */
+	*rtp = NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cork->length = 0;
 	cork->ttl = ipc->ttl;
 	cork->tos = ipc->tos;
@@ -1219,7 +1293,11 @@ ssize_t	ip_append_page(struct sock *sk, struct flowi4 *fl4, struct page *page,
 		return -EOPNOTSUPP;
 
 	hh_len = LL_RESERVED_SPACE(rt->dst.dev);
+<<<<<<< HEAD
 	mtu = cork->gso_size ? IP_MAX_MTU : cork->fragsize;
+=======
+	mtu = cork->fragsize;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	fragheaderlen = sizeof(struct iphdr) + (opt ? opt->optlen : 0);
 	maxfraglen = ((mtu - fragheaderlen) & ~7) + fragheaderlen;
@@ -1475,8 +1553,14 @@ struct sk_buff *ip_make_skb(struct sock *sk,
 					int len, int odd, struct sk_buff *skb),
 			    void *from, int length, int transhdrlen,
 			    struct ipcm_cookie *ipc, struct rtable **rtp,
+<<<<<<< HEAD
 			    struct inet_cork *cork, unsigned int flags)
 {
+=======
+			    unsigned int flags)
+{
+	struct inet_cork cork;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct sk_buff_head queue;
 	int err;
 
@@ -1485,6 +1569,7 @@ struct sk_buff *ip_make_skb(struct sock *sk,
 
 	__skb_queue_head_init(&queue);
 
+<<<<<<< HEAD
 	cork->flags = 0;
 	cork->addr = 0;
 	cork->opt = NULL;
@@ -1501,6 +1586,24 @@ struct sk_buff *ip_make_skb(struct sock *sk,
 	}
 
 	return __ip_make_skb(sk, fl4, &queue, cork);
+=======
+	cork.flags = 0;
+	cork.addr = 0;
+	cork.opt = NULL;
+	err = ip_setup_cork(sk, &cork, ipc, rtp);
+	if (err)
+		return ERR_PTR(err);
+
+	err = __ip_append_data(sk, fl4, &queue, &cork,
+			       &current->task_frag, getfrag,
+			       from, length, transhdrlen, flags);
+	if (err) {
+		__ip_flush_pending_frames(sk, &queue, &cork);
+		return ERR_PTR(err);
+	}
+
+	return __ip_make_skb(sk, fl4, &queue, &cork);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -1568,7 +1671,11 @@ void ip_send_unicast_reply(struct sock *sk, struct sk_buff *skb,
 	if (IS_ERR(rt))
 		return;
 
+<<<<<<< HEAD
 	inet_sk(sk)->tos = arg->tos;
+=======
+	inet_sk(sk)->tos = arg->tos & ~INET_ECN_MASK;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	sk->sk_priority = skb->priority;
 	sk->sk_protocol = ip_hdr(skb)->protocol;

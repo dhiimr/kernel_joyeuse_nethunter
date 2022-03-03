@@ -194,7 +194,11 @@ static inline p4d_t *early_p4d_offset(pgd_t *pgd, unsigned long addr)
 	if (!IS_ENABLED(CONFIG_X86_5LEVEL))
 		return (p4d_t *)pgd;
 
+<<<<<<< HEAD
 	p4d = __pa_nodebug(pgd_val(*pgd)) & PTE_PFN_MASK;
+=======
+	p4d = pgd_val(*pgd) & PTE_PFN_MASK;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	p4d += __START_KERNEL_map - phys_base;
 	return (p4d_t *)p4d + p4d_index(addr);
 }

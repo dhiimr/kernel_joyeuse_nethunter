@@ -161,6 +161,10 @@ extern const struct attribute_group *zfcp_port_attr_groups[];
 extern struct mutex zfcp_sysfs_port_units_mutex;
 extern struct device_attribute *zfcp_sysfs_sdev_attrs[];
 extern struct device_attribute *zfcp_sysfs_shost_attrs[];
+<<<<<<< HEAD
+=======
+bool zfcp_sysfs_port_is_removing(const struct zfcp_port *const port);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* zfcp_unit.c */
 extern int zfcp_unit_add(struct zfcp_port *, u64);

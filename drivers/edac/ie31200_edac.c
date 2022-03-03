@@ -147,6 +147,11 @@
 	(n << (28 + (2 * skl) - PAGE_SHIFT))
 
 static int nr_channels;
+<<<<<<< HEAD
+=======
+static struct pci_dev *mci_pdev;
+static int ie31200_registered = 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct ie31200_priv {
 	void __iomem *window;
@@ -518,12 +523,25 @@ fail_free:
 static int ie31200_init_one(struct pci_dev *pdev,
 			    const struct pci_device_id *ent)
 {
+<<<<<<< HEAD
 	edac_dbg(0, "MC:\n");
 
 	if (pci_enable_device(pdev) < 0)
 		return -EIO;
 
 	return ie31200_probe1(pdev, ent->driver_data);
+=======
+	int rc;
+
+	edac_dbg(0, "MC:\n");
+	if (pci_enable_device(pdev) < 0)
+		return -EIO;
+	rc = ie31200_probe1(pdev, ent->driver_data);
+	if (rc == 0 && !mci_pdev)
+		mci_pdev = pci_dev_get(pdev);
+
+	return rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void ie31200_remove_one(struct pci_dev *pdev)
@@ -532,6 +550,11 @@ static void ie31200_remove_one(struct pci_dev *pdev)
 	struct ie31200_priv *priv;
 
 	edac_dbg(0, "\n");
+<<<<<<< HEAD
+=======
+	pci_dev_put(mci_pdev);
+	mci_pdev = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mci = edac_mc_del_mc(&pdev->dev);
 	if (!mci)
 		return;
@@ -583,17 +606,63 @@ static struct pci_driver ie31200_driver = {
 
 static int __init ie31200_init(void)
 {
+<<<<<<< HEAD
+=======
+	int pci_rc, i;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	edac_dbg(3, "MC:\n");
 	/* Ensure that the OPSTATE is set correctly for POLL or NMI */
 	opstate_init();
 
+<<<<<<< HEAD
 	return pci_register_driver(&ie31200_driver);
+=======
+	pci_rc = pci_register_driver(&ie31200_driver);
+	if (pci_rc < 0)
+		goto fail0;
+
+	if (!mci_pdev) {
+		ie31200_registered = 0;
+		for (i = 0; ie31200_pci_tbl[i].vendor != 0; i++) {
+			mci_pdev = pci_get_device(ie31200_pci_tbl[i].vendor,
+						  ie31200_pci_tbl[i].device,
+						  NULL);
+			if (mci_pdev)
+				break;
+		}
+		if (!mci_pdev) {
+			edac_dbg(0, "ie31200 pci_get_device fail\n");
+			pci_rc = -ENODEV;
+			goto fail1;
+		}
+		pci_rc = ie31200_init_one(mci_pdev, &ie31200_pci_tbl[i]);
+		if (pci_rc < 0) {
+			edac_dbg(0, "ie31200 init fail\n");
+			pci_rc = -ENODEV;
+			goto fail1;
+		}
+	}
+	return 0;
+
+fail1:
+	pci_unregister_driver(&ie31200_driver);
+fail0:
+	pci_dev_put(mci_pdev);
+
+	return pci_rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void __exit ie31200_exit(void)
 {
 	edac_dbg(3, "MC:\n");
 	pci_unregister_driver(&ie31200_driver);
+<<<<<<< HEAD
+=======
+	if (!ie31200_registered)
+		ie31200_remove_one(mci_pdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 module_init(ie31200_init);

@@ -85,7 +85,11 @@ struct ceph_mount_options {
 
 	char *snapdir_name;   /* default ".snap" */
 	char *mds_namespace;  /* default NULL */
+<<<<<<< HEAD
 	char *server_path;    /* default  "/" */
+=======
+	char *server_path;    /* default NULL (means "/") */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	char *fscache_uniq;   /* default NULL */
 };
 
@@ -517,7 +521,16 @@ static inline void __ceph_dir_set_complete(struct ceph_inode_info *ci,
 					   long long release_count,
 					   long long ordered_count)
 {
+<<<<<<< HEAD
 	smp_mb__before_atomic();
+=======
+	/*
+	 * Makes sure operations that setup readdir cache (update page
+	 * cache and i_size) are strongly ordered w.r.t. the following
+	 * atomic64_set() operations.
+	 */
+	smp_mb();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	atomic64_set(&ci->i_complete_seq[0], release_count);
 	atomic64_set(&ci->i_complete_seq[1], ordered_count);
 }
@@ -830,7 +843,11 @@ extern int ceph_getattr(const struct path *path, struct kstat *stat,
 int __ceph_setxattr(struct inode *, const char *, const void *, size_t, int);
 ssize_t __ceph_getxattr(struct inode *, const char *, void *, size_t);
 extern ssize_t ceph_listxattr(struct dentry *, char *, size_t);
+<<<<<<< HEAD
 extern void __ceph_build_xattrs_blob(struct ceph_inode_info *ci);
+=======
+extern struct ceph_buffer *__ceph_build_xattrs_blob(struct ceph_inode_info *ci);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void __ceph_destroy_xattrs(struct ceph_inode_info *ci);
 extern void __init ceph_xattr_init(void);
 extern void ceph_xattr_exit(void);

@@ -358,11 +358,20 @@ static void cyberjack_write_bulk_callback(struct urb *urb)
 	struct cyberjack_private *priv = usb_get_serial_port_data(port);
 	struct device *dev = &port->dev;
 	int status = urb->status;
+<<<<<<< HEAD
 
 	set_bit(0, &port->write_urbs_free);
 	if (status) {
 		dev_dbg(dev, "%s - nonzero write bulk status received: %d\n",
 			__func__, status);
+=======
+	bool resubmitted = false;
+
+	if (status) {
+		dev_dbg(dev, "%s - nonzero write bulk status received: %d\n",
+			__func__, status);
+		set_bit(0, &port->write_urbs_free);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 	}
 
@@ -395,6 +404,11 @@ static void cyberjack_write_bulk_callback(struct urb *urb)
 			goto exit;
 		}
 
+<<<<<<< HEAD
+=======
+		resubmitted = true;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_dbg(dev, "%s - priv->wrsent=%d\n", __func__, priv->wrsent);
 		dev_dbg(dev, "%s - priv->wrfilled=%d\n", __func__, priv->wrfilled);
 
@@ -411,6 +425,11 @@ static void cyberjack_write_bulk_callback(struct urb *urb)
 
 exit:
 	spin_unlock(&priv->lock);
+<<<<<<< HEAD
+=======
+	if (!resubmitted)
+		set_bit(0, &port->write_urbs_free);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	usb_serial_port_softint(port);
 }
 

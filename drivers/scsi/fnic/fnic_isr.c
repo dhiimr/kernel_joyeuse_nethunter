@@ -254,7 +254,11 @@ int fnic_set_intr_mode(struct fnic *fnic)
 		int vecs = n + m + o + 1;
 
 		if (pci_alloc_irq_vectors(fnic->pdev, vecs, vecs,
+<<<<<<< HEAD
 				PCI_IRQ_MSIX) < 0) {
+=======
+				PCI_IRQ_MSIX) == vecs) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			fnic->rq_count = n;
 			fnic->raw_wq_count = m;
 			fnic->wq_copy_count = o;
@@ -280,7 +284,11 @@ int fnic_set_intr_mode(struct fnic *fnic)
 	    fnic->wq_copy_count >= 1 &&
 	    fnic->cq_count >= 3 &&
 	    fnic->intr_count >= 1 &&
+<<<<<<< HEAD
 	    pci_alloc_irq_vectors(fnic->pdev, 1, 1, PCI_IRQ_MSI) < 0) {
+=======
+	    pci_alloc_irq_vectors(fnic->pdev, 1, 1, PCI_IRQ_MSI) == 1) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		fnic->rq_count = 1;
 		fnic->raw_wq_count = 1;
 		fnic->wq_copy_count = 1;

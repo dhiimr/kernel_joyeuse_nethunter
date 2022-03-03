@@ -632,7 +632,11 @@ static __net_init int csum_init_net(struct net *net)
 {
 	struct tc_action_net *tn = net_generic(net, csum_net_id);
 
+<<<<<<< HEAD
 	return tc_action_net_init(tn, &act_csum_ops);
+=======
+	return tc_action_net_init(net, tn, &act_csum_ops);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void __net_exit csum_exit_net(struct net *net)

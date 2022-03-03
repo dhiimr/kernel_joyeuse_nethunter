@@ -1120,6 +1120,10 @@ static int br_ip4_multicast_igmp3_report(struct net_bridge *br,
 	int type;
 	int err = 0;
 	__be32 group;
+<<<<<<< HEAD
+=======
+	u16 nsrcs;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ih = igmpv3_report_hdr(skb);
 	num = ntohs(ih->ngrec);
@@ -1133,8 +1137,14 @@ static int br_ip4_multicast_igmp3_report(struct net_bridge *br,
 		grec = (void *)(skb->data + len - sizeof(*grec));
 		group = grec->grec_mca;
 		type = grec->grec_type;
+<<<<<<< HEAD
 
 		len += ntohs(grec->grec_nsrcs) * 4;
+=======
+		nsrcs = ntohs(grec->grec_nsrcs);
+
+		len += nsrcs * 4;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!pskb_may_pull(skb, len))
 			return -EINVAL;
 
@@ -1155,7 +1165,11 @@ static int br_ip4_multicast_igmp3_report(struct net_bridge *br,
 		src = eth_hdr(skb)->h_source;
 		if ((type == IGMPV3_CHANGE_TO_INCLUDE ||
 		     type == IGMPV3_MODE_IS_INCLUDE) &&
+<<<<<<< HEAD
 		    ntohs(grec->grec_nsrcs) == 0) {
+=======
+		    nsrcs == 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			br_ip4_multicast_leave_group(br, port, group, vid, src);
 		} else {
 			err = br_ip4_multicast_add_group(br, port, group, vid,
@@ -1190,6 +1204,7 @@ static int br_ip6_multicast_mld2_report(struct net_bridge *br,
 	len = skb_transport_offset(skb) + sizeof(*icmp6h);
 
 	for (i = 0; i < num; i++) {
+<<<<<<< HEAD
 		__be16 *nsrcs, _nsrcs;
 
 		nsrcs = skb_header_pointer(skb,
@@ -1202,11 +1217,32 @@ static int br_ip6_multicast_mld2_report(struct net_bridge *br,
 		if (!pskb_may_pull(skb,
 				   len + sizeof(*grec) +
 				   sizeof(struct in6_addr) * ntohs(*nsrcs)))
+=======
+		__be16 *_nsrcs, __nsrcs;
+		u16 nsrcs;
+
+		_nsrcs = skb_header_pointer(skb,
+					    len + offsetof(struct mld2_grec,
+							   grec_nsrcs),
+					    sizeof(__nsrcs), &__nsrcs);
+		if (!_nsrcs)
+			return -EINVAL;
+
+		nsrcs = ntohs(*_nsrcs);
+
+		if (!pskb_may_pull(skb,
+				   len + sizeof(*grec) +
+				   sizeof(struct in6_addr) * nsrcs))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return -EINVAL;
 
 		grec = (struct mld2_grec *)(skb->data + len);
 		len += sizeof(*grec) +
+<<<<<<< HEAD
 		       sizeof(struct in6_addr) * ntohs(*nsrcs);
+=======
+		       sizeof(struct in6_addr) * nsrcs;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* We treat these as MLDv1 reports for now. */
 		switch (grec->grec_type) {
@@ -1225,7 +1261,11 @@ static int br_ip6_multicast_mld2_report(struct net_bridge *br,
 		src = eth_hdr(skb)->h_source;
 		if ((grec->grec_type == MLD2_CHANGE_TO_INCLUDE ||
 		     grec->grec_type == MLD2_MODE_IS_INCLUDE) &&
+<<<<<<< HEAD
 		    ntohs(*nsrcs) == 0) {
+=======
+		    nsrcs == 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			br_ip6_multicast_leave_group(br, port, &grec->grec_mca,
 						     vid, src);
 		} else {
@@ -1477,7 +1517,10 @@ static int br_ip6_multicast_query(struct net_bridge *br,
 				  struct sk_buff *skb,
 				  u16 vid)
 {
+<<<<<<< HEAD
 	const struct ipv6hdr *ip6h = ipv6_hdr(skb);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct mld_msg *mld;
 	struct net_bridge_mdb_entry *mp;
 	struct mld2_query *mld2q;
@@ -1521,7 +1564,11 @@ static int br_ip6_multicast_query(struct net_bridge *br,
 
 	if (is_general_query) {
 		saddr.proto = htons(ETH_P_IPV6);
+<<<<<<< HEAD
 		saddr.u.ip6 = ip6h->saddr;
+=======
+		saddr.u.ip6 = ipv6_hdr(skb)->saddr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		br_multicast_query_received(br, port, &br->ip6_other_query,
 					    &saddr, max_delay);
@@ -1589,6 +1636,12 @@ br_multicast_leave_group(struct net_bridge *br,
 			if (!br_port_group_equal(p, port, src))
 				continue;
 
+<<<<<<< HEAD
+=======
+			if (p->flags & MDB_PG_FLAGS_PERMANENT)
+				break;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			rcu_assign_pointer(*pp, p->next);
 			hlist_del_init(&p->mglist);
 			del_timer(&p->timer);
@@ -1756,7 +1809,13 @@ static void br_multicast_pim(struct net_bridge *br,
 	    pim_hdr_type(pimhdr) != PIM_TYPE_HELLO)
 		return;
 
+<<<<<<< HEAD
 	br_multicast_mark_router(br, port);
+=======
+	spin_lock(&br->multicast_lock);
+	br_multicast_mark_router(br, port);
+	spin_unlock(&br->multicast_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int br_multicast_ipv4_rcv(struct net_bridge *br,

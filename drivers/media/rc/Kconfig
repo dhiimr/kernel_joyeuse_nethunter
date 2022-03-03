@@ -482,6 +482,7 @@ config IR_ZX
 
 endif #RC_DEVICES
 
+<<<<<<< HEAD
 config IR_MSM_GENI
 	tristate "MSM GENI IR Controller"
 	depends on RC_CORE
@@ -493,4 +494,6 @@ config IR_MSM_GENI
 	   To compile this driver as a module, choose M here: the
 	   module will be called msm-geni-ir.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif #RC_CORE

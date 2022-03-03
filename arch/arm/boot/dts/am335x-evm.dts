@@ -724,6 +724,10 @@
 	pinctrl-0 = <&cpsw_default>;
 	pinctrl-1 = <&cpsw_sleep>;
 	status = "okay";
+<<<<<<< HEAD
+=======
+	slaves = <1>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 &davinci_mdio {
@@ -731,6 +735,7 @@
 	pinctrl-0 = <&davinci_mdio_default>;
 	pinctrl-1 = <&davinci_mdio_sleep>;
 	status = "okay";
+<<<<<<< HEAD
 };
 
 &cpsw_emac0 {
@@ -740,6 +745,16 @@
 
 &cpsw_emac1 {
 	phy_id = <&davinci_mdio>, <1>;
+=======
+
+	ethphy0: ethernet-phy@0 {
+		reg = <0>;
+	};
+};
+
+&cpsw_emac0 {
+	phy-handle = <&ethphy0>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	phy-mode = "rgmii-txid";
 };
 

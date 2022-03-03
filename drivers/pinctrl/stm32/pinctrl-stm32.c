@@ -403,7 +403,11 @@ static int stm32_pctrl_dt_subnode_to_map(struct pinctrl_dev *pctldev,
 	unsigned int num_configs;
 	bool has_config = 0;
 	unsigned reserve = 0;
+<<<<<<< HEAD
 	int num_pins, num_funcs, maps_per_pin, i, err;
+=======
+	int num_pins, num_funcs, maps_per_pin, i, err = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	pctl = pinctrl_dev_get_drvdata(pctldev);
 
@@ -430,41 +434,70 @@ static int stm32_pctrl_dt_subnode_to_map(struct pinctrl_dev *pctldev,
 	if (has_config && num_pins >= 1)
 		maps_per_pin++;
 
+<<<<<<< HEAD
 	if (!num_pins || !maps_per_pin)
 		return -EINVAL;
+=======
+	if (!num_pins || !maps_per_pin) {
+		err = -EINVAL;
+		goto exit;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	reserve = num_pins * maps_per_pin;
 
 	err = pinctrl_utils_reserve_map(pctldev, map,
 			reserved_maps, num_maps, reserve);
 	if (err)
+<<<<<<< HEAD
 		return err;
+=======
+		goto exit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (i = 0; i < num_pins; i++) {
 		err = of_property_read_u32_index(node, "pinmux",
 				i, &pinfunc);
 		if (err)
+<<<<<<< HEAD
 			return err;
+=======
+			goto exit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		pin = STM32_GET_PIN_NO(pinfunc);
 		func = STM32_GET_PIN_FUNC(pinfunc);
 
 		if (!stm32_pctrl_is_function_valid(pctl, pin, func)) {
 			dev_err(pctl->dev, "invalid function.\n");
+<<<<<<< HEAD
 			return -EINVAL;
+=======
+			err = -EINVAL;
+			goto exit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		grp = stm32_pctrl_find_group_by_pin(pctl, pin);
 		if (!grp) {
 			dev_err(pctl->dev, "unable to match pin %d to group\n",
 					pin);
+<<<<<<< HEAD
 			return -EINVAL;
+=======
+			err = -EINVAL;
+			goto exit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		err = stm32_pctrl_dt_node_to_map_func(pctl, pin, func, grp, map,
 				reserved_maps, num_maps);
 		if (err)
+<<<<<<< HEAD
 			return err;
+=======
+			goto exit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (has_config) {
 			err = pinctrl_utils_add_map_configs(pctldev, map,
@@ -472,11 +505,21 @@ static int stm32_pctrl_dt_subnode_to_map(struct pinctrl_dev *pctldev,
 					configs, num_configs,
 					PIN_MAP_TYPE_CONFIGS_GROUP);
 			if (err)
+<<<<<<< HEAD
 				return err;
 		}
 	}
 
 	return 0;
+=======
+				goto exit;
+		}
+	}
+
+exit:
+	kfree(configs);
+	return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int stm32_pctrl_dt_node_to_map(struct pinctrl_dev *pctldev,
@@ -950,7 +993,11 @@ static int stm32_gpiolib_register_bank(struct stm32_pinctrl *pctl,
 	struct resource res;
 	struct reset_control *rstc;
 	int npins = STM32_GPIO_PINS_PER_BANK;
+<<<<<<< HEAD
 	int bank_nr, err;
+=======
+	int bank_nr, err, i = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rstc = of_reset_control_get_exclusive(np, NULL);
 	if (!IS_ERR(rstc))
@@ -979,9 +1026,20 @@ static int stm32_gpiolib_register_bank(struct stm32_pinctrl *pctl,
 
 	of_property_read_string(np, "st,bank-name", &bank->gpio_chip.label);
 
+<<<<<<< HEAD
 	if (!of_parse_phandle_with_fixed_args(np, "gpio-ranges", 3, 0, &args)) {
 		bank_nr = args.args[1] / STM32_GPIO_PINS_PER_BANK;
 		bank->gpio_chip.base = args.args[1];
+=======
+	if (!of_parse_phandle_with_fixed_args(np, "gpio-ranges", 3, i, &args)) {
+		bank_nr = args.args[1] / STM32_GPIO_PINS_PER_BANK;
+		bank->gpio_chip.base = args.args[1];
+
+		/* get the last defined gpio line (offset + nb of pins) */
+		npins = args.args[0] + args.args[2];
+		while (!of_parse_phandle_with_fixed_args(np, "gpio-ranges", 3, ++i, &args))
+			npins = max(npins, (int)(args.args[0] + args.args[2]));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		bank_nr = pctl->nbanks;
 		bank->gpio_chip.base = bank_nr * STM32_GPIO_PINS_PER_BANK;

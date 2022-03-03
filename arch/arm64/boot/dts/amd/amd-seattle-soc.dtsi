@@ -107,7 +107,11 @@
 			clock-names = "uartclk", "apb_pclk";
 		};
 
+<<<<<<< HEAD
 		spi0: ssp@e1020000 {
+=======
+		spi0: spi@e1020000 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			status = "disabled";
 			compatible = "arm,pl022", "arm,primecell";
 			reg = <0 0xe1020000 0 0x1000>;
@@ -117,7 +121,11 @@
 			clock-names = "apb_pclk";
 		};
 
+<<<<<<< HEAD
 		spi1: ssp@e1030000 {
+=======
+		spi1: spi@e1030000 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			status = "disabled";
 			compatible = "arm,pl022", "arm,primecell";
 			reg = <0 0xe1030000 0 0x1000>;

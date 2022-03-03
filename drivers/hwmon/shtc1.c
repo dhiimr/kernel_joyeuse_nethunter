@@ -38,7 +38,11 @@ static const unsigned char shtc1_cmd_read_id_reg[]	       = { 0xef, 0xc8 };
 
 /* constants for reading the ID register */
 #define SHTC1_ID	  0x07
+<<<<<<< HEAD
 #define SHTC1_ID_REG_MASK 0x1f
+=======
+#define SHTC1_ID_REG_MASK 0x3f
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* delays for non-blocking i2c commands, both in us */
 #define SHTC1_NONBLOCKING_WAIT_TIME_HPM  14400

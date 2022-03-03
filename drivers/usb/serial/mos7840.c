@@ -126,16 +126,29 @@
 #define BANDB_DEVICE_ID_USOPTL4_2P       0xBC02
 #define BANDB_DEVICE_ID_USOPTL4_4        0xAC44
 #define BANDB_DEVICE_ID_USOPTL4_4P       0xBC03
+<<<<<<< HEAD
 #define BANDB_DEVICE_ID_USOPTL2_4        0xAC24
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* This driver also supports
  * ATEN UC2324 device using Moschip MCS7840
  * ATEN UC2322 device using Moschip MCS7820
+<<<<<<< HEAD
+=======
+ * MOXA UPort 2210 device using Moschip MCS7820
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 #define USB_VENDOR_ID_ATENINTL		0x0557
 #define ATENINTL_DEVICE_ID_UC2324	0x2011
 #define ATENINTL_DEVICE_ID_UC2322	0x7820
 
+<<<<<<< HEAD
+=======
+#define USB_VENDOR_ID_MOXA		0x110a
+#define MOXA_DEVICE_ID_2210		0x2210
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Interrupt Routine Defines    */
 
 #define SERIAL_IIR_RLS      0x06
@@ -203,9 +216,15 @@ static const struct usb_device_id id_table[] = {
 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_2P)},
 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_4)},
 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_4P)},
+<<<<<<< HEAD
 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL2_4)},
 	{USB_DEVICE(USB_VENDOR_ID_ATENINTL, ATENINTL_DEVICE_ID_UC2324)},
 	{USB_DEVICE(USB_VENDOR_ID_ATENINTL, ATENINTL_DEVICE_ID_UC2322)},
+=======
+	{USB_DEVICE(USB_VENDOR_ID_ATENINTL, ATENINTL_DEVICE_ID_UC2324)},
+	{USB_DEVICE(USB_VENDOR_ID_ATENINTL, ATENINTL_DEVICE_ID_UC2322)},
+	{USB_DEVICE(USB_VENDOR_ID_MOXA, MOXA_DEVICE_ID_2210)},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{}			/* terminating entry */
 };
 MODULE_DEVICE_TABLE(usb, id_table);
@@ -1347,8 +1366,15 @@ static int mos7840_write(struct tty_struct *tty, struct usb_serial_port *port,
 	if (urb->transfer_buffer == NULL) {
 		urb->transfer_buffer = kmalloc(URB_TRANSFER_BUFFER_SIZE,
 					       GFP_ATOMIC);
+<<<<<<< HEAD
 		if (!urb->transfer_buffer)
 			goto exit;
+=======
+		if (!urb->transfer_buffer) {
+			bytes_sent = -ENOMEM;
+			goto exit;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	transfer_size = min(count, URB_TRANSFER_BUFFER_SIZE);
 
@@ -2065,6 +2091,10 @@ static int mos7840_probe(struct usb_serial *serial,
 				const struct usb_device_id *id)
 {
 	u16 product = le16_to_cpu(serial->dev->descriptor.idProduct);
+<<<<<<< HEAD
+=======
+	u16 vid = le16_to_cpu(serial->dev->descriptor.idVendor);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8 *buf;
 	int device_type;
 
@@ -2074,6 +2104,14 @@ static int mos7840_probe(struct usb_serial *serial,
 		goto out;
 	}
 
+<<<<<<< HEAD
+=======
+	if (vid == USB_VENDOR_ID_MOXA && product == MOXA_DEVICE_ID_2210) {
+		device_type = MOSCHIP_DEVICE_ID_7820;
+		goto out;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	buf = kzalloc(VENDOR_READ_LENGTH, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
@@ -2327,11 +2365,14 @@ out:
 			goto error;
 		} else
 			dev_dbg(&port->dev, "ZLP_REG5 Writing success status%d\n", status);
+<<<<<<< HEAD
 
 		/* setting configuration feature to one */
 		usb_control_msg(serial->dev, usb_sndctrlpipe(serial->dev, 0),
 				0x03, 0x00, 0x01, 0x00, NULL, 0x00,
 				MOS_WDR_TIMEOUT);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return 0;
 error:

@@ -76,6 +76,14 @@ int __ext4_check_dir_entry(const char *function, unsigned int line,
 		error_msg = "rec_len is too small for name_len";
 	else if (unlikely(((char *) de - buf) + rlen > size))
 		error_msg = "directory entry overrun";
+<<<<<<< HEAD
+=======
+	else if (unlikely(((char *) de - buf) + rlen >
+			  size - EXT4_DIR_REC_LEN(1) &&
+			  ((char *) de - buf) + rlen != size)) {
+		error_msg = "directory entry too close to block end";
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	else if (unlikely(le32_to_cpu(de->inode) >
 			le32_to_cpu(EXT4_SB(dir->i_sb)->s_es->s_inodes_count)))
 		error_msg = "inode out of bounds";
@@ -107,7 +115,10 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
 	struct inode *inode = file_inode(file);
 	struct super_block *sb = inode->i_sb;
 	struct buffer_head *bh = NULL;
+<<<<<<< HEAD
 	int dir_has_error = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct fscrypt_str fstr = FSTR_INIT(NULL, 0);
 
 	if (ext4_encrypted_inode(inode)) {
@@ -121,12 +132,23 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
 		if (err != ERR_BAD_DX_DIR) {
 			return err;
 		}
+<<<<<<< HEAD
 		/*
 		 * We don't set the inode dirty flag since it's not
 		 * critical that it get flushed back to the disk.
 		 */
 		ext4_clear_inode_flag(file_inode(file),
 				      EXT4_INODE_INDEX);
+=======
+		/* Can we just clear INDEX flag to ignore htree information? */
+		if (!ext4_has_metadata_csum(sb)) {
+			/*
+			 * We don't set the inode dirty flag since it's not
+			 * critical that it gets flushed back to the disk.
+			 */
+			ext4_clear_inode_flag(inode, EXT4_INODE_INDEX);
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (ext4_has_inline_data(inode)) {
@@ -143,8 +165,11 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
 			return err;
 	}
 
+<<<<<<< HEAD
 	offset = ctx->pos & (sb->s_blocksize - 1);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	while (ctx->pos < inode->i_size) {
 		struct ext4_map_blocks map;
 
@@ -153,9 +178,24 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
 			goto errout;
 		}
 		cond_resched();
+<<<<<<< HEAD
 		map.m_lblk = ctx->pos >> EXT4_BLOCK_SIZE_BITS(sb);
 		map.m_len = 1;
 		err = ext4_map_blocks(NULL, inode, &map, 0);
+=======
+		offset = ctx->pos & (sb->s_blocksize - 1);
+		map.m_lblk = ctx->pos >> EXT4_BLOCK_SIZE_BITS(sb);
+		map.m_len = 1;
+		err = ext4_map_blocks(NULL, inode, &map, 0);
+		if (err == 0) {
+			/* m_len should never be zero but let's avoid
+			 * an infinite loop if it somehow is */
+			if (map.m_len == 0)
+				map.m_len = 1;
+			ctx->pos += map.m_len * sb->s_blocksize;
+			continue;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (err > 0) {
 			pgoff_t index = map.m_pblk >>
 					(PAGE_SHIFT - inode->i_blkbits);
@@ -174,6 +214,7 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
 		}
 
 		if (!bh) {
+<<<<<<< HEAD
 			if (!dir_has_error) {
 				EXT4_ERROR_FILE(file, 0,
 						"directory contains a "
@@ -181,6 +222,8 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
 					   (unsigned long long) ctx->pos);
 				dir_has_error = 1;
 			}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/* corrupt size?  Maybe no more blocks to read */
 			if (ctx->pos > inode->i_blocks << 9)
 				break;
@@ -526,7 +569,11 @@ static int ext4_dx_readdir(struct file *file, struct dir_context *ctx)
 	struct dir_private_info *info = file->private_data;
 	struct inode *inode = file_inode(file);
 	struct fname *fname;
+<<<<<<< HEAD
 	int	ret;
+=======
+	int ret = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!info) {
 		info = ext4_htree_create_dir_info(file, ctx->pos);
@@ -574,7 +621,11 @@ static int ext4_dx_readdir(struct file *file, struct dir_context *ctx)
 						   info->curr_minor_hash,
 						   &info->next_hash);
 			if (ret < 0)
+<<<<<<< HEAD
 				return ret;
+=======
+				goto finished;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (ret == 0) {
 				ctx->pos = ext4_get_htree_eof(file);
 				break;
@@ -605,7 +656,11 @@ static int ext4_dx_readdir(struct file *file, struct dir_context *ctx)
 	}
 finished:
 	info->last_pos = ctx->pos;
+<<<<<<< HEAD
 	return 0;
+=======
+	return ret < 0 ? ret : 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int ext4_dir_open(struct inode * inode, struct file * filp)

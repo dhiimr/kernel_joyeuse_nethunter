@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+gpio-utils-y += gpio-utils.o
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 lsgpio-y += lsgpio.o gpio-utils.o
 gpio-hammer-y += gpio-hammer.o gpio-utils.o
 gpio-event-mon-y += gpio-event-mon.o gpio-utils.o

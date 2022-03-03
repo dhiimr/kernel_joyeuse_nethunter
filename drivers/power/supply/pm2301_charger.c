@@ -1098,7 +1098,11 @@ static int pm2xxx_wall_charger_probe(struct i2c_client *i2c_client,
 	ret = request_threaded_irq(gpio_to_irq(pm2->pdata->gpio_irq_number),
 				NULL,
 				pm2xxx_charger_irq[0].isr,
+<<<<<<< HEAD
 				pm2->pdata->irq_type,
+=======
+				pm2->pdata->irq_type | IRQF_ONESHOT,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				pm2xxx_charger_irq[0].name, pm2);
 
 	if (ret != 0) {

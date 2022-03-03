@@ -734,8 +734,20 @@ zone_found:
 	 * We have found the zone. Now walk the radix tree to find the leaf node
 	 * for our PFN.
 	 */
+<<<<<<< HEAD
 	node = bm->cur.node;
 	if (((pfn - zone->start_pfn) & ~BM_BLOCK_MASK) == bm->cur.node_pfn)
+=======
+
+	/*
+	 * If the zone we wish to scan is the the current zone and the
+	 * pfn falls into the current node then we do not need to walk
+	 * the tree.
+	 */
+	node = bm->cur.node;
+	if (zone == bm->cur.zone &&
+	    ((pfn - zone->start_pfn) & ~BM_BLOCK_MASK) == bm->cur.node_pfn)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto node_found;
 
 	node      = zone->rtree;
@@ -1257,6 +1269,7 @@ static inline void *saveable_highmem_page(struct zone *z, unsigned long p)
 }
 #endif /* CONFIG_HIGHMEM */
 
+<<<<<<< HEAD
 static bool kernel_pte_present(struct page *page)
 {
 	pgd_t *pgd;
@@ -1284,6 +1297,8 @@ static bool kernel_pte_present(struct page *page)
 	pte = pte_offset_kernel(pmd, addr);
 	return pte_valid(*pte);
 }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * saveable_page - Check if the given page is saveable.
  *
@@ -1314,6 +1329,7 @@ static struct page *saveable_page(struct zone *zone, unsigned long pfn)
 	    && (!kernel_page_present(page) || pfn_is_nosave(pfn)))
 		return NULL;
 
+<<<<<<< HEAD
 	/*
 	 * Even if page is not reserved and if it's not present in kernel PTE;
 	 * don't snapshot it ! This happens to the pages allocated using
@@ -1322,6 +1338,8 @@ static struct page *saveable_page(struct zone *zone, unsigned long pfn)
 	if (!kernel_pte_present(page))
 		return NULL;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (page_is_guard(page))
 		return NULL;
 

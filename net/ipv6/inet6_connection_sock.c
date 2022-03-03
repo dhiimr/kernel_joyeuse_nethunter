@@ -52,7 +52,11 @@ struct dst_entry *inet6_csk_route_req(const struct sock *sk,
 	fl6->flowi6_uid = sk->sk_uid;
 	security_req_classify_flow(req, flowi6_to_flowi(fl6));
 
+<<<<<<< HEAD
 	dst = ip6_dst_lookup_flow(sk, fl6, final_p);
+=======
+	dst = ip6_dst_lookup_flow(sock_net(sk), sk, fl6, final_p);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (IS_ERR(dst))
 		return NULL;
 
@@ -107,7 +111,11 @@ static struct dst_entry *inet6_csk_route_socket(struct sock *sk,
 
 	dst = __inet6_csk_dst_check(sk, np->dst_cookie);
 	if (!dst) {
+<<<<<<< HEAD
 		dst = ip6_dst_lookup_flow(sk, fl6, final_p);
+=======
+		dst = ip6_dst_lookup_flow(sock_net(sk), sk, fl6, final_p);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (!IS_ERR(dst))
 			ip6_dst_store(sk, dst, NULL, NULL);
@@ -150,7 +158,11 @@ struct dst_entry *inet6_csk_update_pmtu(struct sock *sk, u32 mtu)
 
 	if (IS_ERR(dst))
 		return NULL;
+<<<<<<< HEAD
 	dst->ops->update_pmtu(dst, sk, NULL, mtu);
+=======
+	dst->ops->update_pmtu(dst, sk, NULL, mtu, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dst = inet6_csk_route_socket(sk, &fl6);
 	return IS_ERR(dst) ? NULL : dst;

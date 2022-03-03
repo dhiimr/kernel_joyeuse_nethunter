@@ -610,7 +610,11 @@ static const struct clockgen_chipinfo chipinfo[] = {
 		.guts_compat = "fsl,qoriq-device-config-1.0",
 		.init_periph = p5020_init_periph,
 		.cmux_groups = {
+<<<<<<< HEAD
 			&p2041_cmux_grp1, &p2041_cmux_grp2
+=======
+			&p5020_cmux_grp1, &p5020_cmux_grp2
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		},
 		.cmux_to_group = {
 			0, 1, -1
@@ -1382,6 +1386,10 @@ static void __init clockgen_init(struct device_node *np)
 				pr_err("%s: Couldn't map %pOF regs\n", __func__,
 				       guts);
 			}
+<<<<<<< HEAD
+=======
+			of_node_put(guts);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 	}

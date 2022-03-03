@@ -122,12 +122,19 @@ int drm_mode_getresources(struct drm_device *dev, void *data,
 	count = 0;
 	crtc_id = u64_to_user_ptr(card_res->crtc_id_ptr);
 	drm_for_each_crtc(crtc, dev) {
+<<<<<<< HEAD
 		if (drm_lease_held(file_priv, crtc->base.id)) {
 			if (count < card_res->count_crtcs &&
 			    put_user(crtc->base.id, crtc_id + count))
 				return -EFAULT;
 			count++;
 		}
+=======
+		if (count < card_res->count_crtcs &&
+		    put_user(crtc->base.id, crtc_id + count))
+			return -EFAULT;
+		count++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	card_res->count_crtcs = count;
 
@@ -145,6 +152,7 @@ int drm_mode_getresources(struct drm_device *dev, void *data,
 	count = 0;
 	connector_id = u64_to_user_ptr(card_res->connector_id_ptr);
 	drm_for_each_connector_iter(connector, &conn_iter) {
+<<<<<<< HEAD
 		if (drm_lease_held(file_priv, connector->base.id)) {
 			if (count < card_res->count_connectors &&
 			    put_user(connector->base.id, connector_id + count)) {
@@ -153,6 +161,14 @@ int drm_mode_getresources(struct drm_device *dev, void *data,
 			}
 			count++;
 		}
+=======
+		if (count < card_res->count_connectors &&
+		    put_user(connector->base.id, connector_id + count)) {
+			drm_connector_list_iter_end(&conn_iter);
+			return -EFAULT;
+		}
+		count++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	card_res->count_connectors = count;
 	drm_connector_list_iter_end(&conn_iter);

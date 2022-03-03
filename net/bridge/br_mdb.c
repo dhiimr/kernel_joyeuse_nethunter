@@ -373,7 +373,11 @@ static int nlmsg_populate_rtr_fill(struct sk_buff *skb,
 	struct nlmsghdr *nlh;
 	struct nlattr *nest;
 
+<<<<<<< HEAD
 	nlh = nlmsg_put(skb, pid, seq, type, sizeof(*bpm), NLM_F_MULTI);
+=======
+	nlh = nlmsg_put(skb, pid, seq, type, sizeof(*bpm), 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!nlh)
 		return -EMSGSIZE;
 

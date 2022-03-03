@@ -221,7 +221,11 @@ static int lis3_3dc_rates[16] = {0, 1, 10, 25, 50, 100, 200, 400, 1600, 5000};
 static int lis3_3dlh_rates[4] = {50, 100, 400, 1000};
 
 /* ODR is Output Data Rate */
+<<<<<<< HEAD
 static int lis3lv02d_get_odr(struct lis3lv02d *lis3)
+=======
+static int lis3lv02d_get_odr_index(struct lis3lv02d *lis3)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u8 ctrl;
 	int shift;
@@ -229,15 +233,34 @@ static int lis3lv02d_get_odr(struct lis3lv02d *lis3)
 	lis3->read(lis3, CTRL_REG1, &ctrl);
 	ctrl &= lis3->odr_mask;
 	shift = ffs(lis3->odr_mask) - 1;
+<<<<<<< HEAD
 	return lis3->odrs[(ctrl >> shift)];
+=======
+	return (ctrl >> shift);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int lis3lv02d_get_pwron_wait(struct lis3lv02d *lis3)
 {
+<<<<<<< HEAD
 	int div = lis3lv02d_get_odr(lis3);
 
 	if (WARN_ONCE(div == 0, "device returned spurious data"))
 		return -ENXIO;
+=======
+	int odr_idx = lis3lv02d_get_odr_index(lis3);
+	int div = lis3->odrs[odr_idx];
+
+	if (div == 0) {
+		if (odr_idx == 0) {
+			/* Power-down mode, not sampling no need to sleep */
+			return 0;
+		}
+
+		dev_err(&lis3->pdev->dev, "Error unknown odrs-index: %d\n", odr_idx);
+		return -ENXIO;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* LIS3 power on delay is quite long */
 	msleep(lis3->pwron_delay / div);
@@ -820,9 +843,18 @@ static ssize_t lis3lv02d_rate_show(struct device *dev,
 			struct device_attribute *attr, char *buf)
 {
 	struct lis3lv02d *lis3 = dev_get_drvdata(dev);
+<<<<<<< HEAD
 
 	lis3lv02d_sysfs_poweron(lis3);
 	return sprintf(buf, "%d\n", lis3lv02d_get_odr(lis3));
+=======
+	int odr_idx;
+
+	lis3lv02d_sysfs_poweron(lis3);
+
+	odr_idx = lis3lv02d_get_odr_index(lis3);
+	return sprintf(buf, "%d\n", lis3->odrs[odr_idx]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static ssize_t lis3lv02d_rate_set(struct device *dev,

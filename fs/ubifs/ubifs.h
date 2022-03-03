@@ -38,11 +38,20 @@
 #include <linux/backing-dev.h>
 #include <linux/security.h>
 #include <linux/xattr.h>
+<<<<<<< HEAD
 #include <linux/random.h>
 
 #define __FS_HAS_ENCRYPTION IS_ENABLED(CONFIG_UBIFS_FS_ENCRYPTION)
 #include <linux/fscrypt.h>
 
+=======
+#ifdef CONFIG_UBIFS_FS_ENCRYPTION
+#include <linux/fscrypt_supp.h>
+#else
+#include <linux/fscrypt_notsupp.h>
+#endif
+#include <linux/random.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "ubifs-media.h"
 
 /* Version of this UBIFS implementation */
@@ -1834,13 +1843,27 @@ int ubifs_decrypt(const struct inode *inode, struct ubifs_data_node *dn,
 
 extern const struct fscrypt_operations ubifs_crypt_operations;
 
+<<<<<<< HEAD
 static inline bool ubifs_crypt_is_encrypted(const struct inode *inode)
 {
 	const struct ubifs_inode *ui = ubifs_inode(inode);
+=======
+static inline bool __ubifs_crypt_is_encrypted(struct inode *inode)
+{
+	struct ubifs_inode *ui = ubifs_inode(inode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ui->flags & UBIFS_CRYPT_FL;
 }
 
+<<<<<<< HEAD
+=======
+static inline bool ubifs_crypt_is_encrypted(const struct inode *inode)
+{
+	return __ubifs_crypt_is_encrypted((struct inode *)inode);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Normal UBIFS messages */
 __printf(2, 3)
 void ubifs_msg(const struct ubifs_info *c, const char *fmt, ...);

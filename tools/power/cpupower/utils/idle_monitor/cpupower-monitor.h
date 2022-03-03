@@ -18,7 +18,11 @@
 #define CSTATE_NAME_LEN 5
 #define CSTATE_DESC_LEN 60
 
+<<<<<<< HEAD
 int cpu_count;
+=======
+extern int cpu_count;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Hard to define the right names ...: */
 enum power_range_e {

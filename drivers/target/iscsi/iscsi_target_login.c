@@ -199,6 +199,10 @@ int iscsi_check_for_session_reinstatement(struct iscsi_conn *conn)
 		spin_lock(&sess_p->conn_lock);
 		if (atomic_read(&sess_p->session_fall_back_to_erl0) ||
 		    atomic_read(&sess_p->session_logout) ||
+<<<<<<< HEAD
+=======
+		    atomic_read(&sess_p->session_close) ||
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		    (sess_p->time2retain_timer_flags & ISCSI_TF_EXPIRED)) {
 			spin_unlock(&sess_p->conn_lock);
 			continue;
@@ -209,6 +213,10 @@ int iscsi_check_for_session_reinstatement(struct iscsi_conn *conn)
 		   (sess_p->sess_ops->SessionType == sessiontype))) {
 			atomic_set(&sess_p->session_reinstatement, 1);
 			atomic_set(&sess_p->session_fall_back_to_erl0, 1);
+<<<<<<< HEAD
+=======
+			atomic_set(&sess_p->session_close, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			spin_unlock(&sess_p->conn_lock);
 			iscsit_inc_session_usage_count(sess_p);
 			iscsit_stop_time2retain_timer(sess_p);
@@ -233,7 +241,10 @@ int iscsi_check_for_session_reinstatement(struct iscsi_conn *conn)
 	if (sess->session_state == TARG_SESS_STATE_FAILED) {
 		spin_unlock_bh(&sess->conn_lock);
 		iscsit_dec_session_usage_count(sess);
+<<<<<<< HEAD
 		iscsit_close_session(sess);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 	}
 	spin_unlock_bh(&sess->conn_lock);
@@ -241,7 +252,10 @@ int iscsi_check_for_session_reinstatement(struct iscsi_conn *conn)
 	iscsit_stop_session(sess, 1, 1);
 	iscsit_dec_session_usage_count(sess);
 
+<<<<<<< HEAD
 	iscsit_close_session(sess);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -534,6 +548,10 @@ static int iscsi_login_non_zero_tsih_s2(
 		sess_p = (struct iscsi_session *)se_sess->fabric_sess_ptr;
 		if (atomic_read(&sess_p->session_fall_back_to_erl0) ||
 		    atomic_read(&sess_p->session_logout) ||
+<<<<<<< HEAD
+=======
+		    atomic_read(&sess_p->session_close) ||
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		   (sess_p->time2retain_timer_flags & ISCSI_TF_EXPIRED))
 			continue;
 		if (!memcmp(sess_p->isid, pdu->isid, 6) &&
@@ -1157,7 +1175,11 @@ iscsit_conn_set_transport(struct iscsi_conn *conn, struct iscsit_transport *t)
 }
 
 void iscsi_target_login_sess_out(struct iscsi_conn *conn,
+<<<<<<< HEAD
 		struct iscsi_np *np, bool zero_tsih, bool new_sess)
+=======
+				 bool zero_tsih, bool new_sess)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (!new_sess)
 		goto old_sess_out;
@@ -1179,7 +1201,10 @@ void iscsi_target_login_sess_out(struct iscsi_conn *conn,
 	conn->sess = NULL;
 
 old_sess_out:
+<<<<<<< HEAD
 	iscsi_stop_login_thread_timer(np);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * If login negotiation fails check if the Time2Retain timer
 	 * needs to be restarted.
@@ -1439,8 +1464,14 @@ static int __iscsi_target_login_thread(struct iscsi_np *np)
 new_sess_out:
 	new_sess = true;
 old_sess_out:
+<<<<<<< HEAD
 	tpg_np = conn->tpg_np;
 	iscsi_target_login_sess_out(conn, np, zero_tsih, new_sess);
+=======
+	iscsi_stop_login_thread_timer(np);
+	tpg_np = conn->tpg_np;
+	iscsi_target_login_sess_out(conn, zero_tsih, new_sess);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	new_sess = false;
 
 	if (tpg) {

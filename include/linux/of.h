@@ -39,9 +39,13 @@ struct property {
 	struct property *next;
 	unsigned long _flags;
 	unsigned int unique_id;
+<<<<<<< HEAD
 #if defined(CONFIG_OF_KOBJ)
 	struct bin_attribute attr;
 #endif
+=======
+	struct bin_attribute attr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #if defined(CONFIG_SPARC)
@@ -60,9 +64,13 @@ struct device_node {
 	struct	device_node *parent;
 	struct	device_node *child;
 	struct	device_node *sibling;
+<<<<<<< HEAD
 #if defined(CONFIG_OF_KOBJ)
 	struct	kobject kobj;
 #endif
+=======
+	struct	kobject kobj;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long _flags;
 	void	*data;
 #if defined(CONFIG_SPARC)
@@ -107,6 +115,7 @@ extern struct kobj_type of_node_ktype;
 extern const struct fwnode_operations of_fwnode_ops;
 static inline void of_node_init(struct device_node *node)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_OF_KOBJ)
 	kobject_init(&node->kobj, &of_node_ktype);
 #endif
@@ -118,6 +127,23 @@ static inline void of_node_init(struct device_node *node)
 #else
 #define of_node_kobj(n) NULL
 #endif
+=======
+	kobject_init(&node->kobj, &of_node_ktype);
+	node->fwnode.ops = &of_fwnode_ops;
+}
+
+/* true when node is initialized */
+static inline int of_node_is_initialized(struct device_node *node)
+{
+	return node && node->kobj.state_initialized;
+}
+
+/* true when node is attached (i.e. present on sysfs) */
+static inline int of_node_is_attached(struct device_node *node)
+{
+	return node && node->kobj.state_in_sysfs;
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_OF_DYNAMIC
 extern struct device_node *of_node_get(struct device_node *node);
@@ -229,8 +255,13 @@ extern struct device_node *of_find_all_nodes(struct device_node *prev);
 static inline u64 of_read_number(const __be32 *cell, int size)
 {
 	u64 r = 0;
+<<<<<<< HEAD
 	while (size--)
 		r = (r << 32) | be32_to_cpu(*(cell++));
+=======
+	for (; size--; cell++)
+		r = (r << 32) | be32_to_cpu(*cell);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return r;
 }
 
@@ -540,8 +571,11 @@ const char *of_prop_next_string(struct property *prop, const char *cur);
 
 bool of_console_check(struct device_node *dn, char *name, int index);
 
+<<<<<<< HEAD
 extern int of_cpu_node_to_id(struct device_node *np);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else /* CONFIG_OF */
 
 static inline void of_core_init(void)
@@ -882,11 +916,14 @@ static inline void of_property_clear_flag(struct property *p, unsigned long flag
 {
 }
 
+<<<<<<< HEAD
 static inline int of_cpu_node_to_id(struct device_node *np)
 {
 	return -ENODEV;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define of_match_ptr(_ptr)	NULL
 #define of_match_node(_matches, _node)	NULL
 #endif /* CONFIG_OF */
@@ -1170,6 +1207,10 @@ static inline int of_get_available_child_count(const struct device_node *np)
 #define _OF_DECLARE(table, name, compat, fn, fn_type)			\
 	static const struct of_device_id __of_table_##name		\
 		__used __section(__##table##_of_table)			\
+<<<<<<< HEAD
+=======
+		__aligned(__alignof__(struct of_device_id))		\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		 = { .compatible = compat,				\
 		     .data = (fn == (fn_type)NULL) ? fn : fn  }
 #else

@@ -32,7 +32,10 @@
 #include <linux/nfs_fs.h>
 #include <linux/nfs_fs_sb.h>
 #include <linux/nfs_mount.h>
+<<<<<<< HEAD
 #include <soc/qcom/boot_stats.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "do_mounts.h"
 
@@ -364,6 +367,7 @@ static void __init get_fs_names(char *page)
 static int __init do_mount_root(char *name, char *fs, int flags, void *data)
 {
 	struct super_block *s;
+<<<<<<< HEAD
 	int err;
 
 	place_marker("M - DRIVER F/S Init");
@@ -371,6 +375,9 @@ static int __init do_mount_root(char *name, char *fs, int flags, void *data)
 	err = sys_mount((char __user *)name, (char __user *)"/root",
 			(char __user *)fs, (unsigned long)flags,
 						(void __user *)data);
+=======
+	int err = sys_mount(name, "/root", fs, flags, data);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (err)
 		return err;
 
@@ -382,9 +389,12 @@ static int __init do_mount_root(char *name, char *fs, int flags, void *data)
 	       s->s_type->name,
 	       sb_rdonly(s) ? " readonly" : "",
 	       MAJOR(ROOT_DEV), MINOR(ROOT_DEV));
+<<<<<<< HEAD
 
 	place_marker("M - DRIVER F/S Ready");
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -575,7 +585,10 @@ void __init prepare_namespace(void)
 	wait_for_device_probe();
 
 	md_run_setup();
+<<<<<<< HEAD
 	dm_run_setup();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (saved_root_name[0]) {
 		root_device_name = saved_root_name;

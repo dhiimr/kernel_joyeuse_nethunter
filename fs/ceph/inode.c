@@ -730,6 +730,10 @@ static int fill_inode(struct inode *inode, struct page *locked_page,
 	int issued = 0, implemented, new_issued;
 	struct timespec mtime, atime, ctime;
 	struct ceph_buffer *xattr_blob = NULL;
+<<<<<<< HEAD
+=======
+	struct ceph_buffer *old_blob = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct ceph_string *pool_ns = NULL;
 	struct ceph_cap *new_cap = NULL;
 	int err = 0;
@@ -788,7 +792,16 @@ static int fill_inode(struct inode *inode, struct page *locked_page,
 	ci->i_version = le64_to_cpu(info->version);
 	inode->i_version++;
 	inode->i_rdev = le32_to_cpu(info->rdev);
+<<<<<<< HEAD
 	inode->i_blkbits = fls(le32_to_cpu(info->layout.fl_stripe_unit)) - 1;
+=======
+	/* directories have fl_stripe_unit set to zero */
+	if (le32_to_cpu(info->layout.fl_stripe_unit))
+		inode->i_blkbits =
+			fls(le32_to_cpu(info->layout.fl_stripe_unit)) - 1;
+	else
+		inode->i_blkbits = CEPH_BLOCK_SHIFT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if ((new_version || (new_issued & CEPH_CAP_AUTH_SHARED)) &&
 	    (issued & CEPH_CAP_AUTH_EXCL) == 0) {
@@ -847,7 +860,11 @@ static int fill_inode(struct inode *inode, struct page *locked_page,
 	if ((ci->i_xattrs.version == 0 || !(issued & CEPH_CAP_XATTR_EXCL))  &&
 	    le64_to_cpu(info->xattr_version) > ci->i_xattrs.version) {
 		if (ci->i_xattrs.blob)
+<<<<<<< HEAD
 			ceph_buffer_put(ci->i_xattrs.blob);
+=======
+			old_blob = ci->i_xattrs.blob;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ci->i_xattrs.blob = xattr_blob;
 		if (xattr_blob)
 			memcpy(ci->i_xattrs.blob->vec.iov_base,
@@ -993,8 +1010,13 @@ static int fill_inode(struct inode *inode, struct page *locked_page,
 out:
 	if (new_cap)
 		ceph_put_cap(mdsc, new_cap);
+<<<<<<< HEAD
 	if (xattr_blob)
 		ceph_buffer_put(xattr_blob);
+=======
+	ceph_buffer_put(old_blob);
+	ceph_buffer_put(xattr_blob);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ceph_put_string(pool_ns);
 	return err;
 }
@@ -1341,6 +1363,10 @@ retry_lookup:
 		dout(" final dn %p\n", dn);
 	} else if ((req->r_op == CEPH_MDS_OP_LOOKUPSNAP ||
 		    req->r_op == CEPH_MDS_OP_MKSNAP) &&
+<<<<<<< HEAD
+=======
+	           test_bit(CEPH_MDS_R_PARENT_LOCKED, &req->r_req_flags) &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		   !test_bit(CEPH_MDS_R_ABORTED, &req->r_req_flags)) {
 		struct dentry *dn = req->r_dentry;
 		struct inode *dir = req->r_parent;
@@ -1624,7 +1650,10 @@ retry_lookup:
 			if (IS_ERR(realdn)) {
 				err = PTR_ERR(realdn);
 				d_drop(dn);
+<<<<<<< HEAD
 				dn = NULL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				goto next_item;
 			}
 			dn = realdn;
@@ -1751,6 +1780,10 @@ static void ceph_invalidate_work(struct work_struct *work)
 	orig_gen = ci->i_rdcache_gen;
 	spin_unlock(&ci->i_ceph_lock);
 
+<<<<<<< HEAD
+=======
+	ceph_fscache_invalidate(inode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (invalidate_inode_pages2(inode->i_mapping) < 0) {
 		pr_err("invalidate_pages %p fails\n", inode);
 	}

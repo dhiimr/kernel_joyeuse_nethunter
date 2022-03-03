@@ -688,10 +688,17 @@ static void __tipc_node_link_down(struct tipc_node *n, int *bearer_id,
 static void tipc_node_link_down(struct tipc_node *n, int bearer_id, bool delete)
 {
 	struct tipc_link_entry *le = &n->links[bearer_id];
+<<<<<<< HEAD
 	struct tipc_link *l = le->link;
 	struct tipc_media_addr *maddr;
 	struct sk_buff_head xmitq;
 	int old_bearer_id = bearer_id;
+=======
+	struct tipc_media_addr *maddr = NULL;
+	struct tipc_link *l = le->link;
+	int old_bearer_id = bearer_id;
+	struct sk_buff_head xmitq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!l)
 		return;
@@ -713,7 +720,12 @@ static void tipc_node_link_down(struct tipc_node *n, int bearer_id, bool delete)
 	tipc_node_write_unlock(n);
 	if (delete)
 		tipc_mon_remove_peer(n->net, n->addr, old_bearer_id);
+<<<<<<< HEAD
 	tipc_bearer_xmit(n->net, bearer_id, &xmitq, maddr);
+=======
+	if (!skb_queue_empty(&xmitq))
+		tipc_bearer_xmit(n->net, bearer_id, &xmitq, maddr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tipc_sk_rcv(n->net, &le->inputq);
 }
 

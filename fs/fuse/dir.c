@@ -187,7 +187,11 @@ static int fuse_dentry_revalidate(struct dentry *entry, unsigned int flags)
 	int ret;
 
 	inode = d_inode_rcu(entry);
+<<<<<<< HEAD
 	if (inode && is_bad_inode(inode))
+=======
+	if (inode && fuse_is_bad(inode))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto invalid;
 	else if (time_before64(fuse_dentry_time(entry), get_jiffies_64()) ||
 		 (flags & LOOKUP_REVAL)) {
@@ -234,7 +238,12 @@ static int fuse_dentry_revalidate(struct dentry *entry, unsigned int flags)
 		kfree(forget);
 		if (ret == -ENOMEM)
 			goto out;
+<<<<<<< HEAD
 		if (ret || (outarg.attr.mode ^ inode->i_mode) & S_IFMT)
+=======
+		if (ret || fuse_invalid_attr(&outarg.attr) ||
+		    (outarg.attr.mode ^ inode->i_mode) & S_IFMT)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto invalid;
 
 		forget_all_cached_acls(inode);
@@ -262,6 +271,7 @@ invalid:
 	goto out;
 }
 
+<<<<<<< HEAD
 /*
  * Get the canonical path. Since we must translate to a path, this must be done
  * in the context of the userspace daemon, however, the userspace daemon cannot
@@ -306,6 +316,8 @@ default_path:
 	path_get(canonical_path);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int invalid_nodeid(u64 nodeid)
 {
 	return !nodeid || nodeid == FUSE_ROOT_ID;
@@ -328,13 +340,19 @@ const struct dentry_operations fuse_dentry_operations = {
 	.d_revalidate	= fuse_dentry_revalidate,
 	.d_init		= fuse_dentry_init,
 	.d_release	= fuse_dentry_release,
+<<<<<<< HEAD
 	.d_canonical_path = fuse_dentry_canonical_path,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 const struct dentry_operations fuse_root_dentry_operations = {
 	.d_init		= fuse_dentry_init,
 	.d_release	= fuse_dentry_release,
+<<<<<<< HEAD
 	.d_canonical_path = fuse_dentry_canonical_path,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 int fuse_valid_type(int m)
@@ -343,6 +361,15 @@ int fuse_valid_type(int m)
 		S_ISBLK(m) || S_ISFIFO(m) || S_ISSOCK(m);
 }
 
+<<<<<<< HEAD
+=======
+bool fuse_invalid_attr(struct fuse_attr *attr)
+{
+	return !fuse_valid_type(attr->mode) ||
+		attr->size > LLONG_MAX;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int fuse_lookup_name(struct super_block *sb, u64 nodeid, const struct qstr *name,
 		     struct fuse_entry_out *outarg, struct inode **inode)
 {
@@ -374,7 +401,11 @@ int fuse_lookup_name(struct super_block *sb, u64 nodeid, const struct qstr *name
 	err = -EIO;
 	if (!outarg->nodeid)
 		goto out_put_forget;
+<<<<<<< HEAD
 	if (!fuse_valid_type(outarg->attr.mode))
+=======
+	if (fuse_invalid_attr(&outarg->attr))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out_put_forget;
 
 	*inode = fuse_iget(sb, outarg->nodeid, outarg->generation,
@@ -403,6 +434,12 @@ static struct dentry *fuse_lookup(struct inode *dir, struct dentry *entry,
 	bool outarg_valid = true;
 	bool locked;
 
+<<<<<<< HEAD
+=======
+	if (fuse_is_bad(dir))
+		return ERR_PTR(-EIO);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	locked = fuse_lock_inode(dir);
 	err = fuse_lookup_name(dir->i_sb, get_node_id(dir), &entry->d_name,
 			       &outarg, &inode);
@@ -497,7 +534,12 @@ static int fuse_create_open(struct inode *dir, struct dentry *entry,
 		goto out_free_ff;
 
 	err = -EIO;
+<<<<<<< HEAD
 	if (!S_ISREG(outentry.attr.mode) || invalid_nodeid(outentry.nodeid))
+=======
+	if (!S_ISREG(outentry.attr.mode) || invalid_nodeid(outentry.nodeid) ||
+	    fuse_invalid_attr(&outentry.attr))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out_free_ff;
 
 	ff->fh = outopen.fh;
@@ -542,6 +584,12 @@ static int fuse_atomic_open(struct inode *dir, struct dentry *entry,
 	struct fuse_conn *fc = get_fuse_conn(dir);
 	struct dentry *res = NULL;
 
+<<<<<<< HEAD
+=======
+	if (fuse_is_bad(dir))
+		return -EIO;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (d_in_lookup(entry)) {
 		res = fuse_lookup(dir, entry, 0);
 		if (IS_ERR(res))
@@ -589,6 +637,12 @@ static int create_new_entry(struct fuse_conn *fc, struct fuse_args *args,
 	int err;
 	struct fuse_forget_link *forget;
 
+<<<<<<< HEAD
+=======
+	if (fuse_is_bad(dir))
+		return -EIO;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	forget = fuse_alloc_forget();
 	if (!forget)
 		return -ENOMEM;
@@ -603,7 +657,11 @@ static int create_new_entry(struct fuse_conn *fc, struct fuse_args *args,
 		goto out_put_forget_req;
 
 	err = -EIO;
+<<<<<<< HEAD
 	if (invalid_nodeid(outarg.nodeid))
+=======
+	if (invalid_nodeid(outarg.nodeid) || fuse_invalid_attr(&outarg.attr))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out_put_forget_req;
 
 	if ((outarg.attr.mode ^ mode) & S_IFMT)
@@ -710,6 +768,12 @@ static int fuse_unlink(struct inode *dir, struct dentry *entry)
 	struct fuse_conn *fc = get_fuse_conn(dir);
 	FUSE_ARGS(args);
 
+<<<<<<< HEAD
+=======
+	if (fuse_is_bad(dir))
+		return -EIO;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	args.in.h.opcode = FUSE_UNLINK;
 	args.in.h.nodeid = get_node_id(dir);
 	args.in.numargs = 1;
@@ -746,6 +810,12 @@ static int fuse_rmdir(struct inode *dir, struct dentry *entry)
 	struct fuse_conn *fc = get_fuse_conn(dir);
 	FUSE_ARGS(args);
 
+<<<<<<< HEAD
+=======
+	if (fuse_is_bad(dir))
+		return -EIO;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	args.in.h.opcode = FUSE_RMDIR;
 	args.in.h.nodeid = get_node_id(dir);
 	args.in.numargs = 1;
@@ -824,6 +894,12 @@ static int fuse_rename2(struct inode *olddir, struct dentry *oldent,
 	struct fuse_conn *fc = get_fuse_conn(olddir);
 	int err;
 
+<<<<<<< HEAD
+=======
+	if (fuse_is_bad(olddir))
+		return -EIO;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (flags & ~(RENAME_NOREPLACE | RENAME_EXCHANGE))
 		return -EINVAL;
 
@@ -876,7 +952,12 @@ static int fuse_link(struct dentry *entry, struct inode *newdir,
 
 		spin_lock(&fc->lock);
 		fi->attr_version = ++fc->attr_version;
+<<<<<<< HEAD
 		inc_nlink(inode);
+=======
+		if (likely(inode->i_nlink < UINT_MAX))
+			inc_nlink(inode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		spin_unlock(&fc->lock);
 		fuse_invalidate_attr(inode);
 		fuse_update_ctime(inode);
@@ -956,8 +1037,14 @@ static int fuse_do_getattr(struct inode *inode, struct kstat *stat,
 	args.out.args[0].value = &outarg;
 	err = fuse_simple_request(fc, &args);
 	if (!err) {
+<<<<<<< HEAD
 		if ((inode->i_mode ^ outarg.attr.mode) & S_IFMT) {
 			make_bad_inode(inode);
+=======
+		if (fuse_invalid_attr(&outarg.attr) ||
+		    (inode->i_mode ^ outarg.attr.mode) & S_IFMT) {
+			fuse_make_bad(inode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			err = -EIO;
 		} else {
 			fuse_change_attributes(inode, &outarg.attr,
@@ -1005,7 +1092,11 @@ int fuse_reverse_inval_entry(struct super_block *sb, u64 parent_nodeid,
 	if (!parent)
 		return -ENOENT;
 
+<<<<<<< HEAD
 	inode_lock(parent);
+=======
+	inode_lock_nested(parent, I_MUTEX_PARENT);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!S_ISDIR(parent->i_mode))
 		goto unlock;
 
@@ -1146,6 +1237,12 @@ static int fuse_permission(struct inode *inode, int mask)
 	bool refreshed = false;
 	int err = 0;
 
+<<<<<<< HEAD
+=======
+	if (fuse_is_bad(inode))
+		return -EIO;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!fuse_allow_current_process(fc))
 		return -EACCES;
 
@@ -1260,7 +1357,11 @@ static int fuse_direntplus_link(struct file *file,
 
 	if (invalid_nodeid(o->nodeid))
 		return -EIO;
+<<<<<<< HEAD
 	if (!fuse_valid_type(o->attr.mode))
+=======
+	if (fuse_invalid_attr(&o->attr))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EIO;
 
 	fc = get_fuse_conn(dir);
@@ -1283,7 +1384,11 @@ retry:
 			dput(dentry);
 			goto retry;
 		}
+<<<<<<< HEAD
 		if (is_bad_inode(inode)) {
+=======
+		if (fuse_is_bad(inode)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			dput(dentry);
 			return -EIO;
 		}
@@ -1381,7 +1486,11 @@ static int fuse_readdir(struct file *file, struct dir_context *ctx)
 	u64 attr_version = 0;
 	bool locked;
 
+<<<<<<< HEAD
 	if (is_bad_inode(inode))
+=======
+	if (fuse_is_bad(inode))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EIO;
 
 	req = fuse_get_req(fc, 1);
@@ -1441,6 +1550,12 @@ static const char *fuse_get_link(struct dentry *dentry,
 	if (!dentry)
 		return ERR_PTR(-ECHILD);
 
+<<<<<<< HEAD
+=======
+	if (fuse_is_bad(inode))
+		return ERR_PTR(-EIO);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	link = kmalloc(PAGE_SIZE, GFP_KERNEL);
 	if (!link)
 		return ERR_PTR(-ENOMEM);
@@ -1696,6 +1811,22 @@ int fuse_do_setattr(struct dentry *dentry, struct iattr *attr,
 	if (attr->ia_valid & ATTR_SIZE)
 		is_truncate = true;
 
+<<<<<<< HEAD
+=======
+	/* Flush dirty data/metadata before non-truncate SETATTR */
+	if (is_wb && S_ISREG(inode->i_mode) &&
+	    attr->ia_valid &
+			(ATTR_MODE | ATTR_UID | ATTR_GID | ATTR_MTIME_SET |
+			 ATTR_TIMES_SET)) {
+		err = write_inode_now(inode, true);
+		if (err)
+			return err;
+
+		fuse_set_nowrite(inode);
+		fuse_release_nowrite(inode);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (is_truncate) {
 		fuse_set_nowrite(inode);
 		set_bit(FUSE_I_SIZE_UNSTABLE, &fi->state);
@@ -1724,8 +1855,14 @@ int fuse_do_setattr(struct dentry *dentry, struct iattr *attr,
 		goto error;
 	}
 
+<<<<<<< HEAD
 	if ((inode->i_mode ^ outarg.attr.mode) & S_IFMT) {
 		make_bad_inode(inode);
+=======
+	if (fuse_invalid_attr(&outarg.attr) ||
+	    (inode->i_mode ^ outarg.attr.mode) & S_IFMT) {
+		fuse_make_bad(inode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		err = -EIO;
 		goto error;
 	}
@@ -1781,6 +1918,12 @@ static int fuse_setattr(struct dentry *entry, struct iattr *attr)
 	struct file *file = (attr->ia_valid & ATTR_FILE) ? attr->ia_file : NULL;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (fuse_is_bad(inode))
+		return -EIO;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!fuse_allow_current_process(get_fuse_conn(inode)))
 		return -EACCES;
 
@@ -1839,6 +1982,12 @@ static int fuse_getattr(const struct path *path, struct kstat *stat,
 	struct inode *inode = d_inode(path->dentry);
 	struct fuse_conn *fc = get_fuse_conn(inode);
 
+<<<<<<< HEAD
+=======
+	if (fuse_is_bad(inode))
+		return -EIO;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!fuse_allow_current_process(fc))
 		return -EACCES;
 

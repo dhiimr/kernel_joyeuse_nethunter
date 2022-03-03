@@ -41,7 +41,11 @@ static bool phy_is_wideport_member(struct asd_sas_port *port, struct asd_sas_phy
 
 static void sas_resume_port(struct asd_sas_phy *phy)
 {
+<<<<<<< HEAD
 	struct domain_device *dev;
+=======
+	struct domain_device *dev, *n;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct asd_sas_port *port = phy->port;
 	struct sas_ha_struct *sas_ha = phy->ha;
 	struct sas_internal *si = to_sas_internal(sas_ha->core.shost->transportt);
@@ -60,7 +64,11 @@ static void sas_resume_port(struct asd_sas_phy *phy)
 	 * 1/ presume every device came back
 	 * 2/ force the next revalidation to check all expander phys
 	 */
+<<<<<<< HEAD
 	list_for_each_entry(dev, &port->dev_list, dev_list_node) {
+=======
+	list_for_each_entry_safe(dev, n, &port->dev_list, dev_list_node) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		int i, rc;
 
 		rc = sas_notify_lldd_dev_found(dev);

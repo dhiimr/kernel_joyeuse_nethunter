@@ -258,8 +258,15 @@ int __init btext_find_display(int allow_nonstdout)
 			rc = btext_initialize(np);
 			printk("result: %d\n", rc);
 		}
+<<<<<<< HEAD
 		if (rc == 0)
 			break;
+=======
+		if (rc == 0) {
+			of_node_put(np);
+			break;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return rc;
 }

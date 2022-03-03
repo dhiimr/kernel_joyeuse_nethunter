@@ -38,8 +38,11 @@ enum {
 	ND_NSINDEX_INIT = 0x1,
 };
 
+<<<<<<< HEAD
 static const char NSINDEX_SIGNATURE[] = "NAMESPACE_INDEX\0";
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * struct nd_namespace_index - label set superblock
  * @sig: NAMESPACE_INDEX\0

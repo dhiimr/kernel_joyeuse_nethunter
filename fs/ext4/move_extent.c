@@ -400,7 +400,12 @@ data_copy:
 
 	/* Even in case of data=writeback it is reasonable to pin
 	 * inode to transaction, to prevent unexpected data loss */
+<<<<<<< HEAD
 	*err = ext4_jbd2_inode_add_write(handle, orig_inode);
+=======
+	*err = ext4_jbd2_inode_add_write(handle, orig_inode,
+			(loff_t)orig_page_offset << PAGE_SHIFT, replaced_size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 unlock_pages:
 	unlock_page(pagep[0]);
@@ -602,6 +607,7 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
 		return -EOPNOTSUPP;
 	}
 
+<<<<<<< HEAD
 	if (!fscrypt_using_hardware_encryption(orig_inode) ||
 		!fscrypt_using_hardware_encryption(donor_inode)) {
 		if (ext4_encrypted_inode(orig_inode) ||
@@ -610,6 +616,13 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
 				 "Online defrag not supported for encrypted files");
 			return -EOPNOTSUPP;
 		}
+=======
+	if (ext4_encrypted_inode(orig_inode) ||
+	    ext4_encrypted_inode(donor_inode)) {
+		ext4_msg(orig_inode->i_sb, KERN_ERR,
+			 "Online defrag not supported for encrypted files");
+		return -EOPNOTSUPP;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Protect orig and donor inodes against a truncate */

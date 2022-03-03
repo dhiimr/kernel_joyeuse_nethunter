@@ -152,7 +152,10 @@ static int devfreq_passive_notifier_call(struct notifier_block *nb,
 static int devfreq_passive_event_handler(struct devfreq *devfreq,
 				unsigned int event, void *data)
 {
+<<<<<<< HEAD
 	struct device *dev = devfreq->dev.parent;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct devfreq_passive_data *p_data
 			= (struct devfreq_passive_data *)devfreq->data;
 	struct devfreq *parent = (struct devfreq *)p_data->parent;
@@ -168,12 +171,21 @@ static int devfreq_passive_event_handler(struct devfreq *devfreq,
 			p_data->this = devfreq;
 
 		nb->notifier_call = devfreq_passive_notifier_call;
+<<<<<<< HEAD
 		ret = devm_devfreq_register_notifier(dev, parent, nb,
 					DEVFREQ_TRANSITION_NOTIFIER);
 		break;
 	case DEVFREQ_GOV_STOP:
 		devm_devfreq_unregister_notifier(dev, parent, nb,
 					DEVFREQ_TRANSITION_NOTIFIER);
+=======
+		ret = devfreq_register_notifier(parent, nb,
+					DEVFREQ_TRANSITION_NOTIFIER);
+		break;
+	case DEVFREQ_GOV_STOP:
+		WARN_ON(devfreq_unregister_notifier(parent, nb,
+					DEVFREQ_TRANSITION_NOTIFIER));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	default:
 		break;

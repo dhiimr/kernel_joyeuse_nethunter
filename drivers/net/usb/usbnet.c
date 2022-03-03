@@ -112,6 +112,14 @@ int usbnet_get_endpoints(struct usbnet *dev, struct usb_interface *intf)
 			int				intr = 0;
 
 			e = alt->endpoint + ep;
+<<<<<<< HEAD
+=======
+
+			/* ignore endpoints which cannot transfer data */
+			if (!usb_endpoint_maxp(&e->desc))
+				continue;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			switch (e->desc.bmAttributes) {
 			case USB_ENDPOINT_XFER_INT:
 				if (!usb_endpoint_dir_in(&e->desc))
@@ -329,9 +337,13 @@ void usbnet_skb_return (struct usbnet *dev, struct sk_buff *skb)
 
 	flags = u64_stats_update_begin_irqsave(&stats64->syncp);
 	stats64->rx_packets++;
+<<<<<<< HEAD
 	dev->net->stats.rx_packets++;
 	stats64->rx_bytes += skb->len;
 	dev->net->stats.rx_bytes += skb->len;
+=======
+	stats64->rx_bytes += skb->len;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u64_stats_update_end_irqrestore(&stats64->syncp, flags);
 
 	netif_dbg(dev, rx_status, dev->net, "< rx, len %zu, type 0x%x\n",
@@ -353,6 +365,11 @@ void usbnet_update_max_qlen(struct usbnet *dev)
 {
 	enum usb_device_speed speed = dev->udev->speed;
 
+<<<<<<< HEAD
+=======
+	if (!dev->rx_urb_size || !dev->hard_mtu)
+		goto insanity;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	switch (speed) {
 	case USB_SPEED_HIGH:
 		dev->rx_qlen = MAX_QUEUE_MEMORY / dev->rx_urb_size;
@@ -369,6 +386,10 @@ void usbnet_update_max_qlen(struct usbnet *dev)
 		dev->tx_qlen = 5 * MAX_QUEUE_MEMORY / dev->hard_mtu;
 		break;
 	default:
+<<<<<<< HEAD
+=======
+insanity:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev->rx_qlen = dev->tx_qlen = 4;
 	}
 }
@@ -510,6 +531,10 @@ static int rx_submit (struct usbnet *dev, struct urb *urb, gfp_t flags)
 
 	if (netif_running (dev->net) &&
 	    netif_device_present (dev->net) &&
+<<<<<<< HEAD
+=======
+	    test_bit(EVENT_DEV_OPEN, &dev->flags) &&
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    !test_bit (EVENT_RX_HALT, &dev->flags) &&
 	    !test_bit (EVENT_DEV_ASLEEP, &dev->flags)) {
 		switch (retval = usb_submit_urb (urb, GFP_ATOMIC)) {
@@ -1257,9 +1282,13 @@ static void tx_complete (struct urb *urb)
 
 		flags = u64_stats_update_begin_irqsave(&stats64->syncp);
 		stats64->tx_packets += entry->packets;
+<<<<<<< HEAD
 		dev->net->stats.tx_packets += entry->packets;
 		stats64->tx_bytes += entry->length;
 		dev->net->stats.tx_bytes += entry->length;
+=======
+		stats64->tx_bytes += entry->length;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		u64_stats_update_end_irqrestore(&stats64->syncp, flags);
 	} else {
 		dev->net->stats.tx_errors++;
@@ -1437,6 +1466,14 @@ netdev_tx_t usbnet_start_xmit (struct sk_buff *skb,
 		spin_unlock_irqrestore(&dev->txq.lock, flags);
 		goto drop;
 	}
+<<<<<<< HEAD
+=======
+	if (netif_queue_stopped(net)) {
+		usb_autopm_put_interface_async(dev->intf);
+		spin_unlock_irqrestore(&dev->txq.lock, flags);
+		goto drop;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_PM
 	/* if this triggers the device is still a sleep */
@@ -1778,6 +1815,14 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
 	if (!dev->rx_urb_size)
 		dev->rx_urb_size = dev->hard_mtu;
 	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
+<<<<<<< HEAD
+=======
+	if (dev->maxpacket == 0) {
+		/* that is a broken device */
+		status = -ENODEV;
+		goto out4;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* let userspace know we have a random address */
 	if (ether_addr_equal(net->dev_addr, node_id))

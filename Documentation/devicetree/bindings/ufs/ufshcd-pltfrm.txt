@@ -11,11 +11,14 @@ Required properties:
 					  "qcom,ufshc"
 - interrupts        : <interrupt mapping for UFS host controller IRQ>
 - reg               : <registers mapping>
+<<<<<<< HEAD
 		      first entry should contain UFS host controller register address space (mandatory),
                       second entry is the device ref. clock control register map (optional).
 - reset             : reset specifier pair consists of phandle for the reset provider
                       and reset lines used by this controller.
 - reset-names       : reset signal name strings sorted in the same order as the resets property.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 Optional properties:
 - phys                  : phandle to UFS PHY node
@@ -23,6 +26,7 @@ Optional properties:
                           with "phys" attribute, provides phandle to UFS PHY node
 - vdd-hba-supply        : phandle to UFS host controller supply regulator node
 - vcc-supply            : phandle to VCC supply regulator node
+<<<<<<< HEAD
 - vcc-voltage-level     : specifies voltage levels for VCC supply.
                           Should be specified in pairs (min, max), units uV.
 - vcc-low-voltage-sup	: If specified, treats min voltage from vcc-voltage-level as
@@ -31,6 +35,10 @@ Optional properties:
 - vccq2-supply          : phandle to VCCQ2 supply regulator node
 - vccq2-voltage-level   : specifies voltage levels for VCCQ2 supply.
                           Should be specified in pairs (min, max), units uV.
+=======
+- vccq-supply           : phandle to VCCQ supply regulator node
+- vccq2-supply          : phandle to VCCQ2 supply regulator node
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 - vcc-supply-1p8        : For embedded UFS devices, valid VCC range is 1.7-1.95V
                           or 2.7-3.6V. This boolean property when set, specifies
 			  to use low voltage range of 1.7-1.95V. Note for external
@@ -49,6 +57,7 @@ Optional properties:
 			  defined or a value in the array is "0" then it is assumed
 			  that the frequency is set by the parent clock or a
 			  fixed rate clock source.
+<<<<<<< HEAD
 - rpm-level		: UFS Runtime power management level. Following PM levels are supported:
 			  0 - Both UFS device and Link in active state (Highest power consumption)
 			  1 - UFS device in active state but Link in Hibern8 state
@@ -80,6 +89,11 @@ Optional properties:
 - non-removable		: defines if the connected ufs device is not removable
 - force-g4		: forces UFS Host PHY to be initialized in HS-G4
 
+=======
+-lanes-per-direction	: number of lanes available per direction - either 1 or 2.
+			  Note that it is assume same number of lanes is used both
+			  directions at once. If not specified, default is 2 lanes per direction.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 Note: If above properties are not defined it can be assumed that the supply
 regulators or clocks are always on.
@@ -87,15 +101,24 @@ regulators or clocks are always on.
 Example:
 	ufshc@0xfc598000 {
 		compatible = "jedec,ufs-1.1";
+<<<<<<< HEAD
 		reg = <0xfc598000 0x800>, <0xfd512074 0x4>;
 		interrupts = <0 28 0>;
 
 		ufs-qcom-crypto = <&ufs_ice>;
+=======
+		reg = <0xfc598000 0x800>;
+		interrupts = <0 28 0>;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		vdd-hba-supply = <&xxx_reg0>;
 		vdd-hba-fixed-regulator;
 		vcc-supply = <&xxx_reg1>;
 		vcc-supply-1p8;
+<<<<<<< HEAD
 		vcc-low-voltage-sup;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		vccq-supply = <&xxx_reg2>;
 		vccq2-supply = <&xxx_reg3>;
 		vcc-max-microamp = 500000;
@@ -105,6 +128,7 @@ Example:
 		clocks = <&core 0>, <&ref 0>, <&iface 0>;
 		clock-names = "core_clk", "ref_clk", "iface_clk";
 		freq-table-hz = <100000000 200000000>, <0 0>, <0 0>;
+<<<<<<< HEAD
 		resets = <clock_gcc GCC_UFS_BCR>;
 		reset-names = "core_reset";
 		phys = <&ufsphy1>;
@@ -212,4 +236,8 @@ Example:
 					"HS_RB_G1_L1", "HS_RB_G2_L1", "HS_RB_G3_L1",
 					"HS_RB_G1_L2", "HS_RB_G2_L2", "HS_RB_G3_L2",
 					"MAX";
+=======
+		phys = <&ufsphy1>;
+		phy-names = "ufsphy";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};

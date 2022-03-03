@@ -13,11 +13,16 @@ arm_gen_nop(void)
 }
 
 unsigned long
+<<<<<<< HEAD
 __arm_gen_branch(unsigned long pc, unsigned long addr, bool link);
+=======
+__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static inline unsigned long
 arm_gen_branch(unsigned long pc, unsigned long addr)
 {
+<<<<<<< HEAD
 	return __arm_gen_branch(pc, addr, false);
 }
 
@@ -25,6 +30,15 @@ static inline unsigned long
 arm_gen_branch_link(unsigned long pc, unsigned long addr)
 {
 	return __arm_gen_branch(pc, addr, true);
+=======
+	return __arm_gen_branch(pc, addr, false, true);
+}
+
+static inline unsigned long
+arm_gen_branch_link(unsigned long pc, unsigned long addr, bool warn)
+{
+	return __arm_gen_branch(pc, addr, true, warn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #endif

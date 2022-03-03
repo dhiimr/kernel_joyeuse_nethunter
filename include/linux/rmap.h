@@ -12,11 +12,14 @@
 #include <linux/memcontrol.h>
 #include <linux/highmem.h>
 
+<<<<<<< HEAD
 extern int isolate_lru_page(struct page *page);
 extern void putback_lru_page(struct page *page);
 extern unsigned long reclaim_pages_from_list(struct list_head *page_list,
 					     struct vm_area_struct *vma);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * The anon_vma heads a list of private "related" vmas, to scan if
  * an anonymous page pointing to this anon_vma needs to be unmapped:
@@ -103,7 +106,12 @@ enum ttu_flags {
 					 * do a final flush if necessary */
 	TTU_RMAP_LOCKED		= 0x80,	/* do not grab rmap lock:
 					 * caller holds it */
+<<<<<<< HEAD
 	TTU_SPLIT_FREEZE	= 0x100,		/* freeze pte under splitting thp */
+=======
+	TTU_SPLIT_FREEZE	= 0x100, /* freeze pte under splitting thp */
+	TTU_SYNC		= 0x200, /* avoid racy checks with PVMW_SYNC */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #ifdef CONFIG_MMU
@@ -179,6 +187,7 @@ void page_add_anon_rmap(struct page *, struct vm_area_struct *,
 		unsigned long, bool);
 void do_page_add_anon_rmap(struct page *, struct vm_area_struct *,
 			   unsigned long, int);
+<<<<<<< HEAD
 void __page_add_new_anon_rmap(struct page *page, struct vm_area_struct *vma,
 			      unsigned long address, bool compound);
 static inline void page_add_new_anon_rmap(struct page *page,
@@ -189,6 +198,10 @@ static inline void page_add_new_anon_rmap(struct page *page,
 	__page_add_new_anon_rmap(page, vma, address, compound);
 }
 
+=======
+void page_add_new_anon_rmap(struct page *, struct vm_area_struct *,
+		unsigned long, bool);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void page_add_file_rmap(struct page *, bool);
 void page_remove_rmap(struct page *, bool);
 
@@ -208,8 +221,12 @@ static inline void page_dup_rmap(struct page *page, bool compound)
 int page_referenced(struct page *, int is_locked,
 			struct mem_cgroup *memcg, unsigned long *vm_flags);
 
+<<<<<<< HEAD
 bool try_to_unmap(struct page *page, enum ttu_flags flags,
 				struct vm_area_struct *vma);
+=======
+bool try_to_unmap(struct page *, enum ttu_flags flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Avoid racy checks */
 #define PVMW_SYNC		(1 << 0)
@@ -228,7 +245,12 @@ struct page_vma_mapped_walk {
 
 static inline void page_vma_mapped_walk_done(struct page_vma_mapped_walk *pvmw)
 {
+<<<<<<< HEAD
 	if (pvmw->pte)
+=======
+	/* HugeTLB pte is set to the relevant page table entry without pte_mapped. */
+	if (pvmw->pte && !PageHuge(pvmw->page))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pte_unmap(pvmw->pte);
 	if (pvmw->ptl)
 		spin_unlock(pvmw->ptl);
@@ -275,7 +297,10 @@ int page_mapped_in_vma(struct page *page, struct vm_area_struct *vma);
  */
 struct rmap_walk_control {
 	void *arg;
+<<<<<<< HEAD
 	struct vm_area_struct *target_vma;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Return false if page table scanning in rmap_walk should be stopped.
 	 * Otherwise, return true.
@@ -304,7 +329,11 @@ static inline int page_referenced(struct page *page, int is_locked,
 	return 0;
 }
 
+<<<<<<< HEAD
 #define try_to_unmap(page, refs, vma) false
+=======
+#define try_to_unmap(page, refs) false
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static inline int page_mkclean(struct page *page)
 {

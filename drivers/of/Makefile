@@ -1,6 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0
 obj-y = base.o device.o platform.o property.o
+<<<<<<< HEAD
 obj-$(CONFIG_OF_KOBJ) += kobj.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-$(CONFIG_OF_DYNAMIC) += dynamic.o
 obj-$(CONFIG_OF_FLATTREE) += fdt.o
 obj-$(CONFIG_OF_EARLY_FLATTREE) += fdt_address.o
@@ -14,9 +17,14 @@ obj-$(CONFIG_OF_PCI)	+= of_pci.o
 obj-$(CONFIG_OF_PCI_IRQ)  += of_pci_irq.o
 obj-$(CONFIG_OF_RESERVED_MEM) += of_reserved_mem.o
 obj-$(CONFIG_OF_RESOLVE)  += resolver.o
+<<<<<<< HEAD
 obj-$(CONFIG_OF_SLIMBUS) += of_slimbus.o
 obj-$(CONFIG_OF_OVERLAY) += overlay.o
 obj-$(CONFIG_OF_NUMA) += of_numa.o
 obj-$(CONFIG_OF_BATTERYDATA) += of_batterydata.o
+=======
+obj-$(CONFIG_OF_OVERLAY) += overlay.o
+obj-$(CONFIG_OF_NUMA) += of_numa.o
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 obj-$(CONFIG_OF_UNITTEST) += unittest-data/

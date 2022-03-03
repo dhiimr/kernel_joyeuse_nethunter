@@ -656,7 +656,11 @@ static int r852_register_nand_device(struct r852_device *dev)
 	dev->card_registred = 1;
 	return 0;
 error3:
+<<<<<<< HEAD
 	nand_release(mtd);
+=======
+	nand_release(dev->chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 error1:
 	/* Force card redetect */
 	dev->card_detected = 0;
@@ -675,7 +679,11 @@ static void r852_unregister_nand_device(struct r852_device *dev)
 		return;
 
 	device_remove_file(&mtd->dev, &dev_attr_media_type);
+<<<<<<< HEAD
 	nand_release(mtd);
+=======
+	nand_release(dev->chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	r852_engine_disable(dev);
 	dev->card_registred = 0;
 }

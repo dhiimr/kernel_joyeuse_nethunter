@@ -545,7 +545,11 @@ static struct dma_async_tx_descriptor *td_prep_slave_sg(struct dma_chan *chan,
 	}
 
 	dma_sync_single_for_device(chan2dmadev(chan), td_desc->txd.phys,
+<<<<<<< HEAD
 		td_desc->desc_list_len, DMA_MEM_TO_DEV);
+=======
+		td_desc->desc_list_len, DMA_TO_DEVICE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return &td_desc->txd;
 }

@@ -239,9 +239,12 @@ static int vid_cap_start_streaming(struct vb2_queue *vq, unsigned count)
 	if (vb2_is_streaming(&dev->vb_vid_out_q))
 		dev->can_loop_video = vivid_vid_can_loop(dev);
 
+<<<<<<< HEAD
 	if (dev->kthread_vid_cap)
 		return 0;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev->vid_cap_seq_count = 0;
 	dprintk(dev, 1, "%s\n", __func__);
 	for (i = 0; i < VIDEO_MAX_FRAME; i++)
@@ -1007,7 +1010,11 @@ int vivid_vid_cap_s_selection(struct file *file, void *fh, struct v4l2_selection
 		v4l2_rect_map_inside(&s->r, &dev->fmt_cap_rect);
 		if (dev->bitmap_cap && (compose->width != s->r.width ||
 					compose->height != s->r.height)) {
+<<<<<<< HEAD
 			kfree(dev->bitmap_cap);
+=======
+			vfree(dev->bitmap_cap);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			dev->bitmap_cap = NULL;
 		}
 		*compose = s->r;

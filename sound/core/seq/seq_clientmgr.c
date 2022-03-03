@@ -564,7 +564,11 @@ static int update_timestamp_of_queue(struct snd_seq_event *event,
 	event->queue = queue;
 	event->flags &= ~SNDRV_SEQ_TIME_STAMP_MASK;
 	if (real_time) {
+<<<<<<< HEAD
 		event->time.time = snd_seq_timer_get_cur_time(q->timer);
+=======
+		event->time.time = snd_seq_timer_get_cur_time(q->timer, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		event->flags |= SNDRV_SEQ_TIME_STAMP_REAL;
 	} else {
 		event->time.tick = snd_seq_timer_get_cur_tick(q->timer);
@@ -1001,7 +1005,11 @@ static ssize_t snd_seq_write(struct file *file, const char __user *buf,
 {
 	struct snd_seq_client *client = file->private_data;
 	int written = 0, len;
+<<<<<<< HEAD
 	int err;
+=======
+	int err, handled;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct snd_seq_event event;
 
 	if (!(snd_seq_file_flags(file) & SNDRV_SEQ_LFLG_OUTPUT))
@@ -1014,6 +1022,11 @@ static ssize_t snd_seq_write(struct file *file, const char __user *buf,
 	if (!client->accept_output || client->pool == NULL)
 		return -ENXIO;
 
+<<<<<<< HEAD
+=======
+ repeat:
+	handled = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* allocate the pool now if the pool is not allocated yet */ 
 	mutex_lock(&client->ioctl_mutex);
 	if (client->pool->size > 0 && !snd_seq_write_pool_allocated(client)) {
@@ -1073,12 +1086,25 @@ static ssize_t snd_seq_write(struct file *file, const char __user *buf,
 						   0, 0, &client->ioctl_mutex);
 		if (err < 0)
 			break;
+<<<<<<< HEAD
+=======
+		handled++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	__skip_event:
 		/* Update pointers and counts */
 		count -= len;
 		buf += len;
 		written += len;
+<<<<<<< HEAD
+=======
+
+		/* let's have a coffee break if too many events are queued */
+		if (++handled >= 200) {
+			mutex_unlock(&client->ioctl_mutex);
+			goto repeat;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
  out:
@@ -1630,7 +1656,11 @@ static int snd_seq_ioctl_get_queue_status(struct snd_seq_client *client,
 	tmr = queue->timer;
 	status->events = queue->tickq->cells + queue->timeq->cells;
 
+<<<<<<< HEAD
 	status->time = snd_seq_timer_get_cur_time(tmr);
+=======
+	status->time = snd_seq_timer_get_cur_time(tmr, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	status->tick = snd_seq_timer_get_cur_tick(tmr);
 
 	status->running = tmr->running;
@@ -1812,8 +1842,12 @@ static int snd_seq_ioctl_get_client_pool(struct snd_seq_client *client,
 	if (cptr->type == USER_CLIENT) {
 		info->input_pool = cptr->data.user.fifo_pool_size;
 		info->input_free = info->input_pool;
+<<<<<<< HEAD
 		if (cptr->data.user.fifo)
 			info->input_free = snd_seq_unused_cells(cptr->data.user.fifo->pool);
+=======
+		info->input_free = snd_seq_fifo_unused_cells(cptr->data.user.fifo);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		info->input_pool = 0;
 		info->input_free = 0;
@@ -1904,13 +1938,17 @@ static int snd_seq_ioctl_get_subscription(struct snd_seq_client *client,
 	int result;
 	struct snd_seq_client *sender = NULL;
 	struct snd_seq_client_port *sport = NULL;
+<<<<<<< HEAD
 	struct snd_seq_subscribers *p;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	result = -EINVAL;
 	if ((sender = snd_seq_client_use_ptr(subs->sender.client)) == NULL)
 		goto __end;
 	if ((sport = snd_seq_port_use_ptr(sender, subs->sender.port)) == NULL)
 		goto __end;
+<<<<<<< HEAD
 	p = snd_seq_port_get_subscription(&sport->c_src, &subs->dest);
 	if (p) {
 		result = 0;
@@ -1918,6 +1956,10 @@ static int snd_seq_ioctl_get_subscription(struct snd_seq_client *client,
 	} else
 		result = -ENOENT;
 
+=======
+	result = snd_seq_port_get_subscription(&sport->c_src, &subs->dest,
+					       subs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
       __end:
       	if (sport)
 		snd_seq_port_unlock(sport);

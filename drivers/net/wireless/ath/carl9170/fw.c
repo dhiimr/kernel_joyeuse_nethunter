@@ -351,9 +351,13 @@ static int carl9170_fw(struct ar9170 *ar, const __u8 *data, size_t len)
 		ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC);
 
 		if (SUPP(CARL9170FW_WLANTX_CAB)) {
+<<<<<<< HEAD
 			if_comb_types |=
 				BIT(NL80211_IFTYPE_AP) |
 				BIT(NL80211_IFTYPE_P2P_GO);
+=======
+			if_comb_types |= BIT(NL80211_IFTYPE_AP);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_MAC80211_MESH
 			if_comb_types |=

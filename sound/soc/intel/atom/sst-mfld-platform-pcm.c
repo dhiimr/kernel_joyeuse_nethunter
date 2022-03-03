@@ -135,7 +135,11 @@ static void sst_fill_alloc_params(struct snd_pcm_substream *substream,
 	snd_pcm_uframes_t period_size;
 	ssize_t periodbytes;
 	ssize_t buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
+<<<<<<< HEAD
 	u32 buffer_addr = virt_to_phys(substream->dma_buffer.area);
+=======
+	u32 buffer_addr = virt_to_phys(substream->runtime->dma_area);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	channels = substream->runtime->channels;
 	period_size = substream->runtime->period_size;
@@ -241,7 +245,10 @@ static int sst_platform_alloc_stream(struct snd_pcm_substream *substream,
 	/* set codec params and inform SST driver the same */
 	sst_fill_pcm_params(substream, &param);
 	sst_fill_alloc_params(substream, &alloc_params);
+<<<<<<< HEAD
 	substream->runtime->dma_area = substream->dma_buffer.area;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	str_params.sparams = param;
 	str_params.aparams = alloc_params;
 	str_params.codec = SST_CODEC_TYPE_PCM;
@@ -339,7 +346,11 @@ static int sst_media_open(struct snd_pcm_substream *substream,
 
 	ret_val = power_up_sst(stream);
 	if (ret_val < 0)
+<<<<<<< HEAD
 		return ret_val;
+=======
+		goto out_power_up;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Make sure, that the period size is always even */
 	snd_pcm_hw_constraint_step(substream->runtime, 0,
@@ -348,8 +359,14 @@ static int sst_media_open(struct snd_pcm_substream *substream,
 	return snd_pcm_hw_constraint_integer(runtime,
 			 SNDRV_PCM_HW_PARAM_PERIODS);
 out_ops:
+<<<<<<< HEAD
 	kfree(stream);
 	mutex_unlock(&sst_lock);
+=======
+	mutex_unlock(&sst_lock);
+out_power_up:
+	kfree(stream);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret_val;
 }
 
@@ -507,14 +524,22 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
 		.channels_min = SST_STEREO,
 		.channels_max = SST_STEREO,
 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
+<<<<<<< HEAD
 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
+=======
+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 	.capture = {
 		.stream_name = "Headset Capture",
 		.channels_min = 1,
 		.channels_max = 2,
 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
+<<<<<<< HEAD
 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
+=======
+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 },
 {
@@ -525,7 +550,11 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
 		.channels_min = SST_STEREO,
 		.channels_max = SST_STEREO,
 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
+<<<<<<< HEAD
 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
+=======
+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 },
 {

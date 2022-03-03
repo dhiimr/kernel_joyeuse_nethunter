@@ -26,6 +26,7 @@
 
 #include "internal.h"
 
+<<<<<<< HEAD
 static int proc_test_super(struct super_block *sb, void *data)
 {
 	return sb->s_fs_info == data;
@@ -41,6 +42,8 @@ static int proc_set_super(struct super_block *sb, void *data)
 	return err;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 enum {
 	Opt_gid, Opt_hidepid, Opt_err,
 };
@@ -51,7 +54,11 @@ static const match_table_t tokens = {
 	{Opt_err, NULL},
 };
 
+<<<<<<< HEAD
 static int proc_parse_options(char *options, struct pid_namespace *pid)
+=======
+int proc_parse_options(char *options, struct pid_namespace *pid)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	char *p;
 	substring_t args[MAX_OPT_ARGS];
@@ -104,6 +111,7 @@ int proc_remount(struct super_block *sb, int *flags, char *data)
 static struct dentry *proc_mount(struct file_system_type *fs_type,
 	int flags, const char *dev_name, void *data)
 {
+<<<<<<< HEAD
 	int err;
 	struct super_block *sb;
 	struct pid_namespace *ns;
@@ -143,6 +151,18 @@ static struct dentry *proc_mount(struct file_system_type *fs_type,
 	}
 
 	return dget(sb->s_root);
+=======
+	struct pid_namespace *ns;
+
+	if (flags & MS_KERNMOUNT) {
+		ns = data;
+		data = NULL;
+	} else {
+		ns = task_active_pid_ns(current);
+	}
+
+	return mount_ns(fs_type, flags, data, ns, ns->user_ns, proc_fill_super);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void proc_kill_sb(struct super_block *sb)
@@ -180,7 +200,11 @@ void __init proc_root_init(void)
 	proc_symlink("mounts", NULL, "self/mounts");
 
 	proc_net_init();
+<<<<<<< HEAD
 	proc_uid_init();
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_SYSVIPC
 	proc_mkdir("sysvipc", NULL);
 #endif

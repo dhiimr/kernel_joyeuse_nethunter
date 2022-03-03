@@ -17,16 +17,22 @@ conditions.
                         "arm,mmu-401"
                         "arm,mmu-500"
                         "cavium,smmu-v2"
+<<<<<<< HEAD
                         "qcom,smmu-v2"
                         "qcom,qsmmu-v500"
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
                   depending on the particular implementation and/or the
                   version of the architecture implemented.
 
 - reg           : Base address and size of the SMMU.
 
+<<<<<<< HEAD
 - reg-names	: For the "qcom,qsmmu-v500" device "tcu-base" is expected.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 - #global-interrupts : The number of global interrupts exposed by the
                        device.
 
@@ -40,15 +46,26 @@ conditions.
                   combined interrupt, it must be listed multiple times.
 
 - #iommu-cells  : See Documentation/devicetree/bindings/iommu/iommu.txt
+<<<<<<< HEAD
                   for details. With a value of 1, each "iommus" entry
+=======
+                  for details. With a value of 1, each IOMMU specifier
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
                   represents a distinct stream ID emitted by that device
                   into the relevant SMMU.
 
                   SMMUs with stream matching support and complex masters
+<<<<<<< HEAD
                   may use a value of 2, where the second cell represents
                   an SMR mask to combine with the ID in the first cell.
                   Care must be taken to ensure the set of matched IDs
                   does not result in conflicts.
+=======
+                  may use a value of 2, where the second cell of the
+                  IOMMU specifier represents an SMR mask to combine with
+                  the ID in the first cell.  Care must be taken to ensure
+                  the set of matched IDs does not result in conflicts.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 ** System MMU optional properties:
 
@@ -64,6 +81,7 @@ conditions.
                   aliases of secure registers have to be used during
                   SMMU configuration.
 
+<<<<<<< HEAD
 - attach-impl-defs : global registers to program at device attach
                   time. This should be a list of 2-tuples of the format:
                   <offset reg_value>.
@@ -176,6 +194,18 @@ conditions.
 - qcom,msm-bus,num-paths
 - qcom,msm-bus,vectors-KBps
 		: Refer to devicetree/bindings/arm/msm/msm_bus.txt
+=======
+- stream-match-mask : For SMMUs supporting stream matching and using
+                  #iommu-cells = <1>, specifies a mask of bits to ignore
+		  when matching stream IDs (e.g. this may be programmed
+		  into the SMRn.MASK field of every stream match register
+		  used). For cases where it is desirable to ignore some
+                  portion of every Stream ID (e.g. for certain MMU-500
+                  configurations given globally unique input IDs). This
+                  property is not valid for SMMUs using stream indexing,
+                  or using stream matching with #iommu-cells = <2>, and
+                  may be ignored if present in such cases.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 ** Deprecated properties:
 
@@ -228,6 +258,7 @@ conditions.
         };
 
 
+<<<<<<< HEAD
 * Qualcomm MMU-500 TBU Device
 
 The qcom,qsmmu-v500 device implements a number of register regions containing
@@ -261,3 +292,20 @@ smmu {
 		qcom,stream-id-range = <0x800 0x400>;
 	};
 };
+=======
+        /* ARM MMU-500 with 10-bit stream ID input configuration */
+        smmu3: iommu {
+                compatible = "arm,mmu-500", "arm,smmu-v2";
+                ...
+                #iommu-cells = <1>;
+                /* always ignore appended 5-bit TBU number */
+                stream-match-mask = 0x7c00;
+        };
+
+        bus {
+                /* bus whose child devices emit one unique 10-bit stream
+                   ID each, but may master through multiple SMMU TBUs */
+                iommu-map = <0 &smmu3 0 0x400>;
+                ...
+        };
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

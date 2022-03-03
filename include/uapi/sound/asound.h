@@ -110,6 +110,7 @@ enum {
 	SNDRV_HWDEP_IFACE_LINE6,	/* Line6 USB processors */
 	SNDRV_HWDEP_IFACE_FW_MOTU,	/* MOTU FireWire series */
 	SNDRV_HWDEP_IFACE_FW_FIREFACE,	/* RME Fireface series */
+<<<<<<< HEAD
 	SNDRV_HWDEP_IFACE_AUDIO_BE,	/* Backend Audio Control */
 	SNDRV_HWDEP_IFACE_AUDIO_CODEC,  /* codec Audio Control */
 
@@ -120,6 +121,13 @@ enum {
 #define SNDRV_HWDEP_IFACE_AUDIO_BE SNDRV_HWDEP_IFACE_AUDIO_BE
 #define SNDRV_HWDEP_IFACE_AUDIO_CODEC SNDRV_HWDEP_IFACE_AUDIO_CODEC
 
+=======
+
+	/* Don't forget to change the following: */
+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_FIREFACE
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct snd_hwdep_info {
 	unsigned int device;		/* WR: device number */
 	int card;			/* R: card number */

@@ -62,6 +62,7 @@ static ssize_t edac_device_ctl_log_ce_store(struct edac_device_ctl_info
 	return count;
 }
 
+<<<<<<< HEAD
 /* 'panic_on_ce' */
 static ssize_t edac_device_ctl_panic_on_ce_show(struct edac_device_ctl_info
 						*ctl_info, char *data)
@@ -69,6 +70,8 @@ static ssize_t edac_device_ctl_panic_on_ce_show(struct edac_device_ctl_info
 	return snprintf(data, PAGE_SIZE, "%u\n", ctl_info->panic_on_ce);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* 'panic_on_ue' */
 static ssize_t edac_device_ctl_panic_on_ue_show(struct edac_device_ctl_info
 						*ctl_info, char *data)
@@ -76,6 +79,7 @@ static ssize_t edac_device_ctl_panic_on_ue_show(struct edac_device_ctl_info
 	return sprintf(data, "%u\n", ctl_info->panic_on_ue);
 }
 
+<<<<<<< HEAD
 static ssize_t edac_device_ctl_panic_on_ce_store(struct edac_device_ctl_info
 						 *ctl_info, const char *data,
 						 size_t count)
@@ -91,6 +95,8 @@ static ssize_t edac_device_ctl_panic_on_ce_store(struct edac_device_ctl_info
 	return count;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static ssize_t edac_device_ctl_panic_on_ue_store(struct edac_device_ctl_info
 						 *ctl_info, const char *data,
 						 size_t count)
@@ -178,9 +184,12 @@ CTL_INFO_ATTR(log_ue, S_IRUGO | S_IWUSR,
 	edac_device_ctl_log_ue_show, edac_device_ctl_log_ue_store);
 CTL_INFO_ATTR(log_ce, S_IRUGO | S_IWUSR,
 	edac_device_ctl_log_ce_show, edac_device_ctl_log_ce_store);
+<<<<<<< HEAD
 CTL_INFO_ATTR(panic_on_ce, 0644,
 	edac_device_ctl_panic_on_ce_show,
 	edac_device_ctl_panic_on_ce_store);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 CTL_INFO_ATTR(panic_on_ue, S_IRUGO | S_IWUSR,
 	edac_device_ctl_panic_on_ue_show,
 	edac_device_ctl_panic_on_ue_store);
@@ -189,7 +198,10 @@ CTL_INFO_ATTR(poll_msec, S_IRUGO | S_IWUSR,
 
 /* Base Attributes of the EDAC_DEVICE ECC object */
 static struct ctl_info_attribute *device_ctrl_attr[] = {
+<<<<<<< HEAD
 	&attr_ctl_info_panic_on_ce,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	&attr_ctl_info_panic_on_ue,
 	&attr_ctl_info_log_ue,
 	&attr_ctl_info_log_ce,
@@ -301,6 +313,10 @@ int edac_device_register_sysfs_main_kobj(struct edac_device_ctl_info *edac_dev)
 
 	/* Error exit stack */
 err_kobj_reg:
+<<<<<<< HEAD
+=======
+	kobject_put(&edac_dev->kobj);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	module_put(edac_dev->owner);
 
 err_out:

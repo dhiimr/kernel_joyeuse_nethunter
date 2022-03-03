@@ -46,20 +46,65 @@ enum sparc_regset {
 	REGSET_FP,
 };
 
+<<<<<<< HEAD
+=======
+static int regwindow32_get(struct task_struct *target,
+			   const struct pt_regs *regs,
+			   u32 *uregs)
+{
+	unsigned long reg_window = regs->u_regs[UREG_I6];
+	int size = 16 * sizeof(u32);
+
+	if (target == current) {
+		if (copy_from_user(uregs, (void __user *)reg_window, size))
+			return -EFAULT;
+	} else {
+		if (access_process_vm(target, reg_window, uregs, size,
+				      FOLL_FORCE) != size)
+			return -EFAULT;
+	}
+	return 0;
+}
+
+static int regwindow32_set(struct task_struct *target,
+			   const struct pt_regs *regs,
+			   u32 *uregs)
+{
+	unsigned long reg_window = regs->u_regs[UREG_I6];
+	int size = 16 * sizeof(u32);
+
+	if (target == current) {
+		if (copy_to_user((void __user *)reg_window, uregs, size))
+			return -EFAULT;
+	} else {
+		if (access_process_vm(target, reg_window, uregs, size,
+				      FOLL_FORCE | FOLL_WRITE) != size)
+			return -EFAULT;
+	}
+	return 0;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int genregs32_get(struct task_struct *target,
 			 const struct user_regset *regset,
 			 unsigned int pos, unsigned int count,
 			 void *kbuf, void __user *ubuf)
 {
 	const struct pt_regs *regs = target->thread.kregs;
+<<<<<<< HEAD
 	unsigned long __user *reg_window;
 	unsigned long *k = kbuf;
 	unsigned long __user *u = ubuf;
 	unsigned long reg;
+=======
+	u32 uregs[16];
+	int ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (target == current)
 		flush_user_windows();
 
+<<<<<<< HEAD
 	pos /= sizeof(reg);
 	count /= sizeof(reg);
 
@@ -122,6 +167,33 @@ finish:
 
 	return user_regset_copyout_zero(&pos, &count, &kbuf, &ubuf,
 					38 * sizeof(reg), -1);
+=======
+	ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
+				  regs->u_regs,
+				  0, 16 * sizeof(u32));
+	if (ret || !count)
+		return ret;
+
+	if (pos < 32 * sizeof(u32)) {
+		if (regwindow32_get(target, regs, uregs))
+			return -EFAULT;
+		ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
+					  uregs,
+					  16 * sizeof(u32), 32 * sizeof(u32));
+		if (ret || !count)
+			return ret;
+	}
+
+	uregs[0] = regs->psr;
+	uregs[1] = regs->pc;
+	uregs[2] = regs->npc;
+	uregs[3] = regs->y;
+	uregs[4] = 0;	/* WIM */
+	uregs[5] = 0;	/* TBR */
+	return user_regset_copyout(&pos, &count, &kbuf, &ubuf,
+				  uregs,
+				  32 * sizeof(u32), 38 * sizeof(u32));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int genregs32_set(struct task_struct *target,
@@ -130,14 +202,21 @@ static int genregs32_set(struct task_struct *target,
 			 const void *kbuf, const void __user *ubuf)
 {
 	struct pt_regs *regs = target->thread.kregs;
+<<<<<<< HEAD
 	unsigned long __user *reg_window;
 	const unsigned long *k = kbuf;
 	const unsigned long __user *u = ubuf;
 	unsigned long reg;
+=======
+	u32 uregs[16];
+	u32 psr;
+	int ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (target == current)
 		flush_user_windows();
 
+<<<<<<< HEAD
 	pos /= sizeof(reg);
 	count /= sizeof(reg);
 
@@ -206,6 +285,53 @@ finish:
 
 	return user_regset_copyin_ignore(&pos, &count, &kbuf, &ubuf,
 					 38 * sizeof(reg), -1);
+=======
+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+				 regs->u_regs,
+				 0, 16 * sizeof(u32));
+	if (ret || !count)
+		return ret;
+
+	if (pos < 32 * sizeof(u32)) {
+		if (regwindow32_get(target, regs, uregs))
+			return -EFAULT;
+		ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+					 uregs,
+					 16 * sizeof(u32), 32 * sizeof(u32));
+		if (ret)
+			return ret;
+		if (regwindow32_set(target, regs, uregs))
+			return -EFAULT;
+		if (!count)
+			return 0;
+	}
+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+				 &psr,
+				 32 * sizeof(u32), 33 * sizeof(u32));
+	if (ret)
+		return ret;
+	regs->psr = (regs->psr & ~(PSR_ICC | PSR_SYSCALL)) |
+		    (psr & (PSR_ICC | PSR_SYSCALL));
+	if (!count)
+		return 0;
+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+				 &regs->pc,
+				 33 * sizeof(u32), 34 * sizeof(u32));
+	if (ret || !count)
+		return ret;
+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+				 &regs->npc,
+				 34 * sizeof(u32), 35 * sizeof(u32));
+	if (ret || !count)
+		return ret;
+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+				 &regs->y,
+				 35 * sizeof(u32), 36 * sizeof(u32));
+	if (ret || !count)
+		return ret;
+	return user_regset_copyin_ignore(&pos, &count, &kbuf, &ubuf,
+					 36 * sizeof(u32), 38 * sizeof(u32));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int fpregs32_get(struct task_struct *target,

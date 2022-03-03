@@ -245,7 +245,11 @@ int tcp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 						 inet->inet_daddr);
 	}
 
+<<<<<<< HEAD
 	inet->inet_id = tp->write_seq ^ jiffies;
+=======
+	inet->inet_id = prandom_u32();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (tcp_fastopen_defer_connect(sk, &err))
 		return err;
@@ -285,7 +289,11 @@ void tcp_v4_mtu_reduced(struct sock *sk)
 
 	if ((1 << sk->sk_state) & (TCPF_LISTEN | TCPF_CLOSE))
 		return;
+<<<<<<< HEAD
 	mtu = tcp_sk(sk)->mtu_info;
+=======
+	mtu = READ_ONCE(tcp_sk(sk)->mtu_info);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dst = inet_csk_update_pmtu(sk, mtu);
 	if (!dst)
 		return;
@@ -453,7 +461,11 @@ void tcp_v4_err(struct sk_buff *icmp_skb, u32 info)
 			if (sk->sk_state == TCP_LISTEN)
 				goto out;
 
+<<<<<<< HEAD
 			tp->mtu_info = info;
+=======
+			WRITE_ONCE(tp->mtu_info, info);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (!sock_owned_by_user(sk)) {
 				tcp_v4_mtu_reduced(sk);
 			} else {
@@ -995,9 +1007,24 @@ int tcp_md5_do_add(struct sock *sk, const union tcp_md5_addr *addr,
 
 	key = tcp_md5_do_lookup_exact(sk, addr, family, prefixlen);
 	if (key) {
+<<<<<<< HEAD
 		/* Pre-existing entry - just update that one. */
 		memcpy(key->key, newkey, newkeylen);
 		key->keylen = newkeylen;
+=======
+		/* Pre-existing entry - just update that one.
+		 * Note that the key might be used concurrently.
+		 */
+		memcpy(key->key, newkey, newkeylen);
+
+		/* Pairs with READ_ONCE() in tcp_md5_hash_key().
+		 * Also note that a reader could catch new key->keylen value
+		 * but old key->key[], this is the reason we use __GFP_ZERO
+		 * at sock_kmalloc() time below these lines.
+		 */
+		WRITE_ONCE(key->keylen, newkeylen);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 	}
 
@@ -1013,7 +1040,11 @@ int tcp_md5_do_add(struct sock *sk, const union tcp_md5_addr *addr,
 		rcu_assign_pointer(tp->md5sig_info, md5sig);
 	}
 
+<<<<<<< HEAD
 	key = sock_kmalloc(sk, sizeof(*key), gfp);
+=======
+	key = sock_kmalloc(sk, sizeof(*key), gfp | __GFP_ZERO);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!key)
 		return -ENOMEM;
 	if (!tcp_alloc_md5sig_pool()) {
@@ -1368,7 +1399,11 @@ struct sock *tcp_v4_syn_recv_sock(const struct sock *sk, struct sk_buff *skb,
 	inet_csk(newsk)->icsk_ext_hdr_len = 0;
 	if (inet_opt)
 		inet_csk(newsk)->icsk_ext_hdr_len = inet_opt->opt.optlen;
+<<<<<<< HEAD
 	newinet->inet_id = newtp->write_seq ^ jiffies;
+=======
+	newinet->inet_id = prandom_u32();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!dst) {
 		dst = inet_csk_route_child_sock(sk, newsk, req);
@@ -1936,13 +1971,21 @@ static void *listening_get_next(struct seq_file *seq, void *cur)
 	struct tcp_iter_state *st = seq->private;
 	struct net *net = seq_file_net(seq);
 	struct inet_listen_hashbucket *ilb;
+<<<<<<< HEAD
+=======
+	struct hlist_nulls_node *node;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct sock *sk = cur;
 
 	if (!sk) {
 get_head:
 		ilb = &tcp_hashinfo.listening_hash[st->bucket];
 		spin_lock(&ilb->lock);
+<<<<<<< HEAD
 		sk = sk_head(&ilb->head);
+=======
+		sk = sk_nulls_head(&ilb->nulls_head);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		st->offset = 0;
 		goto get_sk;
 	}
@@ -1950,9 +1993,15 @@ get_head:
 	++st->num;
 	++st->offset;
 
+<<<<<<< HEAD
 	sk = sk_next(sk);
 get_sk:
 	sk_for_each_from(sk) {
+=======
+	sk = sk_nulls_next(sk);
+get_sk:
+	sk_nulls_for_each_from(sk, node) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!net_eq(sock_net(sk), net))
 			continue;
 		if (sk->sk_family == st->family)
@@ -2077,6 +2126,10 @@ static void *tcp_get_idx(struct seq_file *seq, loff_t pos)
 static void *tcp_seek_last_pos(struct seq_file *seq)
 {
 	struct tcp_iter_state *st = seq->private;
+<<<<<<< HEAD
+=======
+	int bucket = st->bucket;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int offset = st->offset;
 	int orig_num = st->num;
 	void *rc = NULL;
@@ -2087,7 +2140,11 @@ static void *tcp_seek_last_pos(struct seq_file *seq)
 			break;
 		st->state = TCP_SEQ_STATE_LISTENING;
 		rc = listening_get_next(seq, NULL);
+<<<<<<< HEAD
 		while (offset-- && rc)
+=======
+		while (offset-- && rc && bucket == st->bucket)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			rc = listening_get_next(seq, rc);
 		if (rc)
 			break;
@@ -2098,7 +2155,11 @@ static void *tcp_seek_last_pos(struct seq_file *seq)
 		if (st->bucket > tcp_hashinfo.ehash_mask)
 			break;
 		rc = established_get_first(seq);
+<<<<<<< HEAD
 		while (offset-- && rc)
+=======
+		while (offset-- && rc && bucket == st->bucket)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			rc = established_get_next(seq, rc);
 	}
 
@@ -2254,7 +2315,10 @@ static void get_tcp4_sock(struct sock *sk, struct seq_file *f, int i)
 	__be32 src = inet->inet_rcv_saddr;
 	__u16 destp = ntohs(inet->inet_dport);
 	__u16 srcp = ntohs(inet->inet_sport);
+<<<<<<< HEAD
 	__u8 seq_state = sk->sk_state;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int rx_queue;
 	int state;
 
@@ -2274,9 +2338,12 @@ static void get_tcp4_sock(struct sock *sk, struct seq_file *f, int i)
 		timer_expires = jiffies;
 	}
 
+<<<<<<< HEAD
 	if (inet->transparent)
 		seq_state |= 0x80;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	state = sk_state_load(sk);
 	if (state == TCP_LISTEN)
 		rx_queue = sk->sk_ack_backlog;
@@ -2288,7 +2355,11 @@ static void get_tcp4_sock(struct sock *sk, struct seq_file *f, int i)
 
 	seq_printf(f, "%4d: %08X:%04X %08X:%04X %02X %08X:%08X %02X:%08lX "
 			"%08X %5u %8d %lu %d %pK %lu %lu %u %u %d",
+<<<<<<< HEAD
 		i, src, srcp, dest, destp, seq_state,
+=======
+		i, src, srcp, dest, destp, state,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		tp->write_seq - tp->snd_una,
 		rx_queue,
 		timer_active,
@@ -2481,6 +2552,10 @@ static int __net_init tcp_sk_init(struct net *net)
 	net->ipv4.sysctl_tcp_ecn_fallback = 1;
 
 	net->ipv4.sysctl_tcp_base_mss = TCP_BASE_MSS;
+<<<<<<< HEAD
+=======
+	net->ipv4.sysctl_tcp_min_snd_mss = TCP_MIN_SND_MSS;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	net->ipv4.sysctl_tcp_probe_threshold = TCP_PROBE_THRESHOLD;
 	net->ipv4.sysctl_tcp_probe_interval = TCP_PROBE_INTERVAL;
 

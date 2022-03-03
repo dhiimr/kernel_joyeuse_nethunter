@@ -143,7 +143,11 @@
 			trips {
 				cpu_alert0: cpu_alert0 {
 					/* milliCelsius */
+<<<<<<< HEAD
 					temperature = <850000>;
+=======
+					temperature = <85000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					hysteresis = <2000>;
 					type = "passive";
 				};

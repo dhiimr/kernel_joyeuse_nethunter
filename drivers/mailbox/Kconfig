@@ -170,6 +170,7 @@ config BCM_FLEXRM_MBOX
 	  Mailbox implementation of the Broadcom FlexRM ring manager,
 	  which provides access to various offload engines on Broadcom
 	  SoCs. Say Y here if you want to use the Broadcom FlexRM.
+<<<<<<< HEAD
 
 config QTI_RPMH_MBOX
 	bool "TCS Mailbox for QTI RPMH Communication"
@@ -185,4 +186,6 @@ config MSM_QMP
            a remote processor. This protocol fits into the Generic Mailbox
            Framework. QMP uses a mailbox located in shared memory.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif

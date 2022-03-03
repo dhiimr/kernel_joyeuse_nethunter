@@ -84,7 +84,11 @@ int drm_i2c_encoder_init(struct drm_device *dev,
 
 	err = encoder_drv->encoder_init(client, dev, encoder);
 	if (err)
+<<<<<<< HEAD
 		goto fail_unregister;
+=======
+		goto fail_module_put;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (info->platform_data)
 		encoder->slave_funcs->set_config(&encoder->base,
@@ -92,9 +96,16 @@ int drm_i2c_encoder_init(struct drm_device *dev,
 
 	return 0;
 
+<<<<<<< HEAD
 fail_unregister:
 	i2c_unregister_device(client);
 	module_put(module);
+=======
+fail_module_put:
+	module_put(module);
+fail_unregister:
+	i2c_unregister_device(client);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 fail:
 	return err;
 }

@@ -412,6 +412,10 @@ static int gb_sdio_command(struct gb_sdio_host *host, struct mmc_command *cmd)
 	struct gb_sdio_command_request request = {0};
 	struct gb_sdio_command_response response;
 	struct mmc_data *data = host->mrq->data;
+<<<<<<< HEAD
+=======
+	unsigned int timeout_ms;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8 cmd_flags;
 	u8 cmd_type;
 	int i;
@@ -470,9 +474,18 @@ static int gb_sdio_command(struct gb_sdio_host *host, struct mmc_command *cmd)
 		request.data_blksz = cpu_to_le16(data->blksz);
 	}
 
+<<<<<<< HEAD
 	ret = gb_operation_sync(host->connection, GB_SDIO_TYPE_COMMAND,
 				&request, sizeof(request), &response,
 				sizeof(response));
+=======
+	timeout_ms = cmd->busy_timeout ? cmd->busy_timeout :
+		GB_OPERATION_TIMEOUT_DEFAULT;
+
+	ret = gb_operation_sync_timeout(host->connection, GB_SDIO_TYPE_COMMAND,
+					&request, sizeof(request), &response,
+					sizeof(response), timeout_ms);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret < 0)
 		goto out;
 

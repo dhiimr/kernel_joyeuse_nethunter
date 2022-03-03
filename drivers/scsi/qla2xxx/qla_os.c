@@ -188,12 +188,15 @@ MODULE_PARM_DESC(ql2xdbwr,
 		" 0 -- Regular doorbell.\n"
 		" 1 -- CAMRAM doorbell (faster).\n");
 
+<<<<<<< HEAD
 int ql2xtargetreset = 1;
 module_param(ql2xtargetreset, int, S_IRUGO);
 MODULE_PARM_DESC(ql2xtargetreset,
 		 "Enable target reset."
 		 "Default is 1 - use hw defaults.");
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int ql2xgffidenable;
 module_param(ql2xgffidenable, int, S_IRUGO);
 MODULE_PARM_DESC(ql2xgffidenable,
@@ -1652,6 +1655,7 @@ int
 qla2x00_loop_reset(scsi_qla_host_t *vha)
 {
 	int ret;
+<<<<<<< HEAD
 	struct fc_port *fcport;
 	struct qla_hw_data *ha = vha->hw;
 
@@ -1673,6 +1677,12 @@ qla2x00_loop_reset(scsi_qla_host_t *vha)
 		}
 	}
 
+=======
+	struct qla_hw_data *ha = vha->hw;
+
+	if (IS_QLAFX00(ha))
+		return QLA_SUCCESS;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (ha->flags.enable_lip_full_login && !IS_CNA_CAPABLE(ha)) {
 		atomic_set(&vha->loop_state, LOOP_DOWN);
@@ -3178,6 +3188,13 @@ qla2x00_probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
 	    base_vha->mgmt_svr_loop_id, host->sg_tablesize);
 
 	ha->wq = alloc_workqueue("qla2xxx_wq", WQ_MEM_RECLAIM, 0);
+<<<<<<< HEAD
+=======
+	if (unlikely(!ha->wq)) {
+		ret = -ENOMEM;
+		goto probe_failed;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (ha->mqenable) {
 		bool mq = false;
@@ -3437,6 +3454,13 @@ qla2x00_shutdown(struct pci_dev *pdev)
 	/* Stop currently executing firmware. */
 	qla2x00_try_to_stop_firmware(vha);
 
+<<<<<<< HEAD
+=======
+	/* Disable timer */
+	if (vha->timer_active)
+		qla2x00_stop_timer(vha);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Turn adapter off line */
 	vha->flags.online = 0;
 
@@ -5797,12 +5821,37 @@ qla2x00_do_dpc(void *data)
 		if (test_and_clear_bit
 		    (ISP_ABORT_NEEDED, &base_vha->dpc_flags) &&
 		    !test_bit(UNLOADING, &base_vha->dpc_flags)) {
+<<<<<<< HEAD
 
 			ql_dbg(ql_dbg_dpc, base_vha, 0x4007,
 			    "ISP abort scheduled.\n");
 			if (!(test_and_set_bit(ABORT_ISP_ACTIVE,
 			    &base_vha->dpc_flags))) {
 
+=======
+			bool do_reset = true;
+
+			switch (ql2x_ini_mode) {
+			case QLA2XXX_INI_MODE_ENABLED:
+				break;
+			case QLA2XXX_INI_MODE_DISABLED:
+				if (!qla_tgt_mode_enabled(base_vha))
+					do_reset = false;
+				break;
+			case QLA2XXX_INI_MODE_DUAL:
+				if (!qla_dual_mode_enabled(base_vha))
+					do_reset = false;
+				break;
+			default:
+				break;
+			}
+
+			if (do_reset && !(test_and_set_bit(ABORT_ISP_ACTIVE,
+			    &base_vha->dpc_flags))) {
+				base_vha->flags.online = 1;
+				ql_dbg(ql_dbg_dpc, base_vha, 0x4007,
+				    "ISP abort scheduled.\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				if (ha->isp_ops->abort_isp(base_vha)) {
 					/* failed. retry later */
 					set_bit(ISP_ABORT_NEEDED,
@@ -5810,10 +5859,16 @@ qla2x00_do_dpc(void *data)
 				}
 				clear_bit(ABORT_ISP_ACTIVE,
 						&base_vha->dpc_flags);
+<<<<<<< HEAD
 			}
 
 			ql_dbg(ql_dbg_dpc, base_vha, 0x4008,
 			    "ISP abort end.\n");
+=======
+				ql_dbg(ql_dbg_dpc, base_vha, 0x4008,
+				    "ISP abort end.\n");
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		if (test_and_clear_bit(FCPORT_UPDATE_NEEDED,
@@ -6696,8 +6751,12 @@ qla2x00_module_init(void)
 	/* Initialize target kmem_cache and mem_pools */
 	ret = qlt_init();
 	if (ret < 0) {
+<<<<<<< HEAD
 		kmem_cache_destroy(srb_cachep);
 		return ret;
+=======
+		goto destroy_cache;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else if (ret > 0) {
 		/*
 		 * If initiator mode is explictly disabled by qlt_init(),
@@ -6718,11 +6777,18 @@ qla2x00_module_init(void)
 	qla2xxx_transport_template =
 	    fc_attach_transport(&qla2xxx_transport_functions);
 	if (!qla2xxx_transport_template) {
+<<<<<<< HEAD
 		kmem_cache_destroy(srb_cachep);
 		ql_log(ql_log_fatal, NULL, 0x0002,
 		    "fc_attach_transport failed...Failing load!.\n");
 		qlt_exit();
 		return -ENODEV;
+=======
+		ql_log(ql_log_fatal, NULL, 0x0002,
+		    "fc_attach_transport failed...Failing load!.\n");
+		ret = -ENODEV;
+		goto qlt_exit;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	apidev_major = register_chrdev(0, QLA2XXX_APIDEV, &apidev_fops);
@@ -6734,18 +6800,26 @@ qla2x00_module_init(void)
 	qla2xxx_transport_vport_template =
 	    fc_attach_transport(&qla2xxx_transport_vport_functions);
 	if (!qla2xxx_transport_vport_template) {
+<<<<<<< HEAD
 		kmem_cache_destroy(srb_cachep);
 		qlt_exit();
 		fc_release_transport(qla2xxx_transport_template);
 		ql_log(ql_log_fatal, NULL, 0x0004,
 		    "fc_attach_transport vport failed...Failing load!.\n");
 		return -ENODEV;
+=======
+		ql_log(ql_log_fatal, NULL, 0x0004,
+		    "fc_attach_transport vport failed...Failing load!.\n");
+		ret = -ENODEV;
+		goto unreg_chrdev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	ql_log(ql_log_info, NULL, 0x0005,
 	    "QLogic Fibre Channel HBA Driver: %s.\n",
 	    qla2x00_version_str);
 	ret = pci_register_driver(&qla2xxx_pci_driver);
 	if (ret) {
+<<<<<<< HEAD
 		kmem_cache_destroy(srb_cachep);
 		qlt_exit();
 		fc_release_transport(qla2xxx_transport_template);
@@ -6755,6 +6829,29 @@ qla2x00_module_init(void)
 		    ret);
 	}
 	return ret;
+=======
+		ql_log(ql_log_fatal, NULL, 0x0006,
+		    "pci_register_driver failed...ret=%d Failing load!.\n",
+		    ret);
+		goto release_vport_transport;
+	}
+	return ret;
+
+release_vport_transport:
+	fc_release_transport(qla2xxx_transport_vport_template);
+
+unreg_chrdev:
+	if (apidev_major >= 0)
+		unregister_chrdev(apidev_major, QLA2XXX_APIDEV);
+	fc_release_transport(qla2xxx_transport_template);
+
+qlt_exit:
+	qlt_exit();
+
+destroy_cache:
+	kmem_cache_destroy(srb_cachep);
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**

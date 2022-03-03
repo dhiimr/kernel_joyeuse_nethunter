@@ -18,6 +18,10 @@ int nvkm_i2c_bus_new_(const struct nvkm_i2c_bus_func *, struct nvkm_i2c_pad *,
 		      int id, struct nvkm_i2c_bus **);
 void nvkm_i2c_bus_del(struct nvkm_i2c_bus **);
 void nvkm_i2c_bus_init(struct nvkm_i2c_bus *);
+<<<<<<< HEAD
+=======
+void nvkm_i2c_bus_fini(struct nvkm_i2c_bus *);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 int nvkm_i2c_bit_xfer(struct nvkm_i2c_bus *, struct i2c_msg *, int);
 

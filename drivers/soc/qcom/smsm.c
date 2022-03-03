@@ -117,7 +117,11 @@ struct smsm_entry {
 	DECLARE_BITMAP(irq_enabled, 32);
 	DECLARE_BITMAP(irq_rising, 32);
 	DECLARE_BITMAP(irq_falling, 32);
+<<<<<<< HEAD
 	u32 last_value;
+=======
+	unsigned long last_value;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	u32 *remote_state;
 	u32 *subscription;
@@ -212,8 +216,12 @@ static irqreturn_t smsm_intr(int irq, void *data)
 	u32 val;
 
 	val = readl(entry->remote_state);
+<<<<<<< HEAD
 	changed = val ^ entry->last_value;
 	entry->last_value = val;
+=======
+	changed = val ^ xchg(&entry->last_value, val);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for_each_set_bit(i, entry->irq_enabled, 32) {
 		if (!(changed & BIT(i)))
@@ -274,6 +282,15 @@ static void smsm_unmask_irq(struct irq_data *irqd)
 	struct qcom_smsm *smsm = entry->smsm;
 	u32 val;
 
+<<<<<<< HEAD
+=======
+	/* Make sure our last cached state is up-to-date */
+	if (readl(entry->remote_state) & BIT(irq))
+		set_bit(irq, &entry->last_value);
+	else
+		clear_bit(irq, &entry->last_value);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	set_bit(irq, entry->irq_enabled);
 
 	if (entry->subscription) {

@@ -41,7 +41,10 @@ enum {
 	MM_ANONPAGES,	/* Resident anonymous pages */
 	MM_SWAPENTS,	/* Anonymous swap entries */
 	MM_SHMEMPAGES,	/* Resident shared memory pages */
+<<<<<<< HEAD
 	MM_UNRECLAIMABLE,	/* Unreclaimable pages, e.g. shared with HW */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	NR_MM_COUNTERS
 };
 

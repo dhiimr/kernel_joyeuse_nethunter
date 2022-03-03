@@ -758,6 +758,10 @@ static __always_inline bool pv_vcpu_is_preempted(long cpu)
 	    PV_RESTORE_ALL_CALLER_REGS					\
 	    FRAME_END							\
 	    "ret;"							\
+<<<<<<< HEAD
+=======
+	    ".size " PV_THUNK_NAME(func) ", .-" PV_THUNK_NAME(func) ";"	\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    ".popsection")
 
 /* Get a reference to a callee-save function */

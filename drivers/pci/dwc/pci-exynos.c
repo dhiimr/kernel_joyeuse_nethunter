@@ -683,7 +683,11 @@ static int __init exynos_pcie_probe(struct platform_device *pdev)
 
 	ep->phy = devm_of_phy_get(dev, np, NULL);
 	if (IS_ERR(ep->phy)) {
+<<<<<<< HEAD
 		if (PTR_ERR(ep->phy) == -EPROBE_DEFER)
+=======
+		if (PTR_ERR(ep->phy) != -ENODEV)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return PTR_ERR(ep->phy);
 		dev_warn(dev, "Use the 'phy' property. Current DT of pci-exynos was deprecated!!\n");
 	} else

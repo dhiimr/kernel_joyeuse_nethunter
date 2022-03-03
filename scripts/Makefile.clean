@@ -12,7 +12,11 @@ include scripts/Kbuild.include
 
 # The filename Kbuild has precedence over Makefile
 kbuild-dir := $(if $(filter /%,$(src)),$(src),$(srctree)/$(src))
+<<<<<<< HEAD
 -include $(if $(wildcard $(kbuild-dir)/Kbuild), $(kbuild-dir)/Kbuild, $(kbuild-dir)/Makefile)
+=======
+include $(if $(wildcard $(kbuild-dir)/Kbuild), $(kbuild-dir)/Kbuild, $(kbuild-dir)/Makefile)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 # Figure out what we need to build from the various variables
 # ==========================================================================

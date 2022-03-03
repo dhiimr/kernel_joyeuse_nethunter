@@ -527,7 +527,11 @@ static int jc42_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	}
 	data->config = config;
 
+<<<<<<< HEAD
 	hwmon_dev = devm_hwmon_device_register_with_info(dev, client->name,
+=======
+	hwmon_dev = devm_hwmon_device_register_with_info(dev, "jc42",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 							 data, &jc42_chip_info,
 							 NULL);
 	return PTR_ERR_OR_ZERO(hwmon_dev);

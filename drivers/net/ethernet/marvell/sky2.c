@@ -215,7 +215,11 @@ io_error:
 
 static inline u16 gm_phy_read(struct sky2_hw *hw, unsigned port, u16 reg)
 {
+<<<<<<< HEAD
 	u16 v;
+=======
+	u16 v = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__gm_phy_read(hw, port, reg, &v);
 	return v;
 }
@@ -4947,6 +4951,23 @@ static const struct dmi_system_id msi_blacklist[] = {
 			DMI_MATCH(DMI_PRODUCT_NAME, "P-79"),
 		},
 	},
+<<<<<<< HEAD
+=======
+	{
+		.ident = "ASUS P6T",
+		.matches = {
+			DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK Computer INC."),
+			DMI_MATCH(DMI_BOARD_NAME, "P6T"),
+		},
+	},
+	{
+		.ident = "ASUS P6X",
+		.matches = {
+			DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK Computer INC."),
+			DMI_MATCH(DMI_BOARD_NAME, "P6X"),
+		},
+	},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{}
 };
 

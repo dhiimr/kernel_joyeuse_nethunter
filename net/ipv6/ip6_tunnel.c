@@ -272,7 +272,10 @@ static int ip6_tnl_create2(struct net_device *dev)
 
 	strcpy(t->parms.name, dev->name);
 
+<<<<<<< HEAD
 	dev_hold(dev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ip6_tnl_link(ip6n, t);
 	return 0;
 
@@ -652,7 +655,11 @@ ip4ip6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
 		if (rel_info > dst_mtu(skb_dst(skb2)))
 			goto out;
 
+<<<<<<< HEAD
 		skb_dst_update_pmtu(skb2, rel_info);
+=======
+		skb_dst_update_pmtu_no_confirm(skb2, rel_info);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	if (rel_type == ICMP_REDIRECT)
 		skb_dst(skb2)->ops->redirect(skb_dst(skb2), NULL, skb2);
@@ -872,7 +879,19 @@ int ip6_tnl_rcv(struct ip6_tnl *t, struct sk_buff *skb,
 		struct metadata_dst *tun_dst,
 		bool log_ecn_err)
 {
+<<<<<<< HEAD
 	return __ip6_tnl_rcv(t, skb, tpi, NULL, ip6ip6_dscp_ecn_decapsulate,
+=======
+	int (*dscp_ecn_decapsulate)(const struct ip6_tnl *t,
+				    const struct ipv6hdr *ipv6h,
+				    struct sk_buff *skb);
+
+	dscp_ecn_decapsulate = ip6ip6_dscp_ecn_decapsulate;
+	if (tpi->proto == htons(ETH_P_IP))
+		dscp_ecn_decapsulate = ip4ip6_dscp_ecn_decapsulate;
+
+	return __ip6_tnl_rcv(t, skb, tpi, NULL, dscp_ecn_decapsulate,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			     log_ecn_err);
 }
 EXPORT_SYMBOL(ip6_tnl_rcv);
@@ -1001,12 +1020,21 @@ int ip6_tnl_xmit_ctl(struct ip6_tnl *t,
 			ldev = dev_get_by_index_rcu(net, p->link);
 
 		if (unlikely(!ipv6_chk_addr(net, laddr, ldev, 0)))
+<<<<<<< HEAD
 			pr_warn("%s xmit: Local address not yet configured!\n",
 				p->name);
 		else if (!ipv6_addr_is_multicast(raddr) &&
 			 unlikely(ipv6_chk_addr(net, raddr, NULL, 0)))
 			pr_warn("%s xmit: Routing loop! Remote address found on this node!\n",
 				p->name);
+=======
+			pr_warn_ratelimited("%s xmit: Local address not yet configured!\n",
+					    p->name);
+		else if (!ipv6_addr_is_multicast(raddr) &&
+			 unlikely(ipv6_chk_addr(net, raddr, NULL, 0)))
+			pr_warn_ratelimited("%s xmit: Routing loop! Remote address found on this node!\n",
+					    p->name);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		else
 			ret = 1;
 		rcu_read_unlock();
@@ -1138,7 +1166,11 @@ route_lookup:
 	mtu = max(mtu, skb->protocol == htons(ETH_P_IPV6) ?
 		       IPV6_MIN_MTU : IPV4_MIN_MTU);
 
+<<<<<<< HEAD
 	skb_dst_update_pmtu(skb, mtu);
+=======
+	skb_dst_update_pmtu_no_confirm(skb, mtu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (skb->len - t->tun_hlen - eth_hlen > mtu && !skb_is_gso(skb)) {
 		*pmtu = mtu;
 		err = -EMSGSIZE;
@@ -1280,12 +1312,19 @@ ip4ip6_tnl_xmit(struct sk_buff *skb, struct net_device *dev)
 	}
 
 	fl6.flowi6_uid = sock_net_uid(dev_net(dev), NULL);
+<<<<<<< HEAD
+=======
+	dsfield = INET_ECN_encapsulate(dsfield, ipv4_get_dsfield(iph));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (iptunnel_handle_offloads(skb, SKB_GSO_IPXIP6))
 		return -1;
 
+<<<<<<< HEAD
 	dsfield = INET_ECN_encapsulate(dsfield, ipv4_get_dsfield(iph));
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	skb_set_inner_ipproto(skb, IPPROTO_IPIP);
 
 	err = ip6_tnl_xmit(skb, dev, dsfield, &fl6, encap_limit, &mtu,
@@ -1371,12 +1410,19 @@ ip6ip6_tnl_xmit(struct sk_buff *skb, struct net_device *dev)
 	}
 
 	fl6.flowi6_uid = sock_net_uid(dev_net(dev), NULL);
+<<<<<<< HEAD
+=======
+	dsfield = INET_ECN_encapsulate(dsfield, ipv6_get_dsfield(ipv6h));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (iptunnel_handle_offloads(skb, SKB_GSO_IPXIP6))
 		return -1;
 
+<<<<<<< HEAD
 	dsfield = INET_ECN_encapsulate(dsfield, ipv6_get_dsfield(ipv6h));
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	skb_set_inner_ipproto(skb, IPPROTO_IPV6);
 
 	err = ip6_tnl_xmit(skb, dev, dsfield, &fl6, encap_limit, &mtu,
@@ -1856,6 +1902,10 @@ ip6_tnl_dev_init_gen(struct net_device *dev)
 	dev->min_mtu = ETH_MIN_MTU;
 	dev->max_mtu = IP6_MAX_MTU - dev->hard_header_len;
 
+<<<<<<< HEAD
+=======
+	dev_hold(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 
 destroy_dst:
@@ -1880,10 +1930,15 @@ static int ip6_tnl_dev_init(struct net_device *dev)
 	if (err)
 		return err;
 	ip6_tnl_link_config(t);
+<<<<<<< HEAD
 	if (t->parms.collect_md) {
 		dev->features |= NETIF_F_NETNS_LOCAL;
 		netif_keep_dst(dev);
 	}
+=======
+	if (t->parms.collect_md)
+		netif_keep_dst(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -1901,7 +1956,10 @@ static int __net_init ip6_fb_tnl_dev_init(struct net_device *dev)
 	struct ip6_tnl_net *ip6n = net_generic(net, ip6_tnl_net_id);
 
 	t->parms.proto = IPPROTO_IPV6;
+<<<<<<< HEAD
 	dev_hold(dev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rcu_assign_pointer(ip6n->tnls_wc[0], t);
 	return 0;

@@ -2201,7 +2201,11 @@ static void fill_sec_cpl_for_aead(struct cpl_tx_sec_pdu *sec_cpl,
 	unsigned int mac_mode = CHCR_SCMD_AUTH_MODE_CBCMAC;
 	unsigned int c_id = chcrctx->dev->rx_channel_id;
 	unsigned int ccm_xtra;
+<<<<<<< HEAD
 	unsigned char tag_offset = 0, auth_offset = 0;
+=======
+	unsigned int tag_offset = 0, auth_offset = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int assoclen;
 
 	if (get_aead_subtype(tfm) == CRYPTO_ALG_SUB_TYPE_AEAD_RFC4309)
@@ -2693,9 +2697,12 @@ static int chcr_gcm_setauthsize(struct crypto_aead *tfm, unsigned int authsize)
 		aeadctx->mayverify = VERIFY_SW;
 		break;
 	default:
+<<<<<<< HEAD
 
 		  crypto_tfm_set_flags((struct crypto_tfm *) tfm,
 			CRYPTO_TFM_RES_BAD_KEY_LEN);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 	}
 	return crypto_aead_setauthsize(aeadctx->sw_cipher, authsize);
@@ -2720,8 +2727,11 @@ static int chcr_4106_4309_setauthsize(struct crypto_aead *tfm,
 		aeadctx->mayverify = VERIFY_HW;
 		break;
 	default:
+<<<<<<< HEAD
 		crypto_tfm_set_flags((struct crypto_tfm *)tfm,
 				     CRYPTO_TFM_RES_BAD_KEY_LEN);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 	}
 	return crypto_aead_setauthsize(aeadctx->sw_cipher, authsize);
@@ -2762,8 +2772,11 @@ static int chcr_ccm_setauthsize(struct crypto_aead *tfm,
 		aeadctx->mayverify = VERIFY_HW;
 		break;
 	default:
+<<<<<<< HEAD
 		crypto_tfm_set_flags((struct crypto_tfm *)tfm,
 				     CRYPTO_TFM_RES_BAD_KEY_LEN);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 	}
 	return crypto_aead_setauthsize(aeadctx->sw_cipher, authsize);
@@ -2790,8 +2803,12 @@ static int chcr_ccm_common_setkey(struct crypto_aead *aead,
 		ck_size = CHCR_KEYCTX_CIPHER_KEY_SIZE_256;
 		mk_size = CHCR_KEYCTX_MAC_KEY_SIZE_256;
 	} else {
+<<<<<<< HEAD
 		crypto_tfm_set_flags((struct crypto_tfm *)aead,
 				     CRYPTO_TFM_RES_BAD_KEY_LEN);
+=======
+		crypto_aead_set_flags(aead, CRYPTO_TFM_RES_BAD_KEY_LEN);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		aeadctx->enckey_len = 0;
 		return	-EINVAL;
 	}
@@ -2831,8 +2848,12 @@ static int chcr_aead_rfc4309_setkey(struct crypto_aead *aead, const u8 *key,
 	int error;
 
 	if (keylen < 3) {
+<<<<<<< HEAD
 		crypto_tfm_set_flags((struct crypto_tfm *)aead,
 				     CRYPTO_TFM_RES_BAD_KEY_LEN);
+=======
+		crypto_aead_set_flags(aead, CRYPTO_TFM_RES_BAD_KEY_LEN);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		aeadctx->enckey_len = 0;
 		return	-EINVAL;
 	}
@@ -2883,8 +2904,12 @@ static int chcr_gcm_setkey(struct crypto_aead *aead, const u8 *key,
 	} else if (keylen == AES_KEYSIZE_256) {
 		ck_size = CHCR_KEYCTX_CIPHER_KEY_SIZE_256;
 	} else {
+<<<<<<< HEAD
 		crypto_tfm_set_flags((struct crypto_tfm *)aead,
 				     CRYPTO_TFM_RES_BAD_KEY_LEN);
+=======
+		crypto_aead_set_flags(aead, CRYPTO_TFM_RES_BAD_KEY_LEN);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pr_err("GCM: Invalid key length %d\n", keylen);
 		ret = -EINVAL;
 		goto out;

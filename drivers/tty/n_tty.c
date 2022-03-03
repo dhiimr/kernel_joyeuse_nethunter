@@ -128,10 +128,13 @@ struct n_tty_data {
 
 #define MASK(x) ((x) & (N_TTY_BUF_SIZE - 1))
 
+<<<<<<< HEAD
 #if defined(CONFIG_TTY_FLUSH_LOCAL_ECHO)
 static void continue_process_echoes(struct work_struct *work);
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline size_t read_cnt(struct n_tty_data *ldata)
 {
 	return ldata->read_head - ldata->read_tail;
@@ -768,6 +771,7 @@ static size_t __process_echoes(struct tty_struct *tty)
 			tail++;
 	}
 
+<<<<<<< HEAD
 #if defined(CONFIG_TTY_FLUSH_LOCAL_ECHO)
 	if (ldata->echo_commit != tail) {
 		if (!tty->delayed_work) {
@@ -779,6 +783,9 @@ static size_t __process_echoes(struct tty_struct *tty)
 #endif
 
 not_yet_stored:
+=======
+ not_yet_stored:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ldata->echo_tail = tail;
 	return old_space - space;
 }
@@ -844,6 +851,7 @@ static void flush_echoes(struct tty_struct *tty)
 	mutex_unlock(&ldata->output_lock);
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_TTY_FLUSH_LOCAL_ECHO)
 static void continue_process_echoes(struct work_struct *work)
 {
@@ -858,6 +866,8 @@ static void continue_process_echoes(struct work_struct *work)
 }
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  *	add_echo_byte	-	add a byte to the echo buffer
  *	@c: unicode byte to echo
@@ -1405,7 +1415,11 @@ handle_newline:
 			put_tty_queue(c, ldata);
 			smp_store_release(&ldata->canon_head, ldata->read_head);
 			kill_fasync(&tty->fasync, SIGIO, POLL_IN);
+<<<<<<< HEAD
 			wake_up_interruptible_poll(&tty->read_wait, POLLIN);
+=======
+			wake_up_interruptible_poll(&tty->read_wait, POLLIN | POLLRDNORM);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return 0;
 		}
 	}
@@ -1686,7 +1700,11 @@ static void __receive_buf(struct tty_struct *tty, const unsigned char *cp,
 
 	if (read_cnt(ldata)) {
 		kill_fasync(&tty->fasync, SIGIO, POLL_IN);
+<<<<<<< HEAD
 		wake_up_interruptible_poll(&tty->read_wait, POLLIN);
+=======
+		wake_up_interruptible_poll(&tty->read_wait, POLLIN | POLLRDNORM);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 
@@ -1732,7 +1750,11 @@ n_tty_receive_buf_common(struct tty_struct *tty, const unsigned char *cp,
 
 	down_read(&tty->termios_rwsem);
 
+<<<<<<< HEAD
 	while (1) {
+=======
+	do {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/*
 		 * When PARMRK is set, each input char may take up to 3 chars
 		 * in the read buf; reduce the buffer space avail by 3x
@@ -1774,7 +1796,11 @@ n_tty_receive_buf_common(struct tty_struct *tty, const unsigned char *cp,
 			fp += n;
 		count -= n;
 		rcvd += n;
+<<<<<<< HEAD
 	}
+=======
+	} while (!test_bit(TTY_LDISC_CHANGING, &tty->flags));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	tty->receive_room = room;
 
@@ -2241,7 +2267,11 @@ static ssize_t n_tty_read(struct tty_struct *tty, struct file *file,
 					break;
 				if (!timeout)
 					break;
+<<<<<<< HEAD
 				if (file->f_flags & O_NONBLOCK) {
+=======
+				if (tty_io_nonblock(tty, file)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					retval = -EAGAIN;
 					break;
 				}
@@ -2395,7 +2425,11 @@ static ssize_t n_tty_write(struct tty_struct *tty, struct file *file,
 		}
 		if (!nr)
 			break;
+<<<<<<< HEAD
 		if (file->f_flags & O_NONBLOCK) {
+=======
+		if (tty_io_nonblock(tty, file)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			retval = -EAGAIN;
 			break;
 		}

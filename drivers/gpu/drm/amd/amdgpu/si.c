@@ -1783,7 +1783,11 @@ static void si_program_aspm(struct amdgpu_device *adev)
 			if (orig != data)
 				si_pif_phy1_wreg(adev,PB1_PIF_PWRDOWN_1, data);
 
+<<<<<<< HEAD
 			if ((adev->family != CHIP_OLAND) && (adev->family != CHIP_HAINAN)) {
+=======
+			if ((adev->asic_type != CHIP_OLAND) && (adev->asic_type != CHIP_HAINAN)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				orig = data = si_pif_phy0_rreg(adev,PB0_PIF_PWRDOWN_0);
 				data &= ~PLL_RAMP_UP_TIME_0_MASK;
 				if (orig != data)
@@ -1832,14 +1836,22 @@ static void si_program_aspm(struct amdgpu_device *adev)
 
 			orig = data = si_pif_phy0_rreg(adev,PB0_PIF_CNTL);
 			data &= ~LS2_EXIT_TIME_MASK;
+<<<<<<< HEAD
 			if ((adev->family == CHIP_OLAND) || (adev->family == CHIP_HAINAN))
+=======
+			if ((adev->asic_type == CHIP_OLAND) || (adev->asic_type == CHIP_HAINAN))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				data |= LS2_EXIT_TIME(5);
 			if (orig != data)
 				si_pif_phy0_wreg(adev,PB0_PIF_CNTL, data);
 
 			orig = data = si_pif_phy1_rreg(adev,PB1_PIF_CNTL);
 			data &= ~LS2_EXIT_TIME_MASK;
+<<<<<<< HEAD
 			if ((adev->family == CHIP_OLAND) || (adev->family == CHIP_HAINAN))
+=======
+			if ((adev->asic_type == CHIP_OLAND) || (adev->asic_type == CHIP_HAINAN))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				data |= LS2_EXIT_TIME(5);
 			if (orig != data)
 				si_pif_phy1_wreg(adev,PB1_PIF_CNTL, data);

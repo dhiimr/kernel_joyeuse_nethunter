@@ -386,7 +386,11 @@ static int edac_pci_main_kobj_setup(void)
 
 	/* Error unwind statck */
 kobject_init_and_add_fail:
+<<<<<<< HEAD
 	kfree(edac_pci_top_main_kobj);
+=======
+	kobject_put(edac_pci_top_main_kobj);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 kzalloc_fail:
 	module_put(THIS_MODULE);

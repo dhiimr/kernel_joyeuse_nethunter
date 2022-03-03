@@ -26,7 +26,11 @@
 #include <linux/errno.h>
 #include <linux/kmsg_dump.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <linux/spinlock.h>
+=======
+#include <linux/semaphore.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/time.h>
 #include <linux/types.h>
 
@@ -88,7 +92,11 @@ struct pstore_record {
  * @owner:	module which is repsonsible for this backend driver
  * @name:	name of the backend driver
  *
+<<<<<<< HEAD
  * @buf_lock:	spinlock to serialize access to @buf
+=======
+ * @buf_lock:	semaphore to serialize access to @buf
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @buf:	preallocated crash dump buffer
  * @bufsize:	size of @buf available for crash dump bytes (must match
  *		smallest number of bytes available for writing to a
@@ -173,7 +181,11 @@ struct pstore_info {
 	struct module	*owner;
 	char		*name;
 
+<<<<<<< HEAD
 	spinlock_t	buf_lock;
+=======
+	struct semaphore buf_lock;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	char		*buf;
 	size_t		bufsize;
 
@@ -199,7 +211,10 @@ struct pstore_info {
 
 extern int pstore_register(struct pstore_info *);
 extern void pstore_unregister(struct pstore_info *);
+<<<<<<< HEAD
 extern bool pstore_cannot_block_path(enum kmsg_dump_reason reason);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct pstore_ftrace_record {
 	unsigned long ip;

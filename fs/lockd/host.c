@@ -431,12 +431,16 @@ nlm_bind_host(struct nlm_host *host)
 	 * RPC rebind is required
 	 */
 	if ((clnt = host->h_rpcclnt) != NULL) {
+<<<<<<< HEAD
 		if (time_after_eq(jiffies, host->h_nextrebind)) {
 			rpc_force_rebind(clnt);
 			host->h_nextrebind = jiffies + NLM_HOST_REBIND;
 			dprintk("lockd: next rebind in %lu jiffies\n",
 					host->h_nextrebind - jiffies);
 		}
+=======
+		nlm_rebind_host(host);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		unsigned long increment = nlmsvc_timeout;
 		struct rpc_timeout timeparms = {
@@ -484,13 +488,29 @@ nlm_bind_host(struct nlm_host *host)
 	return clnt;
 }
 
+<<<<<<< HEAD
 /*
  * Force a portmap lookup of the remote lockd port
+=======
+/**
+ * nlm_rebind_host - If needed, force a portmap lookup of the peer's lockd port
+ * @host: NLM host handle for peer
+ *
+ * This is not needed when using a connection-oriented protocol, such as TCP.
+ * The existing autobind mechanism is sufficient to force a rebind when
+ * required, e.g. on connection state transitions.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 void
 nlm_rebind_host(struct nlm_host *host)
 {
+<<<<<<< HEAD
 	dprintk("lockd: rebind host %s\n", host->h_name);
+=======
+	if (host->h_proto != IPPROTO_UDP)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (host->h_rpcclnt && time_after_eq(jiffies, host->h_nextrebind)) {
 		rpc_force_rebind(host->h_rpcclnt);
 		host->h_nextrebind = jiffies + NLM_HOST_REBIND;

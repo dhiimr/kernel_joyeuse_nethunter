@@ -226,9 +226,12 @@ static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
 static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
 	{"Headphone", NULL, "Platform Clock"},
 	{"Headset Mic", NULL, "Platform Clock"},
+<<<<<<< HEAD
 	{"Internal Mic", NULL, "Platform Clock"},
 	{"Speaker", NULL, "Platform Clock"},
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{"Headset Mic", NULL, "MICBIAS1"},
 	{"IN2P", NULL, "Headset Mic"},
 	{"Headphone", NULL, "HPOL"},
@@ -236,19 +239,35 @@ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
 };
 
 static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic1_map[] = {
+<<<<<<< HEAD
+=======
+	{"Internal Mic", NULL, "Platform Clock"},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{"DMIC1", NULL, "Internal Mic"},
 };
 
 static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic2_map[] = {
+<<<<<<< HEAD
+=======
+	{"Internal Mic", NULL, "Platform Clock"},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{"DMIC2", NULL, "Internal Mic"},
 };
 
 static const struct snd_soc_dapm_route byt_rt5640_intmic_in1_map[] = {
+<<<<<<< HEAD
+=======
+	{"Internal Mic", NULL, "Platform Clock"},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{"Internal Mic", NULL, "MICBIAS1"},
 	{"IN1P", NULL, "Internal Mic"},
 };
 
 static const struct snd_soc_dapm_route byt_rt5640_intmic_in3_map[] = {
+<<<<<<< HEAD
+=======
+	{"Internal Mic", NULL, "Platform Clock"},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{"Internal Mic", NULL, "MICBIAS1"},
 	{"IN3P", NULL, "Internal Mic"},
 };
@@ -290,6 +309,10 @@ static const struct snd_soc_dapm_route byt_rt5640_ssp0_aif2_map[] = {
 };
 
 static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
+<<<<<<< HEAD
+=======
+	{"Speaker", NULL, "Platform Clock"},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{"Speaker", NULL, "SPOLP"},
 	{"Speaker", NULL, "SPOLN"},
 	{"Speaker", NULL, "SPORP"},
@@ -297,6 +320,10 @@ static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
 };
 
 static const struct snd_soc_dapm_route byt_rt5640_mono_spk_map[] = {
+<<<<<<< HEAD
+=======
+	{"Speaker", NULL, "Platform Clock"},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{"Speaker", NULL, "SPOLP"},
 	{"Speaker", NULL, "SPOLN"},
 };

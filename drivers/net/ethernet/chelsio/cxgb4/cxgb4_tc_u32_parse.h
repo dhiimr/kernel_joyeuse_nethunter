@@ -38,12 +38,20 @@
 struct cxgb4_match_field {
 	int off; /* Offset from the beginning of the header to match */
 	/* Fill the value/mask pair in the spec if matched */
+<<<<<<< HEAD
 	int (*val)(struct ch_filter_specification *f, u32 val, u32 mask);
+=======
+	int (*val)(struct ch_filter_specification *f, __be32 val, __be32 mask);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* IPv4 match fields */
 static inline int cxgb4_fill_ipv4_tos(struct ch_filter_specification *f,
+<<<<<<< HEAD
 				      u32 val, u32 mask)
+=======
+				      __be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	f->val.tos  = (ntohl(val)  >> 16) & 0x000000FF;
 	f->mask.tos = (ntohl(mask) >> 16) & 0x000000FF;
@@ -52,7 +60,11 @@ static inline int cxgb4_fill_ipv4_tos(struct ch_filter_specification *f,
 }
 
 static inline int cxgb4_fill_ipv4_frag(struct ch_filter_specification *f,
+<<<<<<< HEAD
 				       u32 val, u32 mask)
+=======
+				       __be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u32 mask_val;
 	u8 frag_val;
@@ -74,7 +86,11 @@ static inline int cxgb4_fill_ipv4_frag(struct ch_filter_specification *f,
 }
 
 static inline int cxgb4_fill_ipv4_proto(struct ch_filter_specification *f,
+<<<<<<< HEAD
 					u32 val, u32 mask)
+=======
+					__be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	f->val.proto  = (ntohl(val)  >> 16) & 0x000000FF;
 	f->mask.proto = (ntohl(mask) >> 16) & 0x000000FF;
@@ -83,7 +99,11 @@ static inline int cxgb4_fill_ipv4_proto(struct ch_filter_specification *f,
 }
 
 static inline int cxgb4_fill_ipv4_src_ip(struct ch_filter_specification *f,
+<<<<<<< HEAD
 					 u32 val, u32 mask)
+=======
+					 __be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	memcpy(&f->val.fip[0],  &val,  sizeof(u32));
 	memcpy(&f->mask.fip[0], &mask, sizeof(u32));
@@ -92,7 +112,11 @@ static inline int cxgb4_fill_ipv4_src_ip(struct ch_filter_specification *f,
 }
 
 static inline int cxgb4_fill_ipv4_dst_ip(struct ch_filter_specification *f,
+<<<<<<< HEAD
 					 u32 val, u32 mask)
+=======
+					 __be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	memcpy(&f->val.lip[0],  &val,  sizeof(u32));
 	memcpy(&f->mask.lip[0], &mask, sizeof(u32));
@@ -111,7 +135,11 @@ static const struct cxgb4_match_field cxgb4_ipv4_fields[] = {
 
 /* IPv6 match fields */
 static inline int cxgb4_fill_ipv6_tos(struct ch_filter_specification *f,
+<<<<<<< HEAD
 				      u32 val, u32 mask)
+=======
+				      __be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	f->val.tos  = (ntohl(val)  >> 20) & 0x000000FF;
 	f->mask.tos = (ntohl(mask) >> 20) & 0x000000FF;
@@ -120,7 +148,11 @@ static inline int cxgb4_fill_ipv6_tos(struct ch_filter_specification *f,
 }
 
 static inline int cxgb4_fill_ipv6_proto(struct ch_filter_specification *f,
+<<<<<<< HEAD
 					u32 val, u32 mask)
+=======
+					__be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	f->val.proto  = (ntohl(val)  >> 8) & 0x000000FF;
 	f->mask.proto = (ntohl(mask) >> 8) & 0x000000FF;
@@ -129,7 +161,11 @@ static inline int cxgb4_fill_ipv6_proto(struct ch_filter_specification *f,
 }
 
 static inline int cxgb4_fill_ipv6_src_ip0(struct ch_filter_specification *f,
+<<<<<<< HEAD
 					  u32 val, u32 mask)
+=======
+					  __be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	memcpy(&f->val.fip[0],  &val,  sizeof(u32));
 	memcpy(&f->mask.fip[0], &mask, sizeof(u32));
@@ -138,7 +174,11 @@ static inline int cxgb4_fill_ipv6_src_ip0(struct ch_filter_specification *f,
 }
 
 static inline int cxgb4_fill_ipv6_src_ip1(struct ch_filter_specification *f,
+<<<<<<< HEAD
 					  u32 val, u32 mask)
+=======
+					  __be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	memcpy(&f->val.fip[4],  &val,  sizeof(u32));
 	memcpy(&f->mask.fip[4], &mask, sizeof(u32));
@@ -147,7 +187,11 @@ static inline int cxgb4_fill_ipv6_src_ip1(struct ch_filter_specification *f,
 }
 
 static inline int cxgb4_fill_ipv6_src_ip2(struct ch_filter_specification *f,
+<<<<<<< HEAD
 					  u32 val, u32 mask)
+=======
+					  __be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	memcpy(&f->val.fip[8],  &val,  sizeof(u32));
 	memcpy(&f->mask.fip[8], &mask, sizeof(u32));
@@ -156,7 +200,11 @@ static inline int cxgb4_fill_ipv6_src_ip2(struct ch_filter_specification *f,
 }
 
 static inline int cxgb4_fill_ipv6_src_ip3(struct ch_filter_specification *f,
+<<<<<<< HEAD
 					  u32 val, u32 mask)
+=======
+					  __be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	memcpy(&f->val.fip[12],  &val,  sizeof(u32));
 	memcpy(&f->mask.fip[12], &mask, sizeof(u32));
@@ -165,7 +213,11 @@ static inline int cxgb4_fill_ipv6_src_ip3(struct ch_filter_specification *f,
 }
 
 static inline int cxgb4_fill_ipv6_dst_ip0(struct ch_filter_specification *f,
+<<<<<<< HEAD
 					  u32 val, u32 mask)
+=======
+					  __be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	memcpy(&f->val.lip[0],  &val,  sizeof(u32));
 	memcpy(&f->mask.lip[0], &mask, sizeof(u32));
@@ -174,7 +226,11 @@ static inline int cxgb4_fill_ipv6_dst_ip0(struct ch_filter_specification *f,
 }
 
 static inline int cxgb4_fill_ipv6_dst_ip1(struct ch_filter_specification *f,
+<<<<<<< HEAD
 					  u32 val, u32 mask)
+=======
+					  __be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	memcpy(&f->val.lip[4],  &val,  sizeof(u32));
 	memcpy(&f->mask.lip[4], &mask, sizeof(u32));
@@ -183,7 +239,11 @@ static inline int cxgb4_fill_ipv6_dst_ip1(struct ch_filter_specification *f,
 }
 
 static inline int cxgb4_fill_ipv6_dst_ip2(struct ch_filter_specification *f,
+<<<<<<< HEAD
 					  u32 val, u32 mask)
+=======
+					  __be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	memcpy(&f->val.lip[8],  &val,  sizeof(u32));
 	memcpy(&f->mask.lip[8], &mask, sizeof(u32));
@@ -192,7 +252,11 @@ static inline int cxgb4_fill_ipv6_dst_ip2(struct ch_filter_specification *f,
 }
 
 static inline int cxgb4_fill_ipv6_dst_ip3(struct ch_filter_specification *f,
+<<<<<<< HEAD
 					  u32 val, u32 mask)
+=======
+					  __be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	memcpy(&f->val.lip[12],  &val,  sizeof(u32));
 	memcpy(&f->mask.lip[12], &mask, sizeof(u32));
@@ -216,7 +280,11 @@ static const struct cxgb4_match_field cxgb4_ipv6_fields[] = {
 
 /* TCP/UDP match */
 static inline int cxgb4_fill_l4_ports(struct ch_filter_specification *f,
+<<<<<<< HEAD
 				      u32 val, u32 mask)
+=======
+				      __be32 val, __be32 mask)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	f->val.fport  = ntohl(val)  >> 16;
 	f->mask.fport = ntohl(mask) >> 16;
@@ -237,12 +305,17 @@ static const struct cxgb4_match_field cxgb4_udp_fields[] = {
 };
 
 struct cxgb4_next_header {
+<<<<<<< HEAD
 	unsigned int offset; /* Offset to next header */
 	/* offset, shift, and mask added to offset above
+=======
+	/* Offset, shift, and mask added to beginning of the header
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * to get to next header.  Useful when using a header
 	 * field's value to jump to next header such as IHL field
 	 * in IPv4 header.
 	 */
+<<<<<<< HEAD
 	unsigned int offoff;
 	u32 shift;
 	u32 mask;
@@ -250,6 +323,10 @@ struct cxgb4_next_header {
 	unsigned int match_off;
 	u32 match_val;
 	u32 match_mask;
+=======
+	struct tc_u32_sel sel;
+	struct tc_u32_key key;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* location of jump to make */
 	const struct cxgb4_match_field *jump;
 };
@@ -258,6 +335,7 @@ struct cxgb4_next_header {
  * IPv4 header.
  */
 static const struct cxgb4_next_header cxgb4_ipv4_jumps[] = {
+<<<<<<< HEAD
 	{ .offset = 0, .offoff = 0, .shift = 6, .mask = 0xF,
 	  .match_off = 8, .match_val = 0x600, .match_mask = 0xFF00,
 	  .jump = cxgb4_tcp_fields },
@@ -265,12 +343,46 @@ static const struct cxgb4_next_header cxgb4_ipv4_jumps[] = {
 	  .match_off = 8, .match_val = 0x1100, .match_mask = 0xFF00,
 	  .jump = cxgb4_udp_fields },
 	{ .jump = NULL }
+=======
+	{
+		/* TCP Jump */
+		.sel = {
+			.off = 0,
+			.offoff = 0,
+			.offshift = 6,
+			.offmask = cpu_to_be16(0x0f00),
+		},
+		.key = {
+			.off = 8,
+			.val = cpu_to_be32(0x00060000),
+			.mask = cpu_to_be32(0x00ff0000),
+		},
+		.jump = cxgb4_tcp_fields,
+	},
+	{
+		/* UDP Jump */
+		.sel = {
+			.off = 0,
+			.offoff = 0,
+			.offshift = 6,
+			.offmask = cpu_to_be16(0x0f00),
+		},
+		.key = {
+			.off = 8,
+			.val = cpu_to_be32(0x00110000),
+			.mask = cpu_to_be32(0x00ff0000),
+		},
+		.jump = cxgb4_udp_fields,
+	},
+	{ .jump = NULL },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* Accept a rule with a jump directly past the 40 Bytes of IPv6 fixed header
  * to get to transport layer header.
  */
 static const struct cxgb4_next_header cxgb4_ipv6_jumps[] = {
+<<<<<<< HEAD
 	{ .offset = 0x28, .offoff = 0, .shift = 0, .mask = 0,
 	  .match_off = 4, .match_val = 0x60000, .match_mask = 0xFF0000,
 	  .jump = cxgb4_tcp_fields },
@@ -278,6 +390,39 @@ static const struct cxgb4_next_header cxgb4_ipv6_jumps[] = {
 	  .match_off = 4, .match_val = 0x110000, .match_mask = 0xFF0000,
 	  .jump = cxgb4_udp_fields },
 	{ .jump = NULL }
+=======
+	{
+		/* TCP Jump */
+		.sel = {
+			.off = 40,
+			.offoff = 0,
+			.offshift = 0,
+			.offmask = 0,
+		},
+		.key = {
+			.off = 4,
+			.val = cpu_to_be32(0x00000600),
+			.mask = cpu_to_be32(0x0000ff00),
+		},
+		.jump = cxgb4_tcp_fields,
+	},
+	{
+		/* UDP Jump */
+		.sel = {
+			.off = 40,
+			.offoff = 0,
+			.offshift = 0,
+			.offmask = 0,
+		},
+		.key = {
+			.off = 4,
+			.val = cpu_to_be32(0x00001100),
+			.mask = cpu_to_be32(0x0000ff00),
+		},
+		.jump = cxgb4_udp_fields,
+	},
+	{ .jump = NULL },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct cxgb4_link {

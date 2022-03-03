@@ -110,7 +110,11 @@ static int __init serial_init(void)
 }
 module_init(serial_init);
 
+<<<<<<< HEAD
 static void __init serial_exit(void)
+=======
+static void __exit serial_exit(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	platform_device_unregister(&uart8250_device);
 }

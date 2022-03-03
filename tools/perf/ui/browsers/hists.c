@@ -3142,6 +3142,10 @@ static int perf_evsel__hists_browse(struct perf_evsel *evsel, int nr_events,
 
 				continue;
 			}
+<<<<<<< HEAD
+=======
+			actions->ms.map = map;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			top = pstack__peek(browser->pstack);
 			if (top == &browser->hists->dso_filter) {
 				/*

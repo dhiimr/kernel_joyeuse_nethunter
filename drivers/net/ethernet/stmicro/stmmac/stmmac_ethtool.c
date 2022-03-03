@@ -677,6 +677,7 @@ static int stmmac_ethtool_op_set_eee(struct net_device *dev,
 	struct stmmac_priv *priv = netdev_priv(dev);
 	int ret;
 
+<<<<<<< HEAD
 	if (!edata->eee_enabled) {
 		stmmac_disable_eee_mode(priv);
 	} else {
@@ -688,12 +689,22 @@ static int stmmac_ethtool_op_set_eee(struct net_device *dev,
 		if (!edata->eee_enabled)
 			return -EOPNOTSUPP;
 	}
+=======
+	if (!priv->dma_cap.eee)
+		return -EOPNOTSUPP;
+
+	if (!edata->eee_enabled)
+		stmmac_disable_eee_mode(priv);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = phy_ethtool_set_eee(dev->phydev, edata);
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	priv->eee_enabled = edata->eee_enabled;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	priv->tx_lpi_timer = edata->tx_lpi_timer;
 	return 0;
 }

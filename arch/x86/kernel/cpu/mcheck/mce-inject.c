@@ -46,8 +46,11 @@
 static struct mce i_mce;
 static struct dentry *dfs_inj;
 
+<<<<<<< HEAD
 static u8 n_banks;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define MAX_FLAG_OPT_SIZE	4
 #define NBCFG			0x44
 
@@ -108,6 +111,12 @@ static void setup_inj_struct(struct mce *m)
 	memset(m, 0, sizeof(struct mce));
 
 	m->cpuvendor = boot_cpu_data.x86_vendor;
+<<<<<<< HEAD
+=======
+	m->time	     = ktime_get_real_seconds();
+	m->cpuid     = cpuid_eax(1);
+	m->microcode = boot_cpu_data.microcode;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Update fake mce registers on current CPU. */
@@ -353,7 +362,11 @@ static ssize_t flags_write(struct file *filp, const char __user *ubuf,
 	char buf[MAX_FLAG_OPT_SIZE], *__buf;
 	int err;
 
+<<<<<<< HEAD
 	if (cnt > MAX_FLAG_OPT_SIZE)
+=======
+	if (!cnt || cnt > MAX_FLAG_OPT_SIZE)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 
 	if (copy_from_user(&buf, ubuf, cnt))
@@ -517,7 +530,11 @@ static void do_inject(void)
 	 */
 	if (inj_type == DFR_INT_INJ) {
 		i_mce.status |= MCI_STATUS_DEFERRED;
+<<<<<<< HEAD
 		i_mce.status |= (i_mce.status & ~MCI_STATUS_UC);
+=======
+		i_mce.status &= ~MCI_STATUS_UC;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/*
@@ -567,15 +584,33 @@ err:
 static int inj_bank_set(void *data, u64 val)
 {
 	struct mce *m = (struct mce *)data;
+<<<<<<< HEAD
 
 	if (val >= n_banks) {
 		pr_err("Non-existent MCE bank: %llu\n", val);
+=======
+	u8 n_banks;
+	u64 cap;
+
+	/* Get bank count on target CPU so we can handle non-uniform values. */
+	rdmsrl_on_cpu(m->extcpu, MSR_IA32_MCG_CAP, &cap);
+	n_banks = cap & MCG_BANKCNT_MASK;
+
+	if (val >= n_banks) {
+		pr_err("MCA bank %llu non-existent on CPU%d\n", val, m->extcpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 	}
 
 	m->bank = val;
 	do_inject();
 
+<<<<<<< HEAD
+=======
+	/* Reset injection struct */
+	setup_inj_struct(&i_mce);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -659,10 +694,13 @@ static struct dfs_node {
 static int __init debugfs_init(void)
 {
 	unsigned int i;
+<<<<<<< HEAD
 	u64 cap;
 
 	rdmsrl(MSR_IA32_MCG_CAP, cap);
 	n_banks = cap & MCG_BANKCNT_MASK;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	dfs_inj = debugfs_create_dir("mce-inject", NULL);
 	if (!dfs_inj)

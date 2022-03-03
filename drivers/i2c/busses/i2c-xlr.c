@@ -434,11 +434,22 @@ static int xlr_i2c_probe(struct platform_device *pdev)
 	i2c_set_adapdata(&priv->adap, priv);
 	ret = i2c_add_numbered_adapter(&priv->adap);
 	if (ret < 0)
+<<<<<<< HEAD
 		return ret;
+=======
+		goto err_unprepare_clk;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	platform_set_drvdata(pdev, priv);
 	dev_info(&priv->adap.dev, "Added I2C Bus.\n");
 	return 0;
+<<<<<<< HEAD
+=======
+
+err_unprepare_clk:
+	clk_unprepare(clk);
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int xlr_i2c_remove(struct platform_device *pdev)

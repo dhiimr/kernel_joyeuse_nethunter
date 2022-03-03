@@ -76,7 +76,11 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
 
 	if (offset < -SZ_128M || offset >= SZ_128M) {
 #ifdef CONFIG_ARM64_MODULE_PLTS
+<<<<<<< HEAD
 		struct plt_entry trampoline;
+=======
+		struct plt_entry trampoline, *dst;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		struct module *mod;
 
 		/*
@@ -104,17 +108,25 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
 		 * is added in the future, but for now, the pr_err() below
 		 * deals with a theoretical issue only.
 		 */
+<<<<<<< HEAD
 		trampoline = get_plt_entry(addr);
 		if (!plt_entries_equal(mod->arch.ftrace_trampoline,
 				       &trampoline)) {
 			if (!plt_entries_equal(mod->arch.ftrace_trampoline,
 					       &(struct plt_entry){})) {
+=======
+		dst = mod->arch.ftrace_trampoline;
+		trampoline = get_plt_entry(addr);
+		if (!plt_entries_equal(dst, &trampoline)) {
+			if (!plt_entries_equal(dst, &(struct plt_entry){})) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				pr_err("ftrace: far branches to multiple entry points unsupported inside a single module\n");
 				return -EINVAL;
 			}
 
 			/* point the trampoline to our ftrace entry point */
 			module_disable_ro(mod);
+<<<<<<< HEAD
 			*mod->arch.ftrace_trampoline = trampoline;
 			module_enable_ro(mod, true);
 
@@ -122,6 +134,25 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
 			smp_wmb();
 		}
 		addr = (unsigned long)(void *)mod->arch.ftrace_trampoline;
+=======
+			*dst = trampoline;
+			module_enable_ro(mod, true);
+
+			/*
+			 * Ensure updated trampoline is visible to instruction
+			 * fetch before we patch in the branch. Although the
+			 * architecture doesn't require an IPI in this case,
+			 * Neoverse-N1 erratum #1542419 does require one
+			 * if the TLB maintenance in module_enable_ro() is
+			 * skipped due to rodata_enabled. It doesn't seem worth
+			 * it to make it conditional given that this is
+			 * certainly not a fast-path.
+			 */
+			flush_icache_range((unsigned long)&dst[0],
+					   (unsigned long)&dst[1]);
+		}
+		addr = (unsigned long)dst;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else /* CONFIG_ARM64_MODULE_PLTS */
 		return -EINVAL;
 #endif /* CONFIG_ARM64_MODULE_PLTS */

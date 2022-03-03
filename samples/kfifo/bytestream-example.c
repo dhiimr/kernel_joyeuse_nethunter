@@ -124,8 +124,15 @@ static ssize_t fifo_write(struct file *file, const char __user *buf,
 	ret = kfifo_from_user(&test, buf, count, &copied);
 
 	mutex_unlock(&write_lock);
+<<<<<<< HEAD
 
 	return ret ? ret : copied;
+=======
+	if (ret)
+		return ret;
+
+	return copied;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static ssize_t fifo_read(struct file *file, char __user *buf,
@@ -140,8 +147,15 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
 	ret = kfifo_to_user(&test, buf, count, &copied);
 
 	mutex_unlock(&read_lock);
+<<<<<<< HEAD
 
 	return ret ? ret : copied;
+=======
+	if (ret)
+		return ret;
+
+	return copied;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct file_operations fifo_fops = {

@@ -144,7 +144,11 @@ void __pci_read_msi_msg(struct msi_desc *entry, struct msi_msg *msg);
 void __pci_write_msi_msg(struct msi_desc *entry, struct msi_msg *msg);
 
 u32 __pci_msix_desc_mask_irq(struct msi_desc *desc, u32 flag);
+<<<<<<< HEAD
 u32 __pci_msi_desc_mask_irq(struct msi_desc *desc, u32 mask, u32 flag);
+=======
+void __pci_msi_desc_mask_irq(struct msi_desc *desc, u32 mask, u32 flag);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void pci_msi_mask_irq(struct irq_data *data);
 void pci_msi_unmask_irq(struct irq_data *data);
 

@@ -119,6 +119,7 @@ u8 drm_dp_get_adjust_request_pre_emphasis(const u8 link_status[DP_LINK_STATUS_SI
 EXPORT_SYMBOL(drm_dp_get_adjust_request_pre_emphasis);
 
 void drm_dp_link_train_clock_recovery_delay(const u8 dpcd[DP_RECEIVER_CAP_SIZE]) {
+<<<<<<< HEAD
 	int rd_interval = dpcd[DP_TRAINING_AUX_RD_INTERVAL] &
 			  DP_TRAINING_AUX_RD_MASK;
 
@@ -130,10 +131,17 @@ void drm_dp_link_train_clock_recovery_delay(const u8 dpcd[DP_RECEIVER_CAP_SIZE])
 		udelay(100);
 	else
 		mdelay(rd_interval * 4);
+=======
+	if (dpcd[DP_TRAINING_AUX_RD_INTERVAL] == 0)
+		udelay(100);
+	else
+		mdelay(dpcd[DP_TRAINING_AUX_RD_INTERVAL] * 4);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL(drm_dp_link_train_clock_recovery_delay);
 
 void drm_dp_link_train_channel_eq_delay(const u8 dpcd[DP_RECEIVER_CAP_SIZE]) {
+<<<<<<< HEAD
 	int rd_interval = dpcd[DP_TRAINING_AUX_RD_INTERVAL] &
 			  DP_TRAINING_AUX_RD_MASK;
 
@@ -145,6 +153,12 @@ void drm_dp_link_train_channel_eq_delay(const u8 dpcd[DP_RECEIVER_CAP_SIZE]) {
 		udelay(400);
 	else
 		mdelay(rd_interval * 4);
+=======
+	if (dpcd[DP_TRAINING_AUX_RD_INTERVAL] == 0)
+		udelay(400);
+	else
+		mdelay(dpcd[DP_TRAINING_AUX_RD_INTERVAL] * 4);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL(drm_dp_link_train_channel_eq_delay);
 
@@ -158,8 +172,11 @@ u8 drm_dp_link_rate_to_bw_code(int link_rate)
 		return DP_LINK_BW_2_7;
 	case 540000:
 		return DP_LINK_BW_5_4;
+<<<<<<< HEAD
 	case 810000:
 		return DP_LINK_BW_8_1;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 EXPORT_SYMBOL(drm_dp_link_rate_to_bw_code);
@@ -174,8 +191,11 @@ int drm_dp_bw_code_to_link_rate(u8 link_bw)
 		return 270000;
 	case DP_LINK_BW_5_4:
 		return 540000;
+<<<<<<< HEAD
 	case DP_LINK_BW_8_1:
 		return 810000;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 EXPORT_SYMBOL(drm_dp_bw_code_to_link_rate);
@@ -372,13 +392,27 @@ EXPORT_SYMBOL(drm_dp_link_probe);
  */
 int drm_dp_link_power_up(struct drm_dp_aux *aux, struct drm_dp_link *link)
 {
+<<<<<<< HEAD
 	u8 value = DP_SET_POWER_D0;
+=======
+	u8 value;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err;
 
 	/* DP_SET_POWER register is only available on DPCD v1.1 and later */
 	if (link->revision < 0x11)
 		return 0;
 
+<<<<<<< HEAD
+=======
+	err = drm_dp_dpcd_readb(aux, DP_SET_POWER, &value);
+	if (err < 0)
+		return err;
+
+	value &= ~DP_SET_POWER_MASK;
+	value |= DP_SET_POWER_D0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = drm_dp_dpcd_writeb(aux, DP_SET_POWER, value);
 	if (err < 0)
 		return err;

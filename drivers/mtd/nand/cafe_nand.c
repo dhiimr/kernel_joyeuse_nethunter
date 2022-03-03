@@ -702,7 +702,11 @@ static int cafe_nand_probe(struct pci_dev *pdev,
 			  "CAFE NAND", mtd);
 	if (err) {
 		dev_warn(&pdev->dev, "Could not register IRQ %d\n", pdev->irq);
+<<<<<<< HEAD
 		goto out_ior;
+=======
+		goto out_free_rs;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Disable master reset, enable NAND clock */
@@ -809,6 +813,11 @@ static int cafe_nand_probe(struct pci_dev *pdev,
 	/* Disable NAND IRQ in global IRQ mask register */
 	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
 	free_irq(pdev->irq, mtd);
+<<<<<<< HEAD
+=======
+ out_free_rs:
+	free_rs(cafe->rs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  out_ior:
 	pci_iounmap(pdev, cafe->mmio);
  out_free_mtd:
@@ -826,7 +835,11 @@ static void cafe_nand_remove(struct pci_dev *pdev)
 	/* Disable NAND IRQ in global IRQ mask register */
 	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
 	free_irq(pdev->irq, mtd);
+<<<<<<< HEAD
 	nand_release(mtd);
+=======
+	nand_release(chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	free_rs(cafe->rs);
 	pci_iounmap(pdev, cafe->mmio);
 	dma_free_coherent(&cafe->pdev->dev,

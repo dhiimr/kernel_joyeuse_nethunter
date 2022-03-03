@@ -51,7 +51,12 @@ typedef unsigned long (*genpool_algo_t)(unsigned long *map,
 			unsigned long size,
 			unsigned long start,
 			unsigned int nr,
+<<<<<<< HEAD
 			void *data, struct gen_pool *pool);
+=======
+			void *data, struct gen_pool *pool,
+			unsigned long start_addr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  *  General purpose special memory pool descriptor.
@@ -131,6 +136,7 @@ extern void gen_pool_set_algo(struct gen_pool *pool, genpool_algo_t algo,
 
 extern unsigned long gen_pool_first_fit(unsigned long *map, unsigned long size,
 		unsigned long start, unsigned int nr, void *data,
+<<<<<<< HEAD
 		struct gen_pool *pool);
 
 extern unsigned long gen_pool_fixed_alloc(unsigned long *map,
@@ -140,15 +146,34 @@ extern unsigned long gen_pool_fixed_alloc(unsigned long *map,
 extern unsigned long gen_pool_first_fit_align(unsigned long *map,
 		unsigned long size, unsigned long start, unsigned int nr,
 		void *data, struct gen_pool *pool);
+=======
+		struct gen_pool *pool, unsigned long start_addr);
+
+extern unsigned long gen_pool_fixed_alloc(unsigned long *map,
+		unsigned long size, unsigned long start, unsigned int nr,
+		void *data, struct gen_pool *pool, unsigned long start_addr);
+
+extern unsigned long gen_pool_first_fit_align(unsigned long *map,
+		unsigned long size, unsigned long start, unsigned int nr,
+		void *data, struct gen_pool *pool, unsigned long start_addr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 
 extern unsigned long gen_pool_first_fit_order_align(unsigned long *map,
 		unsigned long size, unsigned long start, unsigned int nr,
+<<<<<<< HEAD
 		void *data, struct gen_pool *pool);
 
 extern unsigned long gen_pool_best_fit(unsigned long *map, unsigned long size,
 		unsigned long start, unsigned int nr, void *data,
 		struct gen_pool *pool);
+=======
+		void *data, struct gen_pool *pool, unsigned long start_addr);
+
+extern unsigned long gen_pool_best_fit(unsigned long *map, unsigned long size,
+		unsigned long start, unsigned int nr, void *data,
+		struct gen_pool *pool, unsigned long start_addr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 
 extern struct gen_pool *devm_gen_pool_create(struct device *dev,

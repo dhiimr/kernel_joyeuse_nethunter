@@ -152,6 +152,15 @@
 
 #if GCC_VERSION < 30200
 # error Sorry, your compiler is too old - please upgrade it.
+<<<<<<< HEAD
+=======
+#elif defined(CONFIG_ARM64) && GCC_VERSION < 50100 && !defined(__clang__)
+/*
+ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
+ * https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
+ */
+# error Sorry, your version of GCC is too old - please use 5.1 or newer.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 #if GCC_VERSION < 30300
@@ -343,6 +352,13 @@
 #define __designated_init __attribute__((designated_init))
 #endif
 
+<<<<<<< HEAD
+=======
+#if GCC_VERSION >= 90100
+#define __copy(symbol)                 __attribute__((__copy__(symbol)))
+#endif
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif	/* gcc version >= 40000 specific checks */
 
 #if !defined(__noclone)

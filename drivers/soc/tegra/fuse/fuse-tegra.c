@@ -178,7 +178,11 @@ static struct platform_driver tegra_fuse_driver = {
 };
 builtin_platform_driver(tegra_fuse_driver);
 
+<<<<<<< HEAD
 bool __init tegra_fuse_read_spare(unsigned int spare)
+=======
+u32 __init tegra_fuse_read_spare(unsigned int spare)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned int offset = fuse->soc->info->spare + spare * 4;
 

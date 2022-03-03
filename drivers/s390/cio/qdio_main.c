@@ -759,6 +759,10 @@ static int get_outbound_buffer_frontier(struct qdio_q *q)
 
 	switch (state) {
 	case SLSB_P_OUTPUT_EMPTY:
+<<<<<<< HEAD
+=======
+	case SLSB_P_OUTPUT_PENDING:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* the adapter got it */
 		DBF_DEV_EVENT(DBF_INFO, q->irq_ptr,
 			"out empty:%1d %02x", q->nr, count);
@@ -1576,6 +1580,7 @@ static int handle_outbound(struct qdio_q *q, unsigned int callflags,
 		rc = qdio_kick_outbound_q(q, phys_aob);
 	} else if (need_siga_sync(q)) {
 		rc = qdio_siga_sync_q(q);
+<<<<<<< HEAD
 	} else {
 		/* try to fast requeue buffers */
 		get_buf_state(q, prev_buf(bufnr), &state, 0);
@@ -1583,6 +1588,15 @@ static int handle_outbound(struct qdio_q *q, unsigned int callflags,
 			rc = qdio_kick_outbound_q(q, 0);
 		else
 			qperf_inc(q, fast_requeue);
+=======
+	} else if (count < QDIO_MAX_BUFFERS_PER_Q &&
+		   get_buf_state(q, prev_buf(bufnr), &state, 0) > 0 &&
+		   state == SLSB_CU_OUTPUT_PRIMED) {
+		/* The previous buffer is not processed yet, tack on. */
+		qperf_inc(q, fast_requeue);
+	} else {
+		rc = qdio_kick_outbound_q(q, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* in case of SIGA errors we must process the error immediately */

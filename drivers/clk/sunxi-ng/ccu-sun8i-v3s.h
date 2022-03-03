@@ -29,7 +29,11 @@
 #define CLK_PLL_AUDIO_8X	5
 #define CLK_PLL_VIDEO		6
 #define CLK_PLL_VE		7
+<<<<<<< HEAD
 #define CLK_PLL_DDR		8
+=======
+#define CLK_PLL_DDR0		8
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define CLK_PLL_PERIPH0		9
 #define CLK_PLL_PERIPH0_2X	10
 #define CLK_PLL_ISP		11
@@ -58,6 +62,12 @@
 
 /* And the GPU module clock is exported */
 
+<<<<<<< HEAD
 #define CLK_NUMBER		(CLK_MIPI_CSI + 1)
+=======
+#define CLK_PLL_DDR1		74
+
+#define CLK_NUMBER		(CLK_PLL_DDR1 + 1)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif /* _CCU_SUN8I_H3_H_ */

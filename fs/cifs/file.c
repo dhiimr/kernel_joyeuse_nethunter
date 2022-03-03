@@ -163,6 +163,10 @@ int cifs_posix_open(char *full_path, struct inode **pinode,
 			goto posix_open_ret;
 		}
 	} else {
+<<<<<<< HEAD
+=======
+		cifs_revalidate_mapping(*pinode);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cifs_fattr_to_inode(*pinode, &fattr);
 	}
 
@@ -252,6 +256,15 @@ cifs_nt_open(char *full_path, struct inode *inode, struct cifs_sb_info *cifs_sb,
 		rc = cifs_get_inode_info(&inode, full_path, buf, inode->i_sb,
 					 xid, fid);
 
+<<<<<<< HEAD
+=======
+	if (rc) {
+		server->ops->close(xid, tcon, fid);
+		if (rc == -ESTALE)
+			rc = -EOPENSTALE;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	kfree(buf);
 	return rc;
@@ -274,6 +287,16 @@ cifs_has_mand_locks(struct cifsInodeInfo *cinode)
 	return has_locks;
 }
 
+<<<<<<< HEAD
+=======
+void
+cifs_down_write(struct rw_semaphore *sem)
+{
+	while (!down_write_trylock(sem))
+		msleep(10);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct cifsFileInfo *
 cifs_new_fileinfo(struct cifs_fid *fid, struct file *file,
 		  struct tcon_link *tlink, __u32 oplock)
@@ -299,9 +322,12 @@ cifs_new_fileinfo(struct cifs_fid *fid, struct file *file,
 	INIT_LIST_HEAD(&fdlocks->locks);
 	fdlocks->cfile = cfile;
 	cfile->llist = fdlocks;
+<<<<<<< HEAD
 	down_write(&cinode->lock_sem);
 	list_add(&fdlocks->llist, &cinode->llist);
 	up_write(&cinode->lock_sem);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cfile->count = 1;
 	cfile->pid = current->tgid;
@@ -325,6 +351,13 @@ cifs_new_fileinfo(struct cifs_fid *fid, struct file *file,
 		oplock = 0;
 	}
 
+<<<<<<< HEAD
+=======
+	cifs_down_write(&cinode->lock_sem);
+	list_add(&fdlocks->llist, &cinode->llist);
+	up_write(&cinode->lock_sem);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock(&tcon->open_file_lock);
 	if (fid->pending_open->oplock != CIFS_OPLOCK_NO_CHANGE && oplock)
 		oplock = fid->pending_open->oplock;
@@ -451,7 +484,11 @@ void _cifsFileInfo_put(struct cifsFileInfo *cifs_file, bool wait_oplock_handler)
 	 * Delete any outstanding lock records. We'll lose them when the file
 	 * is closed anyway.
 	 */
+<<<<<<< HEAD
 	down_write(&cifsi->lock_sem);
+=======
+	cifs_down_write(&cifsi->lock_sem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	list_for_each_entry_safe(li, tmp, &cifs_file->llist->locks, llist) {
 		list_del(&li->llist);
 		cifs_del_lock_waiters(li);
@@ -708,6 +745,16 @@ cifs_reopen_file(struct cifsFileInfo *cfile, bool can_flush)
 	if (backup_cred(cifs_sb))
 		create_options |= CREATE_OPEN_BACKUP_INTENT;
 
+<<<<<<< HEAD
+=======
+	/* O_SYNC also has bit for O_DSYNC so following check picks up either */
+	if (cfile->f_flags & O_SYNC)
+		create_options |= CREATE_WRITE_THROUGH;
+
+	if (cfile->f_flags & O_DIRECT)
+		create_options |= CREATE_NO_BUFFER;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (server->ops->get_lease_key)
 		server->ops->get_lease_key(inode, &cfile->fid);
 
@@ -1005,7 +1052,11 @@ static void
 cifs_lock_add(struct cifsFileInfo *cfile, struct cifsLockInfo *lock)
 {
 	struct cifsInodeInfo *cinode = CIFS_I(d_inode(cfile->dentry));
+<<<<<<< HEAD
 	down_write(&cinode->lock_sem);
+=======
+	cifs_down_write(&cinode->lock_sem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	list_add_tail(&lock->llist, &cfile->llist->locks);
 	up_write(&cinode->lock_sem);
 }
@@ -1027,7 +1078,11 @@ cifs_lock_add_if(struct cifsFileInfo *cfile, struct cifsLockInfo *lock,
 
 try_again:
 	exist = false;
+<<<<<<< HEAD
 	down_write(&cinode->lock_sem);
+=======
+	cifs_down_write(&cinode->lock_sem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	exist = cifs_find_lock_conflict(cfile, lock->offset, lock->length,
 					lock->type, &conf_lock, CIFS_LOCK_OP);
@@ -1049,7 +1104,11 @@ try_again:
 					(lock->blist.next == &lock->blist));
 		if (!rc)
 			goto try_again;
+<<<<<<< HEAD
 		down_write(&cinode->lock_sem);
+=======
+		cifs_down_write(&cinode->lock_sem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		list_del_init(&lock->blist);
 	}
 
@@ -1102,7 +1161,11 @@ cifs_posix_lock_set(struct file *file, struct file_lock *flock)
 		return rc;
 
 try_again:
+<<<<<<< HEAD
 	down_write(&cinode->lock_sem);
+=======
+	cifs_down_write(&cinode->lock_sem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!cinode->can_cache_brlcks) {
 		up_write(&cinode->lock_sem);
 		return rc;
@@ -1308,7 +1371,11 @@ cifs_push_locks(struct cifsFileInfo *cfile)
 	int rc = 0;
 
 	/* we are going to update can_cache_brlcks here - need a write access */
+<<<<<<< HEAD
 	down_write(&cinode->lock_sem);
+=======
+	cifs_down_write(&cinode->lock_sem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!cinode->can_cache_brlcks) {
 		up_write(&cinode->lock_sem);
 		return rc;
@@ -1499,7 +1566,11 @@ cifs_unlock_range(struct cifsFileInfo *cfile, struct file_lock *flock,
 	if (!buf)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	down_write(&cinode->lock_sem);
+=======
+	cifs_down_write(&cinode->lock_sem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (i = 0; i < 2; i++) {
 		cur = buf;
 		num = 0;
@@ -2984,7 +3055,13 @@ cifs_read_allocate_pages(struct cifs_readdata *rdata, unsigned int nr_pages)
 	}
 
 	if (rc) {
+<<<<<<< HEAD
 		for (i = 0; i < nr_pages; i++) {
+=======
+		unsigned int nr_page_failed = i;
+
+		for (i = 0; i < nr_page_failed; i++) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			put_page(rdata->pages[i]);
 			rdata->pages[i] = NULL;
 		}
@@ -3280,7 +3357,11 @@ again:
 	if (rc == -ENODATA)
 		rc = 0;
 
+<<<<<<< HEAD
 	ctx->rc = (rc == 0) ? ctx->total_len : rc;
+=======
+	ctx->rc = (rc == 0) ? (ssize_t)ctx->total_len : rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	mutex_unlock(&ctx->aio_mutex);
 
@@ -3473,7 +3554,11 @@ cifs_read(struct file *file, char *read_data, size_t read_size, loff_t *offset)
 			 * than it negotiated since it will refuse the read
 			 * then.
 			 */
+<<<<<<< HEAD
 			if ((tcon->ses) && !(tcon->ses->capabilities &
+=======
+			if (!(tcon->ses->capabilities &
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				tcon->ses->server->vals->cap_large_files)) {
 				current_read_size = min_t(uint,
 					current_read_size, CIFSMaxBufSize);
@@ -3730,7 +3815,12 @@ readpages_get_pages(struct address_space *mapping, struct list_head *page_list,
 			break;
 
 		__SetPageLocked(page);
+<<<<<<< HEAD
 		if (add_to_page_cache_locked(page, mapping, page->index, gfp)) {
+=======
+		rc = add_to_page_cache_locked(page, mapping, page->index, gfp);
+		if (rc) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			__ClearPageLocked(page);
 			break;
 		}
@@ -3746,6 +3836,10 @@ static int cifs_readpages(struct file *file, struct address_space *mapping,
 	struct list_head *page_list, unsigned num_pages)
 {
 	int rc;
+<<<<<<< HEAD
+=======
+	int err = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct list_head tmplist;
 	struct cifsFileInfo *open_file = file->private_data;
 	struct cifs_sb_info *cifs_sb = CIFS_FILE_SB(file);
@@ -3786,7 +3880,11 @@ static int cifs_readpages(struct file *file, struct address_space *mapping,
 	 * the order of declining indexes. When we put the pages in
 	 * the rdata->pages, then we want them in increasing order.
 	 */
+<<<<<<< HEAD
 	while (!list_empty(page_list)) {
+=======
+	while (!list_empty(page_list) && !err) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		unsigned int i, nr_pages, bytes, rsize;
 		loff_t offset;
 		struct page *page, *tpage;
@@ -3809,9 +3907,16 @@ static int cifs_readpages(struct file *file, struct address_space *mapping,
 			return 0;
 		}
 
+<<<<<<< HEAD
 		rc = readpages_get_pages(mapping, page_list, rsize, &tmplist,
 					 &nr_pages, &offset, &bytes);
 		if (rc) {
+=======
+		nr_pages = 0;
+		err = readpages_get_pages(mapping, page_list, rsize, &tmplist,
+					 &nr_pages, &offset, &bytes);
+		if (!nr_pages) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			add_credits_and_wake_if(server, credits, 0);
 			break;
 		}
@@ -4112,12 +4217,21 @@ void cifs_oplock_break(struct work_struct *work)
 	struct cifs_tcon *tcon = tlink_tcon(cfile->tlink);
 	struct TCP_Server_Info *server = tcon->ses->server;
 	int rc = 0;
+<<<<<<< HEAD
+=======
+	bool purge_cache = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	wait_on_bit(&cinode->flags, CIFS_INODE_PENDING_WRITERS,
 			TASK_UNINTERRUPTIBLE);
 
+<<<<<<< HEAD
 	server->ops->downgrade_oplock(server, cinode,
 		test_bit(CIFS_INODE_DOWNGRADE_OPLOCK_TO_L2, &cinode->flags));
+=======
+	server->ops->downgrade_oplock(server, cinode, cfile->oplock_level,
+				      cfile->oplock_epoch, &purge_cache);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!CIFS_CACHE_WRITE(cinode) && CIFS_CACHE_READ(cinode) &&
 						cifs_has_mand_locks(cinode)) {
@@ -4132,18 +4246,31 @@ void cifs_oplock_break(struct work_struct *work)
 		else
 			break_lease(inode, O_WRONLY);
 		rc = filemap_fdatawrite(inode->i_mapping);
+<<<<<<< HEAD
 		if (!CIFS_CACHE_READ(cinode)) {
+=======
+		if (!CIFS_CACHE_READ(cinode) || purge_cache) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			rc = filemap_fdatawait(inode->i_mapping);
 			mapping_set_error(inode->i_mapping, rc);
 			cifs_zap_mapping(inode);
 		}
 		cifs_dbg(FYI, "Oplock flush inode %p rc %d\n", inode, rc);
+<<<<<<< HEAD
+=======
+		if (CIFS_CACHE_WRITE(cinode))
+			goto oplock_break_ack;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	rc = cifs_push_locks(cfile);
 	if (rc)
 		cifs_dbg(VFS, "Push locks rc = %d\n", rc);
 
+<<<<<<< HEAD
+=======
+oplock_break_ack:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * releasing stale oplock after recent reconnect of smb session using
 	 * a now incorrect file handle is not a data integrity issue but do

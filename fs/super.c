@@ -814,8 +814,12 @@ rescan:
 }
 
 /**
+<<<<<<< HEAD
  *	do_remount_sb2 - asks filesystem to change mount options.
  *	@mnt:   mount we are looking at
+=======
+ *	do_remount_sb - asks filesystem to change mount options.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *	@sb:	superblock in question
  *	@sb_flags: revised superblock flags
  *	@data:	the rest of options
@@ -823,7 +827,11 @@ rescan:
  *
  *	Alters the mount options of a mounted file system.
  */
+<<<<<<< HEAD
 int do_remount_sb2(struct vfsmount *mnt, struct super_block *sb, int sb_flags, void *data, int force)
+=======
+int do_remount_sb(struct super_block *sb, int sb_flags, void *data, int force)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int retval;
 	int remount_ro;
@@ -865,6 +873,7 @@ int do_remount_sb2(struct vfsmount *mnt, struct super_block *sb, int sb_flags, v
 		}
 	}
 
+<<<<<<< HEAD
 	if (mnt && sb->s_op->remount_fs2) {
 		retval = sb->s_op->remount_fs2(mnt, sb, &sb_flags, data);
 		if (retval) {
@@ -875,6 +884,9 @@ int do_remount_sb2(struct vfsmount *mnt, struct super_block *sb, int sb_flags, v
 			     sb->s_type->name, retval);
 		}
 	} else if (sb->s_op->remount_fs) {
+=======
+	if (sb->s_op->remount_fs) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		retval = sb->s_op->remount_fs(sb, &sb_flags, data);
 		if (retval) {
 			if (!force)
@@ -906,17 +918,24 @@ cancel_readonly:
 	return retval;
 }
 
+<<<<<<< HEAD
 int do_remount_sb(struct super_block *sb, int flags, void *data, int force)
 {
 	return do_remount_sb2(NULL, sb, flags, data, force);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void do_emergency_remount(struct work_struct *work)
 {
 	struct super_block *sb, *p = NULL;
 
 	spin_lock(&sb_lock);
+<<<<<<< HEAD
 	list_for_each_entry_reverse(sb, &super_blocks, s_list) {
+=======
+	list_for_each_entry(sb, &super_blocks, s_list) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (hlist_unhashed(&sb->s_instances))
 			continue;
 		sb->s_count++;
@@ -1232,7 +1251,11 @@ struct dentry *mount_single(struct file_system_type *fs_type,
 EXPORT_SYMBOL(mount_single);
 
 struct dentry *
+<<<<<<< HEAD
 mount_fs(struct file_system_type *type, int flags, const char *name, struct vfsmount *mnt, void *data)
+=======
+mount_fs(struct file_system_type *type, int flags, const char *name, void *data)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct dentry *root;
 	struct super_block *sb;
@@ -1249,10 +1272,14 @@ mount_fs(struct file_system_type *type, int flags, const char *name, struct vfsm
 			goto out_free_secdata;
 	}
 
+<<<<<<< HEAD
 	if (type->mount2)
 		root = type->mount2(mnt, type, flags, name, data);
 	else
 		root = type->mount(type, flags, name, data);
+=======
+	root = type->mount(type, flags, name, data);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (IS_ERR(root)) {
 		error = PTR_ERR(root);
 		goto out_free_secdata;
@@ -1354,6 +1381,7 @@ EXPORT_SYMBOL(__sb_end_write);
  */
 int __sb_start_write(struct super_block *sb, int level, bool wait)
 {
+<<<<<<< HEAD
 	bool force_trylock = false;
 	int ret = 1;
 
@@ -1384,6 +1412,13 @@ int __sb_start_write(struct super_block *sb, int level, bool wait)
 
 	WARN_ON(force_trylock && !ret);
 	return ret;
+=======
+	if (!wait)
+		return percpu_down_read_trylock(sb->s_writers.rw_sem + level-1);
+
+	percpu_down_read(sb->s_writers.rw_sem + level-1);
+	return 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL(__sb_start_write);
 
@@ -1423,11 +1458,17 @@ static void lockdep_sb_freeze_acquire(struct super_block *sb)
 		percpu_rwsem_acquire(sb->s_writers.rw_sem + level, 0, _THIS_IP_);
 }
 
+<<<<<<< HEAD
 static void sb_freeze_unlock(struct super_block *sb)
 {
 	int level;
 
 	for (level = SB_FREEZE_LEVELS - 1; level >= 0; level--)
+=======
+static void sb_freeze_unlock(struct super_block *sb, int level)
+{
+	for (level--; level >= 0; level--)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		percpu_up_write(sb->s_writers.rw_sem + level);
 }
 
@@ -1498,7 +1539,18 @@ int freeze_super(struct super_block *sb)
 	sb_wait_write(sb, SB_FREEZE_PAGEFAULT);
 
 	/* All writers are done so after syncing there won't be dirty data */
+<<<<<<< HEAD
 	sync_filesystem(sb);
+=======
+	ret = sync_filesystem(sb);
+	if (ret) {
+		sb->s_writers.frozen = SB_UNFROZEN;
+		sb_freeze_unlock(sb, SB_FREEZE_PAGEFAULT);
+		wake_up(&sb->s_writers.wait_unfrozen);
+		deactivate_locked_super(sb);
+		return ret;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Now wait for internal filesystem counter */
 	sb->s_writers.frozen = SB_FREEZE_FS;
@@ -1510,7 +1562,11 @@ int freeze_super(struct super_block *sb)
 			printk(KERN_ERR
 				"VFS:Filesystem freeze failed\n");
 			sb->s_writers.frozen = SB_UNFROZEN;
+<<<<<<< HEAD
 			sb_freeze_unlock(sb);
+=======
+			sb_freeze_unlock(sb, SB_FREEZE_FS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			wake_up(&sb->s_writers.wait_unfrozen);
 			deactivate_locked_super(sb);
 			return ret;
@@ -1562,7 +1618,11 @@ int thaw_super(struct super_block *sb)
 	}
 
 	sb->s_writers.frozen = SB_UNFROZEN;
+<<<<<<< HEAD
 	sb_freeze_unlock(sb);
+=======
+	sb_freeze_unlock(sb, SB_FREEZE_FS);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	wake_up(&sb->s_writers.wait_unfrozen);
 	deactivate_locked_super(sb);

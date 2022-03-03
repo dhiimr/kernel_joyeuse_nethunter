@@ -19,6 +19,7 @@ extern const struct file_operations debugfs_noop_file_operations;
 extern const struct file_operations debugfs_open_proxy_file_operations;
 extern const struct file_operations debugfs_full_proxy_file_operations;
 
+<<<<<<< HEAD
 struct debugfs_fsdata {
 	const struct file_operations *real_fops;
 	refcount_t active_users;
@@ -33,4 +34,6 @@ struct debugfs_fsdata {
  */
 #define DEBUGFS_FSDATA_IS_REAL_FOPS_BIT BIT(0)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _DEBUGFS_INTERNAL_H_ */

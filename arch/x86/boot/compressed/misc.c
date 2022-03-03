@@ -16,6 +16,10 @@
 #include "error.h"
 #include "../string.h"
 #include "../voffset.h"
+<<<<<<< HEAD
+=======
+#include <asm/bootparam_utils.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * WARNING!!

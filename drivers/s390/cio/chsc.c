@@ -769,8 +769,11 @@ int chsc_chp_vary(struct chp_id chpid, int on)
 {
 	struct channel_path *chp = chpid_to_chp(chpid);
 
+<<<<<<< HEAD
 	/* Wait until previous actions have settled. */
 	css_wait_for_slow_path();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Redo PathVerification on the devices the chpid connects to
 	 */

@@ -92,8 +92,16 @@ __cmpxchg(volatile void *ptr, unsigned long expected, unsigned long new)
 
 #endif /* CONFIG_ARC_HAS_LLSC */
 
+<<<<<<< HEAD
 #define cmpxchg(ptr, o, n) ((typeof(*(ptr)))__cmpxchg((ptr), \
 				(unsigned long)(o), (unsigned long)(n)))
+=======
+#define cmpxchg(ptr, o, n) ({				\
+	(typeof(*(ptr)))__cmpxchg((ptr),		\
+				  (unsigned long)(o),	\
+				  (unsigned long)(n));	\
+})
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * atomic_cmpxchg is same as cmpxchg
@@ -198,8 +206,16 @@ static inline unsigned long __xchg(unsigned long val, volatile void *ptr,
 	return __xchg_bad_pointer();
 }
 
+<<<<<<< HEAD
 #define xchg(ptr, with) ((typeof(*(ptr)))__xchg((unsigned long)(with), (ptr), \
 						 sizeof(*(ptr))))
+=======
+#define xchg(ptr, with) ({				\
+	(typeof(*(ptr)))__xchg((unsigned long)(with),	\
+			       (ptr),			\
+			       sizeof(*(ptr)));		\
+})
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif /* CONFIG_ARC_PLAT_EZNPS */
 

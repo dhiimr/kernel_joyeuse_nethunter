@@ -549,7 +549,10 @@ static struct iio_trigger *viio_trigger_alloc(const char *fmt, va_list vargs)
 		irq_modify_status(trig->subirq_base + i,
 				  IRQ_NOREQUEST | IRQ_NOAUTOEN, IRQ_NOPROBE);
 	}
+<<<<<<< HEAD
 	get_device(&trig->dev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return trig;
 

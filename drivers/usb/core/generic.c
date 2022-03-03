@@ -21,8 +21,11 @@
 
 #include <linux/usb.h>
 #include <linux/usb/hcd.h>
+<<<<<<< HEAD
 #include <linux/usb/audio.h>
 #include <linux/usb/audio-v3.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "usb.h"
 
 static inline const char *plural(int n)
@@ -44,6 +47,7 @@ static int is_activesync(struct usb_interface_descriptor *desc)
 		&& desc->bInterfaceProtocol == 1;
 }
 
+<<<<<<< HEAD
 static int get_usb_audio_config(struct usb_host_bos *bos)
 {
 	unsigned int desc_cnt, num_cfg_desc, len = 0;
@@ -77,6 +81,8 @@ done:
 	return -EINVAL;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int usb_choose_configuration(struct usb_device *udev)
 {
 	int i;
@@ -167,6 +173,10 @@ int usb_choose_configuration(struct usb_device *udev)
 			best = c;
 			break;
 		}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* If all the remaining configs are vendor-specific,
 		 * choose the first one. */
 		else if (!best)
@@ -179,10 +189,14 @@ int usb_choose_configuration(struct usb_device *udev)
 			insufficient_power, plural(insufficient_power));
 
 	if (best) {
+<<<<<<< HEAD
 		/* choose device preferred config */
 		i = get_usb_audio_config(udev->bos);
 		if (i < 0)
 			i = best->desc.bConfigurationValue;
+=======
+		i = best->desc.bConfigurationValue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_dbg(&udev->dev,
 			"configuration #%d chosen from %d choice%s\n",
 			i, num_configs, plural(num_configs));

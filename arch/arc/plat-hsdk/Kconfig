@@ -11,4 +11,8 @@ menuconfig ARC_SOC_HSDK
 	select ARC_HAS_ACCL_REGS
 	select ARC_IRQ_NO_AUTOSAVE
 	select CLK_HSDK
+<<<<<<< HEAD
+=======
+	select RESET_CONTROLLER
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select RESET_HSDK

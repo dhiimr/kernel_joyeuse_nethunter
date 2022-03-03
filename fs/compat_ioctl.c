@@ -161,6 +161,10 @@ struct compat_video_event {
 		unsigned int frame_rate;
 	} u;
 };
+<<<<<<< HEAD
+=======
+#define VIDEO_GET_EVENT32 _IOR('o', 28, struct compat_video_event)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int do_video_get_event(struct file *file,
 		unsigned int cmd, struct compat_video_event __user *up)
@@ -172,7 +176,11 @@ static int do_video_get_event(struct file *file,
 	if (kevent == NULL)
 		return -EFAULT;
 
+<<<<<<< HEAD
 	err = do_ioctl(file, cmd, (unsigned long)kevent);
+=======
+	err = do_ioctl(file, VIDEO_GET_EVENT, (unsigned long)kevent);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!err) {
 		err  = convert_in_user(&kevent->type, &up->type);
 		err |= convert_in_user(&kevent->timestamp, &up->timestamp);
@@ -191,6 +199,10 @@ struct compat_video_still_picture {
         compat_uptr_t iFrame;
         int32_t size;
 };
+<<<<<<< HEAD
+=======
+#define VIDEO_STILLPICTURE32 _IOW('o', 30, struct compat_video_still_picture)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int do_video_stillpicture(struct file *file,
 		unsigned int cmd, struct compat_video_still_picture __user *up)
@@ -213,7 +225,11 @@ static int do_video_stillpicture(struct file *file,
 	if (err)
 		return -EFAULT;
 
+<<<<<<< HEAD
 	err = do_ioctl(file, cmd, (unsigned long) up_native);
+=======
+	err = do_ioctl(file, VIDEO_STILLPICTURE, (unsigned long) up_native);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return err;
 }
@@ -867,10 +883,13 @@ COMPATIBLE_IOCTL(TIOCCBRK)
 COMPATIBLE_IOCTL(TIOCGSID)
 COMPATIBLE_IOCTL(TIOCGICOUNT)
 COMPATIBLE_IOCTL(TIOCGEXCL)
+<<<<<<< HEAD
 /*UART CLOCK*/
 COMPATIBLE_IOCTL(TIOCPMGET)
 COMPATIBLE_IOCTL(TIOCPMPUT)
 COMPATIBLE_IOCTL(TIOCPMACT)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Little t */
 COMPATIBLE_IOCTL(TIOCGETD)
 COMPATIBLE_IOCTL(TIOCSETD)
@@ -1036,9 +1055,12 @@ COMPATIBLE_IOCTL(PPPIOCDISCONN)
 COMPATIBLE_IOCTL(PPPIOCATTCHAN)
 COMPATIBLE_IOCTL(PPPIOCGCHAN)
 COMPATIBLE_IOCTL(PPPIOCGL2TPSTATS)
+<<<<<<< HEAD
 /* PPPOX */
 COMPATIBLE_IOCTL(PPPOEIOCSFWD)
 COMPATIBLE_IOCTL(PPPOEIOCDFWD)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Big A */
 /* sparc only */
 /* Big Q for sound/OSS */
@@ -1483,9 +1505,15 @@ static long do_ioctl_trans(unsigned int cmd,
 		return rtc_ioctl(file, cmd, argp);
 
 	/* dvb */
+<<<<<<< HEAD
 	case VIDEO_GET_EVENT:
 		return do_video_get_event(file, cmd, argp);
 	case VIDEO_STILLPICTURE:
+=======
+	case VIDEO_GET_EVENT32:
+		return do_video_get_event(file, cmd, argp);
+	case VIDEO_STILLPICTURE32:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return do_video_stillpicture(file, cmd, argp);
 	case VIDEO_SET_SPU_PALETTE:
 		return do_video_set_spu_palette(file, cmd, argp);
@@ -1582,9 +1610,16 @@ COMPAT_SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsigned int, cmd,
 #endif
 
 	case FICLONE:
+<<<<<<< HEAD
 	case FICLONERANGE:
 	case FIDEDUPERANGE:
 		goto do_ioctl;
+=======
+		goto do_ioctl;
+	case FICLONERANGE:
+	case FIDEDUPERANGE:
+		goto found_handler;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	case FIBMAP:
 	case FIGETBSZ:

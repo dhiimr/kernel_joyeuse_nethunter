@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2010-2013, 2018, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -26,6 +30,7 @@
 #define TEST_SINGLE_STEP_GET_DEV_DESC		0x0107
 #define TEST_SINGLE_STEP_SET_FEATURE		0x0108
 
+<<<<<<< HEAD
 static u8 numPorts;
 
 static int ehset_get_port_num(struct device *dev, const char *buf,
@@ -85,10 +90,51 @@ static int ehset_set_testmode(struct device *dev, struct usb_device *child_udev,
 	case TEST_PACKET_PID:
 		ret = ehset_set_port_feature(hub_udev, USB_PORT_FEAT_TEST,
 					(TEST_PACKET << 8) | port, 1000);
+=======
+static int ehset_probe(struct usb_interface *intf,
+		       const struct usb_device_id *id)
+{
+	int ret = -EINVAL;
+	struct usb_device *dev = interface_to_usbdev(intf);
+	struct usb_device *hub_udev = dev->parent;
+	struct usb_device_descriptor *buf;
+	u8 portnum = dev->portnum;
+	u16 test_pid = le16_to_cpu(dev->descriptor.idProduct);
+
+	switch (test_pid) {
+	case TEST_SE0_NAK_PID:
+		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
+					USB_REQ_SET_FEATURE, USB_RT_PORT,
+					USB_PORT_FEAT_TEST,
+					(TEST_SE0_NAK << 8) | portnum,
+					NULL, 0, 1000);
+		break;
+	case TEST_J_PID:
+		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
+					USB_REQ_SET_FEATURE, USB_RT_PORT,
+					USB_PORT_FEAT_TEST,
+					(TEST_J << 8) | portnum,
+					NULL, 0, 1000);
+		break;
+	case TEST_K_PID:
+		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
+					USB_REQ_SET_FEATURE, USB_RT_PORT,
+					USB_PORT_FEAT_TEST,
+					(TEST_K << 8) | portnum,
+					NULL, 0, 1000);
+		break;
+	case TEST_PACKET_PID:
+		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
+					USB_REQ_SET_FEATURE, USB_RT_PORT,
+					USB_PORT_FEAT_TEST,
+					(TEST_PACKET << 8) | portnum,
+					NULL, 0, 1000);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	case TEST_HS_HOST_PORT_SUSPEND_RESUME:
 		/* Test: wait for 15secs -> suspend -> 15secs delay -> resume */
 		msleep(15 * 1000);
+<<<<<<< HEAD
 		ret = ehset_set_port_feature(hub_udev, USB_PORT_FEAT_SUSPEND,
 							port, 1000);
 		if (ret)
@@ -97,11 +143,26 @@ static int ehset_set_testmode(struct device *dev, struct usb_device *child_udev,
 		msleep(15 * 1000);
 		ret = ehset_clear_port_feature(hub_udev, USB_PORT_FEAT_SUSPEND,
 							port);
+=======
+		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
+					USB_REQ_SET_FEATURE, USB_RT_PORT,
+					USB_PORT_FEAT_SUSPEND, portnum,
+					NULL, 0, 1000);
+		if (ret < 0)
+			break;
+
+		msleep(15 * 1000);
+		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
+					USB_REQ_CLEAR_FEATURE, USB_RT_PORT,
+					USB_PORT_FEAT_SUSPEND, portnum,
+					NULL, 0, 1000);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	case TEST_SINGLE_STEP_GET_DEV_DESC:
 		/* Test: wait for 15secs -> GetDescriptor request */
 		msleep(15 * 1000);
 		buf = kmalloc(USB_DT_DEVICE_SIZE, GFP_KERNEL);
+<<<<<<< HEAD
 		if (!buf) {
 			ret = -ENOMEM;
 			break;
@@ -109,6 +170,12 @@ static int ehset_set_testmode(struct device *dev, struct usb_device *child_udev,
 
 		ret = usb_control_msg(child_udev,
 					usb_rcvctrlpipe(child_udev, 0),
+=======
+		if (!buf)
+			return -ENOMEM;
+
+		ret = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					USB_REQ_GET_DESCRIPTOR, USB_DIR_IN,
 					USB_DT_DEVICE << 8, 0,
 					buf, USB_DT_DEVICE_SIZE,
@@ -123,6 +190,7 @@ static int ehset_set_testmode(struct device *dev, struct usb_device *child_udev,
 		 * SetPortFeature handling can only be done inside the HCD's
 		 * hub_control callback function.
 		 */
+<<<<<<< HEAD
 		if (hub_udev != child_udev->bus->root_hub) {
 			dev_err(dev, "SINGLE_STEP_SET_FEATURE test only supported on root hub\n");
 			break;
@@ -319,16 +387,38 @@ static int ehset_probe(struct usb_interface *intf,
 
 	ret = ehset_set_testmode(&intf->dev, dev, hub_udev, test_pid, portnum);
 
+=======
+		if (hub_udev != dev->bus->root_hub) {
+			dev_err(&intf->dev, "SINGLE_STEP_SET_FEATURE test only supported on root hub\n");
+			break;
+		}
+
+		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
+					USB_REQ_SET_FEATURE, USB_RT_PORT,
+					USB_PORT_FEAT_TEST,
+					(6 << 8) | portnum,
+					NULL, 0, 60 * 1000);
+
+		break;
+	default:
+		dev_err(&intf->dev, "%s: unsupported PID: 0x%x\n",
+			__func__, test_pid);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return (ret < 0) ? ret : 0;
 }
 
 static void ehset_disconnect(struct usb_interface *intf)
 {
+<<<<<<< HEAD
 	struct usb_device *dev = interface_to_usbdev(intf);
 
 	numPorts = 0;
 	if (dev->descriptor.bDeviceClass == USB_CLASS_HUB)
 		sysfs_remove_group(&intf->dev.kobj, &ehset_attr_group);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct usb_device_id ehset_id_table[] = {

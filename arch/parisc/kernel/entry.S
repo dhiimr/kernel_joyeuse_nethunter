@@ -1849,8 +1849,13 @@ syscall_restore:
 	LDREG	TI_TASK-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r1
 
 	/* Are we being ptraced? */
+<<<<<<< HEAD
 	ldw	TASK_FLAGS(%r1),%r19
 	ldi	_TIF_SYSCALL_TRACE_MASK,%r2
+=======
+	LDREG	TI_FLAGS-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r19
+	ldi	_TIF_SINGLESTEP|_TIF_BLOCKSTEP,%r2
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	and,COND(=)	%r19,%r2,%r0
 	b,n	syscall_restore_rfi
 

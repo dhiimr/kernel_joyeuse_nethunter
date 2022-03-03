@@ -774,7 +774,11 @@ static int pvrdma_pci_probe(struct pci_dev *pdev,
 	    !(pci_resource_flags(pdev, 1) & IORESOURCE_MEM)) {
 		dev_err(&pdev->dev, "PCI BAR region not MMIO\n");
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto err_free_device;
+=======
+		goto err_disable_pdev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ret = pci_request_regions(pdev, DRV_NAME);
@@ -1055,6 +1059,11 @@ static void pvrdma_pci_remove(struct pci_dev *pdev)
 	pvrdma_page_dir_cleanup(dev, &dev->cq_pdir);
 	pvrdma_page_dir_cleanup(dev, &dev->async_pdir);
 	pvrdma_free_slots(dev);
+<<<<<<< HEAD
+=======
+	dma_free_coherent(&pdev->dev, sizeof(*dev->dsr), dev->dsr,
+			  dev->dsrbase);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	iounmap(dev->regs);
 	kfree(dev->sgid_tbl);

@@ -412,7 +412,12 @@ static int alloc_qpn(struct rvt_dev_info *rdi, struct rvt_qpn_table *qpt,
 			offset = qpt->incr | ((offset & 1) ^ 1);
 		}
 		/* there can be no set bits in low-order QoS bits */
+<<<<<<< HEAD
 		WARN_ON(offset & (BIT(rdi->dparms.qos_shift) - 1));
+=======
+		WARN_ON(rdi->dparms.qos_shift > 1 &&
+			offset & ((BIT(rdi->dparms.qos_shift - 1) - 1) << 1));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		qpn = mk_qpn(qpt, map, offset);
 	}
 

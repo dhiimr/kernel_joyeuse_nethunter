@@ -3007,6 +3007,14 @@ static void con_fault(struct ceph_connection *con)
 		ceph_msg_put(con->in_msg);
 		con->in_msg = NULL;
 	}
+<<<<<<< HEAD
+=======
+	if (con->out_msg) {
+		BUG_ON(con->out_msg->con != con);
+		ceph_msg_put(con->out_msg);
+		con->out_msg = NULL;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Requeue anything that hasn't been acked */
 	list_splice_init(&con->out_sent, &con->out_queue);

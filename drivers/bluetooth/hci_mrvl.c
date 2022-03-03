@@ -66,6 +66,12 @@ static int mrvl_open(struct hci_uart *hu)
 
 	BT_DBG("hu %p", hu);
 
+<<<<<<< HEAD
+=======
+	if (!hci_uart_has_flow_control(hu))
+		return -EOPNOTSUPP;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mrvl = kzalloc(sizeof(*mrvl), GFP_KERNEL);
 	if (!mrvl)
 		return -ENOMEM;

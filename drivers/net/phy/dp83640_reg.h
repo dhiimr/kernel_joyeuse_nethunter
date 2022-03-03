@@ -5,7 +5,11 @@
 #ifndef HAVE_DP83640_REGISTERS
 #define HAVE_DP83640_REGISTERS
 
+<<<<<<< HEAD
 #define PAGE0                     0x0000
+=======
+/* #define PAGE0                  0x0000 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define PHYCR2                    0x001c /* PHY Control Register 2 */
 
 #define PAGE4                     0x0004

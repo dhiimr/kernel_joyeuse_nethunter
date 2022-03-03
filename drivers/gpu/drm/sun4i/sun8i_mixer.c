@@ -235,7 +235,11 @@ static struct regmap_config sun8i_mixer_regmap_config = {
 	.reg_bits	= 32,
 	.val_bits	= 32,
 	.reg_stride	= 4,
+<<<<<<< HEAD
 	.max_register	= 0xbfffc, /* guessed */
+=======
+	.max_register	= 0xffffc, /* guessed */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static int sun8i_mixer_bind(struct device *dev, struct device *master,

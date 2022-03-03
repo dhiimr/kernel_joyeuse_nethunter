@@ -185,8 +185,14 @@
 				nvidia,pins = "ata", "atb", "atc", "atd", "ate",
 					"cdev1", "cdev2", "dap1", "dtb", "gma",
 					"gmb", "gmc", "gmd", "gme", "gpu7",
+<<<<<<< HEAD
 					"gpv", "i2cp", "pta", "rm", "slxa",
 					"slxk", "spia", "spib", "uac";
+=======
+					"gpv", "i2cp", "irrx", "irtx", "pta",
+					"rm", "slxa", "slxk", "spia", "spib",
+					"uac";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
 			};
@@ -211,7 +217,11 @@
 			conf_ddc {
 				nvidia,pins = "ddc", "dta", "dtd", "kbca",
 					"kbcb", "kbcc", "kbcd", "kbce", "kbcf",
+<<<<<<< HEAD
 					"sdc";
+=======
+					"sdc", "uad", "uca";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				nvidia,pull = <TEGRA_PIN_PULL_UP>;
 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
 			};
@@ -221,10 +231,16 @@
 					"lvp0", "owc", "sdb";
 				nvidia,tristate = <TEGRA_PIN_ENABLE>;
 			};
+<<<<<<< HEAD
 			conf_irrx {
 				nvidia,pins = "irrx", "irtx", "sdd", "spic",
 					"spie", "spih", "uaa", "uab", "uad",
 					"uca", "ucb";
+=======
+			conf_sdd {
+				nvidia,pins = "sdd", "spic", "spie", "spih",
+					"uaa", "uab", "ucb";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				nvidia,pull = <TEGRA_PIN_PULL_UP>;
 				nvidia,tristate = <TEGRA_PIN_ENABLE>;
 			};

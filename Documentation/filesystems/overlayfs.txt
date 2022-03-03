@@ -89,6 +89,7 @@ Only the lists of names from directories are merged.  Other content
 such as metadata and extended attributes are reported for the upper
 directory only.  These attributes of the lower directory are hidden.
 
+<<<<<<< HEAD
 credentials
 -----------
 
@@ -112,6 +113,8 @@ are opened at privilege, but accessed without creating a form of
 privilege escalation, should only be used with strict understanding
 of the side effects and of the security policies.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 whiteouts and opaque directories
 --------------------------------
 

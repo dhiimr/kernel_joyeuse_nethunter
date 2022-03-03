@@ -1,6 +1,10 @@
 /*
  * Copyright (c) 2013, Sony Mobile Communications AB.
+<<<<<<< HEAD
  * Copyright (c) 2013-2019, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2013, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -15,31 +19,47 @@
 #include <linux/delay.h>
 #include <linux/err.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/irq.h>
 #include <linux/module.h>
 #include <linux/of.h>
 #include <linux/of_irq.h>
+=======
+#include <linux/module.h>
+#include <linux/of.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/platform_device.h>
 #include <linux/pinctrl/machine.h>
 #include <linux/pinctrl/pinctrl.h>
 #include <linux/pinctrl/pinmux.h>
 #include <linux/pinctrl/pinconf.h>
 #include <linux/pinctrl/pinconf-generic.h>
+<<<<<<< HEAD
 #include <linux/of_irq.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/slab.h>
 #include <linux/gpio.h>
 #include <linux/interrupt.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <linux/syscore_ops.h>
 #include <linux/reboot.h>
 #include <linux/pm.h>
 #include <linux/log2.h>
 #include <linux/irq.h>
 #include <soc/qcom/scm.h>
+=======
+#include <linux/reboot.h>
+#include <linux/pm.h>
+#include <linux/log2.h>
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "../core.h"
 #include "../pinconf.h"
 #include "pinctrl-msm.h"
 #include "../pinctrl-utils.h"
+<<<<<<< HEAD
 #include <linux/suspend.h>
 #ifdef CONFIG_HIBERNATION
 #include <linux/notifier.h>
@@ -61,6 +81,12 @@ struct msm_tile {
 };
 #endif
 
+=======
+
+#define MAX_NR_GPIO 300
+#define PS_HOLD_OFFSET 0x820
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * struct msm_pinctrl - state for a pinctrl-msm device
  * @dev:            device handle.
@@ -90,6 +116,7 @@ struct msm_pinctrl {
 
 	const struct msm_pinctrl_soc_data *soc;
 	void __iomem *regs;
+<<<<<<< HEAD
 	void __iomem *pdc_regs;
 #ifdef CONFIG_FRAGMENTED_GPIO_ADDRESS_SPACE
 	/* For holding per tile virtual address */
@@ -136,6 +163,10 @@ static void __iomem *reassign_pctrl_reg(
 #endif
 }
 
+=======
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int msm_get_groups_count(struct pinctrl_dev *pctldev)
 {
 	struct msm_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
@@ -205,12 +236,18 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
 	struct msm_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
 	const struct msm_pingroup *g;
 	unsigned long flags;
+<<<<<<< HEAD
 	void __iomem *base;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 val, mask;
 	int i;
 
 	g = &pctrl->soc->groups[group];
+<<<<<<< HEAD
 	base = reassign_pctrl_reg(pctrl->soc, group);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mask = GENMASK(g->mux_bit + order_base_2(g->nfuncs) - 1, g->mux_bit);
 
 	for (i = 0; i < g->nfuncs; i++) {
@@ -223,6 +260,7 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
 
 	raw_spin_lock_irqsave(&pctrl->lock, flags);
 
+<<<<<<< HEAD
 	val = readl(base + g->ctl_reg);
 	val &= ~mask;
 	val |= i << g->mux_bit;
@@ -231,6 +269,12 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
 		val |= BIT(g->egpio_enable);
 
 	writel(val, base + g->ctl_reg);
+=======
+	val = readl(pctrl->regs + g->ctl_reg);
+	val &= ~mask;
+	val |= i << g->mux_bit;
+	writel(val, pctrl->regs + g->ctl_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
 
@@ -295,18 +339,28 @@ static int msm_config_group_get(struct pinctrl_dev *pctldev,
 	unsigned mask;
 	unsigned arg;
 	unsigned bit;
+<<<<<<< HEAD
 	void __iomem *base;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 	u32 val;
 
 	g = &pctrl->soc->groups[group];
+<<<<<<< HEAD
 	base = reassign_pctrl_reg(pctrl->soc, group);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = msm_config_reg(pctrl, g, param, &mask, &bit);
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	val = readl(base + g->ctl_reg);
+=======
+	val = readl(pctrl->regs + g->ctl_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	arg = (val >> bit) & mask;
 
 	/* Convert register value to pinconf value */
@@ -345,7 +399,11 @@ static int msm_config_group_get(struct pinctrl_dev *pctldev,
 		if (!arg)
 			return -EINVAL;
 
+<<<<<<< HEAD
 		val = readl(base + g->io_reg);
+=======
+		val = readl(pctrl->regs + g->io_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		arg = !!(val & BIT(g->in_bit));
 		break;
 	case PIN_CONFIG_INPUT_ENABLE:
@@ -371,7 +429,10 @@ static int msm_config_group_set(struct pinctrl_dev *pctldev,
 	const struct msm_pingroup *g;
 	struct msm_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
 	unsigned long flags;
+<<<<<<< HEAD
 	void __iomem *base;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned param;
 	unsigned mask;
 	unsigned arg;
@@ -381,7 +442,10 @@ static int msm_config_group_set(struct pinctrl_dev *pctldev,
 	int i;
 
 	g = &pctrl->soc->groups[group];
+<<<<<<< HEAD
 	base = reassign_pctrl_reg(pctrl->soc, group);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (i = 0; i < num_configs; i++) {
 		param = pinconf_to_config_param(configs[i]);
@@ -421,12 +485,20 @@ static int msm_config_group_set(struct pinctrl_dev *pctldev,
 		case PIN_CONFIG_OUTPUT:
 			/* set output value */
 			raw_spin_lock_irqsave(&pctrl->lock, flags);
+<<<<<<< HEAD
 			val = readl(base + g->io_reg);
+=======
+			val = readl(pctrl->regs + g->io_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (arg)
 				val |= BIT(g->out_bit);
 			else
 				val &= ~BIT(g->out_bit);
+<<<<<<< HEAD
 			writel(val, base + g->io_reg);
+=======
+			writel(val, pctrl->regs + g->io_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			raw_spin_unlock_irqrestore(&pctrl->lock, flags);
 
 			/* enable output */
@@ -449,10 +521,17 @@ static int msm_config_group_set(struct pinctrl_dev *pctldev,
 		}
 
 		raw_spin_lock_irqsave(&pctrl->lock, flags);
+<<<<<<< HEAD
 		val = readl(base + g->ctl_reg);
 		val &= ~(mask << bit);
 		val |= arg << bit;
 		writel(val, base + g->ctl_reg);
+=======
+		val = readl(pctrl->regs + g->ctl_reg);
+		val &= ~(mask << bit);
+		val |= arg << bit;
+		writel(val, pctrl->regs + g->ctl_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		raw_spin_unlock_irqrestore(&pctrl->lock, flags);
 	}
 
@@ -477,17 +556,28 @@ static int msm_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
 	const struct msm_pingroup *g;
 	struct msm_pinctrl *pctrl = gpiochip_get_data(chip);
 	unsigned long flags;
+<<<<<<< HEAD
 	void __iomem *base;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 val;
 
 	g = &pctrl->soc->groups[offset];
 
+<<<<<<< HEAD
 	base = reassign_pctrl_reg(pctrl->soc, offset);
 	raw_spin_lock_irqsave(&pctrl->lock, flags);
 
 	val = readl(base + g->ctl_reg);
 	val &= ~BIT(g->oe_bit);
 	writel(val, base + g->ctl_reg);
+=======
+	raw_spin_lock_irqsave(&pctrl->lock, flags);
+
+	val = readl(pctrl->regs + g->ctl_reg);
+	val &= ~BIT(g->oe_bit);
+	writel(val, pctrl->regs + g->ctl_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
 
@@ -499,24 +589,41 @@ static int msm_gpio_direction_output(struct gpio_chip *chip, unsigned offset, in
 	const struct msm_pingroup *g;
 	struct msm_pinctrl *pctrl = gpiochip_get_data(chip);
 	unsigned long flags;
+<<<<<<< HEAD
 	void __iomem *base;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 val;
 
 	g = &pctrl->soc->groups[offset];
 
+<<<<<<< HEAD
 	base = reassign_pctrl_reg(pctrl->soc, offset);
 	raw_spin_lock_irqsave(&pctrl->lock, flags);
 
 	val = readl(base + g->io_reg);
+=======
+	raw_spin_lock_irqsave(&pctrl->lock, flags);
+
+	val = readl(pctrl->regs + g->io_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (value)
 		val |= BIT(g->out_bit);
 	else
 		val &= ~BIT(g->out_bit);
+<<<<<<< HEAD
 	writel(val, base + g->io_reg);
 
 	val = readl(base + g->ctl_reg);
 	val |= BIT(g->oe_bit);
 	writel(val, base + g->ctl_reg);
+=======
+	writel(val, pctrl->regs + g->io_reg);
+
+	val = readl(pctrl->regs + g->ctl_reg);
+	val |= BIT(g->oe_bit);
+	writel(val, pctrl->regs + g->ctl_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
 
@@ -527,6 +634,7 @@ static int msm_gpio_get_direction(struct gpio_chip *chip, unsigned int offset)
 {
 	struct msm_pinctrl *pctrl = gpiochip_get_data(chip);
 	const struct msm_pingroup *g;
+<<<<<<< HEAD
 	void __iomem *base;
 	u32 val;
 
@@ -534,6 +642,13 @@ static int msm_gpio_get_direction(struct gpio_chip *chip, unsigned int offset)
 	base = reassign_pctrl_reg(pctrl->soc, offset);
 
 	val = readl(base + g->ctl_reg);
+=======
+	u32 val;
+
+	g = &pctrl->soc->groups[offset];
+
+	val = readl(pctrl->regs + g->ctl_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* 0 = output, 1 = input */
 	return val & BIT(g->oe_bit) ? 0 : 1;
@@ -543,6 +658,7 @@ static int msm_gpio_get(struct gpio_chip *chip, unsigned offset)
 {
 	const struct msm_pingroup *g;
 	struct msm_pinctrl *pctrl = gpiochip_get_data(chip);
+<<<<<<< HEAD
 	void __iomem *base;
 	u32 val;
 
@@ -550,6 +666,13 @@ static int msm_gpio_get(struct gpio_chip *chip, unsigned offset)
 	base = reassign_pctrl_reg(pctrl->soc, offset);
 
 	val = readl(base + g->io_reg);
+=======
+	u32 val;
+
+	g = &pctrl->soc->groups[offset];
+
+	val = readl(pctrl->regs + g->io_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return !!(val & BIT(g->in_bit));
 }
 
@@ -558,6 +681,7 @@ static void msm_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
 	const struct msm_pingroup *g;
 	struct msm_pinctrl *pctrl = gpiochip_get_data(chip);
 	unsigned long flags;
+<<<<<<< HEAD
 	void __iomem *base;
 	u32 val;
 
@@ -567,11 +691,24 @@ static void msm_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
 	raw_spin_lock_irqsave(&pctrl->lock, flags);
 
 	val = readl(base + g->io_reg);
+=======
+	u32 val;
+
+	g = &pctrl->soc->groups[offset];
+
+	raw_spin_lock_irqsave(&pctrl->lock, flags);
+
+	val = readl(pctrl->regs + g->io_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (value)
 		val |= BIT(g->out_bit);
 	else
 		val &= ~BIT(g->out_bit);
+<<<<<<< HEAD
 	writel(val, base + g->io_reg);
+=======
+	writel(val, pctrl->regs + g->io_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
 }
@@ -587,7 +724,10 @@ static void msm_gpio_dbg_show_one(struct seq_file *s,
 {
 	const struct msm_pingroup *g;
 	struct msm_pinctrl *pctrl = gpiochip_get_data(chip);
+<<<<<<< HEAD
 	void __iomem *base;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned func;
 	int is_out;
 	int drive;
@@ -602,8 +742,12 @@ static void msm_gpio_dbg_show_one(struct seq_file *s,
 	};
 
 	g = &pctrl->soc->groups[offset];
+<<<<<<< HEAD
 	base = reassign_pctrl_reg(pctrl->soc, offset);
 	ctl_reg = readl(base + g->ctl_reg);
+=======
+	ctl_reg = readl(pctrl->regs + g->ctl_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	is_out = !!(ctl_reg & BIT(g->oe_bit));
 	func = (ctl_reg >> g->mux_bit) & 7;
@@ -667,6 +811,7 @@ static void msm_gpio_update_dual_edge_pos(struct msm_pinctrl *pctrl,
 {
 	int loop_limit = 100;
 	unsigned val, val2, intstat;
+<<<<<<< HEAD
 	void __iomem *base;
 	unsigned pol;
 
@@ -680,6 +825,19 @@ static void msm_gpio_update_dual_edge_pos(struct msm_pinctrl *pctrl,
 
 		val2 = readl(base + g->io_reg) & BIT(g->in_bit);
 		intstat = readl(base + g->intr_status_reg);
+=======
+	unsigned pol;
+
+	do {
+		val = readl(pctrl->regs + g->io_reg) & BIT(g->in_bit);
+
+		pol = readl(pctrl->regs + g->intr_cfg_reg);
+		pol ^= BIT(g->intr_polarity_bit);
+		writel(pol, pctrl->regs + g->intr_cfg_reg);
+
+		val2 = readl(pctrl->regs + g->io_reg) & BIT(g->in_bit);
+		intstat = readl(pctrl->regs + g->intr_status_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (intstat || (val == val2))
 			return;
 	} while (loop_limit-- > 0);
@@ -692,11 +850,15 @@ static void msm_gpio_irq_mask(struct irq_data *d)
 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
 	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
 	const struct msm_pingroup *g;
+<<<<<<< HEAD
 	void __iomem *base;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long flags;
 	u32 val;
 
 	g = &pctrl->soc->groups[d->hwirq];
+<<<<<<< HEAD
 	base = reassign_pctrl_reg(pctrl->soc, d->hwirq);
 
 	raw_spin_lock_irqsave(&pctrl->lock, flags);
@@ -704,10 +866,19 @@ static void msm_gpio_irq_mask(struct irq_data *d)
 	val = readl(base + g->intr_cfg_reg);
 	val &= ~BIT(g->intr_enable_bit);
 	writel(val, base + g->intr_cfg_reg);
+=======
+
+	raw_spin_lock_irqsave(&pctrl->lock, flags);
+
+	val = readl(pctrl->regs + g->intr_cfg_reg);
+	val &= ~BIT(g->intr_enable_bit);
+	writel(val, pctrl->regs + g->intr_cfg_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	clear_bit(d->hwirq, pctrl->enabled_irqs);
 
 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
+<<<<<<< HEAD
 
 	if (d->parent_data)
 		irq_chip_mask_parent(d);
@@ -744,6 +915,8 @@ static void msm_gpio_irq_enable(struct irq_data *d)
 
 	if (d->parent_data)
 		irq_chip_enable_parent(d);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void msm_gpio_irq_unmask(struct irq_data *d)
@@ -752,6 +925,7 @@ static void msm_gpio_irq_unmask(struct irq_data *d)
 	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
 	const struct msm_pingroup *g;
 	unsigned long flags;
+<<<<<<< HEAD
 	void __iomem *base;
 	u32 val;
 
@@ -763,13 +937,27 @@ static void msm_gpio_irq_unmask(struct irq_data *d)
 	val = readl(base + g->intr_cfg_reg);
 	val |= BIT(g->intr_enable_bit);
 	writel(val, base + g->intr_cfg_reg);
+=======
+	u32 val;
+
+	g = &pctrl->soc->groups[d->hwirq];
+
+	raw_spin_lock_irqsave(&pctrl->lock, flags);
+
+	val = readl(pctrl->regs + g->intr_cfg_reg);
+	val |= BIT(g->intr_enable_bit);
+	writel(val, pctrl->regs + g->intr_cfg_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	set_bit(d->hwirq, pctrl->enabled_irqs);
 
 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
+<<<<<<< HEAD
 
 	if (d->parent_data)
 		irq_chip_unmask_parent(d);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void msm_gpio_irq_ack(struct irq_data *d)
@@ -778,6 +966,7 @@ static void msm_gpio_irq_ack(struct irq_data *d)
 	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
 	const struct msm_pingroup *g;
 	unsigned long flags;
+<<<<<<< HEAD
 	void __iomem *base;
 	u32 val;
 
@@ -787,11 +976,24 @@ static void msm_gpio_irq_ack(struct irq_data *d)
 	raw_spin_lock_irqsave(&pctrl->lock, flags);
 
 	val = readl(base + g->intr_status_reg);
+=======
+	u32 val;
+
+	g = &pctrl->soc->groups[d->hwirq];
+
+	raw_spin_lock_irqsave(&pctrl->lock, flags);
+
+	val = readl(pctrl->regs + g->intr_status_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (g->intr_ack_high)
 		val |= BIT(g->intr_status_bit);
 	else
 		val &= ~BIT(g->intr_status_bit);
+<<<<<<< HEAD
 	writel(val, base + g->intr_status_reg);
+=======
+	writel(val, pctrl->regs + g->intr_status_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (test_bit(d->hwirq, pctrl->dual_edge_irqs))
 		msm_gpio_update_dual_edge_pos(pctrl, g, d);
@@ -805,11 +1007,17 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
 	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
 	const struct msm_pingroup *g;
 	unsigned long flags;
+<<<<<<< HEAD
 	void __iomem *base;
 	u32 val;
 
 	g = &pctrl->soc->groups[d->hwirq];
 	base = reassign_pctrl_reg(pctrl->soc, d->hwirq);
+=======
+	u32 val;
+
+	g = &pctrl->soc->groups[d->hwirq];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	raw_spin_lock_irqsave(&pctrl->lock, flags);
 
@@ -822,17 +1030,28 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
 		clear_bit(d->hwirq, pctrl->dual_edge_irqs);
 
 	/* Route interrupts to application cpu */
+<<<<<<< HEAD
 	val = readl(base + g->intr_target_reg);
 	val &= ~(7 << g->intr_target_bit);
 	val |= g->intr_target_kpss_val << g->intr_target_bit;
 	writel(val, base + g->intr_target_reg);
+=======
+	val = readl(pctrl->regs + g->intr_target_reg);
+	val &= ~(7 << g->intr_target_bit);
+	val |= g->intr_target_kpss_val << g->intr_target_bit;
+	writel(val, pctrl->regs + g->intr_target_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Update configuration for gpio.
 	 * RAW_STATUS_EN is left on for all gpio irqs. Due to the
 	 * internal circuitry of TLMM, toggling the RAW_STATUS
 	 * could cause the INTR_STATUS to be set for EDGE interrupts.
 	 */
+<<<<<<< HEAD
 	val = readl(base + g->intr_cfg_reg);
+=======
+	val = readl(pctrl->regs + g->intr_cfg_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	val |= BIT(g->intr_raw_status_bit);
 	if (g->intr_detection_width == 2) {
 		val &= ~(3 << g->intr_detection_bit);
@@ -880,16 +1099,23 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
 	} else {
 		BUG();
 	}
+<<<<<<< HEAD
 	writel(val, base + g->intr_cfg_reg);
+=======
+	writel(val, pctrl->regs + g->intr_cfg_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (test_bit(d->hwirq, pctrl->dual_edge_irqs))
 		msm_gpio_update_dual_edge_pos(pctrl, g, d);
 
 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
 
+<<<<<<< HEAD
 	if (d->parent_data)
 		irq_chip_set_type_parent(d, type);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (type & (IRQ_TYPE_LEVEL_LOW | IRQ_TYPE_LEVEL_HIGH))
 		irq_set_handler_locked(d, handle_level_irq);
 	else if (type & (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING))
@@ -910,6 +1136,7 @@ static int msm_gpio_irq_set_wake(struct irq_data *d, unsigned int on)
 
 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
 
+<<<<<<< HEAD
 	if (d->parent_data)
 		irq_chip_set_wake_parent(d, on);
 
@@ -942,11 +1169,19 @@ static void msm_gpiochip_irq_relres(struct irq_data *d)
 static struct irq_chip msm_gpio_irq_chip = {
 	.name           = "msmgpio",
 	.irq_enable     = msm_gpio_irq_enable,
+=======
+	return 0;
+}
+
+static struct irq_chip msm_gpio_irq_chip = {
+	.name           = "msmgpio",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.irq_mask       = msm_gpio_irq_mask,
 	.irq_unmask     = msm_gpio_irq_unmask,
 	.irq_ack        = msm_gpio_irq_ack,
 	.irq_set_type   = msm_gpio_irq_set_type,
 	.irq_set_wake   = msm_gpio_irq_set_wake,
+<<<<<<< HEAD
 	.irq_request_resources    = msm_gpiochip_irq_reqres,
 	.irq_release_resources	  = msm_gpiochip_irq_relres,
 	.flags                    = IRQCHIP_MASK_ON_SUSPEND |
@@ -1557,6 +1792,8 @@ static struct irq_chip msm_dirconn_irq_chip = {
 	.flags			= IRQCHIP_SKIP_SET_WAKE
 					| IRQCHIP_MASK_ON_SUSPEND
 					| IRQCHIP_SET_TYPE_MASKED,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static void msm_gpio_irq_handler(struct irq_desc *desc)
@@ -1565,7 +1802,10 @@ static void msm_gpio_irq_handler(struct irq_desc *desc)
 	const struct msm_pingroup *g;
 	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
 	struct irq_chip *chip = irq_desc_get_chip(desc);
+<<<<<<< HEAD
 	void __iomem *base;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int irq_pin;
 	int handled = 0;
 	u32 val;
@@ -1579,8 +1819,12 @@ static void msm_gpio_irq_handler(struct irq_desc *desc)
 	 */
 	for_each_set_bit(i, pctrl->enabled_irqs, pctrl->chip.ngpio) {
 		g = &pctrl->soc->groups[i];
+<<<<<<< HEAD
 		base = reassign_pctrl_reg(pctrl->soc, i);
 		val = readl(base + g->intr_status_reg);
+=======
+		val = readl(pctrl->regs + g->intr_status_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (val & BIT(g->intr_status_bit)) {
 			irq_pin = irq_find_mapping(gc->irqdomain, i);
 			generic_handle_irq(irq_pin);
@@ -1595,6 +1839,7 @@ static void msm_gpio_irq_handler(struct irq_desc *desc)
 	chained_irq_exit(chip, desc);
 }
 
+<<<<<<< HEAD
 static void msm_gpio_setup_dir_connects(struct msm_pinctrl *pctrl)
 {
 	struct device_node *parent_node;
@@ -1682,13 +1927,18 @@ static int msm_gpiochip_to_irq(struct gpio_chip *chip, unsigned int offset)
 	return irq_create_fwspec_mapping(&fwspec);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int msm_gpio_init(struct msm_pinctrl *pctrl)
 {
 	struct gpio_chip *chip;
 	int ret;
 	unsigned ngpio = pctrl->soc->ngpios;
+<<<<<<< HEAD
 	struct device_node *irq_parent = NULL;
 	struct irq_domain *domain_parent;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (WARN_ON(ngpio > MAX_NR_GPIO))
 		return -EINVAL;
@@ -1727,6 +1977,7 @@ static int msm_gpio_init(struct msm_pinctrl *pctrl)
 		}
 	}
 
+<<<<<<< HEAD
 	irq_parent = of_irq_find_parent(chip->of_node);
 	if (of_device_is_compatible(irq_parent, "qcom,mpm-gpio")) {
 		chip->irqchip = &msm_gpio_irq_chip;
@@ -1768,6 +2019,22 @@ static int msm_gpio_init(struct msm_pinctrl *pctrl)
 				pctrl->irq, msm_gpio_irq_handler);
 
 	msm_gpio_setup_dir_connects(pctrl);
+=======
+	ret = gpiochip_irqchip_add(chip,
+				   &msm_gpio_irq_chip,
+				   0,
+				   handle_edge_irq,
+				   IRQ_TYPE_NONE);
+	if (ret) {
+		dev_err(pctrl->dev, "Failed to add irqchip to gpiochip\n");
+		gpiochip_remove(&pctrl->chip);
+		return -ENOSYS;
+	}
+
+	gpiochip_set_chained_irqchip(chip, &msm_gpio_irq_chip, pctrl->irq,
+				     msm_gpio_irq_handler);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -1806,6 +2073,7 @@ static void msm_pinctrl_setup_pm_reset(struct msm_pinctrl *pctrl)
 		}
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 #ifdef CONFIG_HIBERNATION
 static bool hibernation;
@@ -1995,16 +2263,23 @@ static struct syscore_ops msm_pinctrl_pm_ops = {
 	.resume = msm_pinctrl_resume,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int msm_pinctrl_probe(struct platform_device *pdev,
 		      const struct msm_pinctrl_soc_data *soc_data)
 {
 	struct msm_pinctrl *pctrl;
 	struct resource *res;
 	int ret;
+<<<<<<< HEAD
 	char *key;
 
 	msm_pinctrl_data = pctrl = devm_kzalloc(&pdev->dev,
 				sizeof(*pctrl), GFP_KERNEL);
+=======
+
+	pctrl = devm_kzalloc(&pdev->dev, sizeof(*pctrl), GFP_KERNEL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!pctrl) {
 		dev_err(&pdev->dev, "Can't allocate msm_pinctrl\n");
 		return -ENOMEM;
@@ -2015,6 +2290,7 @@ int msm_pinctrl_probe(struct platform_device *pdev,
 
 	raw_spin_lock_init(&pctrl->lock);
 
+<<<<<<< HEAD
 	key = "pinctrl";
 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, key);
 	pctrl->regs = devm_ioremap_resource(&pdev->dev, res);
@@ -2045,6 +2321,12 @@ int msm_pinctrl_probe(struct platform_device *pdev,
 		pctrl->spi_cfg_regs = res->start;
 		pctrl->spi_cfg_end = res->end;
 	}
+=======
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	pctrl->regs = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(pctrl->regs))
+		return PTR_ERR(pctrl->regs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	msm_pinctrl_setup_pm_reset(pctrl);
 
@@ -2070,12 +2352,15 @@ int msm_pinctrl_probe(struct platform_device *pdev,
 
 	platform_set_drvdata(pdev, pctrl);
 
+<<<<<<< HEAD
 	register_syscore_ops(&msm_pinctrl_pm_ops);
 #ifdef CONFIG_HIBERNATION
 	ret = register_pm_notifier(&pinctrl_notif_block);
 	if (ret)
 		return ret;
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev_dbg(&pdev->dev, "Probed Qualcomm pinctrl driver\n");
 
 	return 0;
@@ -2089,7 +2374,10 @@ int msm_pinctrl_remove(struct platform_device *pdev)
 	gpiochip_remove(&pctrl->chip);
 
 	unregister_restart_handler(&pctrl->restart_nb);
+<<<<<<< HEAD
 	unregister_syscore_ops(&msm_pinctrl_pm_ops);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }

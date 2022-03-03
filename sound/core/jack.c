@@ -33,17 +33,24 @@ struct snd_jack_kctl {
 };
 
 #ifdef CONFIG_SND_JACK_INPUT_DEV
+<<<<<<< HEAD
 static int jack_switch_types[] = {
+=======
+static int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	SW_HEADPHONE_INSERT,
 	SW_MICROPHONE_INSERT,
 	SW_LINEOUT_INSERT,
 	SW_JACK_PHYSICAL_INSERT,
 	SW_VIDEOOUT_INSERT,
 	SW_LINEIN_INSERT,
+<<<<<<< HEAD
 	SW_HPHL_OVERCURRENT,
 	SW_HPHR_OVERCURRENT,
 	SW_UNSUPPORT_INSERT,
 	SW_MICROPHONE2_INSERT,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 #endif /* CONFIG_SND_JACK_INPUT_DEV */
 
@@ -72,10 +79,19 @@ static int snd_jack_dev_free(struct snd_device *device)
 	struct snd_card *card = device->card;
 	struct snd_jack_kctl *jack_kctl, *tmp_jack_kctl;
 
+<<<<<<< HEAD
+=======
+	down_write(&card->controls_rwsem);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	list_for_each_entry_safe(jack_kctl, tmp_jack_kctl, &jack->kctl_list, list) {
 		list_del_init(&jack_kctl->list);
 		snd_ctl_remove(card, jack_kctl->kctl);
 	}
+<<<<<<< HEAD
+=======
+	up_write(&card->controls_rwsem);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (jack->private_free)
 		jack->private_free(jack);
 
@@ -238,6 +254,13 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
 		return -ENOMEM;
 
 	jack->id = kstrdup(id, GFP_KERNEL);
+<<<<<<< HEAD
+=======
+	if (jack->id == NULL) {
+		kfree(jack);
+		return -ENOMEM;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* don't creat input device for phantom jack */
 	if (!phantom_jack) {
@@ -254,7 +277,11 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
 
 		jack->type = type;
 
+<<<<<<< HEAD
 		for (i = 0; i < ARRAY_SIZE(jack_switch_types); i++)
+=======
+		for (i = 0; i < SND_JACK_SWITCH_TYPES; i++)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (type & (1 << i))
 				input_set_capability(jack->input_dev, EV_SW,
 						     jack_switch_types[i]);

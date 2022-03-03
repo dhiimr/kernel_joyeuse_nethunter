@@ -207,8 +207,15 @@ static int acm_ms_bind(struct usb_composite_dev *cdev)
 		struct usb_descriptor_header *usb_desc;
 
 		usb_desc = usb_otg_descriptor_alloc(gadget);
+<<<<<<< HEAD
 		if (!usb_desc)
 			goto fail_string_ids;
+=======
+		if (!usb_desc) {
+			status = -ENOMEM;
+			goto fail_string_ids;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		usb_otg_descriptor_init(gadget, usb_desc);
 		otg_desc[0] = usb_desc;
 		otg_desc[1] = NULL;

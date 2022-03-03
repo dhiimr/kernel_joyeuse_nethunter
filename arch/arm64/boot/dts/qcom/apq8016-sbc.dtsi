@@ -458,6 +458,11 @@
 	l11 {
 		regulator-min-microvolt = <1750000>;
 		regulator-max-microvolt = <3337000>;
+<<<<<<< HEAD
+=======
+		regulator-allow-set-load;
+		regulator-system-load = <200000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	l12 {

@@ -29,7 +29,10 @@
 #include <linux/arm-smccc.h>
 #include <linux/kprobes.h>
 
+<<<<<<< HEAD
 #include <asm/cacheflush.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/checksum.h>
 
 EXPORT_SYMBOL(copy_page);
@@ -45,20 +48,34 @@ EXPORT_SYMBOL(__arch_copy_in_user);
 EXPORT_SYMBOL(memstart_addr);
 
 	/* string / mem functions */
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_KASAN
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 EXPORT_SYMBOL(strchr);
 EXPORT_SYMBOL(strrchr);
 EXPORT_SYMBOL(strcmp);
 EXPORT_SYMBOL(strncmp);
 EXPORT_SYMBOL(strlen);
 EXPORT_SYMBOL(strnlen);
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(memcmp);
+EXPORT_SYMBOL(memchr);
+#endif
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 EXPORT_SYMBOL(memset);
 EXPORT_SYMBOL(memcpy);
 EXPORT_SYMBOL(memmove);
 EXPORT_SYMBOL(__memset);
 EXPORT_SYMBOL(__memcpy);
 EXPORT_SYMBOL(__memmove);
+<<<<<<< HEAD
 EXPORT_SYMBOL(memchr);
 EXPORT_SYMBOL(memcmp);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* atomic bitops */
 EXPORT_SYMBOL(set_bit);
@@ -76,8 +93,11 @@ NOKPROBE_SYMBOL(_mcount);
 	/* arm-smccc */
 EXPORT_SYMBOL(__arm_smccc_smc);
 EXPORT_SYMBOL(__arm_smccc_hvc);
+<<<<<<< HEAD
 
 	/* caching functions */
 EXPORT_SYMBOL(__dma_inv_area);
 EXPORT_SYMBOL(__dma_clean_area);
 EXPORT_SYMBOL(__dma_flush_area);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

@@ -62,16 +62,22 @@ static inline void __cpuidle_unset_driver(struct cpuidle_driver *drv)
  * __cpuidle_set_driver - set per CPU driver variables for the given driver.
  * @drv: a valid pointer to a struct cpuidle_driver
  *
+<<<<<<< HEAD
  * For each CPU in the driver's cpumask, unset the registered driver per CPU
  * to @drv.
  *
  * Returns 0 on success, -EBUSY if the CPUs have driver(s) already.
+=======
+ * Returns 0 on success, -EBUSY if any CPU in the cpumask have a driver
+ * different from drv already.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 static inline int __cpuidle_set_driver(struct cpuidle_driver *drv)
 {
 	int cpu;
 
 	for_each_cpu(cpu, drv->cpumask) {
+<<<<<<< HEAD
 
 		if (__cpuidle_get_cpu_driver(cpu)) {
 			__cpuidle_unset_driver(drv);
@@ -80,6 +86,17 @@ static inline int __cpuidle_set_driver(struct cpuidle_driver *drv)
 
 		per_cpu(cpuidle_drivers, cpu) = drv;
 	}
+=======
+		struct cpuidle_driver *old_drv;
+
+		old_drv = __cpuidle_get_cpu_driver(cpu);
+		if (old_drv && old_drv != drv)
+			return -EBUSY;
+	}
+
+	for_each_cpu(cpu, drv->cpumask)
+		per_cpu(cpuidle_drivers, cpu) = drv;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }

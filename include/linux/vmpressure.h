@@ -16,7 +16,10 @@ struct vmpressure {
 
 	unsigned long tree_scanned;
 	unsigned long tree_reclaimed;
+<<<<<<< HEAD
 	unsigned long stall;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* The lock is used to keep the scanned/reclaimed above in sync. */
 	struct spinlock sr_lock;
 
@@ -30,13 +33,20 @@ struct vmpressure {
 
 struct mem_cgroup;
 
+<<<<<<< HEAD
 extern int vmpressure_notifier_register(struct notifier_block *nb);
 extern int vmpressure_notifier_unregister(struct notifier_block *nb);
+=======
+#ifdef CONFIG_MEMCG
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
 		       unsigned long scanned, unsigned long reclaimed);
 extern void vmpressure_prio(gfp_t gfp, struct mem_cgroup *memcg, int prio);
 
+<<<<<<< HEAD
 #ifdef CONFIG_MEMCG
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void vmpressure_init(struct vmpressure *vmpr);
 extern void vmpressure_cleanup(struct vmpressure *vmpr);
 extern struct vmpressure *memcg_to_vmpressure(struct mem_cgroup *memcg);
@@ -47,9 +57,16 @@ extern int vmpressure_register_event(struct mem_cgroup *memcg,
 extern void vmpressure_unregister_event(struct mem_cgroup *memcg,
 					struct eventfd_ctx *eventfd);
 #else
+<<<<<<< HEAD
 static inline struct vmpressure *memcg_to_vmpressure(struct mem_cgroup *memcg)
 {
 	return NULL;
 }
+=======
+static inline void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
+			      unsigned long scanned, unsigned long reclaimed) {}
+static inline void vmpressure_prio(gfp_t gfp, struct mem_cgroup *memcg,
+				   int prio) {}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* CONFIG_MEMCG */
 #endif /* __LINUX_VMPRESSURE_H */

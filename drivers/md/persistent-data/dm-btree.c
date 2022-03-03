@@ -83,6 +83,7 @@ void inc_children(struct dm_transaction_manager *tm, struct btree_node *n,
 }
 
 static int insert_at(size_t value_size, struct btree_node *node, unsigned index,
+<<<<<<< HEAD
 		      uint64_t key, void *value)
 		      __dm_written_to_disk(value)
 {
@@ -91,6 +92,18 @@ static int insert_at(size_t value_size, struct btree_node *node, unsigned index,
 
 	if (index > nr_entries ||
 	    index >= le32_to_cpu(node->header.max_entries)) {
+=======
+		     uint64_t key, void *value)
+	__dm_written_to_disk(value)
+{
+	uint32_t nr_entries = le32_to_cpu(node->header.nr_entries);
+	uint32_t max_entries = le32_to_cpu(node->header.max_entries);
+	__le64 key_le = cpu_to_le64(key);
+
+	if (index > nr_entries ||
+	    index >= max_entries ||
+	    nr_entries >= max_entries) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		DMERR("too many entries in btree node for insert");
 		__dm_unbless_for_disk(value);
 		return -ENOMEM;
@@ -628,16 +641,39 @@ static int btree_split_beneath(struct shadow_spine *s, uint64_t key)
 
 	new_parent = shadow_current(s);
 
+<<<<<<< HEAD
+=======
+	pn = dm_block_data(new_parent);
+	size = le32_to_cpu(pn->header.flags) & INTERNAL_NODE ?
+		sizeof(__le64) : s->info->value_type.size;
+
+	/* create & init the left block */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	r = new_block(s->info, &left);
 	if (r < 0)
 		return r;
 
+<<<<<<< HEAD
+=======
+	ln = dm_block_data(left);
+	nr_left = le32_to_cpu(pn->header.nr_entries) / 2;
+
+	ln->header.flags = pn->header.flags;
+	ln->header.nr_entries = cpu_to_le32(nr_left);
+	ln->header.max_entries = pn->header.max_entries;
+	ln->header.value_size = pn->header.value_size;
+	memcpy(ln->keys, pn->keys, nr_left * sizeof(pn->keys[0]));
+	memcpy(value_ptr(ln, 0), value_ptr(pn, 0), nr_left * size);
+
+	/* create & init the right block */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	r = new_block(s->info, &right);
 	if (r < 0) {
 		unlock_block(s->info, left);
 		return r;
 	}
 
+<<<<<<< HEAD
 	pn = dm_block_data(new_parent);
 	ln = dm_block_data(left);
 	rn = dm_block_data(right);
@@ -650,10 +686,16 @@ static int btree_split_beneath(struct shadow_spine *s, uint64_t key)
 	ln->header.max_entries = pn->header.max_entries;
 	ln->header.value_size = pn->header.value_size;
 
+=======
+	rn = dm_block_data(right);
+	nr_right = le32_to_cpu(pn->header.nr_entries) - nr_left;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rn->header.flags = pn->header.flags;
 	rn->header.nr_entries = cpu_to_le32(nr_right);
 	rn->header.max_entries = pn->header.max_entries;
 	rn->header.value_size = pn->header.value_size;
+<<<<<<< HEAD
 
 	memcpy(ln->keys, pn->keys, nr_left * sizeof(pn->keys[0]));
 	memcpy(rn->keys, pn->keys + nr_left, nr_right * sizeof(pn->keys[0]));
@@ -661,6 +703,9 @@ static int btree_split_beneath(struct shadow_spine *s, uint64_t key)
 	size = le32_to_cpu(pn->header.flags) & INTERNAL_NODE ?
 		sizeof(__le64) : s->info->value_type.size;
 	memcpy(value_ptr(ln, 0), value_ptr(pn, 0), nr_left * size);
+=======
+	memcpy(rn->keys, pn->keys + nr_left, nr_right * sizeof(pn->keys[0]));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	memcpy(value_ptr(rn, 0), value_ptr(pn, nr_left),
 	       nr_right * size);
 

@@ -63,7 +63,11 @@
 
 	vcc_flash: flash-regulator {
 		compatible = "regulator-fixed";
+<<<<<<< HEAD
 		regulator-name = "vcc_sys";
+=======
+		regulator-name = "vcc_flash";
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		regulator-min-microvolt = <1800000>;
 		regulator-max-microvolt = <1800000>;
 		startup-delay-us = <150>;

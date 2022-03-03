@@ -323,7 +323,11 @@ static int i915_getparam(struct drm_device *dev, void *data,
 		value = i915.semaphores;
 		break;
 	case I915_PARAM_HAS_SECURE_BATCHES:
+<<<<<<< HEAD
 		value = capable(CAP_SYS_ADMIN);
+=======
+		value = HAS_SECURE_BATCHES(dev_priv) && capable(CAP_SYS_ADMIN);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	case I915_PARAM_CMD_PARSER_VERSION:
 		value = i915_cmd_parser_get_version(dev_priv);
@@ -1564,6 +1568,10 @@ static int i915_drm_suspend_late(struct drm_device *dev, bool hibernation)
 	disable_rpm_wakeref_asserts(dev_priv);
 
 	intel_display_set_init_power(dev_priv, false);
+<<<<<<< HEAD
+=======
+	i915_rc6_ctx_wa_suspend(dev_priv);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	fw_csr = !IS_GEN9_LP(dev_priv) &&
 		suspend_to_idle(dev_priv) && dev_priv->csr.dmc_payload;
@@ -1800,6 +1808,10 @@ static int i915_drm_resume_early(struct drm_device *dev)
 		intel_display_set_init_power(dev_priv, true);
 
 	i915_gem_sanitize(dev_priv);
+<<<<<<< HEAD
+=======
+	i915_rc6_ctx_wa_resume(dev_priv);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	enable_rpm_wakeref_asserts(dev_priv);
 

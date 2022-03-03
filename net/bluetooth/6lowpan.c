@@ -57,6 +57,10 @@ static bool enable_6lowpan;
 /* We are listening incoming connections via this channel
  */
 static struct l2cap_chan *listen_chan;
+<<<<<<< HEAD
+=======
+static DEFINE_MUTEX(set_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct lowpan_peer {
 	struct list_head list;
@@ -187,10 +191,23 @@ static inline struct lowpan_peer *peer_lookup_dst(struct lowpan_btle_dev *dev,
 	}
 
 	if (!rt) {
+<<<<<<< HEAD
 		nexthop = &lowpan_cb(skb)->gw;
 
 		if (ipv6_addr_any(nexthop))
 			return NULL;
+=======
+		if (ipv6_addr_any(&lowpan_cb(skb)->gw)) {
+			/* There is neither route nor gateway,
+			 * probably the destination is a direct peer.
+			 */
+			nexthop = daddr;
+		} else {
+			/* There is a known gateway
+			 */
+			nexthop = &lowpan_cb(skb)->gw;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		nexthop = rt6_nexthop(rt, daddr);
 
@@ -1076,12 +1093,20 @@ static void do_enable_set(struct work_struct *work)
 
 	enable_6lowpan = set_enable->flag;
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&set_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (listen_chan) {
 		l2cap_chan_close(listen_chan, 0);
 		l2cap_chan_put(listen_chan);
 	}
 
 	listen_chan = bt_6lowpan_listen();
+<<<<<<< HEAD
+=======
+	mutex_unlock(&set_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	kfree(set_enable);
 }
@@ -1133,11 +1158,19 @@ static ssize_t lowpan_control_write(struct file *fp,
 		if (ret == -EINVAL)
 			return ret;
 
+<<<<<<< HEAD
+=======
+		mutex_lock(&set_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (listen_chan) {
 			l2cap_chan_close(listen_chan, 0);
 			l2cap_chan_put(listen_chan);
 			listen_chan = NULL;
 		}
+<<<<<<< HEAD
+=======
+		mutex_unlock(&set_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (conn) {
 			struct lowpan_peer *peer;

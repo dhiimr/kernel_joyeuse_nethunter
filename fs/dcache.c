@@ -3279,7 +3279,10 @@ char *d_absolute_path(const struct path *path,
 		return ERR_PTR(error);
 	return res;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(d_absolute_path);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * same as __d_path but appends "(deleted)" for unlinked files.

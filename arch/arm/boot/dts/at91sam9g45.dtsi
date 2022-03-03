@@ -566,7 +566,11 @@
 					};
 				};
 
+<<<<<<< HEAD
 				uart1 {
+=======
+				usart1 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					pinctrl_usart1: usart1-0 {
 						atmel,pins =
 							<AT91_PIOB 4 AT91_PERIPH_A AT91_PINCTRL_PULL_UP	/* PB4 periph A with pullup */

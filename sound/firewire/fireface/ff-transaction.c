@@ -99,7 +99,11 @@ static void transmit_midi_msg(struct snd_ff *ff, unsigned int port)
 
 	/* Set interval to next transaction. */
 	ff->next_ktime[port] = ktime_add_ns(ktime_get(),
+<<<<<<< HEAD
 					    len * 8 * NSEC_PER_SEC / 31250);
+=======
+					    len * 8 * (NSEC_PER_SEC / 31250));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ff->rx_bytes[port] = len;
 
 	/*

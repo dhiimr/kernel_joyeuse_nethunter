@@ -46,6 +46,7 @@ config OF_EARLY_FLATTREE
 config OF_PROMTREE
 	bool
 
+<<<<<<< HEAD
 config OF_KOBJ
 	bool "Display devicetree in sysfs"
 	def_bool SYSFS
@@ -55,11 +56,16 @@ config OF_KOBJ
 	  a small amount of memory, as well as decrease boot time. By
 	  default this option will be enabled if SYSFS is enabled.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # Hardly any platforms need this.  It is safe to select, but only do so if you
 # need it.
 config OF_DYNAMIC
 	bool "Support for dynamic device trees" if OF_UNITTEST
+<<<<<<< HEAD
 	select OF_KOBJ
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	  On some platforms, the device tree can be manipulated at runtime.
 	  While this option is selected automatically on such platforms, you
@@ -109,12 +115,15 @@ config OF_RESERVED_MEM
 config OF_RESOLVE
 	bool
 
+<<<<<<< HEAD
 config OF_SLIMBUS
 	def_tristate SLIMBUS
 	depends on SLIMBUS
 	help
 	  OpenFirmware SLIMBUS accessors
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config OF_OVERLAY
 	bool "Device Tree overlays"
 	select OF_DYNAMIC
@@ -128,9 +137,15 @@ config OF_OVERLAY
 config OF_NUMA
 	bool
 
+<<<<<<< HEAD
 config OF_BATTERYDATA
 	def_bool y
 	help
 	  OpenFirmware BatteryData accessors
+=======
+config OF_DMA_DEFAULT_COHERENT
+	# arches should select this if DMA is coherent by default for OF devices
+	bool
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 endif # OF

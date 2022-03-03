@@ -157,9 +157,15 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
 		flush_hash_entry(mm, ptep, addr);
 #endif
 	__asm__ __volatile__("\
+<<<<<<< HEAD
 		stw%U0%X0 %2,%0\n\
 		eieio\n\
 		stw%U0%X0 %L2,%1"
+=======
+		stw%X0 %2,%0\n\
+		eieio\n\
+		stw%X1 %L2,%1"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	: "=m" (*ptep), "=m" (*((unsigned char *)ptep+4))
 	: "r" (pte) : "memory");
 

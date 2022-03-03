@@ -112,17 +112,31 @@ int drm_getunique(struct drm_device *dev, void *data,
 		  struct drm_file *file_priv)
 {
 	struct drm_unique *u = data;
+<<<<<<< HEAD
 	struct drm_master *master = file_priv->master;
 
 	mutex_lock(&master->dev->master_mutex);
 	if (u->unique_len >= master->unique_len) {
 		if (copy_to_user(u->unique, master->unique, master->unique_len)) {
 			mutex_unlock(&master->dev->master_mutex);
+=======
+	struct drm_master *master;
+
+	mutex_lock(&dev->master_mutex);
+	master = file_priv->master;
+	if (u->unique_len >= master->unique_len) {
+		if (copy_to_user(u->unique, master->unique, master->unique_len)) {
+			mutex_unlock(&dev->master_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return -EFAULT;
 		}
 	}
 	u->unique_len = master->unique_len;
+<<<<<<< HEAD
 	mutex_unlock(&master->dev->master_mutex);
+=======
+	mutex_unlock(&dev->master_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -486,6 +500,7 @@ int drm_version(struct drm_device *dev, void *data,
 	return err;
 }
 
+<<<<<<< HEAD
 #define MAX_TASK_NAME_LEN 30
 #define MAX_LIST_NUM 6
 char support_list[MAX_LIST_NUM][MAX_TASK_NAME_LEN] = {
@@ -511,6 +526,8 @@ static bool drm_master_filter(char *task_name)
 	return ret;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * drm_ioctl_permit - Check ioctl permissions against caller
  *
@@ -525,7 +542,10 @@ static bool drm_master_filter(char *task_name)
  */
 int drm_ioctl_permit(u32 flags, struct drm_file *file_priv)
 {
+<<<<<<< HEAD
 	struct task_struct *task = get_current();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* ROOT_ONLY is only for CAP_SYS_ADMIN */
 	if (unlikely((flags & DRM_ROOT_ONLY) && !capable(CAP_SYS_ADMIN)))
 		return -EACCES;
@@ -536,6 +556,7 @@ int drm_ioctl_permit(u32 flags, struct drm_file *file_priv)
 		return -EACCES;
 
 	/* MASTER is only for master or control clients */
+<<<<<<< HEAD
 	if (unlikely((flags & DRM_MASTER) &&
 		     !drm_is_current_master(file_priv) &&
 		     !drm_is_control_client(file_priv))) {
@@ -543,6 +564,12 @@ int drm_ioctl_permit(u32 flags, struct drm_file *file_priv)
 			return -EACCES;
 		}
 	}
+=======
+	if (unlikely((flags & DRM_MASTER) && 
+		     !drm_is_current_master(file_priv) &&
+		     !drm_is_control_client(file_priv)))
+		return -EACCES;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Control clients must be explicitly allowed */
 	if (unlikely(!(flags & DRM_CONTROL_ALLOW) &&
@@ -693,10 +720,13 @@ static const struct drm_ioctl_desc drm_ioctls[] = {
 		      DRM_UNLOCKED|DRM_RENDER_ALLOW),
 	DRM_IOCTL_DEF(DRM_IOCTL_SYNCOBJ_SIGNAL, drm_syncobj_signal_ioctl,
 		      DRM_UNLOCKED|DRM_RENDER_ALLOW),
+<<<<<<< HEAD
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_CREATE_LEASE, drm_mode_create_lease_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_LIST_LESSEES, drm_mode_list_lessees_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GET_LEASE, drm_mode_get_lease_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_REVOKE_LEASE, drm_mode_revoke_lease_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #define DRM_CORE_IOCTL_COUNT	ARRAY_SIZE( drm_ioctls )
@@ -808,6 +838,12 @@ long drm_ioctl(struct file *filp,
 	if (drm_dev_is_unplugged(dev))
 		return -ENODEV;
 
+<<<<<<< HEAD
+=======
+       if (DRM_IOCTL_TYPE(cmd) != DRM_IOCTL_BASE)
+               return -ENOTTY;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	is_driver_ioctl = nr >= DRM_COMMAND_BASE && nr < DRM_COMMAND_END;
 
 	if (is_driver_ioctl) {

@@ -74,7 +74,12 @@ dep-cmd = $(if $(wildcard $(fixdep)),                                           
 #                   dependencies in the cmd file
 if_changed_dep = $(if $(strip $(any-prereq) $(arg-check)),         \
                   @set -e;                                         \
+<<<<<<< HEAD
                   $(echo-cmd) $(cmd_$(1)) && $(dep-cmd))
+=======
+                  $(echo-cmd) $(cmd_$(1));                         \
+                  $(dep-cmd))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 # if_changed      - execute command if any prerequisite is newer than
 #                   target, or command line has changed

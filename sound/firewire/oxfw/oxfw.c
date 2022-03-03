@@ -176,9 +176,12 @@ static int detect_quirks(struct snd_oxfw *oxfw)
 		oxfw->midi_input_ports = 0;
 		oxfw->midi_output_ports = 0;
 
+<<<<<<< HEAD
 		/* Output stream exists but no data channels are useful. */
 		oxfw->has_output = false;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return snd_oxfw_scs1x_add(oxfw);
 	}
 
@@ -409,8 +412,12 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
 	 *  Onyx-i series (former models):	0x081216
 	 *  Mackie Onyx Satellite:		0x00200f
 	 *  Tapco LINK.firewire 4x6:		0x000460
+<<<<<<< HEAD
 	 *  d.2 pro:				Unknown
 	 *  d.4 pro:				Unknown
+=======
+	 *  d.2 pro/d.4 pro (built-in card):	Unknown
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 *  U.420:				Unknown
 	 *  U.420d:				Unknown
 	 */

@@ -137,14 +137,21 @@ static const struct e1000_reg_info e1000_reg_info_tbl[] = {
  * has bit 24 set while ME is accessing MAC CSR registers, wait if it is set
  * and try again a number of times.
  **/
+<<<<<<< HEAD
 s32 __ew32_prepare(struct e1000_hw *hw)
+=======
+static void __ew32_prepare(struct e1000_hw *hw)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	s32 i = E1000_ICH_FWSM_PCIM2PCI_COUNT;
 
 	while ((er32(FWSM) & E1000_ICH_FWSM_PCIM2PCI) && --i)
 		udelay(50);
+<<<<<<< HEAD
 
 	return i;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void __ew32(struct e1000_hw *hw, unsigned long reg, u32 val)
@@ -625,11 +632,19 @@ static void e1000e_update_rdt_wa(struct e1000_ring *rx_ring, unsigned int i)
 {
 	struct e1000_adapter *adapter = rx_ring->adapter;
 	struct e1000_hw *hw = &adapter->hw;
+<<<<<<< HEAD
 	s32 ret_val = __ew32_prepare(hw);
 
 	writel(i, rx_ring->tail);
 
 	if (unlikely(!ret_val && (i != readl(rx_ring->tail)))) {
+=======
+
+	__ew32_prepare(hw);
+	writel(i, rx_ring->tail);
+
+	if (unlikely(i != readl(rx_ring->tail))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		u32 rctl = er32(RCTL);
 
 		ew32(RCTL, rctl & ~E1000_RCTL_EN);
@@ -642,11 +657,19 @@ static void e1000e_update_tdt_wa(struct e1000_ring *tx_ring, unsigned int i)
 {
 	struct e1000_adapter *adapter = tx_ring->adapter;
 	struct e1000_hw *hw = &adapter->hw;
+<<<<<<< HEAD
 	s32 ret_val = __ew32_prepare(hw);
 
 	writel(i, tx_ring->tail);
 
 	if (unlikely(!ret_val && (i != readl(tx_ring->tail)))) {
+=======
+
+	__ew32_prepare(hw);
+	writel(i, tx_ring->tail);
+
+	if (unlikely(i != readl(tx_ring->tail))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		u32 tctl = er32(TCTL);
 
 		ew32(TCTL, tctl & ~E1000_TCTL_EN);
@@ -4228,7 +4251,11 @@ void e1000e_up(struct e1000_adapter *adapter)
 		e1000_configure_msix(adapter);
 	e1000_irq_enable(adapter);
 
+<<<<<<< HEAD
 	netif_start_queue(adapter->netdev);
+=======
+	/* Tx queue started by watchdog timer when link is up */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	e1000e_trigger_lsc(adapter);
 }
@@ -4604,6 +4631,10 @@ int e1000e_open(struct net_device *netdev)
 	pm_runtime_get_sync(&pdev->dev);
 
 	netif_carrier_off(netdev);
+<<<<<<< HEAD
+=======
+	netif_stop_queue(netdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* allocate transmit descriptors */
 	err = e1000e_setup_tx_resources(adapter->tx_ring);
@@ -4664,7 +4695,10 @@ int e1000e_open(struct net_device *netdev)
 	e1000_irq_enable(adapter);
 
 	adapter->tx_hang_recheck = false;
+<<<<<<< HEAD
 	netif_start_queue(netdev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	hw->mac.get_link_status = true;
 	pm_runtime_put(&pdev->dev);
@@ -5271,6 +5305,13 @@ static void e1000_watchdog_task(struct work_struct *work)
 					/* oops */
 					break;
 				}
+<<<<<<< HEAD
+=======
+				if (hw->mac.type == e1000_pch_spt) {
+					netdev->features &= ~NETIF_F_TSO;
+					netdev->features &= ~NETIF_F_TSO6;
+				}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 
 			/* enable transmits in the hardware, need to do this
@@ -5286,6 +5327,10 @@ static void e1000_watchdog_task(struct work_struct *work)
 			if (phy->ops.cfg_on_link_up)
 				phy->ops.cfg_on_link_up(hw);
 
+<<<<<<< HEAD
+=======
+			netif_wake_queue(netdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			netif_carrier_on(netdev);
 
 			if (!test_bit(__E1000_DOWN, &adapter->state))
@@ -5299,6 +5344,10 @@ static void e1000_watchdog_task(struct work_struct *work)
 			/* Link status message must follow this format */
 			pr_info("%s NIC Link is Down\n", adapter->netdev->name);
 			netif_carrier_off(netdev);
+<<<<<<< HEAD
+=======
+			netif_stop_queue(netdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (!test_bit(__E1000_DOWN, &adapter->state))
 				mod_timer(&adapter->phy_info_timer,
 					  round_jiffies(jiffies + 2 * HZ));
@@ -5306,6 +5355,7 @@ static void e1000_watchdog_task(struct work_struct *work)
 			/* 8000ES2LAN requires a Rx packet buffer work-around
 			 * on link down event; reset the controller to flush
 			 * the Rx packet buffer.
+<<<<<<< HEAD
 			 *
 			 * If the link is lost the controller stops DMA, but
 			 * if there is queued Tx work it cannot be done.  So
@@ -5313,6 +5363,10 @@ static void e1000_watchdog_task(struct work_struct *work)
 			 */
 			if ((adapter->flags & FLAG_RX_NEEDS_RESTART) ||
 			    e1000_desc_unused(tx_ring) + 1 < tx_ring->count)
+=======
+			 */
+			if (adapter->flags & FLAG_RX_NEEDS_RESTART)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				adapter->flags |= FLAG_RESTART_NOW;
 			else
 				pm_schedule_suspend(netdev->dev.parent,
@@ -5335,6 +5389,17 @@ link_up:
 	adapter->gotc_old = adapter->stats.gotc;
 	spin_unlock(&adapter->stats64_lock);
 
+<<<<<<< HEAD
+=======
+	/* If the link is lost the controller stops DMA, but
+	 * if there is queued Tx work it cannot be done.  So
+	 * reset the controller to flush the Tx packet buffers.
+	 */
+	if (!netif_carrier_ok(netdev) &&
+	    (e1000_desc_unused(tx_ring) + 1 < tx_ring->count))
+		adapter->flags |= FLAG_RESTART_NOW;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* If reset is necessary, do it outside of interrupt context. */
 	if (adapter->flags & FLAG_RESTART_NOW) {
 		schedule_work(&adapter->reset_task);
@@ -5935,15 +6000,28 @@ static void e1000_reset_task(struct work_struct *work)
 	struct e1000_adapter *adapter;
 	adapter = container_of(work, struct e1000_adapter, reset_task);
 
+<<<<<<< HEAD
 	/* don't run the task if already down */
 	if (test_bit(__E1000_DOWN, &adapter->state))
 		return;
+=======
+	rtnl_lock();
+	/* don't run the task if already down */
+	if (test_bit(__E1000_DOWN, &adapter->state)) {
+		rtnl_unlock();
+		return;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!(adapter->flags & FLAG_RESTART_NOW)) {
 		e1000e_dump(adapter);
 		e_err("Reset adapter unexpectedly\n");
 	}
 	e1000e_reinit_locked(adapter);
+<<<<<<< HEAD
+=======
+	rtnl_unlock();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -6321,11 +6399,25 @@ static int __e1000_shutdown(struct pci_dev *pdev, bool runtime)
 	struct net_device *netdev = pci_get_drvdata(pdev);
 	struct e1000_adapter *adapter = netdev_priv(netdev);
 	struct e1000_hw *hw = &adapter->hw;
+<<<<<<< HEAD
 	u32 ctrl, ctrl_ext, rctl, status;
 	/* Runtime suspend should only enable wakeup for link changes */
 	u32 wufc = runtime ? E1000_WUFC_LNKC : adapter->wol;
 	int retval = 0;
 
+=======
+	u32 ctrl, ctrl_ext, rctl, status, wufc;
+	int retval = 0;
+
+	/* Runtime suspend should only enable wakeup for link changes */
+	if (runtime)
+		wufc = E1000_WUFC_LNKC;
+	else if (device_may_wakeup(&pdev->dev))
+		wufc = adapter->wol;
+	else
+		wufc = 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	status = er32(STATUS);
 	if (status & E1000_STATUS_LU)
 		wufc &= ~E1000_WUFC_LNKC;
@@ -6382,7 +6474,11 @@ static int __e1000_shutdown(struct pci_dev *pdev, bool runtime)
 	if (adapter->hw.phy.type == e1000_phy_igp_3) {
 		e1000e_igp3_phy_powerdown_workaround_ich8lan(&adapter->hw);
 	} else if (hw->mac.type >= e1000_pch_lpt) {
+<<<<<<< HEAD
 		if (!(wufc & (E1000_WUFC_EX | E1000_WUFC_MC | E1000_WUFC_BC)))
+=======
+		if (wufc && !(wufc & (E1000_WUFC_EX | E1000_WUFC_MC | E1000_WUFC_BC)))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/* ULP does not support wake from unicast, multicast
 			 * or broadcast.
 			 */
@@ -7375,6 +7471,10 @@ err_flashmap:
 err_ioremap:
 	free_netdev(netdev);
 err_alloc_etherdev:
+<<<<<<< HEAD
+=======
+	pci_disable_pcie_error_reporting(pdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pci_release_mem_regions(pdev);
 err_pci_reg:
 err_dma:

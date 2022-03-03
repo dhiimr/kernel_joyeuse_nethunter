@@ -30,6 +30,7 @@ config SW_SYNC
 	  WARNING: improper use of this can result in deadlocking kernel
 	  drivers from userspace. Intended for test and debug only.
 
+<<<<<<< HEAD
 config DEBUG_DMA_BUF_REF
 	bool "DEBUG Reference Count"
 	depends on STACKDEPOT
@@ -41,4 +42,6 @@ config DEBUG_DMA_BUF_REF
 	  matching the get/put call stacks.  This feature consumes extra memory
 	  in order to save the stack traces using STACKDEPOT.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endmenu

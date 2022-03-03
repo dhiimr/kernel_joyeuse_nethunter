@@ -122,5 +122,8 @@ obj-$(CONFIG_USB_KBD)		+= usbhid/
 obj-$(CONFIG_I2C_HID)		+= i2c-hid/
 
 obj-$(CONFIG_INTEL_ISH_HID)	+= intel-ish-hid/
+<<<<<<< HEAD
 
 obj-$(CONFIG_HID_QVR)		+= hid-qvr.o hid-trace.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

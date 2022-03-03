@@ -27,6 +27,10 @@ config BCM47XX_BCMA
 	select BCMA
 	select BCMA_HOST_SOC
 	select BCMA_DRIVER_MIPS
+<<<<<<< HEAD
+=======
+	select BCMA_DRIVER_PCI if PCI
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select BCMA_DRIVER_PCI_HOSTMODE if PCI
 	select BCMA_DRIVER_GPIO
 	default y

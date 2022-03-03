@@ -46,7 +46,10 @@
 #include <linux/cleancache.h>
 
 #include "ext4.h"
+<<<<<<< HEAD
 #include <trace/events/android_fs.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static inline bool ext4_bio_encrypted(struct bio *bio)
 {
@@ -57,6 +60,7 @@ static inline bool ext4_bio_encrypted(struct bio *bio)
 #endif
 }
 
+<<<<<<< HEAD
 static void
 ext4_trace_read_completion(struct bio *bio)
 {
@@ -68,6 +72,8 @@ ext4_trace_read_completion(struct bio *bio)
 					      bio->bi_iter.bi_size);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * I/O completion handler for multipage BIOs.
  *
@@ -85,14 +91,21 @@ static void mpage_end_io(struct bio *bio)
 	struct bio_vec *bv;
 	int i;
 
+<<<<<<< HEAD
 	if (trace_android_fs_dataread_start_enabled())
 		ext4_trace_read_completion(bio);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ext4_bio_encrypted(bio)) {
 		if (bio->bi_status) {
 			fscrypt_release_ctx(bio->bi_private);
 		} else {
+<<<<<<< HEAD
 			fscrypt_enqueue_decrypt_bio(bio->bi_private, bio);
+=======
+			fscrypt_decrypt_bio_pages(bio->bi_private, bio);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return;
 		}
 	}
@@ -111,6 +124,7 @@ static void mpage_end_io(struct bio *bio)
 	bio_put(bio);
 }
 
+<<<<<<< HEAD
 static void
 ext4_submit_bio_read(struct bio *bio)
 {
@@ -135,6 +149,8 @@ ext4_submit_bio_read(struct bio *bio)
 	submit_bio(bio);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int ext4_mpage_readpages(struct address_space *mapping,
 			 struct list_head *pages, struct page *page,
 			 unsigned nr_pages)
@@ -275,7 +291,11 @@ int ext4_mpage_readpages(struct address_space *mapping,
 		 */
 		if (bio && (last_block_in_bio != blocks[0] - 1)) {
 		submit_and_realloc:
+<<<<<<< HEAD
 			ext4_submit_bio_read(bio);
+=======
+			submit_bio(bio);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			bio = NULL;
 		}
 		if (bio == NULL) {
@@ -298,8 +318,12 @@ int ext4_mpage_readpages(struct address_space *mapping,
 			bio->bi_iter.bi_sector = blocks[0] << (blkbits - 9);
 			bio->bi_end_io = mpage_end_io;
 			bio->bi_private = ctx;
+<<<<<<< HEAD
 			bio_set_op_attrs(bio, REQ_OP_READ,
 					 ctx ? REQ_NOENCRYPT : 0);
+=======
+			bio_set_op_attrs(bio, REQ_OP_READ, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		length = first_hole << blkbits;
@@ -309,14 +333,22 @@ int ext4_mpage_readpages(struct address_space *mapping,
 		if (((map.m_flags & EXT4_MAP_BOUNDARY) &&
 		     (relative_block == map.m_len)) ||
 		    (first_hole != blocks_per_page)) {
+<<<<<<< HEAD
 			ext4_submit_bio_read(bio);
+=======
+			submit_bio(bio);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			bio = NULL;
 		} else
 			last_block_in_bio = blocks[blocks_per_page - 1];
 		goto next_page;
 	confused:
 		if (bio) {
+<<<<<<< HEAD
 			ext4_submit_bio_read(bio);
+=======
+			submit_bio(bio);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			bio = NULL;
 		}
 		if (!PageUptodate(page))
@@ -329,6 +361,10 @@ int ext4_mpage_readpages(struct address_space *mapping,
 	}
 	BUG_ON(pages && !list_empty(pages));
 	if (bio)
+<<<<<<< HEAD
 		ext4_submit_bio_read(bio);
+=======
+		submit_bio(bio);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }

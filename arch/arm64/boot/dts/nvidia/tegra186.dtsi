@@ -351,7 +351,11 @@
 
 	ccplex@e000000 {
 		compatible = "nvidia,tegra186-ccplex-cluster";
+<<<<<<< HEAD
 		reg = <0x0 0x0e000000 0x0 0x3fffff>;
+=======
+		reg = <0x0 0x0e000000 0x0 0x400000>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		nvidia,bpmp = <&bpmp>;
 	};

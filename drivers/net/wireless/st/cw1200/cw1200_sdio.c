@@ -63,6 +63,10 @@ static const struct sdio_device_id cw1200_sdio_ids[] = {
 	{ SDIO_DEVICE(SDIO_VENDOR_ID_STE, SDIO_DEVICE_ID_STE_CW1200) },
 	{ /* end: all zeroes */			},
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(sdio, cw1200_sdio_ids);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* hwbus_ops implemetation */
 

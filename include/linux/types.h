@@ -10,9 +10,12 @@
 #define DECLARE_BITMAP(name,bits) \
 	unsigned long name[BITS_TO_LONGS(bits)]
 
+<<<<<<< HEAD
 #define DECLARE_BITMAP_ARRAY(name,nr,bits) \
 	unsigned long name[nr][BITS_TO_LONGS(bits)]
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 typedef __u32 __kernel_dev_t;
 
 typedef __kernel_fd_set		fd_set;

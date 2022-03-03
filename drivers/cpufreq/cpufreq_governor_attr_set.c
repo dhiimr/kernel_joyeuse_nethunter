@@ -77,8 +77,13 @@ unsigned int gov_attr_set_put(struct gov_attr_set *attr_set, struct list_head *l
 	if (count)
 		return count;
 
+<<<<<<< HEAD
 	kobject_put(&attr_set->kobj);
 	mutex_destroy(&attr_set->update_lock);
+=======
+	mutex_destroy(&attr_set->update_lock);
+	kobject_put(&attr_set->kobj);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 EXPORT_SYMBOL_GPL(gov_attr_set_put);

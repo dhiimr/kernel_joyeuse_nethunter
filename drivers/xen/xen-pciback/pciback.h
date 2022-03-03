@@ -14,6 +14,10 @@
 #include <linux/spinlock.h>
 #include <linux/workqueue.h>
 #include <linux/atomic.h>
+<<<<<<< HEAD
+=======
+#include <xen/events.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <xen/interface/io/pciif.h>
 
 #define DRV_NAME	"xen-pciback"
@@ -27,6 +31,11 @@ struct pci_dev_entry {
 #define PDEVF_op_active		(1<<(_PDEVF_op_active))
 #define _PCIB_op_pending	(1)
 #define PCIB_op_pending		(1<<(_PCIB_op_pending))
+<<<<<<< HEAD
+=======
+#define _EOI_pending		(2)
+#define EOI_pending		(1<<(_EOI_pending))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct xen_pcibk_device {
 	void *pci_dev_data;
@@ -182,12 +191,25 @@ static inline void xen_pcibk_release_devices(struct xen_pcibk_device *pdev)
 irqreturn_t xen_pcibk_handle_event(int irq, void *dev_id);
 void xen_pcibk_do_op(struct work_struct *data);
 
+<<<<<<< HEAD
+=======
+static inline void xen_pcibk_lateeoi(struct xen_pcibk_device *pdev,
+				     unsigned int eoi_flag)
+{
+	if (test_and_clear_bit(_EOI_pending, &pdev->flags))
+		xen_irq_lateeoi(pdev->evtchn_irq, eoi_flag);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int xen_pcibk_xenbus_register(void);
 void xen_pcibk_xenbus_unregister(void);
 
 extern int verbose_request;
+<<<<<<< HEAD
 
 void xen_pcibk_test_and_schedule_op(struct xen_pcibk_device *pdev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 /* Handles shared IRQs that can to device domain and control domain. */

@@ -89,6 +89,10 @@ asmlinkage __visible void cpu_bringup_and_idle(void)
 {
 	cpu_bringup();
 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
+<<<<<<< HEAD
+=======
+	prevent_tail_call_optimization();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void xen_smp_intr_free_pv(unsigned int cpu)
@@ -430,7 +434,10 @@ static void xen_pv_play_dead(void) /* used only with HOTPLUG_CPU */
 	 * data back is to call:
 	 */
 	tick_nohz_idle_enter();
+<<<<<<< HEAD
 	tick_nohz_idle_stop_tick_protected();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cpuhp_online_idle(CPUHP_AP_ONLINE_IDLE);
 }

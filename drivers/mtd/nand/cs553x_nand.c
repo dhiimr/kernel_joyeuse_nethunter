@@ -338,7 +338,11 @@ static void __exit cs553x_cleanup(void)
 		mmio_base = this->IO_ADDR_R;
 
 		/* Release resources, unregister device */
+<<<<<<< HEAD
 		nand_release(mtd);
+=======
+		nand_release(this);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kfree(mtd->name);
 		cs553x_mtd[i] = NULL;
 

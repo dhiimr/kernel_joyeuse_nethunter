@@ -13,6 +13,10 @@
 #include <linux/suspend.h>
 #include <linux/scatterlist.h>
 #include <linux/kdebug.h>
+<<<<<<< HEAD
+=======
+#include <linux/cpu.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <crypto/hash.h>
 
@@ -249,9 +253,15 @@ static int get_e820_md5(struct e820_table *table, void *buf)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void hibernation_e820_save(void *buf)
 {
 	get_e820_md5(e820_table_firmware, buf);
+=======
+static int hibernation_e820_save(void *buf)
+{
+	return get_e820_md5(e820_table_firmware, buf);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static bool hibernation_e820_mismatch(void *buf)
@@ -271,8 +281,14 @@ static bool hibernation_e820_mismatch(void *buf)
 	return memcmp(result, buf, MD5_DIGEST_SIZE) ? true : false;
 }
 #else
+<<<<<<< HEAD
 static void hibernation_e820_save(void *buf)
 {
+=======
+static int hibernation_e820_save(void *buf)
+{
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static bool hibernation_e820_mismatch(void *buf)
@@ -317,9 +333,13 @@ int arch_hibernation_header_save(void *addr, unsigned int max_size)
 
 	rdr->magic = RESTORE_MAGIC;
 
+<<<<<<< HEAD
 	hibernation_e820_save(rdr->e820_digest);
 
 	return 0;
+=======
+	return hibernation_e820_save(rdr->e820_digest);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -347,3 +367,38 @@ int arch_hibernation_header_restore(void *addr)
 
 	return 0;
 }
+<<<<<<< HEAD
+=======
+
+int arch_resume_nosmt(void)
+{
+	int ret = 0;
+	/*
+	 * We reached this while coming out of hibernation. This means
+	 * that SMT siblings are sleeping in hlt, as mwait is not safe
+	 * against control transition during resume (see comment in
+	 * hibernate_resume_nonboot_cpu_disable()).
+	 *
+	 * If the resumed kernel has SMT disabled, we have to take all the
+	 * SMT siblings out of hlt, and offline them again so that they
+	 * end up in mwait proper.
+	 *
+	 * Called with hotplug disabled.
+	 */
+	cpu_hotplug_enable();
+	if (cpu_smt_control == CPU_SMT_DISABLED ||
+			cpu_smt_control == CPU_SMT_FORCE_DISABLED) {
+		enum cpuhp_smt_control old = cpu_smt_control;
+
+		ret = cpuhp_smt_enable();
+		if (ret)
+			goto out;
+		ret = cpuhp_smt_disable(old);
+		if (ret)
+			goto out;
+	}
+out:
+	cpu_hotplug_disable();
+	return ret;
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

@@ -252,6 +252,10 @@ static void rtl8187_tx(struct ieee80211_hw *dev,
 
 	flags |= ieee80211_get_tx_rate(dev, info)->hw_value << 24;
 	if (ieee80211_has_morefrags(tx_hdr->frame_control))
+<<<<<<< HEAD
+=======
+		flags |= RTL818X_TX_DESC_FLAG_MOREFRAG;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* HW will perform RTS-CTS when only RTS flags is set.
 	 * HW will perform CTS-to-self when both RTS and CTS flags are set.
@@ -443,12 +447,22 @@ static int rtl8187_init_urbs(struct ieee80211_hw *dev)
 		skb_queue_tail(&priv->rx_queue, skb);
 		usb_anchor_urb(entry, &priv->anchored);
 		ret = usb_submit_urb(entry, GFP_KERNEL);
+<<<<<<< HEAD
 		usb_put_urb(entry);
 		if (ret) {
 			skb_unlink(skb, &priv->rx_queue);
 			usb_unanchor_urb(entry);
 			goto err;
 		}
+=======
+		if (ret) {
+			skb_unlink(skb, &priv->rx_queue);
+			usb_unanchor_urb(entry);
+			usb_put_urb(entry);
+			goto err;
+		}
+		usb_put_urb(entry);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return ret;
 

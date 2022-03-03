@@ -591,7 +591,11 @@ static inline bool nfsd4_stateid_generation_after(stateid_t *a, stateid_t *b)
 struct nfsd4_blocked_lock {
 	struct list_head	nbl_list;
 	struct list_head	nbl_lru;
+<<<<<<< HEAD
 	unsigned long		nbl_time;
+=======
+	time_t			nbl_time;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct file_lock	nbl_lock;
 	struct knfsd_fh		nbl_fh;
 	struct nfsd4_callback	nbl_cb;

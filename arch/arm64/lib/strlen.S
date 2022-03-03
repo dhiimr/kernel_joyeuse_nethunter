@@ -56,7 +56,11 @@ pos		.req	x12
 #define REP8_7f 0x7f7f7f7f7f7f7f7f
 #define REP8_80 0x8080808080808080
 
+<<<<<<< HEAD
 ENTRY(strlen)
+=======
+WEAK(strlen)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mov	zeroones, #REP8_01
 	bic	src, srcin, #15
 	ands	tmp1, srcin, #15

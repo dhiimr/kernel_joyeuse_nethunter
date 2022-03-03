@@ -26,7 +26,11 @@
 static int edac_mc_log_ue = 1;
 static int edac_mc_log_ce = 1;
 static int edac_mc_panic_on_ue;
+<<<<<<< HEAD
 static int edac_mc_poll_msec = 1000;
+=======
+static unsigned int edac_mc_poll_msec = 1000;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* Getter functions for above */
 int edac_mc_get_log_ue(void)
@@ -45,19 +49,30 @@ int edac_mc_get_panic_on_ue(void)
 }
 
 /* this is temporary */
+<<<<<<< HEAD
 int edac_mc_get_poll_msec(void)
+=======
+unsigned int edac_mc_get_poll_msec(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return edac_mc_poll_msec;
 }
 
+<<<<<<< HEAD
 static int edac_set_poll_msec(const char *val, const struct kernel_param *kp)
 {
 	unsigned long l;
+=======
+static int edac_set_poll_msec(const char *val, struct kernel_param *kp)
+{
+	unsigned int i;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 
 	if (!val)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	ret = kstrtoul(val, 0, &l);
 	if (ret)
 		return ret;
@@ -69,6 +84,19 @@ static int edac_set_poll_msec(const char *val, const struct kernel_param *kp)
 
 	/* notify edac_mc engine to reset the poll period */
 	edac_mc_reset_delay_period(l);
+=======
+	ret = kstrtouint(val, 0, &i);
+	if (ret)
+		return ret;
+
+	if (i < 1000)
+		return -EINVAL;
+
+	*((unsigned int *)kp->arg) = i;
+
+	/* notify edac_mc engine to reset the poll period */
+	edac_mc_reset_delay_period(i);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -82,7 +110,11 @@ MODULE_PARM_DESC(edac_mc_log_ue,
 module_param(edac_mc_log_ce, int, 0644);
 MODULE_PARM_DESC(edac_mc_log_ce,
 		 "Log correctable error to console: 0=off 1=on");
+<<<<<<< HEAD
 module_param_call(edac_mc_poll_msec, edac_set_poll_msec, param_get_int,
+=======
+module_param_call(edac_mc_poll_msec, edac_set_poll_msec, param_get_uint,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		  &edac_mc_poll_msec, 0644);
 MODULE_PARM_DESC(edac_mc_poll_msec, "Polling period in milliseconds");
 
@@ -426,6 +458,11 @@ static inline int nr_pages_per_csrow(struct csrow_info *csrow)
 static int edac_create_csrow_object(struct mem_ctl_info *mci,
 				    struct csrow_info *csrow, int index)
 {
+<<<<<<< HEAD
+=======
+	int err;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	csrow->dev.type = &csrow_attr_type;
 	csrow->dev.bus = mci->bus;
 	csrow->dev.groups = csrow_dev_groups;
@@ -438,7 +475,15 @@ static int edac_create_csrow_object(struct mem_ctl_info *mci,
 	edac_dbg(0, "creating (virtual) csrow node %s\n",
 		 dev_name(&csrow->dev));
 
+<<<<<<< HEAD
 	return device_add(&csrow->dev);
+=======
+	err = device_add(&csrow->dev);
+	if (err)
+		put_device(&csrow->dev);
+
+	return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Create a CSROW object under specifed edac_mc_device */

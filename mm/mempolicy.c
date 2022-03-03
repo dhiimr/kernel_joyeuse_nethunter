@@ -305,7 +305,11 @@ static void mpol_rebind_nodemask(struct mempolicy *pol, const nodemask_t *nodes)
 	else {
 		nodes_remap(tmp, pol->v.nodes,pol->w.cpuset_mems_allowed,
 								*nodes);
+<<<<<<< HEAD
 		pol->w.cpuset_mems_allowed = tmp;
+=======
+		pol->w.cpuset_mems_allowed = *nodes;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (nodes_empty(tmp))
@@ -379,11 +383,16 @@ void mpol_rebind_mm(struct mm_struct *mm, nodemask_t *new)
 	struct vm_area_struct *vma;
 
 	down_write(&mm->mmap_sem);
+<<<<<<< HEAD
 	for (vma = mm->mmap; vma; vma = vma->vm_next) {
 		vm_write_begin(vma);
 		mpol_rebind_policy(vma->vm_policy, new);
 		vm_write_end(vma);
 	}
+=======
+	for (vma = mm->mmap; vma; vma = vma->vm_next)
+		mpol_rebind_policy(vma->vm_policy, new);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	up_write(&mm->mmap_sem);
 }
 
@@ -499,7 +508,11 @@ static int queue_pages_pte_range(pmd_t *pmd, unsigned long addr,
 	struct queue_pages *qp = walk->private;
 	unsigned long flags = qp->flags;
 	int ret;
+<<<<<<< HEAD
 	pte_t *pte;
+=======
+	pte_t *pte, *mapped_pte;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spinlock_t *ptl;
 
 	ptl = pmd_trans_huge_lock(pmd, vma);
@@ -514,7 +527,11 @@ static int queue_pages_pte_range(pmd_t *pmd, unsigned long addr,
 	if (pmd_trans_unstable(pmd))
 		return 0;
 retry:
+<<<<<<< HEAD
 	pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
+=======
+	mapped_pte = pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (; addr != end; pte++, addr += PAGE_SIZE) {
 		if (!pte_present(*pte))
 			continue;
@@ -552,7 +569,11 @@ retry:
 		} else
 			break;
 	}
+<<<<<<< HEAD
 	pte_unmap_unlock(pte - 1, ptl);
+=======
+	pte_unmap_unlock(mapped_pte, ptl);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cond_resched();
 	return addr != end ? -EIO : 0;
 }
@@ -602,11 +623,17 @@ unsigned long change_prot_numa(struct vm_area_struct *vma,
 {
 	int nr_updated;
 
+<<<<<<< HEAD
 	vm_write_begin(vma);
 	nr_updated = change_protection(vma, addr, end, PAGE_NONE, 0, 1);
 	if (nr_updated)
 		count_vm_numa_events(NUMA_PTE_UPDATES, nr_updated);
 	vm_write_end(vma);
+=======
+	nr_updated = change_protection(vma, addr, end, PAGE_NONE, 0, 1);
+	if (nr_updated)
+		count_vm_numa_events(NUMA_PTE_UPDATES, nr_updated);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return nr_updated;
 }
@@ -712,7 +739,10 @@ static int vma_replace_policy(struct vm_area_struct *vma,
 	if (IS_ERR(new))
 		return PTR_ERR(new);
 
+<<<<<<< HEAD
 	vm_write_begin(vma);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (vma->vm_ops && vma->vm_ops->set_policy) {
 		err = vma->vm_ops->set_policy(vma, new);
 		if (err)
@@ -720,17 +750,24 @@ static int vma_replace_policy(struct vm_area_struct *vma,
 	}
 
 	old = vma->vm_policy;
+<<<<<<< HEAD
 	/*
 	 * The speculative page fault handler accesses this field without
 	 * hodling the mmap_sem.
 	 */
 	WRITE_ONCE(vma->vm_policy,  new);
 	vm_write_end(vma);
+=======
+	vma->vm_policy = new; /* protected by mmap_sem */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mpol_put(old);
 
 	return 0;
  err_out:
+<<<<<<< HEAD
 	vm_write_end(vma);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mpol_put(new);
 	return err;
 }
@@ -767,8 +804,12 @@ static int mbind_range(struct mm_struct *mm, unsigned long start,
 			((vmstart - vma->vm_start) >> PAGE_SHIFT);
 		prev = vma_merge(mm, prev, vmstart, vmend, vma->vm_flags,
 				 vma->anon_vma, vma->vm_file, pgoff,
+<<<<<<< HEAD
 				 new_pol, vma->vm_userfaultfd_ctx,
 				 vma_get_anon_name(vma));
+=======
+				 new_pol, vma->vm_userfaultfd_ctx);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (prev) {
 			vma = prev;
 			next = vma->vm_next;
@@ -1622,6 +1663,7 @@ COMPAT_SYSCALL_DEFINE6(mbind, compat_ulong_t, start, compat_ulong_t, len,
 struct mempolicy *__get_vma_policy(struct vm_area_struct *vma,
 						unsigned long addr)
 {
+<<<<<<< HEAD
 	struct mempolicy *pol;
 
 	if (!vma)
@@ -1644,6 +1686,25 @@ struct mempolicy *__get_vma_policy(struct vm_area_struct *vma,
 		 */
 		if (mpol_needs_cond_ref(pol))
 			mpol_get(pol);
+=======
+	struct mempolicy *pol = NULL;
+
+	if (vma) {
+		if (vma->vm_ops && vma->vm_ops->get_policy) {
+			pol = vma->vm_ops->get_policy(vma, addr);
+		} else if (vma->vm_policy) {
+			pol = vma->vm_policy;
+
+			/*
+			 * shmem_alloc_page() passes MPOL_F_SHARED policy with
+			 * a pseudo vma whose vma->vm_ops=NULL. Take a reference
+			 * count on these policies which will be dropped by
+			 * mpol_cond_put() later
+			 */
+			if (mpol_needs_cond_ref(pol))
+				mpol_get(pol);
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return pol;
@@ -2742,6 +2803,12 @@ int mpol_parse_str(char *str, struct mempolicy **mpol)
 	char *flags = strchr(str, '=');
 	int err = 1;
 
+<<<<<<< HEAD
+=======
+	if (flags)
+		*flags++ = '\0';	/* terminate mode string */
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (nodelist) {
 		/* NUL-terminate mode or flags string */
 		*nodelist++ = '\0';
@@ -2752,9 +2819,12 @@ int mpol_parse_str(char *str, struct mempolicy **mpol)
 	} else
 		nodes_clear(nodes);
 
+<<<<<<< HEAD
 	if (flags)
 		*flags++ = '\0';	/* terminate mode string */
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (mode = 0; mode < MPOL_MAX; mode++) {
 		if (!strcmp(str, policy_modes[mode])) {
 			break;
@@ -2766,7 +2836,13 @@ int mpol_parse_str(char *str, struct mempolicy **mpol)
 	switch (mode) {
 	case MPOL_PREFERRED:
 		/*
+<<<<<<< HEAD
 		 * Insist on a nodelist of one node only
+=======
+		 * Insist on a nodelist of one node only, although later
+		 * we use first_node(nodes) to grab a single node, so here
+		 * nodelist (or nodes) cannot be empty.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		 */
 		if (nodelist) {
 			char *rest = nodelist;
@@ -2774,6 +2850,11 @@ int mpol_parse_str(char *str, struct mempolicy **mpol)
 				rest++;
 			if (*rest)
 				goto out;
+<<<<<<< HEAD
+=======
+			if (nodes_empty(nodes))
+				goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		break;
 	case MPOL_INTERLEAVE:

@@ -178,12 +178,20 @@ static int mxc_scc_get_data(struct mxc_scc_ctx *ctx,
 	else
 		from = scc->black_memory;
 
+<<<<<<< HEAD
 	dev_dbg(scc->dev, "pcopy: from 0x%p %d bytes\n", from,
+=======
+	dev_dbg(scc->dev, "pcopy: from 0x%p %zu bytes\n", from,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ctx->dst_nents * 8);
 	len = sg_pcopy_from_buffer(ablkreq->dst, ctx->dst_nents,
 				   from, ctx->size, ctx->offset);
 	if (!len) {
+<<<<<<< HEAD
 		dev_err(scc->dev, "pcopy err from 0x%p (len=%d)\n", from, len);
+=======
+		dev_err(scc->dev, "pcopy err from 0x%p (len=%zu)\n", from, len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 	}
 
@@ -274,7 +282,11 @@ static int mxc_scc_put_data(struct mxc_scc_ctx *ctx,
 	len = sg_pcopy_to_buffer(req->src, ctx->src_nents,
 				 to, len, ctx->offset);
 	if (!len) {
+<<<<<<< HEAD
 		dev_err(scc->dev, "pcopy err to 0x%p (len=%d)\n", to, len);
+=======
+		dev_err(scc->dev, "pcopy err to 0x%p (len=%zu)\n", to, len);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 	}
 
@@ -335,9 +347,15 @@ static void mxc_scc_ablkcipher_next(struct mxc_scc_ctx *ctx,
 		return;
 	}
 
+<<<<<<< HEAD
 	dev_dbg(scc->dev, "Start encryption (0x%p/0x%p)\n",
 		(void *)readl(scc->base + SCC_SCM_RED_START),
 		(void *)readl(scc->base + SCC_SCM_BLACK_START));
+=======
+	dev_dbg(scc->dev, "Start encryption (0x%x/0x%x)\n",
+		readl(scc->base + SCC_SCM_RED_START),
+		readl(scc->base + SCC_SCM_BLACK_START));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* clear interrupt control registers */
 	writel(SCC_SCM_INTR_CTRL_CLR_INTR,

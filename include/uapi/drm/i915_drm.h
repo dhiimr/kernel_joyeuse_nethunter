@@ -853,7 +853,11 @@ struct drm_i915_gem_execbuffer2 {
 	 * struct drm_i915_gem_exec_fence *fences.
 	 */
 	__u64 cliprects_ptr;
+<<<<<<< HEAD
 #define I915_EXEC_RING_MASK              (7<<0)
+=======
+#define I915_EXEC_RING_MASK              (0x3f)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define I915_EXEC_DEFAULT                (0<<0)
 #define I915_EXEC_RENDER                 (1<<0)
 #define I915_EXEC_BSD                    (2<<0)

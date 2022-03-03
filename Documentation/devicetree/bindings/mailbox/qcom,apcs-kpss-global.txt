@@ -9,6 +9,7 @@ platforms.
 	Value type: <string>
 	Definition: must be one of:
 		    "qcom,msm8916-apcs-kpss-global",
+<<<<<<< HEAD
 		    "qcom,msm8996-apcs-hmss-global",
 		    "qcom,sm8150-apcs-hmss-global",
 		    "qcom,sm8150-spcs-global",
@@ -16,6 +17,10 @@ platforms.
 		    "qcom,trinket-apcs-hmss-global"
 		    "qcom,atoll-apcs-hmss-global"
 		    "qcom,atoll-apcs-hmss-ipc2"
+=======
+		    "qcom,msm8996-apcs-hmss-global"
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 - reg:
 	Usage: required
 	Value type: <prop-encoded-array>

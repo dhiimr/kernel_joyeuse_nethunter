@@ -515,7 +515,11 @@ static void xgbe_isr_task(unsigned long data)
 				xgbe_disable_rx_tx_ints(pdata);
 
 				/* Turn on polling */
+<<<<<<< HEAD
 				__napi_schedule_irqoff(&pdata->napi);
+=======
+				__napi_schedule(&pdata->napi);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 		} else {
 			/* Don't clear Rx/Tx status if doing per channel DMA
@@ -724,7 +728,13 @@ static void xgbe_stop_timers(struct xgbe_prv_data *pdata)
 		if (!channel->tx_ring)
 			break;
 
+<<<<<<< HEAD
 		del_timer_sync(&channel->tx_timer);
+=======
+		/* Deactivate the Tx timer */
+		del_timer_sync(&channel->tx_timer);
+		channel->tx_timer_active = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 
@@ -1964,7 +1974,11 @@ static int xgbe_close(struct net_device *netdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int xgbe_xmit(struct sk_buff *skb, struct net_device *netdev)
+=======
+static netdev_tx_t xgbe_xmit(struct sk_buff *skb, struct net_device *netdev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct xgbe_prv_data *pdata = netdev_priv(netdev);
 	struct xgbe_hw_if *hw_if = &pdata->hw_if;
@@ -1973,7 +1987,11 @@ static int xgbe_xmit(struct sk_buff *skb, struct net_device *netdev)
 	struct xgbe_ring *ring;
 	struct xgbe_packet_data *packet;
 	struct netdev_queue *txq;
+<<<<<<< HEAD
 	int ret;
+=======
+	netdev_tx_t ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	DBGPR("-->xgbe_xmit: skb->len = %d\n", skb->len);
 
@@ -2720,6 +2738,17 @@ read_again:
 			buf2_len = xgbe_rx_buf2_len(rdata, packet, len);
 			len += buf2_len;
 
+<<<<<<< HEAD
+=======
+			if (buf2_len > rdata->rx.buf.dma_len) {
+				/* Hardware inconsistency within the descriptors
+				 * that has resulted in a length underflow.
+				 */
+				error = 1;
+				goto skip_data;
+			}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (!skb) {
 				skb = xgbe_create_skb(pdata, napi, rdata,
 						      buf1_len);
@@ -2749,8 +2778,15 @@ skip_data:
 		if (!last || context_next)
 			goto read_again;
 
+<<<<<<< HEAD
 		if (!skb)
 			goto next_packet;
+=======
+		if (!skb || error) {
+			dev_kfree_skb(skb);
+			goto next_packet;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* Be sure we don't exceed the configured MTU */
 		max_len = netdev->mtu + ETH_HLEN;

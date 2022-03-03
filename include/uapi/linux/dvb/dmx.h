@@ -33,11 +33,14 @@
 
 #define DMX_FILTER_SIZE 16
 
+<<<<<<< HEAD
 /* Min recording chunk upon which event is generated */
 #define DMX_REC_BUFF_CHUNK_MIN_SIZE		(100*188)
 
 #define DMX_MAX_DECODER_BUFFER_NUM		(32)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * enum dmx_output - Output for the demux.
  *
@@ -183,6 +186,7 @@ struct dmx_sct_filter_params {
 #define DMX_CHECK_CRC       1
 #define DMX_ONESHOT         2
 #define DMX_IMMEDIATE_START 4
+<<<<<<< HEAD
 #define DMX_KERNEL_CLIENT   0x8000
 };
 
@@ -913,6 +917,39 @@ struct dmx_scrambling_bits {
 
 	/* Current value of scrambling bits: 0, 1, 2 or 3 */
 	__u8 value;
+=======
+};
+
+/**
+ * struct dmx_pes_filter_params - Specifies Packetized Elementary Stream (PES)
+ *	filter parameters.
+ *
+ * @pid:	PID to be filtered.
+ * @input:	Demux input, as specified by &enum dmx_input.
+ * @output:	Demux output, as specified by &enum dmx_output.
+ * @pes_type:	Type of the pes filter, as specified by &enum dmx_pes_type.
+ * @flags:	Demux PES flags.
+ */
+struct dmx_pes_filter_params {
+	__u16           pid;
+	enum dmx_input  input;
+	enum dmx_output output;
+	enum dmx_ts_pes pes_type;
+	__u32           flags;
+};
+
+/**
+ * struct dmx_stc - Stores System Time Counter (STC) information.
+ *
+ * @num: input data: number of the STC, from 0 to N.
+ * @base: output: divisor for STC to get 90 kHz clock.
+ * @stc: output: stc in @base * 90 kHz units.
+ */
+struct dmx_stc {
+	unsigned int num;
+	unsigned int base;
+	__u64 stc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #define DMX_START                _IO('o', 41)
@@ -921,6 +958,7 @@ struct dmx_scrambling_bits {
 #define DMX_SET_PES_FILTER       _IOW('o', 44, struct dmx_pes_filter_params)
 #define DMX_SET_BUFFER_SIZE      _IO('o', 45)
 #define DMX_GET_PES_PIDS         _IOR('o', 47, __u16[5])
+<<<<<<< HEAD
 #define DMX_GET_CAPS             _IOR('o', 48, dmx_caps_t)
 #define DMX_SET_SOURCE           _IOW('o', 49, dmx_source_t)
 #define DMX_GET_STC              _IOWR('o', 50, struct dmx_stc)
@@ -948,6 +986,11 @@ struct dmx_scrambling_bits {
 #define DMX_GET_SCRAMBLING_BITS _IOWR('o', 72, struct dmx_scrambling_bits)
 #define DMX_SET_CIPHER _IOW('o', 73, struct dmx_cipher_operations)
 #define DMX_FLUSH_BUFFER _IO('o', 74)
+=======
+#define DMX_GET_STC              _IOWR('o', 50, struct dmx_stc)
+#define DMX_ADD_PID              _IOW('o', 51, __u16)
+#define DMX_REMOVE_PID           _IOW('o', 52, __u16)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #if !defined(__KERNEL__)
 

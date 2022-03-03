@@ -2495,7 +2495,12 @@ static int vmw_cmd_dx_set_shader(struct vmw_private *dev_priv,
 
 	cmd = container_of(header, typeof(*cmd), header);
 
+<<<<<<< HEAD
 	if (cmd->body.type >= SVGA3D_SHADERTYPE_DX10_MAX) {
+=======
+	if (cmd->body.type >= SVGA3D_SHADERTYPE_DX10_MAX ||
+	    cmd->body.type < SVGA3D_SHADERTYPE_MIN) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		DRM_ERROR("Illegal shader type %u.\n",
 			  (unsigned) cmd->body.type);
 		return -EINVAL;
@@ -2734,6 +2739,13 @@ static int vmw_cmd_dx_view_define(struct vmw_private *dev_priv,
 	if (view_type == vmw_view_max)
 		return -EINVAL;
 	cmd = container_of(header, typeof(*cmd), header);
+<<<<<<< HEAD
+=======
+	if (unlikely(cmd->sid == SVGA3D_INVALID_ID)) {
+		DRM_ERROR("Invalid surface id.\n");
+		return -EINVAL;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = vmw_cmd_res_check(dev_priv, sw_context, vmw_res_surface,
 				user_surface_converter,
 				&cmd->sid, &srf_node);
@@ -3843,20 +3855,32 @@ int vmw_execbuf_fence_commands(struct drm_file *file_priv,
  * object so we wait for it immediately, and then unreference the
  * user-space reference.
  */
+<<<<<<< HEAD
 void
+=======
+int
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 vmw_execbuf_copy_fence_user(struct vmw_private *dev_priv,
 			    struct vmw_fpriv *vmw_fp,
 			    int ret,
 			    struct drm_vmw_fence_rep __user *user_fence_rep,
 			    struct vmw_fence_obj *fence,
 			    uint32_t fence_handle,
+<<<<<<< HEAD
 			    int32_t out_fence_fd,
 			    struct sync_file *sync_file)
+=======
+			    int32_t out_fence_fd)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct drm_vmw_fence_rep fence_rep;
 
 	if (user_fence_rep == NULL)
+<<<<<<< HEAD
 		return;
+=======
+		return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	memset(&fence_rep, 0, sizeof(fence_rep));
 
@@ -3884,6 +3908,7 @@ vmw_execbuf_copy_fence_user(struct vmw_private *dev_priv,
 	 * and unreference the handle.
 	 */
 	if (unlikely(ret != 0) && (fence_rep.error == 0)) {
+<<<<<<< HEAD
 		if (sync_file)
 			fput(sync_file->file);
 
@@ -3892,12 +3917,19 @@ vmw_execbuf_copy_fence_user(struct vmw_private *dev_priv,
 			fence_rep.fd = -1;
 		}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ttm_ref_object_base_unref(vmw_fp->tfile,
 					  fence_handle, TTM_REF_USAGE);
 		DRM_ERROR("Fence copy error. Syncing.\n");
 		(void) vmw_fence_obj_wait(fence, false, false,
 					  VMW_FENCE_WAIT_TIMEOUT);
 	}
+<<<<<<< HEAD
+=======
+
+	return ret ? -EFAULT : 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -4257,16 +4289,33 @@ int vmw_execbuf_process(struct drm_file *file_priv,
 
 			(void) vmw_fence_obj_wait(fence, false, false,
 						  VMW_FENCE_WAIT_TIMEOUT);
+<<<<<<< HEAD
+=======
+		}
+	}
+
+	ret = vmw_execbuf_copy_fence_user(dev_priv, vmw_fpriv(file_priv), ret,
+				    user_fence_rep, fence, handle, out_fence_fd);
+
+	if (sync_file) {
+		if (ret) {
+			/* usercopy of fence failed, put the file object */
+			fput(sync_file->file);
+			put_unused_fd(out_fence_fd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else {
 			/* Link the fence with the FD created earlier */
 			fd_install(out_fence_fd, sync_file->file);
 		}
 	}
 
+<<<<<<< HEAD
 	vmw_execbuf_copy_fence_user(dev_priv, vmw_fpriv(file_priv), ret,
 				    user_fence_rep, fence, handle,
 				    out_fence_fd, sync_file);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Don't unreference when handing fence out */
 	if (unlikely(out_fence != NULL)) {
 		*out_fence = fence;
@@ -4285,7 +4334,11 @@ int vmw_execbuf_process(struct drm_file *file_priv,
 	 */
 	vmw_resource_list_unreference(sw_context, &resource_list);
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 out_unlock_binding:
 	mutex_unlock(&dev_priv->binding_mutex);

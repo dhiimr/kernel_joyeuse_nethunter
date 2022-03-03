@@ -279,6 +279,10 @@ static int ad7793_setup(struct iio_dev *indio_dev,
 	id &= AD7793_ID_MASK;
 
 	if (id != st->chip_info->id) {
+<<<<<<< HEAD
+=======
+		ret = -ENODEV;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_err(&st->sd.spi->dev, "device ID query failed\n");
 		goto out;
 	}
@@ -543,7 +547,11 @@ static const struct iio_info ad7797_info = {
 	.read_raw = &ad7793_read_raw,
 	.write_raw = &ad7793_write_raw,
 	.write_raw_get_fmt = &ad7793_write_raw_get_fmt,
+<<<<<<< HEAD
 	.attrs = &ad7793_attribute_group,
+=======
+	.attrs = &ad7797_attribute_group,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.validate_trigger = ad_sd_validate_trigger,
 	.driver_module = THIS_MODULE,
 };

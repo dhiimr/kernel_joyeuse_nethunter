@@ -150,7 +150,11 @@
 			reg-names = "aon-ctrl", "aon-sram";
 		};
 
+<<<<<<< HEAD
 		nand: nand@3e2800 {
+=======
+		nand_controller: nand-controller@3e2800 {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			status = "disabled";
 			#address-cells = <1>;
 			#size-cells = <0>;

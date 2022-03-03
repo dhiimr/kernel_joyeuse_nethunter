@@ -2210,6 +2210,10 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
 
 	if (srp_post_send(ch, iu, len)) {
 		shost_printk(KERN_ERR, target->scsi_host, PFX "Send failed\n");
+<<<<<<< HEAD
+=======
+		scmnd->result = DID_ERROR << 16;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto err_unmap;
 	}
 
@@ -3682,9 +3686,17 @@ static void srp_remove_one(struct ib_device *device, void *client_data)
 		spin_unlock(&host->target_lock);
 
 		/*
+<<<<<<< HEAD
 		 * Wait for tl_err and target port removal tasks.
 		 */
 		flush_workqueue(system_long_wq);
+=======
+		 * srp_queue_remove_work() queues a call to
+		 * srp_remove_target(). The latter function cancels
+		 * target->tl_err_work so waiting for the remove works to
+		 * finish is sufficient.
+		 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		flush_workqueue(srp_remove_wq);
 
 		kfree(host);

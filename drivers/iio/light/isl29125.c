@@ -54,7 +54,15 @@
 struct isl29125_data {
 	struct i2c_client *client;
 	u8 conf1;
+<<<<<<< HEAD
 	u16 buffer[8]; /* 3x 16-bit, padding, 8 bytes timestamp */
+=======
+	/* Ensure timestamp is naturally aligned */
+	struct {
+		u16 chans[3];
+		s64 timestamp __aligned(8);
+	} scan;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #define ISL29125_CHANNEL(_color, _si) { \
@@ -187,10 +195,17 @@ static irqreturn_t isl29125_trigger_handler(int irq, void *p)
 		if (ret < 0)
 			goto done;
 
+<<<<<<< HEAD
 		data->buffer[j++] = ret;
 	}
 
 	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
+=======
+		data->scan.chans[j++] = ret;
+	}
+
+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		iio_get_time_ns(indio_dev));
 
 done:

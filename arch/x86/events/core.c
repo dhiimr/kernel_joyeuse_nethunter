@@ -375,7 +375,11 @@ int x86_add_exclusive(unsigned int what)
 	 * LBR and BTS are still mutually exclusive.
 	 */
 	if (x86_pmu.lbr_pt_coexist && what == x86_lbr_exclusive_pt)
+<<<<<<< HEAD
 		return 0;
+=======
+		goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!atomic_inc_not_zero(&x86_pmu.lbr_exclusive[what])) {
 		mutex_lock(&pmc_reserve_mutex);
@@ -387,6 +391,10 @@ int x86_add_exclusive(unsigned int what)
 		mutex_unlock(&pmc_reserve_mutex);
 	}
 
+<<<<<<< HEAD
+=======
+out:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	atomic_inc(&active_events);
 	return 0;
 
@@ -397,11 +405,22 @@ fail_unlock:
 
 void x86_del_exclusive(unsigned int what)
 {
+<<<<<<< HEAD
+=======
+	atomic_dec(&active_events);
+
+	/*
+	 * See the comment in x86_add_exclusive().
+	 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (x86_pmu.lbr_pt_coexist && what == x86_lbr_exclusive_pt)
 		return;
 
 	atomic_dec(&x86_pmu.lbr_exclusive[what]);
+<<<<<<< HEAD
 	atomic_dec(&active_events);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 int x86_setup_perfctr(struct perf_event *event)
@@ -2089,6 +2108,10 @@ static int x86_pmu_event_init(struct perf_event *event)
 	if (err) {
 		if (event->destroy)
 			event->destroy(event);
+<<<<<<< HEAD
+=======
+		event->destroy = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (ACCESS_ONCE(x86_pmu.attr_rdpmc))

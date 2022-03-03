@@ -56,6 +56,10 @@
 
 #include <linux/buffer_head.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/printk.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/slab.h>
 #include <linux/mbcache.h>
 #include <linux/quotaops.h>
@@ -84,8 +88,13 @@
 		printk("\n"); \
 	} while (0)
 #else
+<<<<<<< HEAD
 # define ea_idebug(f...)
 # define ea_bdebug(f...)
+=======
+# define ea_idebug(inode, f...)	no_printk(f)
+# define ea_bdebug(bh, f...)	no_printk(f)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 static int ext2_xattr_set2(struct inode *, struct buffer_head *,
@@ -838,8 +847,12 @@ ext2_xattr_cache_insert(struct mb_cache *cache, struct buffer_head *bh)
 	error = mb_cache_entry_create(cache, GFP_NOFS, hash, bh->b_blocknr, 1);
 	if (error) {
 		if (error == -EBUSY) {
+<<<<<<< HEAD
 			ea_bdebug(bh, "already in cache (%d cache entries)",
 				atomic_read(&ext2_xattr_cache->c_entry_count));
+=======
+			ea_bdebug(bh, "already in cache");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			error = 0;
 		}
 	} else

@@ -207,6 +207,12 @@ struct bnx2x_eth_stats {
 	u32 driver_filtered_tx_pkt;
 	/* src: Clear-on-Read register; Will not survive PMF Migration */
 	u32 eee_tx_lpi;
+<<<<<<< HEAD
+=======
+
+	/* PTP */
+	u32 ptp_skip_tx_ts;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct bnx2x_eth_q_stats {

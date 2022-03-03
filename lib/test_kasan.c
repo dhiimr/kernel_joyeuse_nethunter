@@ -94,6 +94,7 @@ static noinline void __init kmalloc_pagealloc_oob_right(void)
 	ptr[size] = 0;
 	kfree(ptr);
 }
+<<<<<<< HEAD
 
 static noinline void __init kmalloc_pagealloc_uaf(void)
 {
@@ -125,6 +126,8 @@ static noinline void __init kmalloc_pagealloc_invalid_free(void)
 
 	kfree(ptr + 1);
 }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 static noinline void __init kmalloc_large_oob_right(void)
@@ -157,6 +160,10 @@ static noinline void __init kmalloc_oob_krealloc_more(void)
 	if (!ptr1 || !ptr2) {
 		pr_err("Allocation failed\n");
 		kfree(ptr1);
+<<<<<<< HEAD
+=======
+		kfree(ptr2);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 	}
 
@@ -504,6 +511,7 @@ static noinline void __init use_after_scope_test(void)
 	p[1023] = 1;
 }
 
+<<<<<<< HEAD
 static noinline void __init kmem_cache_double_free(void)
 {
 	char *p;
@@ -552,6 +560,8 @@ static noinline void __init kmem_cache_invalid_free(void)
 	kmem_cache_destroy(cache);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int __init kmalloc_tests_init(void)
 {
 	/*
@@ -565,8 +575,11 @@ static int __init kmalloc_tests_init(void)
 	kmalloc_node_oob_right();
 #ifdef CONFIG_SLUB
 	kmalloc_pagealloc_oob_right();
+<<<<<<< HEAD
 	kmalloc_pagealloc_uaf();
 	kmalloc_pagealloc_invalid_free();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 	kmalloc_large_oob_right();
 	kmalloc_oob_krealloc_more();
@@ -587,8 +600,11 @@ static int __init kmalloc_tests_init(void)
 	ksize_unpoisons_memory();
 	copy_user_test();
 	use_after_scope_test();
+<<<<<<< HEAD
 	kmem_cache_double_free();
 	kmem_cache_invalid_free();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	kasan_restore_multi_shot(multishot);
 

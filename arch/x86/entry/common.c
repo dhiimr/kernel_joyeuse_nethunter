@@ -31,6 +31,10 @@
 #include <asm/vdso.h>
 #include <linux/uaccess.h>
 #include <asm/cpufeature.h>
+<<<<<<< HEAD
+=======
+#include <asm/nospec-branch.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/syscalls.h>
@@ -213,6 +217,11 @@ __visible inline void prepare_exit_to_usermode(struct pt_regs *regs)
 #endif
 
 	user_enter_irqoff();
+<<<<<<< HEAD
+=======
+
+	mds_user_clear_cpu_buffers();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #define SYSCALL_EXIT_WORK_FLAGS				\

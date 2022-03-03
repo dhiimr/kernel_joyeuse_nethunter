@@ -11,6 +11,10 @@
 
 #include <linux/export.h>
 #include <linux/ftrace.h>
+<<<<<<< HEAD
+=======
+#include <linux/kprobes.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <asm/stack_pointer.h>
 #include <asm/stacktrace.h>
@@ -32,6 +36,10 @@ static int save_return_addr(struct stackframe *frame, void *d)
 		return 0;
 	}
 }
+<<<<<<< HEAD
+=======
+NOKPROBE_SYMBOL(save_return_addr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 void *return_address(unsigned int level)
 {
@@ -55,3 +63,7 @@ void *return_address(unsigned int level)
 		return NULL;
 }
 EXPORT_SYMBOL_GPL(return_address);
+<<<<<<< HEAD
+=======
+NOKPROBE_SYMBOL(return_address);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

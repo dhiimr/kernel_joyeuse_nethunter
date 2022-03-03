@@ -226,8 +226,16 @@ static int read_symbols(struct elf *elf)
 
 	symtab = find_section_by_name(elf, ".symtab");
 	if (!symtab) {
+<<<<<<< HEAD
 		WARN("missing symbol table");
 		return -1;
+=======
+		/*
+		 * A missing symbol table is actually possible if it's an empty
+		 * .o file.  This can happen for thunk_64.o.
+		 */
+		return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	symbols_nr = symtab->sh.sh_size / symtab->sh.sh_entsize;
@@ -305,7 +313,11 @@ static int read_symbols(struct elf *elf)
 			if (sym->type != STT_FUNC)
 				continue;
 			sym->pfunc = sym->cfunc = sym;
+<<<<<<< HEAD
 			coldstr = strstr(sym->name, ".cold.");
+=======
+			coldstr = strstr(sym->name, ".cold");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (!coldstr)
 				continue;
 
@@ -390,6 +402,10 @@ static int read_relas(struct elf *elf)
 			rela->offset = rela->rela.r_offset;
 			symndx = GELF_R_SYM(rela->rela.r_info);
 			rela->sym = find_symbol_by_index(elf, symndx);
+<<<<<<< HEAD
+=======
+			rela->rela_sec = sec;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (!rela->sym) {
 				WARN("can't find rela entry symbol %d for %s",
 				     symndx, sec->name);

@@ -41,9 +41,12 @@ config VT
 	  If unsure, say Y, or else you won't be able to do much with your new
 	  shiny Linux system :-)
 
+<<<<<<< HEAD
 config TTY_FLUSH_LOCAL_ECHO
 	bool
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config CONSOLE_TRANSLATIONS
 	depends on VT
 	default y
@@ -471,6 +474,7 @@ config VCC
 	help
 	  Support for Sun logical domain consoles.
 
+<<<<<<< HEAD
 config OKL4_VTTY
 	bool "Virtual TTY on the OKL4 Microvisor"
 	depends on OKL4_GUEST
@@ -488,6 +492,8 @@ config OKL4_VTTY_CONSOLE
 	help
 	  Console support for OKL4 Microvisor virtual ttys.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config LDISC_AUTOLOAD
 	bool "Automatically load TTY Line Disciplines"
 	default y

@@ -195,6 +195,10 @@ static int ohci_hcd_sm501_drv_remove(struct platform_device *pdev)
 	struct resource	*mem;
 
 	usb_remove_hcd(hcd);
+<<<<<<< HEAD
+=======
+	iounmap(hcd->regs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
 	usb_put_hcd(hcd);
 	dma_release_declared_memory(&pdev->dev);

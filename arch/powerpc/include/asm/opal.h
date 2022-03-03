@@ -266,7 +266,11 @@ int64_t opal_xive_get_vp_info(uint64_t vp,
 int64_t opal_xive_set_vp_info(uint64_t vp,
 			      uint64_t flags,
 			      uint64_t report_cl_pair);
+<<<<<<< HEAD
 int64_t opal_xive_allocate_irq(uint32_t chip_id);
+=======
+int64_t opal_xive_allocate_irq_raw(uint32_t chip_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int64_t opal_xive_free_irq(uint32_t girq);
 int64_t opal_xive_sync(uint32_t type, uint32_t id);
 int64_t opal_xive_dump(uint32_t type, uint32_t id);

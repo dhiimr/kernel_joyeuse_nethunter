@@ -462,6 +462,10 @@ struct dummy_clk {
 };
 static struct dummy_clk dummy_clks[] __initdata = {
 	DUMMY_CLK(NULL, "pxa27x-gpio", "osc_32_768khz"),
+<<<<<<< HEAD
+=======
+	DUMMY_CLK(NULL, "pxa-rtc", "osc_32_768khz"),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	DUMMY_CLK(NULL, "sa1100-rtc", "osc_32_768khz"),
 	DUMMY_CLK("UARTCLK", "pxa2xx-ir", "STUART"),
 };

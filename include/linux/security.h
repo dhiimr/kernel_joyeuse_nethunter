@@ -31,7 +31,10 @@
 #include <linux/string.h>
 #include <linux/mm.h>
 #include <linux/fs.h>
+<<<<<<< HEAD
 #include <linux/bio.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct linux_binprm;
 struct cred;
@@ -198,6 +201,7 @@ static inline void security_free_mnt_opts(struct security_mnt_opts *opts)
 extern int security_init(void);
 
 /* Security operations */
+<<<<<<< HEAD
 int security_binder_set_context_mgr(struct task_struct *mgr);
 int security_binder_transaction(struct task_struct *from,
 				struct task_struct *to);
@@ -205,6 +209,15 @@ int security_binder_transfer_binder(struct task_struct *from,
 				    struct task_struct *to);
 int security_binder_transfer_file(struct task_struct *from,
 				  struct task_struct *to, struct file *file);
+=======
+int security_binder_set_context_mgr(const struct cred *mgr);
+int security_binder_transaction(const struct cred *from,
+				const struct cred *to);
+int security_binder_transfer_binder(const struct cred *from,
+				    const struct cred *to);
+int security_binder_transfer_file(const struct cred *from,
+				  const struct cred *to, struct file *file);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int security_ptrace_access_check(struct task_struct *child, unsigned int mode);
 int security_ptrace_traceme(struct task_struct *parent);
 int security_capget(struct task_struct *target,
@@ -271,8 +284,11 @@ int security_old_inode_init_security(struct inode *inode, struct inode *dir,
 				     const struct qstr *qstr, const char **name,
 				     void **value, size_t *len);
 int security_inode_create(struct inode *dir, struct dentry *dentry, umode_t mode);
+<<<<<<< HEAD
 int security_inode_post_create(struct inode *dir, struct dentry *dentry,
 					umode_t mode);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int security_inode_link(struct dentry *old_dentry, struct inode *dir,
 			 struct dentry *new_dentry);
 int security_inode_unlink(struct inode *dir, struct dentry *dentry);
@@ -427,25 +443,44 @@ static inline int security_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline int security_binder_set_context_mgr(struct task_struct *mgr)
+=======
+static inline int security_binder_set_context_mgr(const struct cred *mgr)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline int security_binder_transaction(struct task_struct *from,
 					      struct task_struct *to)
+=======
+static inline int security_binder_transaction(const struct cred *from,
+					      const struct cred *to)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline int security_binder_transfer_binder(struct task_struct *from,
 						  struct task_struct *to)
+=======
+static inline int security_binder_transfer_binder(const struct cred *from,
+						  const struct cred *to)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline int security_binder_transfer_file(struct task_struct *from,
 						struct task_struct *to,
+=======
+static inline int security_binder_transfer_file(const struct cred *from,
+						const struct cred *to,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						struct file *file)
 {
 	return 0;
@@ -667,6 +702,7 @@ static inline int security_inode_create(struct inode *dir,
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline int security_inode_post_create(struct inode *dir,
 					 struct dentry *dentry,
 					 umode_t mode)
@@ -674,6 +710,8 @@ static inline int security_inode_post_create(struct inode *dir,
 	return 0;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline int security_inode_link(struct dentry *old_dentry,
 				       struct inode *dir,
 				       struct dentry *new_dentry)
@@ -790,7 +828,11 @@ static inline int security_inode_killpriv(struct dentry *dentry)
 
 static inline int security_inode_getsecurity(struct inode *inode, const char *name, void **buffer, bool alloc)
 {
+<<<<<<< HEAD
 	return -EOPNOTSUPP;
+=======
+	return cap_inode_getsecurity(inode, name, buffer, alloc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline int security_inode_setsecurity(struct inode *inode, const char *name, const void *value, size_t size, int flags)
@@ -1740,6 +1782,7 @@ static inline void securityfs_remove(struct dentry *dentry)
 
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_BPF_SYSCALL
 union bpf_attr;
 struct bpf_map;
@@ -1788,6 +1831,8 @@ static inline void security_bpf_prog_free(struct bpf_prog_aux *aux)
 #endif /* CONFIG_SECURITY */
 #endif /* CONFIG_BPF_SYSCALL */
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_SECURITY
 
 static inline char *alloc_secdata(void)

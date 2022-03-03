@@ -17,6 +17,10 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/efi.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/types.h>
 #include <asm/hypervisor.h>
 #include <asm/hyperv.h>
@@ -101,6 +105,25 @@ static int hv_cpu_init(unsigned int cpu)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int __init hv_pci_init(void)
+{
+	int gen2vm = efi_enabled(EFI_BOOT);
+
+	/*
+	 * For Generation-2 VM, we exit from pci_arch_init() by returning 0.
+	 * The purpose is to suppress the harmless warning:
+	 * "PCI: Fatal: No config space access function found"
+	 */
+	if (gen2vm)
+		return 0;
+
+	/* For Generation-1 VM, we'll proceed in pci_arch_init().  */
+	return 1;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * This function is to be invoked early in the boot sequence after the
  * hypervisor has been detected.
@@ -108,7 +131,11 @@ static int hv_cpu_init(unsigned int cpu)
  * 1. Setup the hypercall page.
  * 2. Register Hyper-V specific clocksource.
  */
+<<<<<<< HEAD
 void hyperv_init(void)
+=======
+void __init hyperv_init(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u64 guest_id, required_msrs;
 	union hv_x64_msr_hypercall_contents hypercall_msr;
@@ -154,6 +181,11 @@ void hyperv_init(void)
 
 	hyper_alloc_mmu();
 
+<<<<<<< HEAD
+=======
+	x86_init.pci.arch_init = hv_pci_init;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Register Hyper-V specific clocksource.
 	 */

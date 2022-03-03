@@ -60,7 +60,11 @@ static const struct x86_cpu_id int0002_cpu_ids[] = {
 /*
  * Limit ourselves to Cherry Trail for now, until testing shows we
  * need to handle the INT0002 device on Baytrail too.
+<<<<<<< HEAD
  *	ICPU(INTEL_FAM6_ATOM_SILVERMONT1),	 * Valleyview, Bay Trail *
+=======
+ *	ICPU(INTEL_FAM6_ATOM_SILVERMONT),	 * Valleyview, Bay Trail *
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 	ICPU(INTEL_FAM6_ATOM_AIRMONT),		/* Braswell, Cherry Trail */
 	{}

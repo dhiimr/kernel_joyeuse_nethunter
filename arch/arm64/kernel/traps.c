@@ -37,8 +37,13 @@
 #include <linux/mm_types.h>
 
 #include <asm/atomic.h>
+<<<<<<< HEAD
 #include <asm/barrier.h>
 #include <asm/bug.h>
+=======
+#include <asm/bug.h>
+#include <asm/cpufeature.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/debug-monitors.h>
 #include <asm/esr.h>
 #include <asm/insn.h>
@@ -49,7 +54,10 @@
 #include <asm/exception.h>
 #include <asm/system_misc.h>
 #include <asm/sysreg.h>
+<<<<<<< HEAD
 #include <trace/events/exception.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static const char *handler[]= {
 	"Synchronous Abort",
@@ -102,9 +110,12 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
 {
 	struct stackframe frame;
 	int skip = 0;
+<<<<<<< HEAD
 	long cur_state = 0;
 	unsigned long cur_sp = 0;
 	unsigned long cur_fp = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	pr_debug("%s(regs = %p tsk = %p)\n", __func__, regs, tsk);
 
@@ -129,9 +140,12 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
 		 */
 		frame.fp = thread_saved_fp(tsk);
 		frame.pc = thread_saved_pc(tsk);
+<<<<<<< HEAD
 		cur_state = tsk->state;
 		cur_sp = thread_saved_sp(tsk);
 		cur_fp = frame.fp;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 #ifdef CONFIG_FUNCTION_GRAPH_TRACER
 	frame.graph = tsk->curr_ret_stack;
@@ -139,6 +153,7 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
 
 	printk("Call trace:\n");
 	do {
+<<<<<<< HEAD
 		if (tsk != current && (cur_state != tsk->state
 			/*
 			 * We would not be printing backtrace for the task
@@ -156,6 +171,8 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
 				tsk->comm);
 			break;
 		}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* skip until specified stack frame */
 		if (!skip) {
 			dump_backtrace_entry(frame.pc);
@@ -303,12 +320,19 @@ static int call_undef_hook(struct pt_regs *regs)
 	int (*fn)(struct pt_regs *regs, u32 instr) = NULL;
 	void __user *pc = (void __user *)instruction_pointer(regs);
 
+<<<<<<< HEAD
 	if (!user_mode(regs)) {
 		__le32 instr_le;
 		if (probe_kernel_address((__force __le32 *)pc, instr_le))
 			goto exit;
 		instr = le32_to_cpu(instr_le);
 	} else if (compat_thumb_mode(regs)) {
+=======
+	if (!user_mode(regs))
+		return 1;
+
+	if (compat_thumb_mode(regs)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* 16-bit Thumb instruction */
 		__le16 instr_le;
 		if (get_user(instr_le, (__le16 __user *)pc))
@@ -394,8 +418,11 @@ void arm64_notify_segfault(struct pt_regs *regs, unsigned long addr)
 
 asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	void __user *pc = (void __user *)instruction_pointer(regs);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* check for AArch32 breakpoint instructions */
 	if (!aarch32_break_handler(regs))
 		return;
@@ -403,6 +430,7 @@ asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
 	if (call_undef_hook(regs) == 0)
 		return;
 
+<<<<<<< HEAD
 	trace_undef_instr(regs, pc);
 
 	force_signal_inject(SIGILL, ILL_ILLOPC, regs, 0);
@@ -413,6 +441,14 @@ int cpu_enable_cache_maint_trap(void *__unused)
 {
 	config_sctlr_el1(SCTLR_EL1_UCI, 0);
 	return 0;
+=======
+	force_signal_inject(SIGILL, ILL_ILLOPC, regs, 0);
+}
+
+void cpu_enable_cache_maint_trap(const struct arm64_cpu_capabilities *__unused)
+{
+	config_sctlr_el1(SCTLR_EL1_UCI, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #define __user_cache_maint(insn, address, res)			\
@@ -485,7 +521,10 @@ static void cntvct_read_handler(unsigned int esr, struct pt_regs *regs)
 {
 	int rt = (esr & ESR_ELx_SYS64_ISS_RT_MASK) >> ESR_ELx_SYS64_ISS_RT_SHIFT;
 
+<<<<<<< HEAD
 	isb();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pt_regs_write_reg(regs, rt, arch_counter_get_cntvct());
 	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
 }
@@ -549,6 +588,7 @@ asmlinkage void __exception do_sysinstr(unsigned int esr, struct pt_regs *regs)
 	do_undefinstr(regs);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_COMPAT
 static void cntfrq_cp15_32_read_handler(unsigned int esr, struct pt_regs *regs)
 {
@@ -667,6 +707,8 @@ asmlinkage void __exception do_cp15_64_instr_compat(unsigned int esr,
 
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 long compat_arm_syscall(struct pt_regs *regs);
 
 asmlinkage long do_ni_syscall(struct pt_regs *regs)
@@ -702,7 +744,10 @@ static const char *esr_class_str[] = {
 	[ESR_ELx_EC_HVC64]		= "HVC (AArch64)",
 	[ESR_ELx_EC_SMC64]		= "SMC (AArch64)",
 	[ESR_ELx_EC_SYS64]		= "MSR/MRS (AArch64)",
+<<<<<<< HEAD
 	[ESR_ELx_EC_SVE]		= "SVE",
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	[ESR_ELx_EC_IMP_DEF]		= "EL3 IMP DEF",
 	[ESR_ELx_EC_IABT_LOW]		= "IABT (lower EL)",
 	[ESR_ELx_EC_IABT_CUR]		= "IABT (current EL)",
@@ -741,7 +786,10 @@ asmlinkage void bad_mode(struct pt_regs *regs, int reason, unsigned int esr)
 		handler[reason], smp_processor_id(), esr,
 		esr_get_class_string(esr));
 
+<<<<<<< HEAD
 	die("Oops - bad mode", regs, 0);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	local_irq_disable();
 	panic("bad mode");
 }

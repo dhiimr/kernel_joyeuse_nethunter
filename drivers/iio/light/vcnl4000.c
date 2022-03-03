@@ -61,7 +61,10 @@ static int vcnl4000_measure(struct vcnl4000_data *data, u8 req_mask,
 				u8 rdy_mask, u8 data_reg, int *val)
 {
 	int tries = 20;
+<<<<<<< HEAD
 	__be16 buf;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 
 	mutex_lock(&data->lock);
@@ -88,13 +91,21 @@ static int vcnl4000_measure(struct vcnl4000_data *data, u8 req_mask,
 		goto fail;
 	}
 
+<<<<<<< HEAD
 	ret = i2c_smbus_read_i2c_block_data(data->client,
 		data_reg, sizeof(buf), (u8 *) &buf);
+=======
+	ret = i2c_smbus_read_word_swapped(data->client, data_reg);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret < 0)
 		goto fail;
 
 	mutex_unlock(&data->lock);
+<<<<<<< HEAD
 	*val = be16_to_cpu(buf);
+=======
+	*val = ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 

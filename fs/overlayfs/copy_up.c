@@ -59,7 +59,11 @@ int ovl_copy_xattr(struct dentry *old, struct dentry *new)
 {
 	ssize_t list_size, size, value_size = 0;
 	char *buf, *name, *value = NULL;
+<<<<<<< HEAD
 	int uninitialized_var(error);
+=======
+	int error = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	size_t slen;
 
 	if (!(old->d_inode->i_opflags & IOP_XATTR) ||
@@ -95,6 +99,17 @@ int ovl_copy_xattr(struct dentry *old, struct dentry *new)
 
 		if (ovl_is_private_xattr(name))
 			continue;
+<<<<<<< HEAD
+=======
+
+		error = security_inode_copy_up_xattr(name);
+		if (error < 0 && error != -EOPNOTSUPP)
+			break;
+		if (error == 1) {
+			error = 0;
+			continue; /* Discard */
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 retry:
 		size = vfs_getxattr(old, name, value, value_size);
 		if (size == -ERANGE)
@@ -118,6 +133,7 @@ retry:
 			goto retry;
 		}
 
+<<<<<<< HEAD
 		error = security_inode_copy_up_xattr(name);
 		if (error < 0 && error != -EOPNOTSUPP)
 			break;
@@ -125,6 +141,8 @@ retry:
 			error = 0;
 			continue; /* Discard */
 		}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		error = vfs_setxattr(new, name, value, size, 0);
 		if (error)
 			break;
@@ -687,7 +705,11 @@ int ovl_copy_up_flags(struct dentry *dentry, int flags)
 		dput(parent);
 		dput(next);
 	}
+<<<<<<< HEAD
 	ovl_revert_creds(old_cred);
+=======
+	revert_creds(old_cred);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return err;
 }

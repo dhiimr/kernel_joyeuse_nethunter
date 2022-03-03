@@ -137,6 +137,7 @@ TRACE_DEFINE_ENUM(CP_TRIMMED);
 		{ CP_UMOUNT,	"Umount" },				\
 		{ CP_TRIMMED,	"Trimmed" })
 
+<<<<<<< HEAD
 #define show_fsync_cpreason(type)					\
 	__print_symbolic(type,						\
 		{ CP_NO_NEEDED,		"no needed" },			\
@@ -161,6 +162,8 @@ TRACE_DEFINE_ENUM(CP_TRIMMED);
 struct f2fs_sb_info;
 struct f2fs_io_info;
 struct extent_info;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct victim_sel_policy;
 struct f2fs_map_blocks;
 
@@ -235,14 +238,24 @@ DEFINE_EVENT(f2fs__inode, f2fs_sync_file_enter,
 
 TRACE_EVENT(f2fs_sync_file_exit,
 
+<<<<<<< HEAD
 	TP_PROTO(struct inode *inode, int cp_reason, int datasync, int ret),
 
 	TP_ARGS(inode, cp_reason, datasync, ret),
+=======
+	TP_PROTO(struct inode *inode, int need_cp, int datasync, int ret),
+
+	TP_ARGS(inode, need_cp, datasync, ret),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	TP_STRUCT__entry(
 		__field(dev_t,	dev)
 		__field(ino_t,	ino)
+<<<<<<< HEAD
 		__field(int,	cp_reason)
+=======
+		__field(int,	need_cp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__field(int,	datasync)
 		__field(int,	ret)
 	),
@@ -250,15 +263,26 @@ TRACE_EVENT(f2fs_sync_file_exit,
 	TP_fast_assign(
 		__entry->dev		= inode->i_sb->s_dev;
 		__entry->ino		= inode->i_ino;
+<<<<<<< HEAD
 		__entry->cp_reason	= cp_reason;
+=======
+		__entry->need_cp	= need_cp;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__entry->datasync	= datasync;
 		__entry->ret		= ret;
 	),
 
+<<<<<<< HEAD
 	TP_printk("dev = (%d,%d), ino = %lu, cp_reason: %s, "
 		"datasync = %d, ret = %d",
 		show_dev_ino(__entry),
 		show_fsync_cpreason(__entry->cp_reason),
+=======
+	TP_printk("dev = (%d,%d), ino = %lu, checkpoint is %s, "
+		"datasync = %d, ret = %d",
+		show_dev_ino(__entry),
+		__entry->need_cp ? "needed" : "not needed",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__entry->datasync,
 		__entry->ret)
 );
@@ -545,9 +569,12 @@ TRACE_EVENT(f2fs_map_blocks,
 		__field(block_t,	m_lblk)
 		__field(block_t,	m_pblk)
 		__field(unsigned int,	m_len)
+<<<<<<< HEAD
 		__field(unsigned int,	m_flags)
 		__field(int,	m_seg_type)
 		__field(bool,	m_may_create)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__field(int,	ret)
 	),
 
@@ -557,22 +584,32 @@ TRACE_EVENT(f2fs_map_blocks,
 		__entry->m_lblk		= map->m_lblk;
 		__entry->m_pblk		= map->m_pblk;
 		__entry->m_len		= map->m_len;
+<<<<<<< HEAD
 		__entry->m_flags	= map->m_flags;
 		__entry->m_seg_type	= map->m_seg_type;
 		__entry->m_may_create	= map->m_may_create;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__entry->ret		= ret;
 	),
 
 	TP_printk("dev = (%d,%d), ino = %lu, file offset = %llu, "
+<<<<<<< HEAD
 		"start blkaddr = 0x%llx, len = 0x%llx, flags = %u,"
 		"seg_type = %d, may_create = %d, err = %d",
+=======
+		"start blkaddr = 0x%llx, len = 0x%llx, err = %d",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		show_dev_ino(__entry),
 		(unsigned long long)__entry->m_lblk,
 		(unsigned long long)__entry->m_pblk,
 		(unsigned long long)__entry->m_len,
+<<<<<<< HEAD
 		__entry->m_flags,
 		__entry->m_seg_type,
 		__entry->m_may_create,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__entry->ret)
 );
 
@@ -763,6 +800,7 @@ TRACE_EVENT(f2fs_get_victim,
 		__entry->free)
 );
 
+<<<<<<< HEAD
 TRACE_EVENT(f2fs_lookup_start,
 
 	TP_PROTO(struct inode *dir, struct dentry *dentry, unsigned int flags),
@@ -848,6 +886,8 @@ TRACE_EVENT(f2fs_readdir,
 		__entry->err)
 );
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 TRACE_EVENT(f2fs_fallocate,
 
 	TP_PROTO(struct inode *inode, int mode,
@@ -1406,6 +1446,7 @@ DEFINE_EVENT(f2fs_discard, f2fs_issue_discard,
 	TP_ARGS(dev, blkstart, blklen)
 );
 
+<<<<<<< HEAD
 DEFINE_EVENT(f2fs_discard, f2fs_remove_discard,
 
 	TP_PROTO(struct block_device *dev, block_t blkstart, block_t blklen),
@@ -1413,6 +1454,8 @@ DEFINE_EVENT(f2fs_discard, f2fs_remove_discard,
 	TP_ARGS(dev, blkstart, blklen)
 );
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 TRACE_EVENT(f2fs_issue_reset_zone,
 
 	TP_PROTO(struct block_device *dev, block_t blkstart),
@@ -1638,6 +1681,7 @@ DEFINE_EVENT(f2fs_sync_dirty_inodes, f2fs_sync_dirty_inodes_exit,
 	TP_ARGS(sb, type, count)
 );
 
+<<<<<<< HEAD
 TRACE_EVENT(f2fs_shutdown,
 
 	TP_PROTO(struct f2fs_sb_info *sbi, unsigned int mode, int ret),
@@ -1662,6 +1706,8 @@ TRACE_EVENT(f2fs_shutdown,
 		__entry->ret)
 );
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _TRACE_F2FS_H */
 
  /* This part must be outside protection */

@@ -41,6 +41,10 @@
 /* Vendor and product ids */
 #define TI_VENDOR_ID			0x0451
 #define IBM_VENDOR_ID			0x04b3
+<<<<<<< HEAD
+=======
+#define STARTECH_VENDOR_ID		0x14b0
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define TI_3410_PRODUCT_ID		0x3410
 #define IBM_4543_PRODUCT_ID		0x4543
 #define IBM_454B_PRODUCT_ID		0x454b
@@ -378,6 +382,10 @@ static const struct usb_device_id ti_id_table_3410[] = {
 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1131_PRODUCT_ID) },
 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1150_PRODUCT_ID) },
 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1151_PRODUCT_ID) },
+<<<<<<< HEAD
+=======
+	{ USB_DEVICE(STARTECH_VENDOR_ID, TI_3410_PRODUCT_ID) },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ }	/* terminator */
 };
 
@@ -416,6 +424,10 @@ static const struct usb_device_id ti_id_table_combined[] = {
 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1131_PRODUCT_ID) },
 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1150_PRODUCT_ID) },
 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1151_PRODUCT_ID) },
+<<<<<<< HEAD
+=======
+	{ USB_DEVICE(STARTECH_VENDOR_ID, TI_3410_PRODUCT_ID) },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ }	/* terminator */
 };
 
@@ -780,7 +792,10 @@ static void ti_close(struct usb_serial_port *port)
 	struct ti_port *tport;
 	int port_number;
 	int status;
+<<<<<<< HEAD
 	int do_unlock;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long flags;
 
 	tdev = usb_get_serial_data(port->serial);
@@ -804,6 +819,7 @@ static void ti_close(struct usb_serial_port *port)
 			"%s - cannot send close port command, %d\n"
 							, __func__, status);
 
+<<<<<<< HEAD
 	/* if mutex_lock is interrupted, continue anyway */
 	do_unlock = !mutex_lock_interruptible(&tdev->td_open_close_lock);
 	--tport->tp_tdev->td_open_port_count;
@@ -814,6 +830,15 @@ static void ti_close(struct usb_serial_port *port)
 	}
 	if (do_unlock)
 		mutex_unlock(&tdev->td_open_close_lock);
+=======
+	mutex_lock(&tdev->td_open_close_lock);
+	--tport->tp_tdev->td_open_port_count;
+	if (tport->tp_tdev->td_open_port_count == 0) {
+		/* last port is closed, shut down interrupt urb */
+		usb_kill_urb(port->serial->port[0]->interrupt_in_urb);
+	}
+	mutex_unlock(&tdev->td_open_close_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 

@@ -175,7 +175,12 @@ static int cx82310_bind(struct usbnet *dev, struct usb_interface *intf)
 	}
 	if (!timeout) {
 		dev_err(&udev->dev, "firmware not ready in time\n");
+<<<<<<< HEAD
 		return -ETIMEDOUT;
+=======
+		ret = -ETIMEDOUT;
+		goto err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* enable ethernet mode (?) */

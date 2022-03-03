@@ -69,8 +69,11 @@ struct mtd_part_parser_data {
 };
 
 
+<<<<<<< HEAD
 void part_fill_badblockstats(struct mtd_info *mtd);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Functions dealing with the various ways of partitioning the space
  */

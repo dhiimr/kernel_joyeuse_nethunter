@@ -216,10 +216,15 @@ int ntb_default_port_number(struct ntb_dev *ntb)
 	case NTB_TOPO_B2B_DSD:
 		return NTB_PORT_SEC_DSD;
 	default:
+<<<<<<< HEAD
 		break;
 	}
 
 	return -EINVAL;
+=======
+		return 0;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL(ntb_default_port_number);
 
@@ -242,10 +247,15 @@ int ntb_default_peer_port_number(struct ntb_dev *ntb, int pidx)
 	case NTB_TOPO_B2B_DSD:
 		return NTB_PORT_PRI_USD;
 	default:
+<<<<<<< HEAD
 		break;
 	}
 
 	return -EINVAL;
+=======
+		return 0;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL(ntb_default_peer_port_number);
 

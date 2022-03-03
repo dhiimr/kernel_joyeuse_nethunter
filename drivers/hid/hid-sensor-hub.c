@@ -223,16 +223,31 @@ int sensor_hub_set_feature(struct hid_sensor_hub_device *hsdev, u32 report_id,
 	buffer_size = buffer_size / sizeof(__s32);
 	if (buffer_size) {
 		for (i = 0; i < buffer_size; ++i) {
+<<<<<<< HEAD
 			hid_set_field(report->field[field_index], i,
 				      (__force __s32)cpu_to_le32(*buf32));
+=======
+			ret = hid_set_field(report->field[field_index], i,
+					    (__force __s32)cpu_to_le32(*buf32));
+			if (ret)
+				goto done_proc;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			++buf32;
 		}
 	}
 	if (remaining_bytes) {
 		value = 0;
 		memcpy(&value, (u8 *)buf32, remaining_bytes);
+<<<<<<< HEAD
 		hid_set_field(report->field[field_index], i,
 			      (__force __s32)cpu_to_le32(value));
+=======
+		ret = hid_set_field(report->field[field_index], i,
+				    (__force __s32)cpu_to_le32(value));
+		if (ret)
+			goto done_proc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	hid_hw_request(hsdev->hdev, report, HID_REQ_SET_REPORT);
 	hid_hw_wait(hsdev->hdev);
@@ -496,7 +511,12 @@ static int sensor_hub_raw_event(struct hid_device *hdev,
 		return 1;
 
 	ptr = raw_data;
+<<<<<<< HEAD
 	ptr++; /* Skip report id */
+=======
+	if (report->id)
+		ptr++; /* Skip report id */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	spin_lock_irqsave(&pdata->lock, flags);
 

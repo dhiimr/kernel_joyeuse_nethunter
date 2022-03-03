@@ -707,6 +707,12 @@ struct intel_sdvo_enhancements_arg {
 #define SDVO_CMD_GET_AUDIO_ENCRYPT_PREFER 0x90
 #define SDVO_CMD_SET_AUDIO_STAT		0x91
 #define SDVO_CMD_GET_AUDIO_STAT		0x92
+<<<<<<< HEAD
+=======
+  #define SDVO_AUDIO_ELD_VALID		(1 << 0)
+  #define SDVO_AUDIO_PRESENCE_DETECT	(1 << 1)
+  #define SDVO_AUDIO_CP_READY		(1 << 2)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define SDVO_CMD_SET_HBUF_INDEX		0x93
   #define SDVO_HBUF_INDEX_ELD		0
   #define SDVO_HBUF_INDEX_AVI_IF	1

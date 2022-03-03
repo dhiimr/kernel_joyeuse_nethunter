@@ -58,6 +58,7 @@ enum snd_jack_types {
 	SND_JACK_VIDEOOUT	= 0x0010,
 	SND_JACK_AVOUT		= SND_JACK_LINEOUT | SND_JACK_VIDEOOUT,
 	SND_JACK_LINEIN		= 0x0020,
+<<<<<<< HEAD
 	SND_JACK_OC_HPHL        = 0x0040,
 	SND_JACK_OC_HPHR        = 0x0080,
 	SND_JACK_UNSUPPORTED    = 0x0100,
@@ -74,6 +75,21 @@ enum snd_jack_types {
 	SND_JACK_BTN_5		= 0x0400,
 };
 
+=======
+
+	/* Kept separate from switches to facilitate implementation */
+	SND_JACK_BTN_0		= 0x4000,
+	SND_JACK_BTN_1		= 0x2000,
+	SND_JACK_BTN_2		= 0x1000,
+	SND_JACK_BTN_3		= 0x0800,
+	SND_JACK_BTN_4		= 0x0400,
+	SND_JACK_BTN_5		= 0x0200,
+};
+
+/* Keep in sync with definitions above */
+#define SND_JACK_SWITCH_TYPES 6
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct snd_jack {
 	struct list_head kctl_list;
 	struct snd_card *card;

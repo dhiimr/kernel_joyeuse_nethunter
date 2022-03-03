@@ -224,7 +224,11 @@ amdgpu_connector_update_scratch_regs(struct drm_connector *connector,
 		if (connector->encoder_ids[i] == 0)
 			break;
 
+<<<<<<< HEAD
 		encoder = drm_encoder_find(connector->dev, NULL,
+=======
+		encoder = drm_encoder_find(connector->dev,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					connector->encoder_ids[i]);
 		if (!encoder)
 			continue;
@@ -249,7 +253,11 @@ amdgpu_connector_find_encoder(struct drm_connector *connector,
 	for (i = 0; i < DRM_CONNECTOR_MAX_ENCODER; i++) {
 		if (connector->encoder_ids[i] == 0)
 			break;
+<<<<<<< HEAD
 		encoder = drm_encoder_find(connector->dev, NULL,
+=======
+		encoder = drm_encoder_find(connector->dev,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					connector->encoder_ids[i]);
 		if (!encoder)
 			continue;
@@ -367,7 +375,11 @@ amdgpu_connector_best_single_encoder(struct drm_connector *connector)
 
 	/* pick the encoder ids */
 	if (enc_id)
+<<<<<<< HEAD
 		return drm_encoder_find(connector->dev, NULL, enc_id);
+=======
+		return drm_encoder_find(connector->dev, enc_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return NULL;
 }
 
@@ -404,6 +416,12 @@ amdgpu_connector_lcd_native_mode(struct drm_encoder *encoder)
 	    native_mode->vdisplay != 0 &&
 	    native_mode->clock != 0) {
 		mode = drm_mode_duplicate(dev, native_mode);
+<<<<<<< HEAD
+=======
+		if (!mode)
+			return NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mode->type = DRM_MODE_TYPE_PREFERRED | DRM_MODE_TYPE_DRIVER;
 		drm_mode_set_name(mode);
 
@@ -418,6 +436,12 @@ amdgpu_connector_lcd_native_mode(struct drm_encoder *encoder)
 		 * simpler.
 		 */
 		mode = drm_cvt_mode(dev, native_mode->hdisplay, native_mode->vdisplay, 60, true, false, false);
+<<<<<<< HEAD
+=======
+		if (!mode)
+			return NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mode->type = DRM_MODE_TYPE_PREFERRED | DRM_MODE_TYPE_DRIVER;
 		DRM_DEBUG_KMS("Adding cvt approximation of native panel mode %s\n", mode->name);
 	}
@@ -734,8 +758,15 @@ amdgpu_connector_lvds_detect(struct drm_connector *connector, bool force)
 
 	if (!drm_kms_helper_is_poll_worker()) {
 		r = pm_runtime_get_sync(connector->dev->dev);
+<<<<<<< HEAD
 		if (r < 0)
 			return connector_status_disconnected;
+=======
+		if (r < 0) {
+			pm_runtime_put_autosuspend(connector->dev->dev);
+			return connector_status_disconnected;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (encoder) {
@@ -842,6 +873,10 @@ static int amdgpu_connector_vga_get_modes(struct drm_connector *connector)
 
 	amdgpu_connector_get_edid(connector);
 	ret = amdgpu_connector_ddc_get_modes(connector);
+<<<<<<< HEAD
+=======
+	amdgpu_get_native_mode(connector);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }
@@ -872,8 +907,15 @@ amdgpu_connector_vga_detect(struct drm_connector *connector, bool force)
 
 	if (!drm_kms_helper_is_poll_worker()) {
 		r = pm_runtime_get_sync(connector->dev->dev);
+<<<<<<< HEAD
 		if (r < 0)
 			return connector_status_disconnected;
+=======
+		if (r < 0) {
+			pm_runtime_put_autosuspend(connector->dev->dev);
+			return connector_status_disconnected;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	encoder = amdgpu_connector_best_single_encoder(connector);
@@ -996,8 +1038,15 @@ amdgpu_connector_dvi_detect(struct drm_connector *connector, bool force)
 
 	if (!drm_kms_helper_is_poll_worker()) {
 		r = pm_runtime_get_sync(connector->dev->dev);
+<<<<<<< HEAD
 		if (r < 0)
 			return connector_status_disconnected;
+=======
+		if (r < 0) {
+			pm_runtime_put_autosuspend(connector->dev->dev);
+			return connector_status_disconnected;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (!force && amdgpu_connector_check_hpd_status_unchanged(connector)) {
@@ -1084,7 +1133,11 @@ amdgpu_connector_dvi_detect(struct drm_connector *connector, bool force)
 			if (connector->encoder_ids[i] == 0)
 				break;
 
+<<<<<<< HEAD
 			encoder = drm_encoder_find(connector->dev, NULL, connector->encoder_ids[i]);
+=======
+			encoder = drm_encoder_find(connector->dev, connector->encoder_ids[i]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (!encoder)
 				continue;
 
@@ -1143,7 +1196,11 @@ amdgpu_connector_dvi_encoder(struct drm_connector *connector)
 		if (connector->encoder_ids[i] == 0)
 			break;
 
+<<<<<<< HEAD
 		encoder = drm_encoder_find(connector->dev, NULL, connector->encoder_ids[i]);
+=======
+		encoder = drm_encoder_find(connector->dev, connector->encoder_ids[i]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!encoder)
 			continue;
 
@@ -1162,7 +1219,11 @@ amdgpu_connector_dvi_encoder(struct drm_connector *connector)
 	/* then check use digitial */
 	/* pick the first one */
 	if (enc_id)
+<<<<<<< HEAD
 		return drm_encoder_find(connector->dev, NULL, enc_id);
+=======
+		return drm_encoder_find(connector->dev, enc_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return NULL;
 }
 
@@ -1303,7 +1364,11 @@ u16 amdgpu_connector_encoder_get_dp_bridge_encoder_id(struct drm_connector *conn
 		if (connector->encoder_ids[i] == 0)
 			break;
 
+<<<<<<< HEAD
 		encoder = drm_encoder_find(connector->dev, NULL,
+=======
+		encoder = drm_encoder_find(connector->dev,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					connector->encoder_ids[i]);
 		if (!encoder)
 			continue;
@@ -1332,7 +1397,11 @@ static bool amdgpu_connector_encoder_is_hbr2(struct drm_connector *connector)
 	for (i = 0; i < DRM_CONNECTOR_MAX_ENCODER; i++) {
 		if (connector->encoder_ids[i] == 0)
 			break;
+<<<<<<< HEAD
 		encoder = drm_encoder_find(connector->dev, NULL,
+=======
+		encoder = drm_encoder_find(connector->dev,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					connector->encoder_ids[i]);
 		if (!encoder)
 			continue;
@@ -1371,8 +1440,15 @@ amdgpu_connector_dp_detect(struct drm_connector *connector, bool force)
 
 	if (!drm_kms_helper_is_poll_worker()) {
 		r = pm_runtime_get_sync(connector->dev->dev);
+<<<<<<< HEAD
 		if (r < 0)
 			return connector_status_disconnected;
+=======
+		if (r < 0) {
+			pm_runtime_put_autosuspend(connector->dev->dev);
+			return connector_status_disconnected;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (!force && amdgpu_connector_check_hpd_status_unchanged(connector)) {

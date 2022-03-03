@@ -9,7 +9,10 @@ config DRM_MXSFB
 	depends on COMMON_CLK
 	select DRM_MXS
 	select DRM_KMS_HELPER
+<<<<<<< HEAD
 	select DRM_KMS_FB_HELPER
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select DRM_KMS_CMA_HELPER
 	select DRM_PANEL
 	help

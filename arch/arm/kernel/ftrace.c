@@ -96,9 +96,16 @@ int ftrace_arch_code_modify_post_process(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr)
 {
 	return arm_gen_branch_link(pc, addr);
+=======
+static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr,
+					 bool warn)
+{
+	return arm_gen_branch_link(pc, addr, warn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int ftrace_modify_code(unsigned long pc, unsigned long old,
@@ -137,14 +144,22 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
 	int ret;
 
 	pc = (unsigned long)&ftrace_call;
+<<<<<<< HEAD
 	new = ftrace_call_replace(pc, (unsigned long)func);
+=======
+	new = ftrace_call_replace(pc, (unsigned long)func, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = ftrace_modify_code(pc, 0, new, false);
 
 #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
 	if (!ret) {
 		pc = (unsigned long)&ftrace_regs_call;
+<<<<<<< HEAD
 		new = ftrace_call_replace(pc, (unsigned long)func);
+=======
+		new = ftrace_call_replace(pc, (unsigned long)func, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		ret = ftrace_modify_code(pc, 0, new, false);
 	}
@@ -153,7 +168,11 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
 #ifdef CONFIG_OLD_MCOUNT
 	if (!ret) {
 		pc = (unsigned long)&ftrace_call_old;
+<<<<<<< HEAD
 		new = ftrace_call_replace(pc, (unsigned long)func);
+=======
+		new = ftrace_call_replace(pc, (unsigned long)func, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		ret = ftrace_modify_code(pc, 0, new, false);
 	}
@@ -166,10 +185,29 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
 {
 	unsigned long new, old;
 	unsigned long ip = rec->ip;
+<<<<<<< HEAD
 
 	old = ftrace_nop_replace(rec);
 
 	new = ftrace_call_replace(ip, adjust_address(rec, addr));
+=======
+	unsigned long aaddr = adjust_address(rec, addr);
+	struct module *mod = NULL;
+
+#ifdef CONFIG_ARM_MODULE_PLTS
+	mod = rec->arch.mod;
+#endif
+
+	old = ftrace_nop_replace(rec);
+
+	new = ftrace_call_replace(ip, aaddr, !mod);
+#ifdef CONFIG_ARM_MODULE_PLTS
+	if (!new && mod) {
+		aaddr = get_module_plt(mod, ip, aaddr);
+		new = ftrace_call_replace(ip, aaddr, true);
+	}
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ftrace_modify_code(rec->ip, old, new, true);
 }
@@ -182,9 +220,15 @@ int ftrace_modify_call(struct dyn_ftrace *rec, unsigned long old_addr,
 	unsigned long new, old;
 	unsigned long ip = rec->ip;
 
+<<<<<<< HEAD
 	old = ftrace_call_replace(ip, adjust_address(rec, old_addr));
 
 	new = ftrace_call_replace(ip, adjust_address(rec, addr));
+=======
+	old = ftrace_call_replace(ip, adjust_address(rec, old_addr), true);
+
+	new = ftrace_call_replace(ip, adjust_address(rec, addr), true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ftrace_modify_code(rec->ip, old, new, true);
 }
@@ -194,12 +238,36 @@ int ftrace_modify_call(struct dyn_ftrace *rec, unsigned long old_addr,
 int ftrace_make_nop(struct module *mod,
 		    struct dyn_ftrace *rec, unsigned long addr)
 {
+<<<<<<< HEAD
+=======
+	unsigned long aaddr = adjust_address(rec, addr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long ip = rec->ip;
 	unsigned long old;
 	unsigned long new;
 	int ret;
 
+<<<<<<< HEAD
 	old = ftrace_call_replace(ip, adjust_address(rec, addr));
+=======
+#ifdef CONFIG_ARM_MODULE_PLTS
+	/* mod is only supplied during module loading */
+	if (!mod)
+		mod = rec->arch.mod;
+	else
+		rec->arch.mod = mod;
+#endif
+
+	old = ftrace_call_replace(ip, aaddr,
+				  !IS_ENABLED(CONFIG_ARM_MODULE_PLTS) || !mod);
+#ifdef CONFIG_ARM_MODULE_PLTS
+	if (!old && mod) {
+		aaddr = get_module_plt(mod, ip, aaddr);
+		old = ftrace_call_replace(ip, aaddr, true);
+	}
+#endif
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	new = ftrace_nop_replace(rec);
 	ret = ftrace_modify_code(ip, old, new, true);
 
@@ -207,7 +275,11 @@ int ftrace_make_nop(struct module *mod,
 	if (ret == -EINVAL && addr == MCOUNT_ADDR) {
 		rec->arch.old_mcount = true;
 
+<<<<<<< HEAD
 		old = ftrace_call_replace(ip, adjust_address(rec, addr));
+=======
+		old = ftrace_call_replace(ip, adjust_address(rec, addr), true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		new = ftrace_nop_replace(rec);
 		ret = ftrace_modify_code(ip, old, new, true);
 	}

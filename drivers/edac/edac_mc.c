@@ -264,7 +264,11 @@ void *edac_align_ptr(void **p, unsigned size, int n_elems)
 	else
 		return (char *)ptr;
 
+<<<<<<< HEAD
 	r = (unsigned long)p % align;
+=======
+	r = (unsigned long)ptr % align;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (r == 0)
 		return (char *)ptr;
@@ -680,13 +684,18 @@ static int del_mc_from_global_list(struct mem_ctl_info *mci)
 
 struct mem_ctl_info *edac_mc_find(int idx)
 {
+<<<<<<< HEAD
 	struct mem_ctl_info *mci = NULL;
+=======
+	struct mem_ctl_info *mci;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct list_head *item;
 
 	mutex_lock(&mem_ctls_mutex);
 
 	list_for_each(item, &mc_devices) {
 		mci = list_entry(item, struct mem_ctl_info, link);
+<<<<<<< HEAD
 
 		if (mci->mc_idx >= idx) {
 			if (mci->mc_idx == idx) {
@@ -696,6 +705,13 @@ struct mem_ctl_info *edac_mc_find(int idx)
 		}
 	}
 
+=======
+		if (mci->mc_idx == idx)
+			goto unlock;
+	}
+
+	mci = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 unlock:
 	mutex_unlock(&mem_ctls_mutex);
 	return mci;
@@ -1240,9 +1256,19 @@ void edac_mc_handle_error(const enum hw_event_mc_err_type type,
 	if (p > e->location)
 		*(p - 1) = '\0';
 
+<<<<<<< HEAD
 	/* Report the error via the trace interface */
 	grain_bits = fls_long(e->grain) + 1;
 
+=======
+	/* Sanity-check driver-supplied grain value. */
+	if (WARN_ON_ONCE(!e->grain))
+		e->grain = 1;
+
+	grain_bits = fls_long(e->grain - 1);
+
+	/* Report the error via the trace interface */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (IS_ENABLED(CONFIG_RAS))
 		trace_mc_event(type, e->msg, e->label, e->error_count,
 			       mci->mc_idx, e->top_layer, e->mid_layer,

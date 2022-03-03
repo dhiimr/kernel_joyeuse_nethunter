@@ -184,7 +184,11 @@ static void cw_clear_margins(struct vc_data *vc, struct fb_info *info,
 	region.color = color;
 	region.rop = ROP_COPY;
 
+<<<<<<< HEAD
 	if (rw && !bottom_only) {
+=======
+	if ((int) rw > 0 && !bottom_only) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		region.dx = 0;
 		region.dy = info->var.yoffset + rs;
 		region.height = rw;
@@ -192,7 +196,11 @@ static void cw_clear_margins(struct vc_data *vc, struct fb_info *info,
 		info->fbops->fb_fillrect(info, &region);
 	}
 
+<<<<<<< HEAD
 	if (bh) {
+=======
+	if ((int) bh > 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		region.dx = info->var.xoffset;
 		region.dy = info->var.yoffset;
                 region.height = info->var.yres;
@@ -202,7 +210,11 @@ static void cw_clear_margins(struct vc_data *vc, struct fb_info *info,
 }
 
 static void cw_cursor(struct vc_data *vc, struct fb_info *info, int mode,
+<<<<<<< HEAD
 		      int softback_lines, int fg, int bg)
+=======
+		      int fg, int bg)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct fb_cursor cursor;
 	struct fbcon_ops *ops = info->fbcon_par;
@@ -219,6 +231,7 @@ static void cw_cursor(struct vc_data *vc, struct fb_info *info, int mode,
 
 	cursor.set = 0;
 
+<<<<<<< HEAD
 	if (softback_lines) {
 		if (y + softback_lines >= vc->vc_rows) {
 			mode = CM_ERASE;
@@ -228,6 +241,8 @@ static void cw_cursor(struct vc_data *vc, struct fb_info *info, int mode,
 			y += softback_lines;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  	c = scr_readw((u16 *) vc->vc_pos);
 	attribute = get_attribute(info, c);
 	src = ops->fontbuffer + ((c & charmask) * (w * vc->vc_font.width));

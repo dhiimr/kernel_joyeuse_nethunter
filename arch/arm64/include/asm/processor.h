@@ -37,6 +37,10 @@
 #include <linux/string.h>
 
 #include <asm/alternative.h>
+<<<<<<< HEAD
+=======
+#include <asm/cpufeature.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/fpsimd.h>
 #include <asm/hw_breakpoint.h>
 #include <asm/lse.h>
@@ -49,7 +53,19 @@
  * TASK_UNMAPPED_BASE - the lower boundary of the mmap VM area.
  */
 #ifdef CONFIG_COMPAT
+<<<<<<< HEAD
 #define TASK_SIZE_32		UL(0x100000000)
+=======
+#ifdef CONFIG_ARM64_64K_PAGES
+/*
+ * With CONFIG_ARM64_64K_PAGES enabled, the last page is occupied
+ * by the compat vectors page.
+ */
+#define TASK_SIZE_32		UL(0x100000000)
+#else
+#define TASK_SIZE_32		(UL(0x100000000) - PAGE_SIZE)
+#endif /* CONFIG_ARM64_64K_PAGES */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define TASK_SIZE		(test_thread_flag(TIF_32BIT) ? \
 				TASK_SIZE_32 : TASK_SIZE_64)
 #define TASK_SIZE_OF(tsk)	(test_tsk_thread_flag(tsk, TIF_32BIT) ? \
@@ -72,9 +88,12 @@
 extern phys_addr_t arm64_dma_phys_limit;
 #define ARCH_LOW_ADDRESS_LIMIT	(arm64_dma_phys_limit - 1)
 
+<<<<<<< HEAD
 extern unsigned int boot_reason;
 extern unsigned int cold_boot;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct debug_info {
 #ifdef CONFIG_HAVE_HW_BREAKPOINT
 	/* Have we suspended stepping by a debugger? */
@@ -149,7 +168,11 @@ static inline void set_ssbs_bit(struct pt_regs *regs)
 
 static inline void set_compat_ssbs_bit(struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	regs->pstate |= COMPAT_PSR_SSBS_BIT;
+=======
+	regs->pstate |= PSR_AA32_SSBS_BIT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void start_thread(struct pt_regs *regs, unsigned long pc,
@@ -213,20 +236,32 @@ extern struct task_struct *cpu_switch_to(struct task_struct *prev,
 #define ARCH_HAS_PREFETCH
 static inline void prefetch(const void *ptr)
 {
+<<<<<<< HEAD
 	asm volatile("prfm pldl1keep, [%x0]\n" : : "r" (ptr));
+=======
+	asm volatile("prfm pldl1keep, %a0\n" : : "p" (ptr));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #define ARCH_HAS_PREFETCHW
 static inline void prefetchw(const void *ptr)
 {
+<<<<<<< HEAD
 	asm volatile("prfm pstl1keep, [%x0]\n" : : "r" (ptr));
+=======
+	asm volatile("prfm pstl1keep, %a0\n" : : "p" (ptr));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #define ARCH_HAS_SPINLOCK_PREFETCH
 static inline void spin_lock_prefetch(const void *ptr)
 {
 	asm volatile(ARM64_LSE_ATOMIC_INSN(
+<<<<<<< HEAD
 		     "prfm pstl1strm, [%x0]",
+=======
+		     "prfm pstl1strm, %a0",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		     "nop") : : "p" (ptr));
 }
 
@@ -234,8 +269,13 @@ static inline void spin_lock_prefetch(const void *ptr)
 
 #endif
 
+<<<<<<< HEAD
 int cpu_enable_pan(void *__unused);
 int cpu_enable_cache_maint_trap(void *__unused);
+=======
+void cpu_enable_pan(const struct arm64_cpu_capabilities *__unused);
+void cpu_enable_cache_maint_trap(const struct arm64_cpu_capabilities *__unused);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif /* __ASSEMBLY__ */
 #endif /* __ASM_PROCESSOR_H */

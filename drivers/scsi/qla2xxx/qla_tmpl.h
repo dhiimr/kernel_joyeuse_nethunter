@@ -13,7 +13,11 @@
 struct __packed qla27xx_fwdt_template {
 	uint32_t template_type;
 	uint32_t entry_offset;
+<<<<<<< HEAD
 	uint32_t template_size;
+=======
+	__le32 template_size;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	uint32_t reserved_1;
 
 	uint32_t entry_count;

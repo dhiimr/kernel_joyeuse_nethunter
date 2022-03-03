@@ -90,6 +90,10 @@ static const struct nla_policy netlbl_mgmt_genl_policy[NLBL_MGMT_A_MAX + 1] = {
 static int netlbl_mgmt_add_common(struct genl_info *info,
 				  struct netlbl_audit *audit_info)
 {
+<<<<<<< HEAD
+=======
+	void *pmap = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret_val = -EINVAL;
 	struct netlbl_domaddr_map *addrmap = NULL;
 	struct cipso_v4_doi *cipsov4 = NULL;
@@ -189,6 +193,10 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
 			ret_val = -ENOMEM;
 			goto add_free_addrmap;
 		}
+<<<<<<< HEAD
+=======
+		pmap = map;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		map->list.addr = addr->s_addr & mask->s_addr;
 		map->list.mask = mask->s_addr;
 		map->list.valid = 1;
@@ -197,10 +205,15 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
 			map->def.cipso = cipsov4;
 
 		ret_val = netlbl_af4list_add(&map->list, &addrmap->list4);
+<<<<<<< HEAD
 		if (ret_val != 0) {
 			kfree(map);
 			goto add_free_addrmap;
 		}
+=======
+		if (ret_val != 0)
+			goto add_free_map;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		entry->family = AF_INET;
 		entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
@@ -237,6 +250,10 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
 			ret_val = -ENOMEM;
 			goto add_free_addrmap;
 		}
+<<<<<<< HEAD
+=======
+		pmap = map;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		map->list.addr = *addr;
 		map->list.addr.s6_addr32[0] &= mask->s6_addr32[0];
 		map->list.addr.s6_addr32[1] &= mask->s6_addr32[1];
@@ -249,10 +266,15 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
 			map->def.calipso = calipso;
 
 		ret_val = netlbl_af6list_add(&map->list, &addrmap->list6);
+<<<<<<< HEAD
 		if (ret_val != 0) {
 			kfree(map);
 			goto add_free_addrmap;
 		}
+=======
+		if (ret_val != 0)
+			goto add_free_map;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		entry->family = AF_INET6;
 		entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
@@ -262,10 +284,19 @@ static int netlbl_mgmt_add_common(struct genl_info *info,
 
 	ret_val = netlbl_domhsh_add(entry, audit_info);
 	if (ret_val != 0)
+<<<<<<< HEAD
 		goto add_free_addrmap;
 
 	return 0;
 
+=======
+		goto add_free_map;
+
+	return 0;
+
+add_free_map:
+	kfree(pmap);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 add_free_addrmap:
 	kfree(addrmap);
 add_doi_put_def:

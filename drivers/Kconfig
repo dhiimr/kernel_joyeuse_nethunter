@@ -59,8 +59,11 @@ source "drivers/spi/Kconfig"
 
 source "drivers/spmi/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/slimbus/Kconfig"
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 source "drivers/hsi/Kconfig"
 
 source "drivers/pps/Kconfig"
@@ -71,8 +74,11 @@ source "drivers/pinctrl/Kconfig"
 
 source "drivers/gpio/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/gnsssirf/Kconfig"
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 source "drivers/w1/Kconfig"
 
 source "drivers/power/Kconfig"
@@ -139,8 +145,11 @@ source "drivers/hv/Kconfig"
 
 source "drivers/xen/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/vservices/Kconfig"
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 source "drivers/staging/Kconfig"
 
 source "drivers/platform/Kconfig"
@@ -175,8 +184,11 @@ source "drivers/vme/Kconfig"
 
 source "drivers/pwm/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/gpu/msm/Kconfig"
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 source "drivers/irqchip/Kconfig"
 
 source "drivers/ipack/Kconfig"
@@ -217,8 +229,11 @@ source "drivers/tee/Kconfig"
 
 source "drivers/mux/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/sensors/Kconfig"
 
 source "drivers/esoc/Kconfig"
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endmenu

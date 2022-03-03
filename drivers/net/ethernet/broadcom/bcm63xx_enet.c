@@ -571,12 +571,21 @@ static irqreturn_t bcm_enet_isr_dma(int irq, void *dev_id)
 /*
  * tx request callback
  */
+<<<<<<< HEAD
 static int bcm_enet_start_xmit(struct sk_buff *skb, struct net_device *dev)
+=======
+static netdev_tx_t
+bcm_enet_start_xmit(struct sk_buff *skb, struct net_device *dev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct bcm_enet_priv *priv;
 	struct bcm_enet_desc *desc;
 	u32 len_stat;
+<<<<<<< HEAD
 	int ret;
+=======
+	netdev_tx_t ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	priv = netdev_priv(dev);
 

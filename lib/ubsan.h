@@ -44,6 +44,7 @@ struct type_mismatch_data_v1 {
 	unsigned char type_check_kind;
 };
 
+<<<<<<< HEAD
 struct nonnull_arg_data {
 	struct source_location location;
 	struct type_descriptor *type;
@@ -51,6 +52,8 @@ struct nonnull_arg_data {
 	unsigned char type_check_kind;
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct type_mismatch_data_common {
 	struct source_location *location;
 	struct type_descriptor *type;
@@ -58,6 +61,20 @@ struct type_mismatch_data_common {
 	unsigned char type_check_kind;
 };
 
+<<<<<<< HEAD
+=======
+struct nonnull_arg_data {
+	struct source_location location;
+	struct source_location attr_location;
+	int arg_index;
+};
+
+struct nonnull_return_data {
+	struct source_location location;
+	struct source_location attr_location;
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct vla_bound_data {
 	struct source_location location;
 	struct type_descriptor *type;

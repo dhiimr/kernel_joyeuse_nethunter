@@ -269,6 +269,11 @@ static snd_pcm_sframes_t mulaw_transfer(struct snd_pcm_plugin *plugin,
 		}
 	}
 #endif
+<<<<<<< HEAD
+=======
+	if (frames > dst_channels[0].frames)
+		frames = dst_channels[0].frames;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	data = (struct mulaw_priv *)plugin->extra_data;
 	data->func(plugin, src_channels, dst_channels, frames);
 	return frames;
@@ -327,8 +332,13 @@ int snd_pcm_plugin_build_mulaw(struct snd_pcm_substream *plug,
 		snd_BUG();
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	if (snd_BUG_ON(!snd_pcm_format_linear(format->format)))
 		return -ENXIO;
+=======
+	if (!snd_pcm_format_linear(format->format))
+		return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = snd_pcm_plugin_build(plug, "Mu-Law<->linear conversion",
 				   src_format, dst_format,

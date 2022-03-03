@@ -784,7 +784,11 @@ static int s3c24xx_nand_remove(struct platform_device *pdev)
 
 		for (mtdno = 0; mtdno < info->mtd_count; mtdno++, ptr++) {
 			pr_debug("releasing mtd %d (%p)\n", mtdno, ptr);
+<<<<<<< HEAD
 			nand_release(nand_to_mtd(&ptr->chip));
+=======
+			nand_release(&ptr->chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 

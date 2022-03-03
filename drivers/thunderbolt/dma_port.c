@@ -369,6 +369,7 @@ int dma_port_flash_read(struct tb_dma_port *dma, unsigned int address,
 			void *buf, size_t size)
 {
 	unsigned int retries = DMA_PORT_RETRIES;
+<<<<<<< HEAD
 	unsigned int offset;
 
 	offset = address & 3;
@@ -378,6 +379,17 @@ int dma_port_flash_read(struct tb_dma_port *dma, unsigned int address,
 		u32 nbytes = min_t(u32, size, MAIL_DATA_DWORDS * 4);
 		int ret;
 
+=======
+
+	do {
+		unsigned int offset;
+		size_t nbytes;
+		int ret;
+
+		offset = address & 3;
+		nbytes = min_t(size_t, size + offset, MAIL_DATA_DWORDS * 4);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = dma_port_flash_read_block(dma, address, dma->buf,
 						ALIGN(nbytes, 4));
 		if (ret) {
@@ -389,6 +401,10 @@ int dma_port_flash_read(struct tb_dma_port *dma, unsigned int address,
 			return ret;
 		}
 
+<<<<<<< HEAD
+=======
+		nbytes -= offset;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		memcpy(buf, dma->buf + offset, nbytes);
 
 		size -= nbytes;

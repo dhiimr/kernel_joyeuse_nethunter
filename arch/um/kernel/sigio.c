@@ -36,14 +36,26 @@ int write_sigio_irq(int fd)
 }
 
 /* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(sigio_spinlock);
 
 void sigio_lock(void)
 {
 	spin_lock(&sigio_spinlock);
+=======
+static DEFINE_MUTEX(sigio_mutex);
+
+void sigio_lock(void)
+{
+	mutex_lock(&sigio_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void sigio_unlock(void)
 {
+<<<<<<< HEAD
 	spin_unlock(&sigio_spinlock);
+=======
+	mutex_unlock(&sigio_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }

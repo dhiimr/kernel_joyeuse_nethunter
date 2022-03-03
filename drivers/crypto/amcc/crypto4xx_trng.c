@@ -111,7 +111,10 @@ void ppc4xx_trng_probe(struct crypto4xx_core_device *core_dev)
 	return;
 
 err_out:
+<<<<<<< HEAD
 	of_node_put(trng);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	iounmap(dev->trng_base);
 	kfree(rng);
 	dev->trng_base = NULL;

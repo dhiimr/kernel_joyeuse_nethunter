@@ -25,8 +25,11 @@
 
 #include "bpf_jit_32.h"
 
+<<<<<<< HEAD
 int bpf_jit_enable __read_mostly;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * eBPF prog stack layout:
  *
@@ -798,7 +801,15 @@ static inline void emit_a32_rsh_i64(const u8 dst[], bool dstk,
 	}
 
 	/* Do LSR operation */
+<<<<<<< HEAD
 	if (val < 32) {
+=======
+	if (val == 0) {
+		/* An immediate value of 0 encodes a shift amount of 32
+		 * for LSR. To shift by 0, don't do anything.
+		 */
+	} else if (val < 32) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		emit(ARM_MOV_SI(tmp2[1], rd, SRTYPE_LSR, val), ctx);
 		emit(ARM_ORR_SI(rd, tmp2[1], rm, SRTYPE_ASL, 32 - val), ctx);
 		emit(ARM_MOV_SI(rm, rm, SRTYPE_LSR, val), ctx);
@@ -831,7 +842,15 @@ static inline void emit_a32_arsh_i64(const u8 dst[], bool dstk,
 	}
 
 	/* Do ARSH operation */
+<<<<<<< HEAD
 	if (val < 32) {
+=======
+	if (val == 0) {
+		/* An immediate value of 0 encodes a shift amount of 32
+		 * for ASR. To shift by 0, don't do anything.
+		 */
+	} else if (val < 32) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		emit(ARM_MOV_SI(tmp2[1], rd, SRTYPE_LSR, val), ctx);
 		emit(ARM_ORR_SI(rd, tmp2[1], rm, SRTYPE_ASL, 32 - val), ctx);
 		emit(ARM_MOV_SI(rm, rm, SRTYPE_ASR, val), ctx);

@@ -44,6 +44,12 @@ extern int qcom_scm_restore_sec_cfg(u32 device_id, u32 spare);
 extern int qcom_scm_iommu_secure_ptbl_size(u32 spare, size_t *size);
 extern int qcom_scm_iommu_secure_ptbl_init(u64 addr, u32 size, u32 spare);
 #else
+<<<<<<< HEAD
+=======
+
+#include <linux/errno.h>
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline
 int qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus)
 {

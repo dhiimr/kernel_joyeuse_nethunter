@@ -226,7 +226,11 @@ int dibusb_read_eeprom_byte(struct dvb_usb_device *d, u8 offs, u8 *val)
 	u8 *buf;
 	int rc;
 
+<<<<<<< HEAD
 	buf = kmalloc(2, GFP_KERNEL);
+=======
+	buf = kzalloc(2, GFP_KERNEL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!buf)
 		return -ENOMEM;
 

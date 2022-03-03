@@ -100,6 +100,7 @@ struct bio {
 		struct bio_integrity_payload *bi_integrity; /* data integrity */
 #endif
 	};
+<<<<<<< HEAD
 #ifdef CONFIG_PFK
 	/* Encryption key to use (NULL if none) */
 	const struct blk_encryption_key	*bi_crypt_key;
@@ -107,6 +108,8 @@ struct bio {
 #ifdef CONFIG_DM_DEFAULT_KEY
 	int bi_crypt_skip;
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	unsigned short		bi_vcnt;	/* how many bio_vec's */
 
@@ -121,9 +124,13 @@ struct bio {
 	struct bio_vec		*bi_io_vec;	/* the actual vec list */
 
 	struct bio_set		*bi_pool;
+<<<<<<< HEAD
 #ifdef CONFIG_PFK
 	struct inode		*bi_dio_inode;
 #endif
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * We can inline a number of vecs at the end of the bio, to avoid
 	 * double allocations for a small number of bio_vecs. This member
@@ -239,6 +246,7 @@ enum req_flag_bits {
 	__REQ_RAHEAD,		/* read ahead, can fail anytime */
 	__REQ_BACKGROUND,	/* background IO */
 
+<<<<<<< HEAD
 	__REQ_SORTED = __REQ_RAHEAD, /* elevator knows about this request */
 	/* command specific flags for REQ_OP_WRITE_ZEROES: */
 	__REQ_NOUNMAP,		/* do not free blocks when zeroing */
@@ -252,6 +260,12 @@ enum req_flag_bits {
 				 * level)
 				 */
 
+=======
+	/* command specific flags for REQ_OP_WRITE_ZEROES: */
+	__REQ_NOUNMAP,		/* do not free blocks when zeroing */
+
+	__REQ_NOWAIT,           /* Don't wait if request will block */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__REQ_NR_BITS,		/* stops here */
 };
 
@@ -261,7 +275,10 @@ enum req_flag_bits {
 #define REQ_SYNC		(1ULL << __REQ_SYNC)
 #define REQ_META		(1ULL << __REQ_META)
 #define REQ_PRIO		(1ULL << __REQ_PRIO)
+<<<<<<< HEAD
 #define REQ_URGENT		(1ULL << __REQ_URGENT)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define REQ_NOMERGE		(1ULL << __REQ_NOMERGE)
 #define REQ_IDLE		(1ULL << __REQ_IDLE)
 #define REQ_INTEGRITY		(1ULL << __REQ_INTEGRITY)
@@ -269,7 +286,10 @@ enum req_flag_bits {
 #define REQ_PREFLUSH		(1ULL << __REQ_PREFLUSH)
 #define REQ_RAHEAD		(1ULL << __REQ_RAHEAD)
 #define REQ_BACKGROUND		(1ULL << __REQ_BACKGROUND)
+<<<<<<< HEAD
 #define REQ_NOENCRYPT		(1ULL << __REQ_NOENCRYPT)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define REQ_NOUNMAP		(1ULL << __REQ_NOUNMAP)
 #define REQ_NOWAIT		(1ULL << __REQ_NOWAIT)

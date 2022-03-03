@@ -301,6 +301,10 @@
 				regulator-name = "vdd_1v35";
 				regulator-min-microvolt = <1350000>;
 				regulator-max-microvolt = <1350000>;
+<<<<<<< HEAD
+=======
+				regulator-always-on;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				regulator-boot-on;
 				regulator-state-mem {
 					regulator-on-in-suspend;
@@ -322,6 +326,10 @@
 				regulator-name = "vdd_2v";
 				regulator-min-microvolt = <2000000>;
 				regulator-max-microvolt = <2000000>;
+<<<<<<< HEAD
+=======
+				regulator-always-on;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				regulator-boot-on;
 				regulator-state-mem {
 					regulator-on-in-suspend;
@@ -332,6 +340,10 @@
 				regulator-name = "vdd_1v8";
 				regulator-min-microvolt = <1800000>;
 				regulator-max-microvolt = <1800000>;
+<<<<<<< HEAD
+=======
+				regulator-always-on;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				regulator-boot-on;
 				regulator-state-mem {
 					regulator-on-in-suspend;
@@ -426,6 +438,10 @@
 				regulator-name = "vdd_ldo10";
 				regulator-min-microvolt = <1800000>;
 				regulator-max-microvolt = <1800000>;
+<<<<<<< HEAD
+=======
+				regulator-always-on;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				regulator-state-mem {
 					regulator-off-in-suspend;
 				};

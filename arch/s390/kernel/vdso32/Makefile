@@ -25,9 +25,16 @@ obj-y += vdso32_wrapper.o
 extra-y += vdso32.lds
 CPPFLAGS_vdso32.lds += -P -C -U$(ARCH)
 
+<<<<<<< HEAD
 # Disable gcov profiling and ubsan for VDSO code
 GCOV_PROFILE := n
 UBSAN_SANITIZE := n
+=======
+# Disable gcov profiling, ubsan and kasan for VDSO code
+GCOV_PROFILE := n
+UBSAN_SANITIZE := n
+KASAN_SANITIZE := n
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 # Force dependency (incbin is bad)
 $(obj)/vdso32_wrapper.o : $(obj)/vdso32.so

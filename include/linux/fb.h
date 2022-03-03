@@ -304,6 +304,7 @@ struct fb_ops {
 	int (*fb_ioctl)(struct fb_info *info, unsigned int cmd,
 			unsigned long arg);
 
+<<<<<<< HEAD
 	/* perform fb specific ioctl v2 (optional) - provides file param */
 	int (*fb_ioctl_v2)(struct fb_info *info, unsigned int cmd,
 					unsigned long arg, struct file *file);
@@ -316,6 +317,12 @@ struct fb_ops {
 	int (*fb_compat_ioctl_v2)(struct fb_info *info, unsigned int cmd,
 				  unsigned long arg, struct file *file);
 
+=======
+	/* Handle 32bit compat ioctl (optional) */
+	int (*fb_compat_ioctl)(struct fb_info *info, unsigned cmd,
+			unsigned long arg);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* perform fb specific mmap */
 	int (*fb_mmap)(struct fb_info *info, struct vm_area_struct *vma);
 
@@ -484,7 +491,10 @@ struct fb_info {
 	struct fb_cmap cmap;		/* Current cmap */
 	struct list_head modelist;      /* mode list */
 	struct fb_videomode *mode;	/* current mode */
+<<<<<<< HEAD
 	struct file *file;		/* current file node */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_FB_BACKLIGHT
 	/* assigned backlight device */
@@ -734,8 +744,11 @@ extern int fb_parse_edid(unsigned char *edid, struct fb_var_screeninfo *var);
 extern const unsigned char *fb_firmware_edid(struct device *device);
 extern void fb_edid_to_monspecs(unsigned char *edid,
 				struct fb_monspecs *specs);
+<<<<<<< HEAD
 extern void fb_edid_add_monspecs(unsigned char *edid,
 				 struct fb_monspecs *specs);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void fb_destroy_modedb(struct fb_videomode *modedb);
 extern int fb_find_mode_cvt(struct fb_videomode *mode, int margins, int rb);
 extern unsigned char *fb_ddc_read(struct i2c_adapter *adapter);
@@ -809,7 +822,10 @@ struct dmt_videomode {
 
 extern const char *fb_mode_option;
 extern const struct fb_videomode vesa_modes[];
+<<<<<<< HEAD
 extern const struct fb_videomode cea_modes[65];
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern const struct dmt_videomode dmt_modes[];
 
 struct fb_modelist {

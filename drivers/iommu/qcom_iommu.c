@@ -327,6 +327,7 @@ static void qcom_iommu_domain_free(struct iommu_domain *domain)
 {
 	struct qcom_iommu_domain *qcom_domain = to_qcom_iommu_domain(domain);
 
+<<<<<<< HEAD
 	if (WARN_ON(qcom_domain->iommu))    /* forgot to detach? */
 		return;
 
@@ -342,6 +343,21 @@ static void qcom_iommu_domain_free(struct iommu_domain *domain)
 	free_io_pgtable_ops(qcom_domain->pgtbl_ops);
 
 	pm_runtime_put_sync(qcom_domain->iommu->dev);
+=======
+	iommu_put_dma_cookie(domain);
+
+	if (qcom_domain->iommu) {
+		/*
+		 * NOTE: unmap can be called after client device is powered
+		 * off, for example, with GPUs or anything involving dma-buf.
+		 * So we cannot rely on the device_link.  Make sure the IOMMU
+		 * is on to avoid unclocked accesses in the TLB inv path:
+		 */
+		pm_runtime_get_sync(qcom_domain->iommu->dev);
+		free_io_pgtable_ops(qcom_domain->pgtbl_ops);
+		pm_runtime_put_sync(qcom_domain->iommu->dev);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	kfree(qcom_domain);
 }
@@ -386,7 +402,11 @@ static void qcom_iommu_detach_dev(struct iommu_domain *domain, struct device *de
 	struct qcom_iommu_domain *qcom_domain = to_qcom_iommu_domain(domain);
 	unsigned i;
 
+<<<<<<< HEAD
 	if (!qcom_domain->iommu)
+=======
+	if (WARN_ON(!qcom_domain->iommu))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 
 	pm_runtime_get_sync(qcom_iommu->dev);
@@ -397,8 +417,11 @@ static void qcom_iommu_detach_dev(struct iommu_domain *domain, struct device *de
 		iommu_writel(ctx, ARM_SMMU_CB_SCTLR, 0);
 	}
 	pm_runtime_put_sync(qcom_iommu->dev);
+<<<<<<< HEAD
 
 	qcom_domain->iommu = NULL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int qcom_iommu_map(struct iommu_domain *domain, unsigned long iova,
@@ -779,8 +802,16 @@ static int qcom_iommu_device_probe(struct platform_device *pdev)
 	qcom_iommu->dev = dev;
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (res)
 		qcom_iommu->local_base = devm_ioremap_resource(dev, res);
+=======
+	if (res) {
+		qcom_iommu->local_base = devm_ioremap_resource(dev, res);
+		if (IS_ERR(qcom_iommu->local_base))
+			return PTR_ERR(qcom_iommu->local_base);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	qcom_iommu->iface_clk = devm_clk_get(dev, "iface");
 	if (IS_ERR(qcom_iommu->iface_clk)) {

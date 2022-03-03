@@ -1914,10 +1914,15 @@ static bool target_handle_task_attr(struct se_cmd *cmd)
 	 */
 	switch (cmd->sam_task_attr) {
 	case TCM_HEAD_TAG:
+<<<<<<< HEAD
+=======
+		atomic_inc_mb(&dev->non_ordered);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pr_debug("Added HEAD_OF_QUEUE for CDB: 0x%02x\n",
 			 cmd->t_task_cdb[0]);
 		return false;
 	case TCM_ORDERED_TAG:
+<<<<<<< HEAD
 		atomic_inc_mb(&dev->dev_ordered_sync);
 
 		pr_debug("Added ORDERED for CDB: 0x%02x to ordered list\n",
@@ -1929,17 +1934,41 @@ static bool target_handle_task_attr(struct se_cmd *cmd)
 		 */
 		if (!atomic_read(&dev->simple_cmds))
 			return false;
+=======
+		atomic_inc_mb(&dev->delayed_cmd_count);
+
+		pr_debug("Added ORDERED for CDB: 0x%02x to ordered list\n",
+			 cmd->t_task_cdb[0]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	default:
 		/*
 		 * For SIMPLE and UNTAGGED Task Attribute commands
 		 */
+<<<<<<< HEAD
 		atomic_inc_mb(&dev->simple_cmds);
 		break;
 	}
 
 	if (atomic_read(&dev->dev_ordered_sync) == 0)
 		return false;
+=======
+		atomic_inc_mb(&dev->non_ordered);
+
+		if (atomic_read(&dev->delayed_cmd_count) == 0)
+			return false;
+		break;
+	}
+
+	if (cmd->sam_task_attr != TCM_ORDERED_TAG) {
+		atomic_inc_mb(&dev->delayed_cmd_count);
+		/*
+		 * We will account for this when we dequeue from the delayed
+		 * list.
+		 */
+		atomic_dec_mb(&dev->non_ordered);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	spin_lock(&dev->delayed_cmd_lock);
 	list_add_tail(&cmd->se_delayed_node, &dev->delayed_cmd_list);
@@ -1947,6 +1976,15 @@ static bool target_handle_task_attr(struct se_cmd *cmd)
 
 	pr_debug("Added CDB: 0x%02x Task Attr: 0x%02x to delayed CMD listn",
 		cmd->t_task_cdb[0], cmd->sam_task_attr);
+<<<<<<< HEAD
+=======
+	/*
+	 * We may have no non ordered cmds when this function started or we
+	 * could have raced with the last simple/head cmd completing, so kick
+	 * the delayed handler here.
+	 */
+	schedule_work(&dev->delayed_cmd_work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return true;
 }
 
@@ -1997,6 +2035,7 @@ EXPORT_SYMBOL(target_execute_cmd);
  * Process all commands up to the last received ORDERED task attribute which
  * requires another blocking boundary
  */
+<<<<<<< HEAD
 static void target_restart_delayed_cmds(struct se_device *dev)
 {
 	for (;;) {
@@ -2013,13 +2052,56 @@ static void target_restart_delayed_cmds(struct se_device *dev)
 		list_del(&cmd->se_delayed_node);
 		spin_unlock(&dev->delayed_cmd_lock);
 
+=======
+void target_do_delayed_work(struct work_struct *work)
+{
+	struct se_device *dev = container_of(work, struct se_device,
+					     delayed_cmd_work);
+
+	spin_lock(&dev->delayed_cmd_lock);
+	while (!dev->ordered_sync_in_progress) {
+		struct se_cmd *cmd;
+
+		if (list_empty(&dev->delayed_cmd_list))
+			break;
+
+		cmd = list_entry(dev->delayed_cmd_list.next,
+				 struct se_cmd, se_delayed_node);
+
+		if (cmd->sam_task_attr == TCM_ORDERED_TAG) {
+			/*
+			 * Check if we started with:
+			 * [ordered] [simple] [ordered]
+			 * and we are now at the last ordered so we have to wait
+			 * for the simple cmd.
+			 */
+			if (atomic_read(&dev->non_ordered) > 0)
+				break;
+
+			dev->ordered_sync_in_progress = true;
+		}
+
+		list_del(&cmd->se_delayed_node);
+		atomic_dec_mb(&dev->delayed_cmd_count);
+		spin_unlock(&dev->delayed_cmd_lock);
+
+		if (cmd->sam_task_attr != TCM_ORDERED_TAG)
+			atomic_inc_mb(&dev->non_ordered);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cmd->transport_state |= CMD_T_SENT;
 
 		__target_execute_cmd(cmd, true);
 
+<<<<<<< HEAD
 		if (cmd->sam_task_attr == TCM_ORDERED_TAG)
 			break;
 	}
+=======
+		spin_lock(&dev->delayed_cmd_lock);
+	}
+	spin_unlock(&dev->delayed_cmd_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -2037,14 +2119,27 @@ static void transport_complete_task_attr(struct se_cmd *cmd)
 		goto restart;
 
 	if (cmd->sam_task_attr == TCM_SIMPLE_TAG) {
+<<<<<<< HEAD
 		atomic_dec_mb(&dev->simple_cmds);
 		dev->dev_cur_ordered_id++;
 	} else if (cmd->sam_task_attr == TCM_HEAD_TAG) {
+=======
+		atomic_dec_mb(&dev->non_ordered);
+		dev->dev_cur_ordered_id++;
+	} else if (cmd->sam_task_attr == TCM_HEAD_TAG) {
+		atomic_dec_mb(&dev->non_ordered);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev->dev_cur_ordered_id++;
 		pr_debug("Incremented dev_cur_ordered_id: %u for HEAD_OF_QUEUE\n",
 			 dev->dev_cur_ordered_id);
 	} else if (cmd->sam_task_attr == TCM_ORDERED_TAG) {
+<<<<<<< HEAD
 		atomic_dec_mb(&dev->dev_ordered_sync);
+=======
+		spin_lock(&dev->delayed_cmd_lock);
+		dev->ordered_sync_in_progress = false;
+		spin_unlock(&dev->delayed_cmd_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		dev->dev_cur_ordered_id++;
 		pr_debug("Incremented dev_cur_ordered_id: %u for ORDERED\n",
@@ -2053,7 +2148,12 @@ static void transport_complete_task_attr(struct se_cmd *cmd)
 	cmd->se_cmd_flags &= ~SCF_TASK_ATTR_SET;
 
 restart:
+<<<<<<< HEAD
 	target_restart_delayed_cmds(dev);
+=======
+	if (atomic_read(&dev->delayed_cmd_count) > 0)
+		schedule_work(&dev->delayed_cmd_work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void transport_complete_qf(struct se_cmd *cmd)
@@ -2966,9 +3066,13 @@ __transport_wait_for_tasks(struct se_cmd *cmd, bool fabric_stop,
 	__releases(&cmd->t_state_lock)
 	__acquires(&cmd->t_state_lock)
 {
+<<<<<<< HEAD
 
 	assert_spin_locked(&cmd->t_state_lock);
 	WARN_ON_ONCE(!irqs_disabled());
+=======
+	lockdep_assert_held(&cmd->t_state_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (fabric_stop)
 		cmd->transport_state |= CMD_T_FABRIC_STOP;

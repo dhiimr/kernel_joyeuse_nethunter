@@ -177,8 +177,11 @@ static u32 b_imm(unsigned int tgt, struct jit_ctx *ctx)
 		(ctx->idx * 4) - 4;
 }
 
+<<<<<<< HEAD
 int bpf_jit_enable __read_mostly;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 enum which_ebpf_reg {
 	src_reg,
 	src_reg_no_fp,
@@ -614,6 +617,10 @@ static void emit_const_to_reg(struct jit_ctx *ctx, int dst, u64 value)
 static int emit_bpf_tail_call(struct jit_ctx *ctx, int this_idx)
 {
 	int off, b_off;
+<<<<<<< HEAD
+=======
+	int tcc_reg;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ctx->flags |= EBPF_SEEN_TC;
 	/*
@@ -626,6 +633,7 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx, int this_idx)
 	b_off = b_imm(this_idx + 1, ctx);
 	emit_instr(ctx, bne, MIPS_R_AT, MIPS_R_ZERO, b_off);
 	/*
+<<<<<<< HEAD
 	 * if (--TCC < 0)
 	 *     goto out;
 	 */
@@ -634,6 +642,16 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx, int this_idx)
 		   (ctx->flags & EBPF_TCC_IN_V1) ? MIPS_R_V1 : MIPS_R_S4, -1);
 	b_off = b_imm(this_idx + 1, ctx);
 	emit_instr(ctx, bltz, MIPS_R_T5, b_off);
+=======
+	 * if (TCC-- < 0)
+	 *     goto out;
+	 */
+	/* Delay slot */
+	tcc_reg = (ctx->flags & EBPF_TCC_IN_V1) ? MIPS_R_V1 : MIPS_R_S4;
+	emit_instr(ctx, daddiu, MIPS_R_T5, tcc_reg, -1);
+	b_off = b_imm(this_idx + 1, ctx);
+	emit_instr(ctx, bltz, tcc_reg, b_off);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * prog = array->ptrs[index];
 	 * if (prog == NULL)

@@ -1,6 +1,10 @@
 /* Renesas Ethernet AVB device driver
  *
+<<<<<<< HEAD
  * Copyright (C) 2014-2015 Renesas Electronics Corporation
+=======
+ * Copyright (C) 2014-2019 Renesas Electronics Corporation
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Copyright (C) 2015 Renesas Solutions Corp.
  * Copyright (C) 2015-2016 Cogent Embedded, Inc. <source@cogentembedded.com>
  *
@@ -513,7 +517,14 @@ static void ravb_get_tx_tstamp(struct net_device *ndev)
 			kfree(ts_skb);
 			if (tag == tfa_tag) {
 				skb_tstamp_tx(skb, &shhwtstamps);
+<<<<<<< HEAD
 				break;
+=======
+				dev_consume_skb_any(skb);
+				break;
+			} else {
+				dev_kfree_skb_any(skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			}
 		}
 		ravb_modify(ndev, TCCR, TCCR_TFR, TCCR_TFR);
@@ -1479,6 +1490,10 @@ static void ravb_tx_timeout_work(struct work_struct *work)
 	struct ravb_private *priv = container_of(work, struct ravb_private,
 						 work);
 	struct net_device *ndev = priv->ndev;
+<<<<<<< HEAD
+=======
+	int error;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	netif_tx_stop_all_queues(ndev);
 
@@ -1487,15 +1502,46 @@ static void ravb_tx_timeout_work(struct work_struct *work)
 		ravb_ptp_stop(ndev);
 
 	/* Wait for DMA stopping */
+<<<<<<< HEAD
 	ravb_stop_dma(ndev);
+=======
+	if (ravb_stop_dma(ndev)) {
+		/* If ravb_stop_dma() fails, the hardware is still operating
+		 * for TX and/or RX. So, this should not call the following
+		 * functions because ravb_dmac_init() is possible to fail too.
+		 * Also, this should not retry ravb_stop_dma() again and again
+		 * here because it's possible to wait forever. So, this just
+		 * re-enables the TX and RX and skip the following
+		 * re-initialization procedure.
+		 */
+		ravb_rcv_snd_enable(ndev);
+		goto out;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ravb_ring_free(ndev, RAVB_BE);
 	ravb_ring_free(ndev, RAVB_NC);
 
 	/* Device init */
+<<<<<<< HEAD
 	ravb_dmac_init(ndev);
 	ravb_emac_init(ndev);
 
+=======
+	error = ravb_dmac_init(ndev);
+	if (error) {
+		/* If ravb_dmac_init() fails, descriptors are freed. So, this
+		 * should return here to avoid re-enabling the TX and RX in
+		 * ravb_emac_init().
+		 */
+		netdev_err(ndev, "%s: ravb_dmac_init() failed, error %d\n",
+			   __func__, error);
+		return;
+	}
+	ravb_emac_init(ndev);
+
+out:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Initialise PTP Clock driver */
 	if (priv->chip_id == RCAR_GEN2)
 		ravb_ptp_init(ndev, priv->pdev);
@@ -1576,7 +1622,11 @@ static netdev_tx_t ravb_start_xmit(struct sk_buff *skb, struct net_device *ndev)
 					 DMA_TO_DEVICE);
 			goto unmap;
 		}
+<<<<<<< HEAD
 		ts_skb->skb = skb;
+=======
+		ts_skb->skb = skb_get(skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ts_skb->tag = priv->ts_skb_tag++;
 		priv->ts_skb_tag &= 0x3ff;
 		list_add_tail(&ts_skb->list, &priv->ts_skb_list);
@@ -1704,6 +1754,10 @@ static int ravb_close(struct net_device *ndev)
 	/* Clear the timestamp list */
 	list_for_each_entry_safe(ts_skb, ts_skb2, &priv->ts_skb_list, list) {
 		list_del(&ts_skb->list);
+<<<<<<< HEAD
+=======
+		kfree_skb(ts_skb->skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kfree(ts_skb);
 	}
 
@@ -1742,12 +1796,25 @@ static int ravb_hwtstamp_get(struct net_device *ndev, struct ifreq *req)
 	config.flags = 0;
 	config.tx_type = priv->tstamp_tx_ctrl ? HWTSTAMP_TX_ON :
 						HWTSTAMP_TX_OFF;
+<<<<<<< HEAD
 	if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_V2_L2_EVENT)
 		config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
 	else if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_ALL)
 		config.rx_filter = HWTSTAMP_FILTER_ALL;
 	else
 		config.rx_filter = HWTSTAMP_FILTER_NONE;
+=======
+	switch (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE) {
+	case RAVB_RXTSTAMP_TYPE_V2_L2_EVENT:
+		config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
+		break;
+	case RAVB_RXTSTAMP_TYPE_ALL:
+		config.rx_filter = HWTSTAMP_FILTER_ALL;
+		break;
+	default:
+		config.rx_filter = HWTSTAMP_FILTER_NONE;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return copy_to_user(req->ifr_data, &config, sizeof(config)) ?
 		-EFAULT : 0;

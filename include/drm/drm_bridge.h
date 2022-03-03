@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2016 Intel Corporation
+<<<<<<< HEAD
  * Copyright (C) 2020 XiaoMi, Inc.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -93,6 +96,7 @@ struct drm_bridge_funcs {
 	 */
 	enum drm_mode_status (*mode_valid)(struct drm_bridge *crtc,
 					   const struct drm_display_mode *mode);
+<<<<<<< HEAD
 	/**
 	 * @connector_init:
 	 *
@@ -109,6 +113,8 @@ struct drm_bridge_funcs {
 	 */
 	int (*connector_init)(struct drm_bridge *bridge,
 				struct drm_connector *connector);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/**
 	 * @mode_fixup:
@@ -260,8 +266,11 @@ struct drm_bridge {
 
 	const struct drm_bridge_funcs *funcs;
 	void *driver_private;
+<<<<<<< HEAD
 	struct mutex lock;
 	bool is_dsi_drm_bridge;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 int drm_bridge_add(struct drm_bridge *bridge);
@@ -282,9 +291,12 @@ void drm_bridge_mode_set(struct drm_bridge *bridge,
 			struct drm_display_mode *adjusted_mode);
 void drm_bridge_pre_enable(struct drm_bridge *bridge);
 void drm_bridge_enable(struct drm_bridge *bridge);
+<<<<<<< HEAD
 int dsi_bridge_interface_enable(int timeout);
 int drm_bridge_connector_init(struct drm_bridge *bridge,
 	struct drm_connector *connector);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_DRM_PANEL_BRIDGE
 struct drm_bridge *drm_panel_bridge_add(struct drm_panel *panel,

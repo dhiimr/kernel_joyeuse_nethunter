@@ -332,10 +332,22 @@ int main(int argc, char **argv)
 	int val;
 	socklen_t len;
 	struct timeval next;
+<<<<<<< HEAD
+=======
+	size_t if_len;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (argc < 2)
 		usage(0);
 	interface = argv[1];
+<<<<<<< HEAD
+=======
+	if_len = strlen(interface);
+	if (if_len >= IFNAMSIZ) {
+		printf("interface name exceeds IFNAMSIZ\n");
+		exit(1);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (i = 2; i < argc; i++) {
 		if (!strcasecmp(argv[i], "SO_TIMESTAMP"))
@@ -369,12 +381,20 @@ int main(int argc, char **argv)
 		bail("socket");
 
 	memset(&device, 0, sizeof(device));
+<<<<<<< HEAD
 	strncpy(device.ifr_name, interface, sizeof(device.ifr_name));
+=======
+	memcpy(device.ifr_name, interface, if_len + 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ioctl(sock, SIOCGIFADDR, &device) < 0)
 		bail("getting interface IP address");
 
 	memset(&hwtstamp, 0, sizeof(hwtstamp));
+<<<<<<< HEAD
 	strncpy(hwtstamp.ifr_name, interface, sizeof(hwtstamp.ifr_name));
+=======
+	memcpy(hwtstamp.ifr_name, interface, if_len + 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hwtstamp.ifr_data = (void *)&hwconfig;
 	memset(&hwconfig, 0, sizeof(hwconfig));
 	hwconfig.tx_type =

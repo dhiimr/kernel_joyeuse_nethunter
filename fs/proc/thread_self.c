@@ -42,7 +42,11 @@ int proc_setup_thread_self(struct super_block *s)
 	inode_lock(root_inode);
 	thread_self = d_alloc_name(s->s_root, "thread-self");
 	if (thread_self) {
+<<<<<<< HEAD
 		struct inode *inode = new_inode_pseudo(s);
+=======
+		struct inode *inode = new_inode(s);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (inode) {
 			inode->i_ino = thread_self_inum;
 			inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);

@@ -292,8 +292,12 @@ int iwl_trans_pcie_gen2_start_fw(struct iwl_trans *trans,
 	/* This may fail if AMT took ownership of the device */
 	if (iwl_pcie_prepare_card_hw(trans)) {
 		IWL_WARN(trans, "Exit HW not ready\n");
+<<<<<<< HEAD
 		ret = -EIO;
 		goto out;
+=======
+		return -EIO;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	iwl_enable_rfkill_int(trans);

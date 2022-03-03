@@ -44,6 +44,7 @@
 #define MAIR(attr, mt)	((attr) << ((mt) * 8))
 
 /*
+<<<<<<< HEAD
  *	cpu_cache_off()
  *
  *	Turn the CPU D-cache off.
@@ -90,6 +91,8 @@ ENTRY(cpu_soft_restart)
 ENDPROC(cpu_soft_restart)
 
 /*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *	cpu_do_idle()
  *
  *	Idle the processor (wait for interrupt).
@@ -110,6 +113,7 @@ ENTRY(cpu_do_suspend)
 	mrs	x2, tpidr_el0
 	mrs	x3, tpidrro_el0
 	mrs	x4, contextidr_el1
+<<<<<<< HEAD
 	mrs	x5, cpacr_el1
 	mrs	x6, tcr_el1
 	mrs	x7, vbar_el1
@@ -128,6 +132,27 @@ alternative_endif
 	stp	x7, x8, [x0, #48]
 	stp	x9, x10, [x0, #64]
 	stp	x11, x12, [x0, #80]
+=======
+	mrs	x5, osdlr_el1
+	mrs	x6, cpacr_el1
+	mrs	x7, tcr_el1
+	mrs	x8, vbar_el1
+	mrs	x9, mdscr_el1
+	mrs	x10, oslsr_el1
+	mrs	x11, sctlr_el1
+alternative_if_not ARM64_HAS_VIRT_HOST_EXTN
+	mrs	x12, tpidr_el1
+alternative_else
+	mrs	x12, tpidr_el2
+alternative_endif
+	mrs	x13, sp_el0
+	stp	x2, x3, [x0]
+	stp	x4, x5, [x0, #16]
+	stp	x6, x7, [x0, #32]
+	stp	x8, x9, [x0, #48]
+	stp	x10, x11, [x0, #64]
+	stp	x12, x13, [x0, #80]
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret
 ENDPROC(cpu_do_suspend)
 
@@ -150,8 +175,13 @@ ENTRY(cpu_do_resume)
 	msr	cpacr_el1, x6
 
 	/* Don't change t0sz here, mask those bits when restoring */
+<<<<<<< HEAD
 	mrs	x5, tcr_el1
 	bfi	x8, x5, TCR_T0SZ_OFFSET, TCR_TxSZ_WIDTH
+=======
+	mrs	x7, tcr_el1
+	bfi	x8, x7, TCR_T0SZ_OFFSET, TCR_TxSZ_WIDTH
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	msr	tcr_el1, x8
 	msr	vbar_el1, x9
@@ -175,6 +205,10 @@ alternative_endif
 	/*
 	 * Restore oslsr_el1 by writing oslar_el1
 	 */
+<<<<<<< HEAD
+=======
+	msr	osdlr_el1, x5
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ubfx	x11, x11, #1, #1
 	msr	oslar_el1, x11
 	reset_pmuserenr_el0 x0			// Disable PMU access from EL0
@@ -324,6 +358,18 @@ skip_pgd:
 	msr	sctlr_el1, x18
 	isb
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Invalidate the local I-cache so that any instructions fetched
+	 * speculatively from the PoC are discarded, since they may have
+	 * been dynamically patched at the PoU.
+	 */
+	ic	iallu
+	dsb	nsh
+	isb
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Set the flag to zero to indicate that we're all done */
 	str	wzr, [flag_ptr]
 	ret
@@ -465,11 +511,15 @@ ENTRY(__cpu_setup)
 	/*
 	 * Prepare SCTLR
 	 */
+<<<<<<< HEAD
 	adr	x5, crval
 	ldp	w5, w6, [x5]
 	mrs	x0, sctlr_el1
 	bic	x0, x0, x5			// clear bits
 	orr	x0, x0, x6			// set bits
+=======
+	mov_q	x0, SCTLR_EL1_SET
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Set/prepare TCR and TTBR. We use 512GB (39-bit) address range for
 	 * both user and kernel.
@@ -486,6 +536,7 @@ ENTRY(__cpu_setup)
 	bfi	x10, x9, #32, #3
 #ifdef CONFIG_ARM64_HW_AFDBM
 	/*
+<<<<<<< HEAD
 	 * Enable hardware update of the Access Flags bit.
 	 * Hardware dirty bit management is enabled later,
 	 * via capabilities.
@@ -495,10 +546,28 @@ ENTRY(__cpu_setup)
 	cbz	x9, 1f
 	orr	x10, x10, #TCR_HA		// hardware Access flag update
 1:
+=======
+	 * Hardware update of the Access and Dirty bits.
+	 */
+	mrs	x9, ID_AA64MMFR1_EL1
+	and	x9, x9, #0xf
+	cbz	x9, 2f
+	cmp	x9, #2
+	b.lt	1f
+#ifdef CONFIG_ARM64_ERRATUM_1024718
+	/* Disable hardware DBM on Cortex-A55 all versions */
+	cpu_midr_match MIDR_CORTEX_A55, MIDR_CPU_VAR_REV(0, 0), MIDR_CPU_VAR_REV(0xf, 0xf), x1, x2, x3, x4
+	cbnz	x1, 1f
+#endif
+	orr	x10, x10, #TCR_HD		// hardware Dirty flag update
+1:	orr	x10, x10, #TCR_HA		// hardware Access flag update
+2:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif	/* CONFIG_ARM64_HW_AFDBM */
 	msr	tcr_el1, x10
 	ret					// return to head.S
 ENDPROC(__cpu_setup)
+<<<<<<< HEAD
 
 	/*
 	 * We set the desired value explicitly, including those of the
@@ -517,3 +586,5 @@ crval:
 	.word	0xfcffffff			// clear
 	.word	0x34d5d91d			// set
 	.popsection
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

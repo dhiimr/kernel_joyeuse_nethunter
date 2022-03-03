@@ -34,6 +34,10 @@
 #include <linux/uaccess.h>
 #include <linux/vfio.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
+=======
+#include <linux/sched/signal.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define DRIVER_VERSION	"0.3"
 #define DRIVER_AUTHOR	"Alex Williamson <alex.williamson@redhat.com>"
@@ -909,6 +913,7 @@ void *vfio_device_data(struct vfio_device *device)
 }
 EXPORT_SYMBOL_GPL(vfio_device_data);
 
+<<<<<<< HEAD
 /* Given a referenced group, check if it contains the device */
 static bool vfio_dev_present(struct vfio_group *group, struct device *dev)
 {
@@ -922,17 +927,26 @@ static bool vfio_dev_present(struct vfio_group *group, struct device *dev)
 	return true;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Decrement the device reference count and wait for the device to be
  * removed.  Open file descriptors for the device... */
 void *vfio_del_group_dev(struct device *dev)
 {
+<<<<<<< HEAD
+=======
+	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct vfio_device *device = dev_get_drvdata(dev);
 	struct vfio_group *group = device->group;
 	void *device_data = device->device_data;
 	struct vfio_unbound_dev *unbound;
 	unsigned int i = 0;
+<<<<<<< HEAD
 	long ret;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool interrupted = false;
 
 	/*
@@ -969,6 +983,11 @@ void *vfio_del_group_dev(struct device *dev)
 	 * interval with counter to allow the driver to take escalating
 	 * measures to release the device if it has the ability to do so.
 	 */
+<<<<<<< HEAD
+=======
+	add_wait_queue(&vfio.release_q, &wait);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	do {
 		device = vfio_group_get_device(group, dev);
 		if (!device)
@@ -980,12 +999,19 @@ void *vfio_del_group_dev(struct device *dev)
 		vfio_device_put(device);
 
 		if (interrupted) {
+<<<<<<< HEAD
 			ret = wait_event_timeout(vfio.release_q,
 					!vfio_dev_present(group, dev), HZ * 10);
 		} else {
 			ret = wait_event_interruptible_timeout(vfio.release_q,
 					!vfio_dev_present(group, dev), HZ * 10);
 			if (ret == -ERESTARTSYS) {
+=======
+			wait_woken(&wait, TASK_UNINTERRUPTIBLE, HZ * 10);
+		} else {
+			wait_woken(&wait, TASK_INTERRUPTIBLE, HZ * 10);
+			if (signal_pending(current)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				interrupted = true;
 				dev_warn(dev,
 					 "Device is currently in use, task"
@@ -994,8 +1020,15 @@ void *vfio_del_group_dev(struct device *dev)
 					 current->comm, task_pid_nr(current));
 			}
 		}
+<<<<<<< HEAD
 	} while (ret <= 0);
 
+=======
+
+	} while (1);
+
+	remove_wait_queue(&vfio.release_q, &wait);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * In order to support multiple devices per group, devices can be
 	 * plucked from the group while other devices in the group are still

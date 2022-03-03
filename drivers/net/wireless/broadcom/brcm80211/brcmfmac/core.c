@@ -318,7 +318,11 @@ static int brcmf_rx_hdrpull(struct brcmf_pub *drvr, struct sk_buff *skb,
 	ret = brcmf_proto_hdrpull(drvr, true, skb, ifp);
 
 	if (ret || !(*ifp) || !(*ifp)->ndev) {
+<<<<<<< HEAD
 		if (ret != -ENODATA && *ifp)
+=======
+		if (ret != -ENODATA && *ifp && (*ifp)->ndev)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			(*ifp)->ndev->stats.rx_errors++;
 		brcmu_pkt_buf_free_skb(skb);
 		return -ENODATA;
@@ -344,7 +348,12 @@ void brcmf_rx_frame(struct device *dev, struct sk_buff *skb, bool handle_event)
 	} else {
 		/* Process special event packets */
 		if (handle_event)
+<<<<<<< HEAD
 			brcmf_fweh_process_skb(ifp->drvr, skb);
+=======
+			brcmf_fweh_process_skb(ifp->drvr, skb,
+					       BCMILCP_SUBTYPE_VENDOR_LONG);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		brcmf_netif_rx(ifp, skb);
 	}
@@ -361,7 +370,11 @@ void brcmf_rx_event(struct device *dev, struct sk_buff *skb)
 	if (brcmf_rx_hdrpull(drvr, skb, &ifp))
 		return;
 
+<<<<<<< HEAD
 	brcmf_fweh_process_skb(ifp->drvr, skb);
+=======
+	brcmf_fweh_process_skb(ifp->drvr, skb, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	brcmu_pkt_buf_free_skb(skb);
 }
 
@@ -663,17 +676,28 @@ static void brcmf_del_if(struct brcmf_pub *drvr, s32 bsscfgidx,
 			 bool rtnl_locked)
 {
 	struct brcmf_if *ifp;
+<<<<<<< HEAD
 
 	ifp = drvr->iflist[bsscfgidx];
 	drvr->iflist[bsscfgidx] = NULL;
+=======
+	int ifidx;
+
+	ifp = drvr->iflist[bsscfgidx];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!ifp) {
 		brcmf_err("Null interface, bsscfgidx=%d\n", bsscfgidx);
 		return;
 	}
 	brcmf_dbg(TRACE, "Enter, bsscfgidx=%d, ifidx=%d\n", bsscfgidx,
 		  ifp->ifidx);
+<<<<<<< HEAD
 	if (drvr->if2bss[ifp->ifidx] == bsscfgidx)
 		drvr->if2bss[ifp->ifidx] = BRCMF_BSSIDX_INVALID;
+=======
+	ifidx = ifp->ifidx;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ifp->ndev) {
 		if (bsscfgidx == 0) {
 			if (ifp->ndev->netdev_ops == &brcmf_netdev_ops_pri) {
@@ -701,6 +725,13 @@ static void brcmf_del_if(struct brcmf_pub *drvr, s32 bsscfgidx,
 		brcmf_p2p_ifp_removed(ifp, rtnl_locked);
 		kfree(ifp);
 	}
+<<<<<<< HEAD
+=======
+
+	drvr->iflist[bsscfgidx] = NULL;
+	if (drvr->if2bss[ifidx] == bsscfgidx)
+		drvr->if2bss[ifidx] = BRCMF_BSSIDX_INVALID;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void brcmf_remove_interface(struct brcmf_if *ifp, bool rtnl_locked)

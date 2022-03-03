@@ -40,9 +40,12 @@ its hardware characteristcs.
 		- System Trace Macrocell:
 			"arm,coresight-stm", "arm,primecell"; [1]
 
+<<<<<<< HEAD
 		- Trigger Generation Unit:
 			"arm,primecell";
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	* reg: physical base address and length of the register
 	  set(s) of the component.
 
@@ -59,8 +62,11 @@ its hardware characteristcs.
 	  layout using the generic DT graph presentation found in
 	  "bindings/graph.txt".
 
+<<<<<<< HEAD
 	* coresight-name: unique descriptive name of the component.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 * Additional required properties for System Trace Macrocells (STM):
 	* reg: along with the physical base address and length of the register
 	  set as described above, another entry is required to describe the
@@ -75,6 +81,7 @@ its hardware characteristcs.
 	* compatible: Currently supported value is (note the absence of the
 	  AMBA markee):
 		- "arm,coresight-replicator"
+<<<<<<< HEAD
 		- "arm,coresight-cti"
 		- "qcom,coresight-tpda"
 		- "qcom,coresight-tpdm"
@@ -99,6 +106,11 @@ its hardware characteristcs.
 
 * Optional properties for all components:
 	* reg-names: names corresponding to each reg property value.
+=======
+
+	* port or ports: same as above.
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 * Optional properties for ETM/PTMs:
 
 	* arm,cp14: must be present if the system accesses ETM/PTM management
@@ -107,13 +119,17 @@ its hardware characteristcs.
 	* cpu: the cpu phandle this ETM/PTM is affined to. When omitted the
 	  source is considered to belong to CPU0.
 
+<<<<<<< HEAD
 	* qcom,tupwr-disable: For ETM, don't keep trace unit powered across power
 	  collapse.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 * Optional property for TMC:
 
 	* arm,buffer-size: size of contiguous buffer space for TMC ETR
 	 (embedded trace router)
+<<<<<<< HEAD
 	* arm,default-sink: represents the default compile time CoreSight sink
 
 	* coresight-ctis: represents flush and reset CTIs for TMC buffer
@@ -194,6 +210,9 @@ its hardware characteristcs.
 
 	* qcom,timestamp-support:boolean, indicates CSR support sys interface to read
 	  timestamp value.
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 Example:
 
@@ -310,6 +329,7 @@ Example:
 		};
 	};
 
+<<<<<<< HEAD
 	tpda_mss: tpda@7043000 {
 		compatible = "qcom,coresight-tpda", "arm,primecell";
 		reg = <0x7043000 0x1000>;
@@ -344,6 +364,8 @@ Example:
 			};
 		};
 	};
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 3. Sources
 	ptm@2201c000 {
 		compatible = "arm,coresight-etm3x", "arm,primecell";
@@ -389,6 +411,7 @@ Example:
 		};
 	};
 
+<<<<<<< HEAD
 	tpdm_mss: tpdm@7042000 {
 		compatible = "qcom,coresight-tpdm", "arm,primecell";
 		reg = <0x7042000 0x1000>;
@@ -422,5 +445,7 @@ Example:
 		clocks = <&clock_aop QDSS_CLK>;
 		clock-names = "apb_pclk";
 	};
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 [1]. There is currently two version of STM: STM32 and STM500.  Both
 have the same HW interface and as such don't need an explicit binding name.

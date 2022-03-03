@@ -239,8 +239,11 @@ struct security_class_mapping secclass_map[] = {
 	  { "access", NULL } },
 	{ "infiniband_endport",
 	  { "manage_subnet", NULL } },
+<<<<<<< HEAD
 	{ "bpf",
 	  {"map_create", "map_read", "map_write", "prog_load", "prog_run"} },
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ NULL }
   };
 

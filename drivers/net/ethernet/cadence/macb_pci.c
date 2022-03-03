@@ -123,9 +123,15 @@ static void macb_remove(struct pci_dev *pdev)
 	struct platform_device *plat_dev = pci_get_drvdata(pdev);
 	struct macb_platform_data *plat_data = dev_get_platdata(&plat_dev->dev);
 
+<<<<<<< HEAD
 	platform_device_unregister(plat_dev);
 	clk_unregister(plat_data->pclk);
 	clk_unregister(plat_data->hclk);
+=======
+	clk_unregister(plat_data->pclk);
+	clk_unregister(plat_data->hclk);
+	platform_device_unregister(plat_dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct pci_device_id dev_id_table[] = {

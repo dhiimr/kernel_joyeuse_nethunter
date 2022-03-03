@@ -800,7 +800,11 @@ static int cfg80211_wext_giwfreq(struct net_device *dev,
 {
 	struct wireless_dev *wdev = dev->ieee80211_ptr;
 	struct cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
+<<<<<<< HEAD
 	struct cfg80211_chan_def chandef;
+=======
+	struct cfg80211_chan_def chandef = {};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 
 	switch (wdev->iftype) {

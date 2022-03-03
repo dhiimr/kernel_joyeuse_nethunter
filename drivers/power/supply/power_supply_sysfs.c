@@ -43,10 +43,14 @@ static struct device_attribute power_supply_attrs[];
 static const char * const power_supply_type_text[] = {
 	"Unknown", "Battery", "UPS", "Mains", "USB",
 	"USB_DCP", "USB_CDP", "USB_ACA", "USB_C",
+<<<<<<< HEAD
 	"USB_PD", "USB_PD_DRP", "BrickID",
 	"USB_HVDCP", "USB_HVDCP_3", "USB_HVDCP_3P5", "Wireless", "USB_FLOAT",
 	"BMS", "Parallel", "Main", "Wipower", "USB_C_UFP", "USB_C_DFP",
 	"Charge_Pump",
+=======
+	"USB_PD", "USB_PD_DRP", "BrickID"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const char * const power_supply_status_text[] = {
@@ -54,14 +58,22 @@ static const char * const power_supply_status_text[] = {
 };
 
 static const char * const power_supply_charge_type_text[] = {
+<<<<<<< HEAD
 	"Unknown", "N/A", "Trickle", "Fast", "Taper"
+=======
+	"Unknown", "N/A", "Trickle", "Fast"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const char * const power_supply_health_text[] = {
 	"Unknown", "Good", "Overheat", "Dead", "Over voltage",
 	"Unspecified failure", "Cold", "Watchdog timer expire",
+<<<<<<< HEAD
 	"Safety timer expire",
 	"Warm", "Cool", "Hot"
+=======
+	"Safety timer expire"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const char * const power_supply_technology_text[] = {
@@ -77,6 +89,7 @@ static const char * const power_supply_scope_text[] = {
 	"Unknown", "System", "Device"
 };
 
+<<<<<<< HEAD
 static const char * const power_supply_usbc_text[] = {
 	"Nothing attached", "Sink attached", "Powered cable w/ sink",
 	"Debug Accessory", "Audio Adapter", "Powered cable w/o sink",
@@ -94,6 +107,8 @@ static const char * const power_supply_typec_src_rp_text[] = {
 	"Rp-Default", "Rp-1.5A", "Rp-3A"
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static ssize_t power_supply_show_property(struct device *dev,
 					  struct device_attribute *attr,
 					  char *buf) {
@@ -112,7 +127,12 @@ static ssize_t power_supply_show_property(struct device *dev,
 				dev_dbg(dev, "driver has no data for `%s' property\n",
 					attr->attr.name);
 			else if (ret != -ENODEV && ret != -EAGAIN)
+<<<<<<< HEAD
 				dev_err(dev, "driver failed to report `%s' property: %zd\n",
+=======
+				dev_err_ratelimited(dev,
+					"driver failed to report `%s' property: %zd\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					attr->attr.name, ret);
 			return ret;
 		}
@@ -133,13 +153,18 @@ static ssize_t power_supply_show_property(struct device *dev,
 	else if (off == POWER_SUPPLY_PROP_CAPACITY_LEVEL)
 		return sprintf(buf, "%s\n",
 			       power_supply_capacity_level_text[value.intval]);
+<<<<<<< HEAD
 	else if (off == POWER_SUPPLY_PROP_TYPE ||
 			off == POWER_SUPPLY_PROP_REAL_TYPE)
+=======
+	else if (off == POWER_SUPPLY_PROP_TYPE)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return sprintf(buf, "%s\n",
 			       power_supply_type_text[value.intval]);
 	else if (off == POWER_SUPPLY_PROP_SCOPE)
 		return sprintf(buf, "%s\n",
 			       power_supply_scope_text[value.intval]);
+<<<<<<< HEAD
 	else if (off == POWER_SUPPLY_PROP_TYPEC_MODE)
 		return scnprintf(buf, PAGE_SIZE, "%s\n",
 			       power_supply_usbc_text[value.intval]);
@@ -184,6 +209,12 @@ static ssize_t power_supply_show_property(struct device *dev,
 				value.intval);
 	else
 		return sprintf(buf, "%d\n", value.intval);
+=======
+	else if (off >= POWER_SUPPLY_PROP_MODEL_NAME)
+		return sprintf(buf, "%s\n", value.strval);
+
+	return sprintf(buf, "%d\n", value.intval);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static ssize_t power_supply_store_property(struct device *dev,
@@ -307,6 +338,7 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(precharge_current),
 	POWER_SUPPLY_ATTR(charge_term_current),
 	POWER_SUPPLY_ATTR(calibrate),
+<<<<<<< HEAD
 	/* Local extensions */
 	POWER_SUPPLY_ATTR(usb_hc),
 	POWER_SUPPLY_ATTR(usb_otg),
@@ -468,12 +500,17 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(chip_ok),
 	/* Local extensions of type int64_t */
 	POWER_SUPPLY_ATTR(charge_counter_ext),
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Properties of type `const char *' */
 	POWER_SUPPLY_ATTR(model_name),
 	POWER_SUPPLY_ATTR(manufacturer),
 	POWER_SUPPLY_ATTR(serial_number),
+<<<<<<< HEAD
 	POWER_SUPPLY_ATTR(battery_type),
 	POWER_SUPPLY_ATTR(cycle_counts),
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static struct attribute *
@@ -550,15 +587,21 @@ int power_supply_uevent(struct device *dev, struct kobj_uevent_env *env)
 	char *prop_buf;
 	char *attrname;
 
+<<<<<<< HEAD
 	dev_dbg(dev, "uevent\n");
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!psy || !psy->desc) {
 		dev_dbg(dev, "No power supply yet\n");
 		return ret;
 	}
 
+<<<<<<< HEAD
 	dev_dbg(dev, "POWER_SUPPLY_NAME=%s\n", psy->desc->name);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = add_uevent_var(env, "POWER_SUPPLY_NAME=%s", psy->desc->name);
 	if (ret)
 		return ret;
@@ -594,8 +637,11 @@ int power_supply_uevent(struct device *dev, struct kobj_uevent_env *env)
 			goto out;
 		}
 
+<<<<<<< HEAD
 		dev_dbg(dev, "prop %s=%s\n", attrname, prop_buf);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = add_uevent_var(env, "POWER_SUPPLY_%s=%s", attrname, prop_buf);
 		kfree(attrname);
 		if (ret)

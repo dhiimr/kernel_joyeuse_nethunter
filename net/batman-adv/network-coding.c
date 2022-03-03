@@ -165,8 +165,15 @@ int batadv_nc_mesh_init(struct batadv_priv *bat_priv)
 				   &batadv_nc_coding_hash_lock_class_key);
 
 	bat_priv->nc.decoding_hash = batadv_hash_new(128);
+<<<<<<< HEAD
 	if (!bat_priv->nc.decoding_hash)
 		goto err;
+=======
+	if (!bat_priv->nc.decoding_hash) {
+		batadv_hash_destroy(bat_priv->nc.coding_hash);
+		goto err;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	batadv_hash_set_lock_class(bat_priv->nc.decoding_hash,
 				   &batadv_nc_decoding_hash_lock_class_key);
@@ -1017,6 +1024,7 @@ static struct batadv_nc_path *batadv_nc_get_path(struct batadv_priv *bat_priv,
  */
 static u8 batadv_nc_random_weight_tq(u8 tq)
 {
+<<<<<<< HEAD
 	u8 rand_val, rand_tq;
 
 	get_random_bytes(&rand_val, sizeof(rand_val));
@@ -1026,6 +1034,10 @@ static u8 batadv_nc_random_weight_tq(u8 tq)
 
 	/* normalize the randomized packet loss */
 	rand_tq /= BATADV_TQ_MAX_VALUE;
+=======
+	/* randomize the estimated packet loss (max TQ - estimated TQ) */
+	u8 rand_tq = prandom_u32_max(BATADV_TQ_MAX_VALUE + 1 - tq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* convert to (randomized) estimated tq again */
 	return BATADV_TQ_MAX_VALUE - rand_tq;

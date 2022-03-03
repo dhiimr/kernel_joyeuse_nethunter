@@ -986,7 +986,12 @@ static int __mthca_init_one(struct pci_dev *pdev, int hca_type)
 		goto err_free_dev;
 	}
 
+<<<<<<< HEAD
 	if (mthca_cmd_init(mdev)) {
+=======
+	err = mthca_cmd_init(mdev);
+	if (err) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mthca_err(mdev, "Failed to init command interface, aborting.\n");
 		goto err_free_dev;
 	}

@@ -6,8 +6,16 @@
 ccflags-y := -fno-function-sections -fno-data-sections
 
 obj-y                          := main.o version.o mounts.o
+<<<<<<< HEAD
 obj-y                          += noinitramfs.o
 obj-$(CONFIG_BLK_DEV_INITRD)   += initramfs.o
+=======
+ifneq ($(CONFIG_BLK_DEV_INITRD),y)
+obj-y                          += noinitramfs.o
+else
+obj-$(CONFIG_BLK_DEV_INITRD)   += initramfs.o
+endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 obj-$(CONFIG_GENERIC_CALIBRATE_DELAY) += calibrate.o
 
 ifneq ($(CONFIG_ARCH_INIT_TASK),y)
@@ -18,7 +26,10 @@ mounts-y			:= do_mounts.o
 mounts-$(CONFIG_BLK_DEV_RAM)	+= do_mounts_rd.o
 mounts-$(CONFIG_BLK_DEV_INITRD)	+= do_mounts_initrd.o
 mounts-$(CONFIG_BLK_DEV_MD)	+= do_mounts_md.o
+<<<<<<< HEAD
 mounts-$(CONFIG_BLK_DEV_DM)	+= do_mounts_dm.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 # dependencies on generated files need to be listed explicitly
 $(obj)/version.o: include/generated/compile.h

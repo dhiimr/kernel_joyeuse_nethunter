@@ -922,6 +922,10 @@ void ieee80211_stop_mesh(struct ieee80211_sub_if_data *sdata)
 
 	/* flush STAs and mpaths on this iface */
 	sta_info_flush(sdata);
+<<<<<<< HEAD
+=======
+	ieee80211_free_keys(sdata, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mesh_path_flush_by_iface(sdata);
 
 	/* stop the beacon */
@@ -1209,7 +1213,12 @@ int ieee80211_mesh_finish_csa(struct ieee80211_sub_if_data *sdata)
 	ifmsh->chsw_ttl = 0;
 
 	/* Remove the CSA and MCSP elements from the beacon */
+<<<<<<< HEAD
 	tmp_csa_settings = rcu_dereference(ifmsh->csa);
+=======
+	tmp_csa_settings = rcu_dereference_protected(ifmsh->csa,
+					    lockdep_is_held(&sdata->wdev.mtx));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	RCU_INIT_POINTER(ifmsh->csa, NULL);
 	if (tmp_csa_settings)
 		kfree_rcu(tmp_csa_settings, rcu_head);
@@ -1231,6 +1240,11 @@ int ieee80211_mesh_csa_beacon(struct ieee80211_sub_if_data *sdata,
 	struct mesh_csa_settings *tmp_csa_settings;
 	int ret = 0;
 
+<<<<<<< HEAD
+=======
+	lockdep_assert_held(&sdata->wdev.mtx);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	tmp_csa_settings = kmalloc(sizeof(*tmp_csa_settings),
 				   GFP_ATOMIC);
 	if (!tmp_csa_settings)

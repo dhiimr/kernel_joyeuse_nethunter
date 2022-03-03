@@ -293,7 +293,11 @@ struct pcmcia_device_id {
 #define INPUT_DEVICE_ID_LED_MAX		0x0f
 #define INPUT_DEVICE_ID_SND_MAX		0x07
 #define INPUT_DEVICE_ID_FF_MAX		0x7f
+<<<<<<< HEAD
 #define INPUT_DEVICE_ID_SW_MAX		0x20
+=======
+#define INPUT_DEVICE_ID_SW_MAX		0x10
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define INPUT_DEVICE_ID_PROP_MAX	0x1f
 
 #define INPUT_DEVICE_ID_MATCH_BUS	1
@@ -460,6 +464,7 @@ struct spmi_device_id {
 	kernel_ulong_t driver_data;	/* Data private to the driver */
 };
 
+<<<<<<< HEAD
 /* soundwire */
 
 #define SOUNDWIRE_NAME_SIZE	32
@@ -470,6 +475,8 @@ struct swr_device_id {
 	kernel_ulong_t driver_data;	/* Data private to the driver */
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* dmi */
 enum dmi_field {
 	DMI_NONE,
@@ -518,6 +525,7 @@ struct dmi_system_id {
 #define DMI_MATCH(a, b)	{ .slot = a, .substr = b }
 #define DMI_EXACT_MATCH(a, b)	{ .slot = a, .substr = b, .exact_match = 1 }
 
+<<<<<<< HEAD
 #define SLIMBUS_NAME_SIZE	32
 #define SLIMBUS_MODULE_PREFIX "slim:"
 
@@ -526,6 +534,8 @@ struct slim_device_id {
 	kernel_ulong_t driver_data;	/* Data private to the driver */
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define PLATFORM_NAME_SIZE	20
 #define PLATFORM_MODULE_PREFIX	"platform:"
 
@@ -537,9 +547,15 @@ struct platform_device_id {
 #define MDIO_NAME_SIZE		32
 #define MDIO_MODULE_PREFIX	"mdio:"
 
+<<<<<<< HEAD
 #define MDIO_ID_FMT "%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d"
 #define MDIO_ID_ARGS(_id) \
 	(_id)>>31, ((_id)>>30) & 1, ((_id)>>29) & 1, ((_id)>>28) & 1,	\
+=======
+#define MDIO_ID_FMT "%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u%u"
+#define MDIO_ID_ARGS(_id) \
+	((_id)>>31) & 1, ((_id)>>30) & 1, ((_id)>>29) & 1, ((_id)>>28) & 1, \
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	((_id)>>27) & 1, ((_id)>>26) & 1, ((_id)>>25) & 1, ((_id)>>24) & 1, \
 	((_id)>>23) & 1, ((_id)>>22) & 1, ((_id)>>21) & 1, ((_id)>>20) & 1, \
 	((_id)>>19) & 1, ((_id)>>18) & 1, ((_id)>>17) & 1, ((_id)>>16) & 1, \
@@ -607,6 +623,13 @@ struct mips_cdmm_device_id {
 /*
  * MODULE_DEVICE_TABLE expects this struct to be called x86cpu_device_id.
  * Although gcc seems to ignore this error, clang fails without this define.
+<<<<<<< HEAD
+=======
+ *
+ * Note: The ordering of the struct is different from upstream because the
+ * static initializers in kernels < 5.7 still use C89 style while upstream
+ * has been converted to proper C99 initializers.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 #define x86cpu_device_id x86_cpu_id
 struct x86_cpu_id {
@@ -615,6 +638,10 @@ struct x86_cpu_id {
 	__u16 model;
 	__u16 feature;	/* bit index */
 	kernel_ulong_t driver_data;
+<<<<<<< HEAD
+=======
+	__u16 steppings;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #define X86_FEATURE_MATCH(x) \
@@ -623,6 +650,10 @@ struct x86_cpu_id {
 #define X86_VENDOR_ANY 0xffff
 #define X86_FAMILY_ANY 0
 #define X86_MODEL_ANY  0
+<<<<<<< HEAD
+=======
+#define X86_STEPPING_ANY 0
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define X86_FEATURE_ANY 0	/* Same as FPU, you can't test for that */
 
 /*
@@ -705,6 +736,7 @@ struct fsl_mc_device_id {
 	const char obj_type[16];
 };
 
+<<<<<<< HEAD
 #define MHI_NAME_SIZE 32
 
 /**
@@ -720,5 +752,7 @@ struct mhi_device_id {
 
 
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif /* LINUX_MOD_DEVICETABLE_H */

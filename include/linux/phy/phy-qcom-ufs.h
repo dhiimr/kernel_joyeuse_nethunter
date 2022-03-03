@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2013-2016, Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2013-2015, Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -33,6 +37,7 @@ void ufs_qcom_phy_disable_dev_ref_clk(struct phy *phy);
 
 int ufs_qcom_phy_start_serdes(struct phy *phy);
 int ufs_qcom_phy_set_tx_lane_enable(struct phy *phy, u32 tx_lanes);
+<<<<<<< HEAD
 int ufs_qcom_phy_ctrl_rx_linecfg(struct phy *generic_phy, bool ctrl);
 int ufs_qcom_phy_calibrate_phy(struct phy *phy, bool is_rate_B, bool is_g4);
 int ufs_qcom_phy_is_pcs_ready(struct phy *phy);
@@ -41,5 +46,11 @@ void ufs_qcom_phy_save_controller_version(struct phy *phy,
 const char *ufs_qcom_phy_name(struct phy *phy);
 int ufs_qcom_phy_configure_lpm(struct phy *generic_phy, bool enable);
 void ufs_qcom_phy_dbg_register_dump(struct phy *generic_phy);
+=======
+int ufs_qcom_phy_calibrate_phy(struct phy *phy, bool is_rate_B);
+int ufs_qcom_phy_is_pcs_ready(struct phy *phy);
+void ufs_qcom_phy_save_controller_version(struct phy *phy,
+			u8 major, u16 minor, u16 step);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif /* PHY_QCOM_UFS_H_ */

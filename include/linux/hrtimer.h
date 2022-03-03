@@ -52,7 +52,10 @@ enum hrtimer_restart {
  *
  * 0x00		inactive
  * 0x01		enqueued into rbtree
+<<<<<<< HEAD
  * 0x02		timer is pinned to a cpu
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * The callback state is not part of the timer->state because clearing it would
  * mean touching the timer after the callback, this makes it impossible to free
@@ -72,8 +75,11 @@ enum hrtimer_restart {
  */
 #define HRTIMER_STATE_INACTIVE	0x00
 #define HRTIMER_STATE_ENQUEUED	0x01
+<<<<<<< HEAD
 #define HRTIMER_PINNED_SHIFT	1
 #define HRTIMER_STATE_PINNED	(1 << HRTIMER_PINNED_SHIFT)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /**
  * struct hrtimer - the basic hrtimer structure
@@ -344,9 +350,12 @@ DECLARE_PER_CPU(struct tick_device, tick_cpu_device);
 
 /* Exported timer functions: */
 
+<<<<<<< HEAD
 /* To be used from cpusets, only */
 extern void hrtimer_quiesce_cpu(void *cpup);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Initialize timers: */
 extern void hrtimer_init(struct hrtimer *timer, clockid_t which_clock,
 			 enum hrtimer_mode mode);
@@ -411,6 +420,7 @@ static inline ktime_t hrtimer_get_remaining(const struct hrtimer *timer)
 }
 
 extern u64 hrtimer_get_next_event(void);
+<<<<<<< HEAD
 extern u64 hrtimer_next_event_without(const struct hrtimer *exclude);
 
 extern bool hrtimer_active(const struct hrtimer *timer);
@@ -421,6 +431,23 @@ extern bool hrtimer_active(const struct hrtimer *timer);
 static inline int hrtimer_is_queued(struct hrtimer *timer)
 {
 	return timer->state & HRTIMER_STATE_ENQUEUED;
+=======
+
+extern bool hrtimer_active(const struct hrtimer *timer);
+
+/**
+ * hrtimer_is_queued = check, whether the timer is on one of the queues
+ * @timer:	Timer to check
+ *
+ * Returns: True if the timer is queued, false otherwise
+ *
+ * The function can be used lockless, but it gives only a current snapshot.
+ */
+static inline bool hrtimer_is_queued(struct hrtimer *timer)
+{
+	/* The READ_ONCE pairs with the update functions of timer->state */
+	return !!(READ_ONCE(timer->state) & HRTIMER_STATE_ENQUEUED);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*

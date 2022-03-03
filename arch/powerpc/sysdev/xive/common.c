@@ -23,6 +23,10 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/msi.h>
+<<<<<<< HEAD
+=======
+#include <linux/vmalloc.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <asm/prom.h>
 #include <asm/io.h>
@@ -72,6 +76,7 @@ static u32 xive_ipi_irq;
 /* Xive state for each CPU */
 static DEFINE_PER_CPU(struct xive_cpu *, xive_cpu);
 
+<<<<<<< HEAD
 /*
  * A "disabled" interrupt should never fire, to catch problems
  * we set its logical number to this
@@ -79,6 +84,8 @@ static DEFINE_PER_CPU(struct xive_cpu *, xive_cpu);
 #define XIVE_BAD_IRQ		0x7fffffff
 #define XIVE_MAX_IRQ		(XIVE_BAD_IRQ - 1)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* An invalid CPU target */
 #define XIVE_INVALID_TARGET	(-1)
 
@@ -482,7 +489,11 @@ static int xive_find_target_in_mask(const struct cpumask *mask,
 	 * Now go through the entire mask until we find a valid
 	 * target.
 	 */
+<<<<<<< HEAD
 	for (;;) {
+=======
+	do {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/*
 		 * We re-check online as the fallback case passes us
 		 * an untested affinity mask
@@ -490,12 +501,20 @@ static int xive_find_target_in_mask(const struct cpumask *mask,
 		if (cpu_online(cpu) && xive_try_pick_target(cpu))
 			return cpu;
 		cpu = cpumask_next(cpu, mask);
+<<<<<<< HEAD
 		if (cpu == first)
 			break;
 		/* Wrap around */
 		if (cpu >= nr_cpu_ids)
 			cpu = cpumask_first(mask);
 	}
+=======
+		/* Wrap around */
+		if (cpu >= nr_cpu_ids)
+			cpu = cpumask_first(mask);
+	} while (cpu != first);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return -1;
 }
 
@@ -940,12 +959,22 @@ EXPORT_SYMBOL_GPL(is_xive_irq);
 void xive_cleanup_irq_data(struct xive_irq_data *xd)
 {
 	if (xd->eoi_mmio) {
+<<<<<<< HEAD
+=======
+		unmap_kernel_range((unsigned long)xd->eoi_mmio,
+				   1u << xd->esb_shift);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		iounmap(xd->eoi_mmio);
 		if (xd->eoi_mmio == xd->trig_mmio)
 			xd->trig_mmio = NULL;
 		xd->eoi_mmio = NULL;
 	}
 	if (xd->trig_mmio) {
+<<<<<<< HEAD
+=======
+		unmap_kernel_range((unsigned long)xd->trig_mmio,
+				   1u << xd->esb_shift);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		iounmap(xd->trig_mmio);
 		xd->trig_mmio = NULL;
 	}
@@ -968,6 +997,18 @@ static int xive_irq_alloc_data(unsigned int virq, irq_hw_number_t hw)
 	xd->target = XIVE_INVALID_TARGET;
 	irq_set_handler_data(virq, xd);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Turn OFF by default the interrupt being mapped. A side
+	 * effect of this check is the mapping the ESB page of the
+	 * interrupt in the Linux address space. This prevents page
+	 * fault issues in the crash handler which masks all
+	 * interrupts.
+	 */
+	xive_esb_read(xd, XIVE_ESB_SET_PQ_01);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -1009,12 +1050,22 @@ static void xive_ipi_eoi(struct irq_data *d)
 {
 	struct xive_cpu *xc = __this_cpu_read(xive_cpu);
 
+<<<<<<< HEAD
 	DBG_VERBOSE("IPI eoi: irq=%d [0x%lx] (HW IRQ 0x%x) pending=%02x\n",
 		    d->irq, irqd_to_hwirq(d), xc->hw_ipi, xc->pending_prio);
 
 	/* Handle possible race with unplug and drop stale IPIs */
 	if (!xc)
 		return;
+=======
+	/* Handle possible race with unplug and drop stale IPIs */
+	if (!xc)
+		return;
+
+	DBG_VERBOSE("IPI eoi: irq=%d [0x%lx] (HW IRQ 0x%x) pending=%02x\n",
+		    d->irq, irqd_to_hwirq(d), xc->hw_ipi, xc->pending_prio);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	xive_do_source_eoi(xc->hw_ipi, &xc->ipi_data);
 	xive_do_queue_eoi(xc);
 }
@@ -1064,7 +1115,11 @@ static int xive_setup_cpu_ipi(unsigned int cpu)
 	xc = per_cpu(xive_cpu, cpu);
 
 	/* Check if we are already setup */
+<<<<<<< HEAD
 	if (xc->hw_ipi != 0)
+=======
+	if (xc->hw_ipi != XIVE_BAD_IRQ)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 
 	/* Grab an IPI from the backend, this will populate xc->hw_ipi */
@@ -1101,7 +1156,11 @@ static void xive_cleanup_cpu_ipi(unsigned int cpu, struct xive_cpu *xc)
 	/* Disable the IPI and free the IRQ data */
 
 	/* Already cleaned up ? */
+<<<<<<< HEAD
 	if (xc->hw_ipi == 0)
+=======
+	if (xc->hw_ipi == XIVE_BAD_IRQ)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 
 	/* Mask the IPI */
@@ -1257,6 +1316,10 @@ static int xive_prepare_cpu(unsigned int cpu)
 		if (np)
 			xc->chip_id = of_get_ibm_chip_id(np);
 		of_node_put(np);
+<<<<<<< HEAD
+=======
+		xc->hw_ipi = XIVE_BAD_IRQ;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		per_cpu(xive_cpu, cpu) = xc;
 	}

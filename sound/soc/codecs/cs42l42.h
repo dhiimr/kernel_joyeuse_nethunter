@@ -81,7 +81,11 @@
 #define CS42L42_HP_PDN_SHIFT		3
 #define CS42L42_HP_PDN_MASK		(1 << CS42L42_HP_PDN_SHIFT)
 #define CS42L42_ADC_PDN_SHIFT		2
+<<<<<<< HEAD
 #define CS42L42_ADC_PDN_MASK		(1 << CS42L42_HP_PDN_SHIFT)
+=======
+#define CS42L42_ADC_PDN_MASK		(1 << CS42L42_ADC_PDN_SHIFT)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define CS42L42_PDN_ALL_SHIFT		0
 #define CS42L42_PDN_ALL_MASK		(1 << CS42L42_PDN_ALL_SHIFT)
 
@@ -743,6 +747,10 @@
 #define CS42L42_FRAC2_VAL(val)	(((val) & 0xff0000) >> 16)
 
 #define CS42L42_NUM_SUPPLIES	5
+<<<<<<< HEAD
+=======
+#define CS42L42_BOOT_TIME_US	3000
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
 	"VA",

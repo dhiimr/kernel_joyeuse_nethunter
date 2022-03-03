@@ -112,8 +112,11 @@ __ref void *alloc_low_pages(unsigned int num)
 	} else {
 		pfn = pgt_buf_end;
 		pgt_buf_end += num;
+<<<<<<< HEAD
 		printk(KERN_DEBUG "BRK [%#010lx, %#010lx] PGTABLE\n",
 			pfn << PAGE_SHIFT, (pgt_buf_end << PAGE_SHIFT) - 1);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	for (i = 0; i < num; i++) {

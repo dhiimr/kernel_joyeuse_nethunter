@@ -570,8 +570,11 @@ enum {
 	SKB_GSO_ESP = 1 << 15,
 
 	SKB_GSO_UDP = 1 << 16,
+<<<<<<< HEAD
 
 	SKB_GSO_UDP_L4 = 1 << 17,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #if BITS_PER_LONG > 32
@@ -774,11 +777,15 @@ struct sk_buff {
 	__u8			ipvs_property:1;
 
 	__u8			inner_protocol_type:1;
+<<<<<<< HEAD
 	__u8			fast_forwarded:1;
 	__u8			remcsum_offload:1;
 
 	 /*4 or 6 bit hole */
 
+=======
+	__u8			remcsum_offload:1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_NET_SWITCHDEV
 	__u8			offload_fwd_mark:1;
 #endif
@@ -1234,7 +1241,12 @@ static inline __u32 skb_get_hash_flowi6(struct sk_buff *skb, const struct flowi6
 	return skb->hash;
 }
 
+<<<<<<< HEAD
 __u32 skb_get_hash_perturb(const struct sk_buff *skb, u32 perturb);
+=======
+__u32 skb_get_hash_perturb(const struct sk_buff *skb,
+			   const siphash_key_t *perturb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static inline __u32 skb_get_hash_raw(const struct sk_buff *skb)
 {
@@ -1316,10 +1328,19 @@ static inline void skb_zcopy_clear(struct sk_buff *skb, bool zerocopy)
 	struct ubuf_info *uarg = skb_zcopy(skb);
 
 	if (uarg) {
+<<<<<<< HEAD
 		if (uarg->callback == sock_zerocopy_callback) {
 			uarg->zerocopy = uarg->zerocopy && zerocopy;
 			sock_zerocopy_put(uarg);
 		} else if (!skb_zcopy_is_nouarg(skb)) {
+=======
+		if (skb_zcopy_is_nouarg(skb)) {
+			/* no notification callback */
+		} else if (uarg->callback == sock_zerocopy_callback) {
+			uarg->zerocopy = uarg->zerocopy && zerocopy;
+			sock_zerocopy_put(uarg);
+		} else {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			uarg->callback(uarg, zerocopy);
 		}
 
@@ -1338,6 +1359,25 @@ static inline void skb_zcopy_abort(struct sk_buff *skb)
 	}
 }
 
+<<<<<<< HEAD
+=======
+static inline void skb_mark_not_on_list(struct sk_buff *skb)
+{
+	skb->next = NULL;
+}
+
+/* Iterate through singly-linked GSO fragments of an skb. */
+#define skb_list_walk_safe(first, skb, next_skb)                               \
+	for ((skb) = (first), (next_skb) = (skb) ? (skb)->next : NULL; (skb);  \
+	     (skb) = (next_skb), (next_skb) = (skb) ? (skb)->next : NULL)
+
+static inline void skb_list_del_init(struct sk_buff *skb)
+{
+	__list_del_entry(&skb->list);
+	skb_mark_not_on_list(skb);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  *	skb_queue_empty - check if a queue is empty
  *	@list: queue head
@@ -1350,6 +1390,22 @@ static inline int skb_queue_empty(const struct sk_buff_head *list)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ *	skb_queue_empty_lockless - check if a queue is empty
+ *	@list: queue head
+ *
+ *	Returns true if the queue is empty, false otherwise.
+ *	This variant can be used in lockless contexts.
+ */
+static inline bool skb_queue_empty_lockless(const struct sk_buff_head *list)
+{
+	return READ_ONCE(list->next) == (const struct sk_buff *) list;
+}
+
+
+/**
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *	skb_queue_is_last - check if skb is the last entry in the queue
  *	@list: queue head
  *	@skb: buffer
@@ -1645,7 +1701,11 @@ static inline struct sk_buff *skb_peek_next(struct sk_buff *skb,
  */
 static inline struct sk_buff *skb_peek_tail(const struct sk_buff_head *list_)
 {
+<<<<<<< HEAD
 	struct sk_buff *skb = list_->prev;
+=======
+	struct sk_buff *skb = READ_ONCE(list_->prev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (skb == (struct sk_buff *)list_)
 		skb = NULL;
@@ -1665,6 +1725,21 @@ static inline __u32 skb_queue_len(const struct sk_buff_head *list_)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ *	skb_queue_len_lockless	- get queue length
+ *	@list_: list to measure
+ *
+ *	Return the length of an &sk_buff queue.
+ *	This variant can be used in lockless contexts.
+ */
+static inline __u32 skb_queue_len_lockless(const struct sk_buff_head *list_)
+{
+	return READ_ONCE(list_->qlen);
+}
+
+/**
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *	__skb_queue_head_init - initialize non-spinlock portions of sk_buff_head
  *	@list: queue to initialize
  *
@@ -1713,10 +1788,21 @@ static inline void __skb_insert(struct sk_buff *newsk,
 				struct sk_buff *prev, struct sk_buff *next,
 				struct sk_buff_head *list)
 {
+<<<<<<< HEAD
 	newsk->next = next;
 	newsk->prev = prev;
 	next->prev  = prev->next = newsk;
 	list->qlen++;
+=======
+	/* See skb_queue_empty_lockless() and skb_peek_tail()
+	 * for the opposite READ_ONCE()
+	 */
+	WRITE_ONCE(newsk->next, next);
+	WRITE_ONCE(newsk->prev, prev);
+	WRITE_ONCE(next->prev, newsk);
+	WRITE_ONCE(prev->next, newsk);
+	WRITE_ONCE(list->qlen, list->qlen + 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void __skb_queue_splice(const struct sk_buff_head *list,
@@ -1726,11 +1812,19 @@ static inline void __skb_queue_splice(const struct sk_buff_head *list,
 	struct sk_buff *first = list->next;
 	struct sk_buff *last = list->prev;
 
+<<<<<<< HEAD
 	first->prev = prev;
 	prev->next = first;
 
 	last->next = next;
 	next->prev = last;
+=======
+	WRITE_ONCE(first->prev, prev);
+	WRITE_ONCE(prev->next, first);
+
+	WRITE_ONCE(last->next, next);
+	WRITE_ONCE(next->prev, last);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -1867,12 +1961,21 @@ static inline void __skb_unlink(struct sk_buff *skb, struct sk_buff_head *list)
 {
 	struct sk_buff *next, *prev;
 
+<<<<<<< HEAD
 	list->qlen--;
 	next	   = skb->next;
 	prev	   = skb->prev;
 	skb->next  = skb->prev = NULL;
 	next->prev = prev;
 	prev->next = next;
+=======
+	WRITE_ONCE(list->qlen, list->qlen - 1);
+	next	   = skb->next;
+	prev	   = skb->prev;
+	skb->next  = skb->prev = NULL;
+	WRITE_ONCE(next->prev, prev);
+	WRITE_ONCE(prev->next, next);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -2578,7 +2681,12 @@ static inline int skb_orphan_frags(struct sk_buff *skb, gfp_t gfp_mask)
 {
 	if (likely(!skb_zcopy(skb)))
 		return 0;
+<<<<<<< HEAD
 	if (skb_uarg(skb)->callback == sock_zerocopy_callback)
+=======
+	if (!skb_zcopy_is_nouarg(skb) &&
+	    skb_uarg(skb)->callback == sock_zerocopy_callback)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 0;
 	return skb_copy_ubufs(skb, gfp_mask);
 }
@@ -2742,6 +2850,18 @@ static inline void skb_propagate_pfmemalloc(struct page *page,
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * skb_frag_off() - Returns the offset of a skb fragment
+ * @frag: the paged fragment
+ */
+static inline unsigned int skb_frag_off(const skb_frag_t *frag)
+{
+	return frag->page_offset;
+}
+
+/**
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * skb_frag_page - retrieve the page referred to by a paged fragment
  * @frag: the paged fragment
  *
@@ -2984,8 +3104,14 @@ static inline int skb_padto(struct sk_buff *skb, unsigned int len)
  *	is untouched. Otherwise it is extended. Returns zero on
  *	success. The skb is freed on error if @free_on_error is true.
  */
+<<<<<<< HEAD
 static inline int __skb_put_padto(struct sk_buff *skb, unsigned int len,
 				  bool free_on_error)
+=======
+static inline int __must_check __skb_put_padto(struct sk_buff *skb,
+					       unsigned int len,
+					       bool free_on_error)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned int size = skb->len;
 
@@ -3008,7 +3134,11 @@ static inline int __skb_put_padto(struct sk_buff *skb, unsigned int len,
  *	is untouched. Otherwise it is extended. Returns zero on
  *	success. The skb is freed on error.
  */
+<<<<<<< HEAD
 static inline int skb_put_padto(struct sk_buff *skb, unsigned int len)
+=======
+static inline int __must_check skb_put_padto(struct sk_buff *skb, unsigned int len)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return __skb_put_padto(skb, len, true);
 }

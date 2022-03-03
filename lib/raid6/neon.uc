@@ -28,7 +28,10 @@
 
 typedef uint8x16_t unative_t;
 
+<<<<<<< HEAD
 #define NBYTES(x) ((unative_t){x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x})
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define NSIZE	sizeof(unative_t)
 
 /*
@@ -61,7 +64,11 @@ void raid6_neon$#_gen_syndrome_real(int disks, unsigned long bytes, void **ptrs)
 	int d, z, z0;
 
 	register unative_t wd$$, wq$$, wp$$, w1$$, w2$$;
+<<<<<<< HEAD
 	const unative_t x1d = NBYTES(0x1d);
+=======
+	const unative_t x1d = vdupq_n_u8(0x1d);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	z0 = disks - 3;		/* Highest data disk */
 	p = dptr[z0+1];		/* XOR parity */
@@ -92,7 +99,11 @@ void raid6_neon$#_xor_syndrome_real(int disks, int start, int stop,
 	int d, z, z0;
 
 	register unative_t wd$$, wq$$, wp$$, w1$$, w2$$;
+<<<<<<< HEAD
 	const unative_t x1d = NBYTES(0x1d);
+=======
+	const unative_t x1d = vdupq_n_u8(0x1d);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	z0 = stop;		/* P/Q right side optimization */
 	p = dptr[disks-2];	/* XOR parity */

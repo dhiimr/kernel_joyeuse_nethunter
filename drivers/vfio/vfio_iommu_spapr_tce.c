@@ -409,6 +409,10 @@ static void tce_iommu_release(void *iommu_data)
 {
 	struct tce_container *container = iommu_data;
 	struct tce_iommu_group *tcegrp;
+<<<<<<< HEAD
+=======
+	struct tce_iommu_prereg *tcemem, *tmtmp;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	long i;
 
 	while (tce_groups_attached(container)) {
@@ -431,6 +435,7 @@ static void tce_iommu_release(void *iommu_data)
 		tce_iommu_free_table(container, tbl);
 	}
 
+<<<<<<< HEAD
 	while (!list_empty(&container->prereg_list)) {
 		struct tce_iommu_prereg *tcemem;
 
@@ -438,6 +443,10 @@ static void tce_iommu_release(void *iommu_data)
 				struct tce_iommu_prereg, next);
 		WARN_ON_ONCE(tce_iommu_prereg_free(container, tcemem));
 	}
+=======
+	list_for_each_entry_safe(tcemem, tmtmp, &container->prereg_list, next)
+		WARN_ON(tce_iommu_prereg_free(container, tcemem));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	tce_iommu_disable(container);
 	if (container->mm)

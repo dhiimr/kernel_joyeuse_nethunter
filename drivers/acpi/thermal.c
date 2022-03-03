@@ -188,6 +188,11 @@ struct acpi_thermal {
 	int tz_enabled;
 	int kelvin_offset;
 	struct work_struct thermal_check_work;
+<<<<<<< HEAD
+=======
+	struct mutex thermal_check_lock;
+	refcount_t thermal_check_count;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* --------------------------------------------------------------------------
@@ -513,6 +518,7 @@ static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void acpi_thermal_check(void *data)
 {
 	struct acpi_thermal *tz = data;
@@ -524,6 +530,8 @@ static void acpi_thermal_check(void *data)
 				   THERMAL_EVENT_UNSPECIFIED);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* sys I/F for generic thermal sysfs support */
 
 static int thermal_get_temp(struct thermal_zone_device *thermal, int *temp)
@@ -557,6 +565,11 @@ static int thermal_get_mode(struct thermal_zone_device *thermal,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void acpi_thermal_check_fn(struct work_struct *work);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int thermal_set_mode(struct thermal_zone_device *thermal,
 				enum thermal_device_mode mode)
 {
@@ -582,7 +595,11 @@ static int thermal_set_mode(struct thermal_zone_device *thermal,
 		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
 			"%s kernel ACPI thermal control\n",
 			tz->tz_enabled ? "Enable" : "Disable"));
+<<<<<<< HEAD
 		acpi_thermal_check(tz);
+=======
+		acpi_thermal_check_fn(&tz->thermal_check_work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return 0;
 }
@@ -951,6 +968,15 @@ static void acpi_thermal_unregister_thermal_zone(struct acpi_thermal *tz)
                                  Driver Interface
    -------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
+=======
+static void acpi_queue_thermal_check(struct acpi_thermal *tz)
+{
+	if (!work_pending(&tz->thermal_check_work))
+		queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void acpi_thermal_notify(struct acpi_device *device, u32 event)
 {
 	struct acpi_thermal *tz = acpi_driver_data(device);
@@ -961,17 +987,29 @@ static void acpi_thermal_notify(struct acpi_device *device, u32 event)
 
 	switch (event) {
 	case ACPI_THERMAL_NOTIFY_TEMPERATURE:
+<<<<<<< HEAD
 		acpi_thermal_check(tz);
 		break;
 	case ACPI_THERMAL_NOTIFY_THRESHOLDS:
 		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_THRESHOLDS);
 		acpi_thermal_check(tz);
+=======
+		acpi_queue_thermal_check(tz);
+		break;
+	case ACPI_THERMAL_NOTIFY_THRESHOLDS:
+		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_THRESHOLDS);
+		acpi_queue_thermal_check(tz);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		acpi_bus_generate_netlink_event(device->pnp.device_class,
 						  dev_name(&device->dev), event, 0);
 		break;
 	case ACPI_THERMAL_NOTIFY_DEVICES:
 		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_DEVICES);
+<<<<<<< HEAD
 		acpi_thermal_check(tz);
+=======
+		acpi_queue_thermal_check(tz);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		acpi_bus_generate_netlink_event(device->pnp.device_class,
 						  dev_name(&device->dev), event, 0);
 		break;
@@ -1071,7 +1109,31 @@ static void acpi_thermal_check_fn(struct work_struct *work)
 {
 	struct acpi_thermal *tz = container_of(work, struct acpi_thermal,
 					       thermal_check_work);
+<<<<<<< HEAD
 	acpi_thermal_check(tz);
+=======
+
+	if (!tz->tz_enabled)
+		return;
+	/*
+	 * In general, it is not sufficient to check the pending bit, because
+	 * subsequent instances of this function may be queued after one of them
+	 * has started running (e.g. if _TMP sleeps).  Avoid bailing out if just
+	 * one of them is running, though, because it may have done the actual
+	 * check some time ago, so allow at least one of them to block on the
+	 * mutex while another one is running the update.
+	 */
+	if (!refcount_dec_not_one(&tz->thermal_check_count))
+		return;
+
+	mutex_lock(&tz->thermal_check_lock);
+
+	thermal_zone_device_update(tz->thermal_zone, THERMAL_EVENT_UNSPECIFIED);
+
+	refcount_inc(&tz->thermal_check_count);
+
+	mutex_unlock(&tz->thermal_check_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int acpi_thermal_add(struct acpi_device *device)
@@ -1103,6 +1165,11 @@ static int acpi_thermal_add(struct acpi_device *device)
 	if (result)
 		goto free_memory;
 
+<<<<<<< HEAD
+=======
+	refcount_set(&tz->thermal_check_count, 3);
+	mutex_init(&tz->thermal_check_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	INIT_WORK(&tz->thermal_check_work, acpi_thermal_check_fn);
 
 	pr_info(PREFIX "%s [%s] (%ld C)\n", acpi_device_name(device),
@@ -1168,7 +1235,11 @@ static int acpi_thermal_resume(struct device *dev)
 		tz->state.active |= tz->trips.active[i].flags.enabled;
 	}
 
+<<<<<<< HEAD
 	queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
+=======
+	acpi_queue_thermal_check(tz);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return AE_OK;
 }

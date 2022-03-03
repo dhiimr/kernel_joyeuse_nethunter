@@ -189,14 +189,24 @@ static int journal_wait_on_commit_record(journal_t *journal,
  * use writepages() because with dealyed allocation we may be doing
  * block allocation in writepages().
  */
+<<<<<<< HEAD
 static int journal_submit_inode_data_buffers(struct address_space *mapping)
+=======
+static int journal_submit_inode_data_buffers(struct address_space *mapping,
+		loff_t dirty_start, loff_t dirty_end)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int ret;
 	struct writeback_control wbc = {
 		.sync_mode =  WB_SYNC_ALL,
 		.nr_to_write = mapping->nrpages * 2,
+<<<<<<< HEAD
 		.range_start = 0,
 		.range_end = i_size_read(mapping->host),
+=======
+		.range_start = dirty_start,
+		.range_end = dirty_end,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	ret = generic_writepages(mapping, &wbc);
@@ -220,6 +230,12 @@ static int journal_submit_data_buffers(journal_t *journal,
 
 	spin_lock(&journal->j_list_lock);
 	list_for_each_entry(jinode, &commit_transaction->t_inode_list, i_list) {
+<<<<<<< HEAD
+=======
+		loff_t dirty_start = jinode->i_dirty_start;
+		loff_t dirty_end = jinode->i_dirty_end;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!(jinode->i_flags & JI_WRITE_DATA))
 			continue;
 		mapping = jinode->i_vfs_inode->i_mapping;
@@ -232,7 +248,12 @@ static int journal_submit_data_buffers(journal_t *journal,
 		 * only allocated blocks here.
 		 */
 		trace_jbd2_submit_inode_data(jinode->i_vfs_inode);
+<<<<<<< HEAD
 		err = journal_submit_inode_data_buffers(mapping);
+=======
+		err = journal_submit_inode_data_buffers(mapping, dirty_start,
+				dirty_end);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!ret)
 			ret = err;
 		spin_lock(&journal->j_list_lock);
@@ -259,12 +280,24 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
 	/* For locking, see the comment in journal_submit_data_buffers() */
 	spin_lock(&journal->j_list_lock);
 	list_for_each_entry(jinode, &commit_transaction->t_inode_list, i_list) {
+<<<<<<< HEAD
+=======
+		loff_t dirty_start = jinode->i_dirty_start;
+		loff_t dirty_end = jinode->i_dirty_end;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!(jinode->i_flags & JI_WAIT_DATA))
 			continue;
 		jinode->i_flags |= JI_COMMIT_RUNNING;
 		spin_unlock(&journal->j_list_lock);
+<<<<<<< HEAD
 		err = filemap_fdatawait_keep_errors(
 				jinode->i_vfs_inode->i_mapping);
+=======
+		err = filemap_fdatawait_range_keep_errors(
+				jinode->i_vfs_inode->i_mapping, dirty_start,
+				dirty_end);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (!ret)
 			ret = err;
 		spin_lock(&journal->j_list_lock);
@@ -284,6 +317,11 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
 				&jinode->i_transaction->t_inode_list);
 		} else {
 			jinode->i_transaction = NULL;
+<<<<<<< HEAD
+=======
+			jinode->i_dirty_start = 0;
+			jinode->i_dirty_end = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 	spin_unlock(&journal->j_list_lock);
@@ -715,7 +753,10 @@ start_journal_io:
 				submit_bh(REQ_OP_WRITE, REQ_SYNC, bh);
 			}
 			cond_resched();
+<<<<<<< HEAD
 			stats.run.rs_blocks_logged += bufs;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			/* Force a new descriptor to be generated next
                            time round the loop. */
@@ -773,7 +814,11 @@ start_journal_io:
 		err = journal_submit_commit_record(journal, commit_transaction,
 						 &cbh, crc32_sum);
 		if (err)
+<<<<<<< HEAD
 			__jbd2_journal_abort_hard(journal);
+=======
+			jbd2_journal_abort(journal, err);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	blk_finish_plug(&plug);
@@ -802,6 +847,10 @@ start_journal_io:
 		if (unlikely(!buffer_uptodate(bh)))
 			err = -EIO;
 		jbd2_unfile_log_bh(bh);
+<<<<<<< HEAD
+=======
+		stats.run.rs_blocks_logged++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/*
 		 * The list contains temporary buffer heads created by
@@ -847,6 +896,10 @@ start_journal_io:
 		BUFFER_TRACE(bh, "ph5: control buffer writeout done: unfile");
 		clear_buffer_jwrite(bh);
 		jbd2_unfile_log_bh(bh);
+<<<<<<< HEAD
+=======
+		stats.run.rs_blocks_logged++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		__brelse(bh);		/* One for getblk */
 		/* AKPM: bforget here */
 	}
@@ -864,10 +917,18 @@ start_journal_io:
 		err = journal_submit_commit_record(journal, commit_transaction,
 						&cbh, crc32_sum);
 		if (err)
+<<<<<<< HEAD
 			__jbd2_journal_abort_hard(journal);
 	}
 	if (cbh)
 		err = journal_wait_on_commit_record(journal, cbh);
+=======
+			jbd2_journal_abort(journal, err);
+	}
+	if (cbh)
+		err = journal_wait_on_commit_record(journal, cbh);
+	stats.run.rs_blocks_logged++;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (jbd2_has_feature_async_commit(journal) &&
 	    journal->j_flags & JBD2_BARRIER) {
 		blkdev_issue_flush(journal->j_dev, GFP_NOFS, NULL);
@@ -960,6 +1021,7 @@ restart_loop:
 		 * it. */
 
 		/*
+<<<<<<< HEAD
 		* A buffer which has been freed while still being journaled by
 		* a previous transaction.
 		*/
@@ -983,6 +1045,36 @@ restart_loop:
 			if (!jh->b_next_transaction) {
 				clear_buffer_freed(bh);
 				clear_buffer_jbddirty(bh);
+=======
+		 * A buffer which has been freed while still being journaled
+		 * by a previous transaction, refile the buffer to BJ_Forget of
+		 * the running transaction. If the just committed transaction
+		 * contains "add to orphan" operation, we can completely
+		 * invalidate the buffer now. We are rather through in that
+		 * since the buffer may be still accessible when blocksize <
+		 * pagesize and it is attached to the last partial page.
+		 */
+		if (buffer_freed(bh) && !jh->b_next_transaction) {
+			struct address_space *mapping;
+
+			clear_buffer_freed(bh);
+			clear_buffer_jbddirty(bh);
+
+			/*
+			 * Block device buffers need to stay mapped all the
+			 * time, so it is enough to clear buffer_jbddirty and
+			 * buffer_freed bits. For the file mapping buffers (i.e.
+			 * journalled data) we need to unmap buffer and clear
+			 * more bits. We also need to be careful about the check
+			 * because the data page mapping can get cleared under
+			 * our hands. Note that if mapping == NULL, we don't
+			 * need to make buffer unmapped because the page is
+			 * already detached from the mapping and buffers cannot
+			 * get reused.
+			 */
+			mapping = READ_ONCE(bh->b_page->mapping);
+			if (mapping && !sb_is_blkdev_sb(mapping->host->i_sb)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				clear_buffer_mapped(bh);
 				clear_buffer_new(bh);
 				clear_buffer_req(bh);

@@ -176,6 +176,10 @@ static int squashfs_fill_super(struct super_block *sb, void *data, int silent)
 	msblk->directory_table = le64_to_cpu(sblk->directory_table_start);
 	msblk->inodes = le32_to_cpu(sblk->inodes);
 	msblk->fragments = le32_to_cpu(sblk->fragments);
+<<<<<<< HEAD
+=======
+	msblk->ids = le16_to_cpu(sblk->no_ids);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	flags = le16_to_cpu(sblk->flags);
 
 	TRACE("Found valid superblock on %pg\n", sb->s_bdev);
@@ -187,7 +191,11 @@ static int squashfs_fill_super(struct super_block *sb, void *data, int silent)
 	TRACE("Block size %d\n", msblk->block_size);
 	TRACE("Number of inodes %d\n", msblk->inodes);
 	TRACE("Number of fragments %d\n", msblk->fragments);
+<<<<<<< HEAD
 	TRACE("Number of ids %d\n", le16_to_cpu(sblk->no_ids));
+=======
+	TRACE("Number of ids %d\n", msblk->ids);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	TRACE("sblk->inode_table_start %llx\n", msblk->inode_table);
 	TRACE("sblk->directory_table_start %llx\n", msblk->directory_table);
 	TRACE("sblk->fragment_table_start %llx\n",
@@ -244,8 +252,12 @@ static int squashfs_fill_super(struct super_block *sb, void *data, int silent)
 allocate_id_index_table:
 	/* Allocate and read id index table */
 	msblk->id_table = squashfs_read_id_index_table(sb,
+<<<<<<< HEAD
 		le64_to_cpu(sblk->id_table_start), next_table,
 		le16_to_cpu(sblk->no_ids));
+=======
+		le64_to_cpu(sblk->id_table_start), next_table, msblk->ids);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (IS_ERR(msblk->id_table)) {
 		ERROR("unable to read id index table\n");
 		err = PTR_ERR(msblk->id_table);

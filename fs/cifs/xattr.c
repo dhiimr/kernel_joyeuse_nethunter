@@ -31,7 +31,11 @@
 #include "cifs_fs_sb.h"
 #include "cifs_unicode.h"
 
+<<<<<<< HEAD
 #define MAX_EA_VALUE_SIZE 65535
+=======
+#define MAX_EA_VALUE_SIZE CIFSMaxBufSize
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define CIFS_XATTR_CIFS_ACL "system.cifs_acl"
 #define CIFS_XATTR_ATTRIB "cifs.dosattrib"  /* full name: user.cifs.dosattrib */
 #define CIFS_XATTR_CREATETIME "cifs.creationtime"  /* user.cifs.creationtime */

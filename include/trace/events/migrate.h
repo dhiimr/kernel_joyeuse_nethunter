@@ -97,6 +97,7 @@ TRACE_EVENT(mm_numa_migrate_ratelimit,
 		__entry->dst_nid,
 		__entry->nr_pages)
 );
+<<<<<<< HEAD
 
 TRACE_EVENT(mm_migrate_pages_start,
 
@@ -118,6 +119,8 @@ TRACE_EVENT(mm_migrate_pages_start,
 		__print_symbolic(__entry->mode, MIGRATE_MODE),
 		__print_symbolic(__entry->reason, MIGRATE_REASON))
 );
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _TRACE_MIGRATE_H */
 
 /* This part must be outside protection */

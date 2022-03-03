@@ -1930,10 +1930,18 @@ static int print_insn(char *buffer, unsigned char *code, unsigned long addr)
 				ptr += sprintf(ptr, "%%c%i", value);
 			else if (operand->flags & OPERAND_VR)
 				ptr += sprintf(ptr, "%%v%i", value);
+<<<<<<< HEAD
 			else if (operand->flags & OPERAND_PCREL)
 				ptr += sprintf(ptr, "%lx", (signed int) value
 								      + addr);
 			else if (operand->flags & OPERAND_SIGNED)
+=======
+			else if (operand->flags & OPERAND_PCREL) {
+				void *pcrel = (void *)((int)value + addr);
+
+				ptr += sprintf(ptr, "%px", pcrel);
+			} else if (operand->flags & OPERAND_SIGNED)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				ptr += sprintf(ptr, "%i", value);
 			else
 				ptr += sprintf(ptr, "%u", value);
@@ -2005,7 +2013,11 @@ void show_code(struct pt_regs *regs)
 		else
 			*ptr++ = ' ';
 		addr = regs->psw.addr + start - 32;
+<<<<<<< HEAD
 		ptr += sprintf(ptr, "%016lx: ", addr);
+=======
+		ptr += sprintf(ptr, "%px: ", (void *)addr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (start + opsize >= end)
 			break;
 		for (i = 0; i < opsize; i++)
@@ -2017,7 +2029,11 @@ void show_code(struct pt_regs *regs)
 		start += opsize;
 		pr_cont("%s", buffer);
 		ptr = buffer;
+<<<<<<< HEAD
 		ptr += sprintf(ptr, "\n\t  ");
+=======
+		ptr += sprintf(ptr, "\n          ");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		hops++;
 	}
 	pr_cont("\n");
@@ -2025,7 +2041,11 @@ void show_code(struct pt_regs *regs)
 
 void print_fn_code(unsigned char *code, unsigned long len)
 {
+<<<<<<< HEAD
 	char buffer[64], *ptr;
+=======
+	char buffer[128], *ptr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int opsize, i;
 
 	while (len) {
@@ -2033,7 +2053,11 @@ void print_fn_code(unsigned char *code, unsigned long len)
 		opsize = insn_length(*code);
 		if (opsize > len)
 			break;
+<<<<<<< HEAD
 		ptr += sprintf(ptr, "%p: ", code);
+=======
+		ptr += sprintf(ptr, "%px: ", code);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		for (i = 0; i < opsize; i++)
 			ptr += sprintf(ptr, "%02x", code[i]);
 		*ptr++ = '\t';

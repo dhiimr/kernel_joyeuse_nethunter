@@ -91,7 +91,12 @@ config DP83640_PHY
 config PTP_1588_CLOCK_PCH
 	tristate "Intel PCH EG20T as PTP clock"
 	depends on X86_32 || COMPILE_TEST
+<<<<<<< HEAD
 	depends on HAS_IOMEM && NET
+=======
+	depends on HAS_IOMEM && PCI
+	depends on NET
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	imply PTP_1588_CLOCK
 	help
 	  This driver adds support for using the PCH EG20T as a PTP

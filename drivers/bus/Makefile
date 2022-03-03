@@ -25,4 +25,7 @@ obj-$(CONFIG_UNIPHIER_SYSTEM_BUS)	+= uniphier-system-bus.o
 obj-$(CONFIG_VEXPRESS_CONFIG)	+= vexpress-config.o
 
 obj-$(CONFIG_DA8XX_MSTPRI)	+= da8xx-mstpri.o
+<<<<<<< HEAD
 obj-$(CONFIG_MHI_BUS) += mhi/
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

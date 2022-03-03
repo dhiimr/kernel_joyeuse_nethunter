@@ -33,7 +33,11 @@ static void
 gm200_i2c_aux_fini(struct gm200_i2c_aux *aux)
 {
 	struct nvkm_device *device = aux->base.pad->i2c->subdev.device;
+<<<<<<< HEAD
 	nvkm_mask(device, 0x00d954 + (aux->ch * 0x50), 0x00310000, 0x00000000);
+=======
+	nvkm_mask(device, 0x00d954 + (aux->ch * 0x50), 0x00710000, 0x00000000);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int
@@ -54,10 +58,17 @@ gm200_i2c_aux_init(struct gm200_i2c_aux *aux)
 			AUX_ERR(&aux->base, "begin idle timeout %08x", ctrl);
 			return -EBUSY;
 		}
+<<<<<<< HEAD
 	} while (ctrl & 0x03010000);
 
 	/* set some magic, and wait up to 1ms for it to appear */
 	nvkm_mask(device, 0x00d954 + (aux->ch * 0x50), 0x00300000, ureq);
+=======
+	} while (ctrl & 0x07010000);
+
+	/* set some magic, and wait up to 1ms for it to appear */
+	nvkm_mask(device, 0x00d954 + (aux->ch * 0x50), 0x00700000, ureq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	timeout = 1000;
 	do {
 		ctrl = nvkm_rd32(device, 0x00d954 + (aux->ch * 0x50));
@@ -67,7 +78,11 @@ gm200_i2c_aux_init(struct gm200_i2c_aux *aux)
 			gm200_i2c_aux_fini(aux);
 			return -EBUSY;
 		}
+<<<<<<< HEAD
 	} while ((ctrl & 0x03000000) != urep);
+=======
+	} while ((ctrl & 0x07000000) != urep);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -118,10 +133,17 @@ gm200_i2c_aux_xfer(struct nvkm_i2c_aux *obj, bool retry,
 		if (retries)
 			udelay(400);
 
+<<<<<<< HEAD
 		/* transaction request, wait up to 1ms for it to complete */
 		nvkm_wr32(device, 0x00d954 + base, 0x00010000 | ctrl);
 
 		timeout = 1000;
+=======
+		/* transaction request, wait up to 2ms for it to complete */
+		nvkm_wr32(device, 0x00d954 + base, 0x00010000 | ctrl);
+
+		timeout = 2000;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		do {
 			ctrl = nvkm_rd32(device, 0x00d954 + base);
 			udelay(1);

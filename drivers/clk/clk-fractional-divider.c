@@ -134,7 +134,11 @@ struct clk_hw *clk_hw_register_fractional_divider(struct device *dev,
 		u8 clk_divider_flags, spinlock_t *lock)
 {
 	struct clk_fractional_divider *fd;
+<<<<<<< HEAD
 	struct clk_init_data init = {};
+=======
+	struct clk_init_data init;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct clk_hw *hw;
 	int ret;
 

@@ -11,6 +11,10 @@ if SND_USB && USB
 
 config SND_USB_AUDIO
 	tristate "USB Audio/MIDI driver"
+<<<<<<< HEAD
+=======
+	select SND_HWDEP
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select SND_RAWMIDI
 	select SND_PCM
 	select BITREVERSE
@@ -161,6 +165,7 @@ config SND_BCD2000
 
 source "sound/usb/line6/Kconfig"
 
+<<<<<<< HEAD
 config SND_USB_AUDIO_QMI
 	tristate "USB Audio QMI Service driver"
 	depends on QCOM_QMI_HELPERS
@@ -169,5 +174,7 @@ config SND_USB_AUDIO_QMI
 	  to perform operations like enable or disable particular audio
 	  stream on a connected USB device.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif	# SND_USB
 

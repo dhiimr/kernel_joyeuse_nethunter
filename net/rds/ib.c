@@ -140,6 +140,12 @@ static void rds_ib_add_one(struct ib_device *device)
 	refcount_set(&rds_ibdev->refcount, 1);
 	INIT_WORK(&rds_ibdev->free_work, rds_ib_dev_free);
 
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&rds_ibdev->ipaddr_list);
+	INIT_LIST_HEAD(&rds_ibdev->conn_list);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rds_ibdev->max_wrs = device->attrs.max_qp_wr;
 	rds_ibdev->max_sge = min(device->attrs.max_sge, RDS_IB_MAX_SGE);
 
@@ -199,9 +205,12 @@ static void rds_ib_add_one(struct ib_device *device)
 		device->name,
 		rds_ibdev->use_fastreg ? "FRMR" : "FMR");
 
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&rds_ibdev->ipaddr_list);
 	INIT_LIST_HEAD(&rds_ibdev->conn_list);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	down_write(&rds_ib_devices_lock);
 	list_add_tail_rcu(&rds_ibdev->list, &rds_ib_devices);
 	up_write(&rds_ib_devices_lock);

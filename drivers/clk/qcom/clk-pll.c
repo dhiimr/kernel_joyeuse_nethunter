@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2013, 2018, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2013, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -28,7 +32,10 @@
 #define PLL_OUTCTRL		BIT(0)
 #define PLL_BYPASSNL		BIT(1)
 #define PLL_RESET_N		BIT(2)
+<<<<<<< HEAD
 #define XO_RATE			19200000
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int clk_pll_enable(struct clk_hw *hw)
 {
@@ -139,9 +146,13 @@ clk_pll_determine_rate(struct clk_hw *hw, struct clk_rate_request *req)
 
 	f = find_freq(pll->freq_tbl, req->rate);
 	if (!f)
+<<<<<<< HEAD
 		req->rate = DIV_ROUND_UP_ULL(req->rate, req->best_parent_rate)
 							* req->best_parent_rate;
 
+=======
+		req->rate = clk_pll_recalc_rate(hw, req->best_parent_rate);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	else
 		req->rate = f->freq;
 
@@ -345,6 +356,7 @@ const struct clk_ops clk_pll_sr2_ops = {
 	.determine_rate = clk_pll_determine_rate,
 };
 EXPORT_SYMBOL_GPL(clk_pll_sr2_ops);
+<<<<<<< HEAD
 
 static int
 clk_pll_hf_set_rate(struct clk_hw *hw, unsigned long rate, unsigned long prate)
@@ -406,3 +418,5 @@ const struct clk_ops clk_pll_hf_ops = {
 	.list_registers = clk_pll_hf_list_registers,
 };
 EXPORT_SYMBOL(clk_pll_hf_ops);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

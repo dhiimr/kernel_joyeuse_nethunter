@@ -80,8 +80,11 @@ void persistent_ram_free_old(struct persistent_ram_zone *prz);
 ssize_t persistent_ram_ecc_string(struct persistent_ram_zone *prz,
 	char *str, size_t len);
 
+<<<<<<< HEAD
 void ramoops_console_write_buf(const char *buf, size_t size);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Ramoops platform data
  * @mem_size	memory size for ramoops

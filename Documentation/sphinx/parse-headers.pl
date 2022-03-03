@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #!/usr/bin/perl
+=======
+#!/usr/bin/env perl
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 use strict;
 use Text::Tabs;
 use Getopt::Long;

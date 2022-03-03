@@ -117,6 +117,7 @@ config INPUT_E3X0_BUTTON
 	  To compile this driver as a module, choose M here: the
 	  module will be called e3x0_button.
 
+<<<<<<< HEAD
 config INPUT_HBTP_INPUT
 	tristate "HBTP input driver support"
 	help
@@ -128,6 +129,8 @@ config INPUT_HBTP_INPUT
 	  To compile this driver as a module, choose M here: the
 	  module will be called hbtp_input.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config INPUT_PCSPKR
 	tristate "PC Speaker support"
 	depends on PCSPKR_PLATFORM
@@ -175,6 +178,7 @@ config INPUT_PMIC8XXX_PWRKEY
 	  To compile this driver as a module, choose M here: the
 	  module will be called pmic8xxx-pwrkey.
 
+<<<<<<< HEAD
 config INPUT_QPNP_POWER_ON
 	tristate "QPNP PMIC Power-on support"
 	depends on SPMI
@@ -193,6 +197,8 @@ config INPUT_QTI_HAPTICS
 	  is capable of driving both LRA and ERM vibrators.  This module provides
 	  haptic feedback for user actions such as a long press on the touch screen.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config INPUT_SPARCSPKR
 	tristate "SPARC Speaker support"
 	depends on PCI && SPARC64
@@ -564,11 +570,14 @@ config INPUT_SGI_BTNS
 	  To compile this driver as a module, choose M here: the
 	  module will be called sgi_btns.
 
+<<<<<<< HEAD
 config INPUT_GPIO
 	tristate "GPIO driver support"
 	help
 	  Say Y here if you want to support gpio based keys, wheels etc...
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config HP_SDC_RTC
 	tristate "HP SDC Real Time Clock"
 	depends on (GSC || HP300) && SERIO

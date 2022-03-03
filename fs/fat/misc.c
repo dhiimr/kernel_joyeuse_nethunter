@@ -68,7 +68,11 @@ int fat_clusters_flush(struct super_block *sb)
 
 	bh = sb_bread(sb, sbi->fsinfo_sector);
 	if (bh == NULL) {
+<<<<<<< HEAD
 		fat_msg_ratelimit(sb, KERN_ERR, "bread failed in %s", __func__);
+=======
+		fat_msg(sb, KERN_ERR, "bread failed in fat_clusters_flush");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EIO;
 	}
 

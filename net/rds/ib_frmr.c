@@ -112,9 +112,15 @@ static int rds_ib_post_reg_frmr(struct rds_ib_mr *ibmr)
 		cpu_relax();
 	}
 
+<<<<<<< HEAD
 	ret = ib_map_mr_sg_zbva(frmr->mr, ibmr->sg, ibmr->sg_len,
 				&off, PAGE_SIZE);
 	if (unlikely(ret != ibmr->sg_len))
+=======
+	ret = ib_map_mr_sg_zbva(frmr->mr, ibmr->sg, ibmr->sg_dma_len,
+				&off, PAGE_SIZE);
+	if (unlikely(ret != ibmr->sg_dma_len))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ret < 0 ? ret : -EINVAL;
 
 	/* Perform a WR for the fast_reg_mr. Each individual page

@@ -23,10 +23,15 @@ show up in /proc/sys/kernel:
 - auto_msgmni
 - bootloader_type	     [ X86 only ]
 - bootloader_version	     [ X86 only ]
+<<<<<<< HEAD
 - boot_reason		     [ ARM and ARM64 only ]
 - callhome		     [ S390 only ]
 - cap_last_cap
 - cold_boot		     [ ARM and ARM64 only ]
+=======
+- callhome		     [ S390 only ]
+- cap_last_cap
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 - core_pattern
 - core_pipe_limit
 - core_uses_pid
@@ -93,6 +98,10 @@ show up in /proc/sys/kernel:
 - sysctl_writes_strict
 - tainted
 - threads-max
+<<<<<<< HEAD
+=======
+- unprivileged_bpf_disabled
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 - unknown_nmi_panic
 - watchdog
 - watchdog_thresh
@@ -167,6 +176,7 @@ Documentation/x86/boot.txt for additional information.
 
 ==============================================================
 
+<<<<<<< HEAD
 boot_reason:
 
 ARM and ARM64 -- reason for device boot
@@ -180,6 +190,8 @@ Documentation/arm/msm/boot.txt for Qualcomm's family of devices.
 
 ==============================================================
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 callhome:
 
 Controls the kernel's callhome behavior in case of a kernel panic.
@@ -200,6 +212,7 @@ cap_last_cap
 Highest valid capability of the running kernel.  Exports
 CAP_LAST_CAP from the kernel.
 
+<<<<<<< HEAD
 ===============================================================
 
 cold_boot
@@ -210,6 +223,8 @@ A single bit will be set in the unsigned integer value to identify
 whether the device was booted from a cold or warm state. Zero
 indicating a warm boot and one indicating a cold boot.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 ==============================================================
 
 core_pattern:
@@ -678,8 +693,12 @@ allowed to execute.
 perf_event_paranoid:
 
 Controls use of the performance events system by unprivileged
+<<<<<<< HEAD
 users (without CAP_SYS_ADMIN).  The default value is 3 if
 CONFIG_SECURITY_PERF_EVENTS_RESTRICT is set, or 2 otherwise.
+=======
+users (without CAP_SYS_ADMIN).  The default value is 2.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
  -1: Allow use of (almost) all events by all users
      Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK
@@ -687,7 +706,10 @@ CONFIG_SECURITY_PERF_EVENTS_RESTRICT is set, or 2 otherwise.
      Disallow raw tracepoint access by users without CAP_SYS_ADMIN
 >=1: Disallow CPU event access by users without CAP_SYS_ADMIN
 >=2: Disallow kernel profiling by users without CAP_SYS_ADMIN
+<<<<<<< HEAD
 >=3: Disallow all event access by users without CAP_SYS_ADMIN
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 ==============================================================
 
@@ -1026,6 +1048,29 @@ available RAM pages threads-max is reduced accordingly.
 
 ==============================================================
 
+<<<<<<< HEAD
+=======
+unprivileged_bpf_disabled:
+
+Writing 1 to this entry will disable unprivileged calls to bpf();
+once disabled, calling bpf() without CAP_SYS_ADMIN will return
+-EPERM. Once set to 1, this can't be cleared from the running kernel
+anymore.
+
+Writing 2 to this entry will also disable unprivileged calls to bpf(),
+however, an admin can still change this setting later on, if needed, by
+writing 0 or 1 to this entry.
+
+If BPF_UNPRIV_DEFAULT_OFF is enabled in the kernel config, then this
+entry will default to 2 instead of 0.
+
+  0 - Unprivileged calls to bpf() are enabled
+  1 - Unprivileged calls to bpf() are disabled without recovery
+  2 - Unprivileged calls to bpf() are disabled
+
+==============================================================
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 unknown_nmi_panic:
 
 The value in this file affects behavior of handling NMI. When the

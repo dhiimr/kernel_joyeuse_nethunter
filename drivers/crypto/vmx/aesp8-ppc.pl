@@ -1318,7 +1318,11 @@ Loop_ctr32_enc:
 	addi		$idx,$idx,16
 	bdnz		Loop_ctr32_enc
 
+<<<<<<< HEAD
 	vadduwm		$ivec,$ivec,$one
+=======
+	vadduqm		$ivec,$ivec,$one
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 vmr		$dat,$inptail
 	 lvx		$inptail,0,$inp
 	 addi		$inp,$inp,16
@@ -1815,7 +1819,11 @@ Lctr32_enc8x_three:
 	stvx_u		$out1,$x10,$out
 	stvx_u		$out2,$x20,$out
 	addi		$out,$out,0x30
+<<<<<<< HEAD
 	b		Lcbc_dec8x_done
+=======
+	b		Lctr32_enc8x_done
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 .align	5
 Lctr32_enc8x_two:
@@ -1827,7 +1835,11 @@ Lctr32_enc8x_two:
 	stvx_u		$out0,$x00,$out
 	stvx_u		$out1,$x10,$out
 	addi		$out,$out,0x20
+<<<<<<< HEAD
 	b		Lcbc_dec8x_done
+=======
+	b		Lctr32_enc8x_done
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 .align	5
 Lctr32_enc8x_one:

@@ -337,7 +337,10 @@ struct pci_dev {
 	unsigned int	d2_support:1;	/* Low power state D2 is supported */
 	unsigned int	no_d1d2:1;	/* D1 and D2 are forbidden */
 	unsigned int	no_d3cold:1;	/* D3cold is forbidden */
+<<<<<<< HEAD
 	unsigned int	no_d3hot:1;	/* D3hot is forbidden */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int	bridge_d3:1;	/* Allow D3 for bridge */
 	unsigned int	d3cold_allowed:1;	/* D3cold is allowed by user */
 	unsigned int	mmio_always_on:1;	/* disallow turning off io/mem
@@ -351,6 +354,11 @@ struct pci_dev {
 	unsigned int	hotplug_user_indicators:1; /* SlotCtl indicators
 						      controlled exclusively by
 						      user sysfs */
+<<<<<<< HEAD
+=======
+	unsigned int	clear_retrain_link:1;	/* Need to clear Retrain Link
+						   bit manually */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned int	d3_delay;	/* D3->D0 transition time in ms */
 	unsigned int	d3cold_delay;	/* D3cold->D0 transition time in ms */
 
@@ -1632,8 +1640,14 @@ static inline int pci_enable_device(struct pci_dev *dev) { return -EIO; }
 static inline void pci_disable_device(struct pci_dev *dev) { }
 static inline int pci_assign_resource(struct pci_dev *dev, int i)
 { return -EBUSY; }
+<<<<<<< HEAD
 static inline int __pci_register_driver(struct pci_driver *drv,
 					struct module *owner)
+=======
+static inline int __must_check __pci_register_driver(struct pci_driver *drv,
+						     struct module *owner,
+						     const char *mod_name)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 { return 0; }
 static inline int pci_register_driver(struct pci_driver *drv)
 { return 0; }

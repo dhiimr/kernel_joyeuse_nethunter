@@ -46,7 +46,11 @@ static struct tcf_pedit_key_ex *tcf_pedit_keys_ex_parse(struct nlattr *nla,
 	int err = -EINVAL;
 	int rem;
 
+<<<<<<< HEAD
 	if (!nla || !n)
+=======
+	if (!nla)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return NULL;
 
 	keys_ex = kcalloc(n, sizeof(*k), GFP_KERNEL);
@@ -163,6 +167,12 @@ static int tcf_pedit_init(struct net *net, struct nlattr *nla,
 		return -EINVAL;
 
 	parm = nla_data(pattr);
+<<<<<<< HEAD
+=======
+	if (!parm->nkeys)
+		return -EINVAL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ksize = parm->nkeys * sizeof(struct tc_pedit_key);
 	if (nla_len(pattr) < sizeof(*parm) + ksize)
 		return -EINVAL;
@@ -172,8 +182,11 @@ static int tcf_pedit_init(struct net *net, struct nlattr *nla,
 		return PTR_ERR(keys_ex);
 
 	if (!tcf_idr_check(tn, parm->index, a, bind)) {
+<<<<<<< HEAD
 		if (!parm->nkeys)
 			return -EINVAL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = tcf_idr_create(tn, parm->index, est, a,
 				     &act_pedit_ops, bind, false);
 		if (ret)
@@ -458,7 +471,11 @@ static __net_init int pedit_init_net(struct net *net)
 {
 	struct tc_action_net *tn = net_generic(net, pedit_net_id);
 
+<<<<<<< HEAD
 	return tc_action_net_init(tn, &act_pedit_ops);
+=======
+	return tc_action_net_init(net, tn, &act_pedit_ops);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void __net_exit pedit_exit_net(struct net *net)

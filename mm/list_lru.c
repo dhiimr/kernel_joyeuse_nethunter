@@ -42,11 +42,15 @@ static void list_lru_unregister(struct list_lru *lru)
 #if defined(CONFIG_MEMCG) && !defined(CONFIG_SLOB)
 static inline bool list_lru_memcg_aware(struct list_lru *lru)
 {
+<<<<<<< HEAD
 	/*
 	 * This needs node 0 to be always present, even
 	 * in the systems supporting sparse numa ids.
 	 */
 	return !!lru->node[0].memcg_lrus;
+=======
+	return lru->memcg_aware;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline struct list_lru_one *
@@ -317,7 +321,11 @@ static int __memcg_init_list_lru_node(struct list_lru_memcg *memcg_lrus,
 	}
 	return 0;
 fail:
+<<<<<<< HEAD
 	__memcg_destroy_list_lru_node(memcg_lrus, begin, i - 1);
+=======
+	__memcg_destroy_list_lru_node(memcg_lrus, begin, i);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return -ENOMEM;
 }
 
@@ -389,6 +397,11 @@ static int memcg_init_list_lru(struct list_lru *lru, bool memcg_aware)
 {
 	int i;
 
+<<<<<<< HEAD
+=======
+	lru->memcg_aware = memcg_aware;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!memcg_aware)
 		return 0;
 

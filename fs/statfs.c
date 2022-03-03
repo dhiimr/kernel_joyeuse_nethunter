@@ -304,6 +304,7 @@ COMPAT_SYSCALL_DEFINE2(fstatfs, unsigned int, fd, struct compat_statfs __user *,
 static int put_compat_statfs64(struct compat_statfs64 __user *ubuf, struct kstatfs *kbuf)
 {
 	struct compat_statfs64 buf;
+<<<<<<< HEAD
 	if (sizeof(ubuf->f_bsize) == 4) {
 		if ((kbuf->f_type | kbuf->f_bsize | kbuf->f_namelen |
 		     kbuf->f_frsize | kbuf->f_flags) & 0xffffffff00000000ULL)
@@ -317,6 +318,12 @@ static int put_compat_statfs64(struct compat_statfs64 __user *ubuf, struct kstat
 		 && (kbuf->f_ffree & 0xffffffff00000000ULL))
 			return -EOVERFLOW;
 	}
+=======
+
+	if ((kbuf->f_bsize | kbuf->f_frsize) & 0xffffffff00000000ULL)
+		return -EOVERFLOW;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	memset(&buf, 0, sizeof(struct compat_statfs64));
 	buf.f_type = kbuf->f_type;
 	buf.f_bsize = kbuf->f_bsize;

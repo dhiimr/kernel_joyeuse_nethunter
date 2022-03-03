@@ -2414,6 +2414,10 @@ int blk_throtl_init(struct request_queue *q)
 void blk_throtl_exit(struct request_queue *q)
 {
 	BUG_ON(!q->td);
+<<<<<<< HEAD
+=======
+	del_timer_sync(&q->td->service_queue.pending_timer);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	throtl_shutdown_wq(q);
 	blkcg_deactivate_policy(q, &blkcg_policy_throtl);
 	free_percpu(q->td->latency_buckets);

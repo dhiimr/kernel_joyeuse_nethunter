@@ -138,8 +138,15 @@ static void ops_exit_list(const struct pernet_operations *ops,
 {
 	struct net *net;
 	if (ops->exit) {
+<<<<<<< HEAD
 		list_for_each_entry(net, net_exit_list, exit_list)
 			ops->exit(net);
+=======
+		list_for_each_entry(net, net_exit_list, exit_list) {
+			ops->exit(net);
+			cond_resched();
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	if (ops->exit_batch)
 		ops->exit_batch(net_exit_list);
@@ -181,9 +188,15 @@ static int net_eq_idr(int id, void *net, void *peer)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Should be called with nsid_lock held. If a new id is assigned, the bool alloc
  * is set to true, thus the caller knows that the new id must be notified via
  * rtnl.
+=======
+/* Must be called from RCU-critical section or with nsid_lock held. If
+ * a new id is assigned, the bool alloc is set to true, thus the
+ * caller knows that the new id must be notified via rtnl.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 static int __peernet2id_alloc(struct net *net, struct net *peer, bool *alloc)
 {
@@ -207,7 +220,11 @@ static int __peernet2id_alloc(struct net *net, struct net *peer, bool *alloc)
 	return NETNSA_NSID_NOT_ASSIGNED;
 }
 
+<<<<<<< HEAD
 /* should be called with nsid_lock held */
+=======
+/* Must be called from RCU-critical section or with nsid_lock held */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int __peernet2id(struct net *net, struct net *peer)
 {
 	bool no = false;
@@ -240,9 +257,16 @@ int peernet2id(struct net *net, struct net *peer)
 {
 	int id;
 
+<<<<<<< HEAD
 	spin_lock_bh(&net->nsid_lock);
 	id = __peernet2id(net, peer);
 	spin_unlock_bh(&net->nsid_lock);
+=======
+	rcu_read_lock();
+	id = __peernet2id(net, peer);
+	rcu_read_unlock();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return id;
 }
 EXPORT_SYMBOL(peernet2id);
@@ -761,6 +785,10 @@ struct rtnl_net_dump_cb {
 	int s_idx;
 };
 
+<<<<<<< HEAD
+=======
+/* Runs in RCU-critical section. */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int rtnl_net_dumpid_one(int id, void *peer, void *data)
 {
 	struct rtnl_net_dump_cb *net_cb = (struct rtnl_net_dump_cb *)data;
@@ -791,9 +819,15 @@ static int rtnl_net_dumpid(struct sk_buff *skb, struct netlink_callback *cb)
 		.s_idx = cb->args[0],
 	};
 
+<<<<<<< HEAD
 	spin_lock_bh(&net->nsid_lock);
 	idr_for_each(&net->netns_ids, rtnl_net_dumpid_one, &net_cb);
 	spin_unlock_bh(&net->nsid_lock);
+=======
+	rcu_read_lock();
+	idr_for_each(&net->netns_ids, rtnl_net_dumpid_one, &net_cb);
+	rcu_read_unlock();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	cb->args[0] = net_cb.idx;
 	return skb->len;
@@ -854,7 +888,12 @@ static int __init net_ns_init(void)
 
 	mutex_unlock(&net_mutex);
 
+<<<<<<< HEAD
 	register_pernet_subsys(&net_ns_ops);
+=======
+	if (register_pernet_subsys(&net_ns_ops))
+		panic("Could not register network namespace subsystems");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	rtnl_register(PF_UNSPEC, RTM_NEWNSID, rtnl_net_newid, NULL,
 		      RTNL_FLAG_DOIT_UNLOCKED);

@@ -1286,11 +1286,18 @@ sl811h_hub_control(
 			goto error;
 		put_unaligned_le32(sl811->port1, buf);
 
+<<<<<<< HEAD
 #ifndef	VERBOSE
 	if (*(u16*)(buf+2))	/* only if wPortChange is interesting */
 #endif
 		dev_dbg(hcd->self.controller, "GetPortStatus %08x\n",
 			sl811->port1);
+=======
+		if (__is_defined(VERBOSE) ||
+		    *(u16*)(buf+2)) /* only if wPortChange is interesting */
+			dev_dbg(hcd->self.controller, "GetPortStatus %08x\n",
+				sl811->port1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 	case SetPortFeature:
 		if (wIndex != 1 || wLength != 0)

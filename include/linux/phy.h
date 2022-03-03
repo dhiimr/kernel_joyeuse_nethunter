@@ -372,6 +372,10 @@ struct phy_c45_device_ids {
  * is_pseudo_fixed_link: Set to true if this phy is an Ethernet switch, etc.
  * has_fixups: Set to true if this phy has fixups/quirks.
  * suspended: Set to true if this phy has been suspended successfully.
+<<<<<<< HEAD
+=======
+ * suspended_by_mdio_bus: Set to true if this phy was suspended by MDIO bus.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * sysfs_links: Internal boolean tracking sysfs symbolic links setup/removal.
  * loopback_enabled: Set true if this phy has been loopbacked successfully.
  * state: state of the PHY for management purposes
@@ -410,6 +414,10 @@ struct phy_device {
 	bool is_pseudo_fixed_link;
 	bool has_fixups;
 	bool suspended;
+<<<<<<< HEAD
+=======
+	bool suspended_by_mdio_bus;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool sysfs_links;
 	bool loopback_enabled;
 

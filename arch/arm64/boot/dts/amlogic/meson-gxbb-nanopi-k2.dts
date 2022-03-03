@@ -178,7 +178,11 @@
 	pinctrl-names = "default";
 };
 
+<<<<<<< HEAD
 &pinctrl_aobus {
+=======
+&gpio_ao {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	gpio-line-names = "UART TX", "UART RX", "Power Control", "Power Key In",
 			  "VCCK En", "CON1 Header Pin31",
 			  "I2S Header Pin6", "IR In", "I2S Header Pin7",
@@ -186,7 +190,11 @@
 			  "I2S Header Pin5", "HDMI CEC", "SYS LED";
 };
 
+<<<<<<< HEAD
 &pinctrl_periphs {
+=======
+&gpio {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	gpio-line-names = /* Bank GPIOZ */
 			  "Eth MDIO", "Eth MDC", "Eth RGMII RX Clk",
 			  "Eth RX DV", "Eth RX D0", "Eth RX D1", "Eth RX D2",

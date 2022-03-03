@@ -1,7 +1,10 @@
 /*
  * Copyright (C) 2010-2011 Canonical Ltd <jeremy.kerr@canonical.com>
  * Copyright (C) 2011-2012 Linaro Ltd <mturquette@linaro.org>
+<<<<<<< HEAD
  * Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -24,9 +27,12 @@
 #include <linux/init.h>
 #include <linux/sched.h>
 #include <linux/clkdev.h>
+<<<<<<< HEAD
 #include <linux/of_platform.h>
 #include <linux/pm_opp.h>
 #include <linux/regulator/consumer.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "clk.h"
 
@@ -43,6 +49,7 @@ static HLIST_HEAD(clk_root_list);
 static HLIST_HEAD(clk_orphan_list);
 static LIST_HEAD(clk_notifier_list);
 
+<<<<<<< HEAD
 struct clk_handoff_vdd {
 	struct list_head list;
 	struct clk_vdd_class *vdd_class;
@@ -61,6 +68,14 @@ static DEFINE_MUTEX(vdd_class_list_lock);
  */
 static LIST_HEAD(clk_rate_change_list);
 
+=======
+static struct hlist_head *all_lists[] = {
+	&clk_root_list,
+	&clk_orphan_list,
+	NULL,
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /***    private data structures    ***/
 
 struct clk_core {
@@ -71,8 +86,13 @@ struct clk_core {
 	struct clk_core		*parent;
 	const char		**parent_names;
 	struct clk_core		**parents;
+<<<<<<< HEAD
 	unsigned int		num_parents;
 	unsigned int		new_parent_index;
+=======
+	u8			num_parents;
+	u8			new_parent_index;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long		rate;
 	unsigned long		req_rate;
 	unsigned long		new_rate;
@@ -82,13 +102,19 @@ struct clk_core {
 	bool			orphan;
 	unsigned int		enable_count;
 	unsigned int		prepare_count;
+<<<<<<< HEAD
 	bool			need_handoff_enable;
 	bool			need_handoff_prepare;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long		min_rate;
 	unsigned long		max_rate;
 	unsigned long		accuracy;
 	int			phase;
+<<<<<<< HEAD
 	struct clk_duty		duty;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct hlist_head	children;
 	struct hlist_node	child_node;
 	struct hlist_head	clks;
@@ -98,12 +124,15 @@ struct clk_core {
 	struct hlist_node	debug_node;
 #endif
 	struct kref		ref;
+<<<<<<< HEAD
 	struct clk_vdd_class	*vdd_class;
 	int			vdd_class_vote;
 	int			new_vdd_class_vote;
 	struct list_head	rate_change_node;
 	unsigned long		*rate_max;
 	int			num_rate_max;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #define CREATE_TRACE_POINTS
@@ -478,6 +507,7 @@ void clk_hw_set_rate_range(struct clk_hw *hw, unsigned long min_rate,
 EXPORT_SYMBOL_GPL(clk_hw_set_rate_range);
 
 /*
+<<<<<<< HEAD
  * Aggregate the rate of all the enabled child nodes and exclude that
  * of the child node for which this request was made.
  */
@@ -498,6 +528,8 @@ unsigned long clk_aggregate_rate(struct clk_hw *hw,
 EXPORT_SYMBOL_GPL(clk_aggregate_rate);
 
 /*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Helper for finding best parent to provide a given frequency. This can be used
  * directly as a determine_rate callback (e.g. for a mux), or from a more
  * complex clock that may combine a mux with other operations.
@@ -516,6 +548,7 @@ int __clk_mux_determine_rate_closest(struct clk_hw *hw,
 }
 EXPORT_SYMBOL_GPL(__clk_mux_determine_rate_closest);
 
+<<<<<<< HEAD
 /*
  *  Find the voltage level required for a given clock rate.
  */
@@ -750,6 +783,8 @@ done:
 	return ret;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /***        clk api        ***/
 
 static void clk_core_unprepare(struct clk_core *core)
@@ -776,6 +811,7 @@ static void clk_core_unprepare(struct clk_core *core)
 		core->ops->unprepare(core->hw);
 
 	trace_clk_unprepare_complete(core);
+<<<<<<< HEAD
 
 	if (core->vdd_class) {
 		clk_unvote_vdd_level(core->vdd_class, core->vdd_class_vote);
@@ -783,6 +819,8 @@ static void clk_core_unprepare(struct clk_core *core)
 		core->new_vdd_class_vote = 0;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	clk_core_unprepare(core->parent);
 }
 
@@ -829,6 +867,7 @@ static int clk_core_prepare(struct clk_core *core)
 
 		trace_clk_prepare(core);
 
+<<<<<<< HEAD
 		ret = clk_vote_rate_vdd(core, core->rate);
 		if (ret) {
 			clk_core_unprepare(core->parent);
@@ -840,15 +879,20 @@ static int clk_core_prepare(struct clk_core *core)
 			core->new_vdd_class_vote = core->vdd_class_vote;
 		}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (core->ops->prepare)
 			ret = core->ops->prepare(core->hw);
 
 		trace_clk_prepare_complete(core);
 
 		if (ret) {
+<<<<<<< HEAD
 			clk_unvote_rate_vdd(core, core->rate);
 			core->vdd_class_vote = 0;
 			core->new_vdd_class_vote = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			clk_core_unprepare(core->parent);
 			return ret;
 		}
@@ -1046,6 +1090,7 @@ static void clk_unprepare_unused_subtree(struct clk_core *core)
 	hlist_for_each_entry(child, &core->children, child_node)
 		clk_unprepare_unused_subtree(child);
 
+<<<<<<< HEAD
 	/*
 	 * setting CLK_ENABLE_HAND_OFF flag triggers this conditional
 	 *
@@ -1059,6 +1104,8 @@ static void clk_unprepare_unused_subtree(struct clk_core *core)
 		clk_core_unprepare(core);
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (core->prepare_count)
 		return;
 
@@ -1085,6 +1132,7 @@ static void clk_disable_unused_subtree(struct clk_core *core)
 	hlist_for_each_entry(child, &core->children, child_node)
 		clk_disable_unused_subtree(child);
 
+<<<<<<< HEAD
 	/*
 	 * setting CLK_ENABLE_HAND_OFF flag triggers this conditional
 	 *
@@ -1100,6 +1148,8 @@ static void clk_disable_unused_subtree(struct clk_core *core)
 		clk_enable_unlock(flags);
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (core->flags & CLK_OPS_PARENT_ENABLE)
 		clk_core_prepare_enable(core->parent);
 
@@ -1142,7 +1192,10 @@ __setup("clk_ignore_unused", clk_ignore_unused_setup);
 static int clk_disable_unused(void)
 {
 	struct clk_core *core;
+<<<<<<< HEAD
 	struct clk_handoff_vdd *v, *v_temp;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (clk_ignore_unused) {
 		pr_warn("clk: Not disabling unused clocks\n");
@@ -1163,6 +1216,7 @@ static int clk_disable_unused(void)
 	hlist_for_each_entry(core, &clk_orphan_list, child_node)
 		clk_unprepare_unused_subtree(core);
 
+<<<<<<< HEAD
 	mutex_lock(&vdd_class_list_lock);
 	list_for_each_entry_safe(v, v_temp, &clk_handoff_vdd_list, list) {
 		clk_unvote_vdd_level(v->vdd_class,
@@ -1173,6 +1227,8 @@ static int clk_disable_unused(void)
 	vdd_class_handoff_completed = true;
 	mutex_unlock(&vdd_class_list_lock);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	clk_prepare_unlock();
 
 	return 0;
@@ -1655,6 +1711,7 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 /*
  * Vote for the voltage level required for core->new_rate.  Keep track of all
  * clocks with a changed voltage level in clk_rate_change_list.
@@ -1708,6 +1765,14 @@ static int clk_calc_subtree(struct clk_core *core, unsigned long new_rate,
 	if (ret)
 		return ret;
 
+=======
+static void clk_calc_subtree(struct clk_core *core, unsigned long new_rate,
+			     struct clk_core *new_parent, u8 p_index)
+{
+	struct clk_core *child;
+
+	core->new_rate = new_rate;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	core->new_parent = new_parent;
 	core->new_parent_index = p_index;
 	/* include clk in new parent's PRE_RATE_CHANGE notifications */
@@ -1717,12 +1782,17 @@ static int clk_calc_subtree(struct clk_core *core, unsigned long new_rate,
 
 	hlist_for_each_entry(child, &core->children, child_node) {
 		child->new_rate = clk_recalc(child, new_rate);
+<<<<<<< HEAD
 		ret = clk_calc_subtree(child, child->new_rate, NULL, 0);
 		if (ret)
 			return ret;
 	}
 
 	return 0;
+=======
+		clk_calc_subtree(child, child->new_rate, NULL, 0);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -1812,6 +1882,7 @@ static struct clk_core *clk_calc_new_rates(struct clk_core *core,
 		}
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Certain PLLs only have 16 bits to program the fractional divider.
 	 * Hence the programmed rate might be slightly different than the
@@ -1829,6 +1900,14 @@ out:
 	ret = clk_calc_subtree(core, new_rate, parent, p_index);
 	if (ret)
 		return NULL;
+=======
+	if ((core->flags & CLK_SET_RATE_PARENT) && parent &&
+	    best_parent_rate != parent->rate)
+		top = clk_calc_new_rates(parent, best_parent_rate);
+
+out:
+	clk_calc_subtree(core, new_rate, parent, p_index);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return top;
 }
@@ -1876,7 +1955,11 @@ static struct clk_core *clk_propagate_rate_change(struct clk_core *core,
  * walk down a subtree and set the new rates notifying the rate
  * change on the way
  */
+<<<<<<< HEAD
 static int clk_change_rate(struct clk_core *core)
+=======
+static void clk_change_rate(struct clk_core *core)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct clk_core *child;
 	struct hlist_node *tmp;
@@ -1885,7 +1968,10 @@ static int clk_change_rate(struct clk_core *core)
 	bool skip_set_rate = false;
 	struct clk_core *old_parent;
 	struct clk_core *parent = NULL;
+<<<<<<< HEAD
 	int rc = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	old_rate = core->rate;
 
@@ -1906,8 +1992,11 @@ static int clk_change_rate(struct clk_core *core)
 		clk_enable_unlock(flags);
 	}
 
+<<<<<<< HEAD
 	trace_clk_set_rate(core, core->new_rate);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (core->new_parent && core->new_parent != core->parent) {
 		old_parent = __clk_set_parent_before(core, core->new_parent);
 		trace_clk_set_parent(core, core->new_parent);
@@ -1928,12 +2017,19 @@ static int clk_change_rate(struct clk_core *core)
 	if (core->flags & CLK_OPS_PARENT_ENABLE)
 		clk_core_prepare_enable(parent);
 
+<<<<<<< HEAD
 	if (!skip_set_rate && core->ops->set_rate) {
 		rc = core->ops->set_rate(core->hw, core->new_rate,
 						best_parent_rate);
 		if (rc)
 			goto err_set_rate;
 	}
+=======
+	trace_clk_set_rate(core, core->new_rate);
+
+	if (!skip_set_rate && core->ops->set_rate)
+		core->ops->set_rate(core->hw, core->new_rate, best_parent_rate);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	trace_clk_set_rate_complete(core, core->new_rate);
 
@@ -1965,13 +2061,18 @@ static int clk_change_rate(struct clk_core *core)
 		/* Skip children who will be reparented to another clock */
 		if (child->new_parent && child->new_parent != core)
 			continue;
+<<<<<<< HEAD
 		rc = clk_change_rate(child);
 		if (rc)
 			return rc;
+=======
+		clk_change_rate(child);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* handle the new child who might not be in core->children yet */
 	if (core->new_child)
+<<<<<<< HEAD
 		rc = clk_change_rate(core->new_child);
 
 	return rc;
@@ -2045,11 +2146,17 @@ static void clk_cleanup_vdd_votes(void)
 		list_del_init(&core->rate_change_node);
 	}
 }
+=======
+		clk_change_rate(core->new_child);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int clk_core_set_rate_nolock(struct clk_core *core,
 				    unsigned long req_rate)
 {
 	struct clk_core *top, *fail_clk;
 	unsigned long rate = req_rate;
+<<<<<<< HEAD
 	int ret = 0;
 	/*
 	 * The prepare lock ensures mutual exclusion with other tasks.
@@ -2060,6 +2167,8 @@ static int clk_core_set_rate_nolock(struct clk_core *core,
 	 * function completes.
 	 */
 	static unsigned int set_rate_nesting_count;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!core)
 		return 0;
@@ -2071,6 +2180,7 @@ static int clk_core_set_rate_nolock(struct clk_core *core,
 	if ((core->flags & CLK_SET_RATE_GATE) && core->prepare_count)
 		return -EBUSY;
 
+<<<<<<< HEAD
 	set_rate_nesting_count++;
 
 	/* calculate new rates and get the topmost changed clock */
@@ -2080,10 +2190,17 @@ static int clk_core_set_rate_nolock(struct clk_core *core,
 		set_rate_nesting_count--;
 		goto pre_rate_change_err;
 	}
+=======
+	/* calculate new rates and get the topmost changed clock */
+	top = clk_calc_new_rates(core, rate);
+	if (!top)
+		return -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* notify that we are about to change rates */
 	fail_clk = clk_propagate_rate_change(top, PRE_RATE_CHANGE);
 	if (fail_clk) {
+<<<<<<< HEAD
 		pr_debug("%s: failed to set %s clock to run at %lu\n", __func__,
 				fail_clk->name, req_rate);
 		clk_propagate_rate_change(top, ABORT_RATE_CHANGE);
@@ -2125,6 +2242,20 @@ pre_rate_change_err:
 	}
 
 	return ret;
+=======
+		pr_debug("%s: failed to set %s rate\n", __func__,
+				fail_clk->name);
+		clk_propagate_rate_change(top, ABORT_RATE_CHANGE);
+		return -EBUSY;
+	}
+
+	/* change the rates */
+	clk_change_rate(top);
+
+	core->req_rate = req_rate;
+
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -2328,7 +2459,11 @@ static int clk_core_set_parent(struct clk_core *core, struct clk_core *parent)
 	/* prevent racing with updates to the clock topology */
 	clk_prepare_lock();
 
+<<<<<<< HEAD
 	if (core->parent == parent && !(core->flags & CLK_IS_MEASURE))
+=======
+	if (core->parent == parent)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto out;
 
 	/* verify ops for for multi-parent clks */
@@ -2485,6 +2620,7 @@ int clk_get_phase(struct clk *clk)
 }
 EXPORT_SYMBOL_GPL(clk_get_phase);
 
+<<<<<<< HEAD
 static void clk_core_reset_duty_cycle_nolock(struct clk_core *core)
 {
 	/* Assume a default value of 50% */
@@ -2642,6 +2778,8 @@ int clk_get_scaled_duty_cycle(struct clk *clk, unsigned int scale)
 }
 EXPORT_SYMBOL_GPL(clk_get_scaled_duty_cycle);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * clk_is_match - check if two clk's point to the same hardware clock
  * @p: clk compared against q
@@ -2668,6 +2806,7 @@ bool clk_is_match(const struct clk *p, const struct clk *q)
 }
 EXPORT_SYMBOL_GPL(clk_is_match);
 
+<<<<<<< HEAD
 int clk_set_flags(struct clk *clk, unsigned long flags)
 {
 	if (!clk)
@@ -2680,6 +2819,8 @@ int clk_set_flags(struct clk *clk, unsigned long flags)
 }
 EXPORT_SYMBOL_GPL(clk_set_flags);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /***        debugfs support        ***/
 
 #ifdef CONFIG_DEBUG_FS
@@ -2687,6 +2828,7 @@ EXPORT_SYMBOL_GPL(clk_set_flags);
 
 static struct dentry *rootdir;
 static int inited = 0;
+<<<<<<< HEAD
 static u32 debug_suspend;
 static DEFINE_MUTEX(clk_debug_lock);
 static HLIST_HEAD(clk_debug_list);
@@ -2697,11 +2839,17 @@ static struct hlist_head *all_lists[] = {
 	NULL,
 };
 
+=======
+static DEFINE_MUTEX(clk_debug_lock);
+static HLIST_HEAD(clk_debug_list);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct hlist_head *orphan_list[] = {
 	&clk_orphan_list,
 	NULL,
 };
 
+<<<<<<< HEAD
 static void clk_state_subtree(struct clk_core *c)
 {
 	int vdd_level = 0;
@@ -2752,18 +2900,28 @@ static const struct file_operations clk_state_fops = {
 	.release	= single_release,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void clk_summary_show_one(struct seq_file *s, struct clk_core *c,
 				 int level)
 {
 	if (!c)
 		return;
 
+<<<<<<< HEAD
 	seq_printf(s, "%*s%-*s %7d %8d %8lu %11lu %10d %5d\n",
 		   level * 3 + 1, "",
 		   30 - level * 3, c->name,
 		   c->enable_count, c->prepare_count, clk_core_get_rate(c),
 		   clk_core_get_accuracy(c), clk_core_get_phase(c),
 		   clk_core_get_scaled_duty_cycle(c, 100000));
+=======
+	seq_printf(s, "%*s%-*s %11d %12d %11lu %10lu %-3d\n",
+		   level * 3 + 1, "",
+		   30 - level * 3, c->name,
+		   c->enable_count, c->prepare_count, clk_core_get_rate(c),
+		   clk_core_get_accuracy(c), clk_core_get_phase(c));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void clk_summary_show_subtree(struct seq_file *s, struct clk_core *c,
@@ -2774,14 +2932,20 @@ static void clk_summary_show_subtree(struct seq_file *s, struct clk_core *c,
 	if (!c)
 		return;
 
+<<<<<<< HEAD
 	if (c->ops->bus_vote)
 		c->ops->bus_vote(c->hw, true);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	clk_summary_show_one(s, c, level);
 
 	hlist_for_each_entry(child, &c->children, child_node)
 		clk_summary_show_subtree(s, child, level + 1);
+<<<<<<< HEAD
 	if (c->ops->bus_vote)
 		c->ops->bus_vote(c->hw, false);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int clk_summary_show(struct seq_file *s, void *data)
@@ -2789,9 +2953,14 @@ static int clk_summary_show(struct seq_file *s, void *data)
 	struct clk_core *c;
 	struct hlist_head **lists = (struct hlist_head **)s->private;
 
+<<<<<<< HEAD
 	seq_puts(s, "                                 enable  prepare                          duty\n");
 	seq_puts(s, "   clock                          count    count   rate   accuracy phase  cycle\n");
 	seq_puts(s, "-------------------------------------------------------------------------------\n");
+=======
+	seq_puts(s, "   clock                         enable_cnt  prepare_cnt        rate   accuracy   phase\n");
+	seq_puts(s, "----------------------------------------------------------------------------------------\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	clk_prepare_lock();
 
@@ -2829,8 +2998,11 @@ static void clk_dump_one(struct seq_file *s, struct clk_core *c, int level)
 	seq_printf(s, "\"rate\": %lu,", clk_core_get_rate(c));
 	seq_printf(s, "\"accuracy\": %lu,", clk_core_get_accuracy(c));
 	seq_printf(s, "\"phase\": %d", clk_core_get_phase(c));
+<<<<<<< HEAD
 	seq_printf(s, "\"duty_cycle\": %u",
 		   clk_core_get_scaled_duty_cycle(c, 100000));
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void clk_dump_subtree(struct seq_file *s, struct clk_core *c, int level)
@@ -2840,9 +3012,12 @@ static void clk_dump_subtree(struct seq_file *s, struct clk_core *c, int level)
 	if (!c)
 		return;
 
+<<<<<<< HEAD
 	if (c->ops->bus_vote)
 		c->ops->bus_vote(c->hw, true);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	clk_dump_one(s, c, level);
 
 	hlist_for_each_entry(child, &c->children, child_node) {
@@ -2851,9 +3026,12 @@ static void clk_dump_subtree(struct seq_file *s, struct clk_core *c, int level)
 	}
 
 	seq_putc(s, '}');
+<<<<<<< HEAD
 
 	if (c->ops->bus_vote)
 		c->ops->bus_vote(c->hw, false);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int clk_dump(struct seq_file *s, void *data)
@@ -2918,6 +3096,7 @@ static const struct file_operations possible_parents_fops = {
 	.release	= single_release,
 };
 
+<<<<<<< HEAD
 static int clock_debug_rate_set(void *data, u64 val)
 {
 	struct clk_core *core = data;
@@ -3285,6 +3464,8 @@ static const struct file_operations clk_duty_cycle_fops = {
 	.release	= single_release,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
 {
 	struct dentry *d;
@@ -3301,6 +3482,7 @@ static int clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
 
 	core->dentry = d;
 
+<<<<<<< HEAD
 	d = debugfs_create_file("clk_rate", 0444, core->dentry, core,
 			&clock_rate_fops);
 	if (!d)
@@ -3327,22 +3509,51 @@ static int clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
 		goto err_out;
 
 	d = debugfs_create_x32("clk_flags", 0444, core->dentry,
+=======
+	d = debugfs_create_ulong("clk_rate", 0444, core->dentry, &core->rate);
+	if (!d)
+		goto err_out;
+
+	d = debugfs_create_ulong("clk_accuracy", 0444, core->dentry,
+				 &core->accuracy);
+	if (!d)
+		goto err_out;
+
+	d = debugfs_create_u32("clk_phase", 0444, core->dentry, &core->phase);
+	if (!d)
+		goto err_out;
+
+	d = debugfs_create_x32("clk_flags", S_IRUGO, core->dentry,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			(u32 *)&core->flags);
 	if (!d)
 		goto err_out;
 
 	d = debugfs_create_u32("clk_prepare_count", 0444, core->dentry,
+<<<<<<< HEAD
 			(u32 *)&core->prepare_count);
 	if (!d)
 		goto err_out;
 
 	d = debugfs_create_file("clk_enable_count", 0444, core->dentry,
 			core, &clock_enable_fops);
+=======
+			       &core->prepare_count);
+	if (!d)
+		goto err_out;
+
+	d = debugfs_create_u32("clk_enable_count", 0444, core->dentry,
+			       &core->enable_count);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!d)
 		goto err_out;
 
 	d = debugfs_create_u32("clk_notifier_count", 0444, core->dentry,
+<<<<<<< HEAD
 			(u32 *)&core->notifier_count);
+=======
+			       &core->notifier_count);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!d)
 		goto err_out;
 
@@ -3353,6 +3564,7 @@ static int clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
 			goto err_out;
 	}
 
+<<<<<<< HEAD
 	d = debugfs_create_file("clk_parent", 0444, core->dentry, core,
 			&clock_parent_fops);
 	if (!d)
@@ -3368,6 +3580,8 @@ static int clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
 	if (!d)
 		goto err_out;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (core->ops->debug_init) {
 		ret = core->ops->debug_init(core->hw, core->dentry);
 		if (ret)
@@ -3439,6 +3653,7 @@ struct dentry *clk_debugfs_add_file(struct clk_hw *hw, char *name, umode_t mode,
 }
 EXPORT_SYMBOL_GPL(clk_debugfs_add_file);
 
+<<<<<<< HEAD
 /*
  * Print the names of all enabled clocks and their parents if
  * debug_suspend is set from debugfs along with print_parent flag set to 1.
@@ -3457,6 +3672,8 @@ void clock_debug_print_enabled(bool print_parent)
 }
 EXPORT_SYMBOL_GPL(clock_debug_print_enabled);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * clk_debug_init - lazily populate the debugfs clk directory
  *
@@ -3496,6 +3713,7 @@ static int __init clk_debug_init(void)
 	if (!d)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	d = debugfs_create_file("clk_enabled_list", 0444, rootdir,
 				&clk_debug_list, &clk_enabled_list_fops);
 	if (!d)
@@ -3511,6 +3729,8 @@ static int __init clk_debug_init(void)
 	if (!d)
 		return -ENOMEM;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_lock(&clk_debug_lock);
 	hlist_for_each_entry(core, &clk_debug_list, debug_node)
 		clk_debug_create_one(core, rootdir);
@@ -3647,11 +3867,14 @@ static int __clk_core_init(struct clk_core *core)
 		core->phase = 0;
 
 	/*
+<<<<<<< HEAD
 	 * Set clk's duty cycle.
 	 */
 	clk_core_update_duty_cycle_nolock(core);
 
 	/*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * Set clk's rate.  The preferred method is to use .recalc_rate.  For
 	 * simple clocks and lazy developers the default fallback is to use the
 	 * parent's rate.  If a clock doesn't have a parent (or is orphaned)
@@ -3674,11 +3897,25 @@ static int __clk_core_init(struct clk_core *core)
 	if (core->flags & CLK_IS_CRITICAL) {
 		unsigned long flags;
 
+<<<<<<< HEAD
 		clk_core_prepare(core);
 
 		flags = clk_enable_lock();
 		clk_core_enable(core);
 		clk_enable_unlock(flags);
+=======
+		ret = clk_core_prepare(core);
+		if (ret)
+			goto out;
+
+		flags = clk_enable_lock();
+		ret = clk_core_enable(core);
+		clk_enable_unlock(flags);
+		if (ret) {
+			clk_core_unprepare(core);
+			goto out;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/*
@@ -3714,6 +3951,7 @@ static int __clk_core_init(struct clk_core *core)
 	if (core->ops->init)
 		core->ops->init(core->hw);
 
+<<<<<<< HEAD
 	/*
 	 * enable clocks with the CLK_ENABLE_HAND_OFF flag set
 	 *
@@ -3745,6 +3983,8 @@ static int __clk_core_init(struct clk_core *core)
 		}
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kref_init(&core->ref);
 out:
 	clk_prepare_unlock();
@@ -3826,6 +4066,7 @@ struct clk *clk_register(struct device *dev, struct clk_hw *hw)
 	core->num_parents = hw->init->num_parents;
 	core->min_rate = 0;
 	core->max_rate = ULONG_MAX;
+<<<<<<< HEAD
 	core->vdd_class = hw->init->vdd_class;
 	core->rate_max = hw->init->rate_max;
 	core->num_rate_max = hw->init->num_rate_max;
@@ -3839,6 +4080,10 @@ struct clk *clk_register(struct device *dev, struct clk_hw *hw)
 		}
 	}
 
+=======
+	hw->core = core;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* allocate local copy in case parent_names is __initdata */
 	core->parent_names = kcalloc(core->num_parents, sizeof(char *),
 					GFP_KERNEL);
@@ -3868,7 +4113,10 @@ struct clk *clk_register(struct device *dev, struct clk_hw *hw)
 	};
 
 	INIT_HLIST_HEAD(&core->clks);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&core->rate_change_node);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	hw->clk = __clk_create_clk(hw, NULL, NULL);
 	if (IS_ERR(hw->clk)) {
@@ -3966,6 +4214,37 @@ static const struct clk_ops clk_nodrv_ops = {
 	.set_parent	= clk_nodrv_set_parent,
 };
 
+<<<<<<< HEAD
+=======
+static void clk_core_evict_parent_cache_subtree(struct clk_core *root,
+						struct clk_core *target)
+{
+	int i;
+	struct clk_core *child;
+
+	for (i = 0; i < root->num_parents; i++)
+		if (root->parents[i] == target)
+			root->parents[i] = NULL;
+
+	hlist_for_each_entry(child, &root->children, child_node)
+		clk_core_evict_parent_cache_subtree(child, target);
+}
+
+/* Remove this clk from all parent caches */
+static void clk_core_evict_parent_cache(struct clk_core *core)
+{
+	struct hlist_head **lists;
+	struct clk_core *root;
+
+	lockdep_assert_held(&prepare_lock);
+
+	for (lists = all_lists; *lists; lists++)
+		hlist_for_each_entry(root, *lists, child_node)
+			clk_core_evict_parent_cache_subtree(root, core);
+
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * clk_unregister - unregister a currently registered clock
  * @clk: clock to unregister
@@ -4004,6 +4283,11 @@ void clk_unregister(struct clk *clk)
 			clk_core_set_parent(child, NULL);
 	}
 
+<<<<<<< HEAD
+=======
+	clk_core_evict_parent_cache(clk->core);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hlist_del_init(&clk->core->child_node);
 
 	if (clk->core->prepare_count)
@@ -4035,6 +4319,7 @@ static void devm_clk_hw_release(struct device *dev, void *res)
 	clk_hw_unregister(*(struct clk_hw **)res);
 }
 
+<<<<<<< HEAD
 #define MAX_LEN_OPP_HANDLE	50
 #define LEN_OPP_HANDLE		16
 
@@ -4195,6 +4480,8 @@ err_derive_device_list:
 	kfree(device_list);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * devm_clk_register - resource managed clk_register()
  * @dev: device that is registering this clock
@@ -4221,7 +4508,10 @@ struct clk *devm_clk_register(struct device *dev, struct clk_hw *hw)
 		devres_free(clkp);
 	}
 
+<<<<<<< HEAD
 	clk_populate_clock_opp_table(dev->of_node, hw);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return clk;
 }
 EXPORT_SYMBOL_GPL(devm_clk_register);
@@ -4252,7 +4542,10 @@ int devm_clk_hw_register(struct device *dev, struct clk_hw *hw)
 		devres_free(hwp);
 	}
 
+<<<<<<< HEAD
 	clk_populate_clock_opp_table(dev->of_node, hw);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 EXPORT_SYMBOL_GPL(devm_clk_hw_register);
@@ -4381,6 +4674,7 @@ int clk_notifier_register(struct clk *clk, struct notifier_block *nb)
 	/* search the list of notifiers for this clk */
 	list_for_each_entry(cn, &clk_notifier_list, node)
 		if (cn->clk == clk)
+<<<<<<< HEAD
 			break;
 
 	/* if clk wasn't in the notifier list, allocate new clk_notifier */
@@ -4395,6 +4689,21 @@ int clk_notifier_register(struct clk *clk, struct notifier_block *nb)
 		list_add(&cn->node, &clk_notifier_list);
 	}
 
+=======
+			goto found;
+
+	/* if clk wasn't in the notifier list, allocate new clk_notifier */
+	cn = kzalloc(sizeof(*cn), GFP_KERNEL);
+	if (!cn)
+		goto out;
+
+	cn->clk = clk;
+	srcu_init_notifier_head(&cn->notifier_head);
+
+	list_add(&cn->node, &clk_notifier_list);
+
+found:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = srcu_notifier_chain_register(&cn->notifier_head, nb);
 
 	clk->core->notifier_count++;
@@ -4419,14 +4728,20 @@ EXPORT_SYMBOL_GPL(clk_notifier_register);
  */
 int clk_notifier_unregister(struct clk *clk, struct notifier_block *nb)
 {
+<<<<<<< HEAD
 	struct clk_notifier *cn = NULL;
 	int ret = -EINVAL;
+=======
+	struct clk_notifier *cn;
+	int ret = -ENOENT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!clk || !nb)
 		return -EINVAL;
 
 	clk_prepare_lock();
 
+<<<<<<< HEAD
 	list_for_each_entry(cn, &clk_notifier_list, node)
 		if (cn->clk == clk)
 			break;
@@ -4445,6 +4760,22 @@ int clk_notifier_unregister(struct clk *clk, struct notifier_block *nb)
 
 	} else {
 		ret = -ENOENT;
+=======
+	list_for_each_entry(cn, &clk_notifier_list, node) {
+		if (cn->clk == clk) {
+			ret = srcu_notifier_chain_unregister(&cn->notifier_head, nb);
+
+			clk->core->notifier_count--;
+
+			/* XXX the notifier code should handle this better */
+			if (!cn->notifier_head.head) {
+				srcu_cleanup_notifier_head(&cn->notifier_head);
+				list_del(&cn->node);
+				kfree(cn);
+			}
+			break;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	clk_prepare_unlock();
@@ -4589,6 +4920,7 @@ int of_clk_add_hw_provider(struct device_node *np,
 }
 EXPORT_SYMBOL_GPL(of_clk_add_hw_provider);
 
+<<<<<<< HEAD
 static void devm_of_clk_release_provider(struct device *dev, void *res)
 {
 	of_clk_del_provider(*(struct device_node **)res);
@@ -4620,6 +4952,8 @@ int devm_of_clk_add_hw_provider(struct device *dev,
 }
 EXPORT_SYMBOL_GPL(devm_of_clk_add_hw_provider);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * of_clk_del_provider() - Remove a previously registered clock provider
  * @np: Device node pointer associated with clock provider
@@ -4641,6 +4975,7 @@ void of_clk_del_provider(struct device_node *np)
 }
 EXPORT_SYMBOL_GPL(of_clk_del_provider);
 
+<<<<<<< HEAD
 static int devm_clk_provider_match(struct device *dev, void *res, void *data)
 {
 	struct device_node **np = res;
@@ -4662,6 +4997,8 @@ void devm_of_clk_del_provider(struct device *dev)
 }
 EXPORT_SYMBOL(devm_of_clk_del_provider);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct clk_hw *
 __of_clk_get_hw_from_provider(struct of_clk_provider *provider,
 			      struct of_phandle_args *clkspec)

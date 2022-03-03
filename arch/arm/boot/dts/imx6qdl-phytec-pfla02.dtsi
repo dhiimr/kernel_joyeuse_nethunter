@@ -306,8 +306,13 @@
 			fsl,pins = <
 				MX6QDL_PAD_EIM_D24__UART3_TX_DATA	0x1b0b1
 				MX6QDL_PAD_EIM_D25__UART3_RX_DATA	0x1b0b1
+<<<<<<< HEAD
 				MX6QDL_PAD_EIM_D30__UART3_RTS_B		0x1b0b1
 				MX6QDL_PAD_EIM_D31__UART3_CTS_B		0x1b0b1
+=======
+				MX6QDL_PAD_EIM_D31__UART3_RTS_B		0x1b0b1
+				MX6QDL_PAD_EIM_D30__UART3_CTS_B		0x1b0b1
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			>;
 		};
 
@@ -394,6 +399,10 @@
 &uart3 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_uart3>;
+<<<<<<< HEAD
+=======
+	uart-has-rtscts;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	status = "disabled";
 };
 
@@ -423,6 +432,10 @@
 	pinctrl-0 = <&pinctrl_usdhc2>;
 	cd-gpios = <&gpio1 4 GPIO_ACTIVE_LOW>;
 	wp-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
+<<<<<<< HEAD
+=======
+	vmmc-supply = <&vdd_sd1_reg>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	status = "disabled";
 };
 
@@ -432,5 +445,9 @@
 		     &pinctrl_usdhc3_cdwp>;
 	cd-gpios = <&gpio1 27 GPIO_ACTIVE_LOW>;
 	wp-gpios = <&gpio1 29 GPIO_ACTIVE_HIGH>;
+<<<<<<< HEAD
+=======
+	vmmc-supply = <&vdd_sd0_reg>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	status = "disabled";
 };

@@ -257,6 +257,10 @@ extern int rbv_present,via_alt_mapping;
 
 struct irq_desc;
 
+<<<<<<< HEAD
+=======
+extern void via_l2_flush(int writeback);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void via_register_interrupts(void);
 extern void via_irq_enable(int);
 extern void via_irq_disable(int);

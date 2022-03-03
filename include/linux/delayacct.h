@@ -57,12 +57,16 @@ struct task_delay_info {
 
 	u64 freepages_start;
 	u64 freepages_delay;	/* wait for memory reclaim */
+<<<<<<< HEAD
 
 	u64 thrashing_start;
 	u64 thrashing_delay;	/* wait for thrashing page */
 
 	u32 freepages_count;	/* total count of memory reclaim */
 	u32 thrashing_count;	/* total count of thrash waits */
+=======
+	u32 freepages_count;	/* total count of memory reclaim */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 #endif
 
@@ -81,8 +85,11 @@ extern int __delayacct_add_tsk(struct taskstats *, struct task_struct *);
 extern __u64 __delayacct_blkio_ticks(struct task_struct *);
 extern void __delayacct_freepages_start(void);
 extern void __delayacct_freepages_end(void);
+<<<<<<< HEAD
 extern void __delayacct_thrashing_start(void);
 extern void __delayacct_thrashing_end(void);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static inline int delayacct_is_task_waiting_on_io(struct task_struct *p)
 {
@@ -163,6 +170,7 @@ static inline void delayacct_freepages_end(void)
 		__delayacct_freepages_end();
 }
 
+<<<<<<< HEAD
 static inline void delayacct_thrashing_start(void)
 {
 	if (current->delays)
@@ -175,6 +183,8 @@ static inline void delayacct_thrashing_end(void)
 		__delayacct_thrashing_end();
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else
 static inline void delayacct_set_flag(int flag)
 {}
@@ -201,10 +211,13 @@ static inline void delayacct_freepages_start(void)
 {}
 static inline void delayacct_freepages_end(void)
 {}
+<<<<<<< HEAD
 static inline void delayacct_thrashing_start(void)
 {}
 static inline void delayacct_thrashing_end(void)
 {}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif /* CONFIG_TASK_DELAY_ACCT */
 

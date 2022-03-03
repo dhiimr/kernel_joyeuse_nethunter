@@ -402,6 +402,10 @@ static int smsusb_init_device(struct usb_interface *intf, int board_id)
 	struct smsusb_device_t *dev;
 	void *mdev;
 	int i, rc;
+<<<<<<< HEAD
+=======
+	int align = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* create device object */
 	dev = kzalloc(sizeof(struct smsusb_device_t), GFP_KERNEL);
@@ -413,6 +417,27 @@ static int smsusb_init_device(struct usb_interface *intf, int board_id)
 	dev->udev = interface_to_usbdev(intf);
 	dev->state = SMSUSB_DISCONNECTED;
 
+<<<<<<< HEAD
+=======
+	for (i = 0; i < intf->cur_altsetting->desc.bNumEndpoints; i++) {
+		struct usb_endpoint_descriptor *desc =
+				&intf->cur_altsetting->endpoint[i].desc;
+
+		if (desc->bEndpointAddress & USB_DIR_IN) {
+			dev->in_ep = desc->bEndpointAddress;
+			align = usb_endpoint_maxp(desc) - sizeof(struct sms_msg_hdr);
+		} else {
+			dev->out_ep = desc->bEndpointAddress;
+		}
+	}
+
+	pr_debug("in_ep = %02x, out_ep = %02x\n", dev->in_ep, dev->out_ep);
+	if (!dev->in_ep || !dev->out_ep || align < 0) {  /* Missing endpoints? */
+		smsusb_term_device(intf);
+		return -ENODEV;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	params.device_type = sms_get_board(board_id)->type;
 
 	switch (params.device_type) {
@@ -427,14 +452,19 @@ static int smsusb_init_device(struct usb_interface *intf, int board_id)
 		/* fall-thru */
 	default:
 		dev->buffer_size = USB2_BUFFER_SIZE;
+<<<<<<< HEAD
 		dev->response_alignment =
 		    le16_to_cpu(dev->udev->ep_in[1]->desc.wMaxPacketSize) -
 		    sizeof(struct sms_msg_hdr);
+=======
+		dev->response_alignment = align;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		params.flags |= SMS_DEVICE_FAMILY2;
 		break;
 	}
 
+<<<<<<< HEAD
 	for (i = 0; i < intf->cur_altsetting->desc.bNumEndpoints; i++) {
 		if (intf->cur_altsetting->endpoint[i].desc. bEndpointAddress & USB_DIR_IN)
 			dev->in_ep = intf->cur_altsetting->endpoint[i].desc.bEndpointAddress;
@@ -445,6 +475,8 @@ static int smsusb_init_device(struct usb_interface *intf, int board_id)
 	pr_debug("in_ep = %02x, out_ep = %02x\n",
 		dev->in_ep, dev->out_ep);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	params.device = &dev->udev->dev;
 	params.buffer_size = dev->buffer_size;
 	params.num_buffers = MAX_BUFFERS;

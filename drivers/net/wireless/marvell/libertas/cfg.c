@@ -273,6 +273,13 @@ add_ie_rates(u8 *tlv, const u8 *ie, int *nrates)
 	int hw, ap, ap_max = ie[1];
 	u8 hw_rate;
 
+<<<<<<< HEAD
+=======
+	if (ap_max > MAX_RATES) {
+		lbs_deb_assoc("invalid rates\n");
+		return tlv;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Advance past IE header */
 	ie += 2;
 
@@ -1720,6 +1727,12 @@ static int lbs_ibss_join_existing(struct lbs_private *priv,
 	struct cmd_ds_802_11_ad_hoc_join cmd;
 	u8 preamble = RADIO_PREAMBLE_SHORT;
 	int ret = 0;
+<<<<<<< HEAD
+=======
+	int hw, i;
+	u8 rates_max;
+	u8 *rates;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* TODO: set preamble based on scan result */
 	ret = lbs_set_radio(priv, preamble, 1);
@@ -1778,9 +1791,20 @@ static int lbs_ibss_join_existing(struct lbs_private *priv,
 	if (!rates_eid) {
 		lbs_add_rates(cmd.bss.rates);
 	} else {
+<<<<<<< HEAD
 		int hw, i;
 		u8 rates_max = rates_eid[1];
 		u8 *rates = cmd.bss.rates;
+=======
+		rates_max = rates_eid[1];
+		if (rates_max > MAX_RATES) {
+			lbs_deb_join("invalid rates");
+			rcu_read_unlock();
+			ret = -EINVAL;
+			goto out;
+		}
+		rates = cmd.bss.rates;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		for (hw = 0; hw < ARRAY_SIZE(lbs_rates); hw++) {
 			u8 hw_rate = lbs_rates[hw].bitrate / 5;
 			for (i = 0; i < rates_max; i++) {

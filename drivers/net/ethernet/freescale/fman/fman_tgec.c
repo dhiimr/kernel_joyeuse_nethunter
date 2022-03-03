@@ -585,7 +585,11 @@ int tgec_del_hash_mac_address(struct fman_mac *tgec, enet_addr_t *eth_addr)
 
 	list_for_each(pos, &tgec->multicast_addr_hash->lsts[hash]) {
 		hash_entry = ETH_HASH_ENTRY_OBJ(pos);
+<<<<<<< HEAD
 		if (hash_entry->addr == addr) {
+=======
+		if (hash_entry && hash_entry->addr == addr) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			list_del_init(&hash_entry->node);
 			kfree(hash_entry);
 			break;

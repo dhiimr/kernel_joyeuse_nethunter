@@ -101,6 +101,12 @@ MODULE_DEVICE_TABLE(acpi, lis3lv02d_device_ids);
 static int lis3lv02d_acpi_init(struct lis3lv02d *lis3)
 {
 	struct acpi_device *dev = lis3->bus_priv;
+<<<<<<< HEAD
+=======
+	if (!lis3->init_required)
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (acpi_evaluate_object(dev->handle, METHOD_NAME__INI,
 				 NULL, NULL) != AE_OK)
 		return -EINVAL;
@@ -367,6 +373,10 @@ static int lis3lv02d_add(struct acpi_device *device)
 	}
 
 	/* call the core layer do its init */
+<<<<<<< HEAD
+=======
+	lis3_dev.init_required = true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = lis3lv02d_init_device(&lis3_dev);
 	if (ret)
 		return ret;
@@ -379,9 +389,17 @@ static int lis3lv02d_add(struct acpi_device *device)
 	INIT_WORK(&hpled_led.work, delayed_set_status_worker);
 	ret = led_classdev_register(NULL, &hpled_led.led_classdev);
 	if (ret) {
+<<<<<<< HEAD
 		lis3lv02d_joystick_disable(&lis3_dev);
 		lis3lv02d_poweroff(&lis3_dev);
 		flush_work(&hpled_led.work);
+=======
+		i8042_remove_filter(hp_accel_i8042_filter);
+		lis3lv02d_joystick_disable(&lis3_dev);
+		lis3lv02d_poweroff(&lis3_dev);
+		flush_work(&hpled_led.work);
+		lis3lv02d_remove_fs(&lis3_dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ret;
 	}
 
@@ -414,11 +432,34 @@ static int lis3lv02d_suspend(struct device *dev)
 
 static int lis3lv02d_resume(struct device *dev)
 {
+<<<<<<< HEAD
+=======
+	lis3_dev.init_required = false;
 	lis3lv02d_poweron(&lis3_dev);
 	return 0;
 }
 
+static int lis3lv02d_restore(struct device *dev)
+{
+	lis3_dev.init_required = true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
+	lis3lv02d_poweron(&lis3_dev);
+	return 0;
+}
+
+<<<<<<< HEAD
 static SIMPLE_DEV_PM_OPS(hp_accel_pm, lis3lv02d_suspend, lis3lv02d_resume);
+=======
+static const struct dev_pm_ops hp_accel_pm = {
+	.suspend = lis3lv02d_suspend,
+	.resume = lis3lv02d_resume,
+	.freeze = lis3lv02d_suspend,
+	.thaw = lis3lv02d_resume,
+	.poweroff = lis3lv02d_suspend,
+	.restore = lis3lv02d_restore,
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define HP_ACCEL_PM (&hp_accel_pm)
 #else
 #define HP_ACCEL_PM NULL

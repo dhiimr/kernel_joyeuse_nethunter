@@ -546,7 +546,11 @@ void cmdline(int argc, char **argv)
 
 	progname = argv[0];
 
+<<<<<<< HEAD
 	while ((opt = getopt_long_only(argc, argv, "+a:c:dD:E:e:f:m:M:rt:u:vw",
+=======
+	while ((opt = getopt_long_only(argc, argv, "+a:c:dD:E:e:f:m:M:rt:u:vw:",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				long_options, &option_index)) != -1) {
 		switch (opt) {
 		case 'a':
@@ -1260,6 +1264,18 @@ void probe_dev_msr(void)
 		if (system("/sbin/modprobe msr > /dev/null 2>&1"))
 			err(-5, "no /dev/cpu/0/msr, Try \"# modprobe msr\" ");
 }
+<<<<<<< HEAD
+=======
+
+static void get_cpuid_or_exit(unsigned int leaf,
+			     unsigned int *eax, unsigned int *ebx,
+			     unsigned int *ecx, unsigned int *edx)
+{
+	if (!__get_cpuid(leaf, eax, ebx, ecx, edx))
+		errx(1, "Processor not supported\n");
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * early_cpuid()
  * initialize turbo_is_enabled, has_hwp, has_epb
@@ -1267,6 +1283,7 @@ void probe_dev_msr(void)
  */
 void early_cpuid(void)
 {
+<<<<<<< HEAD
 	unsigned int eax, ebx, ecx, edx, max_level;
 	unsigned int fms, family, model;
 
@@ -1276,6 +1293,12 @@ void early_cpuid(void)
 		errx(1, "Processor not supported\n");
 
 	__get_cpuid(1, &fms, &ebx, &ecx, &edx);
+=======
+	unsigned int eax, ebx, ecx, edx;
+	unsigned int fms, family, model;
+
+	get_cpuid_or_exit(1, &fms, &ebx, &ecx, &edx);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	family = (fms >> 8) & 0xf;
 	model = (fms >> 4) & 0xf;
 	if (family == 6 || family == 0xf)
@@ -1289,7 +1312,11 @@ void early_cpuid(void)
 		bdx_highest_ratio = msr & 0xFF;
 	}
 
+<<<<<<< HEAD
 	__get_cpuid(0x6, &eax, &ebx, &ecx, &edx);
+=======
+	get_cpuid_or_exit(0x6, &eax, &ebx, &ecx, &edx);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	turbo_is_enabled = (eax >> 1) & 1;
 	has_hwp = (eax >> 7) & 1;
 	has_epb = (ecx >> 3) & 1;
@@ -1307,7 +1334,11 @@ void parse_cpuid(void)
 
 	eax = ebx = ecx = edx = 0;
 
+<<<<<<< HEAD
 	__get_cpuid(0, &max_level, &ebx, &ecx, &edx);
+=======
+	get_cpuid_or_exit(0, &max_level, &ebx, &ecx, &edx);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (ebx == 0x756e6547 && edx == 0x49656e69 && ecx == 0x6c65746e)
 		genuine_intel = 1;
@@ -1316,7 +1347,11 @@ void parse_cpuid(void)
 		fprintf(stderr, "CPUID(0): %.4s%.4s%.4s ",
 			(char *)&ebx, (char *)&edx, (char *)&ecx);
 
+<<<<<<< HEAD
 	__get_cpuid(1, &fms, &ebx, &ecx, &edx);
+=======
+	get_cpuid_or_exit(1, &fms, &ebx, &ecx, &edx);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	family = (fms >> 8) & 0xf;
 	model = (fms >> 4) & 0xf;
 	stepping = fms & 0xf;
@@ -1341,7 +1376,11 @@ void parse_cpuid(void)
 		errx(1, "CPUID: no MSR");
 
 
+<<<<<<< HEAD
 	__get_cpuid(0x6, &eax, &ebx, &ecx, &edx);
+=======
+	get_cpuid_or_exit(0x6, &eax, &ebx, &ecx, &edx);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* turbo_is_enabled already set */
 	/* has_hwp already set */
 	has_hwp_notify = eax & (1 << 8);

@@ -3686,8 +3686,15 @@ static int pqi_submit_raid_request_synchronous(struct pqi_ctrl_info *ctrl_info,
 				return -ETIMEDOUT;
 			msecs_blocked =
 				jiffies_to_msecs(jiffies - start_jiffies);
+<<<<<<< HEAD
 			if (msecs_blocked >= timeout_msecs)
 				return -ETIMEDOUT;
+=======
+			if (msecs_blocked >= timeout_msecs) {
+				rc = -ETIMEDOUT;
+				goto out;
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			timeout_msecs -= msecs_blocked;
 		}
 	}
@@ -6392,7 +6399,11 @@ static int pqi_pci_init(struct pqi_ctrl_info *ctrl_info)
 	else
 		mask = DMA_BIT_MASK(32);
 
+<<<<<<< HEAD
 	rc = dma_set_mask(&ctrl_info->pci_dev->dev, mask);
+=======
+	rc = dma_set_mask_and_coherent(&ctrl_info->pci_dev->dev, mask);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (rc) {
 		dev_err(&ctrl_info->pci_dev->dev, "failed to set DMA mask\n");
 		goto disable_device;

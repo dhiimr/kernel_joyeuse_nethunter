@@ -410,6 +410,7 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void dpcm_be_hw_params_prepare(void *data)
 {
 	struct snd_compr_stream *cstream = data;
@@ -441,6 +442,8 @@ static void dpcm_be_hw_params_prepare_async(void *data, async_cookie_t cookie)
 	dpcm_be_hw_params_prepare(data);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int soc_compr_set_params(struct snd_compr_stream *cstream,
 					struct snd_compr_params *params)
 {
@@ -503,11 +506,15 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
 		 fe->pcm->streams[cstream->direction].substream;
 	struct snd_soc_platform *platform = fe->platform;
 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *be_list[DPCM_MAX_BE_USERS];
 	struct snd_soc_dpcm *dpcm;
 	int ret = 0, stream, i, j = 0;
 
 	ASYNC_DOMAIN_EXCLUSIVE(async_domain);
+=======
+	int ret = 0, stream;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (cstream->direction == SND_COMPRESS_PLAYBACK)
 		stream = SNDRV_PCM_STREAM_PLAYBACK;
@@ -522,6 +529,7 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
 			goto out;
 	}
 
+<<<<<<< HEAD
 	if (!(fe->dai_link->async_ops & ASYNC_DPCM_SND_SOC_HW_PARAMS)) {
 		/* first we call set_params for the platform driver
 		 * this should configure the soc side
@@ -627,6 +635,38 @@ exit:
 			goto out;
 	}
 
+=======
+	if (platform->driver->compr_ops && platform->driver->compr_ops->set_params) {
+		ret = platform->driver->compr_ops->set_params(cstream, params);
+		if (ret < 0)
+			goto out;
+	}
+
+	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->set_params) {
+		ret = fe->dai_link->compr_ops->set_params(cstream);
+		if (ret < 0)
+			goto out;
+	}
+
+	/*
+	 * Create an empty hw_params for the BE as the machine driver must
+	 * fix this up to match DSP decoder and ASRC configuration.
+	 * I.e. machine driver fixup for compressed BE is mandatory.
+	 */
+	memset(&fe->dpcm[fe_substream->stream].hw_params, 0,
+		sizeof(struct snd_pcm_hw_params));
+
+	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
+
+	ret = dpcm_be_dai_hw_params(fe, stream);
+	if (ret < 0)
+		goto out;
+
+	ret = dpcm_be_dai_prepare(fe, stream);
+	if (ret < 0)
+		goto out;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_START);
 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_PREPARE;
 
@@ -751,6 +791,7 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int sst_compr_set_next_track_param(struct snd_compr_stream *cstream,
 				union snd_codec_options *codec_options)
 {
@@ -767,6 +808,8 @@ static int sst_compr_set_next_track_param(struct snd_compr_stream *cstream,
 }
 
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int soc_compr_set_metadata(struct snd_compr_stream *cstream,
 				struct snd_compr_metadata *metadata)
 {
@@ -813,7 +856,10 @@ static struct snd_compr_ops soc_compr_ops = {
 	.free		= soc_compr_free,
 	.set_params	= soc_compr_set_params,
 	.set_metadata   = soc_compr_set_metadata,
+<<<<<<< HEAD
 	.set_next_track_param	= sst_compr_set_next_track_param,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.get_metadata	= soc_compr_get_metadata,
 	.get_params	= soc_compr_get_params,
 	.trigger	= soc_compr_trigger,
@@ -830,7 +876,10 @@ static struct snd_compr_ops soc_compr_dyn_ops = {
 	.set_params	= soc_compr_set_params_fe,
 	.get_params	= soc_compr_get_params,
 	.set_metadata   = soc_compr_set_metadata,
+<<<<<<< HEAD
 	.set_next_track_param	= sst_compr_set_next_track_param,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.get_metadata	= soc_compr_get_metadata,
 	.trigger	= soc_compr_trigger_fe,
 	.pointer	= soc_compr_pointer,
@@ -945,6 +994,7 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
 	rtd->compr = compr;
 	compr->private_data = rtd;
 
+<<<<<<< HEAD
 	if (platform->driver->pcm_new) {
 		ret = platform->driver->pcm_new(rtd);
 		if (ret < 0) {
@@ -955,6 +1005,10 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
 
 	dev_dbg(rtd->card->dev, "compress asoc: %s <-> %s mapping ok\n",
 		codec_dai->name, cpu_dai->name);
+=======
+	printk(KERN_INFO "compress asoc: %s <-> %s mapping ok\n", codec_dai->name,
+		cpu_dai->name);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 
 compr_err:

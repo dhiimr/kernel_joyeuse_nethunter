@@ -1925,6 +1925,7 @@ static int mv_u3d_probe(struct platform_device *dev)
 		goto err_get_irq;
 	}
 	u3d->irq = r->start;
+<<<<<<< HEAD
 	if (request_irq(u3d->irq, mv_u3d_irq,
 		IRQF_SHARED, driver_name, u3d)) {
 		u3d->irq = 0;
@@ -1933,6 +1934,8 @@ static int mv_u3d_probe(struct platform_device *dev)
 		retval = -ENODEV;
 		goto err_request_irq;
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* initialize gadget structure */
 	u3d->gadget.ops = &mv_u3d_ops;	/* usb_gadget_ops */
@@ -1945,6 +1948,18 @@ static int mv_u3d_probe(struct platform_device *dev)
 
 	mv_u3d_eps_init(u3d);
 
+<<<<<<< HEAD
+=======
+	if (request_irq(u3d->irq, mv_u3d_irq,
+		IRQF_SHARED, driver_name, u3d)) {
+		u3d->irq = 0;
+		dev_err(&dev->dev, "Request irq %d for u3d failed\n",
+			u3d->irq);
+		retval = -ENODEV;
+		goto err_request_irq;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* external vbus detection */
 	if (u3d->vbus) {
 		u3d->clock_gating = 1;
@@ -1968,8 +1983,13 @@ static int mv_u3d_probe(struct platform_device *dev)
 
 err_unregister:
 	free_irq(u3d->irq, u3d);
+<<<<<<< HEAD
 err_request_irq:
 err_get_irq:
+=======
+err_get_irq:
+err_request_irq:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(u3d->status_req);
 err_alloc_status_req:
 	kfree(u3d->eps);

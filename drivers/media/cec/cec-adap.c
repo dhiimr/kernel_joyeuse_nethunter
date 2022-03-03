@@ -330,7 +330,12 @@ static void cec_data_cancel(struct cec_data *data)
 	} else {
 		list_del_init(&data->list);
 		if (!(data->msg.tx_status & CEC_TX_STATUS_OK))
+<<<<<<< HEAD
 			data->adap->transmit_queue_sz--;
+=======
+			if (!WARN_ON(!data->adap->transmit_queue_sz))
+				data->adap->transmit_queue_sz--;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* Mark it as an error */
@@ -377,6 +382,17 @@ static void cec_flush(struct cec_adapter *adap)
 		 * need to do anything special in that case.
 		 */
 	}
+<<<<<<< HEAD
+=======
+	/*
+	 * If something went wrong and this counter isn't what it should
+	 * be, then this will reset it back to 0. Warn if it is not 0,
+	 * since it indicates a bug, either in this framework or in a
+	 * CEC driver.
+	 */
+	if (WARN_ON(adap->transmit_queue_sz))
+		adap->transmit_queue_sz = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -465,7 +481,12 @@ int cec_thread_func(void *_adap)
 		data = list_first_entry(&adap->transmit_queue,
 					struct cec_data, list);
 		list_del_init(&data->list);
+<<<<<<< HEAD
 		adap->transmit_queue_sz--;
+=======
+		if (!WARN_ON(!data->adap->transmit_queue_sz))
+			adap->transmit_queue_sz--;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/* Make this the current transmitting message */
 		adap->transmitting = data;
@@ -1031,11 +1052,19 @@ void cec_received_msg_ts(struct cec_adapter *adap,
 			valid_la = false;
 		else if (!cec_msg_is_broadcast(msg) && !(dir_fl & DIRECTED))
 			valid_la = false;
+<<<<<<< HEAD
 		else if (cec_msg_is_broadcast(msg) && !(dir_fl & BCAST1_4))
 			valid_la = false;
 		else if (cec_msg_is_broadcast(msg) &&
 			 adap->log_addrs.cec_version >= CEC_OP_CEC_VERSION_2_0 &&
 			 !(dir_fl & BCAST2_0))
+=======
+		else if (cec_msg_is_broadcast(msg) && !(dir_fl & BCAST))
+			valid_la = false;
+		else if (cec_msg_is_broadcast(msg) &&
+			 adap->log_addrs.cec_version < CEC_OP_CEC_VERSION_2_0 &&
+			 !(dir_fl & BCAST1_4))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			valid_la = false;
 	}
 	if (valid_la && min_len) {
@@ -1125,6 +1154,10 @@ void cec_received_msg_ts(struct cec_adapter *adap,
 			if (abort)
 				dst->rx_status |= CEC_RX_STATUS_FEATURE_ABORT;
 			msg->flags = dst->flags;
+<<<<<<< HEAD
+=======
+			msg->sequence = dst->sequence;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/* Remove it from the wait_queue */
 			list_del_init(&data->list);
 
@@ -1403,6 +1436,16 @@ configured:
 			las->log_addr[i],
 			cec_phys_addr_exp(adap->phys_addr));
 		cec_transmit_msg_fh(adap, &msg, NULL, false);
+<<<<<<< HEAD
+=======
+
+		/* Report Vendor ID */
+		if (adap->log_addrs.vendor_id != CEC_VENDOR_ID_NONE) {
+			cec_msg_device_vendor_id(&msg,
+						 adap->log_addrs.vendor_id);
+			cec_transmit_msg_fh(adap, &msg, NULL, false);
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	adap->kthread_config = NULL;
 	complete(&adap->config_completion);
@@ -1607,6 +1650,13 @@ int __cec_s_log_addrs(struct cec_adapter *adap,
 		unsigned j;
 
 		log_addrs->log_addr[i] = CEC_LOG_ADDR_INVALID;
+<<<<<<< HEAD
+=======
+		if (log_addrs->log_addr_type[i] > CEC_LOG_ADDR_TYPE_UNREGISTERED) {
+			dprintk(1, "unknown logical address type\n");
+			return -EINVAL;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (type_mask & (1 << log_addrs->log_addr_type[i])) {
 			dprintk(1, "duplicate logical address type\n");
 			return -EINVAL;
@@ -1627,10 +1677,13 @@ int __cec_s_log_addrs(struct cec_adapter *adap,
 			dprintk(1, "invalid primary device type\n");
 			return -EINVAL;
 		}
+<<<<<<< HEAD
 		if (log_addrs->log_addr_type[i] > CEC_LOG_ADDR_TYPE_UNREGISTERED) {
 			dprintk(1, "unknown logical address type\n");
 			return -EINVAL;
 		}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		for (j = 0; j < feature_sz; j++) {
 			if ((features[j] & 0x80) == 0) {
 				if (op_is_dev_features)

@@ -607,10 +607,16 @@ static int technisat_usb2_frontend_attach(struct dvb_usb_adapter *a)
 static int technisat_usb2_get_ir(struct dvb_usb_device *d)
 {
 	struct technisat_usb2_state *state = d->priv;
+<<<<<<< HEAD
 	u8 *buf = state->buf;
 	u8 *b;
 	int ret;
 	struct ir_raw_event ev;
+=======
+	struct ir_raw_event ev;
+	u8 *buf = state->buf;
+	int i, ret;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	buf[0] = GET_IR_DATA_VENDOR_REQUEST;
 	buf[1] = 0x08;
@@ -646,6 +652,7 @@ unlock:
 		return 0; /* no key pressed */
 
 	/* decoding */
+<<<<<<< HEAD
 	b = buf+1;
 
 #if 0
@@ -661,11 +668,30 @@ unlock:
 
 		b++;
 		if (*b == 0xff) {
+=======
+
+#if 0
+	deb_rc("RC: %d ", ret);
+	debug_dump(buf + 1, ret, deb_rc);
+#endif
+
+	ev.pulse = 0;
+	for (i = 1; i < ARRAY_SIZE(state->buf); i++) {
+		if (buf[i] == 0xff) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ev.pulse = 0;
 			ev.duration = 888888*2;
 			ir_raw_event_store(d->rc_dev, &ev);
 			break;
 		}
+<<<<<<< HEAD
+=======
+
+		ev.pulse = !ev.pulse;
+		ev.duration = (buf[i] * FIRMWARE_CLOCK_DIVISOR *
+			       FIRMWARE_CLOCK_TICK) / 1000;
+		ir_raw_event_store(d->rc_dev, &ev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ir_raw_event_handle(d->rc_dev);

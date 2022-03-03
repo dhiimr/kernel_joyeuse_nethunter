@@ -30,7 +30,10 @@ struct regmap;
 struct regmap_range_cfg;
 struct regmap_field;
 struct snd_ac97;
+<<<<<<< HEAD
 struct swr_device;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* An enum of all the supported cache types */
 enum regcache_type {
@@ -513,11 +516,14 @@ struct regmap *__devm_regmap_init_ac97(struct snd_ac97 *ac97,
 				       struct lock_class_key *lock_key,
 				       const char *lock_name);
 
+<<<<<<< HEAD
 struct regmap *__devm_regmap_init_swr(struct swr_device *dev,
 				      const struct regmap_config *config,
 				      struct lock_class_key *lock_key,
 				      const char *lock_name);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Wrapper for regmap_init macros to include a unique lockdep key and name
  * for each call. No-op if CONFIG_LOCKDEP is not set.
@@ -666,6 +672,7 @@ int regmap_attach_dev(struct device *dev, struct regmap *map,
 bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
 
 /**
+<<<<<<< HEAD
  * regmap_init_swr(): Initialise register map
  *
  * @swr: Device that will be interacted with
@@ -679,6 +686,8 @@ bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
 				swr, config)
 
 /**
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * devm_regmap_init() - Initialise managed register map
  *
  * @dev: Device that will be interacted with
@@ -808,6 +817,7 @@ bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
 	__regmap_lockdep_wrapper(__devm_regmap_init_ac97, #config,	\
 				ac97, config)
 
+<<<<<<< HEAD
 /**
  * devm_regmap_init_swr(): Initialise managed register map
  *
@@ -822,6 +832,8 @@ bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
 	__regmap_lockdep_wrapper(__devm_regmap_init_swr, #config,       \
 				swr, config)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void regmap_exit(struct regmap *map);
 int regmap_reinit_cache(struct regmap *map,
 			const struct regmap_config *config);
@@ -1000,7 +1012,10 @@ struct regmap_irq_chip {
 	bool mask_invert:1;
 	bool use_ack:1;
 	bool ack_invert:1;
+<<<<<<< HEAD
 	bool clear_ack:1;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool wake_invert:1;
 	bool runtime_pm:1;
 	bool type_invert:1;

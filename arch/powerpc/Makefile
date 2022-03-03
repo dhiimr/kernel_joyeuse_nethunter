@@ -385,7 +385,13 @@ vdso_install:
 ifeq ($(CONFIG_PPC64),y)
 	$(Q)$(MAKE) $(build)=arch/$(ARCH)/kernel/vdso64 $@
 endif
+<<<<<<< HEAD
 	$(Q)$(MAKE) $(build)=arch/$(ARCH)/kernel/vdso32 $@
+=======
+ifdef CONFIG_VDSO32
+	$(Q)$(MAKE) $(build)=arch/$(ARCH)/kernel/vdso32 $@
+endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 archclean:
 	$(Q)$(MAKE) $(clean)=$(boot)
@@ -396,6 +402,7 @@ archprepare: checkbin
 # to stdout and these checks are run even on install targets.
 TOUT	:= .tmp_gas_check
 
+<<<<<<< HEAD
 # Check gcc and binutils versions:
 # - gcc-3.4 and binutils-2.14 are a fatal combination
 # - Require gcc 4.0 or above on 64-bit
@@ -426,6 +433,11 @@ checkbin:
 		echo 'disable kernel modules' ; \
 		false ; \
 	fi
+=======
+# Check toolchain versions:
+# - gcc-4.6 is the minimum kernel-wide version so nothing required.
+checkbin:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	@if test "x${CONFIG_CPU_LITTLE_ENDIAN}" = "xy" \
 	    && $(LD) --version | head -1 | grep ' 2\.24$$' >/dev/null ; then \
 		echo -n '*** binutils 2.24 miscompiles weak symbols ' ; \

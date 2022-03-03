@@ -47,7 +47,11 @@
 
 /* These are for everybody (although not all archs will actually
    discard it in modules) */
+<<<<<<< HEAD
 #define __init		__section(.init.text) __cold __inittrace __latent_entropy __noinitretpoline __nocfi
+=======
+#define __init		__section(.init.text) __cold __inittrace __latent_entropy __noinitretpoline
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define __initdata	__section(.init.data)
 #define __initconst	__section(.init.rodata)
 #define __exitdata	__section(.exit.data)
@@ -153,6 +157,7 @@ extern bool initcall_debug;
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
 #ifdef CONFIG_LTO_CLANG
   /* prepend the variable name with __COUNTER__ to ensure correct ordering */
   #define ___initcall_name2(c, fn, id) 	__initcall_##c##_##fn##id
@@ -162,6 +167,8 @@ extern bool initcall_debug;
   #define __initcall_name(fn, id) 	__initcall_##fn##id
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * initcalls are now grouped by functionality into separate
  * subsections. Ordering inside the subsections is determined
@@ -179,7 +186,11 @@ extern bool initcall_debug;
  */
 
 #define __define_initcall(fn, id) \
+<<<<<<< HEAD
 	static initcall_t __initcall_name(fn, id) __used \
+=======
+	static initcall_t __initcall_##fn##id __used \
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__attribute__((__section__(".initcall" #id ".init"))) = fn;
 
 /*
@@ -289,8 +300,11 @@ void __init parse_early_options(char *cmdline);
 /* Data marked not to be saved by software suspend */
 #define __nosavedata __section(.data..nosave)
 
+<<<<<<< HEAD
 #define __rticdata  __attribute__((section(".bss.rtic")))
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef MODULE
 #define __exit_p(x) x
 #else

@@ -177,8 +177,16 @@ void nfs40_shutdown_client(struct nfs_client *clp)
 
 struct nfs_client *nfs4_alloc_client(const struct nfs_client_initdata *cl_init)
 {
+<<<<<<< HEAD
 	int err;
 	struct nfs_client *clp = nfs_alloc_client(cl_init);
+=======
+	char buf[INET6_ADDRSTRLEN + 1];
+	const char *ip_addr = cl_init->ip_addr;
+	struct nfs_client *clp = nfs_alloc_client(cl_init);
+	int err;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (IS_ERR(clp))
 		return clp;
 
@@ -202,6 +210,47 @@ struct nfs_client *nfs4_alloc_client(const struct nfs_client_initdata *cl_init)
 #if IS_ENABLED(CONFIG_NFS_V4_1)
 	init_waitqueue_head(&clp->cl_lock_waitq);
 #endif
+<<<<<<< HEAD
+=======
+
+	if (cl_init->minorversion != 0)
+		__set_bit(NFS_CS_INFINITE_SLOTS, &clp->cl_flags);
+	__set_bit(NFS_CS_DISCRTRY, &clp->cl_flags);
+	__set_bit(NFS_CS_NO_RETRANS_TIMEOUT, &clp->cl_flags);
+
+	/*
+	 * Set up the connection to the server before we add add to the
+	 * global list.
+	 */
+	err = nfs_create_rpc_client(clp, cl_init, RPC_AUTH_GSS_KRB5I);
+	if (err == -EINVAL)
+		err = nfs_create_rpc_client(clp, cl_init, RPC_AUTH_UNIX);
+	if (err < 0)
+		goto error;
+
+	/* If no clientaddr= option was specified, find a usable cb address */
+	if (ip_addr == NULL) {
+		struct sockaddr_storage cb_addr;
+		struct sockaddr *sap = (struct sockaddr *)&cb_addr;
+
+		err = rpc_localaddr(clp->cl_rpcclient, sap, sizeof(cb_addr));
+		if (err < 0)
+			goto error;
+		err = rpc_ntop(sap, buf, sizeof(buf));
+		if (err < 0)
+			goto error;
+		ip_addr = (const char *)buf;
+	}
+	strlcpy(clp->cl_ipaddr, ip_addr, sizeof(clp->cl_ipaddr));
+
+	err = nfs_idmap_new(clp);
+	if (err < 0) {
+		dprintk("%s: failed to create idmapper. Error = %d\n",
+			__func__, err);
+		goto error;
+	}
+	__set_bit(NFS_CS_IDMAP, &clp->cl_res_state);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return clp;
 
 error:
@@ -354,8 +403,11 @@ static int nfs4_init_client_minor_version(struct nfs_client *clp)
 struct nfs_client *nfs4_init_client(struct nfs_client *clp,
 				    const struct nfs_client_initdata *cl_init)
 {
+<<<<<<< HEAD
 	char buf[INET6_ADDRSTRLEN + 1];
 	const char *ip_addr = cl_init->ip_addr;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct nfs_client *old;
 	int error;
 
@@ -363,6 +415,7 @@ struct nfs_client *nfs4_init_client(struct nfs_client *clp,
 		/* the client is initialised already */
 		return clp;
 
+<<<<<<< HEAD
 	/* Check NFS protocol revision and initialize RPC op vector */
 	clp->rpc_ops = &nfs_v4_clientops;
 
@@ -400,6 +453,8 @@ struct nfs_client *nfs4_init_client(struct nfs_client *clp,
 	}
 	__set_bit(NFS_CS_IDMAP, &clp->cl_res_state);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	error = nfs4_init_client_minor_version(clp);
 	if (error < 0)
 		goto error;
@@ -417,8 +472,13 @@ struct nfs_client *nfs4_init_client(struct nfs_client *clp,
 		 */
 		nfs_mark_client_ready(clp, -EPERM);
 	}
+<<<<<<< HEAD
 	nfs_put_client(clp);
 	clear_bit(NFS_CS_TSM_POSSIBLE, &clp->cl_flags);
+=======
+	clear_bit(NFS_CS_TSM_POSSIBLE, &clp->cl_flags);
+	nfs_put_client(clp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return old;
 
 error:
@@ -739,9 +799,18 @@ out:
 
 static void nfs4_destroy_server(struct nfs_server *server)
 {
+<<<<<<< HEAD
 	nfs_server_return_all_delegations(server);
 	unset_pnfs_layoutdriver(server);
 	nfs4_purge_state_owners(server);
+=======
+	LIST_HEAD(freeme);
+
+	nfs_server_return_all_delegations(server);
+	unset_pnfs_layoutdriver(server);
+	nfs4_purge_state_owners(server, &freeme);
+	nfs4_free_state_owners(&freeme);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -1236,8 +1305,16 @@ int nfs4_update_server(struct nfs_server *server, const char *hostname,
 	}
 	nfs_put_client(clp);
 
+<<<<<<< HEAD
 	if (server->nfs_client->cl_hostname == NULL)
 		server->nfs_client->cl_hostname = kstrdup(hostname, GFP_KERNEL);
+=======
+	if (server->nfs_client->cl_hostname == NULL) {
+		server->nfs_client->cl_hostname = kstrdup(hostname, GFP_KERNEL);
+		if (server->nfs_client->cl_hostname == NULL)
+			return -ENOMEM;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	nfs_server_insert_lists(server);
 
 	return nfs_probe_destination(server);

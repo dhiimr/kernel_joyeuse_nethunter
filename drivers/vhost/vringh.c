@@ -273,6 +273,7 @@ __vringh_iov(struct vringh *vrh, u16 i,
 	desc_max = vrh->vring.num;
 	up_next = -1;
 
+<<<<<<< HEAD
 	if (riov)
 		riov->i = riov->used = 0;
 	else if (wiov)
@@ -280,6 +281,16 @@ __vringh_iov(struct vringh *vrh, u16 i,
 	else
 		/* You must want something! */
 		BUG();
+=======
+	/* You must want something! */
+	if (WARN_ON(!riov && !wiov))
+		return -EINVAL;
+
+	if (riov)
+		riov->i = riov->used = 0;
+	if (wiov)
+		wiov->i = wiov->used = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for (;;) {
 		void *addr;
@@ -329,7 +340,11 @@ __vringh_iov(struct vringh *vrh, u16 i,
 			iov = wiov;
 		else {
 			iov = riov;
+<<<<<<< HEAD
 			if (unlikely(wiov && wiov->i)) {
+=======
+			if (unlikely(wiov && wiov->used)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				vringh_bad("Readable desc %p after writable",
 					   &descs[i]);
 				err = -EINVAL;

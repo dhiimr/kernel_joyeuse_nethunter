@@ -819,6 +819,10 @@ static int fimc_is_probe(struct platform_device *pdev)
 		return -ENODEV;
 
 	is->pmu_regs = of_iomap(node, 0);
+<<<<<<< HEAD
+=======
+	of_node_put(node);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!is->pmu_regs)
 		return -ENOMEM;
 

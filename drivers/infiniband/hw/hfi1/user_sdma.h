@@ -236,7 +236,10 @@ struct user_sdma_txreq {
 	struct list_head list;
 	struct user_sdma_request *req;
 	u16 flags;
+<<<<<<< HEAD
 	unsigned int busycount;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u64 seqnum;
 };
 

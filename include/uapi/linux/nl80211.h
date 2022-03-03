@@ -982,6 +982,7 @@
  * @NL80211_CMD_DEL_PMK: For offloaded 4-Way handshake, delete the previously
  *	configured PMK for the authenticator address identified by
  *	&NL80211_ATTR_MAC.
+<<<<<<< HEAD
  * @NL80211_CMD_PORT_AUTHORIZED: An event that indicates that the 4 way
  *	handshake was completed successfully by the driver. The BSSID is
  *	specified with &NL80211_ATTR_MAC. Drivers that support 4 way handshake
@@ -1054,6 +1055,8 @@
  *	offload OWE processing to user space. This intends to support
  *	OWE AKM by the host drivers that implement SME but rely
  *	on the user space for the cryptographic/DH IE processing in AP mode.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * @NL80211_CMD_MAX: highest used command number
  * @__NL80211_CMD_AFTER_LAST: internal use
@@ -1257,6 +1260,7 @@ enum nl80211_commands {
 	NL80211_CMD_SET_PMK,
 	NL80211_CMD_DEL_PMK,
 
+<<<<<<< HEAD
 	NL80211_CMD_PORT_AUTHORIZED,
 
 	NL80211_CMD_RELOAD_REGDB,
@@ -1277,6 +1281,8 @@ enum nl80211_commands {
 
 	NL80211_CMD_UPDATE_OWE_INFO,
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* add new commands above here */
 
 	/* used to define NL80211_CMD_MAX below */
@@ -1499,12 +1505,17 @@ enum nl80211_commands {
  *
  * @NL80211_ATTR_USE_MFP: Whether management frame protection (IEEE 802.11w) is
  *	used for the association (&enum nl80211_mfp, represented as a u32);
+<<<<<<< HEAD
  *	this attribute can be used with %NL80211_CMD_ASSOCIATE and
  *	%NL80211_CMD_CONNECT requests. %NL80211_MFP_OPTIONAL is not allowed for
  *	%NL80211_CMD_ASSOCIATE since user space SME is expected and hence, it
  *	must have decided whether to use management frame protection or not.
  *	Setting %NL80211_MFP_OPTIONAL with a %NL80211_CMD_CONNECT request will
  *	let the driver (or the firmware) decide whether to use MFP or not.
+=======
+ *	this attribute can be used
+ *	with %NL80211_CMD_ASSOCIATE and %NL80211_CMD_CONNECT requests
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * @NL80211_ATTR_STA_FLAGS2: Attribute containing a
  *	&struct nl80211_sta_flag_update.
@@ -2235,6 +2246,7 @@ enum nl80211_commands {
  *	the driver or is not needed (because roaming used the Fast Transition
  *	protocol).
  *
+<<<<<<< HEAD
  * @NL80211_ATTR_EXTERNAL_AUTH_ACTION: Identify the requested external
  *     authentication operation (u32 attribute with an
  *     &enum nl80211_external_auth_action value). This is used with the
@@ -2245,6 +2257,8 @@ enum nl80211_commands {
  *	may offload authentication processing to user space if this capability
  *	is indicated in the respective requests from the user space.
  *
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @NUM_NL80211_ATTR: total number of nl80211_attrs available
  * @NL80211_ATTR_MAX: highest attribute number currently defined
  * @__NL80211_ATTR_AFTER_LAST: internal use
@@ -2671,9 +2685,12 @@ enum nl80211_attrs {
 	NL80211_ATTR_PMKR0_NAME,
 	NL80211_ATTR_PORT_AUTHORIZED,
 
+<<<<<<< HEAD
 	NL80211_ATTR_EXTERNAL_AUTH_ACTION,
 	NL80211_ATTR_EXTERNAL_AUTH_SUPPORT,
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* add attributes here, update the policy in nl80211.c */
 
 	__NL80211_ATTR_AFTER_LAST,
@@ -2996,12 +3013,15 @@ enum nl80211_sta_bss_param {
  * @NL80211_STA_INFO_RX_DURATION: aggregate PPDU duration for all frames
  *	received from the station (u64, usec)
  * @NL80211_STA_INFO_PAD: attribute used for padding for 64-bit alignment
+<<<<<<< HEAD
  * @NL80211_STA_INFO_RX_MPDUS: total number of received packets (MPDUs)
  *	(u32, from this station)
  * @NL80211_STA_INFO_FCS_ERROR_COUNT: total number of packets (MPDUs) received
  *	with an FCS error (u32, from this station). This count may not include
  *	some packets with an FCS error due to TA corruption. Hence this counter
  *	might not be fully accurate.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @__NL80211_STA_INFO_AFTER_LAST: internal
  * @NL80211_STA_INFO_MAX: highest possible station info attribute
  */
@@ -3040,8 +3060,11 @@ enum nl80211_sta_info {
 	NL80211_STA_INFO_TID_STATS,
 	NL80211_STA_INFO_RX_DURATION,
 	NL80211_STA_INFO_PAD,
+<<<<<<< HEAD
 	NL80211_STA_INFO_RX_MPDUS,
 	NL80211_STA_INFO_FCS_ERROR_COUNT,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* keep last */
 	__NL80211_STA_INFO_AFTER_LAST,
@@ -3967,9 +3990,12 @@ enum nl80211_bss_scan_width {
  *	@NL80211_BSS_PARENT_BSSID. (u64).
  * @NL80211_BSS_PARENT_BSSID: the BSS according to which @NL80211_BSS_PARENT_TSF
  *	is set.
+<<<<<<< HEAD
  * @NL80211_BSS_CHAIN_SIGNAL: per-chain signal strength of last BSS update.
  *	Contains a nested array of signal strength attributes (u8, dBm),
  *	using the nesting index as the antenna number.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @__NL80211_BSS_AFTER_LAST: internal
  * @NL80211_BSS_MAX: highest BSS attribute
  */
@@ -3993,7 +4019,10 @@ enum nl80211_bss {
 	NL80211_BSS_PAD,
 	NL80211_BSS_PARENT_TSF,
 	NL80211_BSS_PARENT_BSSID,
+<<<<<<< HEAD
 	NL80211_BSS_CHAIN_SIGNAL,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* keep last */
 	__NL80211_BSS_AFTER_LAST,
@@ -4070,12 +4099,18 @@ enum nl80211_key_type {
  * enum nl80211_mfp - Management frame protection state
  * @NL80211_MFP_NO: Management frame protection not used
  * @NL80211_MFP_REQUIRED: Management frame protection required
+<<<<<<< HEAD
  * @NL80211_MFP_OPTIONAL: Management frame protection is optional
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 enum nl80211_mfp {
 	NL80211_MFP_NO,
 	NL80211_MFP_REQUIRED,
+<<<<<<< HEAD
 	NL80211_MFP_OPTIONAL,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 enum nl80211_wpa_versions {
@@ -5039,6 +5074,7 @@ enum nl80211_feature_flags {
  *	handshake with 802.1X in station mode (will pass EAP frames to the host
  *	and accept the set_pmk/del_pmk commands), doing it in the host might not
  *	be supported.
+<<<<<<< HEAD
  * @NL80211_EXT_FEATURE_FILS_MAX_CHANNEL_TIME: Driver is capable of overriding
  *	the max channel attribute in the FILS request params IE with the
  *	actual dwell time.
@@ -5085,6 +5121,8 @@ enum nl80211_feature_flags {
  *
  * @NL80211_EXT_FEATURE_AP_PMKSA_CACHING: Driver/device supports PMKSA caching
  *	(set/del PMKSA operations) in AP mode.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * @NUM_NL80211_EXT_FEATURES: number of extended features.
  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
@@ -5107,6 +5145,7 @@ enum nl80211_ext_feature_index {
 	NL80211_EXT_FEATURE_FILS_SK_OFFLOAD,
 	NL80211_EXT_FEATURE_4WAY_HANDSHAKE_STA_PSK,
 	NL80211_EXT_FEATURE_4WAY_HANDSHAKE_STA_1X,
+<<<<<<< HEAD
 	NL80211_EXT_FEATURE_FILS_MAX_CHANNEL_TIME,
 	NL80211_EXT_FEATURE_ACCEPT_BCAST_PROBE_RESP,
 	NL80211_EXT_FEATURE_OCE_PROBE_REQ_HIGH_TX_RATE,
@@ -5125,6 +5164,8 @@ enum nl80211_ext_feature_index {
 	NL80211_EXT_FEATURE_ENABLE_FTM_RESPONDER,
 	NL80211_EXT_FEATURE_AIRTIME_FAIRNESS,
 	NL80211_EXT_FEATURE_AP_PMKSA_CACHING,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* add new features before the definition below */
 	NUM_NL80211_EXT_FEATURES,
@@ -5185,10 +5226,13 @@ enum nl80211_timeout_reason {
  * of NL80211_CMD_TRIGGER_SCAN and NL80211_CMD_START_SCHED_SCAN
  * requests.
  *
+<<<<<<< HEAD
  * NL80211_SCAN_FLAG_LOW_SPAN, NL80211_SCAN_FLAG_LOW_POWER, and
  * NL80211_SCAN_FLAG_HIGH_ACCURACY flags are exclusive of each other, i.e., only
  * one of them can be used in the request.
  *
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @NL80211_SCAN_FLAG_LOW_PRIORITY: scan request has low priority
  * @NL80211_SCAN_FLAG_FLUSH: flush cache before scanning
  * @NL80211_SCAN_FLAG_AP: force a scan even if the interface is configured
@@ -5205,6 +5249,7 @@ enum nl80211_timeout_reason {
  *	locally administered 1, multicast 0) is assumed.
  *	This flag must not be requested when the feature isn't supported, check
  *	the nl80211 feature flags for the device.
+<<<<<<< HEAD
  * @NL80211_SCAN_FLAG_FILS_MAX_CHANNEL_TIME: fill the dwell time in the FILS
  *	request parameters IE in the probe request
  * @NL80211_SCAN_FLAG_ACCEPT_BCAST_PROBE_RESP: accept broadcast probe responses
@@ -5243,6 +5288,14 @@ enum nl80211_scan_flags {
 	NL80211_SCAN_FLAG_LOW_SPAN				= 1<<8,
 	NL80211_SCAN_FLAG_LOW_POWER				= 1<<9,
 	NL80211_SCAN_FLAG_HIGH_ACCURACY				= 1<<10,
+=======
+ */
+enum nl80211_scan_flags {
+	NL80211_SCAN_FLAG_LOW_PRIORITY			= 1<<0,
+	NL80211_SCAN_FLAG_FLUSH				= 1<<1,
+	NL80211_SCAN_FLAG_AP				= 1<<2,
+	NL80211_SCAN_FLAG_RANDOM_ADDR			= 1<<3,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -5300,8 +5353,11 @@ enum nl80211_smps_mode {
  *	non-operating channel is expired and no longer valid. New CAC must
  *	be done on this channel before starting the operation. This is not
  *	applicable for ETSI dfs domain where pre-CAC is valid for ever.
+<<<<<<< HEAD
  * @NL80211_RADAR_CAC_STARTED: Channel Availability Check has been started,
  *	should be generated by HW if NL80211_EXT_FEATURE_DFS_OFFLOAD is enabled.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 enum nl80211_radar_event {
 	NL80211_RADAR_DETECTED,
@@ -5309,7 +5365,10 @@ enum nl80211_radar_event {
 	NL80211_RADAR_CAC_ABORTED,
 	NL80211_RADAR_NOP_FINISHED,
 	NL80211_RADAR_PRE_CAC_EXPIRED,
+<<<<<<< HEAD
 	NL80211_RADAR_CAC_STARTED,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -5368,6 +5427,7 @@ enum nl80211_crit_proto_id {
  * Used by cfg80211_rx_mgmt()
  *
  * @NL80211_RXMGMT_FLAG_ANSWERED: frame was answered by device/driver.
+<<<<<<< HEAD
  * @NL80211_RXMGMT_FLAG_EXTERNAL_AUTH: Host driver intends to offload
  *	the authentication. Exclusively defined for host drivers that
  *	advertises the SME functionality but would like the userspace
@@ -5376,6 +5436,11 @@ enum nl80211_crit_proto_id {
 enum nl80211_rxmgmt_flags {
 	NL80211_RXMGMT_FLAG_ANSWERED = 1 << 0,
 	NL80211_RXMGMT_FLAG_EXTERNAL_AUTH = 1 << 1,
+=======
+ */
+enum nl80211_rxmgmt_flags {
+	NL80211_RXMGMT_FLAG_ANSWERED = 1 << 0,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /*
@@ -5650,6 +5715,7 @@ enum nl80211_nan_match_attributes {
 	NL80211_NAN_MATCH_ATTR_MAX = NUM_NL80211_NAN_MATCH_ATTR - 1
 };
 
+<<<<<<< HEAD
 /**
  * nl80211_external_auth_action - Action to perform with external
  *     authentication request. Used by NL80211_ATTR_EXTERNAL_AUTH_ACTION.
@@ -5661,4 +5727,6 @@ enum nl80211_external_auth_action {
 	NL80211_EXTERNAL_AUTH_ABORT,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* __LINUX_NL80211_H */

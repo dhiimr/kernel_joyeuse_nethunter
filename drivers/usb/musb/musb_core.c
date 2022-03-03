@@ -1838,6 +1838,12 @@ static const struct attribute_group musb_attr_group = {
 #define MUSB_QUIRK_B_INVALID_VBUS_91	(MUSB_DEVCTL_BDEVICE | \
 					 (2 << MUSB_DEVCTL_VBUS_SHIFT) | \
 					 MUSB_DEVCTL_SESSION)
+<<<<<<< HEAD
+=======
+#define MUSB_QUIRK_B_DISCONNECT_99	(MUSB_DEVCTL_BDEVICE | \
+					 (3 << MUSB_DEVCTL_VBUS_SHIFT) | \
+					 MUSB_DEVCTL_SESSION)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define MUSB_QUIRK_A_DISCONNECT_19	((3 << MUSB_DEVCTL_VBUS_SHIFT) | \
 					 MUSB_DEVCTL_SESSION)
 
@@ -1860,6 +1866,18 @@ static void musb_pm_runtime_check_session(struct musb *musb)
 	s = MUSB_DEVCTL_FSDEV | MUSB_DEVCTL_LSDEV |
 		MUSB_DEVCTL_HR;
 	switch (devctl & ~s) {
+<<<<<<< HEAD
+=======
+	case MUSB_QUIRK_B_DISCONNECT_99:
+		if (musb->quirk_retries && !musb->flush_irq_work) {
+			musb_dbg(musb, "Poll devctl in case of suspend after disconnect\n");
+			schedule_delayed_work(&musb->irq_work,
+					      msecs_to_jiffies(1000));
+			musb->quirk_retries--;
+			break;
+		}
+		/* fall through */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	case MUSB_QUIRK_B_INVALID_VBUS_91:
 		if (musb->quirk_retries && !musb->flush_irq_work) {
 			musb_dbg(musb,
@@ -2096,11 +2114,16 @@ int musb_queue_resume_work(struct musb *musb,
 {
 	struct musb_pending_work *w;
 	unsigned long flags;
+<<<<<<< HEAD
+=======
+	bool is_suspended;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int error;
 
 	if (WARN_ON(!callback))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (pm_runtime_active(musb->controller))
 		return callback(musb, data);
 
@@ -2122,6 +2145,31 @@ int musb_queue_resume_work(struct musb *musb,
 	}
 	spin_unlock_irqrestore(&musb->list_lock, flags);
 
+=======
+	spin_lock_irqsave(&musb->list_lock, flags);
+	is_suspended = musb->is_runtime_suspended;
+
+	if (is_suspended) {
+		w = devm_kzalloc(musb->controller, sizeof(*w), GFP_ATOMIC);
+		if (!w) {
+			error = -ENOMEM;
+			goto out_unlock;
+		}
+
+		w->callback = callback;
+		w->data = data;
+
+		list_add_tail(&w->node, &musb->pending_list);
+		error = 0;
+	}
+
+out_unlock:
+	spin_unlock_irqrestore(&musb->list_lock, flags);
+
+	if (!is_suspended)
+		error = callback(musb, data);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return error;
 }
 EXPORT_SYMBOL_GPL(musb_queue_resume_work);
@@ -2320,6 +2368,12 @@ musb_init_controller(struct device *dev, int nIrq, void __iomem *ctrl)
 	musb_disable_interrupts(musb);
 	musb_writeb(musb->mregs, MUSB_DEVCTL, 0);
 
+<<<<<<< HEAD
+=======
+	/* MUSB_POWER_SOFTCONN might be already set, JZ4740 does this. */
+	musb_writeb(musb->mregs, MUSB_POWER, 0);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Init IRQ workqueue before request_irq */
 	INIT_DELAYED_WORK(&musb->irq_work, musb_irq_work);
 	INIT_DELAYED_WORK(&musb->deassert_reset_work, musb_deassert_reset);
@@ -2738,6 +2792,16 @@ static int musb_resume(struct device *dev)
 	musb_enable_interrupts(musb);
 	musb_platform_enable(musb);
 
+<<<<<<< HEAD
+=======
+	/* session might be disabled in suspend */
+	if (musb->port_mode == MUSB_HOST &&
+	    !(musb->ops->quirks & MUSB_PRESERVE_SESSION)) {
+		devctl |= MUSB_DEVCTL_SESSION;
+		musb_writeb(musb->mregs, MUSB_DEVCTL, devctl);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&musb->lock, flags);
 	error = musb_run_resume_work(musb);
 	if (error)

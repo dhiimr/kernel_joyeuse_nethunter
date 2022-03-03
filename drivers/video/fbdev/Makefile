@@ -131,11 +131,14 @@ obj-$(CONFIG_FB_HYPERV)		  += hyperv_fb.o
 obj-$(CONFIG_FB_OPENCORES)	  += ocfb.o
 obj-$(CONFIG_FB_SM712)		  += sm712fb.o
 
+<<<<<<< HEAD
 ifeq ($(CONFIG_FB_MSM),y)
 obj-y                             += msm/
 else
 obj-$(CONFIG_MSM_DBA)             += msm/msm_dba/
 endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # Platform or fallback drivers go here
 obj-$(CONFIG_FB_UVESA)            += uvesafb.o
 obj-$(CONFIG_FB_VESA)             += vesafb.o

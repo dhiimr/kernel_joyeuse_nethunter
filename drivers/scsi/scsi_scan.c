@@ -462,7 +462,12 @@ static struct scsi_target *scsi_alloc_target(struct device *parent,
 		error = shost->hostt->target_alloc(starget);
 
 		if(error) {
+<<<<<<< HEAD
 			dev_printk(KERN_ERR, dev, "target allocation failed, error %d\n", error);
+=======
+			if (error != -ENXIO)
+				dev_err(dev, "target allocation failed, error %d\n", error);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/* don't want scsi_target_reap to do the final
 			 * put because it will be under the host lock */
 			scsi_target_destroy(starget);
@@ -826,8 +831,18 @@ static int scsi_add_lun(struct scsi_device *sdev, unsigned char *inq_result,
 		 * well-known logical units. Force well-known type
 		 * to enumerate them correctly.
 		 */
+<<<<<<< HEAD
 		if (scsi_is_wlun(sdev->lun) && sdev->type != TYPE_WLUN)
 			sdev->type = TYPE_WLUN;
+=======
+		if (scsi_is_wlun(sdev->lun) && sdev->type != TYPE_WLUN) {
+			sdev_printk(KERN_WARNING, sdev,
+				"%s: correcting incorrect peripheral device type 0x%x for W-LUN 0x%16xhN\n",
+				__func__, sdev->type, (unsigned int)sdev->lun);
+			sdev->type = TYPE_WLUN;
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (sdev->type == TYPE_RBC || sdev->type == TYPE_ROM) {
@@ -964,10 +979,13 @@ static int scsi_add_lun(struct scsi_device *sdev, unsigned char *inq_result,
 
 	transport_configure_device(&sdev->sdev_gendev);
 
+<<<<<<< HEAD
 	/* The LLD can override auto suspend tunables in ->slave_configure() */
 	sdev->use_rpm_auto = 0;
 	sdev->autosuspend_delay = SCSI_DEFAULT_AUTOSUSPEND_DELAY;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (sdev->host->hostt->slave_configure) {
 		ret = sdev->host->hostt->slave_configure(sdev);
 		if (ret) {
@@ -1719,15 +1737,26 @@ static void scsi_sysfs_add_devices(struct Scsi_Host *shost)
  */
 static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
 {
+<<<<<<< HEAD
 	struct async_scan_data *data;
+=======
+	struct async_scan_data *data = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unsigned long flags;
 
 	if (strncmp(scsi_scan_type, "sync", 4) == 0)
 		return NULL;
 
+<<<<<<< HEAD
 	if (shost->async_scan) {
 		shost_printk(KERN_DEBUG, shost, "%s called twice\n", __func__);
 		return NULL;
+=======
+	mutex_lock(&shost->scan_mutex);
+	if (shost->async_scan) {
+		shost_printk(KERN_DEBUG, shost, "%s called twice\n", __func__);
+		goto err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	data = kmalloc(sizeof(*data), GFP_KERNEL);
@@ -1738,7 +1767,10 @@ static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
 		goto err;
 	init_completion(&data->prev_finished);
 
+<<<<<<< HEAD
 	mutex_lock(&shost->scan_mutex);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(shost->host_lock, flags);
 	shost->async_scan = 1;
 	spin_unlock_irqrestore(shost->host_lock, flags);
@@ -1753,6 +1785,10 @@ static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
 	return data;
 
  err:
+<<<<<<< HEAD
+=======
+	mutex_unlock(&shost->scan_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(data);
 	return NULL;
 }

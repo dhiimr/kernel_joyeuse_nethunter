@@ -305,6 +305,14 @@ static inline struct Qdisc *qdisc_root(const struct Qdisc *qdisc)
 	return q;
 }
 
+<<<<<<< HEAD
+=======
+static inline struct Qdisc *qdisc_root_bh(const struct Qdisc *qdisc)
+{
+	return rcu_dereference_bh(qdisc->dev_queue->qdisc);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline struct Qdisc *qdisc_root_sleeping(const struct Qdisc *qdisc)
 {
 	return qdisc->dev_queue->qdisc_sleeping;
@@ -880,6 +888,10 @@ struct psched_ratecfg {
 	u64	rate_bytes_ps; /* bytes per second */
 	u32	mult;
 	u16	overhead;
+<<<<<<< HEAD
+=======
+	u16	mpu;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u8	linklayer;
 	u8	shift;
 };
@@ -889,6 +901,12 @@ static inline u64 psched_l2t_ns(const struct psched_ratecfg *r,
 {
 	len += r->overhead;
 
+<<<<<<< HEAD
+=======
+	if (len < r->mpu)
+		len = r->mpu;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (unlikely(r->linklayer == TC_LINKLAYER_ATM))
 		return ((u64)(DIV_ROUND_UP(len,48)*53) * r->mult) >> r->shift;
 
@@ -911,6 +929,10 @@ static inline void psched_ratecfg_getrate(struct tc_ratespec *res,
 	res->rate = min_t(u64, r->rate_bytes_ps, ~0U);
 
 	res->overhead = r->overhead;
+<<<<<<< HEAD
+=======
+	res->mpu = r->mpu;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	res->linklayer = (r->linklayer & TC_LINKLAYER_MASK);
 }
 

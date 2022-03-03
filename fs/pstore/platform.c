@@ -129,26 +129,44 @@ static const char *get_reason_str(enum kmsg_dump_reason reason)
 	}
 }
 
+<<<<<<< HEAD
 bool pstore_cannot_block_path(enum kmsg_dump_reason reason)
 {
 	/*
 	 * In case of NMI path, pstore shouldn't be blocked
 	 * regardless of reason.
 	 */
+=======
+/*
+ * Should pstore_dump() wait for a concurrent pstore_dump()? If
+ * not, the current pstore_dump() will report a failure to dump
+ * and return.
+ */
+static bool pstore_cannot_wait(enum kmsg_dump_reason reason)
+{
+	/* In NMI path, pstore shouldn't block regardless of reason. */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (in_nmi())
 		return true;
 
 	switch (reason) {
 	/* In panic case, other cpus are stopped by smp_send_stop(). */
 	case KMSG_DUMP_PANIC:
+<<<<<<< HEAD
 	/* Emergency restart shouldn't be blocked by spin lock. */
+=======
+	/* Emergency restart shouldn't be blocked. */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	case KMSG_DUMP_EMERG:
 		return true;
 	default:
 		return false;
 	}
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(pstore_cannot_block_path);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_PSTORE_ZLIB_COMPRESS
 /* Derived from logfs_compress() */
@@ -499,12 +517,16 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 	unsigned long	total = 0;
 	const char	*why;
 	unsigned int	part = 1;
+<<<<<<< HEAD
 	unsigned long	flags = 0;
 	int		is_locked;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int		ret;
 
 	why = get_reason_str(reason);
 
+<<<<<<< HEAD
 	if (pstore_cannot_block_path(reason)) {
 		is_locked = spin_trylock_irqsave(&psinfo->buf_lock, flags);
 		if (!is_locked) {
@@ -516,6 +538,21 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 		spin_lock_irqsave(&psinfo->buf_lock, flags);
 		is_locked = 1;
 	}
+=======
+	if (down_trylock(&psinfo->buf_lock)) {
+		/* Failed to acquire lock: give up if we cannot wait. */
+		if (pstore_cannot_wait(reason)) {
+			pr_err("dump skipped in %s path: may corrupt error record\n",
+				in_nmi() ? "NMI" : why);
+			return;
+		}
+		if (down_interruptible(&psinfo->buf_lock)) {
+			pr_err("could not grab semaphore?!\n");
+			return;
+		}
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	oopscount++;
 	while (total < kmsg_bytes) {
 		char *dst;
@@ -532,7 +569,11 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 		record.part = part;
 		record.buf = psinfo->buf;
 
+<<<<<<< HEAD
 		if (big_oops_buf && is_locked) {
+=======
+		if (big_oops_buf) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			dst = big_oops_buf;
 			dst_size = big_oops_buf_sz;
 		} else {
@@ -550,7 +591,11 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 					  dst_size, &dump_size))
 			break;
 
+<<<<<<< HEAD
 		if (big_oops_buf && is_locked) {
+=======
+		if (big_oops_buf) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			zipped_len = pstore_compress(dst, psinfo->buf,
 						header_size + dump_size,
 						psinfo->bufsize);
@@ -573,8 +618,13 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 		total += record.size;
 		part++;
 	}
+<<<<<<< HEAD
 	if (is_locked)
 		spin_unlock_irqrestore(&psinfo->buf_lock, flags);
+=======
+
+	up(&psinfo->buf_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct kmsg_dumper pstore_dumper = {
@@ -597,6 +647,7 @@ static void pstore_unregister_kmsg(void)
 #ifdef CONFIG_PSTORE_CONSOLE
 static void pstore_console_write(struct console *con, const char *s, unsigned c)
 {
+<<<<<<< HEAD
 	const char *e = s + c;
 
 	while (s < e) {
@@ -622,6 +673,16 @@ static void pstore_console_write(struct console *con, const char *s, unsigned c)
 		s += c;
 		c = e - s;
 	}
+=======
+	struct pstore_record record;
+
+	pstore_record_init(&record, psinfo);
+	record.type = PSTORE_TYPE_CONSOLE;
+
+	record.buf = (char *)s;
+	record.size = c;
+	psinfo->write(&record);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct console pstore_console = {
@@ -710,6 +771,10 @@ int pstore_register(struct pstore_info *psi)
 		psi->write_user = pstore_write_user_compat;
 	psinfo = psi;
 	mutex_init(&psinfo->read_mutex);
+<<<<<<< HEAD
+=======
+	sema_init(&psinfo->buf_lock, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_unlock(&pstore_lock);
 
 	if (owner && !try_module_get(owner)) {
@@ -717,7 +782,12 @@ int pstore_register(struct pstore_info *psi)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	allocate_buf_for_compression();
+=======
+	if (psi->flags & PSTORE_FLAGS_DMESG)
+		allocate_buf_for_compression();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (pstore_is_mounted())
 		pstore_get_records(0);

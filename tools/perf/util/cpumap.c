@@ -462,7 +462,11 @@ static void set_max_cpu_num(void)
 
 	/* get the highest possible cpu number for a sparse allocation */
 	ret = snprintf(path, PATH_MAX, "%s/devices/system/cpu/possible", mnt);
+<<<<<<< HEAD
 	if (ret == PATH_MAX) {
+=======
+	if (ret >= PATH_MAX) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
 		goto out;
 	}
@@ -473,7 +477,11 @@ static void set_max_cpu_num(void)
 
 	/* get the highest present cpu number for a sparse allocation */
 	ret = snprintf(path, PATH_MAX, "%s/devices/system/cpu/present", mnt);
+<<<<<<< HEAD
 	if (ret == PATH_MAX) {
+=======
+	if (ret >= PATH_MAX) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
 		goto out;
 	}
@@ -501,7 +509,11 @@ static void set_max_node_num(void)
 
 	/* get the highest possible cpu number for a sparse allocation */
 	ret = snprintf(path, PATH_MAX, "%s/devices/system/node/possible", mnt);
+<<<<<<< HEAD
 	if (ret == PATH_MAX) {
+=======
+	if (ret >= PATH_MAX) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
 		goto out;
 	}
@@ -586,7 +598,11 @@ int cpu__setup_cpunode_map(void)
 		return 0;
 
 	n = snprintf(path, PATH_MAX, "%s/devices/system/node", mnt);
+<<<<<<< HEAD
 	if (n == PATH_MAX) {
+=======
+	if (n >= PATH_MAX) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
 		return -1;
 	}
@@ -601,7 +617,11 @@ int cpu__setup_cpunode_map(void)
 			continue;
 
 		n = snprintf(buf, PATH_MAX, "%s/%s", path, dent1->d_name);
+<<<<<<< HEAD
 		if (n == PATH_MAX) {
+=======
+		if (n >= PATH_MAX) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
 			continue;
 		}
@@ -701,7 +721,14 @@ size_t cpu_map__snprint_mask(struct cpu_map *map, char *buf, size_t size)
 	unsigned char *bitmap;
 	int last_cpu = cpu_map__cpu(map, map->nr - 1);
 
+<<<<<<< HEAD
 	bitmap = zalloc((last_cpu + 7) / 8);
+=======
+	if (buf == NULL)
+		return 0;
+
+	bitmap = zalloc(last_cpu / 8 + 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (bitmap == NULL) {
 		buf[0] = '\0';
 		return 0;

@@ -55,10 +55,18 @@
 #include <net/ip.h>
 #include <net/ipv6.h>
 
+<<<<<<< HEAD
+=======
+#include "bridge_loop_avoidance.h"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "hard-interface.h"
 #include "hash.h"
 #include "log.h"
 #include "packet.h"
+<<<<<<< HEAD
+=======
+#include "send.h"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "translation-table.h"
 #include "tvlv.h"
 
@@ -269,8 +277,11 @@ static void batadv_mcast_mla_list_free(struct hlist_head *mcast_list)
  * translation table except the ones listed in the given mcast_list.
  *
  * If mcast_list is NULL then all are retracted.
+<<<<<<< HEAD
  *
  * Do not call outside of the mcast worker! (or cancel mcast worker first)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 static void batadv_mcast_mla_tt_retract(struct batadv_priv *bat_priv,
 					struct hlist_head *mcast_list)
@@ -278,8 +289,11 @@ static void batadv_mcast_mla_tt_retract(struct batadv_priv *bat_priv,
 	struct batadv_hw_addr *mcast_entry;
 	struct hlist_node *tmp;
 
+<<<<<<< HEAD
 	WARN_ON(delayed_work_pending(&bat_priv->mcast.work));
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hlist_for_each_entry_safe(mcast_entry, tmp, &bat_priv->mcast.mla_list,
 				  list) {
 		if (mcast_list &&
@@ -303,8 +317,11 @@ static void batadv_mcast_mla_tt_retract(struct batadv_priv *bat_priv,
  *
  * Adds multicast listener announcements from the given mcast_list to the
  * translation table if they have not been added yet.
+<<<<<<< HEAD
  *
  * Do not call outside of the mcast worker! (or cancel mcast worker first)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 static void batadv_mcast_mla_tt_add(struct batadv_priv *bat_priv,
 				    struct hlist_head *mcast_list)
@@ -312,8 +329,11 @@ static void batadv_mcast_mla_tt_add(struct batadv_priv *bat_priv,
 	struct batadv_hw_addr *mcast_entry;
 	struct hlist_node *tmp;
 
+<<<<<<< HEAD
 	WARN_ON(delayed_work_pending(&bat_priv->mcast.work));
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!mcast_list)
 		return;
 
@@ -600,7 +620,14 @@ static void batadv_mcast_mla_update(struct work_struct *work)
 	priv_mcast = container_of(delayed_work, struct batadv_priv_mcast, work);
 	bat_priv = container_of(priv_mcast, struct batadv_priv, mcast);
 
+<<<<<<< HEAD
 	__batadv_mcast_mla_update(bat_priv);
+=======
+	spin_lock(&bat_priv->mcast.mla_lock);
+	__batadv_mcast_mla_update(bat_priv);
+	spin_unlock(&bat_priv->mcast.mla_lock);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	batadv_mcast_start_timer(bat_priv);
 }
 
@@ -1296,6 +1323,38 @@ void batadv_mcast_free(struct batadv_priv *bat_priv)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * batadv_mcast_forw_send_orig() - send a multicast packet to an originator
+ * @bat_priv: the bat priv with all the soft interface information
+ * @skb: the multicast packet to send
+ * @vid: the vlan identifier
+ * @orig_node: the originator to send the packet to
+ *
+ * Return: NET_XMIT_DROP in case of error or NET_XMIT_SUCCESS otherwise.
+ */
+int batadv_mcast_forw_send_orig(struct batadv_priv *bat_priv,
+				struct sk_buff *skb,
+				unsigned short vid,
+				struct batadv_orig_node *orig_node)
+{
+	/* Avoid sending multicast-in-unicast packets to other BLA
+	 * gateways - they already got the frame from the LAN side
+	 * we share with them.
+	 * TODO: Refactor to take BLA into account earlier, to avoid
+	 * reducing the mcast_fanout count.
+	 */
+	if (batadv_bla_is_backbone_gw_orig(bat_priv, orig_node->orig, vid)) {
+		dev_kfree_skb(skb);
+		return NET_XMIT_SUCCESS;
+	}
+
+	return batadv_send_skb_unicast(bat_priv, skb, BATADV_UNICAST, 0,
+				       orig_node, vid);
+}
+
+/**
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * batadv_mcast_purge_orig - reset originator global mcast state modifications
  * @orig: the originator which is going to get purged
  */

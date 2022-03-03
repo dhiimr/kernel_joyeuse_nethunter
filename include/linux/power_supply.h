@@ -18,7 +18,10 @@
 #include <linux/leds.h>
 #include <linux/spinlock.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
 #include <linux/types.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * All voltages, currents, charges, energies, time and temperatures in uV,
@@ -46,7 +49,10 @@ enum {
 	POWER_SUPPLY_CHARGE_TYPE_NONE,
 	POWER_SUPPLY_CHARGE_TYPE_TRICKLE,
 	POWER_SUPPLY_CHARGE_TYPE_FAST,
+<<<<<<< HEAD
 	POWER_SUPPLY_CHARGE_TYPE_TAPER,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 enum {
@@ -59,9 +65,12 @@ enum {
 	POWER_SUPPLY_HEALTH_COLD,
 	POWER_SUPPLY_HEALTH_WATCHDOG_TIMER_EXPIRE,
 	POWER_SUPPLY_HEALTH_SAFETY_TIMER_EXPIRE,
+<<<<<<< HEAD
 	POWER_SUPPLY_HEALTH_WARM,
 	POWER_SUPPLY_HEALTH_COOL,
 	POWER_SUPPLY_HEALTH_HOT,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 enum {
@@ -89,6 +98,7 @@ enum {
 	POWER_SUPPLY_SCOPE_DEVICE,
 };
 
+<<<<<<< HEAD
 enum {
 	POWER_SUPPLY_DP_DM_UNKNOWN = 0,
 	POWER_SUPPLY_DP_DM_PREPARE = 1,
@@ -159,6 +169,8 @@ enum {
 	POWER_SUPPLY_QC_INOV_THERMAL_DISABLE = BIT(2),
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 enum power_supply_property {
 	/* Properties of type `int' */
 	POWER_SUPPLY_PROP_STATUS = 0,
@@ -224,6 +236,7 @@ enum power_supply_property {
 	POWER_SUPPLY_PROP_PRECHARGE_CURRENT,
 	POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT,
 	POWER_SUPPLY_PROP_CALIBRATE,
+<<<<<<< HEAD
 	/* Local extensions */
 	POWER_SUPPLY_PROP_USB_HC,
 	POWER_SUPPLY_PROP_USB_OTG,
@@ -386,12 +399,17 @@ enum power_supply_property {
 
 	/* Local extensions of type int64_t */
 	POWER_SUPPLY_PROP_CHARGE_COUNTER_EXT,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Properties of type `const char *' */
 	POWER_SUPPLY_PROP_MODEL_NAME,
 	POWER_SUPPLY_PROP_MANUFACTURER,
 	POWER_SUPPLY_PROP_SERIAL_NUMBER,
+<<<<<<< HEAD
 	POWER_SUPPLY_PROP_BATTERY_TYPE,
 	POWER_SUPPLY_PROP_CYCLE_COUNTS,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 enum power_supply_type {
@@ -407,6 +425,7 @@ enum power_supply_type {
 	POWER_SUPPLY_TYPE_USB_PD,		/* Power Delivery Port */
 	POWER_SUPPLY_TYPE_USB_PD_DRP,		/* PD Dual Role Port */
 	POWER_SUPPLY_TYPE_APPLE_BRICK_ID,	/* Apple Charging Method */
+<<<<<<< HEAD
 	POWER_SUPPLY_TYPE_USB_HVDCP,		/* High Voltage DCP */
 	POWER_SUPPLY_TYPE_USB_HVDCP_3,		/* Efficient High Voltage DCP */
 	POWER_SUPPLY_TYPE_USB_HVDCP_3P5,	/* Efficient High Voltage DCP 20mV Steps */
@@ -454,6 +473,8 @@ enum power_supply_typec_power_role {
 	POWER_SUPPLY_TYPEC_PR_DUAL,
 	POWER_SUPPLY_TYPEC_PR_SINK,
 	POWER_SUPPLY_TYPEC_PR_SOURCE,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 enum power_supply_notifier_events {
@@ -463,11 +484,14 @@ enum power_supply_notifier_events {
 union power_supply_propval {
 	int intval;
 	const char *strval;
+<<<<<<< HEAD
 	int64_t int64val;
 #ifdef CONFIG_BATT_VERIFY_BY_DS28E16
 	unsigned char arrayval[50];
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 struct device_node;

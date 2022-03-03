@@ -259,7 +259,11 @@ static bool unpack_nameX(struct aa_ext *e, enum aa_code code, const char *name)
 		char *tag = NULL;
 		size_t size = unpack_u16_chunk(e, &tag);
 		/* if a name is specified it must match. otherwise skip tag */
+<<<<<<< HEAD
 		if (name && (!size || strcmp(name, tag)))
+=======
+		if (name && (!size || tag[size-1] != '\0' || strcmp(name, tag)))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto fail;
 	} else if (name) {
 		/* if a name is specified and there is no name tag fail */

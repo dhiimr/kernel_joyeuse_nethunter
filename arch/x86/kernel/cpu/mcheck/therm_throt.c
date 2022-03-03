@@ -185,7 +185,11 @@ static void therm_throt_process(bool new_event, int event, int level)
 	/* if we just entered the thermal event */
 	if (new_event) {
 		if (event == THERMAL_THROTTLING_EVENT)
+<<<<<<< HEAD
 			pr_crit("CPU%d: %s temperature above threshold, cpu clock throttled (total events = %lu)\n",
+=======
+			pr_warn("CPU%d: %s temperature above threshold, cpu clock throttled (total events = %lu)\n",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				this_cpu,
 				level == CORE_LEVEL ? "Core" : "Package",
 				state->count);

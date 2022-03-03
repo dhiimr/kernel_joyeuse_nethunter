@@ -737,7 +737,11 @@
 
 /* MAAR bit definitions */
 #define MIPS_MAAR_VH		(_U64CAST_(1) << 63)
+<<<<<<< HEAD
 #define MIPS_MAAR_ADDR		((BIT_ULL(BITS_PER_LONG - 12) - 1) << 12)
+=======
+#define MIPS_MAAR_ADDR		GENMASK_ULL(55, 12)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define MIPS_MAAR_ADDR_SHIFT	12
 #define MIPS_MAAR_S		(_ULCAST_(1) << 1)
 #define MIPS_MAAR_VL		(_ULCAST_(1) << 0)

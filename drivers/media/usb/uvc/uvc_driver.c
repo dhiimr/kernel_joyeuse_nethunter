@@ -903,8 +903,16 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
 	unsigned int size;
 	unsigned int i;
 
+<<<<<<< HEAD
 	extra_size = ALIGN(extra_size, sizeof(*entity->pads));
 	num_inputs = (type & UVC_TERM_OUTPUT) ? num_pads : num_pads - 1;
+=======
+	extra_size = roundup(extra_size, sizeof(*entity->pads));
+	if (num_pads)
+		num_inputs = type & UVC_TERM_OUTPUT ? num_pads : num_pads - 1;
+	else
+		num_inputs = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	size = sizeof(*entity) + extra_size + sizeof(*entity->pads) * num_pads
 	     + num_inputs;
 	entity = kzalloc(size, GFP_KERNEL);
@@ -920,7 +928,11 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
 
 	for (i = 0; i < num_inputs; ++i)
 		entity->pads[i].flags = MEDIA_PAD_FL_SINK;
+<<<<<<< HEAD
 	if (!UVC_ENTITY_IS_OTERM(entity))
+=======
+	if (!UVC_ENTITY_IS_OTERM(entity) && num_pads)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		entity->pads[num_pads-1].flags = MEDIA_PAD_FL_SOURCE;
 
 	entity->bNrInPins = num_inputs;
@@ -1446,6 +1458,14 @@ static int uvc_scan_chain_forward(struct uvc_video_chain *chain,
 			break;
 		if (forward == prev)
 			continue;
+<<<<<<< HEAD
+=======
+		if (forward->chain.next || forward->chain.prev) {
+			uvc_trace(UVC_TRACE_DESCR, "Found reference to "
+				"entity %d already in chain.\n", forward->id);
+			return -EINVAL;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		switch (UVC_ENTITY_TYPE(forward)) {
 		case UVC_VC_EXTENSION_UNIT:
@@ -1527,6 +1547,16 @@ static int uvc_scan_chain_backward(struct uvc_video_chain *chain,
 				return -1;
 			}
 
+<<<<<<< HEAD
+=======
+			if (term->chain.next || term->chain.prev) {
+				uvc_trace(UVC_TRACE_DESCR, "Found reference to "
+					"entity %d already in chain.\n",
+					term->id);
+				return -EINVAL;
+			}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (uvc_trace_param & UVC_TRACE_PROBE)
 				printk(KERN_CONT " %d", term->id);
 
@@ -2059,6 +2089,23 @@ static int uvc_probe(struct usb_interface *intf,
 			   sizeof(dev->name) - len);
 	}
 
+<<<<<<< HEAD
+=======
+	/* Initialize the media device. */
+#ifdef CONFIG_MEDIA_CONTROLLER
+	dev->mdev.dev = &intf->dev;
+	strscpy(dev->mdev.model, dev->name, sizeof(dev->mdev.model));
+	if (udev->serial)
+		strscpy(dev->mdev.serial, udev->serial,
+			sizeof(dev->mdev.serial));
+	usb_make_path(udev, dev->mdev.bus_info, sizeof(dev->mdev.bus_info));
+	dev->mdev.hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
+	media_device_init(&dev->mdev);
+
+	dev->vdev.mdev = &dev->mdev;
+#endif
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Parse the Video Class control descriptor. */
 	if (uvc_parse_control(dev) < 0) {
 		uvc_trace(UVC_TRACE_PROBE, "Unable to parse UVC "
@@ -2079,6 +2126,7 @@ static int uvc_probe(struct usb_interface *intf,
 			"linux-uvc-devel mailing list.\n");
 	}
 
+<<<<<<< HEAD
 	/* Initialize the media device and register the V4L2 device. */
 #ifdef CONFIG_MEDIA_CONTROLLER
 	dev->mdev.dev = &intf->dev;
@@ -2092,6 +2140,9 @@ static int uvc_probe(struct usb_interface *intf,
 
 	dev->vdev.mdev = &dev->mdev;
 #endif
+=======
+	/* Register the V4L2 device. */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (v4l2_device_register(&intf->dev, &dev->vdev) < 0)
 		goto error;
 
@@ -2231,7 +2282,11 @@ static int uvc_reset_resume(struct usb_interface *intf)
  * Module parameters
  */
 
+<<<<<<< HEAD
 static int uvc_clock_param_get(char *buffer, const struct kernel_param *kp)
+=======
+static int uvc_clock_param_get(char *buffer, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (uvc_clock_param == CLOCK_MONOTONIC)
 		return sprintf(buffer, "CLOCK_MONOTONIC");
@@ -2239,7 +2294,11 @@ static int uvc_clock_param_get(char *buffer, const struct kernel_param *kp)
 		return sprintf(buffer, "CLOCK_REALTIME");
 }
 
+<<<<<<< HEAD
 static int uvc_clock_param_set(const char *val, const struct kernel_param *kp)
+=======
+static int uvc_clock_param_set(const char *val, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (strncasecmp(val, "clock_", strlen("clock_")) == 0)
 		val += strlen("clock_");

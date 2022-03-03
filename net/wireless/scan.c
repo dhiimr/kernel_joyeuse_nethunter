@@ -484,6 +484,11 @@ const u8 *cfg80211_find_ie_match(u8 eid, const u8 *ies, int len,
 				 const u8 *match, int match_len,
 				 int match_offset)
 {
+<<<<<<< HEAD
+=======
+	const struct element *elem;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* match_offset can't be smaller than 2, unless match_len is
 	 * zero, in which case match_offset must be zero as well.
 	 */
@@ -491,6 +496,7 @@ const u8 *cfg80211_find_ie_match(u8 eid, const u8 *ies, int len,
 		    (!match_len && match_offset)))
 		return NULL;
 
+<<<<<<< HEAD
 	while (len >= 2 && len >= ies[1] + 2) {
 		if ((ies[0] == eid) &&
 		    (ies[1] + 2 >= match_offset + match_len) &&
@@ -499,6 +505,12 @@ const u8 *cfg80211_find_ie_match(u8 eid, const u8 *ies, int len,
 
 		len -= ies[1] + 2;
 		ies += ies[1] + 2;
+=======
+	for_each_element_id(elem, eid, ies, len) {
+		if (elem->datalen >= match_offset - 2 + match_len &&
+		    !memcmp(elem->data + match_offset - 2, match, match_len))
+			return (void *)elem;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return NULL;
@@ -981,9 +993,12 @@ cfg80211_bss_update(struct cfg80211_registered_device *rdev,
 		found->ts = tmp->ts;
 		found->ts_boottime = tmp->ts_boottime;
 		found->parent_tsf = tmp->parent_tsf;
+<<<<<<< HEAD
 		found->pub.chains = tmp->pub.chains;
 		memcpy(found->pub.chain_signal, tmp->pub.chain_signal,
 		       IEEE80211_MAX_CHAINS);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ether_addr_copy(found->parent_bssid, tmp->parent_bssid);
 	} else {
 		struct cfg80211_internal_bss *new;
@@ -1031,14 +1046,22 @@ cfg80211_bss_update(struct cfg80211_registered_device *rdev,
 			 * be grouped with this beacon for updates ...
 			 */
 			if (!cfg80211_combine_bsses(rdev, new)) {
+<<<<<<< HEAD
 				kfree(new);
+=======
+				bss_ref_put(rdev, new);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				goto drop;
 			}
 		}
 
 		if (rdev->bss_entries >= bss_entries_limit &&
 		    !cfg80211_bss_expire_oldest(rdev)) {
+<<<<<<< HEAD
 			kfree(new);
+=======
+			bss_ref_put(rdev, new);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto drop;
 		}
 
@@ -1276,8 +1299,11 @@ cfg80211_inform_bss_frame_data(struct wiphy *wiphy,
 	tmp.pub.capability = le16_to_cpu(mgmt->u.probe_resp.capab_info);
 	tmp.ts_boottime = data->boottime_ns;
 	tmp.parent_tsf = data->parent_tsf;
+<<<<<<< HEAD
 	tmp.pub.chains = data->chains;
 	memcpy(tmp.pub.chain_signal, data->chain_signal, IEEE80211_MAX_CHAINS);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ether_addr_copy(tmp.parent_bssid, data->parent_bssid);
 
 	signal_valid = abs(data->chan->center_freq - channel->center_freq) <=

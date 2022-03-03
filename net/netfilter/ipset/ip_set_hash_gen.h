@@ -104,17 +104,26 @@ htable_size(u8 hbits)
 {
 	size_t hsize;
 
+<<<<<<< HEAD
 	/* We must fit both into u32 in jhash and size_t */
 	if (hbits > 31)
 		return 0;
 	hsize = jhash_size(hbits);
 	if ((((size_t)-1) - sizeof(struct htable)) / sizeof(struct hbucket *)
+=======
+	/* We must fit both into u32 in jhash and INT_MAX in kvmalloc_node() */
+	if (hbits > 31)
+		return 0;
+	hsize = jhash_size(hbits);
+	if ((INT_MAX - sizeof(struct htable)) / sizeof(struct hbucket *)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    < hsize)
 		return 0;
 
 	return hsize * sizeof(struct hbucket *) + sizeof(struct htable);
 }
 
+<<<<<<< HEAD
 /* Compute htable_bits from the user input parameter hashsize */
 static u8
 htable_bits(u32 hashsize)
@@ -129,6 +138,8 @@ htable_bits(u32 hashsize)
 	return bits;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef IP_SET_HASH_WITH_NETS
 #if IPSET_NET_COUNT > 1
 #define __CIDR(cidr, i)		(cidr[i])
@@ -624,7 +635,11 @@ retry:
 					goto cleanup;
 				}
 				m->size = AHASH_INIT_SIZE;
+<<<<<<< HEAD
 				extsize = ext_size(AHASH_INIT_SIZE, dsize);
+=======
+				extsize += ext_size(AHASH_INIT_SIZE, dsize);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				RCU_INIT_POINTER(hbucket(t, key), m);
 			} else if (m->pos >= m->size) {
 				struct hbucket *ht;
@@ -1294,7 +1309,15 @@ IPSET_TOKEN(HTYPE, _create)(struct net *net, struct ip_set *set,
 	if (!h)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	hbits = htable_bits(hashsize);
+=======
+	/* Compute htable_bits from the user input parameter hashsize.
+	 * Assume that hashsize == 2^htable_bits,
+	 * otherwise round up to the first 2^n value.
+	 */
+	hbits = fls(hashsize - 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hsize = htable_size(hbits);
 	if (hsize == 0) {
 		kfree(h);

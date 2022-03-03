@@ -43,6 +43,7 @@ struct pptp_opt {
 	u32 seq_sent, seq_recv;
 	int ppp_flags;
 };
+<<<<<<< HEAD
 
 struct pppolac_opt {
 	__u32		local;
@@ -62,6 +63,8 @@ struct pppopns_opt {
 	int		(*backlog_rcv)(struct sock *sk_raw, struct sk_buff *skb);
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <net/sock.h>
 
 struct pppox_sock {
@@ -72,8 +75,11 @@ struct pppox_sock {
 	union {
 		struct pppoe_opt pppoe;
 		struct pptp_opt  pptp;
+<<<<<<< HEAD
 		struct pppolac_opt lac;
 		struct pppopns_opt pns;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} proto;
 	__be16			num;
 };
@@ -105,6 +111,12 @@ extern int register_pppox_proto(int proto_num, const struct pppox_proto *pp);
 extern void unregister_pppox_proto(int proto_num);
 extern void pppox_unbind_sock(struct sock *sk);/* delete ppp-channel binding */
 extern int pppox_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg);
+<<<<<<< HEAD
+=======
+extern int pppox_compat_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg);
+
+#define PPPOEIOCSFWD32    _IOW(0xB1 ,0, compat_size_t)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* PPPoX socket states */
 enum {

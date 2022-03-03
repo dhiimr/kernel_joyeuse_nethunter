@@ -79,9 +79,12 @@
 #define TIOCGPTLCK	_IOR('T', 0x39, int) /* Get Pty lock state */
 #define TIOCGEXCL	_IOR('T', 0x40, int) /* Get exclusive mode state */
 #define TIOCGPTPEER	_IO('T', 0x41) /* Safely open the slave */
+<<<<<<< HEAD
 #define TIOCPMGET	0x544D	/* PM get */
 #define TIOCPMPUT	0x544E	/* PM put */
 #define TIOCPMACT	0x544F	/* PM is active */
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define FIONCLEX	0x5450
 #define FIOCLEX		0x5451

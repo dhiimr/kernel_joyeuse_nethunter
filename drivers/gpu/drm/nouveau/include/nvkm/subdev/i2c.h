@@ -38,6 +38,10 @@ struct nvkm_i2c_bus {
 	struct mutex mutex;
 	struct list_head head;
 	struct i2c_adapter i2c;
+<<<<<<< HEAD
+=======
+	u8 enabled;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 int nvkm_i2c_bus_acquire(struct nvkm_i2c_bus *);
@@ -57,6 +61,10 @@ struct nvkm_i2c_aux {
 	struct mutex mutex;
 	struct list_head head;
 	struct i2c_adapter i2c;
+<<<<<<< HEAD
+=======
+	u8 enabled;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	u32 intr;
 };

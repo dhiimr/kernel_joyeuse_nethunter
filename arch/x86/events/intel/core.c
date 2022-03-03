@@ -3051,7 +3051,11 @@ static int intel_pmu_hw_config(struct perf_event *event)
 		return ret;
 
 	if (event->attr.precise_ip) {
+<<<<<<< HEAD
 		if (!event->attr.freq) {
+=======
+		if (!(event->attr.freq || (event->attr.wakeup_events && !event->attr.watermark))) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			event->hw.flags |= PERF_X86_EVENT_AUTO_RELOAD;
 			if (!(event->attr.sample_type &
 			      ~intel_pmu_free_running_flags(event)))
@@ -3297,6 +3301,14 @@ static u64 bdw_limit_period(struct perf_event *event, u64 left)
 	return left;
 }
 
+<<<<<<< HEAD
+=======
+static u64 nhm_limit_period(struct perf_event *event, u64 left)
+{
+	return max(left, 32ULL);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 PMU_FORMAT_ATTR(event,	"config:0-7"	);
 PMU_FORMAT_ATTR(umask,	"config:8-15"	);
 PMU_FORMAT_ATTR(edge,	"config:18"	);
@@ -3427,6 +3439,15 @@ static void intel_pmu_cpu_starting(int cpu)
 
 	cpuc->lbr_sel = NULL;
 
+<<<<<<< HEAD
+=======
+	if (x86_pmu.flags & PMU_FL_TFA) {
+		WARN_ON_ONCE(cpuc->tfa_shadow);
+		cpuc->tfa_shadow = ~0ULL;
+		intel_set_tfa(cpuc, false);
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (x86_pmu.version > 1)
 		flip_smm_bit(&x86_pmu.attr_freeze_on_smi);
 
@@ -4086,6 +4107,10 @@ __init int intel_pmu_init(void)
 		x86_pmu.pebs_constraints = intel_nehalem_pebs_event_constraints;
 		x86_pmu.enable_all = intel_pmu_nhm_enable_all;
 		x86_pmu.extra_regs = intel_nehalem_extra_regs;
+<<<<<<< HEAD
+=======
+		x86_pmu.limit_period = nhm_limit_period;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		x86_pmu.cpu_events = nhm_events_attrs;
 
@@ -4105,11 +4130,19 @@ __init int intel_pmu_init(void)
 		name = "nehalem";
 		break;
 
+<<<<<<< HEAD
 	case INTEL_FAM6_ATOM_PINEVIEW:
 	case INTEL_FAM6_ATOM_LINCROFT:
 	case INTEL_FAM6_ATOM_PENWELL:
 	case INTEL_FAM6_ATOM_CLOVERVIEW:
 	case INTEL_FAM6_ATOM_CEDARVIEW:
+=======
+	case INTEL_FAM6_ATOM_BONNELL:
+	case INTEL_FAM6_ATOM_BONNELL_MID:
+	case INTEL_FAM6_ATOM_SALTWELL:
+	case INTEL_FAM6_ATOM_SALTWELL_MID:
+	case INTEL_FAM6_ATOM_SALTWELL_TABLET:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		memcpy(hw_cache_event_ids, atom_hw_cache_event_ids,
 		       sizeof(hw_cache_event_ids));
 
@@ -4122,9 +4155,17 @@ __init int intel_pmu_init(void)
 		name = "bonnell";
 		break;
 
+<<<<<<< HEAD
 	case INTEL_FAM6_ATOM_SILVERMONT1:
 	case INTEL_FAM6_ATOM_SILVERMONT2:
 	case INTEL_FAM6_ATOM_AIRMONT:
+=======
+	case INTEL_FAM6_ATOM_SILVERMONT:
+	case INTEL_FAM6_ATOM_SILVERMONT_X:
+	case INTEL_FAM6_ATOM_SILVERMONT_MID:
+	case INTEL_FAM6_ATOM_AIRMONT:
+	case INTEL_FAM6_ATOM_AIRMONT_MID:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		memcpy(hw_cache_event_ids, slm_hw_cache_event_ids,
 			sizeof(hw_cache_event_ids));
 		memcpy(hw_cache_extra_regs, slm_hw_cache_extra_regs,
@@ -4143,7 +4184,11 @@ __init int intel_pmu_init(void)
 		break;
 
 	case INTEL_FAM6_ATOM_GOLDMONT:
+<<<<<<< HEAD
 	case INTEL_FAM6_ATOM_DENVERTON:
+=======
+	case INTEL_FAM6_ATOM_GOLDMONT_X:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		memcpy(hw_cache_event_ids, glm_hw_cache_event_ids,
 		       sizeof(hw_cache_event_ids));
 		memcpy(hw_cache_extra_regs, glm_hw_cache_extra_regs,
@@ -4169,7 +4214,11 @@ __init int intel_pmu_init(void)
 		name = "goldmont";
 		break;
 
+<<<<<<< HEAD
 	case INTEL_FAM6_ATOM_GEMINI_LAKE:
+=======
+	case INTEL_FAM6_ATOM_GOLDMONT_PLUS:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		memcpy(hw_cache_event_ids, glp_hw_cache_event_ids,
 		       sizeof(hw_cache_event_ids));
 		memcpy(hw_cache_extra_regs, glp_hw_cache_extra_regs,

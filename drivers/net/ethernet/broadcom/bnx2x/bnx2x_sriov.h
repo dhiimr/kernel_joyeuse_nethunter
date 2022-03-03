@@ -139,6 +139,10 @@ struct bnx2x_virtf {
 #define VF_ACQUIRED	1	/* VF acquired, but not initialized */
 #define VF_ENABLED	2	/* VF Enabled */
 #define VF_RESET	3	/* VF FLR'd, pending cleanup */
+<<<<<<< HEAD
+=======
+#define VF_LOST		4	/* Recovery while VFs are loaded */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	bool flr_clnup_stage;	/* true during flr cleanup */
 	bool malicious;		/* true if FW indicated so, until FLR */

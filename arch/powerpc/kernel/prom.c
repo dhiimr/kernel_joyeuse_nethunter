@@ -128,7 +128,11 @@ static void __init move_device_tree(void)
 		p = __va(memblock_alloc(size, PAGE_SIZE));
 		memcpy(p, initial_boot_params, size);
 		initial_boot_params = p;
+<<<<<<< HEAD
 		DBG("Moved device tree to 0x%p\n", p);
+=======
+		DBG("Moved device tree to 0x%px\n", p);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	DBG("<- move_device_tree\n");
@@ -265,7 +269,11 @@ static struct feature_property {
 };
 
 #if defined(CONFIG_44x) && defined(CONFIG_PPC_FPU)
+<<<<<<< HEAD
 static inline void identical_pvr_fixup(unsigned long node)
+=======
+static __init void identical_pvr_fixup(unsigned long node)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned int pvr;
 	const char *model = of_get_flat_dt_prop(node, "model", NULL);
@@ -658,11 +666,35 @@ static void __init early_reserve_mem(void)
 #endif
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC64
+static void __init save_fscr_to_task(void)
+{
+	/*
+	 * Ensure the init_task (pid 0, aka swapper) uses the value of FSCR we
+	 * have configured via the device tree features or via __init_FSCR().
+	 * That value will then be propagated to pid 1 (init) and all future
+	 * processes.
+	 */
+	if (early_cpu_has_feature(CPU_FTR_ARCH_207S))
+		init_task.thread.fscr = mfspr(SPRN_FSCR);
+}
+#else
+static inline void save_fscr_to_task(void) {};
+#endif
+
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void __init early_init_devtree(void *params)
 {
 	phys_addr_t limit;
 
+<<<<<<< HEAD
 	DBG(" -> early_init_devtree(%p)\n", params);
+=======
+	DBG(" -> early_init_devtree(%px)\n", params);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Too early to BUG_ON(), do it by hand */
 	if (!early_init_dt_verify(params))
@@ -722,7 +754,11 @@ void __init early_init_devtree(void *params)
 	memblock_allow_resize();
 	memblock_dump_all();
 
+<<<<<<< HEAD
 	DBG("Phys. mem: %llx\n", memblock_phys_mem_size());
+=======
+	DBG("Phys. mem: %llx\n", (unsigned long long)memblock_phys_mem_size());
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* We may need to relocate the flat tree, do it now.
 	 * FIXME .. and the initrd too? */
@@ -743,6 +779,11 @@ void __init early_init_devtree(void *params)
 		BUG();
 	}
 
+<<<<<<< HEAD
+=======
+	save_fscr_to_task();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #if defined(CONFIG_SMP) && defined(CONFIG_PPC64)
 	/* We'll later wait for secondaries to check in; there are
 	 * NCPUS-1 non-boot CPUs  :-)

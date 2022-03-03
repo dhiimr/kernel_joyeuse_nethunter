@@ -143,7 +143,11 @@
 #define SUN4I_HDMI_DDC_CMD_IMPLICIT_WRITE	3
 
 #define SUN4I_HDMI_DDC_CLK_REG		0x528
+<<<<<<< HEAD
 #define SUN4I_HDMI_DDC_CLK_M(m)			(((m) & 0x7) << 3)
+=======
+#define SUN4I_HDMI_DDC_CLK_M(m)			(((m) & 0xf) << 3)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define SUN4I_HDMI_DDC_CLK_N(n)			((n) & 0x7)
 
 #define SUN4I_HDMI_DDC_LINE_CTRL_REG	0x540

@@ -280,8 +280,13 @@ struct mcb_bus *mcb_alloc_bus(struct device *carrier)
 
 	bus_nr = ida_simple_get(&mcb_ida, 0, 0, GFP_KERNEL);
 	if (bus_nr < 0) {
+<<<<<<< HEAD
 		rc = bus_nr;
 		goto err_free;
+=======
+		kfree(bus);
+		return ERR_PTR(bus_nr);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	bus->bus_nr = bus_nr;
@@ -296,12 +301,21 @@ struct mcb_bus *mcb_alloc_bus(struct device *carrier)
 	dev_set_name(&bus->dev, "mcb:%d", bus_nr);
 	rc = device_add(&bus->dev);
 	if (rc)
+<<<<<<< HEAD
 		goto err_free;
 
 	return bus;
 err_free:
 	put_device(carrier);
 	kfree(bus);
+=======
+		goto err_put;
+
+	return bus;
+
+err_put:
+	put_device(&bus->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ERR_PTR(rc);
 }
 EXPORT_SYMBOL_GPL(mcb_alloc_bus);

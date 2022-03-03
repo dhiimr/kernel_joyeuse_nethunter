@@ -207,7 +207,11 @@ void etnaviv_core_dump(struct etnaviv_gpu *gpu)
 		mutex_lock(&obj->lock);
 		pages = etnaviv_gem_get_pages(obj);
 		mutex_unlock(&obj->lock);
+<<<<<<< HEAD
 		if (pages) {
+=======
+		if (!IS_ERR(pages)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			int j;
 
 			iter.hdr->data[0] = bomap - bomap_start;

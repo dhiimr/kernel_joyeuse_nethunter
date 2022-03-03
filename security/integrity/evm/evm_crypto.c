@@ -90,7 +90,11 @@ static struct shash_desc *init_desc(char type)
 		algo = evm_hash;
 	}
 
+<<<<<<< HEAD
 	if (*tfm == NULL) {
+=======
+	if (IS_ERR_OR_NULL(*tfm)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		mutex_lock(&mutex);
 		if (*tfm)
 			goto out;
@@ -240,7 +244,11 @@ static int evm_calc_hmac_or_hash(struct dentry *dentry,
 
 	/* Portable EVM signatures must include an IMA hash */
 	if (type == EVM_XATTR_PORTABLE_DIGSIG && !ima_present)
+<<<<<<< HEAD
 		return -EPERM;
+=======
+		error = -EPERM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	kfree(xattr_value);
 	kfree(desc);

@@ -248,7 +248,13 @@ static int __net_init ipmr_rules_init(struct net *net)
 	return 0;
 
 err2:
+<<<<<<< HEAD
 	ipmr_free_table(mrt);
+=======
+	rtnl_lock();
+	ipmr_free_table(mrt);
+	rtnl_unlock();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 err1:
 	fib_rules_unregister(ops);
 	return err;

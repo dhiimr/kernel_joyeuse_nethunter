@@ -112,6 +112,7 @@ static ssize_t ad_partner_oper_port_state_show(struct slave *slave, char *buf)
 }
 static SLAVE_ATTR_RO(ad_partner_oper_port_state);
 
+<<<<<<< HEAD
 static const struct slave_attribute *slave_attrs[] = {
 	&slave_attr_state,
 	&slave_attr_mii_status,
@@ -121,11 +122,25 @@ static const struct slave_attribute *slave_attrs[] = {
 	&slave_attr_ad_aggregator_id,
 	&slave_attr_ad_actor_oper_port_state,
 	&slave_attr_ad_partner_oper_port_state,
+=======
+static const struct attribute *slave_attrs[] = {
+	&slave_attr_state.attr,
+	&slave_attr_mii_status.attr,
+	&slave_attr_link_failure_count.attr,
+	&slave_attr_perm_hwaddr.attr,
+	&slave_attr_queue_id.attr,
+	&slave_attr_ad_aggregator_id.attr,
+	&slave_attr_ad_actor_oper_port_state.attr,
+	&slave_attr_ad_partner_oper_port_state.attr,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	NULL
 };
 
 #define to_slave_attr(_at) container_of(_at, struct slave_attribute, attr)
+<<<<<<< HEAD
 #define to_slave(obj)	container_of(obj, struct slave, kobj)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static ssize_t slave_show(struct kobject *kobj,
 			  struct attribute *attr, char *buf)
@@ -136,6 +151,7 @@ static ssize_t slave_show(struct kobject *kobj,
 	return slave_attr->show(slave, buf);
 }
 
+<<<<<<< HEAD
 static const struct sysfs_ops slave_sysfs_ops = {
 	.show = slave_show,
 };
@@ -165,14 +181,27 @@ int bond_sysfs_slave_add(struct slave *slave)
 	}
 
 	return 0;
+=======
+const struct sysfs_ops slave_sysfs_ops = {
+	.show = slave_show,
+};
+
+int bond_sysfs_slave_add(struct slave *slave)
+{
+	return sysfs_create_files(&slave->kobj, slave_attrs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void bond_sysfs_slave_del(struct slave *slave)
 {
+<<<<<<< HEAD
 	const struct slave_attribute **a;
 
 	for (a = slave_attrs; *a; ++a)
 		sysfs_remove_file(&slave->kobj, &((*a)->attr));
 
 	kobject_put(&slave->kobj);
+=======
+	sysfs_remove_files(&slave->kobj, slave_attrs);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }

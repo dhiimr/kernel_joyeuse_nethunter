@@ -330,7 +330,11 @@ static int ttusb_dec_send_command(struct ttusb_dec *dec, const u8 command,
 
 	dprintk("%s\n", __func__);
 
+<<<<<<< HEAD
 	b = kmalloc(COMMAND_PACKET_SIZE + 4, GFP_KERNEL);
+=======
+	b = kzalloc(COMMAND_PACKET_SIZE + 4, GFP_KERNEL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!b)
 		return -ENOMEM;
 

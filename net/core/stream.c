@@ -120,7 +120,10 @@ int sk_stream_wait_memory(struct sock *sk, long *timeo_p)
 	int err = 0;
 	long vm_wait = 0;
 	long current_timeo = *timeo_p;
+<<<<<<< HEAD
 	bool noblock = (*timeo_p ? false : true);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	DEFINE_WAIT_FUNC(wait, woken_wake_function);
 
 	if (sk_stream_memory_free(sk))
@@ -133,11 +136,16 @@ int sk_stream_wait_memory(struct sock *sk, long *timeo_p)
 
 		if (sk->sk_err || (sk->sk_shutdown & SEND_SHUTDOWN))
 			goto do_error;
+<<<<<<< HEAD
 		if (!*timeo_p) {
 			if (noblock)
 				set_bit(SOCK_NOSPACE, &sk->sk_socket->flags);
 			goto do_nonblock;
 		}
+=======
+		if (!*timeo_p)
+			goto do_eagain;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (signal_pending(current))
 			goto do_interrupted;
 		sk_clear_bit(SOCKWQ_ASYNC_NOSPACE, sk);
@@ -169,7 +177,17 @@ out:
 do_error:
 	err = -EPIPE;
 	goto out;
+<<<<<<< HEAD
 do_nonblock:
+=======
+do_eagain:
+	/* Make sure that whenever EAGAIN is returned, EPOLLOUT event can
+	 * be generated later.
+	 * When TCP receives ACK packets that make room, tcp_check_space()
+	 * only calls tcp_new_space() if SOCK_NOSPACE is set.
+	 */
+	set_bit(SOCK_NOSPACE, &sk->sk_socket->flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = -EAGAIN;
 	goto out;
 do_interrupted:
@@ -193,9 +211,12 @@ void sk_stream_kill_queues(struct sock *sk)
 	/* First the read buffer. */
 	__skb_queue_purge(&sk->sk_receive_queue);
 
+<<<<<<< HEAD
 	/* Next, the error queue. */
 	__skb_queue_purge(&sk->sk_error_queue);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Next, the write queue. */
 	WARN_ON(!skb_queue_empty(&sk->sk_write_queue));
 

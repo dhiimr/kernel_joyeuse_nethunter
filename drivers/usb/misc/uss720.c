@@ -749,6 +749,10 @@ static int uss720_probe(struct usb_interface *intf,
 	parport_announce_port(pp);
 
 	usb_set_intfdata(intf, pp);
+<<<<<<< HEAD
+=======
+	usb_put_dev(usbdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 
 probe_abort:

@@ -78,6 +78,10 @@ fman0: fman@400000 {
 		#size-cells = <0>;
 		compatible = "fsl,fman-memac-mdio", "fsl,fman-xmdio";
 		reg = <0xfc000 0x1000>;
+<<<<<<< HEAD
+=======
+		fsl,erratum-a009885;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	xmdio0: mdio@fd000 {
@@ -85,6 +89,10 @@ fman0: fman@400000 {
 		#size-cells = <0>;
 		compatible = "fsl,fman-memac-mdio", "fsl,fman-xmdio";
 		reg = <0xfd000 0x1000>;
+<<<<<<< HEAD
+=======
+		fsl,erratum-a009885;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	ptp_timer0: ptp-timer@fe000 {

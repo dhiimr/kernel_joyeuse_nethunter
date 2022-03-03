@@ -229,7 +229,10 @@ static struct ipv6_devconf ipv6_devconf __read_mostly = {
 	.accept_ra_rt_info_max_plen = 0,
 #endif
 #endif
+<<<<<<< HEAD
 	.accept_ra_rt_table	= 0,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.proxy_ndp		= 0,
 	.accept_source_route	= 0,	/* we do not accept RH0 by default. */
 	.disable_ipv6		= 0,
@@ -249,7 +252,10 @@ static struct ipv6_devconf ipv6_devconf __read_mostly = {
 	.enhanced_dad           = 1,
 	.addr_gen_mode		= IN6_ADDR_GEN_MODE_EUI64,
 	.disable_policy		= 0,
+<<<<<<< HEAD
 	.accept_ra_prefix_route = 1,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
@@ -285,7 +291,10 @@ static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
 	.accept_ra_rt_info_max_plen = 0,
 #endif
 #endif
+<<<<<<< HEAD
 	.accept_ra_rt_table	= 0,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.proxy_ndp		= 0,
 	.accept_source_route	= 0,	/* we do not accept RH0 by default. */
 	.disable_ipv6		= 0,
@@ -305,7 +314,10 @@ static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
 	.enhanced_dad           = 1,
 	.addr_gen_mode		= IN6_ADDR_GEN_MODE_EUI64,
 	.disable_policy		= 0,
+<<<<<<< HEAD
 	.accept_ra_prefix_route = 1,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /* Check if link is ready: is it up and is a valid qdisc available */
@@ -2220,6 +2232,7 @@ static int ipv6_generate_eui64(u8 *eui, struct net_device *dev)
 	case ARPHRD_TUNNEL6:
 	case ARPHRD_IP6GRE:
 		return addrconf_ifid_ip6tnl(eui, dev);
+<<<<<<< HEAD
 	case ARPHRD_RAWIP: {
 		struct in6_addr lladdr;
 
@@ -2230,6 +2243,8 @@ static int ipv6_generate_eui64(u8 *eui, struct net_device *dev)
 
 		return 0;
 	}
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return -1;
 }
@@ -2289,6 +2304,7 @@ static void  ipv6_try_regen_rndid(struct inet6_dev *idev, struct in6_addr *tmpad
 		ipv6_regen_rndid(idev);
 }
 
+<<<<<<< HEAD
 u32 addrconf_rt_table(const struct net_device *dev, u32 default_table) {
 	/* Determines into what table to put autoconf PIO/RIO/default routes
 	 * learned on this device.
@@ -2314,6 +2330,8 @@ u32 addrconf_rt_table(const struct net_device *dev, u32 default_table) {
 	return table;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  *	Add prefix route.
  */
@@ -2323,7 +2341,11 @@ addrconf_prefix_route(struct in6_addr *pfx, int plen, struct net_device *dev,
 		      unsigned long expires, u32 flags)
 {
 	struct fib6_config cfg = {
+<<<<<<< HEAD
 		.fc_table = l3mdev_fib_table(dev) ? : addrconf_rt_table(dev, RT6_TABLE_PREFIX),
+=======
+		.fc_table = l3mdev_fib_table(dev) ? : RT6_TABLE_PREFIX,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.fc_metric = IP6_RT_PRIO_ADDRCONF,
 		.fc_ifindex = dev->ifindex,
 		.fc_expires = expires,
@@ -2356,7 +2378,11 @@ static struct rt6_info *addrconf_get_prefix_route(const struct in6_addr *pfx,
 	struct fib6_node *fn;
 	struct rt6_info *rt = NULL;
 	struct fib6_table *table;
+<<<<<<< HEAD
 	u32 tb_id = l3mdev_fib_table(dev) ? : addrconf_rt_table(dev, RT6_TABLE_PREFIX);
+=======
+	u32 tb_id = l3mdev_fib_table(dev) ? : RT6_TABLE_PREFIX;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	table = fib6_get_table(dev_net(dev), tb_id);
 	if (!table)
@@ -2395,6 +2421,10 @@ static void addrconf_add_mroute(struct net_device *dev)
 		.fc_dst_len = 8,
 		.fc_flags = RTF_UP,
 		.fc_nlinfo.nl_net = dev_net(dev),
+<<<<<<< HEAD
+=======
+		.fc_protocol = RTPROT_KERNEL,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	ipv6_addr_set(&cfg.fc_dst, htonl(0xFF000000), 0, 0, 0);
@@ -2683,11 +2713,16 @@ void addrconf_prefix_rcv(struct net_device *dev, u8 *opt, int len, bool sllao)
 				flags |= RTF_EXPIRES;
 				expires = jiffies_to_clock_t(rt_expires);
 			}
+<<<<<<< HEAD
 			if (dev->ip6_ptr->cnf.accept_ra_prefix_route) {
 				addrconf_prefix_route(&pinfo->prefix,
 						      pinfo->prefix_len,
 						      dev, expires, flags);
 			}
+=======
+			addrconf_prefix_route(&pinfo->prefix, pinfo->prefix_len,
+					      dev, expires, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		ip6_rt_put(rt);
 	}
@@ -3037,6 +3072,12 @@ static void sit_add_v4_addrs(struct inet6_dev *idev)
 	memcpy(&addr.s6_addr32[3], idev->dev->dev_addr, 4);
 
 	if (idev->dev->flags&IFF_POINTOPOINT) {
+<<<<<<< HEAD
+=======
+		if (idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_NONE)
+			return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		addr.s6_addr32[0] = htonl(0xfe800000);
 		scope = IFA_LINK;
 		plen = 64;
@@ -3217,6 +3258,13 @@ static void addrconf_addr_gen(struct inet6_dev *idev, bool prefix_route)
 	if (netif_is_l3_master(idev->dev))
 		return;
 
+<<<<<<< HEAD
+=======
+	/* no link local addresses on devices flagged as slaves */
+	if (idev->dev->flags & IFF_SLAVE)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ipv6_addr_set(&addr, htonl(0xFE800000), 0, 0, 0);
 
 	switch (idev->cnf.addr_gen_mode) {
@@ -3263,9 +3311,18 @@ static void addrconf_dev_config(struct net_device *dev)
 	    (dev->type != ARPHRD_IP6GRE) &&
 	    (dev->type != ARPHRD_IPGRE) &&
 	    (dev->type != ARPHRD_TUNNEL) &&
+<<<<<<< HEAD
 	    (dev->type != ARPHRD_NONE) &&
 	    (dev->type != ARPHRD_RAWIP)) {
 		/* Alas, we support only Ethernet autoconfiguration. */
+=======
+	    (dev->type != ARPHRD_NONE)) {
+		/* Alas, we support only Ethernet autoconfiguration. */
+		idev = __in6_dev_get(dev);
+		if (!IS_ERR_OR_NULL(idev) && dev->flags & IFF_UP &&
+		    dev->flags & IFF_MULTICAST)
+			ipv6_mc_up(idev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 	}
 
@@ -5087,7 +5144,10 @@ static inline void ipv6_store_devconf(struct ipv6_devconf *cnf,
 	array[DEVCONF_ACCEPT_RA_RT_INFO_MAX_PLEN] = cnf->accept_ra_rt_info_max_plen;
 #endif
 #endif
+<<<<<<< HEAD
 	array[DEVCONF_ACCEPT_RA_RT_TABLE] = cnf->accept_ra_rt_table;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	array[DEVCONF_PROXY_NDP] = cnf->proxy_ndp;
 	array[DEVCONF_ACCEPT_SOURCE_ROUTE] = cnf->accept_source_route;
 #ifdef CONFIG_IPV6_OPTIMISTIC_DAD
@@ -5591,6 +5651,7 @@ static void __ipv6_ifa_notify(int event, struct inet6_ifaddr *ifp)
 	switch (event) {
 	case RTM_NEWADDR:
 		/*
+<<<<<<< HEAD
 		 * If the address was optimistic
 		 * we inserted the route at the start of
 		 * our DAD process, so we don't need
@@ -5598,6 +5659,22 @@ static void __ipv6_ifa_notify(int event, struct inet6_ifaddr *ifp)
 		 */
 		if (!rcu_access_pointer(ifp->rt->rt6i_node))
 			ip6_ins_rt(ifp->rt);
+=======
+		 * If the address was optimistic we inserted the route at the
+		 * start of our DAD process, so we don't need to do it again.
+		 * If the device was taken down in the middle of the DAD
+		 * cycle there is a race where we could get here without a
+		 * host route, so nothing to insert. That will be fixed when
+		 * the device is brought up.
+		 */
+		if (ifp->rt && !rcu_access_pointer(ifp->rt->rt6i_node)) {
+			ip6_ins_rt(ifp->rt);
+		} else if (!ifp->rt && (ifp->idev->dev->flags & IFF_UP)) {
+			pr_warn("BUG: Address %pI6c on device %s is missing its host route.\n",
+				&ifp->addr, ifp->idev->dev->name);
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (ifp->idev->cnf.forwarding)
 			addrconf_join_anycast(ifp);
 		if (!ipv6_addr_any(&ifp->peer_addr))
@@ -6248,6 +6325,7 @@ static const struct ctl_table addrconf_sysctl[] = {
 #endif
 #endif
 	{
+<<<<<<< HEAD
 		.procname	= "accept_ra_rt_table",
 		.data		= &ipv6_devconf.accept_ra_rt_table,
 		.maxlen		= sizeof(int),
@@ -6255,6 +6333,8 @@ static const struct ctl_table addrconf_sysctl[] = {
 		.proc_handler	= proc_dointvec,
 	},
 	{
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.procname	= "proxy_ndp",
 		.data		= &ipv6_devconf.proxy_ndp,
 		.maxlen		= sizeof(int),
@@ -6388,6 +6468,7 @@ static const struct ctl_table addrconf_sysctl[] = {
 	{
 		.procname	= "seg6_enabled",
 		.data		= &ipv6_devconf.seg6_enabled,
+<<<<<<< HEAD
 		.maxlen         = sizeof(int),
 		.mode           = 0644,
 		.proc_handler   = proc_dointvec,
@@ -6395,6 +6476,8 @@ static const struct ctl_table addrconf_sysctl[] = {
 	{
 		.procname	= "accept_ra_prefix_route",
 		.data		= &ipv6_devconf.accept_ra_prefix_route,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.maxlen		= sizeof(int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec,

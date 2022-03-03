@@ -52,6 +52,10 @@
 #define CONTROL_EX_PDR		BIT(8)
 
 /* control register */
+<<<<<<< HEAD
+=======
+#define CONTROL_SWR		BIT(15)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define CONTROL_TEST		BIT(7)
 #define CONTROL_CCE		BIT(6)
 #define CONTROL_DISABLE_AR	BIT(5)
@@ -97,6 +101,12 @@
 #define BTR_TSEG2_SHIFT		12
 #define BTR_TSEG2_MASK		(0x7 << BTR_TSEG2_SHIFT)
 
+<<<<<<< HEAD
+=======
+/* interrupt register */
+#define INT_STS_PENDING		0x8000
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* brp extension register */
 #define BRP_EXT_BRPE_MASK	0x0f
 #define BRP_EXT_BRPE_SHIFT	0
@@ -208,6 +218,7 @@ static const struct can_bittiming_const c_can_bittiming_const = {
 	.brp_inc = 1,
 };
 
+<<<<<<< HEAD
 static inline void c_can_pm_runtime_enable(const struct c_can_priv *priv)
 {
 	if (priv->device)
@@ -220,6 +231,8 @@ static inline void c_can_pm_runtime_disable(const struct c_can_priv *priv)
 		pm_runtime_disable(priv->device);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline void c_can_pm_runtime_get_sync(const struct c_can_priv *priv)
 {
 	if (priv->device)
@@ -569,6 +582,29 @@ static void c_can_configure_msg_objects(struct net_device *dev)
 				   IF_MCONT_RCV_EOB);
 }
 
+<<<<<<< HEAD
+=======
+static int c_can_software_reset(struct net_device *dev)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+	int retry = 0;
+
+	if (priv->type != BOSCH_D_CAN)
+		return 0;
+
+	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_SWR | CONTROL_INIT);
+	while (priv->read_reg(priv, C_CAN_CTRL_REG) & CONTROL_SWR) {
+		msleep(20);
+		if (retry++ > 100) {
+			netdev_err(dev, "CCTRL: software reset failed\n");
+			return -EIO;
+		}
+	}
+
+	return 0;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Configure C_CAN chip:
  * - enable/disable auto-retransmission
@@ -578,6 +614,14 @@ static void c_can_configure_msg_objects(struct net_device *dev)
 static int c_can_chip_config(struct net_device *dev)
 {
 	struct c_can_priv *priv = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+	int err;
+
+	err = c_can_software_reset(dev);
+	if (err)
+		return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* enable automatic retransmission */
 	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_ENABLE_AR);
@@ -1029,10 +1073,23 @@ static int c_can_poll(struct napi_struct *napi, int quota)
 	u16 curr, last = priv->last_status;
 	int work_done = 0;
 
+<<<<<<< HEAD
 	priv->last_status = curr = priv->read_reg(priv, C_CAN_STS_REG);
 	/* Ack status on C_CAN. D_CAN is self clearing */
 	if (priv->type != BOSCH_D_CAN)
 		priv->write_reg(priv, C_CAN_STS_REG, LEC_UNUSED);
+=======
+	/* Only read the status register if a status interrupt was pending */
+	if (atomic_xchg(&priv->sie_pending, 0)) {
+		priv->last_status = curr = priv->read_reg(priv, C_CAN_STS_REG);
+		/* Ack status on C_CAN. D_CAN is self clearing */
+		if (priv->type != BOSCH_D_CAN)
+			priv->write_reg(priv, C_CAN_STS_REG, LEC_UNUSED);
+	} else {
+		/* no change detected ... */
+		curr = last;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* handle state changes */
 	if ((curr & STATUS_EWARN) && (!(last & STATUS_EWARN))) {
@@ -1083,10 +1140,23 @@ static irqreturn_t c_can_isr(int irq, void *dev_id)
 {
 	struct net_device *dev = (struct net_device *)dev_id;
 	struct c_can_priv *priv = netdev_priv(dev);
+<<<<<<< HEAD
 
 	if (!priv->read_reg(priv, C_CAN_INT_REG))
 		return IRQ_NONE;
 
+=======
+	int reg_int;
+
+	reg_int = priv->read_reg(priv, C_CAN_INT_REG);
+	if (!reg_int)
+		return IRQ_NONE;
+
+	/* save for later use */
+	if (reg_int & INT_STS_PENDING)
+		atomic_set(&priv->sie_pending, 1);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* disable all interrupts and schedule the NAPI */
 	c_can_irq_control(priv, false);
 	napi_schedule(&priv->napi);
@@ -1277,7 +1347,10 @@ static const struct net_device_ops c_can_netdev_ops = {
 
 int register_c_can_dev(struct net_device *dev)
 {
+<<<<<<< HEAD
 	struct c_can_priv *priv = netdev_priv(dev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int err;
 
 	/* Deactivate pins to prevent DRA7 DCAN IP from being
@@ -1287,28 +1360,40 @@ int register_c_can_dev(struct net_device *dev)
 	 */
 	pinctrl_pm_select_sleep_state(dev->dev.parent);
 
+<<<<<<< HEAD
 	c_can_pm_runtime_enable(priv);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev->flags |= IFF_ECHO;	/* we support local echo */
 	dev->netdev_ops = &c_can_netdev_ops;
 
 	err = register_candev(dev);
+<<<<<<< HEAD
 	if (err)
 		c_can_pm_runtime_disable(priv);
 	else
 		devm_can_led_init(dev);
 
+=======
+	if (!err)
+		devm_can_led_init(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return err;
 }
 EXPORT_SYMBOL_GPL(register_c_can_dev);
 
 void unregister_c_can_dev(struct net_device *dev)
 {
+<<<<<<< HEAD
 	struct c_can_priv *priv = netdev_priv(dev);
 
 	unregister_candev(dev);
 
 	c_can_pm_runtime_disable(priv);
+=======
+	unregister_candev(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(unregister_c_can_dev);
 

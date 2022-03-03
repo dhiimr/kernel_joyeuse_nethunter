@@ -91,7 +91,10 @@
 struct atmel_aes_caps {
 	bool			has_dualbuff;
 	bool			has_cfb64;
+<<<<<<< HEAD
 	bool			has_ctr32;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool			has_gcm;
 	bool			has_xts;
 	bool			has_authenc;
@@ -990,8 +993,14 @@ static int atmel_aes_ctr_transfer(struct atmel_aes_dev *dd)
 	struct atmel_aes_ctr_ctx *ctx = atmel_aes_ctr_ctx_cast(dd->ctx);
 	struct ablkcipher_request *req = ablkcipher_request_cast(dd->areq);
 	struct scatterlist *src, *dst;
+<<<<<<< HEAD
 	u32 ctr, blocks;
 	size_t datalen;
+=======
+	size_t datalen;
+	u32 ctr;
+	u16 blocks, start, end;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bool use_dma, fragmented = false;
 
 	/* Check for transfer completion. */
@@ -1003,6 +1012,7 @@ static int atmel_aes_ctr_transfer(struct atmel_aes_dev *dd)
 	datalen = req->nbytes - ctx->offset;
 	blocks = DIV_ROUND_UP(datalen, AES_BLOCK_SIZE);
 	ctr = be32_to_cpu(ctx->iv[3]);
+<<<<<<< HEAD
 	if (dd->caps.has_ctr32) {
 		/* Check 32bit counter overflow. */
 		u32 start = ctr;
@@ -1024,6 +1034,19 @@ static int atmel_aes_ctr_transfer(struct atmel_aes_dev *dd)
 			fragmented = true;
 		}
 	}
+=======
+
+	/* Check 16bit counter overflow. */
+	start = ctr & 0xffff;
+	end = start + blocks - 1;
+
+	if (blocks >> 16 || end < start) {
+		ctr |= 0xffff;
+		datalen = AES_BLOCK_SIZE * (0x10000 - start);
+		fragmented = true;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	use_dma = (datalen >= ATMEL_AES_DMA_THRESHOLD);
 
 	/* Jump to offset. */
@@ -2536,7 +2559,10 @@ static void atmel_aes_get_cap(struct atmel_aes_dev *dd)
 {
 	dd->caps.has_dualbuff = 0;
 	dd->caps.has_cfb64 = 0;
+<<<<<<< HEAD
 	dd->caps.has_ctr32 = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dd->caps.has_gcm = 0;
 	dd->caps.has_xts = 0;
 	dd->caps.has_authenc = 0;
@@ -2547,7 +2573,10 @@ static void atmel_aes_get_cap(struct atmel_aes_dev *dd)
 	case 0x500:
 		dd->caps.has_dualbuff = 1;
 		dd->caps.has_cfb64 = 1;
+<<<<<<< HEAD
 		dd->caps.has_ctr32 = 1;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dd->caps.has_gcm = 1;
 		dd->caps.has_xts = 1;
 		dd->caps.has_authenc = 1;
@@ -2556,7 +2585,10 @@ static void atmel_aes_get_cap(struct atmel_aes_dev *dd)
 	case 0x200:
 		dd->caps.has_dualbuff = 1;
 		dd->caps.has_cfb64 = 1;
+<<<<<<< HEAD
 		dd->caps.has_ctr32 = 1;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dd->caps.has_gcm = 1;
 		dd->caps.max_burst_size = 4;
 		break;

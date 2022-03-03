@@ -160,6 +160,10 @@ int __inet_inherit_port(const struct sock *sk, struct sock *child)
 				return -ENOMEM;
 			}
 		}
+<<<<<<< HEAD
+=======
+		inet_csk_update_fastreuse(tb, child);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	inet_bind_hash(child, tb, port);
 	spin_unlock(&head->lock);
@@ -193,7 +197,11 @@ static inline int compute_score(struct sock *sk, struct net *net,
 			if (sk->sk_bound_dev_if)
 				score += 4;
 		}
+<<<<<<< HEAD
 		if (sk->sk_incoming_cpu == raw_smp_processor_id())
+=======
+		if (READ_ONCE(sk->sk_incoming_cpu) == raw_smp_processor_id())
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			score++;
 	}
 	return score;
@@ -219,9 +227,16 @@ struct sock *__inet_lookup_listener(struct net *net,
 	int score, hiscore = 0, matches = 0, reuseport = 0;
 	bool exact_dif = inet_exact_dif_match(net, skb);
 	struct sock *sk, *result = NULL;
+<<<<<<< HEAD
 	u32 phash = 0;
 
 	sk_for_each_rcu(sk, &ilb->head) {
+=======
+	struct hlist_nulls_node *node;
+	u32 phash = 0;
+
+	sk_nulls_for_each_rcu(sk, node, &ilb->nulls_head) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		score = compute_score(sk, net, hnum, daddr,
 				      dif, sdif, exact_dif);
 		if (score > hiscore) {
@@ -442,10 +457,18 @@ static int inet_reuseport_add_sock(struct sock *sk,
 				   struct inet_listen_hashbucket *ilb)
 {
 	struct inet_bind_bucket *tb = inet_csk(sk)->icsk_bind_hash;
+<<<<<<< HEAD
 	struct sock *sk2;
 	kuid_t uid = sock_i_uid(sk);
 
 	sk_for_each_rcu(sk2, &ilb->head) {
+=======
+	const struct hlist_nulls_node *node;
+	struct sock *sk2;
+	kuid_t uid = sock_i_uid(sk);
+
+	sk_nulls_for_each_rcu(sk2, node, &ilb->nulls_head) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (sk2 != sk &&
 		    sk2->sk_family == sk->sk_family &&
 		    ipv6_only_sock(sk2) == ipv6_only_sock(sk) &&
@@ -480,9 +503,15 @@ int __inet_hash(struct sock *sk, struct sock *osk)
 	}
 	if (IS_ENABLED(CONFIG_IPV6) && sk->sk_reuseport &&
 		sk->sk_family == AF_INET6)
+<<<<<<< HEAD
 		hlist_add_tail_rcu(&sk->sk_node, &ilb->head);
 	else
 		hlist_add_head_rcu(&sk->sk_node, &ilb->head);
+=======
+		__sk_nulls_add_node_tail_rcu(sk, &ilb->nulls_head);
+	else
+		__sk_nulls_add_node_rcu(sk, &ilb->nulls_head);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sock_set_flag(sk, SOCK_RCU_FREE);
 	sock_prot_inuse_add(sock_net(sk), sk->sk_prot, 1);
 unlock:
@@ -525,10 +554,14 @@ void inet_unhash(struct sock *sk)
 	spin_lock_bh(lock);
 	if (rcu_access_pointer(sk->sk_reuseport_cb))
 		reuseport_detach_sock(sk);
+<<<<<<< HEAD
 	if (listener)
 		done = __sk_del_node_init(sk);
 	else
 		done = __sk_nulls_del_node_init_rcu(sk);
+=======
+	done = __sk_nulls_del_node_init_rcu(sk);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (done)
 		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);
 	spin_unlock_bh(lock);
@@ -664,7 +697,12 @@ void inet_hashinfo_init(struct inet_hashinfo *h)
 
 	for (i = 0; i < INET_LHTABLE_SIZE; i++) {
 		spin_lock_init(&h->listening_hash[i].lock);
+<<<<<<< HEAD
 		INIT_HLIST_HEAD(&h->listening_hash[i].head);
+=======
+		INIT_HLIST_NULLS_HEAD(&h->listening_hash[i].nulls_head,
+				      i + LISTENING_NULLS_BASE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 EXPORT_SYMBOL_GPL(inet_hashinfo_init);

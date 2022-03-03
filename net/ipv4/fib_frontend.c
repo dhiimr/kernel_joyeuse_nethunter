@@ -292,7 +292,11 @@ __be32 fib_compute_spec_dst(struct sk_buff *skb)
 			.flowi4_iif = LOOPBACK_IFINDEX,
 			.flowi4_oif = l3mdev_master_ifindex_rcu(dev),
 			.daddr = ip_hdr(skb)->saddr,
+<<<<<<< HEAD
 			.flowi4_tos = RT_TOS(ip_hdr(skb)->tos),
+=======
+			.flowi4_tos = ip_hdr(skb)->tos & IPTOS_RT_MASK,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			.flowi4_scope = scope,
 			.flowi4_mark = vmark ? skb->mark : 0,
 		};

@@ -1028,8 +1028,11 @@ err1:
 
 void cxl_guest_remove_afu(struct cxl_afu *afu)
 {
+<<<<<<< HEAD
 	pr_devel("in %s - AFU(%d)\n", __func__, afu->slice);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!afu)
 		return;
 

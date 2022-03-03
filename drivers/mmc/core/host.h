@@ -13,8 +13,11 @@
 
 #include <linux/mmc/host.h>
 
+<<<<<<< HEAD
 #define cls_dev_to_mmc_host(d)	container_of(d, struct mmc_host, class_dev)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 int mmc_register_host_class(void);
 void mmc_unregister_host_class(void);
 
@@ -27,9 +30,12 @@ int mmc_retune(struct mmc_host *host);
 void mmc_retune_pause(struct mmc_host *host);
 void mmc_retune_unpause(struct mmc_host *host);
 
+<<<<<<< HEAD
 void mmc_latency_hist_sysfs_init(struct mmc_host *host);
 void mmc_latency_hist_sysfs_exit(struct mmc_host *host);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline void mmc_retune_recheck(struct mmc_host *host)
 {
 	if (host->hold_retune <= 1)
@@ -75,8 +81,11 @@ static inline bool mmc_card_hs400es(struct mmc_card *card)
 }
 
 
+<<<<<<< HEAD
 void mmc_latency_hist_sysfs_init(struct mmc_host *host);
 void mmc_latency_hist_sysfs_exit(struct mmc_host *host);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 

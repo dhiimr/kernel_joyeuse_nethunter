@@ -117,8 +117,16 @@ void		nfsd_put_raparams(struct file *file, struct raparms *ra);
 
 static inline int fh_want_write(struct svc_fh *fh)
 {
+<<<<<<< HEAD
 	int ret = mnt_want_write(fh->fh_export->ex_path.mnt);
 
+=======
+	int ret;
+
+	if (fh->fh_want_write)
+		return 0;
+	ret = mnt_want_write(fh->fh_export->ex_path.mnt);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!ret)
 		fh->fh_want_write = true;
 	return ret;

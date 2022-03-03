@@ -652,7 +652,11 @@ smb2_set_ea(const unsigned int xid, struct cifs_tcon *tcon,
 		return rc;
 	}
 
+<<<<<<< HEAD
 	len = sizeof(ea) + ea_name_len + ea_value_len + 1;
+=======
+	len = sizeof(*ea) + ea_name_len + ea_value_len + 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ea = kzalloc(len, GFP_KERNEL);
 	if (ea == NULL) {
 		SMB2_close(xid, tcon, fid.persistent_fid, fid.volatile_fid);
@@ -885,6 +889,11 @@ smb2_copychunk_range(const unsigned int xid,
 			cpu_to_le32(min_t(u32, len, tcon->max_bytes_chunk));
 
 		/* Request server copy to target from src identified by key */
+<<<<<<< HEAD
+=======
+		kfree(retbuf);
+		retbuf = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rc = SMB2_ioctl(xid, tcon, trgtfile->fid.persistent_fid,
 			trgtfile->fid.volatile_fid, FSCTL_SRV_COPYCHUNK_WRITE,
 			true /* is_fsctl */, false /* use_ipc */,
@@ -1755,6 +1764,15 @@ static long smb3_zero_range(struct file *file, struct cifs_tcon *tcon,
 	inode = d_inode(cfile->dentry);
 	cifsi = CIFS_I(inode);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * We zero the range through ioctl, so we need remove the page caches
+	 * first, otherwise the data may be inconsistent with the server.
+	 */
+	truncate_pagecache_range(inode, offset, offset + len - 1);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* if file not oplocked can't be sure whether asking to extend size */
 	if (!CIFS_CACHE_READ(cifsi))
 		if (keep_size == false) {
@@ -1824,6 +1842,15 @@ static long smb3_punch_hole(struct file *file, struct cifs_tcon *tcon,
 		return rc;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * We implement the punch hole through ioctl, so we need remove the page
+	 * caches first, otherwise the data may be inconsistent with the server.
+	 */
+	truncate_pagecache_range(inode, offset, offset + len - 1);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cifs_dbg(FYI, "offset %lld len %lld", offset, len);
 
 	fsctl_buf.FileOffset = cpu_to_le64(offset);
@@ -1923,6 +1950,7 @@ static long smb3_fallocate(struct file *file, struct cifs_tcon *tcon, int mode,
 
 static void
 smb2_downgrade_oplock(struct TCP_Server_Info *server,
+<<<<<<< HEAD
 			struct cifsInodeInfo *cinode, bool set_level2)
 {
 	if (set_level2)
@@ -1939,6 +1967,40 @@ smb21_downgrade_oplock(struct TCP_Server_Info *server,
 	server->ops->set_oplock_level(cinode,
 				      set_level2 ? SMB2_LEASE_READ_CACHING_HE :
 				      0, 0, NULL);
+=======
+		      struct cifsInodeInfo *cinode, __u32 oplock,
+		      unsigned int epoch, bool *purge_cache)
+{
+	server->ops->set_oplock_level(cinode, oplock, 0, NULL);
+}
+
+static void
+smb21_set_oplock_level(struct cifsInodeInfo *cinode, __u32 oplock,
+		       unsigned int epoch, bool *purge_cache);
+
+static void
+smb3_downgrade_oplock(struct TCP_Server_Info *server,
+		       struct cifsInodeInfo *cinode, __u32 oplock,
+		       unsigned int epoch, bool *purge_cache)
+{
+	unsigned int old_state = cinode->oplock;
+	unsigned int old_epoch = cinode->epoch;
+	unsigned int new_state;
+
+	if (epoch > old_epoch) {
+		smb21_set_oplock_level(cinode, oplock, 0, NULL);
+		cinode->epoch = epoch;
+	}
+
+	new_state = cinode->oplock;
+	*purge_cache = false;
+
+	if ((old_state & CIFS_CACHE_READ_FLG) != 0 &&
+	    (new_state & CIFS_CACHE_READ_FLG) == 0)
+		*purge_cache = true;
+	else if (old_state == new_state && (epoch - old_epoch > 1))
+		*purge_cache = true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void
@@ -1969,11 +2031,16 @@ smb21_set_oplock_level(struct cifsInodeInfo *cinode, __u32 oplock,
 		       unsigned int epoch, bool *purge_cache)
 {
 	char message[5] = {0};
+<<<<<<< HEAD
+=======
+	unsigned int new_oplock = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	oplock &= 0xFF;
 	if (oplock == SMB2_OPLOCK_LEVEL_NOCHANGE)
 		return;
 
+<<<<<<< HEAD
 	cinode->oplock = 0;
 	if (oplock & SMB2_LEASE_READ_CACHING_HE) {
 		cinode->oplock |= CIFS_CACHE_READ_FLG;
@@ -1989,6 +2056,29 @@ smb21_set_oplock_level(struct cifsInodeInfo *cinode, __u32 oplock,
 	}
 	if (!cinode->oplock)
 		strcat(message, "None");
+=======
+	/* Check if the server granted an oplock rather than a lease */
+	if (oplock & SMB2_OPLOCK_LEVEL_EXCLUSIVE)
+		return smb2_set_oplock_level(cinode, oplock, epoch,
+					     purge_cache);
+
+	if (oplock & SMB2_LEASE_READ_CACHING_HE) {
+		new_oplock |= CIFS_CACHE_READ_FLG;
+		strcat(message, "R");
+	}
+	if (oplock & SMB2_LEASE_HANDLE_CACHING_HE) {
+		new_oplock |= CIFS_CACHE_HANDLE_FLG;
+		strcat(message, "H");
+	}
+	if (oplock & SMB2_LEASE_WRITE_CACHING_HE) {
+		new_oplock |= CIFS_CACHE_WRITE_FLG;
+		strcat(message, "W");
+	}
+	if (!new_oplock)
+		strncpy(message, "None", sizeof(message));
+
+	cinode->oplock = new_oplock;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cifs_dbg(FYI, "%s Lease granted on inode %p\n", message,
 		 &cinode->vfs_inode);
 }
@@ -2166,7 +2256,19 @@ fill_transform_hdr(struct smb2_transform_hdr *tr_hdr, struct smb_rqst *old_rq)
 static inline void smb2_sg_set_buf(struct scatterlist *sg, const void *buf,
 				   unsigned int buflen)
 {
+<<<<<<< HEAD
 	sg_set_page(sg, virt_to_page(buf), buflen, offset_in_page(buf));
+=======
+	void *addr;
+	/*
+	 * VMAP_STACK (at least) puts stack into the vmalloc address space
+	 */
+	if (is_vmalloc_addr(buf))
+		addr = vmalloc_to_page(buf);
+	else
+		addr = virt_to_page(buf);
+	sg_set_page(sg, addr, buflen, offset_in_page(buf));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct scatterlist *
@@ -2230,7 +2332,11 @@ smb2_get_enc_key(struct TCP_Server_Info *server, __u64 ses_id, int enc, u8 *key)
 	}
 	spin_unlock(&cifs_tcp_ses_lock);
 
+<<<<<<< HEAD
 	return 1;
+=======
+	return -EAGAIN;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 /*
  * Encrypt or decrypt @rqst message. @rqst has the following format:
@@ -2262,7 +2368,11 @@ crypt_message(struct TCP_Server_Info *server, struct smb_rqst *rqst, int enc)
 	if (rc) {
 		cifs_dbg(VFS, "%s: Could not get %scryption key\n", __func__,
 			 enc ? "en" : "de");
+<<<<<<< HEAD
 		return 0;
+=======
+		return rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	rc = smb3_crypto_aead_allocate(server);
@@ -2926,7 +3036,11 @@ struct smb_version_operations smb21_operations = {
 	.print_stats = smb2_print_stats,
 	.is_oplock_break = smb2_is_valid_oplock_break,
 	.handle_cancelled_mid = smb2_handle_cancelled_mid,
+<<<<<<< HEAD
 	.downgrade_oplock = smb21_downgrade_oplock,
+=======
+	.downgrade_oplock = smb2_downgrade_oplock,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.need_neg = smb2_need_neg,
 	.negotiate = smb2_negotiate,
 	.negotiate_wsize = smb2_negotiate_wsize,
@@ -3021,7 +3135,11 @@ struct smb_version_operations smb30_operations = {
 	.dump_share_caps = smb2_dump_share_caps,
 	.is_oplock_break = smb2_is_valid_oplock_break,
 	.handle_cancelled_mid = smb2_handle_cancelled_mid,
+<<<<<<< HEAD
 	.downgrade_oplock = smb21_downgrade_oplock,
+=======
+	.downgrade_oplock = smb3_downgrade_oplock,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.need_neg = smb2_need_neg,
 	.negotiate = smb2_negotiate,
 	.negotiate_wsize = smb2_negotiate_wsize,
@@ -3126,7 +3244,11 @@ struct smb_version_operations smb311_operations = {
 	.dump_share_caps = smb2_dump_share_caps,
 	.is_oplock_break = smb2_is_valid_oplock_break,
 	.handle_cancelled_mid = smb2_handle_cancelled_mid,
+<<<<<<< HEAD
 	.downgrade_oplock = smb21_downgrade_oplock,
+=======
+	.downgrade_oplock = smb3_downgrade_oplock,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.need_neg = smb2_need_neg,
 	.negotiate = smb2_negotiate,
 	.negotiate_wsize = smb2_negotiate_wsize,

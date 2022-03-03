@@ -4600,8 +4600,17 @@ int be_update_queues(struct be_adapter *adapter)
 	struct net_device *netdev = adapter->netdev;
 	int status;
 
+<<<<<<< HEAD
 	if (netif_running(netdev))
 		be_close(netdev);
+=======
+	if (netif_running(netdev)) {
+		/* device cannot transmit now, avoid dev_watchdog timeouts */
+		netif_carrier_off(netdev);
+
+		be_close(netdev);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	be_cancel_worker(adapter);
 
@@ -5922,6 +5931,10 @@ drv_cleanup:
 unmap_bars:
 	be_unmap_pci_bars(adapter);
 free_netdev:
+<<<<<<< HEAD
+=======
+	pci_disable_pcie_error_reporting(pdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	free_netdev(netdev);
 rel_reg:
 	pci_release_regions(pdev);

@@ -84,7 +84,10 @@ struct aic3x_priv {
 	struct list_head list;
 	int master;
 	int gpio_reset;
+<<<<<<< HEAD
 	bool reset_inverted;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int power;
 #define AIC3X_MODEL_3X 0
 #define AIC3X_MODEL_33 1
@@ -1356,8 +1359,12 @@ static int aic3x_regulator_event(struct notifier_block *nb,
 		 * of the supplies was disabled
 		 */
 		if (gpio_is_valid(aic3x->gpio_reset))
+<<<<<<< HEAD
 			gpio_set_value(aic3x->gpio_reset,
 				       aic3x->reset_inverted);
+=======
+			gpio_set_value(aic3x->gpio_reset, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		regcache_mark_dirty(aic3x->regmap);
 	}
 
@@ -1379,8 +1386,12 @@ static int aic3x_set_power(struct snd_soc_codec *codec, int power)
 
 		if (gpio_is_valid(aic3x->gpio_reset)) {
 			udelay(1);
+<<<<<<< HEAD
 			gpio_set_value(aic3x->gpio_reset,
 				       !aic3x->reset_inverted);
+=======
+			gpio_set_value(aic3x->gpio_reset, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 		/* Sync reg_cache with the hardware */
@@ -1813,9 +1824,12 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
 		else
 			aic3x->gpio_reset = -1;
 
+<<<<<<< HEAD
 		aic3x->reset_inverted =
 			of_property_read_bool(np, "reset-inverted");
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (of_property_read_u32_array(np, "ai3x-gpio-func",
 					ai3x_setup->gpio_func, 2) >= 0) {
 			aic3x->setup = ai3x_setup;
@@ -1852,8 +1866,12 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
 		ret = gpio_request(aic3x->gpio_reset, "tlv320aic3x reset");
 		if (ret != 0)
 			goto err;
+<<<<<<< HEAD
 		gpio_direction_output(aic3x->gpio_reset,
 				      aic3x->reset_inverted);
+=======
+		gpio_direction_output(aic3x->gpio_reset, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++)
@@ -1901,7 +1919,11 @@ static int aic3x_i2c_remove(struct i2c_client *client)
 	snd_soc_unregister_codec(&client->dev);
 	if (gpio_is_valid(aic3x->gpio_reset) &&
 	    !aic3x_is_shared_reset(aic3x)) {
+<<<<<<< HEAD
 		gpio_set_value(aic3x->gpio_reset, aic3x->reset_inverted);
+=======
+		gpio_set_value(aic3x->gpio_reset, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		gpio_free(aic3x->gpio_reset);
 	}
 	return 0;

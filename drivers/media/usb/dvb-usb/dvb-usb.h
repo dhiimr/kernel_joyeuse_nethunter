@@ -474,7 +474,11 @@ extern int __must_check
 dvb_usb_generic_write(struct dvb_usb_device *, u8 *, u16);
 
 /* commonly used remote control parsing */
+<<<<<<< HEAD
 extern int dvb_usb_nec_rc_key_to_event(struct dvb_usb_device *, u8[], u32 *, int *);
+=======
+extern int dvb_usb_nec_rc_key_to_event(struct dvb_usb_device *, u8[5], u32 *, int *);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /* commonly used firmware download types and function */
 struct hexline {

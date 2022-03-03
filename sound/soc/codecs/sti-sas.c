@@ -407,6 +407,10 @@ static const struct of_device_id sti_sas_dev_match[] = {
 	},
 	{},
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(of, sti_sas_dev_match);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int sti_sas_driver_probe(struct platform_device *pdev)
 {

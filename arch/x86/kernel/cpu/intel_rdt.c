@@ -135,6 +135,43 @@ struct rdt_resource rdt_resources_all[] = {
 		.format_str		= "%d=%0*x",
 		.fflags			= RFTYPE_RES_CACHE,
 	},
+<<<<<<< HEAD
+=======
+	[RDT_RESOURCE_L2DATA] =
+	{
+		.rid			= RDT_RESOURCE_L2DATA,
+		.name			= "L2DATA",
+		.domains		= domain_init(RDT_RESOURCE_L2DATA),
+		.msr_base		= IA32_L2_CBM_BASE,
+		.msr_update		= cat_wrmsr,
+		.cache_level		= 2,
+		.cache = {
+			.min_cbm_bits	= 1,
+			.cbm_idx_mult	= 2,
+			.cbm_idx_offset	= 0,
+		},
+		.parse_ctrlval		= parse_cbm,
+		.format_str		= "%d=%0*x",
+		.fflags			= RFTYPE_RES_CACHE,
+	},
+	[RDT_RESOURCE_L2CODE] =
+	{
+		.rid			= RDT_RESOURCE_L2CODE,
+		.name			= "L2CODE",
+		.domains		= domain_init(RDT_RESOURCE_L2CODE),
+		.msr_base		= IA32_L2_CBM_BASE,
+		.msr_update		= cat_wrmsr,
+		.cache_level		= 2,
+		.cache = {
+			.min_cbm_bits	= 1,
+			.cbm_idx_mult	= 2,
+			.cbm_idx_offset	= 1,
+		},
+		.parse_ctrlval		= parse_cbm,
+		.format_str		= "%d=%0*x",
+		.fflags			= RFTYPE_RES_CACHE,
+	},
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	[RDT_RESOURCE_MBA] =
 	{
 		.rid			= RDT_RESOURCE_MBA,
@@ -259,6 +296,7 @@ static void rdt_get_cache_alloc_cfg(int idx, struct rdt_resource *r)
 	r->alloc_enabled = true;
 }
 
+<<<<<<< HEAD
 static void rdt_get_cdp_l3_config(int type)
 {
 	struct rdt_resource *r_l3 = &rdt_resources_all[RDT_RESOURCE_L3];
@@ -268,6 +306,17 @@ static void rdt_get_cdp_l3_config(int type)
 	r->cache.cbm_len = r_l3->cache.cbm_len;
 	r->default_ctrl = r_l3->default_ctrl;
 	r->cache.shareable_bits = r_l3->cache.shareable_bits;
+=======
+static void rdt_get_cdp_config(int level, int type)
+{
+	struct rdt_resource *r_l = &rdt_resources_all[level];
+	struct rdt_resource *r = &rdt_resources_all[type];
+
+	r->num_closid = r_l->num_closid / 2;
+	r->cache.cbm_len = r_l->cache.cbm_len;
+	r->default_ctrl = r_l->default_ctrl;
+	r->cache.shareable_bits = r_l->cache.shareable_bits;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	r->data_width = (r->cache.cbm_len + 3) / 4;
 	r->alloc_capable = true;
 	/*
@@ -277,6 +326,21 @@ static void rdt_get_cdp_l3_config(int type)
 	r->alloc_enabled = false;
 }
 
+<<<<<<< HEAD
+=======
+static void rdt_get_cdp_l3_config(void)
+{
+	rdt_get_cdp_config(RDT_RESOURCE_L3, RDT_RESOURCE_L3DATA);
+	rdt_get_cdp_config(RDT_RESOURCE_L3, RDT_RESOURCE_L3CODE);
+}
+
+static void rdt_get_cdp_l2_config(void)
+{
+	rdt_get_cdp_config(RDT_RESOURCE_L2, RDT_RESOURCE_L2DATA);
+	rdt_get_cdp_config(RDT_RESOURCE_L2, RDT_RESOURCE_L2CODE);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int get_cache_id(int cpu, int level)
 {
 	struct cpu_cacheinfo *ci = get_cpu_cacheinfo(cpu);
@@ -486,6 +550,11 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
 	d->id = id;
 	cpumask_set_cpu(cpu, &d->cpu_mask);
 
+<<<<<<< HEAD
+=======
+	rdt_domain_reconfigure_cdp(r);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (r->alloc_capable && domain_setup_ctrlval(r, d)) {
 		kfree(d);
 		return;
@@ -526,7 +595,11 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
 		if (static_branch_unlikely(&rdt_mon_enable_key))
 			rmdir_mondata_subdir_allrdtgrp(r, d->id);
 		list_del(&d->list);
+<<<<<<< HEAD
 		if (is_mbm_enabled())
+=======
+		if (r->mon_capable && is_mbm_enabled())
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			cancel_delayed_work(&d->mbm_over);
 		if (is_llc_occupancy_enabled() &&  has_busy_rmid(r, d)) {
 			/*
@@ -729,15 +802,25 @@ static __init bool get_rdt_alloc_resources(void)
 
 	if (rdt_cpu_has(X86_FEATURE_CAT_L3)) {
 		rdt_get_cache_alloc_cfg(1, &rdt_resources_all[RDT_RESOURCE_L3]);
+<<<<<<< HEAD
 		if (rdt_cpu_has(X86_FEATURE_CDP_L3)) {
 			rdt_get_cdp_l3_config(RDT_RESOURCE_L3DATA);
 			rdt_get_cdp_l3_config(RDT_RESOURCE_L3CODE);
 		}
+=======
+		if (rdt_cpu_has(X86_FEATURE_CDP_L3))
+			rdt_get_cdp_l3_config();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = true;
 	}
 	if (rdt_cpu_has(X86_FEATURE_CAT_L2)) {
 		/* CPUID 0x10.2 fields are same format at 0x10.1 */
 		rdt_get_cache_alloc_cfg(2, &rdt_resources_all[RDT_RESOURCE_L2]);
+<<<<<<< HEAD
+=======
+		if (rdt_cpu_has(X86_FEATURE_CDP_L2))
+			rdt_get_cdp_l2_config();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = true;
 	}
 

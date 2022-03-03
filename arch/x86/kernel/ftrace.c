@@ -22,6 +22,10 @@
 #include <linux/init.h>
 #include <linux/list.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include <linux/memory.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <trace/syscall.h>
 
@@ -30,20 +34,38 @@
 #include <asm/sections.h>
 #include <asm/ftrace.h>
 #include <asm/nops.h>
+<<<<<<< HEAD
+=======
+#include <asm/text-patching.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #ifdef CONFIG_DYNAMIC_FTRACE
 
 int ftrace_arch_code_modify_prepare(void)
+<<<<<<< HEAD
 {
+=======
+    __acquires(&text_mutex)
+{
+	mutex_lock(&text_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	set_kernel_text_rw();
 	set_all_modules_text_rw();
 	return 0;
 }
 
 int ftrace_arch_code_modify_post_process(void)
+<<<<<<< HEAD
 {
 	set_all_modules_text_ro();
 	set_kernel_text_ro();
+=======
+    __releases(&text_mutex)
+{
+	set_all_modules_text_ro();
+	set_kernel_text_ro();
+	mutex_unlock(&text_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -229,6 +251,10 @@ int ftrace_modify_call(struct dyn_ftrace *rec, unsigned long old_addr,
 }
 
 static unsigned long ftrace_update_func;
+<<<<<<< HEAD
+=======
+static unsigned long ftrace_update_func_call;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int update_ftrace_func(unsigned long ip, void *new)
 {
@@ -257,6 +283,11 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
 	unsigned char *new;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	ftrace_update_func_call = (unsigned long)func;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	new = ftrace_call_replace(ip, (unsigned long)func);
 	ret = update_ftrace_func(ip, new);
 
@@ -292,6 +323,7 @@ int ftrace_int3_handler(struct pt_regs *regs)
 	if (WARN_ON_ONCE(!regs))
 		return 0;
 
+<<<<<<< HEAD
 	ip = regs->ip - 1;
 	if (!ftrace_location(ip) && !is_ftrace_caller(ip))
 		return 0;
@@ -299,6 +331,30 @@ int ftrace_int3_handler(struct pt_regs *regs)
 	regs->ip += MCOUNT_INSN_SIZE - 1;
 
 	return 1;
+=======
+	ip = regs->ip - INT3_INSN_SIZE;
+
+#ifdef CONFIG_X86_64
+	if (ftrace_location(ip)) {
+		int3_emulate_call(regs, (unsigned long)ftrace_regs_caller);
+		return 1;
+	} else if (is_ftrace_caller(ip)) {
+		if (!ftrace_update_func_call) {
+			int3_emulate_jmp(regs, ip + CALL_INSN_SIZE);
+			return 1;
+		}
+		int3_emulate_call(regs, ftrace_update_func_call);
+		return 1;
+	}
+#else
+	if (ftrace_location(ip) || is_ftrace_caller(ip)) {
+		int3_emulate_jmp(regs, ip + CALL_INSN_SIZE);
+		return 1;
+	}
+#endif
+
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int ftrace_write(unsigned long ip, const char *val, int size)
@@ -869,6 +925,11 @@ void arch_ftrace_update_trampoline(struct ftrace_ops *ops)
 
 	func = ftrace_ops_get_func(ops);
 
+<<<<<<< HEAD
+=======
+	ftrace_update_func_call = (unsigned long)func;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Do a safe modify in case the trampoline is executing */
 	new = ftrace_call_replace(ip, (unsigned long)func);
 	ret = update_ftrace_func(ip, new);
@@ -965,6 +1026,10 @@ static int ftrace_mod_jmp(unsigned long ip, void *func)
 {
 	unsigned char *new;
 
+<<<<<<< HEAD
+=======
+	ftrace_update_func_call = 0UL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	new = ftrace_jmp_replace(ip, (unsigned long)func);
 
 	return update_ftrace_func(ip, new);

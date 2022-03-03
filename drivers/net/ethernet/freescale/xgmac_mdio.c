@@ -49,6 +49,10 @@ struct tgec_mdio_controller {
 struct mdio_fsl_priv {
 	struct	tgec_mdio_controller __iomem *mdio_base;
 	bool	is_little_endian;
+<<<<<<< HEAD
+=======
+	bool	has_a011043;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static u32 xgmac_read32(void __iomem *regs,
@@ -226,7 +230,12 @@ static int xgmac_mdio_read(struct mii_bus *bus, int phy_id, int regnum)
 		return ret;
 
 	/* Return all Fs if nothing was there */
+<<<<<<< HEAD
 	if (xgmac_read32(&regs->mdio_stat, endian) & MDIO_STAT_RD_ER) {
+=======
+	if ((xgmac_read32(&regs->mdio_stat, endian) & MDIO_STAT_RD_ER) &&
+	    !priv->has_a011043) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dev_err(&bus->dev,
 			"Error while reading PHY%d reg at %d.%hhu\n",
 			phy_id, dev_addr, regnum);
@@ -274,6 +283,12 @@ static int xgmac_mdio_probe(struct platform_device *pdev)
 	priv->is_little_endian = of_property_read_bool(pdev->dev.of_node,
 						       "little-endian");
 
+<<<<<<< HEAD
+=======
+	priv->has_a011043 = of_property_read_bool(pdev->dev.of_node,
+						  "fsl,erratum-a011043");
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = of_mdiobus_register(bus, np);
 	if (ret) {
 		dev_err(&pdev->dev, "cannot register MDIO bus\n");
@@ -296,9 +311,16 @@ err_ioremap:
 static int xgmac_mdio_remove(struct platform_device *pdev)
 {
 	struct mii_bus *bus = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 
 	mdiobus_unregister(bus);
 	iounmap(bus->priv);
+=======
+	struct mdio_fsl_priv *priv = bus->priv;
+
+	mdiobus_unregister(bus);
+	iounmap(priv->mdio_base);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mdiobus_free(bus);
 
 	return 0;

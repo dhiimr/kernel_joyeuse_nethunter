@@ -40,10 +40,13 @@
  *	the implementation assumes non-aliasing VIPT D-cache and (aliasing)
  *	VIPT or ASID-tagged VIVT I-cache.
  *
+<<<<<<< HEAD
  *	flush_cache_all()
  *
  *		Unconditionally clean and invalidate the entire cache.
  *
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *	flush_cache_mm(mm)
  *
  *		Clean and invalidate all user space cache entries
@@ -69,7 +72,10 @@
  *		- kaddr  - page address
  *		- size   - region size
  */
+<<<<<<< HEAD
 extern void flush_cache_all(void);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern void flush_icache_range(unsigned long start, unsigned long end);
 extern void __flush_dcache_area(void *addr, size_t len);
 extern void __inval_dcache_area(void *addr, size_t len);
@@ -99,6 +105,7 @@ static inline void flush_cache_range(struct vm_area_struct *vma,
 extern void __dma_map_area(const void *, size_t, int);
 extern void __dma_unmap_area(const void *, size_t, int);
 extern void __dma_flush_area(const void *, size_t);
+<<<<<<< HEAD
 extern void __dma_inv_area(const void *start, size_t size);
 extern void __dma_clean_area(const void *start, size_t size);
 
@@ -108,6 +115,8 @@ extern void __dma_clean_area(const void *start, size_t size);
 	__dma_inv_area(start, (void *)(end) - (void *)(start))
 #define dmac_clean_range(start, end) \
 	__dma_clean_area(start, (void *)(end) - (void *)(start))
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * Copy user data from/to a page which is mapped into a different

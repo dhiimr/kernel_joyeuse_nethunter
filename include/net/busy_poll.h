@@ -48,7 +48,11 @@ static inline bool net_busy_loop_on(void)
 
 static inline bool sk_can_busy_loop(const struct sock *sk)
 {
+<<<<<<< HEAD
 	return sk->sk_ll_usec && !signal_pending(current);
+=======
+	return READ_ONCE(sk->sk_ll_usec) && !signal_pending(current);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 bool sk_busy_loop_end(void *p, unsigned long start_time);
@@ -134,7 +138,11 @@ static inline void skb_mark_napi_id(struct sk_buff *skb,
 static inline void sk_mark_napi_id(struct sock *sk, const struct sk_buff *skb)
 {
 #ifdef CONFIG_NET_RX_BUSY_POLL
+<<<<<<< HEAD
 	sk->sk_napi_id = skb->napi_id;
+=======
+	WRITE_ONCE(sk->sk_napi_id, skb->napi_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 }
 
@@ -143,8 +151,13 @@ static inline void sk_mark_napi_id_once(struct sock *sk,
 					const struct sk_buff *skb)
 {
 #ifdef CONFIG_NET_RX_BUSY_POLL
+<<<<<<< HEAD
 	if (!sk->sk_napi_id)
 		sk->sk_napi_id = skb->napi_id;
+=======
+	if (!READ_ONCE(sk->sk_napi_id))
+		WRITE_ONCE(sk->sk_napi_id, skb->napi_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 }
 

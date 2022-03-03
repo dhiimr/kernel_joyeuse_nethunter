@@ -29,4 +29,7 @@ obj-$(CONFIG_MIPS_CPS_CPUIDLE)		+= cpuidle-cps.o
 # POWERPC drivers
 obj-$(CONFIG_PSERIES_CPUIDLE)		+= cpuidle-pseries.o
 obj-$(CONFIG_POWERNV_CPUIDLE)		+= cpuidle-powernv.o
+<<<<<<< HEAD
 obj-$(CONFIG_MSM_PM) += lpm-levels.o lpm-levels-of.o
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

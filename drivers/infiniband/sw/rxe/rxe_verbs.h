@@ -214,6 +214,10 @@ struct rxe_resp_info {
 	struct rxe_mem		*mr;
 	u32			resid;
 	u32			rkey;
+<<<<<<< HEAD
+=======
+	u32			length;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u64			atomic_orig;
 
 	/* SRQ only */
@@ -407,18 +411,30 @@ struct rxe_dev {
 	struct list_head	pending_mmaps;
 
 	spinlock_t		mmap_offset_lock; /* guard mmap_offset */
+<<<<<<< HEAD
 	int			mmap_offset;
 
 	u64			stats_counters[RXE_NUM_OF_COUNTERS];
+=======
+	u64			mmap_offset;
+
+	atomic64_t		stats_counters[RXE_NUM_OF_COUNTERS];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	struct rxe_port		port;
 	struct list_head	list;
 	struct crypto_shash	*tfm;
 };
 
+<<<<<<< HEAD
 static inline void rxe_counter_inc(struct rxe_dev *rxe, enum rxe_counters cnt)
 {
 	rxe->stats_counters[cnt]++;
+=======
+static inline void rxe_counter_inc(struct rxe_dev *rxe, enum rxe_counters index)
+{
+	atomic64_inc(&rxe->stats_counters[index]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline struct rxe_dev *to_rdev(struct ib_device *dev)

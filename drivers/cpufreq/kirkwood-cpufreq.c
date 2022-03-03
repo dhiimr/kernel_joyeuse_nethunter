@@ -124,13 +124,22 @@ static int kirkwood_cpufreq_probe(struct platform_device *pdev)
 	priv.cpu_clk = of_clk_get_by_name(np, "cpu_clk");
 	if (IS_ERR(priv.cpu_clk)) {
 		dev_err(priv.dev, "Unable to get cpuclk\n");
+<<<<<<< HEAD
 		return PTR_ERR(priv.cpu_clk);
+=======
+		err = PTR_ERR(priv.cpu_clk);
+		goto out_node;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	err = clk_prepare_enable(priv.cpu_clk);
 	if (err) {
 		dev_err(priv.dev, "Unable to prepare cpuclk\n");
+<<<<<<< HEAD
 		return err;
+=======
+		goto out_node;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	kirkwood_freq_table[0].frequency = clk_get_rate(priv.cpu_clk) / 1000;
@@ -161,6 +170,7 @@ static int kirkwood_cpufreq_probe(struct platform_device *pdev)
 		goto out_ddr;
 	}
 
+<<<<<<< HEAD
 	of_node_put(np);
 	np = NULL;
 
@@ -170,11 +180,27 @@ static int kirkwood_cpufreq_probe(struct platform_device *pdev)
 
 	dev_err(priv.dev, "Failed to register cpufreq driver\n");
 
+=======
+	err = cpufreq_register_driver(&kirkwood_cpufreq_driver);
+	if (err) {
+		dev_err(priv.dev, "Failed to register cpufreq driver\n");
+		goto out_powersave;
+	}
+
+	of_node_put(np);
+	return 0;
+
+out_powersave:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	clk_disable_unprepare(priv.powersave_clk);
 out_ddr:
 	clk_disable_unprepare(priv.ddr_clk);
 out_cpu:
 	clk_disable_unprepare(priv.cpu_clk);
+<<<<<<< HEAD
+=======
+out_node:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	of_node_put(np);
 
 	return err;

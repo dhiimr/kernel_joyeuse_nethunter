@@ -8,11 +8,31 @@ struct strip_zone {
 	int	 nb_dev;	/* # of devices attached to the zone */
 };
 
+<<<<<<< HEAD
+=======
+/* Linux 3.14 (20d0189b101) made an unintended change to
+ * the RAID0 layout for multi-zone arrays (where devices aren't all
+ * the same size.
+ * RAID0_ORIG_LAYOUT restores the original layout
+ * RAID0_ALT_MULTIZONE_LAYOUT uses the altered layout
+ * The layouts are identical when there is only one zone (all
+ * devices the same size).
+ */
+
+enum r0layout {
+	RAID0_ORIG_LAYOUT = 1,
+	RAID0_ALT_MULTIZONE_LAYOUT = 2,
+};
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct r0conf {
 	struct strip_zone	*strip_zone;
 	struct md_rdev		**devlist; /* lists of rdevs, pointed to
 					    * by strip_zone->dev */
 	int			nr_strip_zones;
+<<<<<<< HEAD
+=======
+	enum r0layout		layout;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #endif

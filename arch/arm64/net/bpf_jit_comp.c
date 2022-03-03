@@ -31,8 +31,11 @@
 
 #include "bpf_jit.h"
 
+<<<<<<< HEAD
 int bpf_jit_enable __read_mostly;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define TMP_REG_1 (MAX_BPF_JIT_REG + 0)
 #define TMP_REG_2 (MAX_BPF_JIT_REG + 1)
 #define TCALL_CNT (MAX_BPF_JIT_REG + 2)
@@ -330,7 +333,11 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx)
 	const int i = insn - ctx->prog->insnsi;
 	const bool is64 = BPF_CLASS(code) == BPF_ALU64;
 	const bool isdw = BPF_SIZE(code) == BPF_DW;
+<<<<<<< HEAD
 	u8 jmp_cond;
+=======
+	u8 jmp_cond, reg;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	s32 jmp_offset;
 
 #define check_imm(bits, imm) do {				\
@@ -706,10 +713,15 @@ emit_cond_jmp:
 			break;
 		}
 		break;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* STX XADD: lock *(u32 *)(dst + off) += src */
 	case BPF_STX | BPF_XADD | BPF_W:
 	/* STX XADD: lock *(u64 *)(dst + off) += src */
 	case BPF_STX | BPF_XADD | BPF_DW:
+<<<<<<< HEAD
 		emit_a64_mov_i(1, tmp, off, ctx);
 		emit(A64_ADD(1, tmp, tmp, dst), ctx);
 		emit(A64_PRFM(tmp, PST, L1, STRM), ctx);
@@ -719,6 +731,25 @@ emit_cond_jmp:
 		jmp_offset = -3;
 		check_imm19(jmp_offset);
 		emit(A64_CBNZ(0, tmp3, jmp_offset), ctx);
+=======
+		if (!off) {
+			reg = dst;
+		} else {
+			emit_a64_mov_i(1, tmp, off, ctx);
+			emit(A64_ADD(1, tmp, tmp, dst), ctx);
+			reg = tmp;
+		}
+		if (cpus_have_cap(ARM64_HAS_LSE_ATOMICS)) {
+			emit(A64_STADD(isdw, reg, src), ctx);
+		} else {
+			emit(A64_LDXR(isdw, tmp2, reg), ctx);
+			emit(A64_ADD(isdw, tmp2, tmp2, src), ctx);
+			emit(A64_STXR(isdw, tmp2, reg, tmp3), ctx);
+			jmp_offset = -3;
+			check_imm19(jmp_offset);
+			emit(A64_CBNZ(0, tmp3, jmp_offset), ctx);
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		break;
 
 	/* R0 = ntohx(*(size *)(((struct sk_buff *)R6)->data + imm)) */

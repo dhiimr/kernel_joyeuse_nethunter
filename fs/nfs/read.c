@@ -205,7 +205,11 @@ static void nfs_initiate_read(struct nfs_pgio_header *hdr,
 }
 
 static void
+<<<<<<< HEAD
 nfs_async_read_error(struct list_head *head)
+=======
+nfs_async_read_error(struct list_head *head, int error)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct nfs_page	*req;
 
@@ -354,7 +358,11 @@ struct nfs_readdesc {
 };
 
 static int
+<<<<<<< HEAD
 readpage_async_filler(struct file *data, struct page *page)
+=======
+readpage_async_filler(void *data, struct page *page)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct nfs_readdesc *desc = (struct nfs_readdesc *)data;
 	struct nfs_page *new;

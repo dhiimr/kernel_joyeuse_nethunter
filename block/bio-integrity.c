@@ -313,8 +313,16 @@ bool bio_integrity_prep(struct bio *bio)
 		ret = bio_integrity_add_page(bio, virt_to_page(buf),
 					     bytes, offset);
 
+<<<<<<< HEAD
 		if (ret == 0)
 			return false;
+=======
+		if (ret == 0) {
+			printk(KERN_ERR "could not attach integrity payload\n");
+			status = BLK_STS_RESOURCE;
+			goto err_end_io;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		if (ret < bytes)
 			break;
@@ -414,7 +422,11 @@ void bio_integrity_advance(struct bio *bio, unsigned int bytes_done)
 	struct blk_integrity *bi = blk_get_integrity(bio->bi_disk);
 	unsigned bytes = bio_integrity_bytes(bi, bytes_done >> 9);
 
+<<<<<<< HEAD
 	bip->bip_iter.bi_sector += bytes_done >> 9;
+=======
+	bip->bip_iter.bi_sector += bio_integrity_intervals(bi, bytes_done >> 9);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bvec_iter_advance(bip->bip_vec, &bip->bip_iter, bytes);
 }
 EXPORT_SYMBOL(bio_integrity_advance);

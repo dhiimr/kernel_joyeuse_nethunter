@@ -21,7 +21,11 @@ int save_registers(int pid, struct uml_pt_regs *regs)
 	return 0;
 }
 
+<<<<<<< HEAD
 int restore_registers(int pid, struct uml_pt_regs *regs)
+=======
+int restore_pid_registers(int pid, struct uml_pt_regs *regs)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int err;
 
@@ -36,7 +40,11 @@ int restore_registers(int pid, struct uml_pt_regs *regs)
 static unsigned long exec_regs[MAX_REG_NR];
 static unsigned long exec_fp_regs[FP_SIZE];
 
+<<<<<<< HEAD
 int init_registers(int pid)
+=======
+int init_pid_registers(int pid)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int err;
 

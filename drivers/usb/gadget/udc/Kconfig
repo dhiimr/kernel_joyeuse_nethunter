@@ -328,6 +328,10 @@ config USB_AMD5536UDC
 config USB_FSL_QE
 	tristate "Freescale QE/CPM USB Device Controller"
 	depends on FSL_SOC && (QUICC_ENGINE || CPM)
+<<<<<<< HEAD
+=======
+	depends on !64BIT || BROKEN
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	help
 	   Some of Freescale PowerPC processors have a Full Speed
 	   QE/CPM2 USB controller, which support device mode with 4

@@ -214,9 +214,14 @@ sun4i_hdmi_connector_detect(struct drm_connector *connector, bool force)
 	struct sun4i_hdmi *hdmi = drm_connector_to_sun4i_hdmi(connector);
 	unsigned long reg;
 
+<<<<<<< HEAD
 	if (readl_poll_timeout(hdmi->base + SUN4I_HDMI_HPD_REG, reg,
 			       reg & SUN4I_HDMI_HPD_HIGH,
 			       0, 500000)) {
+=======
+	reg = readl(hdmi->base + SUN4I_HDMI_HPD_REG);
+	if (!(reg & SUN4I_HDMI_HPD_HIGH)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cec_phys_addr_invalidate(hdmi->cec_adap);
 		return connector_status_disconnected;
 	}
@@ -438,8 +443,11 @@ static void sun4i_hdmi_unbind(struct device *dev, struct device *master,
 	struct sun4i_hdmi *hdmi = dev_get_drvdata(dev);
 
 	cec_unregister_adapter(hdmi->cec_adap);
+<<<<<<< HEAD
 	drm_connector_cleanup(&hdmi->connector);
 	drm_encoder_cleanup(&hdmi->encoder);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	i2c_del_adapter(hdmi->i2c);
 	clk_disable_unprepare(hdmi->mod_clk);
 	clk_disable_unprepare(hdmi->bus_clk);

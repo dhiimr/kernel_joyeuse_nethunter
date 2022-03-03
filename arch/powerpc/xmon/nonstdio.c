@@ -182,7 +182,11 @@ void xmon_printf(const char *format, ...)
 
 	if (n && rc == 0) {
 		/* No udbg hooks, fallback to printk() - dangerous */
+<<<<<<< HEAD
 		printk("%s", xmon_outbuf);
+=======
+		pr_cont("%s", xmon_outbuf);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 

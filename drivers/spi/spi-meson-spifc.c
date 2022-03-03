@@ -357,6 +357,10 @@ static int meson_spifc_probe(struct platform_device *pdev)
 	return 0;
 out_clk:
 	clk_disable_unprepare(spifc->clk);
+<<<<<<< HEAD
+=======
+	pm_runtime_disable(spifc->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out_err:
 	spi_master_put(master);
 	return ret;

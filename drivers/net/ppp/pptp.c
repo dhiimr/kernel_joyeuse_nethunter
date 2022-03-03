@@ -325,6 +325,14 @@ allow_packet:
 			skb_pull(skb, 2);
 		}
 
+<<<<<<< HEAD
+=======
+		if ((*skb->data) & 1) {
+			/* protocol is compressed */
+			*(u8 *)skb_push(skb, 1) = 0;
+		}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		skb->ip_summed = CHECKSUM_NONE;
 		skb_set_network_header(skb, skb->head-skb->data);
 		ppp_input(&po->chan, skb);
@@ -631,6 +639,12 @@ static const struct proto_ops pptp_ops = {
 	.recvmsg    = sock_no_recvmsg,
 	.mmap       = sock_no_mmap,
 	.ioctl      = pppox_ioctl,
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_COMPAT
+	.compat_ioctl = pppox_compat_ioctl,
+#endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static const struct pppox_proto pppox_pptp_proto = {

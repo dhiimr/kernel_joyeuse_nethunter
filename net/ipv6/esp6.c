@@ -219,7 +219,10 @@ static void esp_output_fill_trailer(u8 *tail, int tfclen, int plen, __u8 proto)
 int esp6_output_head(struct xfrm_state *x, struct sk_buff *skb, struct esp_info *esp)
 {
 	u8 *tail;
+<<<<<<< HEAD
 	u8 *vaddr;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int nfrags;
 	struct page *page;
 	struct sk_buff *trailer;
@@ -252,6 +255,7 @@ int esp6_output_head(struct xfrm_state *x, struct sk_buff *skb, struct esp_info 
 			page = pfrag->page;
 			get_page(page);
 
+<<<<<<< HEAD
 			vaddr = kmap_atomic(page);
 
 			tail = vaddr + pfrag->offset;
@@ -260,6 +264,12 @@ int esp6_output_head(struct xfrm_state *x, struct sk_buff *skb, struct esp_info 
 
 			kunmap_atomic(vaddr);
 
+=======
+			tail = page_address(page) + pfrag->offset;
+
+			esp_output_fill_trailer(tail, esp->tfclen, esp->plen, esp->proto);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			nfrags = skb_shinfo(skb)->nr_frags;
 
 			__skb_fill_page_desc(skb, nfrags, page, pfrag->offset,

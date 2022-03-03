@@ -1534,6 +1534,7 @@ static void gfx_v9_0_gpu_init(struct amdgpu_device *adev)
 	mutex_unlock(&adev->srbm_mutex);
 
 	gfx_v9_0_init_compute_vmid(adev);
+<<<<<<< HEAD
 
 	mutex_lock(&adev->grbm_idx_mutex);
 	/*
@@ -1553,6 +1554,8 @@ static void gfx_v9_0_gpu_init(struct amdgpu_device *adev)
 			PA_SC_FIFO_SIZE__SC_EARLYZ_TILE_FIFO_SIZE__SHIFT));
 	mutex_unlock(&adev->grbm_idx_mutex);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void gfx_v9_0_wait_for_rlc_serdes(struct amdgpu_device *adev)

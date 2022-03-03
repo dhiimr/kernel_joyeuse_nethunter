@@ -854,7 +854,11 @@ static int nand_davinci_remove(struct platform_device *pdev)
 		ecc4_busy = false;
 	spin_unlock_irq(&davinci_nand_lock);
 
+<<<<<<< HEAD
 	nand_release(nand_to_mtd(&info->chip));
+=======
+	nand_release(&info->chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	clk_disable_unprepare(info->clk);
 

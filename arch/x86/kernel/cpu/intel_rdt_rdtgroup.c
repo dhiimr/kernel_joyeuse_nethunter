@@ -393,6 +393,7 @@ unlock:
 	return ret ?: nbytes;
 }
 
+<<<<<<< HEAD
 struct task_move_callback {
 	struct callback_head	work;
 	struct rdtgroup		*rdtgrp;
@@ -424,11 +425,48 @@ static void move_myself(struct callback_head *head)
 	preempt_enable();
 
 	kfree(callback);
+=======
+/**
+ * rdtgroup_remove - the helper to remove resource group safely
+ * @rdtgrp: resource group to remove
+ *
+ * On resource group creation via a mkdir, an extra kernfs_node reference is
+ * taken to ensure that the rdtgroup structure remains accessible for the
+ * rdtgroup_kn_unlock() calls where it is removed.
+ *
+ * Drop the extra reference here, then free the rdtgroup structure.
+ *
+ * Return: void
+ */
+static void rdtgroup_remove(struct rdtgroup *rdtgrp)
+{
+	kernfs_put(rdtgrp->kn);
+	kfree(rdtgrp);
+}
+
+static void _update_task_closid_rmid(void *task)
+{
+	/*
+	 * If the task is still current on this CPU, update PQR_ASSOC MSR.
+	 * Otherwise, the MSR is updated when the task is scheduled in.
+	 */
+	if (task == current)
+		intel_rdt_sched_in();
+}
+
+static void update_task_closid_rmid(struct task_struct *t)
+{
+	if (IS_ENABLED(CONFIG_SMP) && task_curr(t))
+		smp_call_function_single(task_cpu(t), _update_task_closid_rmid, t, 1);
+	else
+		_update_task_closid_rmid(t);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int __rdtgroup_move_task(struct task_struct *tsk,
 				struct rdtgroup *rdtgrp)
 {
+<<<<<<< HEAD
 	struct task_move_callback *callback;
 	int ret;
 
@@ -469,6 +507,49 @@ static int __rdtgroup_move_task(struct task_struct *tsk,
 		}
 	}
 	return ret;
+=======
+	/* If the task is already in rdtgrp, no need to move the task. */
+	if ((rdtgrp->type == RDTCTRL_GROUP && tsk->closid == rdtgrp->closid &&
+	     tsk->rmid == rdtgrp->mon.rmid) ||
+	    (rdtgrp->type == RDTMON_GROUP && tsk->rmid == rdtgrp->mon.rmid &&
+	     tsk->closid == rdtgrp->mon.parent->closid))
+		return 0;
+
+	/*
+	 * Set the task's closid/rmid before the PQR_ASSOC MSR can be
+	 * updated by them.
+	 *
+	 * For ctrl_mon groups, move both closid and rmid.
+	 * For monitor groups, can move the tasks only from
+	 * their parent CTRL group.
+	 */
+
+	if (rdtgrp->type == RDTCTRL_GROUP) {
+		tsk->closid = rdtgrp->closid;
+		tsk->rmid = rdtgrp->mon.rmid;
+	} else if (rdtgrp->type == RDTMON_GROUP) {
+		if (rdtgrp->mon.parent->closid == tsk->closid)
+			tsk->rmid = rdtgrp->mon.rmid;
+		else
+			return -EINVAL;
+	}
+
+	/*
+	 * Ensure the task's closid and rmid are written before determining if
+	 * the task is current that will decide if it will be interrupted.
+	 */
+	barrier();
+
+	/*
+	 * By now, the task's closid and rmid are set. If the task is current
+	 * on a CPU, the PQR_ASSOC MSR needs to be updated to make the resource
+	 * group go into effect. If the task is not current, the MSR will be
+	 * updated when the task is scheduled in.
+	 */
+	update_task_closid_rmid(tsk);
+
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int rdtgroup_task_write_permission(struct task_struct *task,
@@ -830,7 +911,10 @@ static int rdtgroup_mkdir_info_resdir(struct rdt_resource *r, char *name,
 	if (IS_ERR(kn_subdir))
 		return PTR_ERR(kn_subdir);
 
+<<<<<<< HEAD
 	kernfs_get(kn_subdir);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = rdtgroup_kn_set_ugid(kn_subdir);
 	if (ret)
 		return ret;
@@ -853,7 +937,10 @@ static int rdtgroup_create_info_dir(struct kernfs_node *parent_kn)
 	kn_info = kernfs_create_dir(parent_kn, "info", parent_kn->mode, NULL);
 	if (IS_ERR(kn_info))
 		return PTR_ERR(kn_info);
+<<<<<<< HEAD
 	kernfs_get(kn_info);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	for_each_alloc_enabled_rdt_resource(r) {
 		fflags =  r->fflags | RF_CTRL_INFO;
@@ -870,12 +957,15 @@ static int rdtgroup_create_info_dir(struct kernfs_node *parent_kn)
 			goto out_destroy;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * This extra ref will be put in kernfs_remove() and guarantees
 	 * that @rdtgrp->kn is always accessible.
 	 */
 	kernfs_get(kn_info);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = rdtgroup_kn_set_ugid(kn_info);
 	if (ret)
 		goto out_destroy;
@@ -904,12 +994,15 @@ mongroup_create_dir(struct kernfs_node *parent_kn, struct rdtgroup *prgrp,
 	if (dest_kn)
 		*dest_kn = kn;
 
+<<<<<<< HEAD
 	/*
 	 * This extra ref will be put in kernfs_remove() and guarantees
 	 * that @rdtgrp->kn is always accessible.
 	 */
 	kernfs_get(kn);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = rdtgroup_kn_set_ugid(kn);
 	if (ret)
 		goto out_destroy;
@@ -922,6 +1015,10 @@ out_destroy:
 	kernfs_remove(kn);
 	return ret;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void l3_qos_cfg_update(void *arg)
 {
 	bool *enable = arg;
@@ -929,8 +1026,22 @@ static void l3_qos_cfg_update(void *arg)
 	wrmsrl(IA32_L3_QOS_CFG, *enable ? L3_QOS_CDP_ENABLE : 0ULL);
 }
 
+<<<<<<< HEAD
 static int set_l3_qos_cfg(struct rdt_resource *r, bool enable)
 {
+=======
+static void l2_qos_cfg_update(void *arg)
+{
+	bool *enable = arg;
+
+	wrmsrl(IA32_L2_QOS_CFG, *enable ? L2_QOS_CDP_ENABLE : 0ULL);
+}
+
+static int set_cache_qos_cfg(int level, bool enable)
+{
+	void (*update)(void *arg);
+	struct rdt_resource *r_l;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cpumask_var_t cpu_mask;
 	struct rdt_domain *d;
 	int cpu;
@@ -938,16 +1049,34 @@ static int set_l3_qos_cfg(struct rdt_resource *r, bool enable)
 	if (!zalloc_cpumask_var(&cpu_mask, GFP_KERNEL))
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	list_for_each_entry(d, &r->domains, list) {
+=======
+	if (level == RDT_RESOURCE_L3)
+		update = l3_qos_cfg_update;
+	else if (level == RDT_RESOURCE_L2)
+		update = l2_qos_cfg_update;
+	else
+		return -EINVAL;
+
+	r_l = &rdt_resources_all[level];
+	list_for_each_entry(d, &r_l->domains, list) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/* Pick one CPU from each domain instance to update MSR */
 		cpumask_set_cpu(cpumask_any(&d->cpu_mask), cpu_mask);
 	}
 	cpu = get_cpu();
 	/* Update QOS_CFG MSR on this cpu if it's in cpu_mask. */
 	if (cpumask_test_cpu(cpu, cpu_mask))
+<<<<<<< HEAD
 		l3_qos_cfg_update(&enable);
 	/* Update QOS_CFG MSR on all other cpus in cpu_mask. */
 	smp_call_function_many(cpu_mask, l3_qos_cfg_update, &enable, 1);
+=======
+		update(&enable);
+	/* Update QOS_CFG MSR on all other cpus in cpu_mask. */
+	smp_call_function_many(cpu_mask, update, &enable, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	put_cpu();
 
 	free_cpumask_var(cpu_mask);
@@ -955,6 +1084,7 @@ static int set_l3_qos_cfg(struct rdt_resource *r, bool enable)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int cdp_enable(void)
 {
 	struct rdt_resource *r_l3data = &rdt_resources_all[RDT_RESOURCE_L3DATA];
@@ -971,10 +1101,29 @@ static int cdp_enable(void)
 		r_l3->alloc_enabled = false;
 		r_l3data->alloc_enabled = true;
 		r_l3code->alloc_enabled = true;
+=======
+static int cdp_enable(int level, int data_type, int code_type)
+{
+	struct rdt_resource *r_ldata = &rdt_resources_all[data_type];
+	struct rdt_resource *r_lcode = &rdt_resources_all[code_type];
+	struct rdt_resource *r_l = &rdt_resources_all[level];
+	int ret;
+
+	if (!r_l->alloc_capable || !r_ldata->alloc_capable ||
+	    !r_lcode->alloc_capable)
+		return -EINVAL;
+
+	ret = set_cache_qos_cfg(level, true);
+	if (!ret) {
+		r_l->alloc_enabled = false;
+		r_ldata->alloc_enabled = true;
+		r_lcode->alloc_enabled = true;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return ret;
 }
 
+<<<<<<< HEAD
 static void cdp_disable(void)
 {
 	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_L3];
@@ -988,12 +1137,58 @@ static void cdp_disable(void)
 	}
 }
 
+=======
+static int cdpl3_enable(void)
+{
+	return cdp_enable(RDT_RESOURCE_L3, RDT_RESOURCE_L3DATA,
+			  RDT_RESOURCE_L3CODE);
+}
+
+static int cdpl2_enable(void)
+{
+	return cdp_enable(RDT_RESOURCE_L2, RDT_RESOURCE_L2DATA,
+			  RDT_RESOURCE_L2CODE);
+}
+
+static void cdp_disable(int level, int data_type, int code_type)
+{
+	struct rdt_resource *r = &rdt_resources_all[level];
+
+	r->alloc_enabled = r->alloc_capable;
+
+	if (rdt_resources_all[data_type].alloc_enabled) {
+		rdt_resources_all[data_type].alloc_enabled = false;
+		rdt_resources_all[code_type].alloc_enabled = false;
+		set_cache_qos_cfg(level, false);
+	}
+}
+
+static void cdpl3_disable(void)
+{
+	cdp_disable(RDT_RESOURCE_L3, RDT_RESOURCE_L3DATA, RDT_RESOURCE_L3CODE);
+}
+
+static void cdpl2_disable(void)
+{
+	cdp_disable(RDT_RESOURCE_L2, RDT_RESOURCE_L2DATA, RDT_RESOURCE_L2CODE);
+}
+
+static void cdp_disable_all(void)
+{
+	if (rdt_resources_all[RDT_RESOURCE_L3DATA].alloc_enabled)
+		cdpl3_disable();
+	if (rdt_resources_all[RDT_RESOURCE_L2DATA].alloc_enabled)
+		cdpl2_disable();
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int parse_rdtgroupfs_options(char *data)
 {
 	char *token, *o = data;
 	int ret = 0;
 
 	while ((token = strsep(&o, ",")) != NULL) {
+<<<<<<< HEAD
 		if (!*token)
 			return -EINVAL;
 
@@ -1001,6 +1196,32 @@ static int parse_rdtgroupfs_options(char *data)
 			ret = cdp_enable();
 	}
 
+=======
+		if (!*token) {
+			ret = -EINVAL;
+			goto out;
+		}
+
+		if (!strcmp(token, "cdp")) {
+			ret = cdpl3_enable();
+			if (ret)
+				goto out;
+		} else if (!strcmp(token, "cdpl2")) {
+			ret = cdpl2_enable();
+			if (ret)
+				goto out;
+		} else {
+			ret = -EINVAL;
+			goto out;
+		}
+	}
+
+	return 0;
+
+out:
+	pr_err("Invalid mount option \"%s\"\n", token);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -1061,8 +1282,12 @@ void rdtgroup_kn_unlock(struct kernfs_node *kn)
 	if (atomic_dec_and_test(&rdtgrp->waitcount) &&
 	    (rdtgrp->flags & RDT_DELETED)) {
 		kernfs_unbreak_active_protection(kn);
+<<<<<<< HEAD
 		kernfs_put(rdtgrp->kn);
 		kfree(rdtgrp);
+=======
+		rdtgroup_remove(rdtgrp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		kernfs_unbreak_active_protection(kn);
 	}
@@ -1107,13 +1332,20 @@ static struct dentry *rdt_mount(struct file_system_type *fs_type,
 
 	if (rdt_mon_capable) {
 		ret = mongroup_create_dir(rdtgroup_default.kn,
+<<<<<<< HEAD
 					  NULL, "mon_groups",
+=======
+					  &rdtgroup_default, "mon_groups",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					  &kn_mongrp);
 		if (ret) {
 			dentry = ERR_PTR(ret);
 			goto out_info;
 		}
+<<<<<<< HEAD
 		kernfs_get(kn_mongrp);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		ret = mkdir_mondata_all(rdtgroup_default.kn,
 					&rdtgroup_default, &kn_mondata);
@@ -1121,7 +1353,10 @@ static struct dentry *rdt_mount(struct file_system_type *fs_type,
 			dentry = ERR_PTR(ret);
 			goto out_mongrp;
 		}
+<<<<<<< HEAD
 		kernfs_get(kn_mondata);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		rdtgroup_default.mon.mon_data_kn = kn_mondata;
 	}
 
@@ -1155,7 +1390,11 @@ out_mongrp:
 out_info:
 	kernfs_remove(kn_info);
 out_cdp:
+<<<<<<< HEAD
 	cdp_disable();
+=======
+	cdp_disable_all();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	mutex_unlock(&rdtgroup_mutex);
 	cpus_read_unlock();
@@ -1260,7 +1499,15 @@ static void free_all_child_rdtgrp(struct rdtgroup *rdtgrp)
 	list_for_each_entry_safe(sentry, stmp, head, mon.crdtgrp_list) {
 		free_rmid(sentry->mon.rmid);
 		list_del(&sentry->mon.crdtgrp_list);
+<<<<<<< HEAD
 		kfree(sentry);
+=======
+
+		if (atomic_read(&sentry->waitcount) != 0)
+			sentry->flags = RDT_DELETED;
+		else
+			rdtgroup_remove(sentry);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 
@@ -1294,7 +1541,15 @@ static void rmdir_all_sub(void)
 
 		kernfs_remove(rdtgrp->kn);
 		list_del(&rdtgrp->rdtgroup_list);
+<<<<<<< HEAD
 		kfree(rdtgrp);
+=======
+
+		if (atomic_read(&rdtgrp->waitcount) != 0)
+			rdtgrp->flags = RDT_DELETED;
+		else
+			rdtgroup_remove(rdtgrp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	/* Notify online CPUs to update per cpu storage and PQR_ASSOC MSR */
 	update_closid_rmid(cpu_online_mask, &rdtgroup_default);
@@ -1314,7 +1569,11 @@ static void rdt_kill_sb(struct super_block *sb)
 	/*Put everything back to default values. */
 	for_each_alloc_enabled_rdt_resource(r)
 		reset_all_ctrls(r);
+<<<<<<< HEAD
 	cdp_disable();
+=======
+	cdp_disable_all();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rmdir_all_sub();
 	static_branch_disable_cpuslocked(&rdt_alloc_enable_key);
 	static_branch_disable_cpuslocked(&rdt_mon_enable_key);
@@ -1388,11 +1647,14 @@ static int mkdir_mondata_subdir(struct kernfs_node *parent_kn,
 	if (IS_ERR(kn))
 		return PTR_ERR(kn);
 
+<<<<<<< HEAD
 	/*
 	 * This extra ref will be put in kernfs_remove() and guarantees
 	 * that kn is always accessible.
 	 */
 	kernfs_get(kn);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = rdtgroup_kn_set_ugid(kn);
 	if (ret)
 		goto out_destroy;
@@ -1491,7 +1753,11 @@ static int mkdir_mondata_all(struct kernfs_node *parent_kn,
 	/*
 	 * Create the mon_data directory first.
 	 */
+<<<<<<< HEAD
 	ret = mongroup_create_dir(parent_kn, NULL, "mon_data", &kn);
+=======
+	ret = mongroup_create_dir(parent_kn, prgrp, "mon_data", &kn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		return ret;
 
@@ -1525,7 +1791,11 @@ static int mkdir_rdt_prepare(struct kernfs_node *parent_kn,
 	uint files = 0;
 	int ret;
 
+<<<<<<< HEAD
 	prdtgrp = rdtgroup_kn_lock_live(prgrp_kn);
+=======
+	prdtgrp = rdtgroup_kn_lock_live(parent_kn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!prdtgrp) {
 		ret = -ENODEV;
 		goto out_unlock;
@@ -1553,8 +1823,13 @@ static int mkdir_rdt_prepare(struct kernfs_node *parent_kn,
 	/*
 	 * kernfs_remove() will drop the reference count on "kn" which
 	 * will free it. But we still need it to stick around for the
+<<<<<<< HEAD
 	 * rdtgroup_kn_unlock(kn} call below. Take one extra reference
 	 * here, which will be dropped inside rdtgroup_kn_unlock().
+=======
+	 * rdtgroup_kn_unlock(kn) call. Take one extra reference here,
+	 * which will be dropped by kernfs_put() in rdtgroup_remove().
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 */
 	kernfs_get(kn);
 
@@ -1581,18 +1856,30 @@ static int mkdir_rdt_prepare(struct kernfs_node *parent_kn,
 	kernfs_activate(kn);
 
 	/*
+<<<<<<< HEAD
 	 * The caller unlocks the prgrp_kn upon success.
+=======
+	 * The caller unlocks the parent_kn upon success.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 */
 	return 0;
 
 out_idfree:
 	free_rmid(rdtgrp->mon.rmid);
 out_destroy:
+<<<<<<< HEAD
+=======
+	kernfs_put(rdtgrp->kn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kernfs_remove(rdtgrp->kn);
 out_free_rgrp:
 	kfree(rdtgrp);
 out_unlock:
+<<<<<<< HEAD
 	rdtgroup_kn_unlock(prgrp_kn);
+=======
+	rdtgroup_kn_unlock(parent_kn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -1600,7 +1887,11 @@ static void mkdir_rdt_prepare_clean(struct rdtgroup *rgrp)
 {
 	kernfs_remove(rgrp->kn);
 	free_rmid(rgrp->mon.rmid);
+<<<<<<< HEAD
 	kfree(rgrp);
+=======
+	rdtgroup_remove(rgrp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -1630,7 +1921,11 @@ static int rdtgroup_mkdir_mon(struct kernfs_node *parent_kn,
 	 */
 	list_add_tail(&rdtgrp->mon.crdtgrp_list, &prgrp->mon.crdtgrp_list);
 
+<<<<<<< HEAD
 	rdtgroup_kn_unlock(prgrp_kn);
+=======
+	rdtgroup_kn_unlock(parent_kn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -1667,7 +1962,11 @@ static int rdtgroup_mkdir_ctrl_mon(struct kernfs_node *parent_kn,
 		 * Create an empty mon_groups directory to hold the subset
 		 * of tasks and cpus to monitor.
 		 */
+<<<<<<< HEAD
 		ret = mongroup_create_dir(kn, NULL, "mon_groups", NULL);
+=======
+		ret = mongroup_create_dir(kn, rdtgrp, "mon_groups", NULL);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (ret)
 			goto out_id_free;
 	}
@@ -1680,10 +1979,30 @@ out_id_free:
 out_common_fail:
 	mkdir_rdt_prepare_clean(rdtgrp);
 out_unlock:
+<<<<<<< HEAD
 	rdtgroup_kn_unlock(prgrp_kn);
 	return ret;
 }
 
+=======
+	rdtgroup_kn_unlock(parent_kn);
+	return ret;
+}
+
+/* Restore the qos cfg state when a domain comes online */
+void rdt_domain_reconfigure_cdp(struct rdt_resource *r)
+{
+	if (!r->alloc_capable)
+		return;
+
+	if (r == &rdt_resources_all[RDT_RESOURCE_L2DATA])
+		l2_qos_cfg_update(&r->alloc_enabled);
+
+	if (r == &rdt_resources_all[RDT_RESOURCE_L3DATA])
+		l3_qos_cfg_update(&r->alloc_enabled);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * We allow creating mon groups only with in a directory called "mon_groups"
  * which is present in every ctrl_mon group. Check if this is a valid
@@ -1753,11 +2072,14 @@ static int rdtgroup_rmdir_mon(struct kernfs_node *kn, struct rdtgroup *rdtgrp,
 	WARN_ON(list_empty(&prdtgrp->mon.crdtgrp_list));
 	list_del(&rdtgrp->mon.crdtgrp_list);
 
+<<<<<<< HEAD
 	/*
 	 * one extra hold on this, will drop when we kfree(rdtgrp)
 	 * in rdtgroup_kn_unlock()
 	 */
 	kernfs_get(kn);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kernfs_remove(rdtgrp->kn);
 
 	return 0;
@@ -1792,6 +2114,7 @@ static int rdtgroup_rmdir_ctrl(struct kernfs_node *kn, struct rdtgroup *rdtgrp,
 	closid_free(rdtgrp->closid);
 	free_rmid(rdtgrp->mon.rmid);
 
+<<<<<<< HEAD
 	/*
 	 * Free all the child monitor group rmids.
 	 */
@@ -1805,6 +2128,16 @@ static int rdtgroup_rmdir_ctrl(struct kernfs_node *kn, struct rdtgroup *rdtgrp,
 	 */
 	kernfs_get(kn);
 	kernfs_remove(rdtgrp->kn);
+=======
+	list_del(&rdtgrp->rdtgroup_list);
+
+	kernfs_remove(rdtgrp->kn);
+
+	/*
+	 * Free all the child monitor group rmids.
+	 */
+	free_all_child_rdtgrp(rdtgrp);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -1832,7 +2165,12 @@ static int rdtgroup_rmdir(struct kernfs_node *kn)
 	 * If the rdtgroup is a mon group and parent directory
 	 * is a valid "mon_groups" directory, remove the mon group.
 	 */
+<<<<<<< HEAD
 	if (rdtgrp->type == RDTCTRL_GROUP && parent_kn == rdtgroup_default.kn)
+=======
+	if (rdtgrp->type == RDTCTRL_GROUP && parent_kn == rdtgroup_default.kn &&
+	    rdtgrp != &rdtgroup_default)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = rdtgroup_rmdir_ctrl(kn, rdtgrp, tmpmask);
 	else if (rdtgrp->type == RDTMON_GROUP &&
 		 is_mon_groups(parent_kn, kn->name))

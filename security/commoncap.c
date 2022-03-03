@@ -54,7 +54,11 @@ static void warn_setuid_and_fcaps_mixed(const char *fname)
 }
 
 /**
+<<<<<<< HEAD
  * __cap_capable - Determine whether a task has a particular effective capability
+=======
+ * cap_capable - Determine whether a task has a particular effective capability
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * @cred: The credentials to use
  * @ns:  The user namespace in which we need the capability
  * @cap: The capability to check for
@@ -68,11 +72,16 @@ static void warn_setuid_and_fcaps_mixed(const char *fname)
  * cap_has_capability() returns 0 when a task has a capability, but the
  * kernel's capable() and has_capability() returns 1 for this case.
  */
+<<<<<<< HEAD
 int __cap_capable(const struct cred *cred, struct user_namespace *targ_ns,
+=======
+int cap_capable(const struct cred *cred, struct user_namespace *targ_ns,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		int cap, int audit)
 {
 	struct user_namespace *ns = targ_ns;
 
+<<<<<<< HEAD
 #ifdef CONFIG_ANDROID_PARANOID_NETWORK
 	if (cap == CAP_NET_RAW && in_egroup_p(AID_NET_RAW))
 		return 0;
@@ -80,6 +89,8 @@ int __cap_capable(const struct cred *cred, struct user_namespace *targ_ns,
 		return 0;
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* See if cred has the capability in the target user namespace
 	 * by examining the target user namespace and all of the target
 	 * user namespace's parents.
@@ -87,11 +98,15 @@ int __cap_capable(const struct cred *cred, struct user_namespace *targ_ns,
 	for (;;) {
 		/* Do we have the necessary capabilities? */
 		if (ns == cred->user_ns)
+<<<<<<< HEAD
 		#ifndef CONFIG_KERNEL_CUSTOM_FACTORY
                        return cap_raised(cred->cap_effective, cap) ? 0 : -EPERM;
         #else
                        return 0;
         #endif
+=======
+			return cap_raised(cred->cap_effective, cap) ? 0 : -EPERM;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		/*
 		 * If we're already at a lower level than we're looking for,
@@ -117,11 +132,14 @@ int __cap_capable(const struct cred *cred, struct user_namespace *targ_ns,
 	/* We never get here */
 }
 
+<<<<<<< HEAD
 int cap_capable(const struct cred *cred, struct user_namespace *targ_ns,
 		int cap, int audit)
 {
 	return __cap_capable(cred, targ_ns, cap, audit);
 }
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * cap_settime - Determine whether the current process may set the system clock
  * @ts: The time to set
@@ -394,10 +412,18 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
 {
 	int size, ret;
 	kuid_t kroot;
+<<<<<<< HEAD
 	uid_t root, mappedroot;
 	char *tmpbuf = NULL;
 	struct vfs_cap_data *cap;
 	struct vfs_ns_cap_data *nscap;
+=======
+	u32 nsmagic, magic;
+	uid_t root, mappedroot;
+	char *tmpbuf = NULL;
+	struct vfs_cap_data *cap;
+	struct vfs_ns_cap_data *nscap = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct dentry *dentry;
 	struct user_namespace *fs_ns;
 
@@ -413,12 +439,17 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
 				 &tmpbuf, size, GFP_NOFS);
 	dput(dentry);
 
+<<<<<<< HEAD
 	if (ret < 0)
+=======
+	if (ret < 0 || !tmpbuf)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ret;
 
 	fs_ns = inode->i_sb->s_user_ns;
 	cap = (struct vfs_cap_data *) tmpbuf;
 	if (is_v2header((size_t) ret, cap)) {
+<<<<<<< HEAD
 		/* If this is sizeof(vfs_cap_data) then we're ok with the
 		 * on-disk value, so return that.  */
 		if (alloc)
@@ -433,12 +464,24 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
 
 	nscap = (struct vfs_ns_cap_data *) tmpbuf;
 	root = le32_to_cpu(nscap->rootid);
+=======
+		root = 0;
+	} else if (is_v3header((size_t) ret, cap)) {
+		nscap = (struct vfs_ns_cap_data *) tmpbuf;
+		root = le32_to_cpu(nscap->rootid);
+	} else {
+		size = -EINVAL;
+		goto out_free;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kroot = make_kuid(fs_ns, root);
 
 	/* If the root kuid maps to a valid uid in current ns, then return
 	 * this as a nscap. */
 	mappedroot = from_kuid(current_user_ns(), kroot);
 	if (mappedroot != (uid_t)-1 && mappedroot != (uid_t)0) {
+<<<<<<< HEAD
 		if (alloc) {
 			*buffer = tmpbuf;
 			nscap->rootid = cpu_to_le32(mappedroot);
@@ -450,15 +493,55 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
 	if (!rootid_owns_currentns(kroot)) {
 		kfree(tmpbuf);
 		return -EOPNOTSUPP;
+=======
+		size = sizeof(struct vfs_ns_cap_data);
+		if (alloc) {
+			if (!nscap) {
+				/* v2 -> v3 conversion */
+				nscap = kzalloc(size, GFP_ATOMIC);
+				if (!nscap) {
+					size = -ENOMEM;
+					goto out_free;
+				}
+				nsmagic = VFS_CAP_REVISION_3;
+				magic = le32_to_cpu(cap->magic_etc);
+				if (magic & VFS_CAP_FLAGS_EFFECTIVE)
+					nsmagic |= VFS_CAP_FLAGS_EFFECTIVE;
+				memcpy(&nscap->data, &cap->data, sizeof(__le32) * 2 * VFS_CAP_U32);
+				nscap->magic_etc = cpu_to_le32(nsmagic);
+			} else {
+				/* use allocated v3 buffer */
+				tmpbuf = NULL;
+			}
+			nscap->rootid = cpu_to_le32(mappedroot);
+			*buffer = nscap;
+		}
+		goto out_free;
+	}
+
+	if (!rootid_owns_currentns(kroot)) {
+		size = -EOVERFLOW;
+		goto out_free;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* This comes from a parent namespace.  Return as a v2 capability */
 	size = sizeof(struct vfs_cap_data);
 	if (alloc) {
+<<<<<<< HEAD
 		*buffer = kmalloc(size, GFP_ATOMIC);
 		if (*buffer) {
 			struct vfs_cap_data *cap = *buffer;
 			__le32 nsmagic, magic;
+=======
+		if (nscap) {
+			/* v3 -> v2 conversion */
+			cap = kzalloc(size, GFP_ATOMIC);
+			if (!cap) {
+				size = -ENOMEM;
+				goto out_free;
+			}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			magic = VFS_CAP_REVISION_2;
 			nsmagic = le32_to_cpu(nscap->magic_etc);
 			if (nsmagic & VFS_CAP_FLAGS_EFFECTIVE)
@@ -466,9 +549,18 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
 			memcpy(&cap->data, &nscap->data, sizeof(__le32) * 2 * VFS_CAP_U32);
 			cap->magic_etc = cpu_to_le32(magic);
 		} else {
+<<<<<<< HEAD
 			size = -ENOMEM;
 		}
 	}
+=======
+			/* use unconverted v2 */
+			tmpbuf = NULL;
+		}
+		*buffer = cap;
+	}
+out_free:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(tmpbuf);
 	return size;
 }
@@ -727,6 +819,10 @@ int cap_bprm_set_creds(struct linux_binprm *bprm)
 	int ret;
 	kuid_t root_uid;
 
+<<<<<<< HEAD
+=======
+	new->cap_ambient = old->cap_ambient;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (WARN_ON(!cap_ambient_invariant_ok(old)))
 		return -EPERM;
 

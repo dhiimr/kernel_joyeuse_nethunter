@@ -13,6 +13,7 @@ config ZRAM
 	  It has several use cases, for example: /tmp storage, use as swap
 	  disks and maybe many more.
 
+<<<<<<< HEAD
 	  See Documentation/blockdev/zram.txt for more information.
 
 config ZRAM_DEDUP
@@ -31,6 +32,12 @@ config ZRAM_DEDUP
 
 config ZRAM_WRITEBACK
        bool "Write back incompressible or idle page to backing device"
+=======
+	  See zram.txt for more information.
+
+config ZRAM_WRITEBACK
+       bool "Write back incompressible page to backing device"
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
        depends on ZRAM
        default n
        help
@@ -39,6 +46,7 @@ config ZRAM_WRITEBACK
 	 For this feature, admin should set up backing device via
 	 /sys/block/zramX/backing_dev.
 
+<<<<<<< HEAD
 	 With /sys/block/zramX/{idle,writeback}, application could ask
 	 idle page's writeback to the backing device to save in memory.
 
@@ -53,3 +61,6 @@ config ZRAM_MEMORY_TRACKING
 	  /sys/kernel/debug/zram/zramX/block_state.
 
 	  See Documentation/blockdev/zram.txt for more information.
+=======
+	 See zram.txt for more infomration.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

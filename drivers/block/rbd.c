@@ -51,6 +51,7 @@
 #define RBD_DEBUG	/* Activate rbd_assert() calls */
 
 /*
+<<<<<<< HEAD
  * The basic unit of block I/O is a sector.  It is interpreted in a
  * number of contexts in Linux (blk, bio, genhd), but the default is
  * universally 512 bytes.  These symbols are just slightly more
@@ -60,6 +61,8 @@
 #define	SECTOR_SIZE	(1ULL << SECTOR_SHIFT)
 
 /*
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Increment the given counter and return its updated value.
  * If the counter is already 0 it will not be incremented.
  * If the counter is already at its maximum value returns
@@ -3847,6 +3850,13 @@ static void cancel_tasks_sync(struct rbd_device *rbd_dev)
 	cancel_work_sync(&rbd_dev->unlock_work);
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * header_rwsem must not be held to avoid a deadlock with
+ * rbd_dev_refresh() when flushing notifies.
+ */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void rbd_unregister_watch(struct rbd_device *rbd_dev)
 {
 	WARN_ON(waitqueue_active(&rbd_dev->lock_waitq));
@@ -4539,6 +4549,12 @@ static ssize_t rbd_config_info_show(struct device *dev,
 {
 	struct rbd_device *rbd_dev = dev_to_rbd_dev(dev);
 
+<<<<<<< HEAD
+=======
+	if (!capable(CAP_SYS_ADMIN))
+		return -EPERM;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return sprintf(buf, "%s\n", rbd_dev->config_info);
 }
 
@@ -4640,6 +4656,12 @@ static ssize_t rbd_image_refresh(struct device *dev,
 	struct rbd_device *rbd_dev = dev_to_rbd_dev(dev);
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (!capable(CAP_SYS_ADMIN))
+		return -EPERM;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = rbd_dev_refresh(rbd_dev);
 	if (ret)
 		return ret;
@@ -6044,9 +6066,16 @@ static int rbd_dev_header_name(struct rbd_device *rbd_dev)
 
 static void rbd_dev_image_release(struct rbd_device *rbd_dev)
 {
+<<<<<<< HEAD
 	rbd_dev_unprobe(rbd_dev);
 	if (rbd_dev->opts)
 		rbd_unregister_watch(rbd_dev);
+=======
+	if (rbd_dev->opts)
+		rbd_unregister_watch(rbd_dev);
+
+	rbd_dev_unprobe(rbd_dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rbd_dev->image_format = 0;
 	kfree(rbd_dev->spec->image_id);
 	rbd_dev->spec->image_id = NULL;
@@ -6057,6 +6086,12 @@ static void rbd_dev_image_release(struct rbd_device *rbd_dev)
  * device.  If this image is the one being mapped (i.e., not a
  * parent), initiate a watch on its header object before using that
  * object to get detailed information about the rbd image.
+<<<<<<< HEAD
+=======
+ *
+ * On success, returns with header_rwsem held for write if called
+ * with @depth == 0.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 static int rbd_dev_image_probe(struct rbd_device *rbd_dev, int depth)
 {
@@ -6087,9 +6122,18 @@ static int rbd_dev_image_probe(struct rbd_device *rbd_dev, int depth)
 		}
 	}
 
+<<<<<<< HEAD
 	ret = rbd_dev_header_info(rbd_dev);
 	if (ret)
 		goto err_out_watch;
+=======
+	if (!depth)
+		down_write(&rbd_dev->header_rwsem);
+
+	ret = rbd_dev_header_info(rbd_dev);
+	if (ret)
+		goto err_out_probe;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * If this image is the one being mapped, we have pool name and
@@ -6133,10 +6177,18 @@ static int rbd_dev_image_probe(struct rbd_device *rbd_dev, int depth)
 	return 0;
 
 err_out_probe:
+<<<<<<< HEAD
 	rbd_dev_unprobe(rbd_dev);
 err_out_watch:
 	if (!depth)
 		rbd_unregister_watch(rbd_dev);
+=======
+	if (!depth)
+		up_write(&rbd_dev->header_rwsem);
+	if (!depth)
+		rbd_unregister_watch(rbd_dev);
+	rbd_dev_unprobe(rbd_dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 err_out_format:
 	rbd_dev->image_format = 0;
 	kfree(rbd_dev->spec->image_id);
@@ -6156,6 +6208,12 @@ static ssize_t do_rbd_add(struct bus_type *bus,
 	bool read_only;
 	int rc;
 
+<<<<<<< HEAD
+=======
+	if (!capable(CAP_SYS_ADMIN))
+		return -EPERM;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!try_module_get(THIS_MODULE))
 		return -ENODEV;
 
@@ -6194,12 +6252,18 @@ static ssize_t do_rbd_add(struct bus_type *bus,
 		goto err_out_rbd_dev;
 	}
 
+<<<<<<< HEAD
 	down_write(&rbd_dev->header_rwsem);
 	rc = rbd_dev_image_probe(rbd_dev, 0);
 	if (rc < 0) {
 		up_write(&rbd_dev->header_rwsem);
 		goto err_out_rbd_dev;
 	}
+=======
+	rc = rbd_dev_image_probe(rbd_dev, 0);
+	if (rc < 0)
+		goto err_out_rbd_dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* If we are mapping a snapshot it must be marked read-only */
 
@@ -6311,6 +6375,12 @@ static ssize_t do_rbd_remove(struct bus_type *bus,
 	bool force = false;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (!capable(CAP_SYS_ADMIN))
+		return -EPERM;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dev_id = -1;
 	opt_buf[0] = '\0';
 	sscanf(buf, "%d %5s", &dev_id, opt_buf);

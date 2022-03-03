@@ -2,7 +2,10 @@
  * Persistent Storage - ramfs parts.
  *
  * Copyright (C) 2010 Intel Corporation <tony.luck@intel.com>
+<<<<<<< HEAD
  * Copyright (C) 2020 XiaoMi, Inc.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License version 2 as
@@ -37,9 +40,13 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
 #ifdef CONFIG_PSTORE_LAST_KMSG
 #include <linux/proc_fs.h>
 #endif
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "internal.h"
 
 #define	PSTORE_NAMELEN	64
@@ -297,6 +304,7 @@ bool pstore_is_mounted(void)
 	return pstore_sb != NULL;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PSTORE_LAST_KMSG
 static char *console_buffer;
 static ssize_t console_bufsize;
@@ -315,6 +323,8 @@ static const struct file_operations last_kmsg_fops = {
 };
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Make a regular file in the root directory of our file system.
  * Load it up with "size" bytes of data from "buf".
@@ -421,6 +431,7 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
 	list_add(&private->list, &allpstore);
 	spin_unlock_irqrestore(&allpstore_lock, flags);
 
+<<<<<<< HEAD
 #ifdef CONFIG_PSTORE_LAST_KMSG
 	if (record->type == PSTORE_TYPE_CONSOLE) {
 		console_buffer = record->buf;
@@ -428,6 +439,8 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
 	}
 #endif
 	
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 
 fail_private:
@@ -514,10 +527,13 @@ static int __init init_pstore_fs(void)
 {
 	int err;
 
+<<<<<<< HEAD
 #ifdef CONFIG_PSTORE_LAST_KMSG
 	struct proc_dir_entry *last_kmsg_entry = NULL;
 #endif
 	
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Create a convenient mount point for people to access pstore */
 	err = sysfs_create_mount_point(fs_kobj, "pstore");
 	if (err)
@@ -527,6 +543,7 @@ static int __init init_pstore_fs(void)
 	if (err < 0)
 		sysfs_remove_mount_point(fs_kobj, "pstore");
 
+<<<<<<< HEAD
 #ifdef CONFIG_PSTORE_LAST_KMSG
 	last_kmsg_entry = proc_create_data("last_kmsg", S_IFREG | S_IRUGO,
 				NULL, &last_kmsg_fops, NULL);
@@ -535,6 +552,8 @@ static int __init init_pstore_fs(void)
 	}
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	return err;
 }

@@ -136,6 +136,10 @@ static void *mall_get(struct tcf_proto *tp, u32 handle)
 static const struct nla_policy mall_policy[TCA_MATCHALL_MAX + 1] = {
 	[TCA_MATCHALL_UNSPEC]		= { .type = NLA_UNSPEC },
 	[TCA_MATCHALL_CLASSID]		= { .type = NLA_U32 },
+<<<<<<< HEAD
+=======
+	[TCA_MATCHALL_FLAGS]		= { .type = NLA_U32 },
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static int mall_set_parms(struct net *net, struct tcf_proto *tp,

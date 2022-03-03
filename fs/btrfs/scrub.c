@@ -2421,14 +2421,21 @@ static void scrub_missing_raid56_worker(struct btrfs_work *work)
 		scrub_write_block_to_dev_replace(sblock);
 	}
 
+<<<<<<< HEAD
 	scrub_block_put(sblock);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (sctx->is_dev_replace && sctx->flush_all_writes) {
 		mutex_lock(&sctx->wr_lock);
 		scrub_wr_submit(sctx);
 		mutex_unlock(&sctx->wr_lock);
 	}
 
+<<<<<<< HEAD
+=======
+	scrub_block_put(sblock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	scrub_pending_bio_dec(sctx);
 }
 

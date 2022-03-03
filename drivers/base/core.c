@@ -10,6 +10,10 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/cpufreq.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/device.h>
 #include <linux/err.h>
 #include <linux/fwnode.h>
@@ -95,6 +99,19 @@ void device_links_read_unlock(int not_used)
 }
 #endif /* !CONFIG_SRCU */
 
+<<<<<<< HEAD
+=======
+static bool device_is_ancestor(struct device *dev, struct device *target)
+{
+	while (target->parent) {
+		target = target->parent;
+		if (dev == target)
+			return true;
+	}
+	return false;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * device_is_dependent - Check if one device depends on another one
  * @dev: Device to check dependencies for.
@@ -108,7 +125,16 @@ static int device_is_dependent(struct device *dev, void *target)
 	struct device_link *link;
 	int ret;
 
+<<<<<<< HEAD
 	if (WARN_ON(dev == target))
+=======
+	/*
+	 * The "ancestors" check is needed to catch the case when the target
+	 * device has not been completely initialized yet and it is still
+	 * missing from the list of children of its parent device.
+	 */
+	if (dev == target || device_is_ancestor(dev, target))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return 1;
 
 	ret = device_for_each_child(dev, target, device_is_dependent);
@@ -116,7 +142,11 @@ static int device_is_dependent(struct device *dev, void *target)
 		return ret;
 
 	list_for_each_entry(link, &dev->links.consumers, s_node) {
+<<<<<<< HEAD
 		if (WARN_ON(link->consumer == target))
+=======
+		if (link->consumer == target)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return 1;
 
 		ret = device_is_dependent(link->consumer, target);
@@ -179,11 +209,26 @@ struct device_link *device_link_add(struct device *consumer,
 				    struct device *supplier, u32 flags)
 {
 	struct device_link *link;
+<<<<<<< HEAD
+=======
+	bool rpm_put_supplier = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!consumer || !supplier ||
 	    ((flags & DL_FLAG_STATELESS) && (flags & DL_FLAG_AUTOREMOVE)))
 		return NULL;
 
+<<<<<<< HEAD
+=======
+	if (flags & DL_FLAG_PM_RUNTIME && flags & DL_FLAG_RPM_ACTIVE) {
+		if (pm_runtime_get_sync(supplier) < 0) {
+			pm_runtime_put_noidle(supplier);
+			return NULL;
+		}
+		rpm_put_supplier = true;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	device_links_write_lock();
 	device_pm_lock();
 
@@ -208,6 +253,7 @@ struct device_link *device_link_add(struct device *consumer,
 
 	if (flags & DL_FLAG_PM_RUNTIME) {
 		if (flags & DL_FLAG_RPM_ACTIVE) {
+<<<<<<< HEAD
 			if (pm_runtime_get_sync(supplier) < 0) {
 				pm_runtime_put_noidle(supplier);
 				kfree(link);
@@ -215,6 +261,10 @@ struct device_link *device_link_add(struct device *consumer,
 				goto out;
 			}
 			link->rpm_active = true;
+=======
+			link->rpm_active = true;
+			rpm_put_supplier = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 		pm_runtime_new_link(consumer);
 		/*
@@ -285,6 +335,13 @@ struct device_link *device_link_add(struct device *consumer,
  out:
 	device_pm_unlock();
 	device_links_write_unlock();
+<<<<<<< HEAD
+=======
+
+	if (rpm_put_supplier)
+		pm_runtime_put(supplier);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return link;
 }
 EXPORT_SYMBOL_GPL(device_link_add);
@@ -649,11 +706,14 @@ int lock_device_hotplug_sysfs(void)
 	return restart_syscall();
 }
 
+<<<<<<< HEAD
 void lock_device_hotplug_assert(void)
 {
 	lockdep_assert_held(&device_hotplug_lock);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #ifdef CONFIG_BLOCK
 static inline int device_is_not_partition(struct device *dev)
 {
@@ -1426,6 +1486,10 @@ void device_initialize(struct device *dev)
 	device_pm_init(dev);
 	set_dev_node(dev, -1);
 #ifdef CONFIG_GENERIC_MSI_IRQ
+<<<<<<< HEAD
+=======
+	raw_spin_lock_init(&dev->msi_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	INIT_LIST_HEAD(&dev->msi_list);
 #endif
 	INIT_LIST_HEAD(&dev->links.consumers);
@@ -1577,12 +1641,70 @@ static inline struct kobject *get_glue_dir(struct device *dev)
  */
 static void cleanup_glue_dir(struct device *dev, struct kobject *glue_dir)
 {
+<<<<<<< HEAD
+=======
+	unsigned int ref;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* see if we live in a "glue" directory */
 	if (!live_in_glue_dir(glue_dir, dev))
 		return;
 
 	mutex_lock(&gdp_mutex);
+<<<<<<< HEAD
 	if (!kobject_has_children(glue_dir) && kref_read(&glue_dir->kref) == 1)
+=======
+	/**
+	 * There is a race condition between removing glue directory
+	 * and adding a new device under the glue directory.
+	 *
+	 * CPU1:                                         CPU2:
+	 *
+	 * device_add()
+	 *   get_device_parent()
+	 *     class_dir_create_and_add()
+	 *       kobject_add_internal()
+	 *         create_dir()    // create glue_dir
+	 *
+	 *                                               device_add()
+	 *                                                 get_device_parent()
+	 *                                                   kobject_get() // get glue_dir
+	 *
+	 * device_del()
+	 *   cleanup_glue_dir()
+	 *     kobject_del(glue_dir)
+	 *
+	 *                                               kobject_add()
+	 *                                                 kobject_add_internal()
+	 *                                                   create_dir() // in glue_dir
+	 *                                                     sysfs_create_dir_ns()
+	 *                                                       kernfs_create_dir_ns(sd)
+	 *
+	 *       sysfs_remove_dir() // glue_dir->sd=NULL
+	 *       sysfs_put()        // free glue_dir->sd
+	 *
+	 *                                                         // sd is freed
+	 *                                                         kernfs_new_node(sd)
+	 *                                                           kernfs_get(glue_dir)
+	 *                                                           kernfs_add_one()
+	 *                                                           kernfs_put()
+	 *
+	 * Before CPU1 remove last child device under glue dir, if CPU2 add
+	 * a new device under glue dir, the glue_dir kobject reference count
+	 * will be increase to 2 in kobject_get(k). And CPU2 has been called
+	 * kernfs_create_dir_ns(). Meanwhile, CPU1 call sysfs_remove_dir()
+	 * and sysfs_put(). This result in glue_dir->sd is freed.
+	 *
+	 * Then the CPU2 will see a stale "empty" but still potentially used
+	 * glue dir around in kernfs_new_node().
+	 *
+	 * In order to avoid this happening, we also should make sure that
+	 * kernfs_node for glue_dir is released in CPU1 only when refcount
+	 * for glue_dir kobj is 1.
+	 */
+	ref = kref_read(&glue_dir->kref);
+	if (!kobject_has_children(glue_dir) && !--ref)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kobject_del(glue_dir);
 	kobject_put(glue_dir);
 	mutex_unlock(&gdp_mutex);
@@ -1593,8 +1715,13 @@ static int device_add_class_symlinks(struct device *dev)
 	struct device_node *of_node = dev_of_node(dev);
 	int error;
 
+<<<<<<< HEAD
 	if (of_node && of_node_kobj(of_node)) {
 		error = sysfs_create_link(&dev->kobj, of_node_kobj(of_node), "of_node");
+=======
+	if (of_node) {
+		error = sysfs_create_link(&dev->kobj, &of_node->kobj,"of_node");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (error)
 			dev_warn(dev, "Error %d creating of_node link\n",error);
 		/* An error here doesn't warrant bringing down the device */
@@ -2799,6 +2926,11 @@ void device_shutdown(void)
 	wait_for_device_probe();
 	device_block_probing();
 
+<<<<<<< HEAD
+=======
+	cpufreq_suspend();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock(&devices_kset->list_lock);
 	/*
 	 * Walk the devices list backward, shutting down each in turn.
@@ -3017,9 +3149,16 @@ static inline bool fwnode_is_primary(struct fwnode_handle *fwnode)
  */
 void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
 {
+<<<<<<< HEAD
 	if (fwnode) {
 		struct fwnode_handle *fn = dev->fwnode;
 
+=======
+	struct device *parent = dev->parent;
+	struct fwnode_handle *fn = dev->fwnode;
+
+	if (fwnode) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (fwnode_is_primary(fn))
 			fn = fn->secondary;
 
@@ -3029,8 +3168,18 @@ void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
 		}
 		dev->fwnode = fwnode;
 	} else {
+<<<<<<< HEAD
 		dev->fwnode = fwnode_is_primary(dev->fwnode) ?
 			dev->fwnode->secondary : NULL;
+=======
+		if (fwnode_is_primary(fn)) {
+			dev->fwnode = fn->secondary;
+			if (!(parent && fn == parent->fwnode))
+				fn->secondary = NULL;
+		} else {
+			dev->fwnode = NULL;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 EXPORT_SYMBOL_GPL(set_primary_fwnode);

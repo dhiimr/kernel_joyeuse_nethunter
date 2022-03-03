@@ -110,6 +110,12 @@
 #define SONIC_CR_TXP            0x0002
 #define SONIC_CR_HTX            0x0001
 
+<<<<<<< HEAD
+=======
+#define SONIC_CR_ALL (SONIC_CR_LCAM | SONIC_CR_RRRA | \
+		      SONIC_CR_RXEN | SONIC_CR_TXP)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * SONIC data configuration bits
  */
@@ -274,8 +280,14 @@
 #define SONIC_NUM_RDS   SONIC_NUM_RRS /* number of receive descriptors */
 #define SONIC_NUM_TDS   16            /* number of transmit descriptors */
 
+<<<<<<< HEAD
 #define SONIC_RDS_MASK  (SONIC_NUM_RDS-1)
 #define SONIC_TDS_MASK  (SONIC_NUM_TDS-1)
+=======
+#define SONIC_RRS_MASK  (SONIC_NUM_RRS - 1)
+#define SONIC_RDS_MASK  (SONIC_NUM_RDS - 1)
+#define SONIC_TDS_MASK  (SONIC_NUM_TDS - 1)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define SONIC_RBSIZE	1520          /* size of one resource buffer */
 
@@ -321,6 +333,10 @@ struct sonic_local {
 	unsigned int next_tx;          /* next free TD */
 	struct device *device;         /* generic device */
 	struct net_device_stats stats;
+<<<<<<< HEAD
+=======
+	spinlock_t lock;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #define TX_TIMEOUT (3 * HZ)
@@ -342,11 +358,16 @@ static void sonic_tx_timeout(struct net_device *dev);
    as far as we can tell. */
 /* OpenBSD calls this "SWO".  I'd like to think that sonic_buf_put()
    is a much better name. */
+<<<<<<< HEAD
 static inline void sonic_buf_put(void* base, int bitmode,
+=======
+static inline void sonic_buf_put(u16 *base, int bitmode,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				 int offset, __u16 val)
 {
 	if (bitmode)
 #ifdef __BIG_ENDIAN
+<<<<<<< HEAD
 		((__u16 *) base + (offset*2))[1] = val;
 #else
 		((__u16 *) base + (offset*2))[0] = val;
@@ -356,16 +377,36 @@ static inline void sonic_buf_put(void* base, int bitmode,
 }
 
 static inline __u16 sonic_buf_get(void* base, int bitmode,
+=======
+		__raw_writew(val, base + (offset * 2) + 1);
+#else
+		__raw_writew(val, base + (offset * 2) + 0);
+#endif
+	else
+		__raw_writew(val, base + (offset * 1) + 0);
+}
+
+static inline __u16 sonic_buf_get(u16 *base, int bitmode,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				  int offset)
 {
 	if (bitmode)
 #ifdef __BIG_ENDIAN
+<<<<<<< HEAD
 		return ((volatile __u16 *) base + (offset*2))[1];
 #else
 		return ((volatile __u16 *) base + (offset*2))[0];
 #endif
 	else
 		return ((volatile __u16 *) base)[offset];
+=======
+		return __raw_readw(base + (offset * 2) + 1);
+#else
+		return __raw_readw(base + (offset * 2) + 0);
+#endif
+	else
+		return __raw_readw(base + (offset * 1) + 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* Inlines that you should actually use for reading/writing DMA buffers */

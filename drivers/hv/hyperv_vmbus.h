@@ -26,6 +26,10 @@
 #define _HYPERV_VMBUS_H
 
 #include <linux/list.h>
+<<<<<<< HEAD
+=======
+#include <linux/bitops.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/sync_bitops.h>
 #include <linux/atomic.h>
 #include <linux/hyperv.h>

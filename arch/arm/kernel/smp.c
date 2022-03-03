@@ -76,6 +76,13 @@ enum ipi_msg_type {
 	IPI_CPU_STOP,
 	IPI_IRQ_WORK,
 	IPI_COMPLETION,
+<<<<<<< HEAD
+=======
+	/*
+	 * CPU_BACKTRACE is special and not included in NR_IPI
+	 * or tracable with trace_ipi_*
+	 */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	IPI_CPU_BACKTRACE,
 	/*
 	 * SGI8-15 can be reserved by secure firmware, and thus may
@@ -527,6 +534,7 @@ static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
 	__smp_cross_call(target, ipinr);
 }
 
+<<<<<<< HEAD
 DEFINE_PER_CPU(bool, pending_ipi);
 static void smp_cross_call_common(const struct cpumask *cpumask,
 						unsigned int func)
@@ -539,6 +547,8 @@ static void smp_cross_call_common(const struct cpumask *cpumask,
 	smp_cross_call(cpumask, func);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void show_ipi_list(struct seq_file *p, int prec)
 {
 	unsigned int cpu, i;
@@ -567,32 +577,52 @@ u64 smp_irq_stat_cpu(unsigned int cpu)
 
 void arch_send_call_function_ipi_mask(const struct cpumask *mask)
 {
+<<<<<<< HEAD
 	smp_cross_call_common(mask, IPI_CALL_FUNC);
+=======
+	smp_cross_call(mask, IPI_CALL_FUNC);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void arch_send_wakeup_ipi_mask(const struct cpumask *mask)
 {
+<<<<<<< HEAD
 	smp_cross_call_common(mask, IPI_WAKEUP);
+=======
+	smp_cross_call(mask, IPI_WAKEUP);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void arch_send_call_function_single_ipi(int cpu)
 {
+<<<<<<< HEAD
 	smp_cross_call_common(cpumask_of(cpu), IPI_CALL_FUNC);
+=======
+	smp_cross_call(cpumask_of(cpu), IPI_CALL_FUNC);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #ifdef CONFIG_IRQ_WORK
 void arch_irq_work_raise(void)
 {
 	if (arch_irq_work_has_interrupt())
+<<<<<<< HEAD
 		smp_cross_call_common(cpumask_of(smp_processor_id()),
 				IPI_IRQ_WORK);
+=======
+		smp_cross_call(cpumask_of(smp_processor_id()), IPI_IRQ_WORK);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #endif
 
 #ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
 void tick_broadcast(const struct cpumask *mask)
 {
+<<<<<<< HEAD
 	smp_cross_call_common(mask, IPI_TIMER);
+=======
+	smp_cross_call(mask, IPI_TIMER);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #endif
 
@@ -710,14 +740,21 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 
 	if ((unsigned)ipinr < NR_IPI)
 		trace_ipi_exit_rcuidle(ipi_types[ipinr]);
+<<<<<<< HEAD
 
 	per_cpu(pending_ipi, cpu) = false;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	set_irq_regs(old_regs);
 }
 
 void smp_send_reschedule(int cpu)
 {
+<<<<<<< HEAD
 	smp_cross_call_common(cpumask_of(cpu), IPI_RESCHEDULE);
+=======
+	smp_cross_call(cpumask_of(cpu), IPI_RESCHEDULE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void smp_send_stop(void)
@@ -728,7 +765,11 @@ void smp_send_stop(void)
 	cpumask_copy(&mask, cpu_online_mask);
 	cpumask_clear_cpu(smp_processor_id(), &mask);
 	if (!cpumask_empty(&mask))
+<<<<<<< HEAD
 		smp_cross_call_common(&mask, IPI_CPU_STOP);
+=======
+		smp_cross_call(&mask, IPI_CPU_STOP);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Wait up to one second for other CPUs to stop */
 	timeout = USEC_PER_SEC;
@@ -816,6 +857,7 @@ core_initcall(register_cpufreq_notifier);
 
 static void raise_nmi(cpumask_t *mask)
 {
+<<<<<<< HEAD
 	/*
 	 * Generate the backtrace directly if we are running in a calling
 	 * context that is not preemptible by the backtrace IPI. Note
@@ -826,6 +868,9 @@ static void raise_nmi(cpumask_t *mask)
 		nmi_cpu_backtrace(NULL);
 
 	smp_cross_call_common(mask, IPI_CPU_BACKTRACE);
+=======
+	__smp_cross_call(mask, IPI_CPU_BACKTRACE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)

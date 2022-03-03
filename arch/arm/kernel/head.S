@@ -675,11 +675,15 @@ ARM_BE8(rev16	ip, ip)
 	bcc	1b
 	bx	lr
 #else
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_ENDIAN_BE8
 	moveq	r0, #0x00004000	@ set bit 22, mov to mvn instruction
 #else
 	moveq	r0, #0x400000	@ set bit 22, mov to mvn instruction
 #endif
+=======
+	moveq	r0, #0x400000	@ set bit 22, mov to mvn instruction
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	b	2f
 1:	ldr	ip, [r7, r3]
 #ifdef CONFIG_CPU_ENDIAN_BE8
@@ -688,7 +692,11 @@ ARM_BE8(rev16	ip, ip)
 	tst	ip, #0x000f0000	@ check the rotation field
 	orrne	ip, ip, r6, lsl #24 @ mask in offset bits 31-24
 	biceq	ip, ip, #0x00004000 @ clear bit 22
+<<<<<<< HEAD
 	orreq	ip, ip, r0      @ mask in offset bits 7-0
+=======
+	orreq	ip, ip, r0, ror #8  @ mask in offset bits 7-0
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else
 	bic	ip, ip, #0x000000ff
 	tst	ip, #0xf00	@ check the rotation field

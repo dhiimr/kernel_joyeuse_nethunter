@@ -15,6 +15,10 @@ MODULE_LICENSE("GPL v2");
 #define VENDOR_DIGIDESIGN	0x00a07e
 #define MODEL_CONSOLE		0x000001
 #define MODEL_RACK		0x000002
+<<<<<<< HEAD
+=======
+#define SPEC_VERSION		0x000001
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static int name_card(struct snd_dg00x *dg00x)
 {
@@ -185,14 +189,28 @@ static const struct ieee1394_device_id snd_dg00x_id_table[] = {
 	/* Both of 002/003 use the same ID. */
 	{
 		.match_flags = IEEE1394_MATCH_VENDOR_ID |
+<<<<<<< HEAD
 			       IEEE1394_MATCH_MODEL_ID,
 		.vendor_id = VENDOR_DIGIDESIGN,
+=======
+			       IEEE1394_MATCH_VERSION |
+			       IEEE1394_MATCH_MODEL_ID,
+		.vendor_id = VENDOR_DIGIDESIGN,
+		.version = SPEC_VERSION,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.model_id = MODEL_CONSOLE,
 	},
 	{
 		.match_flags = IEEE1394_MATCH_VENDOR_ID |
+<<<<<<< HEAD
 			       IEEE1394_MATCH_MODEL_ID,
 		.vendor_id = VENDOR_DIGIDESIGN,
+=======
+			       IEEE1394_MATCH_VERSION |
+			       IEEE1394_MATCH_MODEL_ID,
+		.vendor_id = VENDOR_DIGIDESIGN,
+		.version = SPEC_VERSION,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.model_id = MODEL_RACK,
 	},
 	{}

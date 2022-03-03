@@ -107,9 +107,17 @@ static int vnt_int_report_rate(struct vnt_private *priv, u8 pkt_no, u8 tsr)
 
 	info->status.rates[0].count = tx_retry;
 
+<<<<<<< HEAD
 	if (!(tsr & (TSR_TMO | TSR_RETRYTMO))) {
 		info->status.rates[0].idx = idx;
 		info->flags |= IEEE80211_TX_STAT_ACK;
+=======
+	if (!(tsr & TSR_TMO)) {
+		info->status.rates[0].idx = idx;
+
+		if (!(info->flags & IEEE80211_TX_CTL_NO_ACK))
+			info->flags |= IEEE80211_TX_STAT_ACK;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	ieee80211_tx_status_irqsafe(priv->hw, context->skb);
@@ -151,7 +159,12 @@ void vnt_int_process_data(struct vnt_private *priv)
 				priv->wake_up_count =
 					priv->hw->conf.listen_interval;
 
+<<<<<<< HEAD
 			--priv->wake_up_count;
+=======
+			if (priv->wake_up_count)
+				--priv->wake_up_count;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			/* Turn on wake up to listen next beacon */
 			if (priv->wake_up_count == 1)

@@ -182,6 +182,11 @@ static u32 bmp280_compensate_humidity(struct bmp280_data *data,
 		+ (s32)2097152) * H2 + 8192) >> 14);
 	var -= ((((var >> 15) * (var >> 15)) >> 7) * (s32)H1) >> 4;
 
+<<<<<<< HEAD
+=======
+	var = clamp_val(var, 0, 419430400);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return var >> 12;
 };
 
@@ -651,7 +656,11 @@ static int bmp180_measure(struct bmp280_data *data, u8 ctrl_meas)
 	unsigned int ctrl;
 
 	if (data->use_eoc)
+<<<<<<< HEAD
 		init_completion(&data->done);
+=======
+		reinit_completion(&data->done);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = regmap_write(data->regmap, BMP280_REG_CTRL_MEAS, ctrl_meas);
 	if (ret)
@@ -907,6 +916,12 @@ static int bmp085_fetch_eoc_irq(struct device *dev,
 			"trying to enforce it\n");
 		irq_trig = IRQF_TRIGGER_RISING;
 	}
+<<<<<<< HEAD
+=======
+
+	init_completion(&data->done);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = devm_request_threaded_irq(dev,
 			irq,
 			bmp085_eoc_irq,

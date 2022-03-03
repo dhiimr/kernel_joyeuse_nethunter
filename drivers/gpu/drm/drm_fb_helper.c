@@ -1590,7 +1590,11 @@ int drm_fb_helper_check_var(struct fb_var_screeninfo *var,
 	 * Changes struct fb_var_screeninfo are currently not pushed back
 	 * to KMS, hence fail if different settings are requested.
 	 */
+<<<<<<< HEAD
 	if (var->bits_per_pixel != fb->format->cpp[0] * 8 ||
+=======
+	if (var->bits_per_pixel > fb->format->cpp[0] * 8 ||
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    var->xres > fb->width || var->yres > fb->height ||
 	    var->xres_virtual > fb->width || var->yres_virtual > fb->height) {
 		DRM_DEBUG("fb requested width/height/bpp can't fit in current fb "
@@ -1616,6 +1620,14 @@ int drm_fb_helper_check_var(struct fb_var_screeninfo *var,
 	}
 
 	/*
+<<<<<<< HEAD
+=======
+	 * Likewise, bits_per_pixel should be rounded up to a supported value.
+	 */
+	var->bits_per_pixel = fb->format->cpp[0] * 8;
+
+	/*
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	 * drm fbdev emulation doesn't support changing the pixel format at all,
 	 * so reject all pixel format changing requests.
 	 */

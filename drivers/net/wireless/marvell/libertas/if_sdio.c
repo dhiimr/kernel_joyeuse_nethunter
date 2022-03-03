@@ -1183,6 +1183,13 @@ static int if_sdio_probe(struct sdio_func *func,
 
 	spin_lock_init(&card->lock);
 	card->workqueue = alloc_workqueue("libertas_sdio", WQ_MEM_RECLAIM, 0);
+<<<<<<< HEAD
+=======
+	if (unlikely(!card->workqueue)) {
+		ret = -ENOMEM;
+		goto err_queue;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	INIT_WORK(&card->packet_worker, if_sdio_host_to_card_worker);
 	init_waitqueue_head(&card->pwron_waitq);
 
@@ -1234,6 +1241,10 @@ err_activate_card:
 	lbs_remove_card(priv);
 free:
 	destroy_workqueue(card->workqueue);
+<<<<<<< HEAD
+=======
+err_queue:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	while (card->packets) {
 		packet = card->packets;
 		card->packets = card->packets->next;

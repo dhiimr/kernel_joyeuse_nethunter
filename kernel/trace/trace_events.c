@@ -326,7 +326,12 @@ void trace_event_enable_cmd_record(bool enable)
 	struct trace_event_file *file;
 	struct trace_array *tr;
 
+<<<<<<< HEAD
 	mutex_lock(&event_mutex);
+=======
+	lockdep_assert_held(&event_mutex);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	do_for_each_event_file(tr, file) {
 
 		if (!(file->flags & EVENT_FILE_FL_ENABLED))
@@ -340,7 +345,10 @@ void trace_event_enable_cmd_record(bool enable)
 			clear_bit(EVENT_FILE_FL_RECORDED_CMD_BIT, &file->flags);
 		}
 	} while_for_each_event_file();
+<<<<<<< HEAD
 	mutex_unlock(&event_mutex);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void trace_event_enable_tgid_record(bool enable)
@@ -348,7 +356,12 @@ void trace_event_enable_tgid_record(bool enable)
 	struct trace_event_file *file;
 	struct trace_array *tr;
 
+<<<<<<< HEAD
 	mutex_lock(&event_mutex);
+=======
+	lockdep_assert_held(&event_mutex);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	do_for_each_event_file(tr, file) {
 		if (!(file->flags & EVENT_FILE_FL_ENABLED))
 			continue;
@@ -362,7 +375,10 @@ void trace_event_enable_tgid_record(bool enable)
 				  &file->flags);
 		}
 	} while_for_each_event_file();
+<<<<<<< HEAD
 	mutex_unlock(&event_mutex);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int __ftrace_event_enable_disable(struct trace_event_file *file,
@@ -533,12 +549,20 @@ void trace_event_follow_fork(struct trace_array *tr, bool enable)
 	if (enable) {
 		register_trace_prio_sched_process_fork(event_filter_pid_sched_process_fork,
 						       tr, INT_MIN);
+<<<<<<< HEAD
 		register_trace_prio_sched_process_exit(event_filter_pid_sched_process_exit,
+=======
+		register_trace_prio_sched_process_free(event_filter_pid_sched_process_exit,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						       tr, INT_MAX);
 	} else {
 		unregister_trace_sched_process_fork(event_filter_pid_sched_process_fork,
 						    tr);
+<<<<<<< HEAD
 		unregister_trace_sched_process_exit(event_filter_pid_sched_process_exit,
+=======
+		unregister_trace_sched_process_free(event_filter_pid_sched_process_exit,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						    tr);
 	}
 }
@@ -799,6 +823,11 @@ static int ftrace_set_clr_event(struct trace_array *tr, char *buf, int set)
 	char *event = NULL, *sub = NULL, *match;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (!tr)
+		return -ENOENT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * The buf format can be <subsystem>:<event-name>
 	 *  *:<event-name> means any event by that name.
@@ -1112,7 +1141,12 @@ system_enable_read(struct file *filp, char __user *ubuf, size_t cnt,
 	mutex_lock(&event_mutex);
 	list_for_each_entry(file, &tr->events, list) {
 		call = file->event_call;
+<<<<<<< HEAD
 		if (!trace_event_name(call) || !call->class || !call->class->reg)
+=======
+		if ((call->flags & TRACE_EVENT_FL_IGNORE_ENABLE) ||
+		    !trace_event_name(call) || !call->class || !call->class->reg)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			continue;
 
 		if (system && strcmp(call->class->system, system->name) != 0)
@@ -1319,9 +1353,12 @@ event_id_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
 	char buf[32];
 	int len;
 
+<<<<<<< HEAD
 	if (*ppos)
 		return 0;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (unlikely(!id))
 		return -ENODEV;
 
@@ -1406,8 +1443,13 @@ static int subsystem_open(struct inode *inode, struct file *filp)
 		return -ENODEV;
 
 	/* Make sure the system still exists */
+<<<<<<< HEAD
 	mutex_lock(&trace_types_lock);
 	mutex_lock(&event_mutex);
+=======
+	mutex_lock(&event_mutex);
+	mutex_lock(&trace_types_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	list_for_each_entry(tr, &ftrace_trace_arrays, list) {
 		list_for_each_entry(dir, &tr->systems, list) {
 			if (dir == inode->i_private) {
@@ -1421,8 +1463,13 @@ static int subsystem_open(struct inode *inode, struct file *filp)
 		}
 	}
  exit_loop:
+<<<<<<< HEAD
 	mutex_unlock(&event_mutex);
 	mutex_unlock(&trace_types_lock);
+=======
+	mutex_unlock(&trace_types_lock);
+	mutex_unlock(&event_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!system)
 		return -ENODEV;
@@ -2254,12 +2301,25 @@ static struct trace_event_file *
 trace_create_new_event(struct trace_event_call *call,
 		       struct trace_array *tr)
 {
+<<<<<<< HEAD
+=======
+	struct trace_pid_list *pid_list;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct trace_event_file *file;
 
 	file = kmem_cache_alloc(file_cachep, GFP_TRACE);
 	if (!file)
 		return NULL;
 
+<<<<<<< HEAD
+=======
+	pid_list = rcu_dereference_protected(tr->filtered_pids,
+					     lockdep_is_held(&event_mutex));
+
+	if (pid_list)
+		file->flags |= EVENT_FILE_FL_PID_FILTER;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	file->event_call = call;
 	file->tr = tr;
 	atomic_set(&file->sm_ref, 0);
@@ -2308,15 +2368,25 @@ static void __add_event_to_tracers(struct trace_event_call *call);
 int trace_add_event_call(struct trace_event_call *call)
 {
 	int ret;
+<<<<<<< HEAD
 	mutex_lock(&trace_types_lock);
 	mutex_lock(&event_mutex);
+=======
+	mutex_lock(&event_mutex);
+	mutex_lock(&trace_types_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ret = __register_event(call, NULL);
 	if (ret >= 0)
 		__add_event_to_tracers(call);
 
+<<<<<<< HEAD
 	mutex_unlock(&event_mutex);
 	mutex_unlock(&trace_types_lock);
+=======
+	mutex_unlock(&trace_types_lock);
+	mutex_unlock(&event_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -2370,6 +2440,7 @@ int trace_remove_event_call(struct trace_event_call *call)
 {
 	int ret;
 
+<<<<<<< HEAD
 	mutex_lock(&trace_types_lock);
 	mutex_lock(&event_mutex);
 	down_write(&trace_event_sem);
@@ -2377,6 +2448,15 @@ int trace_remove_event_call(struct trace_event_call *call)
 	up_write(&trace_event_sem);
 	mutex_unlock(&event_mutex);
 	mutex_unlock(&trace_types_lock);
+=======
+	mutex_lock(&event_mutex);
+	mutex_lock(&trace_types_lock);
+	down_write(&trace_event_sem);
+	ret = probe_remove_event_call(call);
+	up_write(&trace_event_sem);
+	mutex_unlock(&trace_types_lock);
+	mutex_unlock(&event_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return ret;
 }
@@ -2438,8 +2518,13 @@ static int trace_module_notify(struct notifier_block *self,
 {
 	struct module *mod = data;
 
+<<<<<<< HEAD
 	mutex_lock(&trace_types_lock);
 	mutex_lock(&event_mutex);
+=======
+	mutex_lock(&event_mutex);
+	mutex_lock(&trace_types_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	switch (val) {
 	case MODULE_STATE_COMING:
 		trace_module_add_events(mod);
@@ -2448,8 +2533,13 @@ static int trace_module_notify(struct notifier_block *self,
 		trace_module_remove_events(mod);
 		break;
 	}
+<<<<<<< HEAD
 	mutex_unlock(&event_mutex);
 	mutex_unlock(&trace_types_lock);
+=======
+	mutex_unlock(&trace_types_lock);
+	mutex_unlock(&event_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return 0;
 }
@@ -2964,24 +3054,41 @@ create_event_toplevel_files(struct dentry *parent, struct trace_array *tr)
  * creates the event hierachry in the @parent/events directory.
  *
  * Returns 0 on success.
+<<<<<<< HEAD
+=======
+ *
+ * Must be called with event_mutex held.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 int event_trace_add_tracer(struct dentry *parent, struct trace_array *tr)
 {
 	int ret;
 
+<<<<<<< HEAD
 	mutex_lock(&event_mutex);
 
 	ret = create_event_toplevel_files(parent, tr);
 	if (ret)
 		goto out_unlock;
+=======
+	lockdep_assert_held(&event_mutex);
+
+	ret = create_event_toplevel_files(parent, tr);
+	if (ret)
+		goto out;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	down_write(&trace_event_sem);
 	__trace_add_event_dirs(tr);
 	up_write(&trace_event_sem);
 
+<<<<<<< HEAD
  out_unlock:
 	mutex_unlock(&event_mutex);
 
+=======
+ out:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -3010,9 +3117,16 @@ early_event_add_tracer(struct dentry *parent, struct trace_array *tr)
 	return ret;
 }
 
+<<<<<<< HEAD
 int event_trace_del_tracer(struct trace_array *tr)
 {
 	mutex_lock(&event_mutex);
+=======
+/* Must be called with event_mutex held */
+int event_trace_del_tracer(struct trace_array *tr)
+{
+	lockdep_assert_held(&event_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Disable any event triggers and associated soft-disabled events */
 	clear_event_triggers(tr);
@@ -3033,8 +3147,11 @@ int event_trace_del_tracer(struct trace_array *tr)
 
 	tr->event_dir = NULL;
 
+<<<<<<< HEAD
 	mutex_unlock(&event_mutex);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 

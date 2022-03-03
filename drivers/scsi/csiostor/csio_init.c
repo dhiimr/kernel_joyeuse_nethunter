@@ -649,7 +649,11 @@ csio_shost_init(struct csio_hw *hw, struct device *dev,
 	if (csio_lnode_init(ln, hw, pln))
 		goto err_shost_put;
 
+<<<<<<< HEAD
 	if (scsi_add_host(shost, dev))
+=======
+	if (scsi_add_host_with_dma(shost, dev, &hw->pdev->dev))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto err_lnode_exit;
 
 	return ln;
@@ -1260,3 +1264,7 @@ MODULE_DEVICE_TABLE(pci, csio_pci_tbl);
 MODULE_VERSION(CSIO_DRV_VERSION);
 MODULE_FIRMWARE(FW_FNAME_T5);
 MODULE_FIRMWARE(FW_FNAME_T6);
+<<<<<<< HEAD
+=======
+MODULE_SOFTDEP("pre: cxgb4");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

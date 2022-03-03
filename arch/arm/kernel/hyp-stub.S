@@ -159,10 +159,16 @@ ARM_BE8(orr	r7, r7, #(1 << 25))     @ HSCTLR.EE
 #if !defined(ZIMAGE) && defined(CONFIG_ARM_ARCH_TIMER)
 	@ make CNTP_* and CNTPCT accessible from PL1
 	mrc	p15, 0, r7, c0, c1, 1	@ ID_PFR1
+<<<<<<< HEAD
 	lsr	r7, #16
 	and	r7, #0xf
 	cmp	r7, #1
 	bne	1f
+=======
+	ubfx	r7, r7, #16, #4
+	teq	r7, #0
+	beq	1f
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mrc	p15, 4, r7, c14, c1, 0	@ CNTHCTL
 	orr	r7, r7, #3		@ PL1PCEN | PL1PCTEN
 	mcr	p15, 4, r7, c14, c1, 0	@ CNTHCTL
@@ -180,8 +186,13 @@ ARM_BE8(orr	r7, r7, #(1 << 25))     @ HSCTLR.EE
 	@ Check whether GICv3 system registers are available
 	mrc	p15, 0, r7, c0, c1, 1	@ ID_PFR1
 	ubfx	r7, r7, #28, #4
+<<<<<<< HEAD
 	cmp	r7, #1
 	bne	2f
+=======
+	teq	r7, #0
+	beq	2f
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	@ Enable system register accesses
 	mrc	p15, 4, r7, c12, c9, 5	@ ICC_HSRE

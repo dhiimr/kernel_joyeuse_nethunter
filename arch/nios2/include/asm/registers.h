@@ -24,7 +24,11 @@
 #endif
 
 /* control register numbers */
+<<<<<<< HEAD
 #define CTL_STATUS	0
+=======
+#define CTL_FSTATUS	0
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define CTL_ESTATUS	1
 #define CTL_BSTATUS	2
 #define CTL_IENABLE	3

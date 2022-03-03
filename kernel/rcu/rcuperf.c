@@ -542,6 +542,13 @@ rcu_perf_cleanup(void)
 
 	if (torture_cleanup_begin())
 		return;
+<<<<<<< HEAD
+=======
+	if (!cur_ops) {
+		torture_cleanup_end();
+		return;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (reader_tasks) {
 		for (i = 0; i < nrealreaders; i++)
@@ -663,6 +670,10 @@ rcu_perf_init(void)
 			pr_alert(" %s", perf_ops[i]->name);
 		pr_alert("\n");
 		firsterr = -EINVAL;
+<<<<<<< HEAD
+=======
+		cur_ops = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto unwind;
 	}
 	if (cur_ops->init)

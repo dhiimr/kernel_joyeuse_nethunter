@@ -424,6 +424,10 @@ int has_transparent_hugepage(void)
 	}
 	return mask == PM_HUGE_MASK;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(has_transparent_hugepage);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #endif /* CONFIG_TRANSPARENT_HUGEPAGE  */
 

@@ -16,10 +16,15 @@
 #include <linux/configfs.h>
 #include <linux/badblocks.h>
 
+<<<<<<< HEAD
 #define SECTOR_SHIFT		9
 #define PAGE_SECTORS_SHIFT	(PAGE_SHIFT - SECTOR_SHIFT)
 #define PAGE_SECTORS		(1 << PAGE_SECTORS_SHIFT)
 #define SECTOR_SIZE		(1 << SECTOR_SHIFT)
+=======
+#define PAGE_SECTORS_SHIFT	(PAGE_SHIFT - SECTOR_SHIFT)
+#define PAGE_SECTORS		(1 << PAGE_SECTORS_SHIFT)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define SECTOR_MASK		(PAGE_SECTORS - 1)
 
 #define FREE_BATCH		16
@@ -622,6 +627,10 @@ static struct nullb_cmd *__alloc_cmd(struct nullb_queue *nq)
 	if (tag != -1U) {
 		cmd = &nq->cmds[tag];
 		cmd->tag = tag;
+<<<<<<< HEAD
+=======
+		cmd->error = BLK_STS_OK;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cmd->nq = nq;
 		if (nq->dev->irqmode == NULL_IRQ_TIMER) {
 			hrtimer_init(&cmd->timer, CLOCK_MONOTONIC,
@@ -1134,7 +1143,11 @@ static int null_handle_rq(struct nullb_cmd *cmd)
 		len = bvec.bv_len;
 		err = null_transfer(nullb, bvec.bv_page, len, bvec.bv_offset,
 				     op_is_write(req_op(rq)), sector,
+<<<<<<< HEAD
 				     req_op(rq) & REQ_FUA);
+=======
+				     rq->cmd_flags & REQ_FUA);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (err) {
 			spin_unlock_irq(&nullb->lock);
 			return err;
@@ -1399,6 +1412,10 @@ static blk_status_t null_queue_rq(struct blk_mq_hw_ctx *hctx,
 		cmd->timer.function = null_cmd_timer_expired;
 	}
 	cmd->rq = bd->rq;
+<<<<<<< HEAD
+=======
+	cmd->error = BLK_STS_OK;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cmd->nq = nq;
 
 	blk_mq_start_request(bd->rq);
@@ -1593,7 +1610,16 @@ static void null_nvm_unregister(struct nullb *nullb) {}
 
 static void null_del_dev(struct nullb *nullb)
 {
+<<<<<<< HEAD
 	struct nullb_device *dev = nullb->dev;
+=======
+	struct nullb_device *dev;
+
+	if (!nullb)
+		return;
+
+	dev = nullb->dev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	ida_simple_remove(&nullb_indexes, nullb->index);
 
@@ -1919,6 +1945,10 @@ out_cleanup_queues:
 	cleanup_queues(nullb);
 out_free_nullb:
 	kfree(nullb);
+<<<<<<< HEAD
+=======
+	dev->nullb = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	return rv;
 }

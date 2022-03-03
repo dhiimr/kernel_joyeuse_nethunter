@@ -905,7 +905,11 @@ static struct memstick_host *jmb38x_ms_alloc_host(struct jmb38x_ms *jm, int cnt)
 
 	iounmap(host->addr);
 err_out_free:
+<<<<<<< HEAD
 	kfree(msh);
+=======
+	memstick_free_host(msh);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return NULL;
 }
 
@@ -947,7 +951,11 @@ static int jmb38x_ms_probe(struct pci_dev *pdev,
 	if (!cnt) {
 		rc = -ENODEV;
 		pci_dev_busy = 1;
+<<<<<<< HEAD
 		goto err_out;
+=======
+		goto err_out_int;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	jm = kzalloc(sizeof(struct jmb38x_ms)

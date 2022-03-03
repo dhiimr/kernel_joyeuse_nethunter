@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2013-2019, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2013-2017, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -13,9 +17,12 @@
 #ifndef _RMNET_MAP_H_
 #define _RMNET_MAP_H_
 
+<<<<<<< HEAD
 #include <linux/skbuff.h>
 #include "rmnet_config.h"
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct rmnet_map_control_command {
 	u8  command_name;
 	u8  cmd_type:2;
@@ -26,24 +33,45 @@ struct rmnet_map_control_command {
 		struct {
 			u16 ip_family:2;
 			u16 reserved:14;
+<<<<<<< HEAD
 			__be16 flow_control_seq_num;
 			__be32 qos_id;
+=======
+			u16 flow_control_seq_num;
+			u32 qos_id;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} flow_control;
 		u8 data[0];
 	};
 }  __aligned(1);
 
+<<<<<<< HEAD
+=======
+enum rmnet_map_results {
+	RMNET_MAP_SUCCESS,
+	RMNET_MAP_CONSUMED,
+	RMNET_MAP_GENERAL_FAILURE,
+	RMNET_MAP_NOT_ENABLED,
+	RMNET_MAP_FAILED_AGGREGATION,
+	RMNET_MAP_FAILED_MUX
+};
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 enum rmnet_map_commands {
 	RMNET_MAP_COMMAND_NONE,
 	RMNET_MAP_COMMAND_FLOW_DISABLE,
 	RMNET_MAP_COMMAND_FLOW_ENABLE,
+<<<<<<< HEAD
 	RMNET_MAP_COMMAND_FLOW_START = 7,
 	RMNET_MAP_COMMAND_FLOW_END = 8,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* These should always be the last 2 elements */
 	RMNET_MAP_COMMAND_UNKNOWN,
 	RMNET_MAP_COMMAND_ENUM_LENGTH
 };
 
+<<<<<<< HEAD
 enum rmnet_map_v5_header_type {
 	RMNET_MAP_HEADER_TYPE_UNKNOWN,
 	RMNET_MAP_HEADER_TYPE_COALESCING = 0x1,
@@ -195,6 +223,16 @@ struct rmnet_map_dl_ind {
 	struct list_head list;
 };
 
+=======
+struct rmnet_map_header {
+	u8  pad_len:6;
+	u8  reserved_bit:1;
+	u8  cd_bit:1;
+	u8  mux_id;
+	u16 pkt_len;
+}  __aligned(1);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define RMNET_MAP_GET_MUX_ID(Y) (((struct rmnet_map_header *) \
 				 (Y)->data)->mux_id)
 #define RMNET_MAP_GET_CD_BIT(Y) (((struct rmnet_map_header *) \
@@ -207,9 +245,12 @@ struct rmnet_map_dl_ind {
 #define RMNET_MAP_GET_LENGTH(Y) (ntohs(((struct rmnet_map_header *) \
 					(Y)->data)->pkt_len))
 
+<<<<<<< HEAD
 #define RMNET_MAP_DEAGGR_SPACING  64
 #define RMNET_MAP_DEAGGR_HEADROOM (RMNET_MAP_DEAGGR_SPACING / 2)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define RMNET_MAP_COMMAND_REQUEST     0
 #define RMNET_MAP_COMMAND_ACK         1
 #define RMNET_MAP_COMMAND_UNSUPPORTED 2
@@ -218,6 +259,7 @@ struct rmnet_map_dl_ind {
 #define RMNET_MAP_NO_PAD_BYTES        0
 #define RMNET_MAP_ADD_PAD_BYTES       1
 
+<<<<<<< HEAD
 static inline unsigned char *rmnet_map_data_ptr(struct sk_buff *skb)
 {
 	/* Nonlinear packets we receive are entirely within frag 0 */
@@ -292,4 +334,13 @@ int rmnet_map_dl_ind_register(struct rmnet_port *port,
 int rmnet_map_dl_ind_deregister(struct rmnet_port *port,
 				struct rmnet_map_dl_ind *dl_ind);
 void rmnet_map_cmd_exit(struct rmnet_port *port);
+=======
+u8 rmnet_map_demultiplex(struct sk_buff *skb);
+struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb);
+struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff *skb,
+						  int hdrlen, int pad);
+rx_handler_result_t rmnet_map_command(struct sk_buff *skb,
+				      struct rmnet_port *port);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif /* _RMNET_MAP_H_ */

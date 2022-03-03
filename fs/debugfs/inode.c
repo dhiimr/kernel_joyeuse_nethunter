@@ -27,11 +27,20 @@
 #include <linux/parser.h>
 #include <linux/magic.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/srcu.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "internal.h"
 
 #define DEBUGFS_DEFAULT_MODE	0700
 
+<<<<<<< HEAD
+=======
+DEFINE_SRCU(debugfs_srcu);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct vfsmount *debugfs_mount;
 static int debugfs_mount_count;
 static bool debugfs_registered;
@@ -187,6 +196,7 @@ static const struct super_operations debugfs_super_operations = {
 	.destroy_inode	= debugfs_destroy_inode,
 };
 
+<<<<<<< HEAD
 static void debugfs_release_dentry(struct dentry *dentry)
 {
 	void *fsd = dentry->d_fsdata;
@@ -195,6 +205,8 @@ static void debugfs_release_dentry(struct dentry *dentry)
 		kfree(dentry->d_fsdata);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct vfsmount *debugfs_automount(struct path *path)
 {
 	debugfs_automount_t f;
@@ -204,7 +216,10 @@ static struct vfsmount *debugfs_automount(struct path *path)
 
 static const struct dentry_operations debugfs_dops = {
 	.d_delete = always_delete_dentry,
+<<<<<<< HEAD
 	.d_release = debugfs_release_dentry,
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.d_automount = debugfs_automount,
 };
 
@@ -369,8 +384,12 @@ static struct dentry *__debugfs_create_file(const char *name, umode_t mode,
 	inode->i_private = data;
 
 	inode->i_fop = proxy_fops;
+<<<<<<< HEAD
 	dentry->d_fsdata = (void *)((unsigned long)real_fops |
 				DEBUGFS_FSDATA_IS_REAL_FOPS_BIT);
+=======
+	dentry->d_fsdata = (void *)real_fops;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	d_instantiate(dentry, inode);
 	fsnotify_create(d_inode(dentry->d_parent), dentry);
@@ -627,6 +646,7 @@ struct dentry *debugfs_create_symlink(const char *name, struct dentry *parent,
 }
 EXPORT_SYMBOL_GPL(debugfs_create_symlink);
 
+<<<<<<< HEAD
 static void __debugfs_remove_file(struct dentry *dentry, struct dentry *parent)
 {
 	struct debugfs_fsdata *fsd;
@@ -648,12 +668,15 @@ static void __debugfs_remove_file(struct dentry *dentry, struct dentry *parent)
 		wait_for_completion(&fsd->active_users_drained);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int __debugfs_remove(struct dentry *dentry, struct dentry *parent)
 {
 	int ret = 0;
 
 	if (simple_positive(dentry)) {
 		dget(dentry);
+<<<<<<< HEAD
 		if (!d_is_reg(dentry)) {
 			if (d_is_dir(dentry))
 				ret = simple_rmdir(d_inode(parent), dentry);
@@ -664,6 +687,14 @@ static int __debugfs_remove(struct dentry *dentry, struct dentry *parent)
 		} else {
 			__debugfs_remove_file(dentry, parent);
 		}
+=======
+		if (d_is_dir(dentry))
+			ret = simple_rmdir(d_inode(parent), dentry);
+		else
+			simple_unlink(d_inode(parent), dentry);
+		if (!ret)
+			d_delete(dentry);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dput(dentry);
 	}
 	return ret;
@@ -697,6 +728,11 @@ void debugfs_remove(struct dentry *dentry)
 	inode_unlock(d_inode(parent));
 	if (!ret)
 		simple_release_fs(&debugfs_mount, &debugfs_mount_count);
+<<<<<<< HEAD
+=======
+
+	synchronize_srcu(&debugfs_srcu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(debugfs_remove);
 
@@ -770,6 +806,11 @@ void debugfs_remove_recursive(struct dentry *dentry)
 	if (!__debugfs_remove(child, parent))
 		simple_release_fs(&debugfs_mount, &debugfs_mount_count);
 	inode_unlock(d_inode(parent));
+<<<<<<< HEAD
+=======
+
+	synchronize_srcu(&debugfs_srcu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(debugfs_remove_recursive);
 

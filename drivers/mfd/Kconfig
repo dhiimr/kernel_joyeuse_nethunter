@@ -878,6 +878,7 @@ config MFD_PM8XXX
 	  Say M here if you want to include support for PM8xxx chips as a
 	  module. This will build a module called "pm8xxx-core".
 
+<<<<<<< HEAD
 config MFD_I2C_PMIC
 	tristate "QTI I2C PMIC support"
 	depends on I2C && OF
@@ -889,6 +890,8 @@ config MFD_I2C_PMIC
 	  access for all of the device's peripherals.  Some QTI PMIC chips
 	  support communication over both I2C and SPMI.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config MFD_QCOM_RPM
 	tristate "Qualcomm Resource Power Manager (RPM)"
 	depends on ARCH_QCOM && OF

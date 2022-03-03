@@ -197,6 +197,10 @@ static struct platform_driver haswell_audio = {
 	.probe = haswell_audio_probe,
 	.driver = {
 		.name = "haswell-audio",
+<<<<<<< HEAD
+=======
+		.pm = &snd_soc_pm_ops,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	},
 };
 

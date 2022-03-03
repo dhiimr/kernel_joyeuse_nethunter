@@ -78,7 +78,11 @@ static void *stack_slabs[STACK_ALLOC_MAX_SLABS];
 static int depot_index;
 static int next_slab_inited;
 static size_t depot_offset;
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(depot_lock);
+=======
+static DEFINE_RAW_SPINLOCK(depot_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static bool init_stack_slab(void **prealloc)
 {
@@ -92,15 +96,28 @@ static bool init_stack_slab(void **prealloc)
 		return true;
 	if (stack_slabs[depot_index] == NULL) {
 		stack_slabs[depot_index] = *prealloc;
+<<<<<<< HEAD
 	} else {
 		stack_slabs[depot_index + 1] = *prealloc;
+=======
+		*prealloc = NULL;
+	} else {
+		/* If this is the last depot slab, do not touch the next one. */
+		if (depot_index + 1 < STACK_ALLOC_MAX_SLABS) {
+			stack_slabs[depot_index + 1] = *prealloc;
+			*prealloc = NULL;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/*
 		 * This smp_store_release pairs with smp_load_acquire() from
 		 * |next_slab_inited| above and in depot_save_stack().
 		 */
 		smp_store_release(&next_slab_inited, 1);
 	}
+<<<<<<< HEAD
 	*prealloc = NULL;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return true;
 }
 
@@ -146,7 +163,12 @@ static struct stack_record *depot_alloc_stack(unsigned long *entries, int size,
 	return stack;
 }
 
+<<<<<<< HEAD
 #define STACK_HASH_SIZE (1L << CONFIG_STACK_HASH_ORDER_SHIFT)
+=======
+#define STACK_HASH_ORDER 20
+#define STACK_HASH_SIZE (1L << STACK_HASH_ORDER)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define STACK_HASH_MASK (STACK_HASH_SIZE - 1)
 #define STACK_HASH_SEED 0x9747b28c
 
@@ -248,7 +270,11 @@ depot_stack_handle_t depot_save_stack(struct stack_trace *trace,
 			prealloc = page_address(page);
 	}
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&depot_lock, flags);
+=======
+	raw_spin_lock_irqsave(&depot_lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	found = find_stack(*bucket, trace->entries, trace->nr_entries, hash);
 	if (!found) {
@@ -272,7 +298,11 @@ depot_stack_handle_t depot_save_stack(struct stack_trace *trace,
 		WARN_ON(!init_stack_slab(&prealloc));
 	}
 
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&depot_lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&depot_lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 exit:
 	if (prealloc) {
 		/* Nobody used this memory, ok to free it. */

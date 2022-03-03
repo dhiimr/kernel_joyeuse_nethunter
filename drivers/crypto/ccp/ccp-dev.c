@@ -35,6 +35,7 @@ struct ccp_tasklet_data {
 };
 
 /* Human-readable error strings */
+<<<<<<< HEAD
 static char *ccp_error_codes[] = {
 	"",
 	"ERR 01: ILLEGAL_ENGINE",
@@ -85,6 +86,64 @@ static char *ccp_error_codes[] = {
 void ccp_log_error(struct ccp_device *d, int e)
 {
 	dev_err(d->dev, "CCP error: %s (0x%x)\n", ccp_error_codes[e], e);
+=======
+#define CCP_MAX_ERROR_CODE	64
+static char *ccp_error_codes[] = {
+	"",
+	"ILLEGAL_ENGINE",
+	"ILLEGAL_KEY_ID",
+	"ILLEGAL_FUNCTION_TYPE",
+	"ILLEGAL_FUNCTION_MODE",
+	"ILLEGAL_FUNCTION_ENCRYPT",
+	"ILLEGAL_FUNCTION_SIZE",
+	"Zlib_MISSING_INIT_EOM",
+	"ILLEGAL_FUNCTION_RSVD",
+	"ILLEGAL_BUFFER_LENGTH",
+	"VLSB_FAULT",
+	"ILLEGAL_MEM_ADDR",
+	"ILLEGAL_MEM_SEL",
+	"ILLEGAL_CONTEXT_ID",
+	"ILLEGAL_KEY_ADDR",
+	"0xF Reserved",
+	"Zlib_ILLEGAL_MULTI_QUEUE",
+	"Zlib_ILLEGAL_JOBID_CHANGE",
+	"CMD_TIMEOUT",
+	"IDMA0_AXI_SLVERR",
+	"IDMA0_AXI_DECERR",
+	"0x15 Reserved",
+	"IDMA1_AXI_SLAVE_FAULT",
+	"IDMA1_AIXI_DECERR",
+	"0x18 Reserved",
+	"ZLIBVHB_AXI_SLVERR",
+	"ZLIBVHB_AXI_DECERR",
+	"0x1B Reserved",
+	"ZLIB_UNEXPECTED_EOM",
+	"ZLIB_EXTRA_DATA",
+	"ZLIB_BTYPE",
+	"ZLIB_UNDEFINED_SYMBOL",
+	"ZLIB_UNDEFINED_DISTANCE_S",
+	"ZLIB_CODE_LENGTH_SYMBOL",
+	"ZLIB _VHB_ILLEGAL_FETCH",
+	"ZLIB_UNCOMPRESSED_LEN",
+	"ZLIB_LIMIT_REACHED",
+	"ZLIB_CHECKSUM_MISMATCH0",
+	"ODMA0_AXI_SLVERR",
+	"ODMA0_AXI_DECERR",
+	"0x28 Reserved",
+	"ODMA1_AXI_SLVERR",
+	"ODMA1_AXI_DECERR",
+};
+
+void ccp_log_error(struct ccp_device *d, unsigned int e)
+{
+	if (WARN_ON(e >= CCP_MAX_ERROR_CODE))
+		return;
+
+	if (e < ARRAY_SIZE(ccp_error_codes))
+		dev_err(d->dev, "CCP error %d: %s\n", e, ccp_error_codes[e]);
+	else
+		dev_err(d->dev, "CCP error %d: Unknown Error\n", e);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /* List of CCPs, CCP count, read-write access lock, and access functions
@@ -534,6 +593,13 @@ int ccp_dev_suspend(struct sp_device *sp, pm_message_t state)
 	unsigned long flags;
 	unsigned int i;
 
+<<<<<<< HEAD
+=======
+	/* If there's no device there's nothing to do */
+	if (!ccp)
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&ccp->cmd_lock, flags);
 
 	ccp->suspending = 1;
@@ -558,6 +624,13 @@ int ccp_dev_resume(struct sp_device *sp)
 	unsigned long flags;
 	unsigned int i;
 
+<<<<<<< HEAD
+=======
+	/* If there's no device there's nothing to do */
+	if (!ccp)
+		return 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_lock_irqsave(&ccp->cmd_lock, flags);
 
 	ccp->suspending = 0;

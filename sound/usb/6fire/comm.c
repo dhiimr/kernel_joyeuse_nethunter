@@ -99,7 +99,11 @@ static int usb6fire_comm_send_buffer(u8 *buffer, struct usb_device *dev)
 	int actual_len;
 
 	ret = usb_interrupt_msg(dev, usb_sndintpipe(dev, COMM_EP),
+<<<<<<< HEAD
 			buffer, buffer[1] + 2, &actual_len, HZ);
+=======
+			buffer, buffer[1] + 2, &actual_len, 1000);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret < 0)
 		return ret;
 	else if (actual_len != buffer[1] + 2)

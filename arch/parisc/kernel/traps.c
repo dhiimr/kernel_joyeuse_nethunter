@@ -795,7 +795,11 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
 	     * unless pagefault_disable() was called before.
 	     */
 
+<<<<<<< HEAD
 	    if (fault_space == 0 && !faulthandler_disabled())
+=======
+	    if (faulthandler_disabled() || fault_space == 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	    {
 		/* Clean up and return if in exception table. */
 		if (fixup_exception(regs))

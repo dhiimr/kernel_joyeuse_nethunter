@@ -2058,6 +2058,10 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		/*bdx_hw_reset(priv); */
 		if (bdx_read_mac(priv)) {
 			pr_err("load MAC address failed\n");
+<<<<<<< HEAD
+=======
+			err = -EFAULT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto err_out_iomap;
 		}
 		SET_NETDEV_DEV(ndev, &pdev->dev);

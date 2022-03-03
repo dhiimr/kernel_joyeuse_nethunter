@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #!/usr/bin/perl
+=======
+#!/usr/bin/env perl
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # SPDX-License-Identifier: GPL-2.0
 
 open (IN,"ktest.pl");

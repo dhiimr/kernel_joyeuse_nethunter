@@ -32,7 +32,11 @@ static unsigned long sun4i_ddc_calc_divider(unsigned long rate,
 	unsigned long best_rate = 0;
 	u8 best_m = 0, best_n = 0, _m, _n;
 
+<<<<<<< HEAD
 	for (_m = 0; _m < 8; _m++) {
+=======
+	for (_m = 0; _m < 16; _m++) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		for (_n = 0; _n < 8; _n++) {
 			unsigned long tmp_rate;
 

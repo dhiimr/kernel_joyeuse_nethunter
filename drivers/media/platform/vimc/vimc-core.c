@@ -243,10 +243,14 @@ static void vimc_comp_unbind(struct device *master)
 
 static int vimc_comp_compare(struct device *comp, void *data)
 {
+<<<<<<< HEAD
 	const struct platform_device *pdev = to_platform_device(comp);
 	const char *name = data;
 
 	return !strcmp(pdev->dev.platform_data, name);
+=======
+	return comp == data;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static struct component_match *vimc_add_subdevs(struct vimc_device *vimc)
@@ -275,7 +279,11 @@ static struct component_match *vimc_add_subdevs(struct vimc_device *vimc)
 		}
 
 		component_match_add(&vimc->pdev.dev, &match, vimc_comp_compare,
+<<<<<<< HEAD
 				    (void *)vimc->pipe_cfg->ents[i].name);
+=======
+				    &vimc->subdevs[i]->dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return match;
@@ -302,6 +310,11 @@ static int vimc_probe(struct platform_device *pdev)
 
 	dev_dbg(&pdev->dev, "probe");
 
+<<<<<<< HEAD
+=======
+	memset(&vimc->mdev, 0, sizeof(vimc->mdev));
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Create platform_device for each entity in the topology*/
 	vimc->subdevs = devm_kcalloc(&vimc->pdev.dev, vimc->pipe_cfg->num_ents,
 				     sizeof(*vimc->subdevs), GFP_KERNEL);

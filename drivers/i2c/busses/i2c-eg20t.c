@@ -189,6 +189,10 @@ static const struct pci_device_id pch_pcidev_id[] = {
 	{ PCI_VDEVICE(ROHM, PCI_DEVICE_ID_ML7831_I2C), 1, },
 	{0,}
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(pci, pch_pcidev_id);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static irqreturn_t pch_i2c_handler(int irq, void *pData);
 

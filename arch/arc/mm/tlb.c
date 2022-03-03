@@ -902,9 +902,17 @@ void do_tlb_overlap_fault(unsigned long cause, unsigned long address,
 			  struct pt_regs *regs)
 {
 	struct cpuinfo_arc_mmu *mmu = &cpuinfo_arc700[smp_processor_id()].mmu;
+<<<<<<< HEAD
 	unsigned int pd0[mmu->ways];
 	unsigned long flags;
 	int set;
+=======
+	unsigned long flags;
+	int set, n_ways = mmu->ways;
+
+	n_ways = min(n_ways, 4);
+	BUG_ON(mmu->ways > 4);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	local_irq_save(flags);
 
@@ -912,9 +920,16 @@ void do_tlb_overlap_fault(unsigned long cause, unsigned long address,
 	for (set = 0; set < mmu->sets; set++) {
 
 		int is_valid, way;
+<<<<<<< HEAD
 
 		/* read out all the ways of current set */
 		for (way = 0, is_valid = 0; way < mmu->ways; way++) {
+=======
+		unsigned int pd0[4];
+
+		/* read out all the ways of current set */
+		for (way = 0, is_valid = 0; way < n_ways; way++) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			write_aux_reg(ARC_REG_TLBINDEX,
 					  SET_WAY_TO_IDX(mmu, set, way));
 			write_aux_reg(ARC_REG_TLBCOMMAND, TLBRead);
@@ -928,14 +943,22 @@ void do_tlb_overlap_fault(unsigned long cause, unsigned long address,
 			continue;
 
 		/* Scan the set for duplicate ways: needs a nested loop */
+<<<<<<< HEAD
 		for (way = 0; way < mmu->ways - 1; way++) {
+=======
+		for (way = 0; way < n_ways - 1; way++) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			int n;
 
 			if (!pd0[way])
 				continue;
 
+<<<<<<< HEAD
 			for (n = way + 1; n < mmu->ways; n++) {
+=======
+			for (n = way + 1; n < n_ways; n++) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				if (pd0[way] != pd0[n])
 					continue;
 

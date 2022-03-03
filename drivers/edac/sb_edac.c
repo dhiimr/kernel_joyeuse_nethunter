@@ -1014,7 +1014,11 @@ static u64 haswell_get_tohm(struct sbridge_pvt *pvt)
 	pci_read_config_dword(pvt->info.pci_vtd, HASWELL_TOHM_1, &reg);
 	rc = ((reg << 6) | rc) << 26;
 
+<<<<<<< HEAD
 	return rc | 0x1ffffff;
+=======
+	return rc | 0x3ffffff;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static u64 knl_get_tolm(struct sbridge_pvt *pvt)
@@ -2915,6 +2919,7 @@ static void sbridge_mce_output_error(struct mem_ctl_info *mci,
 	 *	cccc = channel
 	 * If the mask doesn't match, report an error to the parsing logic
 	 */
+<<<<<<< HEAD
 	if (! ((errcode & 0xef80) == 0x80)) {
 		optype = "Can't parse: it is not a mem";
 	} else {
@@ -2944,6 +2949,29 @@ static void sbridge_mce_output_error(struct mem_ctl_info *mci,
 	if (!GET_BITFIELD(m->status, 58, 58))
 		return;
 
+=======
+	switch (optypenum) {
+	case 0:
+		optype = "generic undef request error";
+		break;
+	case 1:
+		optype = "memory read error";
+		break;
+	case 2:
+		optype = "memory write error";
+		break;
+	case 3:
+		optype = "addr/cmd error";
+		break;
+	case 4:
+		optype = "memory scrubbing error";
+		break;
+	default:
+		optype = "reserved";
+		break;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (pvt->info.type == KNIGHTS_LANDING) {
 		if (channel == 14) {
 			edac_dbg(0, "%s%s err_code:%04x:%04x EDRAM bank %d\n",
@@ -3049,17 +3077,23 @@ static int sbridge_mce_check_error(struct notifier_block *nb, unsigned long val,
 {
 	struct mce *mce = (struct mce *)data;
 	struct mem_ctl_info *mci;
+<<<<<<< HEAD
 	struct sbridge_pvt *pvt;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	char *type;
 
 	if (edac_get_report_status() == EDAC_REPORTING_DISABLED)
 		return NOTIFY_DONE;
 
+<<<<<<< HEAD
 	mci = get_mci_for_node_id(mce->socketid, IMC0);
 	if (!mci)
 		return NOTIFY_DONE;
 	pvt = mci->pvt_info;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Just let mcelog handle it if the error is
 	 * outside the memory controller. A memory error
@@ -3069,6 +3103,25 @@ static int sbridge_mce_check_error(struct notifier_block *nb, unsigned long val,
 	if ((mce->status & 0xefff) >> 7 != 1)
 		return NOTIFY_DONE;
 
+<<<<<<< HEAD
+=======
+	/* Check ADDRV bit in STATUS */
+	if (!GET_BITFIELD(mce->status, 58, 58))
+		return NOTIFY_DONE;
+
+	/* Check MISCV bit in STATUS */
+	if (!GET_BITFIELD(mce->status, 59, 59))
+		return NOTIFY_DONE;
+
+	/* Check address type in MISC (physical address only) */
+	if (GET_BITFIELD(mce->misc, 6, 8) != 2)
+		return NOTIFY_DONE;
+
+	mci = get_mci_for_node_id(mce->socketid, IMC0);
+	if (!mci)
+		return NOTIFY_DONE;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (mce->mcgstatus & MCG_STATUS_MCIP)
 		type = "Exception";
 	else

@@ -712,7 +712,14 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
 		goto err1;
 	}
 
+<<<<<<< HEAD
 	fb_virt = ioremap(par->mem->start, screen_fb_size);
+=======
+	/*
+	 * Map the VRAM cacheable for performance.
+	 */
+	fb_virt = ioremap_wc(par->mem->start, screen_fb_size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!fb_virt)
 		goto err2;
 

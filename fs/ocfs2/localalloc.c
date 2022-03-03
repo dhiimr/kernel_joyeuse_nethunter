@@ -391,7 +391,12 @@ void ocfs2_shutdown_local_alloc(struct ocfs2_super *osb)
 	struct ocfs2_dinode *alloc = NULL;
 
 	cancel_delayed_work(&osb->la_enable_wq);
+<<<<<<< HEAD
 	flush_workqueue(osb->ocfs2_wq);
+=======
+	if (osb->ocfs2_wq)
+		flush_workqueue(osb->ocfs2_wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (osb->local_alloc_state == OCFS2_LA_UNUSED)
 		goto out;

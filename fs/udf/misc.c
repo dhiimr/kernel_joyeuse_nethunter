@@ -173,13 +173,31 @@ struct genericFormat *udf_get_extendedattr(struct inode *inode, uint32_t type,
 		else
 			offset = le32_to_cpu(eahd->appAttrLocation);
 
+<<<<<<< HEAD
 		while (offset < iinfo->i_lenEAttr) {
 			gaf = (struct genericFormat *)&ea[offset];
+=======
+		while (offset + sizeof(*gaf) < iinfo->i_lenEAttr) {
+			uint32_t attrLength;
+
+			gaf = (struct genericFormat *)&ea[offset];
+			attrLength = le32_to_cpu(gaf->attrLength);
+
+			/* Detect undersized elements and buffer overflows */
+			if ((attrLength < sizeof(*gaf)) ||
+			    (attrLength > (iinfo->i_lenEAttr - offset)))
+				break;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (le32_to_cpu(gaf->attrType) == type &&
 					gaf->attrSubtype == subtype)
 				return gaf;
 			else
+<<<<<<< HEAD
 				offset += le32_to_cpu(gaf->attrLength);
+=======
+				offset += attrLength;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 

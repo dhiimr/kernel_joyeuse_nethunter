@@ -1029,6 +1029,11 @@ static int __init pvr2fb_setup(char *options)
 	if (!options || !*options)
 		return 0;
 
+<<<<<<< HEAD
+=======
+	cable_arg[0] = output_arg[0] = 0;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	while ((this_opt = strsep(&options, ","))) {
 		if (!*this_opt)
 			continue;

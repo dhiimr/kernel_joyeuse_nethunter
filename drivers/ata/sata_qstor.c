@@ -116,7 +116,11 @@ static int qs_scr_write(struct ata_link *link, unsigned int sc_reg, u32 val);
 static int qs_ata_init_one(struct pci_dev *pdev, const struct pci_device_id *ent);
 static int qs_port_start(struct ata_port *ap);
 static void qs_host_stop(struct ata_host *host);
+<<<<<<< HEAD
 static void qs_qc_prep(struct ata_queued_cmd *qc);
+=======
+static enum ata_completion_errors qs_qc_prep(struct ata_queued_cmd *qc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static unsigned int qs_qc_issue(struct ata_queued_cmd *qc);
 static int qs_check_atapi_dma(struct ata_queued_cmd *qc);
 static void qs_freeze(struct ata_port *ap);
@@ -276,7 +280,11 @@ static unsigned int qs_fill_sg(struct ata_queued_cmd *qc)
 	return si;
 }
 
+<<<<<<< HEAD
 static void qs_qc_prep(struct ata_queued_cmd *qc)
+=======
+static enum ata_completion_errors qs_qc_prep(struct ata_queued_cmd *qc)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct qs_port_priv *pp = qc->ap->private_data;
 	u8 dflags = QS_DF_PORD, *buf = pp->pkt;
@@ -288,7 +296,11 @@ static void qs_qc_prep(struct ata_queued_cmd *qc)
 
 	qs_enter_reg_mode(qc->ap);
 	if (qc->tf.protocol != ATA_PROT_DMA)
+<<<<<<< HEAD
 		return;
+=======
+		return AC_ERR_OK;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	nelem = qs_fill_sg(qc);
 
@@ -311,6 +323,11 @@ static void qs_qc_prep(struct ata_queued_cmd *qc)
 
 	/* frame information structure (FIS) */
 	ata_tf_to_fis(&qc->tf, 0, 1, &buf[32]);
+<<<<<<< HEAD
+=======
+
+	return AC_ERR_OK;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static inline void qs_packet_start(struct ata_queued_cmd *qc)

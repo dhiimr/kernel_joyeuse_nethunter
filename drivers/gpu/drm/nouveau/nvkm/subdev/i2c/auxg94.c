@@ -118,10 +118,17 @@ g94_i2c_aux_xfer(struct nvkm_i2c_aux *obj, bool retry,
 		if (retries)
 			udelay(400);
 
+<<<<<<< HEAD
 		/* transaction request, wait up to 1ms for it to complete */
 		nvkm_wr32(device, 0x00e4e4 + base, 0x00010000 | ctrl);
 
 		timeout = 1000;
+=======
+		/* transaction request, wait up to 2ms for it to complete */
+		nvkm_wr32(device, 0x00e4e4 + base, 0x00010000 | ctrl);
+
+		timeout = 2000;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		do {
 			ctrl = nvkm_rd32(device, 0x00e4e4 + base);
 			udelay(1);

@@ -687,6 +687,10 @@ static char *compact_gfp_flags(char *gfp_flags)
 			new = realloc(new_flags, len + strlen(cpt) + 2);
 			if (new == NULL) {
 				free(new_flags);
+<<<<<<< HEAD
+=======
+				free(orig_flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				return NULL;
 			}
 

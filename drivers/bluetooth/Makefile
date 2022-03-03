@@ -28,12 +28,15 @@ obj-$(CONFIG_BT_QCA)		+= btqca.o
 
 obj-$(CONFIG_BT_HCIUART_NOKIA)	+= hci_nokia.o
 
+<<<<<<< HEAD
 obj-$(CONFIG_MSM_BT_POWER)	+= bluetooth-power.o
 
 obj-$(CONFIG_BTFM_SLIM)		+= btfm_slim.o
 obj-$(CONFIG_BTFM_SLIM)		+= btfm_slim_codec.o
 obj-$(CONFIG_BTFM_SLIM_WCN3990)	+= btfm_slim_wcn3990.o
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 btmrvl-y			:= btmrvl_main.o
 btmrvl-$(CONFIG_DEBUG_FS)	+= btmrvl_debugfs.o
 

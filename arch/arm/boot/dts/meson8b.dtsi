@@ -121,7 +121,11 @@
 		#clock-cells = <1>;
 		#reset-cells = <1>;
 		compatible = "amlogic,meson8b-clkc";
+<<<<<<< HEAD
 		reg = <0x8000 0x4>, <0x4000 0x460>;
+=======
+		reg = <0x8000 0x4>, <0x4000 0x400>;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	};
 
 	reset: reset-controller@4404 {

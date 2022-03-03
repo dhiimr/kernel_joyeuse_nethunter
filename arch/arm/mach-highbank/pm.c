@@ -36,11 +36,19 @@ static int highbank_suspend_finish(unsigned long val)
 static int highbank_pm_enter(suspend_state_t state)
 {
 	cpu_pm_enter();
+<<<<<<< HEAD
 	cpu_cluster_pm_enter(0);
 
 	cpu_suspend(0, highbank_suspend_finish);
 
 	cpu_cluster_pm_exit(0);
+=======
+	cpu_cluster_pm_enter();
+
+	cpu_suspend(0, highbank_suspend_finish);
+
+	cpu_cluster_pm_exit();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cpu_pm_exit();
 
 	return 0;

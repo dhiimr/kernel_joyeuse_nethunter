@@ -22,6 +22,7 @@
 #include <linux/types.h>
 #include <media/cec.h>
 
+<<<<<<< HEAD
 /*
  * This EDID is expected to be a CEA-861 compliant, which means that there are
  * at least two blocks and one or more of the extensions blocks are CEA-861
@@ -82,6 +83,8 @@ static unsigned int cec_get_edid_spa_location(const u8 *edid, unsigned int size)
 	return 0;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 u16 cec_get_edid_phys_addr(const u8 *edid, unsigned int size,
 			   unsigned int *offset)
 {

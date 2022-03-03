@@ -549,6 +549,10 @@ int fm_v4l2_init_video_device(struct fmdev *fmdev, int radio_nr)
 
 	/* Register with V4L2 subsystem as RADIO device */
 	if (video_register_device(&gradio_dev, VFL_TYPE_RADIO, radio_nr)) {
+<<<<<<< HEAD
+=======
+		v4l2_device_unregister(&fmdev->v4l2_dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		fmerr("Could not register video device\n");
 		return -ENOMEM;
 	}
@@ -562,6 +566,11 @@ int fm_v4l2_init_video_device(struct fmdev *fmdev, int radio_nr)
 	if (ret < 0) {
 		fmerr("(fmdev): Can't init ctrl handler\n");
 		v4l2_ctrl_handler_free(&fmdev->ctrl_handler);
+<<<<<<< HEAD
+=======
+		video_unregister_device(fmdev->radio_dev);
+		v4l2_device_unregister(&fmdev->v4l2_dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EBUSY;
 	}
 

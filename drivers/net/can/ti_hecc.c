@@ -903,7 +903,12 @@ static int ti_hecc_probe(struct platform_device *pdev)
 	priv->base = devm_ioremap_resource(&pdev->dev, res);
 	if (IS_ERR(priv->base)) {
 		dev_err(&pdev->dev, "hecc ioremap failed\n");
+<<<<<<< HEAD
 		return PTR_ERR(priv->base);
+=======
+		err = PTR_ERR(priv->base);
+		goto probe_exit_candev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* handle hecc-ram memory */
@@ -916,7 +921,12 @@ static int ti_hecc_probe(struct platform_device *pdev)
 	priv->hecc_ram = devm_ioremap_resource(&pdev->dev, res);
 	if (IS_ERR(priv->hecc_ram)) {
 		dev_err(&pdev->dev, "hecc-ram ioremap failed\n");
+<<<<<<< HEAD
 		return PTR_ERR(priv->hecc_ram);
+=======
+		err = PTR_ERR(priv->hecc_ram);
+		goto probe_exit_candev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	/* handle mbx memory */
@@ -929,13 +939,22 @@ static int ti_hecc_probe(struct platform_device *pdev)
 	priv->mbx = devm_ioremap_resource(&pdev->dev, res);
 	if (IS_ERR(priv->mbx)) {
 		dev_err(&pdev->dev, "mbx ioremap failed\n");
+<<<<<<< HEAD
 		return PTR_ERR(priv->mbx);
+=======
+		err = PTR_ERR(priv->mbx);
+		goto probe_exit_candev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
 	if (!irq) {
 		dev_err(&pdev->dev, "No irq resource\n");
+<<<<<<< HEAD
 		goto probe_exit;
+=======
+		goto probe_exit_candev;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	priv->ndev = ndev;
@@ -988,7 +1007,11 @@ probe_exit_clk:
 	clk_put(priv->clk);
 probe_exit_candev:
 	free_candev(ndev);
+<<<<<<< HEAD
 probe_exit:
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return err;
 }
 

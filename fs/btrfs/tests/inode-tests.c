@@ -245,6 +245,10 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
 		return ret;
 	}
 
+<<<<<<< HEAD
+=======
+	inode->i_mode = S_IFREG;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	BTRFS_I(inode)->location.type = BTRFS_INODE_ITEM_KEY;
 	BTRFS_I(inode)->location.objectid = BTRFS_FIRST_FREE_OBJECTID;
 	BTRFS_I(inode)->location.offset = 0;

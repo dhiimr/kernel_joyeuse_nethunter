@@ -380,8 +380,13 @@ static void lpuart_dma_tx(struct lpuart_port *sport)
 	}
 
 	sport->dma_tx_desc = dmaengine_prep_slave_sg(sport->dma_tx_chan, sgl,
+<<<<<<< HEAD
 					sport->dma_tx_nents,
 					DMA_MEM_TO_DEV, DMA_PREP_INTERRUPT);
+=======
+					ret, DMA_MEM_TO_DEV,
+					DMA_PREP_INTERRUPT);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!sport->dma_tx_desc) {
 		dma_unmap_sg(dev, sgl, sport->dma_tx_nents, DMA_TO_DEVICE);
 		dev_err(dev, "Cannot prepare TX slave DMA!\n");
@@ -532,6 +537,7 @@ static int lpuart32_poll_init(struct uart_port *port)
 	spin_lock_irqsave(&sport->port.lock, flags);
 
 	/* Disable Rx & Tx */
+<<<<<<< HEAD
 	writel(0, sport->port.membase + UARTCTRL);
 
 	temp = readl(sport->port.membase + UARTFIFO);
@@ -552,6 +558,28 @@ static int lpuart32_poll_init(struct uart_port *port)
 
 	/* Enable Rx and Tx */
 	writel(UARTCTRL_RE | UARTCTRL_TE, sport->port.membase + UARTCTRL);
+=======
+	lpuart32_write(&sport->port, UARTCTRL, 0);
+
+	temp = lpuart32_read(&sport->port, UARTFIFO);
+
+	/* Enable Rx and Tx FIFO */
+	lpuart32_write(&sport->port, UARTFIFO,
+		       temp | UARTFIFO_RXFE | UARTFIFO_TXFE);
+
+	/* flush Tx and Rx FIFO */
+	lpuart32_write(&sport->port, UARTFIFO,
+		       UARTFIFO_TXFLUSH | UARTFIFO_RXFLUSH);
+
+	/* explicitly clear RDRF */
+	if (lpuart32_read(&sport->port, UARTSTAT) & UARTSTAT_RDRF) {
+		lpuart32_read(&sport->port, UARTDATA);
+		lpuart32_write(&sport->port, UARTFIFO, UARTFIFO_RXUF);
+	}
+
+	/* Enable Rx and Tx */
+	lpuart32_write(&sport->port, UARTCTRL, UARTCTRL_RE | UARTCTRL_TE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	spin_unlock_irqrestore(&sport->port.lock, flags);
 
 	return 0;
@@ -559,18 +587,32 @@ static int lpuart32_poll_init(struct uart_port *port)
 
 static void lpuart32_poll_put_char(struct uart_port *port, unsigned char c)
 {
+<<<<<<< HEAD
 	while (!(readl(port->membase + UARTSTAT) & UARTSTAT_TDRE))
 		barrier();
 
 	writel(c, port->membase + UARTDATA);
+=======
+	while (!(lpuart32_read(port, UARTSTAT) & UARTSTAT_TDRE))
+		barrier();
+
+	lpuart32_write(port, UARTDATA, c);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int lpuart32_poll_get_char(struct uart_port *port)
 {
+<<<<<<< HEAD
 	if (!(readl(port->membase + UARTSTAT) & UARTSTAT_RDRF))
 		return NO_POLL_CHAR;
 
 	return readl(port->membase + UARTDATA);
+=======
+	if (!(lpuart32_read(port, UARTWATER) >> UARTWATER_RXCNT_OFF))
+		return NO_POLL_CHAR;
+
+	return lpuart32_read(port, UARTDATA);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 #endif
 
@@ -1998,6 +2040,12 @@ lpuart32_console_get_options(struct lpuart_port *sport, int *baud,
 
 	bd = lpuart32_read(&sport->port, UARTBAUD);
 	bd &= UARTBAUD_SBR_MASK;
+<<<<<<< HEAD
+=======
+	if (!bd)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sbr = bd;
 	uartclk = clk_get_rate(sport->clk);
 	/*
@@ -2167,7 +2215,11 @@ static int lpuart_probe(struct platform_device *pdev)
 		return PTR_ERR(sport->port.membase);
 
 	sport->port.membase += sdata->reg_off;
+<<<<<<< HEAD
 	sport->port.mapbase = res->start;
+=======
+	sport->port.mapbase = res->start + sdata->reg_off;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	sport->port.dev = &pdev->dev;
 	sport->port.type = PORT_LPUART;
 	ret = platform_get_irq(pdev, 0);

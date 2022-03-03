@@ -1072,16 +1072,26 @@ static int i5100_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 				    PCI_DEVICE_ID_INTEL_5100_19, 0);
 	if (!einj) {
 		ret = -ENODEV;
+<<<<<<< HEAD
 		goto bail_einj;
+=======
+		goto bail_mc_free;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	rc = pci_enable_device(einj);
 	if (rc < 0) {
 		ret = rc;
+<<<<<<< HEAD
 		goto bail_disable_einj;
 	}
 
 
+=======
+		goto bail_einj;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mci->pdev = &pdev->dev;
 
 	priv = mci->pvt_info;
@@ -1147,14 +1157,23 @@ static int i5100_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 bail_scrub:
 	priv->scrub_enable = 0;
 	cancel_delayed_work_sync(&(priv->i5100_scrubbing));
+<<<<<<< HEAD
 	edac_mc_free(mci);
 
 bail_disable_einj:
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pci_disable_device(einj);
 
 bail_einj:
 	pci_dev_put(einj);
 
+<<<<<<< HEAD
+=======
+bail_mc_free:
+	edac_mc_free(mci);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 bail_disable_ch1:
 	pci_disable_device(ch1mm);
 

@@ -1170,12 +1170,20 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
 			if (type == BTRFS_SHARED_BLOCK_REF_KEY) {
 				ASSERT(eb->fs_info);
 				/*
+<<<<<<< HEAD
 				 * Every shared one has parent tree
 				 * block, which must be aligned to
 				 * nodesize.
 				 */
 				if (offset &&
 				    IS_ALIGNED(offset, eb->fs_info->nodesize))
+=======
+				 * Every shared one has parent tree block,
+				 * which must be aligned to sector size.
+				 */
+				if (offset &&
+				    IS_ALIGNED(offset, eb->fs_info->sectorsize))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					return type;
 			}
 		} else if (is_data == BTRFS_REF_TYPE_DATA) {
@@ -1184,12 +1192,20 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
 			if (type == BTRFS_SHARED_DATA_REF_KEY) {
 				ASSERT(eb->fs_info);
 				/*
+<<<<<<< HEAD
 				 * Every shared one has parent tree
 				 * block, which must be aligned to
 				 * nodesize.
 				 */
 				if (offset &&
 				    IS_ALIGNED(offset, eb->fs_info->nodesize))
+=======
+				 * Every shared one has parent tree block,
+				 * which must be aligned to sector size.
+				 */
+				if (offset &&
+				    IS_ALIGNED(offset, eb->fs_info->sectorsize))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					return type;
 			}
 		} else {
@@ -1199,8 +1215,14 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
 	}
 
 	btrfs_print_leaf((struct extent_buffer *)eb);
+<<<<<<< HEAD
 	btrfs_err(eb->fs_info, "eb %llu invalid extent inline ref type %d",
 		  eb->start, type);
+=======
+	btrfs_err(eb->fs_info,
+		  "eb %llu iref 0x%lx invalid extent inline ref type %d",
+		  eb->start, (unsigned long)iref, type);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	WARN_ON(1);
 
 	return BTRFS_REF_TYPE_INVALID;
@@ -4087,8 +4109,12 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags,
 				    info->space_info_kobj, "%s",
 				    alloc_name(space_info->flags));
 	if (ret) {
+<<<<<<< HEAD
 		percpu_counter_destroy(&space_info->total_bytes_pinned);
 		kfree(space_info);
+=======
+		kobject_put(&space_info->kobj);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ret;
 	}
 
@@ -7707,6 +7733,17 @@ search:
 			 */
 			if ((flags & extra) && !(block_group->flags & extra))
 				goto loop;
+<<<<<<< HEAD
+=======
+
+			/*
+			 * This block group has different flags than we want.
+			 * It's possible that we have MIXED_GROUP flag but no
+			 * block group is mixed.  Just skip such block group.
+			 */
+			btrfs_release_block_group(block_group, delalloc);
+			continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 
 have_block_group:
@@ -9358,8 +9395,11 @@ out:
 	 */
 	if (!for_reloc && root_dropped == false)
 		btrfs_add_dead_root(root);
+<<<<<<< HEAD
 	if (err && err != -EAGAIN)
 		btrfs_handle_fs_error(fs_info, err, NULL);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return err;
 }
 
@@ -10248,6 +10288,10 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
 			btrfs_err(info,
 "bg %llu is a mixed block group but filesystem hasn't enabled mixed block groups",
 				  cache->key.objectid);
+<<<<<<< HEAD
+=======
+			btrfs_put_block_group(cache);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			ret = -EINVAL;
 			goto error;
 		}
@@ -10621,6 +10665,12 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
 		 &fs_info->block_group_cache_tree);
 	RB_CLEAR_NODE(&block_group->cache_node);
 
+<<<<<<< HEAD
+=======
+	/* Once for the block groups rbtree */
+	btrfs_put_block_group(block_group);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (fs_info->first_logical_byte == block_group->key.objectid)
 		fs_info->first_logical_byte = (u64)-1;
 	spin_unlock(&fs_info->block_group_cache_lock);
@@ -10772,9 +10822,12 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
 	btrfs_put_block_group(block_group);
 	btrfs_put_block_group(block_group);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
 	if (ret > 0)
 		ret = -EIO;
@@ -10782,7 +10835,14 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
 		goto out;
 
 	ret = btrfs_del_item(trans, root, path);
+<<<<<<< HEAD
 out:
+=======
+
+out:
+	/* Once for the lookup reference */
+	btrfs_put_block_group(block_group);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	btrfs_free_path(path);
 	return ret;
 }

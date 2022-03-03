@@ -106,6 +106,10 @@ struct nbd_device {
 	struct nbd_config *config;
 	struct mutex config_lock;
 	struct gendisk *disk;
+<<<<<<< HEAD
+=======
+	struct workqueue_struct *recv_workq;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	struct list_head list;
 	struct task_struct *task_recv;
@@ -132,9 +136,16 @@ static struct dentry *nbd_dbg_dir;
 
 #define NBD_MAGIC 0x68797548
 
+<<<<<<< HEAD
 static unsigned int nbds_max = 16;
 static int max_part = 16;
 static struct workqueue_struct *recv_workqueue;
+=======
+#define NBD_DEF_BLKSIZE 1024
+
+static unsigned int nbds_max = 16;
+static int max_part = 16;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int part_shift;
 
 static int nbd_dev_dbg_init(struct nbd_device *nbd);
@@ -226,8 +237,13 @@ static void nbd_put(struct nbd_device *nbd)
 	if (refcount_dec_and_mutex_lock(&nbd->refs,
 					&nbd_index_mutex)) {
 		idr_remove(&nbd_index_idr, nbd->index);
+<<<<<<< HEAD
 		mutex_unlock(&nbd_index_mutex);
 		nbd_dev_remove(nbd);
+=======
+		nbd_dev_remove(nbd);
+		mutex_unlock(&nbd_index_mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 }
 
@@ -266,7 +282,11 @@ static void nbd_size_clear(struct nbd_device *nbd)
 	}
 }
 
+<<<<<<< HEAD
 static void nbd_size_update(struct nbd_device *nbd)
+=======
+static void nbd_size_update(struct nbd_device *nbd, bool start)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct nbd_config *config = nbd->config;
 	struct block_device *bdev = bdget_disk(nbd->disk, 0);
@@ -277,7 +297,12 @@ static void nbd_size_update(struct nbd_device *nbd)
 	if (bdev) {
 		if (bdev->bd_disk) {
 			bd_set_size(bdev, config->bytesize);
+<<<<<<< HEAD
 			set_blocksize(bdev, config->blksize);
+=======
+			if (start)
+				set_blocksize(bdev, config->blksize);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		} else
 			bdev->bd_invalidated = 1;
 		bdput(bdev);
@@ -292,7 +317,11 @@ static void nbd_size_set(struct nbd_device *nbd, loff_t blocksize,
 	config->blksize = blocksize;
 	config->bytesize = blocksize * nr_blocks;
 	if (nbd->task_recv != NULL)
+<<<<<<< HEAD
 		nbd_size_update(nbd);
+=======
+		nbd_size_update(nbd, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void nbd_complete_rq(struct request *req)
@@ -340,8 +369,15 @@ static enum blk_eh_timer_return nbd_xmit_timeout(struct request *req,
 	}
 	config = nbd->config;
 
+<<<<<<< HEAD
 	if (!mutex_trylock(&cmd->lock))
 		return BLK_EH_RESET_TIMER;
+=======
+	if (!mutex_trylock(&cmd->lock)) {
+		nbd_config_put(nbd);
+		return BLK_EH_RESET_TIMER;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (config->num_connections > 1) {
 		dev_err_ratelimited(nbd_to_dev(nbd),
@@ -644,6 +680,15 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
 		ret = -ENOENT;
 		goto out;
 	}
+<<<<<<< HEAD
+=======
+	if (cmd->status != BLK_STS_OK) {
+		dev_err(disk_to_dev(nbd->disk), "Command already handled %p\n",
+			req);
+		ret = -ENOENT;
+		goto out;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (test_bit(NBD_CMD_REQUEUED, &cmd->flags)) {
 		dev_err(disk_to_dev(nbd->disk), "Raced with timeout on req %p\n",
 			req);
@@ -715,9 +760,15 @@ static void recv_work(struct work_struct *work)
 
 		blk_mq_complete_request(blk_mq_rq_from_pdu(cmd));
 	}
+<<<<<<< HEAD
 	atomic_dec(&config->recv_threads);
 	wake_up(&config->recv_wq);
 	nbd_config_put(nbd);
+=======
+	nbd_config_put(nbd);
+	atomic_dec(&config->recv_threads);
+	wake_up(&config->recv_wq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(args);
 }
 
@@ -908,6 +959,29 @@ static blk_status_t nbd_queue_rq(struct blk_mq_hw_ctx *hctx,
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static struct socket *nbd_get_socket(struct nbd_device *nbd, unsigned long fd,
+				     int *err)
+{
+	struct socket *sock;
+
+	*err = 0;
+	sock = sockfd_lookup(fd, err);
+	if (!sock)
+		return NULL;
+
+	if (sock->ops->shutdown == sock_no_shutdown) {
+		dev_err(disk_to_dev(nbd->disk), "Unsupported socket: shutdown callout must be supported.\n");
+		*err = -EINVAL;
+		sockfd_put(sock);
+		return NULL;
+	}
+
+	return sock;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
 			  bool netlink)
 {
@@ -917,10 +991,23 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
 	struct nbd_sock *nsock;
 	int err;
 
+<<<<<<< HEAD
 	sock = sockfd_lookup(arg, &err);
 	if (!sock)
 		return err;
 
+=======
+	sock = nbd_get_socket(nbd, arg, &err);
+	if (!sock)
+		return err;
+
+	/*
+	 * We need to make sure we don't get any errant requests while we're
+	 * reallocating the ->socks array.
+	 */
+	blk_mq_freeze_queue(nbd->disk->queue);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!netlink && !nbd->task_setup &&
 	    !test_bit(NBD_BOUND, &config->runtime_flags))
 		nbd->task_setup = current;
@@ -930,13 +1017,25 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
 	     test_bit(NBD_BOUND, &config->runtime_flags))) {
 		dev_err(disk_to_dev(nbd->disk),
 			"Device being setup by another task");
+<<<<<<< HEAD
 		sockfd_put(sock);
 		return -EBUSY;
+=======
+		err = -EBUSY;
+		goto put_socket;
+	}
+
+	nsock = kzalloc(sizeof(*nsock), GFP_KERNEL);
+	if (!nsock) {
+		err = -ENOMEM;
+		goto put_socket;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	socks = krealloc(config->socks, (config->num_connections + 1) *
 			 sizeof(struct nbd_sock *), GFP_KERNEL);
 	if (!socks) {
+<<<<<<< HEAD
 		sockfd_put(sock);
 		return -ENOMEM;
 	}
@@ -944,6 +1043,11 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
 	if (!nsock) {
 		sockfd_put(sock);
 		return -ENOMEM;
+=======
+		kfree(nsock);
+		err = -ENOMEM;
+		goto put_socket;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	config->socks = socks;
@@ -957,8 +1061,19 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
 	nsock->cookie = 0;
 	socks[config->num_connections++] = nsock;
 	atomic_inc(&config->live_connections);
+<<<<<<< HEAD
 
 	return 0;
+=======
+	blk_mq_unfreeze_queue(nbd->disk->queue);
+
+	return 0;
+
+put_socket:
+	blk_mq_unfreeze_queue(nbd->disk->queue);
+	sockfd_put(sock);
+	return err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int nbd_reconnect_socket(struct nbd_device *nbd, unsigned long arg)
@@ -969,7 +1084,11 @@ static int nbd_reconnect_socket(struct nbd_device *nbd, unsigned long arg)
 	int i;
 	int err;
 
+<<<<<<< HEAD
 	sock = sockfd_lookup(arg, &err);
+=======
+	sock = nbd_get_socket(nbd, arg, &err);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!sock)
 		return err;
 
@@ -1011,7 +1130,11 @@ static int nbd_reconnect_socket(struct nbd_device *nbd, unsigned long arg)
 		/* We take the tx_mutex in an error path in the recv_work, so we
 		 * need to queue_work outside of the tx_mutex.
 		 */
+<<<<<<< HEAD
 		queue_work(recv_workqueue, &args->work);
+=======
+		queue_work(nbd->recv_workq, &args->work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		atomic_inc(&config->live_connections);
 		wake_up(&config->conn_wait);
@@ -1116,6 +1239,13 @@ static void nbd_config_put(struct nbd_device *nbd)
 		kfree(nbd->config);
 		nbd->config = NULL;
 
+<<<<<<< HEAD
+=======
+		if (nbd->recv_workq)
+			destroy_workqueue(nbd->recv_workq);
+		nbd->recv_workq = NULL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		nbd->tag_set.timeout = 0;
 		queue_flag_clear_unlocked(QUEUE_FLAG_DISCARD, nbd->disk->queue);
 
@@ -1141,6 +1271,17 @@ static int nbd_start_device(struct nbd_device *nbd)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+=======
+	nbd->recv_workq = alloc_workqueue("knbd%d-recv",
+					  WQ_MEM_RECLAIM | WQ_HIGHPRI |
+					  WQ_UNBOUND, 0, nbd->index);
+	if (!nbd->recv_workq) {
+		dev_err(disk_to_dev(nbd->disk), "Could not allocate knbd recv work queue.\n");
+		return -ENOMEM;
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	blk_mq_update_nr_hw_queues(&nbd->tag_set, config->num_connections);
 	nbd->task_recv = current;
 
@@ -1160,6 +1301,19 @@ static int nbd_start_device(struct nbd_device *nbd)
 		args = kzalloc(sizeof(*args), GFP_KERNEL);
 		if (!args) {
 			sock_shutdown(nbd);
+<<<<<<< HEAD
+=======
+			/*
+			 * If num_connections is m (2 < m),
+			 * and NO.1 ~ NO.n(1 < n < m) kzallocs are successful.
+			 * But NO.(n + 1) failed. We still have n recv threads.
+			 * So, add flush_workqueue here to prevent recv threads
+			 * dropping the last config_refs and trying to destroy
+			 * the workqueue from inside the workqueue.
+			 */
+			if (i)
+				flush_workqueue(nbd->recv_workq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return -ENOMEM;
 		}
 		sk_set_memalloc(config->socks[i]->sock->sk);
@@ -1171,9 +1325,15 @@ static int nbd_start_device(struct nbd_device *nbd)
 		INIT_WORK(&args->work, recv_work);
 		args->nbd = nbd;
 		args->index = i;
+<<<<<<< HEAD
 		queue_work(recv_workqueue, &args->work);
 	}
 	nbd_size_update(nbd);
+=======
+		queue_work(nbd->recv_workq, &args->work);
+	}
+	nbd_size_update(nbd, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return error;
 }
 
@@ -1193,6 +1353,11 @@ static int nbd_start_device_ioctl(struct nbd_device *nbd, struct block_device *b
 					 atomic_read(&config->recv_threads) == 0);
 	if (ret)
 		sock_shutdown(nbd);
+<<<<<<< HEAD
+=======
+	flush_workqueue(nbd->recv_workq);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	mutex_lock(&nbd->config_lock);
 	bd_set_size(bdev, 0);
 	/* user requested, ignore socket errors */
@@ -1207,13 +1372,28 @@ static void nbd_clear_sock_ioctl(struct nbd_device *nbd,
 				 struct block_device *bdev)
 {
 	sock_shutdown(nbd);
+<<<<<<< HEAD
 	kill_bdev(bdev);
+=======
+	__invalidate_device(bdev, true);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	nbd_bdev_reset(bdev);
 	if (test_and_clear_bit(NBD_HAS_CONFIG_REF,
 			       &nbd->config->runtime_flags))
 		nbd_config_put(nbd);
 }
 
+<<<<<<< HEAD
+=======
+static bool nbd_is_valid_blksize(unsigned long blksize)
+{
+	if (!blksize || !is_power_of_2(blksize) || blksize < 512 ||
+	    blksize > PAGE_SIZE)
+		return false;
+	return true;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Must be called with config_lock held */
 static int __nbd_ioctl(struct block_device *bdev, struct nbd_device *nbd,
 		       unsigned int cmd, unsigned long arg)
@@ -1229,8 +1409,14 @@ static int __nbd_ioctl(struct block_device *bdev, struct nbd_device *nbd,
 	case NBD_SET_SOCK:
 		return nbd_add_socket(nbd, arg, false);
 	case NBD_SET_BLKSIZE:
+<<<<<<< HEAD
 		if (!arg || !is_power_of_2(arg) || arg < 512 ||
 		    arg > PAGE_SIZE)
+=======
+		if (!arg)
+			arg = NBD_DEF_BLKSIZE;
+		if (!nbd_is_valid_blksize(arg))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return -EINVAL;
 		nbd_size_set(nbd, arg,
 			     div_s64(config->bytesize, arg));
@@ -1310,7 +1496,11 @@ static struct nbd_config *nbd_alloc_config(void)
 	atomic_set(&config->recv_threads, 0);
 	init_waitqueue_head(&config->recv_wq);
 	init_waitqueue_head(&config->conn_wait);
+<<<<<<< HEAD
 	config->blksize = 1024;
+=======
+	config->blksize = NBD_DEF_BLKSIZE;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	atomic_set(&config->live_connections, 0);
 	try_module_get(THIS_MODULE);
 	return config;
@@ -1362,6 +1552,10 @@ static void nbd_release(struct gendisk *disk, fmode_t mode)
 	if (test_bit(NBD_DISCONNECT_ON_CLOSE, &nbd->config->runtime_flags) &&
 			bdev->bd_openers == 0)
 		nbd_disconnect_and_put(nbd);
+<<<<<<< HEAD
+=======
+	bdput(bdev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	nbd_config_put(nbd);
 	nbd_put(nbd);
@@ -1742,6 +1936,15 @@ again:
 	if (info->attrs[NBD_ATTR_BLOCK_SIZE_BYTES]) {
 		u64 bsize =
 			nla_get_u64(info->attrs[NBD_ATTR_BLOCK_SIZE_BYTES]);
+<<<<<<< HEAD
+=======
+		if (!bsize)
+			bsize = NBD_DEF_BLKSIZE;
+		if (!nbd_is_valid_blksize(bsize)) {
+			ret = -EINVAL;
+			goto out;
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		nbd_size_set(nbd, bsize, div64_u64(config->bytesize, bsize));
 	}
 	if (info->attrs[NBD_ATTR_TIMEOUT]) {
@@ -1817,6 +2020,15 @@ static void nbd_disconnect_and_put(struct nbd_device *nbd)
 	mutex_lock(&nbd->config_lock);
 	nbd_disconnect(nbd);
 	mutex_unlock(&nbd->config_lock);
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure recv thread has finished, so it does not drop the last
+	 * config ref and try to destroy the workqueue from inside the work
+	 * queue.
+	 */
+	flush_workqueue(nbd->recv_workq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (test_and_clear_bit(NBD_HAS_CONFIG_REF,
 			       &nbd->config->runtime_flags))
 		nbd_config_put(nbd);
@@ -2197,6 +2409,7 @@ static int __init nbd_init(void)
 
 	if (nbds_max > 1UL << (MINORBITS - part_shift))
 		return -EINVAL;
+<<<<<<< HEAD
 	recv_workqueue = alloc_workqueue("knbd-recv",
 					 WQ_MEM_RECLAIM | WQ_HIGHPRI, 0);
 	if (!recv_workqueue)
@@ -2210,6 +2423,14 @@ static int __init nbd_init(void)
 	if (genl_register_family(&nbd_genl_family)) {
 		unregister_blkdev(NBD_MAJOR, "nbd");
 		destroy_workqueue(recv_workqueue);
+=======
+
+	if (register_blkdev(NBD_MAJOR, "nbd"))
+		return -EIO;
+
+	if (genl_register_family(&nbd_genl_family)) {
+		unregister_blkdev(NBD_MAJOR, "nbd");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 	}
 	nbd_dbg_init();
@@ -2251,7 +2472,10 @@ static void __exit nbd_cleanup(void)
 
 	idr_destroy(&nbd_index_idr);
 	genl_unregister_family(&nbd_genl_family);
+<<<<<<< HEAD
 	destroy_workqueue(recv_workqueue);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	unregister_blkdev(NBD_MAJOR, "nbd");
 }
 

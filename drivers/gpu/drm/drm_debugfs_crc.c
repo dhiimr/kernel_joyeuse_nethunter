@@ -101,8 +101,13 @@ static ssize_t crc_control_write(struct file *file, const char __user *ubuf,
 	if (IS_ERR(source))
 		return PTR_ERR(source);
 
+<<<<<<< HEAD
 	if (source[len] == '\n')
 		source[len] = '\0';
+=======
+	if (source[len - 1] == '\n')
+		source[len - 1] = '\0';
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	spin_lock_irq(&crc->lock);
 
@@ -139,6 +144,10 @@ static int crtc_crc_data_count(struct drm_crtc_crc *crc)
 static void crtc_crc_cleanup(struct drm_crtc_crc *crc)
 {
 	kfree(crc->entries);
+<<<<<<< HEAD
+=======
+	crc->overflow = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	crc->entries = NULL;
 	crc->head = 0;
 	crc->tail = 0;
@@ -359,12 +368,22 @@ int drm_crtc_add_crc_entry(struct drm_crtc *crtc, bool has_frame,
 	struct drm_crtc_crc *crc = &crtc->crc;
 	struct drm_crtc_crc_entry *entry;
 	int head, tail;
+<<<<<<< HEAD
 
 	spin_lock(&crc->lock);
 
 	/* Caller may not have noticed yet that userspace has stopped reading */
 	if (!crc->entries) {
 		spin_unlock(&crc->lock);
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&crc->lock, flags);
+
+	/* Caller may not have noticed yet that userspace has stopped reading */
+	if (!crc->entries) {
+		spin_unlock_irqrestore(&crc->lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -EINVAL;
 	}
 
@@ -372,8 +391,19 @@ int drm_crtc_add_crc_entry(struct drm_crtc *crtc, bool has_frame,
 	tail = crc->tail;
 
 	if (CIRC_SPACE(head, tail, DRM_CRC_ENTRIES_NR) < 1) {
+<<<<<<< HEAD
 		spin_unlock(&crc->lock);
 		DRM_ERROR("Overflow of CRC buffer, userspace reads too slow.\n");
+=======
+		bool was_overflow = crc->overflow;
+
+		crc->overflow = true;
+		spin_unlock_irqrestore(&crc->lock, flags);
+
+		if (!was_overflow)
+			DRM_ERROR("Overflow of CRC buffer, userspace reads too slow.\n");
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -ENOBUFS;
 	}
 
@@ -385,7 +415,11 @@ int drm_crtc_add_crc_entry(struct drm_crtc *crtc, bool has_frame,
 	head = (head + 1) & (DRM_CRC_ENTRIES_NR - 1);
 	crc->head = head;
 
+<<<<<<< HEAD
 	spin_unlock(&crc->lock);
+=======
+	spin_unlock_irqrestore(&crc->lock, flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	wake_up_interruptible(&crc->wq);
 

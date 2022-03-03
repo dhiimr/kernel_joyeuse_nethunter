@@ -152,10 +152,14 @@ static void mxs_irq_clear(char *state)
 
 	/* Clear pending interrupt */
 	timrot_irq_acknowledge();
+<<<<<<< HEAD
 
 #ifdef DEBUG
 	pr_info("%s: changing mode to %s\n", __func__, state)
 #endif /* DEBUG */
+=======
+	pr_debug("%s: changing mode to %s\n", __func__, state);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int mxs_shutdown(struct clock_event_device *evt)

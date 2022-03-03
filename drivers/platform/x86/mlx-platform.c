@@ -318,7 +318,11 @@ static int __init mlxplat_init(void)
 
 	for (i = 0; i < ARRAY_SIZE(mlxplat_mux_data); i++) {
 		priv->pdev_mux[i] = platform_device_register_resndata(
+<<<<<<< HEAD
 						&mlxplat_dev->dev,
+=======
+						&priv->pdev_i2c->dev,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 						"i2c-mux-reg", i, NULL,
 						0, &mlxplat_mux_data[i],
 						sizeof(mlxplat_mux_data[i]));

@@ -12,7 +12,11 @@ __archpost:
 include scripts/Kbuild.include
 
 CMD_RELOCS = arch/mips/boot/tools/relocs
+<<<<<<< HEAD
 quiet_cmd_relocs = RELOCS $@
+=======
+quiet_cmd_relocs = RELOCS  $@
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
       cmd_relocs = $(CMD_RELOCS) $@
 
 # `@true` prevents complaint when there is nothing to be done

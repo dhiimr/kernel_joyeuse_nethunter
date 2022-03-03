@@ -1594,6 +1594,10 @@ static int ctcm_new_device(struct ccwgroup_device *cgdev)
 		if (priv->channel[direction] == NULL) {
 			if (direction == CTCM_WRITE)
 				channel_free(priv->channel[CTCM_READ]);
+<<<<<<< HEAD
+=======
+			result = -ENODEV;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			goto out_dev;
 		}
 		priv->channel[direction]->netdev = dev;

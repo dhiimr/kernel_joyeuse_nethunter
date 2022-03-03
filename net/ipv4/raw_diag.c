@@ -23,9 +23,12 @@ raw_get_hashinfo(const struct inet_diag_req_v2 *r)
 		return &raw_v6_hashinfo;
 #endif
 	} else {
+<<<<<<< HEAD
 		pr_warn_once("Unexpected inet family %d\n",
 			     r->sdiag_family);
 		WARN_ON_ONCE(1);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return ERR_PTR(-EINVAL);
 	}
 }
@@ -102,8 +105,14 @@ static int raw_diag_dump_one(struct sk_buff *in_skb,
 	if (IS_ERR(sk))
 		return PTR_ERR(sk);
 
+<<<<<<< HEAD
 	rep = nlmsg_new(sizeof(struct inet_diag_msg) +
 			sizeof(struct inet_diag_meminfo) + 64,
+=======
+	rep = nlmsg_new(nla_total_size(sizeof(struct inet_diag_msg)) +
+			inet_diag_msg_attrs_size() +
+			nla_total_size(sizeof(struct inet_diag_meminfo)) + 64,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			GFP_KERNEL);
 	if (!rep) {
 		sock_put(sk);

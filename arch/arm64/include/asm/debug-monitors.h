@@ -31,7 +31,10 @@
 
 /* MDSCR_EL1 enabling bits */
 #define DBG_MDSCR_KDE		(1 << 13)
+<<<<<<< HEAD
 #define DBG_MDSCR_HDE		(1 << 14)
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define DBG_MDSCR_MDE		(1 << 15)
 #define DBG_MDSCR_MASK		~(DBG_MDSCR_KDE | DBG_MDSCR_MDE)
 
@@ -120,6 +123,11 @@ void disable_debug_monitors(enum dbg_active_el el);
 
 void user_rewind_single_step(struct task_struct *task);
 void user_fastforward_single_step(struct task_struct *task);
+<<<<<<< HEAD
+=======
+void user_regs_reset_single_step(struct user_pt_regs *regs,
+				 struct task_struct *task);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 void kernel_enable_single_step(struct pt_regs *regs);
 void kernel_disable_single_step(void);

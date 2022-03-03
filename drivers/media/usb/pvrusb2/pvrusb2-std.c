@@ -353,7 +353,11 @@ struct v4l2_standard *pvr2_std_create_enum(unsigned int *countptr,
 		bcnt = pvr2_std_id_to_str(buf,sizeof(buf),fmsk);
 		pvr2_trace(
 			PVR2_TRACE_ERROR_LEGS,
+<<<<<<< HEAD
 			"WARNING: Failed to classify the following standard(s): %.*s",
+=======
+			"***WARNING*** Failed to classify the following standard(s): %.*s",
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			bcnt,buf);
 	}
 

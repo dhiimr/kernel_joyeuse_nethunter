@@ -30,7 +30,12 @@ static inline struct ceph_buffer *ceph_buffer_get(struct ceph_buffer *b)
 
 static inline void ceph_buffer_put(struct ceph_buffer *b)
 {
+<<<<<<< HEAD
 	kref_put(&b->kref, ceph_buffer_release);
+=======
+	if (b)
+		kref_put(&b->kref, ceph_buffer_release);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 extern int ceph_decode_buffer(struct ceph_buffer **b, void **p, void *end);

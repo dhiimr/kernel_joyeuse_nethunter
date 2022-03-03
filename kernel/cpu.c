@@ -30,14 +30,20 @@
 #include <linux/relay.h>
 #include <linux/slab.h>
 #include <linux/percpu-rwsem.h>
+<<<<<<< HEAD
 #include <uapi/linux/sched/types.h>
 #include <linux/highmem.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/cpuset.h>
 
 #include <trace/events/power.h>
 #define CREATE_TRACE_POINTS
 #include <trace/events/cpuhp.h>
+<<<<<<< HEAD
 #include <linux/sched/clock.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include "smpboot.h"
 
@@ -380,6 +386,10 @@ void __init cpu_smt_disable(bool force)
 		pr_info("SMT: Force disabled\n");
 		cpu_smt_control = CPU_SMT_FORCE_DISABLED;
 	} else {
+<<<<<<< HEAD
+=======
+		pr_info("SMT: disabled\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		cpu_smt_control = CPU_SMT_DISABLED;
 	}
 }
@@ -497,8 +507,12 @@ static int bringup_wait_for_ap(unsigned int cpu)
 	if (WARN_ON_ONCE((!cpu_online(cpu))))
 		return -ECANCELED;
 
+<<<<<<< HEAD
 	/* Unpark the stopper thread and the hotplug thread of the target cpu */
 	stop_machine_unpark(cpu);
+=======
+	/* Unpark the hotplug thread of the target cpu */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kthread_unpark(st->thread);
 
 	/*
@@ -775,7 +789,61 @@ void __init cpuhp_threads_init(void)
 	kthread_unpark(this_cpu_read(cpuhp_state.thread));
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG_CPU
+=======
+/*
+ *
+ * Serialize hotplug trainwrecks outside of the cpu_hotplug_lock
+ * protected region.
+ *
+ * The operation is still serialized against concurrent CPU hotplug via
+ * cpu_add_remove_lock, i.e. CPU map protection.  But it is _not_
+ * serialized against other hotplug related activity like adding or
+ * removing of state callbacks and state instances, which invoke either the
+ * startup or the teardown callback of the affected state.
+ *
+ * This is required for subsystems which are unfixable vs. CPU hotplug and
+ * evade lock inversion problems by scheduling work which has to be
+ * completed _before_ cpu_up()/_cpu_down() returns.
+ *
+ * Don't even think about adding anything to this for any new code or even
+ * drivers. It's only purpose is to keep existing lock order trainwrecks
+ * working.
+ *
+ * For cpu_down() there might be valid reasons to finish cleanups which are
+ * not required to be done under cpu_hotplug_lock, but that's a different
+ * story and would be not invoked via this.
+ */
+static void cpu_up_down_serialize_trainwrecks(bool tasks_frozen)
+{
+	/*
+	 * cpusets delegate hotplug operations to a worker to "solve" the
+	 * lock order problems. Wait for the worker, but only if tasks are
+	 * _not_ frozen (suspend, hibernate) as that would wait forever.
+	 *
+	 * The wait is required because otherwise the hotplug operation
+	 * returns with inconsistent state, which could even be observed in
+	 * user space when a new CPU is brought up. The CPU plug uevent
+	 * would be delivered and user space reacting on it would fail to
+	 * move tasks to the newly plugged CPU up to the point where the
+	 * work has finished because up to that point the newly plugged CPU
+	 * is not assignable in cpusets/cgroups. On unplug that's not
+	 * necessarily a visible issue, but it is still inconsistent state,
+	 * which is the real problem which needs to be "fixed". This can't
+	 * prevent the transient state between scheduling the work and
+	 * returning from waiting for it.
+	 */
+	if (!tasks_frozen)
+		cpuset_wait_for_hotplug();
+}
+
+#ifdef CONFIG_HOTPLUG_CPU
+#ifndef arch_clear_mm_cpumask_cpu
+#define arch_clear_mm_cpumask_cpu(cpu, mm) cpumask_clear_cpu(cpu, mm_cpumask(mm))
+#endif
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * clear_tasks_mm_cpumask - Safely clear tasks' mm_cpumask for a CPU
  * @cpu: a CPU id
@@ -811,7 +879,11 @@ void clear_tasks_mm_cpumask(int cpu)
 		t = find_lock_task_mm(p);
 		if (!t)
 			continue;
+<<<<<<< HEAD
 		cpumask_clear_cpu(cpu, mm_cpumask(t->mm));
+=======
+		arch_clear_mm_cpumask_cpu(cpu, t->mm);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		task_unlock(t);
 	}
 	rcu_read_unlock();
@@ -941,7 +1013,10 @@ static int cpuhp_down_callbacks(unsigned int cpu, struct cpuhp_cpu_state *st,
 
 	for (; st->state > target; st->state--) {
 		ret = cpuhp_invoke_callback(cpu, st->state, false, NULL, NULL);
+<<<<<<< HEAD
 		BUG_ON(ret && st->state < CPUHP_AP_IDLE_DEAD);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (ret) {
 			st->target = prev_state;
 			if (st->state < prev_state)
@@ -958,7 +1033,10 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
 {
 	struct cpuhp_cpu_state *st = per_cpu_ptr(&cpuhp_state, cpu);
 	int prev_state, ret = 0;
+<<<<<<< HEAD
 	u64 start_time = 0;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (num_online_cpus() == 1)
 		return -EBUSY;
@@ -966,6 +1044,7 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
 	if (!cpu_present(cpu))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (!tasks_frozen && !cpu_isolated(cpu) && num_online_uniso_cpus() == 1)
 		return -EBUSY;
 
@@ -974,6 +1053,10 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
 	if (trace_cpuhp_latency_enabled())
 		start_time = sched_clock();
 
+=======
+	cpus_write_lock();
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cpuhp_tasks_frozen = tasks_frozen;
 
 	prev_state = cpuhp_set_state(st, target);
@@ -1011,7 +1094,10 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
 	}
 
 out:
+<<<<<<< HEAD
 	trace_cpuhp_latency(cpu, 0, start_time, ret);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cpus_write_unlock();
 	/*
 	 * Do post unplug cleanup. This is still protected against
@@ -1019,6 +1105,10 @@ out:
 	 */
 	lockup_detector_cleanup();
 	arch_smt_update();
+<<<<<<< HEAD
+=======
+	cpu_up_down_serialize_trainwrecks(tasks_frozen);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return ret;
 }
 
@@ -1033,6 +1123,7 @@ static int do_cpu_down(unsigned int cpu, enum cpuhp_state target)
 {
 	int err;
 
+<<<<<<< HEAD
 	/*
 	 * When cpusets are enabled, the rebuilding of the scheduling
 	 * domains is deferred to a workqueue context. Make sure
@@ -1045,6 +1136,8 @@ static int do_cpu_down(unsigned int cpu, enum cpuhp_state target)
 	 */
 	cpuset_wait_for_hotplug();
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cpu_maps_update_begin();
 	err = cpu_down_maps_locked(cpu, target);
 	cpu_maps_update_done();
@@ -1088,8 +1181,13 @@ void notify_cpu_starting(unsigned int cpu)
 
 /*
  * Called from the idle task. Wake up the controlling task which brings the
+<<<<<<< HEAD
  * stopper and the hotplug thread of the upcoming CPU up and then delegates
  * the rest of the online bringup to the hotplug thread.
+=======
+ * hotplug thread of the upcoming CPU up and then delegates the rest of the
+ * online bringup to the hotplug thread.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 void cpuhp_online_idle(enum cpuhp_state state)
 {
@@ -1099,6 +1197,15 @@ void cpuhp_online_idle(enum cpuhp_state state)
 	if (state != CPUHP_AP_ONLINE_IDLE)
 		return;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Unpart the stopper thread before we start the idle loop (and start
+	 * scheduling); this ensures the stopper task is always available.
+	 */
+	stop_machine_unpark(smp_processor_id());
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	st->state = CPUHP_AP_ONLINE_IDLE;
 	complete_ap_thread(st, true);
 }
@@ -1109,11 +1216,16 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
 	struct cpuhp_cpu_state *st = per_cpu_ptr(&cpuhp_state, cpu);
 	struct task_struct *idle;
 	int ret = 0;
+<<<<<<< HEAD
 	u64 start_time = 0;
 
 	cpus_write_lock();
 	if (trace_cpuhp_latency_enabled())
 		start_time = sched_clock();
+=======
+
+	cpus_write_lock();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!cpu_present(cpu)) {
 		ret = -EINVAL;
@@ -1161,6 +1273,7 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
 	target = min((int)target, CPUHP_BRINGUP_CPU);
 	ret = cpuhp_up_callbacks(cpu, st, target);
 out:
+<<<<<<< HEAD
 	trace_cpuhp_latency(cpu, 1, start_time, ret);
 	cpus_write_unlock();
 	arch_smt_update();
@@ -1198,6 +1311,17 @@ static int do_cpu_up(unsigned int cpu, enum cpuhp_state target)
 {
 	int err = 0;
 	int switch_err = 0;
+=======
+	cpus_write_unlock();
+	arch_smt_update();
+	cpu_up_down_serialize_trainwrecks(tasks_frozen);
+	return ret;
+}
+
+static int do_cpu_up(unsigned int cpu, enum cpuhp_state target)
+{
+	int err = 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!cpu_possible(cpu)) {
 		pr_err("can't online cpu %d because it is not configured as may-hotadd at boot time\n",
@@ -1208,12 +1332,15 @@ static int do_cpu_up(unsigned int cpu, enum cpuhp_state target)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	cpuset_wait_for_hotplug();
 
 	switch_err = switch_to_rt_policy();
 	if (switch_err < 0)
 		return switch_err;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	err = try_online_node(cpu_to_node(cpu));
 	if (err)
 		return err;
@@ -1232,6 +1359,7 @@ static int do_cpu_up(unsigned int cpu, enum cpuhp_state target)
 	err = _cpu_up(cpu, 0, target);
 out:
 	cpu_maps_update_done();
+<<<<<<< HEAD
 
 	if (!switch_err) {
 		switch_err = switch_to_fair_policy();
@@ -1240,6 +1368,8 @@ out:
 				switch_err, current->comm, current->pid);
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return err;
 }
 
@@ -1269,6 +1399,7 @@ int freeze_secondary_cpus(int primary)
 	for_each_online_cpu(cpu) {
 		if (cpu == primary)
 			continue;
+<<<<<<< HEAD
 
 		if (pm_wakeup_pending()) {
 			pr_info("Wakeup pending. Abort CPU freeze\n");
@@ -1276,6 +1407,8 @@ int freeze_secondary_cpus(int primary)
 			break;
 		}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		trace_suspend_resume(TPS("CPU_OFF"), cpu, true);
 		error = _cpu_down(cpu, 1, CPUHP_OFFLINE);
 		trace_suspend_resume(TPS("CPU_OFF"), cpu, false);
@@ -1314,7 +1447,10 @@ void __weak arch_enable_nonboot_cpus_end(void)
 void enable_nonboot_cpus(void)
 {
 	int cpu, error;
+<<<<<<< HEAD
 	struct device *cpu_device;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Allow everyone to use the CPU hotplug again */
 	cpu_maps_update_begin();
@@ -1332,12 +1468,15 @@ void enable_nonboot_cpus(void)
 		trace_suspend_resume(TPS("CPU_ON"), cpu, false);
 		if (!error) {
 			pr_info("CPU%d is up\n", cpu);
+<<<<<<< HEAD
 			cpu_device = get_cpu_device(cpu);
 			if (!cpu_device)
 				pr_err("%s: failed to get cpu%d device\n",
 				       __func__, cpu);
 			else
 				kobject_uevent(&cpu_device->kobj, KOBJ_ONLINE);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			continue;
 		}
 		pr_warn("Error taking CPU%d up: %d\n", cpu, error);
@@ -1518,11 +1657,14 @@ static struct cpuhp_step cpuhp_ap_states[] = {
 		.startup.single		= NULL,
 		.teardown.single	= rcutree_dying_cpu,
 	},
+<<<<<<< HEAD
 	[CPUHP_AP_KMAP_DYING] = {
 		.name			= "KMAP:dying",
 		.startup.single		= NULL,
 		.teardown.single	= kmap_remove_unused_cpu,
 	},
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	[CPUHP_AP_SMPCFD_DYING] = {
 		.name			= "smpcfd:dying",
 		.startup.single		= NULL,
@@ -1546,7 +1688,11 @@ static struct cpuhp_step cpuhp_ap_states[] = {
 	},
 	[CPUHP_AP_PERF_ONLINE] = {
 		.name			= "perf:online",
+<<<<<<< HEAD
 		.startup.single		= perf_event_restart_events,
+=======
+		.startup.single		= perf_event_init_cpu,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		.teardown.single	= perf_event_exit_cpu,
 	},
 	[CPUHP_AP_WORKQUEUE_ONLINE] = {
@@ -2034,6 +2180,12 @@ static ssize_t write_cpuhp_fail(struct device *dev,
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
+=======
+	if (fail < CPUHP_OFFLINE || fail > CPUHP_ONLINE)
+		return -EINVAL;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Cannot fail STARTING/DYING callbacks.
 	 */
@@ -2144,7 +2296,11 @@ static void cpuhp_online_cpu_device(unsigned int cpu)
 	kobject_uevent(&dev->kobj, KOBJ_ONLINE);
 }
 
+<<<<<<< HEAD
 static int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
+=======
+int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int cpu, ret = 0;
 
@@ -2170,21 +2326,33 @@ static int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
 		 */
 		cpuhp_offline_cpu_device(cpu);
 	}
+<<<<<<< HEAD
 	if (!ret) {
 		cpu_smt_control = ctrlval;
 		arch_smt_update();
 	}
+=======
+	if (!ret)
+		cpu_smt_control = ctrlval;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cpu_maps_update_done();
 	return ret;
 }
 
+<<<<<<< HEAD
 static int cpuhp_smt_enable(void)
+=======
+int cpuhp_smt_enable(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int cpu, ret = 0;
 
 	cpu_maps_update_begin();
 	cpu_smt_control = CPU_SMT_ENABLED;
+<<<<<<< HEAD
 	arch_smt_update();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for_each_present_cpu(cpu) {
 		/* Skip online CPUs and CPUs on offline nodes */
 		if (cpu_online(cpu) || !node_online(cpu_to_node(cpu)))
@@ -2344,9 +2512,12 @@ EXPORT_SYMBOL(__cpu_present_mask);
 struct cpumask __cpu_active_mask __read_mostly;
 EXPORT_SYMBOL(__cpu_active_mask);
 
+<<<<<<< HEAD
 struct cpumask __cpu_isolated_mask __read_mostly;
 EXPORT_SYMBOL(__cpu_isolated_mask);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 void init_cpu_present(const struct cpumask *src)
 {
 	cpumask_copy(&__cpu_present_mask, src);
@@ -2362,11 +2533,14 @@ void init_cpu_online(const struct cpumask *src)
 	cpumask_copy(&__cpu_online_mask, src);
 }
 
+<<<<<<< HEAD
 void init_cpu_isolated(const struct cpumask *src)
 {
 	cpumask_copy(&__cpu_isolated_mask, src);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Activate the first processor.
  */
@@ -2396,6 +2570,7 @@ void __init boot_cpu_hotplug_init(void)
 	this_cpu_write(cpuhp_state.state, CPUHP_ONLINE);
 }
 
+<<<<<<< HEAD
 static ATOMIC_NOTIFIER_HEAD(idle_notifier);
 
 void idle_notifier_register(struct notifier_block *n)
@@ -2415,3 +2590,47 @@ void idle_notifier_call_chain(unsigned long val)
 	atomic_notifier_call_chain(&idle_notifier, val, NULL);
 }
 EXPORT_SYMBOL_GPL(idle_notifier_call_chain);
+=======
+/*
+ * These are used for a global "mitigations=" cmdline option for toggling
+ * optional CPU mitigations.
+ */
+enum cpu_mitigations {
+	CPU_MITIGATIONS_OFF,
+	CPU_MITIGATIONS_AUTO,
+	CPU_MITIGATIONS_AUTO_NOSMT,
+};
+
+static enum cpu_mitigations cpu_mitigations __ro_after_init =
+	CPU_MITIGATIONS_AUTO;
+
+static int __init mitigations_parse_cmdline(char *arg)
+{
+	if (!strcmp(arg, "off"))
+		cpu_mitigations = CPU_MITIGATIONS_OFF;
+	else if (!strcmp(arg, "auto"))
+		cpu_mitigations = CPU_MITIGATIONS_AUTO;
+	else if (!strcmp(arg, "auto,nosmt"))
+		cpu_mitigations = CPU_MITIGATIONS_AUTO_NOSMT;
+	else
+		pr_crit("Unsupported mitigations=%s, system may still be vulnerable\n",
+			arg);
+
+	return 0;
+}
+early_param("mitigations", mitigations_parse_cmdline);
+
+/* mitigations=off */
+bool cpu_mitigations_off(void)
+{
+	return cpu_mitigations == CPU_MITIGATIONS_OFF;
+}
+EXPORT_SYMBOL_GPL(cpu_mitigations_off);
+
+/* mitigations=auto,nosmt */
+bool cpu_mitigations_auto_nosmt(void)
+{
+	return cpu_mitigations == CPU_MITIGATIONS_AUTO_NOSMT;
+}
+EXPORT_SYMBOL_GPL(cpu_mitigations_auto_nosmt);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

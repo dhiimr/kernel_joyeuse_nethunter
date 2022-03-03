@@ -239,7 +239,11 @@ static __net_init int skbedit_init_net(struct net *net)
 {
 	struct tc_action_net *tn = net_generic(net, skbedit_net_id);
 
+<<<<<<< HEAD
 	return tc_action_net_init(tn, &act_skbedit_ops);
+=======
+	return tc_action_net_init(net, tn, &act_skbedit_ops);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void __net_exit skbedit_exit_net(struct net *net)

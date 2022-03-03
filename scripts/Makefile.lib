@@ -268,6 +268,7 @@ cmd_gzip = (cat $(filter-out FORCE,$^) | gzip -n -f -9 > $@) || \
 
 # DTC
 # ---------------------------------------------------------------------------
+<<<<<<< HEAD
 ifneq ($(DTC_EXT),)
       DTC = $(DTC_EXT)
 else
@@ -286,6 +287,18 @@ DTC_FLAGS += -Wno-simple_bus_reg \
 	-Wno-pci_device_reg \
 	-Wno-avoid_default_addr_size \
         -Wno-reg_format
+=======
+DTC ?= $(objtree)/scripts/dtc/dtc
+
+# Disable noisy checks by default
+ifeq ($(KBUILD_ENABLE_EXTRA_GCC_CHECKS),)
+DTC_FLAGS += -Wno-unit_address_vs_reg \
+	-Wno-simple_bus_reg \
+	-Wno-unit_address_format \
+	-Wno-pci_bridge \
+	-Wno-pci_device_bus_num \
+	-Wno-pci_device_reg
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 endif
 
 ifeq ($(KBUILD_ENABLE_EXTRA_GCC_CHECKS),2)
@@ -326,6 +339,7 @@ $(obj)/%.dtb: $(src)/%.dts FORCE
 
 dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
 
+<<<<<<< HEAD
 # mkdtimg
 #----------------------------------------------------------------------------
 quiet_cmd_mkdtimg = DTBOIMG $@
@@ -342,6 +356,8 @@ cmd_mkdtb = cat $(filter-out FORCE,$^) > $@
 quiet_cmd_cat = CAT     $@
 cmd_cat = (cat $(filter-out FORCE,$^) > $@) || (rm -f $@; false)
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # Bzip2
 # ---------------------------------------------------------------------------
 

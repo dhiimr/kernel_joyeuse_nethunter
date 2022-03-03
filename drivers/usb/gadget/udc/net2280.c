@@ -3786,8 +3786,15 @@ static int net2280_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	return 0;
 
 done:
+<<<<<<< HEAD
 	if (dev)
 		net2280_remove(pdev);
+=======
+	if (dev) {
+		net2280_remove(pdev);
+		kfree(dev);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return retval;
 }
 

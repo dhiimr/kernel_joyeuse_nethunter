@@ -181,10 +181,26 @@ static long
 odev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	struct seq_oss_devinfo *dp;
+<<<<<<< HEAD
 	dp = file->private_data;
 	if (snd_BUG_ON(!dp))
 		return -ENXIO;
 	return snd_seq_oss_ioctl(dp, cmd, arg);
+=======
+	long rc;
+
+	dp = file->private_data;
+	if (snd_BUG_ON(!dp))
+		return -ENXIO;
+
+	if (cmd != SNDCTL_SEQ_SYNC &&
+	    mutex_lock_interruptible(&register_mutex))
+		return -ERESTARTSYS;
+	rc = snd_seq_oss_ioctl(dp, cmd, arg);
+	if (cmd != SNDCTL_SEQ_SYNC)
+		mutex_unlock(&register_mutex);
+	return rc;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 #ifdef CONFIG_COMPAT

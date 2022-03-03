@@ -689,6 +689,11 @@ static int usX2Y_rate_set(struct usX2Ydev *usX2Y, int rate)
 			us->submitted =	2*NOOF_SETRATE_URBS;
 			for (i = 0; i < NOOF_SETRATE_URBS; ++i) {
 				struct urb *urb = us->urb[i];
+<<<<<<< HEAD
+=======
+				if (!urb)
+					continue;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				if (urb->status) {
 					if (!err)
 						err = -ENODEV;

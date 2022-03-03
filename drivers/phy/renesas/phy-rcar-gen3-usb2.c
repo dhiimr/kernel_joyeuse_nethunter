@@ -22,6 +22,10 @@
 #include <linux/platform_device.h>
 #include <linux/pm_runtime.h>
 #include <linux/regulator/consumer.h>
+<<<<<<< HEAD
+=======
+#include <linux/string.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/workqueue.h>
 
 /******* USB2.0 Host registers (original offset is +0x200) *******/
@@ -64,6 +68,10 @@
 					 USB2_OBINT_IDDIGCHG)
 
 /* VBCTRL */
+<<<<<<< HEAD
+=======
+#define USB2_VBCTRL_OCCLREN		BIT(16)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define USB2_VBCTRL_DRVVBUSSEL		BIT(8)
 
 /* LINECTRL1 */
@@ -194,7 +202,11 @@ static void rcar_gen3_init_from_a_peri_to_a_host(struct rcar_gen3_chan *ch)
 	val = readl(usb2_base + USB2_OBINTEN);
 	writel(val & ~USB2_OBINT_BITS, usb2_base + USB2_OBINTEN);
 
+<<<<<<< HEAD
 	rcar_gen3_enable_vbus_ctrl(ch, 0);
+=======
+	rcar_gen3_enable_vbus_ctrl(ch, 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	rcar_gen3_init_for_host(ch);
 
 	writel(val | USB2_OBINT_BITS, usb2_base + USB2_OBINTEN);
@@ -233,9 +245,15 @@ static ssize_t role_store(struct device *dev, struct device_attribute *attr,
 	 */
 	is_b_device = rcar_gen3_check_id(ch);
 	is_host = rcar_gen3_is_host(ch);
+<<<<<<< HEAD
 	if (!strncmp(buf, "host", strlen("host")))
 		new_mode_is_host = true;
 	else if (!strncmp(buf, "peripheral", strlen("peripheral")))
+=======
+	if (sysfs_streq(buf, "host"))
+		new_mode_is_host = true;
+	else if (sysfs_streq(buf, "peripheral"))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		new_mode_is_host = false;
 	else
 		return -EINVAL;
@@ -278,6 +296,10 @@ static void rcar_gen3_init_otg(struct rcar_gen3_chan *ch)
 	u32 val;
 
 	val = readl(usb2_base + USB2_VBCTRL);
+<<<<<<< HEAD
+=======
+	val &= ~USB2_VBCTRL_OCCLREN;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	writel(val | USB2_VBCTRL_DRVVBUSSEL, usb2_base + USB2_VBCTRL);
 	writel(USB2_OBINT_BITS, usb2_base + USB2_OBINTSTA);
 	val = readl(usb2_base + USB2_OBINTEN);

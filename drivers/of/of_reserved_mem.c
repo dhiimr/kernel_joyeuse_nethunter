@@ -1,7 +1,11 @@
 /*
  * Device tree based initialization code for reserved memory.
  *
+<<<<<<< HEAD
  * Copyright (c) 2013, 2015, 2017 The Linux Foundation. All Rights Reserved.
+=======
+ * Copyright (c) 2013, 2015 The Linux Foundation. All Rights Reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Copyright (c) 2013,2014 Samsung Electronics Co., Ltd.
  *		http://www.samsung.com
  * Author: Marek Szyprowski <m.szyprowski@samsung.com>
@@ -24,9 +28,14 @@
 #include <linux/of_reserved_mem.h>
 #include <linux/sort.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/kmemleak.h>
 
 #define MAX_RESERVED_REGIONS	64
+=======
+
+#define MAX_RESERVED_REGIONS	32
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static struct reserved_mem reserved_mem[MAX_RESERVED_REGIONS];
 static int reserved_mem_count;
 
@@ -55,10 +64,15 @@ int __init __weak early_init_dt_alloc_reserved_memory_arch(phys_addr_t size,
 	}
 
 	*res_base = base;
+<<<<<<< HEAD
 	if (nomap) {
 		kmemleak_ignore_phys(base);
 		return memblock_remove(base, size);
 	}
+=======
+	if (nomap)
+		return memblock_remove(base, size);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 #else
@@ -161,9 +175,15 @@ static int __init __reserved_mem_alloc_size(unsigned long node,
 			ret = early_init_dt_alloc_reserved_memory_arch(size,
 					align, start, end, nomap, &base);
 			if (ret == 0) {
+<<<<<<< HEAD
 				pr_debug("allocated memory for '%s' node: base %pa, size %ld MiB\n",
 					uname, &base,
 					(unsigned long)size / SZ_1M);
+=======
+				pr_debug("allocated memory for '%s' node: base %pa, size %lu MiB\n",
+					uname, &base,
+					(unsigned long)(size / SZ_1M));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				break;
 			}
 			len -= t_len;
@@ -173,8 +193,13 @@ static int __init __reserved_mem_alloc_size(unsigned long node,
 		ret = early_init_dt_alloc_reserved_memory_arch(size, align,
 							0, 0, nomap, &base);
 		if (ret == 0)
+<<<<<<< HEAD
 			pr_debug("allocated memory for '%s' node: base %pa, size %ld MiB\n",
 				uname, &base, (unsigned long)size / SZ_1M);
+=======
+			pr_debug("allocated memory for '%s' node: base %pa, size %lu MiB\n",
+				uname, &base, (unsigned long)(size / SZ_1M));
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (base == 0) {
@@ -225,6 +250,19 @@ static int __init __rmem_cmp(const void *a, const void *b)
 	if (ra->base > rb->base)
 		return 1;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Put the dynamic allocations (address == 0, size == 0) before static
+	 * allocations at address 0x0 so that overlap detection works
+	 * correctly.
+	 */
+	if (ra->size < rb->size)
+		return -1;
+	if (ra->size > rb->size)
+		return 1;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -242,8 +280,12 @@ static void __init __rmem_check_for_overlap(void)
 
 		this = &reserved_mem[i];
 		next = &reserved_mem[i + 1];
+<<<<<<< HEAD
 		if (!(this->base && next->base))
 			continue;
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (this->base + this->size > next->base) {
 			phys_addr_t this_end, next_end;
 

@@ -166,7 +166,10 @@ static irqreturn_t evtchn_interrupt(int irq, void *data)
 	     "Interrupt for port %d, but apparently not enabled; per-user %p\n",
 	     evtchn->port, u);
 
+<<<<<<< HEAD
 	disable_irq_nosync(irq);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	evtchn->enabled = false;
 
 	spin_lock(&u->ring_prod_lock);
@@ -292,7 +295,11 @@ static ssize_t evtchn_write(struct file *file, const char __user *buf,
 		evtchn = find_evtchn(u, port);
 		if (evtchn && !evtchn->enabled) {
 			evtchn->enabled = true;
+<<<<<<< HEAD
 			enable_irq(irq_from_evtchn(port));
+=======
+			xen_irq_lateeoi(irq_from_evtchn(port), 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		}
 	}
 
@@ -392,8 +399,13 @@ static int evtchn_bind_to_user(struct per_user_data *u, int port)
 	if (rc < 0)
 		goto err;
 
+<<<<<<< HEAD
 	rc = bind_evtchn_to_irqhandler(port, evtchn_interrupt, 0,
 				       u->name, evtchn);
+=======
+	rc = bind_evtchn_to_irqhandler_lateeoi(port, evtchn_interrupt, 0,
+					       u->name, evtchn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (rc < 0)
 		goto err;
 
@@ -447,7 +459,11 @@ static void evtchn_bind_interdom_next_vcpu(int evtchn)
 	this_cpu_write(bind_last_selected_cpu, selected_cpu);
 
 	/* unmask expects irqs to be disabled */
+<<<<<<< HEAD
 	xen_rebind_evtchn_to_cpu(evtchn, selected_cpu);
+=======
+	xen_set_affinity_evtchn(desc, selected_cpu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	raw_spin_unlock_irqrestore(&desc->lock, flags);
 }
 

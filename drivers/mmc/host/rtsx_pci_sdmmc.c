@@ -551,9 +551,28 @@ static int sd_write_long_data(struct realtek_pci_sdmmc *host,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int sd_rw_multi(struct realtek_pci_sdmmc *host, struct mmc_request *mrq)
 {
 	struct mmc_data *data = mrq->data;
+=======
+static inline void sd_enable_initial_mode(struct realtek_pci_sdmmc *host)
+{
+	rtsx_pci_write_register(host->pcr, SD_CFG1,
+			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_128);
+}
+
+static inline void sd_disable_initial_mode(struct realtek_pci_sdmmc *host)
+{
+	rtsx_pci_write_register(host->pcr, SD_CFG1,
+			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_0);
+}
+
+static int sd_rw_multi(struct realtek_pci_sdmmc *host, struct mmc_request *mrq)
+{
+	struct mmc_data *data = mrq->data;
+	int err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (host->sg_count < 0) {
 		data->error = host->sg_count;
@@ -562,6 +581,7 @@ static int sd_rw_multi(struct realtek_pci_sdmmc *host, struct mmc_request *mrq)
 		return data->error;
 	}
 
+<<<<<<< HEAD
 	if (data->flags & MMC_DATA_READ)
 		return sd_read_long_data(host, mrq);
 
@@ -578,6 +598,21 @@ static inline void sd_disable_initial_mode(struct realtek_pci_sdmmc *host)
 {
 	rtsx_pci_write_register(host->pcr, SD_CFG1,
 			SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_0);
+=======
+	if (data->flags & MMC_DATA_READ) {
+		if (host->initial_mode)
+			sd_disable_initial_mode(host);
+
+		err = sd_read_long_data(host, mrq);
+
+		if (host->initial_mode)
+			sd_enable_initial_mode(host);
+
+		return err;
+	}
+
+	return sd_write_long_data(host, mrq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void sd_normal_rw(struct realtek_pci_sdmmc *host,

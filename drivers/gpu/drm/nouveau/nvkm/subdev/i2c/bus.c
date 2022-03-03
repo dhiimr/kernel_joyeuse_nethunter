@@ -110,6 +110,22 @@ nvkm_i2c_bus_init(struct nvkm_i2c_bus *bus)
 	BUS_TRACE(bus, "init");
 	if (bus->func->init)
 		bus->func->init(bus);
+<<<<<<< HEAD
+=======
+
+	mutex_lock(&bus->mutex);
+	bus->enabled = true;
+	mutex_unlock(&bus->mutex);
+}
+
+void
+nvkm_i2c_bus_fini(struct nvkm_i2c_bus *bus)
+{
+	BUS_TRACE(bus, "fini");
+	mutex_lock(&bus->mutex);
+	bus->enabled = false;
+	mutex_unlock(&bus->mutex);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void
@@ -126,9 +142,21 @@ nvkm_i2c_bus_acquire(struct nvkm_i2c_bus *bus)
 {
 	struct nvkm_i2c_pad *pad = bus->pad;
 	int ret;
+<<<<<<< HEAD
 	BUS_TRACE(bus, "acquire");
 	mutex_lock(&bus->mutex);
 	ret = nvkm_i2c_pad_acquire(pad, NVKM_I2C_PAD_I2C);
+=======
+
+	BUS_TRACE(bus, "acquire");
+	mutex_lock(&bus->mutex);
+
+	if (bus->enabled)
+		ret = nvkm_i2c_pad_acquire(pad, NVKM_I2C_PAD_I2C);
+	else
+		ret = -EIO;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (ret)
 		mutex_unlock(&bus->mutex);
 	return ret;

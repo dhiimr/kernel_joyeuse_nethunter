@@ -2,7 +2,13 @@
 #ifndef _LINUX_FUTEX_H
 #define _LINUX_FUTEX_H
 
+<<<<<<< HEAD
 #include <linux/ktime.h>
+=======
+#include <linux/sched.h>
+#include <linux/ktime.h>
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <uapi/linux/futex.h>
 
 struct inode;
@@ -12,9 +18,12 @@ struct task_struct;
 long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
 	      u32 __user *uaddr2, u32 val2, u32 val3);
 
+<<<<<<< HEAD
 extern int
 handle_futex_death(u32 __user *uaddr, struct task_struct *curr, int pi);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Futexes are matched on equal values of this key.
  * The key type depends on whether it's a shared or private mapping.
@@ -35,6 +44,7 @@ handle_futex_death(u32 __user *uaddr, struct task_struct *curr, int pi);
 
 union futex_key {
 	struct {
+<<<<<<< HEAD
 		unsigned long pgoff;
 		struct inode *inode;
 		int offset;
@@ -72,6 +82,59 @@ extern void exit_pi_state_list(struct task_struct *curr);
 static inline void exit_pi_state_list(struct task_struct *curr)
 {
 }
+=======
+		u64 i_seq;
+		unsigned long pgoff;
+		unsigned int offset;
+	} shared;
+	struct {
+		union {
+			struct mm_struct *mm;
+			u64 __tmp;
+		};
+		unsigned long address;
+		unsigned int offset;
+	} private;
+	struct {
+		u64 ptr;
+		unsigned long word;
+		unsigned int offset;
+	} both;
+};
+
+#define FUTEX_KEY_INIT (union futex_key) { .both = { .ptr = 0ULL } }
+
+#ifdef CONFIG_FUTEX
+enum {
+	FUTEX_STATE_OK,
+	FUTEX_STATE_EXITING,
+	FUTEX_STATE_DEAD,
+};
+
+static inline void futex_init_task(struct task_struct *tsk)
+{
+	tsk->robust_list = NULL;
+#ifdef CONFIG_COMPAT
+	tsk->compat_robust_list = NULL;
+#endif
+	INIT_LIST_HEAD(&tsk->pi_state_list);
+	tsk->pi_state_cache = NULL;
+	tsk->futex_state = FUTEX_STATE_OK;
+	mutex_init(&tsk->futex_exit_mutex);
+}
+
+void futex_exit_recursive(struct task_struct *tsk);
+void futex_exit_release(struct task_struct *tsk);
+void futex_exec_release(struct task_struct *tsk);
+
+long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
+	      u32 __user *uaddr2, u32 val2, u32 val3);
+#else
+static inline void futex_init_task(struct task_struct *tsk) { }
+static inline void futex_exit_recursive(struct task_struct *tsk) { }
+static inline void futex_exit_release(struct task_struct *tsk) { }
+static inline void futex_exec_release(struct task_struct *tsk) { }
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 
 #endif

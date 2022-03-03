@@ -161,7 +161,12 @@ static int stm32_timer_start(struct stm32_timer_trigger *priv,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void stm32_timer_stop(struct stm32_timer_trigger *priv)
+=======
+static void stm32_timer_stop(struct stm32_timer_trigger *priv,
+			     struct iio_trigger *trig)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	u32 ccer, cr1;
 
@@ -179,6 +184,15 @@ static void stm32_timer_stop(struct stm32_timer_trigger *priv)
 	regmap_write(priv->regmap, TIM_PSC, 0);
 	regmap_write(priv->regmap, TIM_ARR, 0);
 
+<<<<<<< HEAD
+=======
+	/* Force disable master mode */
+	if (stm32_timer_is_trgo2_name(trig->name))
+		regmap_update_bits(priv->regmap, TIM_CR2, TIM_CR2_MMS2, 0);
+	else
+		regmap_update_bits(priv->regmap, TIM_CR2, TIM_CR2_MMS, 0);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Make sure that registers are updated */
 	regmap_update_bits(priv->regmap, TIM_EGR, TIM_EGR_UG, TIM_EGR_UG);
 }
@@ -197,7 +211,11 @@ static ssize_t stm32_tt_store_frequency(struct device *dev,
 		return ret;
 
 	if (freq == 0) {
+<<<<<<< HEAD
 		stm32_timer_stop(priv);
+=======
+		stm32_timer_stop(priv, trig);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		ret = stm32_timer_start(priv, trig, freq);
 		if (ret)
@@ -879,6 +897,10 @@ static struct platform_driver stm32_timer_trigger_driver = {
 };
 module_platform_driver(stm32_timer_trigger_driver);
 
+<<<<<<< HEAD
 MODULE_ALIAS("platform: stm32-timer-trigger");
+=======
+MODULE_ALIAS("platform:stm32-timer-trigger");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 MODULE_DESCRIPTION("STMicroelectronics STM32 Timer Trigger driver");
 MODULE_LICENSE("GPL v2");

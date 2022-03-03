@@ -19,6 +19,7 @@
 #include "msm_gem.h"
 #include "msm_mmu.h"
 
+<<<<<<< HEAD
 /* SDE address space operations */
 static void smmu_aspace_unmap_vma(struct msm_gem_address_space *aspace,
 		struct msm_gem_vma *vma, struct sg_table *sgt,
@@ -194,6 +195,30 @@ msm_gem_smmu_address_space_create(struct drm_device *dev, struct msm_mmu *mmu,
 static void iommu_aspace_unmap_vma(struct msm_gem_address_space *aspace,
 		struct msm_gem_vma *vma, struct sg_table *sgt,
 		unsigned int flags)
+=======
+static void
+msm_gem_address_space_destroy(struct kref *kref)
+{
+	struct msm_gem_address_space *aspace = container_of(kref,
+			struct msm_gem_address_space, kref);
+
+	drm_mm_takedown(&aspace->mm);
+	if (aspace->mmu)
+		aspace->mmu->funcs->destroy(aspace->mmu);
+	kfree(aspace);
+}
+
+
+void msm_gem_address_space_put(struct msm_gem_address_space *aspace)
+{
+	if (aspace)
+		kref_put(&aspace->kref, msm_gem_address_space_destroy);
+}
+
+void
+msm_gem_unmap_vma(struct msm_gem_address_space *aspace,
+		struct msm_gem_vma *vma, struct sg_table *sgt)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (!aspace || !vma->iova)
 		return;
@@ -212,9 +237,15 @@ static void iommu_aspace_unmap_vma(struct msm_gem_address_space *aspace,
 	msm_gem_address_space_put(aspace);
 }
 
+<<<<<<< HEAD
 static int iommu_aspace_map_vma(struct msm_gem_address_space *aspace,
 		struct msm_gem_vma *vma, struct sg_table *sgt,
 		int npages, unsigned int flags)
+=======
+int
+msm_gem_map_vma(struct msm_gem_address_space *aspace,
+		struct msm_gem_vma *vma, struct sg_table *sgt, int npages)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int ret;
 
@@ -244,6 +275,7 @@ static int iommu_aspace_map_vma(struct msm_gem_address_space *aspace,
 	return ret;
 }
 
+<<<<<<< HEAD
 static void iommu_aspace_destroy(struct msm_gem_address_space *aspace)
 {
 	drm_mm_takedown(&aspace->mm);
@@ -257,6 +289,8 @@ static const struct msm_gem_aspace_ops msm_iommu_aspace_ops = {
 	.destroy = iommu_aspace_destroy,
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct msm_gem_address_space *
 msm_gem_address_space_create(struct device *dev, struct iommu_domain *domain,
 		const char *name)
@@ -270,7 +304,10 @@ msm_gem_address_space_create(struct device *dev, struct iommu_domain *domain,
 	spin_lock_init(&aspace->lock);
 	aspace->name = name;
 	aspace->mmu = msm_iommu_new(dev, domain);
+<<<<<<< HEAD
 	aspace->ops = &msm_iommu_aspace_ops;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	drm_mm_init(&aspace->mm, (domain->geometry.aperture_start >> PAGE_SHIFT),
 			(domain->geometry.aperture_end >> PAGE_SHIFT) - 1);
@@ -279,6 +316,7 @@ msm_gem_address_space_create(struct device *dev, struct iommu_domain *domain,
 
 	return aspace;
 }
+<<<<<<< HEAD
 
 
 /* Generic address space operations */
@@ -370,3 +408,5 @@ int msm_gem_address_space_unregister_cb(struct msm_gem_address_space *aspace,
 	return -EINVAL;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

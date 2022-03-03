@@ -14,9 +14,15 @@
 #include <asm/mach/pci.h>
 #include <asm/mach-types.h>
 
+<<<<<<< HEAD
 static int irqmap_ebsa285[] __initdata = { IRQ_IN3, IRQ_IN1, IRQ_IN0, IRQ_PCI };
 
 static int __init ebsa285_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+=======
+static int irqmap_ebsa285[] = { IRQ_IN3, IRQ_IN1, IRQ_IN0, IRQ_PCI };
+
+static int ebsa285_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (dev->vendor == PCI_VENDOR_ID_CONTAQ &&
 	    dev->device == PCI_DEVICE_ID_CONTAQ_82C693)

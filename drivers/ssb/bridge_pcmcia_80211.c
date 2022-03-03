@@ -113,16 +113,32 @@ static struct pcmcia_driver ssb_host_pcmcia_driver = {
 	.resume		= ssb_host_pcmcia_resume,
 };
 
+<<<<<<< HEAD
+=======
+static int pcmcia_init_failed;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * These are not module init/exit functions!
  * The module_pcmcia_driver() helper cannot be used here.
  */
 int ssb_host_pcmcia_init(void)
 {
+<<<<<<< HEAD
 	return pcmcia_register_driver(&ssb_host_pcmcia_driver);
+=======
+	pcmcia_init_failed = pcmcia_register_driver(&ssb_host_pcmcia_driver);
+
+	return pcmcia_init_failed;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 void ssb_host_pcmcia_exit(void)
 {
+<<<<<<< HEAD
 	pcmcia_unregister_driver(&ssb_host_pcmcia_driver);
+=======
+	if (!pcmcia_init_failed)
+		pcmcia_unregister_driver(&ssb_host_pcmcia_driver);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }

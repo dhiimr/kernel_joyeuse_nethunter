@@ -38,6 +38,10 @@ struct vdso_data {
 	__u32 tz_minuteswest;	/* Whacky timezone stuff */
 	__u32 tz_dsttime;
 	__u32 use_syscall;
+<<<<<<< HEAD
+=======
+	__u32 hrtimer_res;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #endif /* !__ASSEMBLY__ */

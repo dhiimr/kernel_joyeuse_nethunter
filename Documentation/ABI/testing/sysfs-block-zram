@@ -98,6 +98,7 @@ Description:
 		The backing_dev file is read-write and set up backing
 		device for zram to write incompressible pages.
 		For using, user should enable CONFIG_ZRAM_WRITEBACK.
+<<<<<<< HEAD
 
 What:		/sys/block/zram<id>/use_dedup
 Date:		March 2017
@@ -147,3 +148,5 @@ Description:
 		The writeback_limit file is read-write and specifies the maximum
 		amount of writeback ZRAM can do. The limit could be changed
 		in run time.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

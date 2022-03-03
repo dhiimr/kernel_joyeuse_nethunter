@@ -1711,7 +1711,10 @@ int core_alua_set_tg_pt_gp_id(
 		pr_err("Maximum ALUA alua_tg_pt_gps_count:"
 			" 0x0000ffff reached\n");
 		spin_unlock(&dev->t10_alua.tg_pt_gps_lock);
+<<<<<<< HEAD
 		kmem_cache_free(t10_alua_tg_pt_gp_cache, tg_pt_gp);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return -ENOSPC;
 	}
 again:

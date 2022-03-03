@@ -24,8 +24,11 @@
 #include "common.h"
 #include "stmmac_ptp.h"
 
+<<<<<<< HEAD
 #define PTP_LIMIT 100000
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void stmmac_config_hw_tstamping(void __iomem *ioaddr, u32 data)
 {
 	writel(data, ioaddr + PTP_TCR);
@@ -38,12 +41,25 @@ static u32 stmmac_config_sub_second_increment(void __iomem *ioaddr,
 	unsigned long data;
 	u32 reg_value;
 
+<<<<<<< HEAD
 	/* For GMAC3.x, 4.x versions, convert the ptp_clock to nano second
 	 *	formula = (1/ptp_clock) * 1000000000
 	 * where ptp_clock is 50MHz if fine method is used to update system
 	 */
 	if (value & PTP_TCR_TSCFUPDT)
 		data = (1000000000ULL / 50000000);
+=======
+	/* For GMAC3.x, 4.x versions, in "fine adjustement mode" set sub-second
+	 * increment to twice the number of nanoseconds of a clock cycle.
+	 * The calculation of the default_addend value by the caller will set it
+	 * to mid-range = 2^31 when the remainder of this division is zero,
+	 * which will make the accumulator overflow once every 2 ptp_clock
+	 * cycles, adding twice the number of nanoseconds of a clock cycle :
+	 * 2000000000ULL / ptp_clock.
+	 */
+	if (value & PTP_TCR_TSCFUPDT)
+		data = (2000000000ULL / ptp_clock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	else
 		data = (1000000000ULL / ptp_clock);
 
@@ -67,6 +83,7 @@ static int stmmac_init_systime(void __iomem *ioaddr, u32 sec, u32 nsec)
 	int limit;
 	u32 value;
 
+<<<<<<< HEAD
 	/* wait for previous(if any) time initialization to complete. */
 	limit = PTP_LIMIT;
 	while (limit--) {
@@ -77,6 +94,8 @@ static int stmmac_init_systime(void __iomem *ioaddr, u32 sec, u32 nsec)
 	if (limit < 0)
 		return -EBUSY;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	writel(sec, ioaddr + PTP_STSUR);
 	writel(nsec, ioaddr + PTP_STNSUR);
 	/* issue command to initialize the system time value */
@@ -127,6 +146,7 @@ static int stmmac_adjust_systime(void __iomem *ioaddr, u32 sec, u32 nsec,
 	u32 value;
 	int limit;
 
+<<<<<<< HEAD
 	/* wait for previous(if any) time adjust/update to complete. */
 	limit = PTP_LIMIT;
 	while (limit--) {
@@ -137,13 +157,19 @@ static int stmmac_adjust_systime(void __iomem *ioaddr, u32 sec, u32 nsec,
 	if (limit < 0)
 		return -EBUSY;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (add_sub) {
 		/* If the new sec value needs to be subtracted with
 		 * the system time, then MAC_STSUR reg should be
 		 * programmed with (2^32 – <new_sec_value>)
 		 */
 		if (gmac4)
+<<<<<<< HEAD
 			sec = (100000000ULL - sec);
+=======
+			sec = -sec;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		value = readl(ioaddr + PTP_TCR);
 		if (value & PTP_TCR_TSCTRLSSR)

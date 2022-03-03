@@ -44,6 +44,7 @@ PMIC's from Qualcomm.
 		    the first cell will be used to define gpio number and the
 		    second denotes the flags for this gpio
 
+<<<<<<< HEAD
 - qcom,gpios-disallowed:
 	Usage: optional
 	Value type: <prop-encoded-array>
@@ -55,6 +56,8 @@ PMIC's from Qualcomm.
 		    GPIOs defined in this array won't be registered as pins
 		    in the pinctrl device or gpios in the gpio chip.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 Please refer to ../gpio/gpio.txt and ../interrupt-controller/interrupts.txt for
 a general description of GPIO and interrupt bindings.
 
@@ -241,7 +244,10 @@ Example:
 
 		gpio-controller;
 		#gpio-cells = <2>;
+<<<<<<< HEAD
 		qcom,gpios-disallowed = <1 20>;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 		pm8921_gpio_keys: gpio-keys {
 			volume-keys {

@@ -789,11 +789,20 @@ static int build_adc_controls(struct snd_akm4xxx *ak)
 				return err;
 
 			memset(&knew, 0, sizeof(knew));
+<<<<<<< HEAD
 			knew.name = ak->adc_info[mixer_ch].selector_name;
 			if (!knew.name) {
 				knew.name = "Capture Channel";
 				knew.index = mixer_ch + ak->idx_offset * 2;
 			}
+=======
+			if (!ak->adc_info ||
+				!ak->adc_info[mixer_ch].selector_name) {
+				knew.name = "Capture Channel";
+				knew.index = mixer_ch + ak->idx_offset * 2;
+			} else
+				knew.name = ak->adc_info[mixer_ch].selector_name;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 			knew.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
 			knew.info = ak4xxx_capture_source_info;

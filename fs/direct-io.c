@@ -37,8 +37,11 @@
 #include <linux/uio.h>
 #include <linux/atomic.h>
 #include <linux/prefetch.h>
+<<<<<<< HEAD
 #define __FS_HAS_ENCRYPTION IS_ENABLED(CONFIG_F2FS_FS_ENCRYPTION)
 #include <linux/fscrypt.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 /*
  * How many user pages to map in one call to get_user_pages().  This determines
@@ -454,6 +457,7 @@ dio_bio_alloc(struct dio *dio, struct dio_submit *sdio,
 	sdio->logical_offset_in_bio = sdio->cur_page_fs_offset;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PFK
 static bool is_inode_filesystem_type(const struct inode *inode,
 					const char *fs_type)
@@ -471,6 +475,8 @@ static bool is_inode_filesystem_type(const struct inode *inode,
 }
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * In the AIO read case we speculatively dirty the pages before starting IO.
  * During IO completion, any of these pages which happen to have been written
@@ -493,6 +499,7 @@ static inline void dio_bio_submit(struct dio *dio, struct dio_submit *sdio)
 		bio_set_pages_dirty(bio);
 
 	dio->bio_disk = bio->bi_disk;
+<<<<<<< HEAD
 #ifdef CONFIG_PFK
 	bio->bi_dio_inode = dio->inode;
 
@@ -504,6 +511,9 @@ static inline void dio_bio_submit(struct dio *dio, struct dio_submit *sdio)
 		fscrypt_set_ice_dun(dio->inode, bio, PG_DUN_NEW(dio->inode,
 			(sdio->logical_offset_in_bio >> PAGE_SHIFT)));
 #endif
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (sdio->submit_io) {
 		sdio->submit_io(bio, dio->inode, sdio->logical_offset_in_bio);
 		dio->bio_cookie = BLK_QC_T_NONE;
@@ -515,6 +525,7 @@ static inline void dio_bio_submit(struct dio *dio, struct dio_submit *sdio)
 	sdio->logical_offset_in_bio = 0;
 }
 
+<<<<<<< HEAD
 struct inode *dio_bio_get_inode(struct bio *bio)
 {
 	struct inode *inode = NULL;
@@ -527,6 +538,8 @@ struct inode *dio_bio_get_inode(struct bio *bio)
 	return inode;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Release any resources in case of a failure
  */
@@ -898,6 +911,10 @@ submit_page_section(struct dio *dio, struct dio_submit *sdio, struct page *page,
 		    struct buffer_head *map_bh)
 {
 	int ret = 0;
+<<<<<<< HEAD
+=======
+	int boundary = sdio->boundary;	/* dio_send_cur_page may clear it */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (dio->op == REQ_OP_WRITE) {
 		/*
@@ -936,10 +953,17 @@ submit_page_section(struct dio *dio, struct dio_submit *sdio, struct page *page,
 	sdio->cur_page_fs_offset = sdio->block_in_file << sdio->blkbits;
 out:
 	/*
+<<<<<<< HEAD
 	 * If sdio->boundary then we want to schedule the IO now to
 	 * avoid metadata seeks.
 	 */
 	if (sdio->boundary) {
+=======
+	 * If boundary then we want to schedule the IO now to
+	 * avoid metadata seeks.
+	 */
+	if (boundary) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ret = dio_send_cur_page(dio, sdio, map_bh);
 		if (sdio->bio)
 			dio_bio_submit(dio, sdio);

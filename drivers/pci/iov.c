@@ -179,6 +179,10 @@ int pci_iov_add_virtfn(struct pci_dev *dev, int id, int reset)
 failed2:
 	sysfs_remove_link(&dev->dev.kobj, buf);
 failed1:
+<<<<<<< HEAD
+=======
+	pci_stop_and_remove_bus_device(virtfn);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pci_dev_put(dev);
 	pci_stop_and_remove_bus_device(virtfn);
 failed0:

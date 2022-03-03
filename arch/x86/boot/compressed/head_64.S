@@ -41,6 +41,10 @@
 	.hidden _ebss
 	.hidden _got
 	.hidden _egot
+<<<<<<< HEAD
+=======
+	.hidden _end
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	__HEAD
 	.code32
@@ -105,7 +109,11 @@ ENTRY(startup_32)
 	notl	%eax
 	andl	%eax, %ebx
 	cmpl	$LOAD_PHYSICAL_ADDR, %ebx
+<<<<<<< HEAD
 	jge	1f
+=======
+	jae	1f
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 	movl	$LOAD_PHYSICAL_ADDR, %ebx
 1:
@@ -227,6 +235,14 @@ ENTRY(efi32_stub_entry)
 	leal	efi32_config(%ebp), %eax
 	movl	%eax, efi_config(%ebp)
 
+<<<<<<< HEAD
+=======
+	/* Disable paging */
+	movl	%cr0, %eax
+	btrl	$X86_CR0_PG_BIT, %eax
+	movl	%eax, %cr0
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	jmp	startup_32
 ENDPROC(efi32_stub_entry)
 #endif
@@ -275,7 +291,11 @@ ENTRY(startup_64)
 	notq	%rax
 	andq	%rax, %rbp
 	cmpq	$LOAD_PHYSICAL_ADDR, %rbp
+<<<<<<< HEAD
 	jge	1f
+=======
+	jae	1f
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif
 	movq	$LOAD_PHYSICAL_ADDR, %rbp
 1:

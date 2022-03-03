@@ -38,7 +38,10 @@ static struct bio *get_swap_bio(gfp_t gfp_flags,
 
 		bio->bi_iter.bi_sector = map_swap_page(page, &bdev);
 		bio_set_dev(bio, bdev);
+<<<<<<< HEAD
 		bio->bi_iter.bi_sector <<= PAGE_SHIFT - 9;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		bio->bi_end_io = end_io;
 
 		for (i = 0; i < nr; i++)
@@ -63,9 +66,14 @@ void end_swap_bio_write(struct bio *bio)
 		 * Also clear PG_reclaim to avoid rotate_reclaimable_page()
 		 */
 		set_page_dirty(page);
+<<<<<<< HEAD
 		pr_alert_ratelimited("Write-error on swap-device (%u:%u:%llu)\n",
 			 MAJOR(bio_dev(bio)),
 			 MINOR(bio_dev(bio)),
+=======
+		pr_alert("Write-error on swap-device (%u:%u:%llu)\n",
+			 MAJOR(bio_dev(bio)), MINOR(bio_dev(bio)),
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			 (unsigned long long)bio->bi_iter.bi_sector);
 		ClearPageReclaim(page);
 	}
@@ -262,11 +270,14 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static sector_t swap_page_sector(struct page *page)
 {
 	return (sector_t)__page_file_index(page) << (PAGE_SHIFT - 9);
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline void count_swpout_vm_event(struct page *page)
 {
 #ifdef CONFIG_TRANSPARENT_HUGEPAGE
@@ -325,7 +336,12 @@ int __swap_writepage(struct page *page, struct writeback_control *wbc,
 		return ret;
 	}
 
+<<<<<<< HEAD
 	ret = bdev_write_page(sis->bdev, swap_page_sector(page), page, wbc);
+=======
+	ret = bdev_write_page(sis->bdev, map_swap_page(page, &sis->bdev),
+			      page, wbc);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!ret) {
 		count_swpout_vm_event(page);
 		return 0;
@@ -348,7 +364,11 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 int swap_readpage(struct page *page, bool synchronous)
+=======
+int swap_readpage(struct page *page, bool do_poll)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct bio *bio;
 	int ret = 0;
@@ -356,7 +376,11 @@ int swap_readpage(struct page *page, bool synchronous)
 	blk_qc_t qc;
 	struct gendisk *disk;
 
+<<<<<<< HEAD
 	VM_BUG_ON_PAGE(!PageSwapCache(page) && !synchronous, page);
+=======
+	VM_BUG_ON_PAGE(!PageSwapCache(page), page);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	VM_BUG_ON_PAGE(!PageLocked(page), page);
 	VM_BUG_ON_PAGE(PageUptodate(page), page);
 	if (frontswap_load(page) == 0) {
@@ -375,7 +399,11 @@ int swap_readpage(struct page *page, bool synchronous)
 		return ret;
 	}
 
+<<<<<<< HEAD
 	ret = bdev_read_page(sis->bdev, swap_page_sector(page), page);
+=======
+	ret = bdev_read_page(sis->bdev, map_swap_page(page, &sis->bdev), page);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (!ret) {
 		if (trylock_page(page)) {
 			swap_slot_free_notify(page);
@@ -404,7 +432,11 @@ int swap_readpage(struct page *page, bool synchronous)
 	count_vm_event(PSWPIN);
 	bio_get(bio);
 	qc = submit_bio(bio);
+<<<<<<< HEAD
 	while (synchronous) {
+=======
+	while (do_poll) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		set_current_state(TASK_UNINTERRUPTIBLE);
 		if (!READ_ONCE(bio->bi_private))
 			break;

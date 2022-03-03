@@ -837,15 +837,23 @@ extern int vmw_execbuf_fence_commands(struct drm_file *file_priv,
 				      struct vmw_private *dev_priv,
 				      struct vmw_fence_obj **p_fence,
 				      uint32_t *p_handle);
+<<<<<<< HEAD
 extern void vmw_execbuf_copy_fence_user(struct vmw_private *dev_priv,
+=======
+extern int vmw_execbuf_copy_fence_user(struct vmw_private *dev_priv,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 					struct vmw_fpriv *vmw_fp,
 					int ret,
 					struct drm_vmw_fence_rep __user
 					*user_fence_rep,
 					struct vmw_fence_obj *fence,
 					uint32_t fence_handle,
+<<<<<<< HEAD
 					int32_t out_fence_fd,
 					struct sync_file *sync_file);
+=======
+					int32_t out_fence_fd);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 extern int vmw_validate_single_buffer(struct vmw_private *dev_priv,
 				      struct ttm_buffer_object *bo,
 				      bool interruptible,

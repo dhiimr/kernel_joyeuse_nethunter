@@ -30,6 +30,7 @@ typedef void (*alternative_cb_t)(struct alt_instr *alt,
 void __init apply_alternatives_all(void);
 void apply_alternatives(void *start, size_t length);
 
+<<<<<<< HEAD
 #define ALTINSTR_ENTRY(feature,cb)					      \
 	" .word 661b - .\n"				/* label           */ \
 	" .if " __stringify(cb) " == 0\n"				      \
@@ -37,6 +38,18 @@ void apply_alternatives(void *start, size_t length);
 	" .else\n"							      \
 	" .word " __stringify(cb) "- .\n"		/* callback */	      \
 	" .endif\n"							      \
+=======
+#define ALTINSTR_ENTRY(feature)					              \
+	" .word 661b - .\n"				/* label           */ \
+	" .word 663f - .\n"				/* new instruction */ \
+	" .hword " __stringify(feature) "\n"		/* feature bit     */ \
+	" .byte 662b-661b\n"				/* source len      */ \
+	" .byte 664f-663f\n"				/* replacement len */
+
+#define ALTINSTR_ENTRY_CB(feature, cb)					      \
+	" .word 661b - .\n"				/* label           */ \
+	" .word " __stringify(cb) "- .\n"		/* callback */	      \
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	" .hword " __stringify(feature) "\n"		/* feature bit     */ \
 	" .byte 662b-661b\n"				/* source len      */ \
 	" .byte 664f-663f\n"				/* replacement len */
@@ -57,12 +70,17 @@ void apply_alternatives(void *start, size_t length);
  *
  * Alternatives with callbacks do not generate replacement instructions.
  */
+<<<<<<< HEAD
 #define __ALTERNATIVE_CFG(oldinstr, newinstr, feature, cfg_enabled, cb)	\
+=======
+#define __ALTERNATIVE_CFG(oldinstr, newinstr, feature, cfg_enabled)	\
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	".if "__stringify(cfg_enabled)" == 1\n"				\
 	"661:\n\t"							\
 	oldinstr "\n"							\
 	"662:\n"							\
 	".pushsection .altinstructions,\"a\"\n"				\
+<<<<<<< HEAD
 	ALTINSTR_ENTRY(feature,cb)					\
 	".popsection\n"							\
 	" .if " __stringify(cb) " == 0\n"				\
@@ -84,6 +102,36 @@ void apply_alternatives(void *start, size_t length);
 
 #define ALTERNATIVE_CB(oldinstr, cb) \
 	__ALTERNATIVE_CFG(oldinstr, "NOT_AN_INSTRUCTION", ARM64_CB_PATCH, 1, cb)
+=======
+	ALTINSTR_ENTRY(feature)						\
+	".popsection\n"							\
+	".subsection 1\n"						\
+	"663:\n\t"							\
+	newinstr "\n"							\
+	"664:\n\t"							\
+	".org	. - (664b-663b) + (662b-661b)\n\t"			\
+	".org	. - (662b-661b) + (664b-663b)\n\t"			\
+	".previous\n"							\
+	".endif\n"
+
+#define __ALTERNATIVE_CFG_CB(oldinstr, feature, cfg_enabled, cb)	\
+	".if "__stringify(cfg_enabled)" == 1\n"				\
+	"661:\n\t"							\
+	oldinstr "\n"							\
+	"662:\n"							\
+	".pushsection .altinstructions,\"a\"\n"				\
+	ALTINSTR_ENTRY_CB(feature, cb)					\
+	".popsection\n"							\
+	"663:\n\t"							\
+	"664:\n\t"							\
+	".endif\n"
+
+#define _ALTERNATIVE_CFG(oldinstr, newinstr, feature, cfg, ...)	\
+	__ALTERNATIVE_CFG(oldinstr, newinstr, feature, IS_ENABLED(cfg))
+
+#define ALTERNATIVE_CB(oldinstr, cb) \
+	__ALTERNATIVE_CFG_CB(oldinstr, ARM64_CB_PATCH, 1, cb)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #else
 
 #include <asm/assembler.h>
@@ -102,11 +150,19 @@ void apply_alternatives(void *start, size_t length);
 662:	.pushsection .altinstructions, "a"
 	altinstruction_entry 661b, 663f, \cap, 662b-661b, 664f-663f
 	.popsection
+<<<<<<< HEAD
 	.pushsection .altinstr_replacement, "ax"
 663:	\insn2
 664:	.popsection
 	.org	. - (664b-663b) + (662b-661b)
 	.org	. - (662b-661b) + (664b-663b)
+=======
+	.subsection 1
+663:	\insn2
+664:	.org	. - (664b-663b) + (662b-661b)
+	.org	. - (662b-661b) + (664b-663b)
+	.previous
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.endif
 .endm
 
@@ -145,7 +201,11 @@ void apply_alternatives(void *start, size_t length);
 	.pushsection .altinstructions, "a"
 	altinstruction_entry 663f, 661f, \cap, 664f-663f, 662f-661f
 	.popsection
+<<<<<<< HEAD
 	.pushsection .altinstr_replacement, "ax"
+=======
+	.subsection 1
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.align 2	/* So GAS knows label 661 is suitably aligned */
 661:
 .endm
@@ -164,9 +224,15 @@ void apply_alternatives(void *start, size_t length);
 .macro alternative_else
 662:
 	.if .Lasm_alt_mode==0
+<<<<<<< HEAD
 	.pushsection .altinstr_replacement, "ax"
 	.else
 	.popsection
+=======
+	.subsection 1
+	.else
+	.previous
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.endif
 663:
 .endm
@@ -176,11 +242,19 @@ void apply_alternatives(void *start, size_t length);
  */
 .macro alternative_endif
 664:
+<<<<<<< HEAD
 	.if .Lasm_alt_mode==0
 	.popsection
 	.endif
 	.org	. - (664b-663b) + (662b-661b)
 	.org	. - (662b-661b) + (664b-663b)
+=======
+	.org	. - (664b-663b) + (662b-661b)
+	.org	. - (662b-661b) + (664b-663b)
+	.if .Lasm_alt_mode==0
+	.previous
+	.endif
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 .endm
 
 /*
@@ -206,7 +280,11 @@ alternative_endif
 
 .macro user_alt, label, oldinstr, newinstr, cond
 9999:	alternative_insn "\oldinstr", "\newinstr", \cond
+<<<<<<< HEAD
 	_ASM_EXTABLE 9999b, \label
+=======
+	_asm_extable 9999b, \label
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 .endm
 
 /*

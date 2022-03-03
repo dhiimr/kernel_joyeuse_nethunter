@@ -196,9 +196,17 @@ void rxrpc_disconnect_call(struct rxrpc_call *call)
 
 	call->peer->cong_cwnd = call->cong_cwnd;
 
+<<<<<<< HEAD
 	spin_lock_bh(&conn->params.peer->lock);
 	hlist_del_init(&call->error_link);
 	spin_unlock_bh(&conn->params.peer->lock);
+=======
+	if (!hlist_unhashed(&call->error_link)) {
+		spin_lock_bh(&conn->params.peer->lock);
+		hlist_del_init(&call->error_link);
+		spin_unlock_bh(&conn->params.peer->lock);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (rxrpc_is_client_call(call))
 		return rxrpc_disconnect_client_call(call);
@@ -207,9 +215,14 @@ void rxrpc_disconnect_call(struct rxrpc_call *call)
 	__rxrpc_disconnect_call(conn, call);
 	spin_unlock(&conn->channel_lock);
 
+<<<<<<< HEAD
 	call->conn = NULL;
 	conn->idle_timestamp = jiffies;
 	rxrpc_put_connection(conn);
+=======
+	set_bit(RXRPC_CALL_DISCONNECTED, &call->flags);
+	conn->idle_timestamp = jiffies;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*

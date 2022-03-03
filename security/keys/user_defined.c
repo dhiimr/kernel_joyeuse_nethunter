@@ -172,7 +172,11 @@ EXPORT_SYMBOL_GPL(user_describe);
  * read the key data
  * - the key's semaphore is read-locked
  */
+<<<<<<< HEAD
 long user_read(const struct key *key, char __user *buffer, size_t buflen)
+=======
+long user_read(const struct key *key, char *buffer, size_t buflen)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	const struct user_key_payload *upayload;
 	long ret;
@@ -185,8 +189,12 @@ long user_read(const struct key *key, char __user *buffer, size_t buflen)
 		if (buflen > upayload->datalen)
 			buflen = upayload->datalen;
 
+<<<<<<< HEAD
 		if (copy_to_user(buffer, upayload->data, buflen) != 0)
 			ret = -EFAULT;
+=======
+		memcpy(buffer, upayload->data, buflen);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return ret;

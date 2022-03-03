@@ -485,7 +485,11 @@ int br_add_if(struct net_bridge *br, struct net_device *dev)
 	struct net_bridge_port *p;
 	int err = 0;
 	unsigned br_hr, dev_hr;
+<<<<<<< HEAD
 	bool changed_addr;
+=======
+	bool changed_addr, fdb_synced = false;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Don't allow bridging non-ethernet like devices, or DSA-enabled
 	 * master network devices since the bridge layer rx_handler prevents
@@ -518,13 +522,25 @@ int br_add_if(struct net_bridge *br, struct net_device *dev)
 	call_netdevice_notifiers(NETDEV_JOIN, dev);
 
 	err = dev_set_allmulti(dev, 1);
+<<<<<<< HEAD
 	if (err)
 		goto put_back;
+=======
+	if (err) {
+		br_multicast_del_port(p);
+		kfree(p);	/* kobject not yet init'd, manually free */
+		goto err1;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = kobject_init_and_add(&p->kobj, &brport_ktype, &(dev->dev.kobj),
 				   SYSFS_BRIDGE_PORT_ATTR);
 	if (err)
+<<<<<<< HEAD
 		goto err1;
+=======
+		goto err2;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	err = br_sysfs_addif(p);
 	if (err)
@@ -553,6 +569,22 @@ int br_add_if(struct net_bridge *br, struct net_device *dev)
 	list_add_rcu(&p->list, &br->port_list);
 
 	nbp_update_port_count(br);
+<<<<<<< HEAD
+=======
+	if (!br_promisc_port(p) && (p->dev->priv_flags & IFF_UNICAST_FLT)) {
+		/* When updating the port count we also update all ports'
+		 * promiscuous mode.
+		 * A port leaving promiscuous mode normally gets the bridge's
+		 * fdb synced to the unicast filter (if supported), however,
+		 * `br_port_clear_promisc` does not distinguish between
+		 * non-promiscuous ports and *new* ports, so we need to
+		 * sync explicitly here.
+		 */
+		fdb_synced = br_fdb_sync_static(br, p) == 0;
+		if (!fdb_synced)
+			netdev_err(dev, "failed to sync bridge static fdb addresses to this port\n");
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	netdev_update_features(br->dev);
 
@@ -593,6 +625,11 @@ int br_add_if(struct net_bridge *br, struct net_device *dev)
 	return 0;
 
 err7:
+<<<<<<< HEAD
+=======
+	if (fdb_synced)
+		br_fdb_unsync_static(br, p);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	list_del_rcu(&p->list);
 	br_fdb_delete_by_port(br, p, 0, 1);
 	nbp_update_port_count(br);
@@ -606,6 +643,7 @@ err4:
 err3:
 	sysfs_remove_link(br->ifobj, p->dev->name);
 err2:
+<<<<<<< HEAD
 	kobject_put(&p->kobj);
 	p = NULL; /* kobject_put frees */
 err1:
@@ -613,6 +651,13 @@ err1:
 put_back:
 	dev_put(dev);
 	kfree(p);
+=======
+	br_multicast_del_port(p);
+	kobject_put(&p->kobj);
+	dev_set_allmulti(dev, -1);
+err1:
+	dev_put(dev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return err;
 }
 
@@ -654,6 +699,7 @@ void br_port_flags_change(struct net_bridge_port *p, unsigned long mask)
 	if (mask & BR_AUTO_MASK)
 		nbp_update_port_count(br);
 }
+<<<<<<< HEAD
 
 /* br_port_dev_get()
  * Using the given addr, identify the port to which it is reachable,
@@ -685,3 +731,5 @@ struct net_device *br_port_dev_get(struct net_device *dev, unsigned char *addr)
 	return netdev;
 }
 EXPORT_SYMBOL(br_port_dev_get);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

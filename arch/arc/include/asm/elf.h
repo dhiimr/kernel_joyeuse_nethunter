@@ -26,7 +26,11 @@
 #define  R_ARC_32_PCREL		0x31
 
 /*to set parameters in the core dumps */
+<<<<<<< HEAD
 #define ELF_ARCH		EM_ARCOMPACT
+=======
+#define ELF_ARCH		EM_ARC_INUSE
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #define ELF_CLASS		ELFCLASS32
 
 #ifdef CONFIG_CPU_BIG_ENDIAN

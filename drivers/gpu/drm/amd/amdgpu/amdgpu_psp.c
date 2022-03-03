@@ -37,6 +37,7 @@ static void psp_set_funcs(struct amdgpu_device *adev);
 static int psp_early_init(void *handle)
 {
 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
+<<<<<<< HEAD
 
 	psp_set_funcs(adev);
 
@@ -49,6 +50,12 @@ static int psp_sw_init(void *handle)
 	struct psp_context *psp = &adev->psp;
 	int ret;
 
+=======
+	struct psp_context *psp = &adev->psp;
+
+	psp_set_funcs(adev);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	switch (adev->asic_type) {
 	case CHIP_VEGA10:
 		psp->init_microcode = psp_v3_1_init_microcode;
@@ -79,6 +86,18 @@ static int psp_sw_init(void *handle)
 
 	psp->adev = adev;
 
+<<<<<<< HEAD
+=======
+	return 0;
+}
+
+static int psp_sw_init(void *handle)
+{
+	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
+	struct psp_context *psp = &adev->psp;
+	int ret;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = psp_init_microcode(psp);
 	if (ret) {
 		DRM_ERROR("Failed to load psp firmware!\n");

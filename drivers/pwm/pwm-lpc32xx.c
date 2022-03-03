@@ -124,17 +124,28 @@ static int lpc32xx_pwm_probe(struct platform_device *pdev)
 	lpc32xx->chip.npwm = 1;
 	lpc32xx->chip.base = -1;
 
+<<<<<<< HEAD
+=======
+	/* If PWM is disabled, configure the output to the default value */
+	val = readl(lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
+	val &= ~PWM_PIN_LEVEL;
+	writel(val, lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ret = pwmchip_add(&lpc32xx->chip);
 	if (ret < 0) {
 		dev_err(&pdev->dev, "failed to add PWM chip, error %d\n", ret);
 		return ret;
 	}
 
+<<<<<<< HEAD
 	/* When PWM is disable, configure the output to the default value */
 	val = readl(lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
 	val &= ~PWM_PIN_LEVEL;
 	writel(val, lpc32xx->base + (lpc32xx->chip.pwms[0].hwpwm << 2));
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	platform_set_drvdata(pdev, lpc32xx);
 
 	return 0;

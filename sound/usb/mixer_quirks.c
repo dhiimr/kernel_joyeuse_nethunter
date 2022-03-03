@@ -169,7 +169,12 @@ static int add_single_ctl_with_resume(struct usb_mixer_interface *mixer,
 		return -ENOMEM;
 	}
 	kctl->private_free = snd_usb_mixer_elem_free;
+<<<<<<< HEAD
 	return snd_usb_mixer_add_control(list, kctl);
+=======
+	/* don't use snd_usb_mixer_add_control() here, this is a special list element */
+	return snd_usb_mixer_add_list(list, kctl, false);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /*
@@ -195,6 +200,10 @@ static const struct rc_config {
 	{ USB_ID(0x041e, 0x3042), 0, 1, 1, 1,  1,  0x000d }, /* Usb X-Fi S51 */
 	{ USB_ID(0x041e, 0x30df), 0, 1, 1, 1,  1,  0x000d }, /* Usb X-Fi S51 Pro */
 	{ USB_ID(0x041e, 0x3237), 0, 1, 1, 1,  1,  0x000d }, /* Usb X-Fi S51 Pro */
+<<<<<<< HEAD
+=======
+	{ USB_ID(0x041e, 0x3263), 0, 1, 1, 1,  1,  0x000d }, /* Usb X-Fi S51 Pro */
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	{ USB_ID(0x041e, 0x3048), 2, 2, 6, 6,  2,  0x6e91 }, /* Toshiba SB0500 */
 };
 
@@ -754,7 +763,11 @@ static int snd_ni_control_init_val(struct usb_mixer_interface *mixer,
 		return err;
 	}
 
+<<<<<<< HEAD
 	kctl->private_value |= (value << 24);
+=======
+	kctl->private_value |= ((unsigned int)value << 24);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -915,7 +928,11 @@ static int snd_ftu_eff_switch_init(struct usb_mixer_interface *mixer,
 	if (err < 0)
 		return err;
 
+<<<<<<< HEAD
 	kctl->private_value |= value[0] << 24;
+=======
+	kctl->private_value |= (unsigned int)value[0] << 24;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return 0;
 }
 
@@ -1171,7 +1188,11 @@ void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
 	int unitid = 12; /* SamleRate ExtensionUnit ID */
 
 	list_for_each_entry(mixer, &chip->mixer_list, list) {
+<<<<<<< HEAD
 		cval = (struct usb_mixer_elem_info *)mixer->id_elems[unitid];
+=======
+		cval = mixer_elem_list_to_info(mixer->id_elems[unitid]);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (cval) {
 			snd_usb_mixer_set_ctl_value(cval, UAC_SET_CUR,
 						    cval->control << 8,
@@ -1520,11 +1541,23 @@ static int snd_microii_spdif_default_get(struct snd_kcontrol *kcontrol,
 
 	/* use known values for that card: interface#1 altsetting#1 */
 	iface = usb_ifnum_to_if(chip->dev, 1);
+<<<<<<< HEAD
 	if (!iface || iface->num_altsetting < 2)
 		return -EINVAL;
 	alts = &iface->altsetting[1];
 	if (get_iface_desc(alts)->bNumEndpoints < 1)
 		return -EINVAL;
+=======
+	if (!iface || iface->num_altsetting < 2) {
+		err = -EINVAL;
+		goto end;
+	}
+	alts = &iface->altsetting[1];
+	if (get_iface_desc(alts)->bNumEndpoints < 1) {
+		err = -EINVAL;
+		goto end;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	ep = get_endpoint(alts, 0)->bEndpointAddress;
 
 	err = snd_usb_ctl_msg(chip->dev,

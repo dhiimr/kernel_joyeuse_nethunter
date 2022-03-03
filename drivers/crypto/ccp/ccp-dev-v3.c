@@ -590,6 +590,10 @@ const struct ccp_vdata ccpv3_platform = {
 	.setup = NULL,
 	.perform = &ccp3_actions,
 	.offset = 0,
+<<<<<<< HEAD
+=======
+	.rsamax = CCP_RSA_MAX_WIDTH,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 const struct ccp_vdata ccpv3 = {

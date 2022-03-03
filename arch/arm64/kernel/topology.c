@@ -21,7 +21,10 @@
 #include <linux/of.h>
 #include <linux/sched.h>
 #include <linux/sched/topology.h>
+<<<<<<< HEAD
 #include <linux/sched/energy.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/slab.h>
 #include <linux/string.h>
 
@@ -38,6 +41,7 @@ static int __init get_cpu_for_node(struct device_node *node)
 	if (!cpu_node)
 		return -1;
 
+<<<<<<< HEAD
 	cpu = of_cpu_node_to_id(cpu_node);
 	if (cpu >= 0)
 		topology_parse_cpu_capacity(cpu_node, cpu);
@@ -46,6 +50,20 @@ static int __init get_cpu_for_node(struct device_node *node)
 
 	of_node_put(cpu_node);
 	return cpu;
+=======
+	for_each_possible_cpu(cpu) {
+		if (of_get_cpu_node(cpu, NULL) == cpu_node) {
+			topology_parse_cpu_capacity(cpu_node, cpu);
+			of_node_put(cpu_node);
+			return cpu;
+		}
+	}
+
+	pr_crit("Unable to find CPU node for %pOF\n", cpu_node);
+
+	of_node_put(cpu_node);
+	return -1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static int __init parse_core(struct device_node *core, int cluster_id,
@@ -277,6 +295,7 @@ void store_cpu_topology(unsigned int cpuid)
 
 topology_populated:
 	update_siblings_masks(cpuid);
+<<<<<<< HEAD
 	topology_detect_flags();
 }
 
@@ -328,6 +347,9 @@ static struct sched_domain_topology_level arm64_topology[] = {
 	{ cpu_cpu_mask, NULL, cpu_system_energy, SD_INIT_NAME(SYS) },
 	{ NULL, }
 };
+=======
+}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static void __init reset_cpu_topology(void)
 {
@@ -349,14 +371,18 @@ static void __init reset_cpu_topology(void)
 
 void __init init_cpu_topology(void)
 {
+<<<<<<< HEAD
 	int cpu;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	reset_cpu_topology();
 
 	/*
 	 * Discard anything that was parsed if we hit an error so we
 	 * don't use partial information.
 	 */
+<<<<<<< HEAD
 	if (of_have_populated_dt() && parse_dt_topology()) {
 		reset_cpu_topology();
 	} else {
@@ -364,4 +390,8 @@ void __init init_cpu_topology(void)
 		for_each_possible_cpu(cpu)
 			update_siblings_masks(cpu);
 	}
+=======
+	if (of_have_populated_dt() && parse_dt_topology())
+		reset_cpu_topology();
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }

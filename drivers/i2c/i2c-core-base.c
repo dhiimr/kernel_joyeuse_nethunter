@@ -31,6 +31,10 @@
 #include <linux/i2c.h>
 #include <linux/idr.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <linux/irqflags.h>
 #include <linux/jump_label.h>
 #include <linux/kernel.h>
@@ -262,13 +266,22 @@ EXPORT_SYMBOL_GPL(i2c_recover_bus);
 static void i2c_init_recovery(struct i2c_adapter *adap)
 {
 	struct i2c_bus_recovery_info *bri = adap->bus_recovery_info;
+<<<<<<< HEAD
 	char *err_str;
+=======
+	char *err_str, *err_level = KERN_ERR;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!bri)
 		return;
 
 	if (!bri->recover_bus) {
+<<<<<<< HEAD
 		err_str = "no recover_bus() found";
+=======
+		err_str = "no suitable method provided";
+		err_level = KERN_DEBUG;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		goto err;
 	}
 
@@ -296,7 +309,11 @@ static void i2c_init_recovery(struct i2c_adapter *adap)
 
 	return;
  err:
+<<<<<<< HEAD
 	dev_err(&adap->dev, "Not using recovery: %s\n", err_str);
+=======
+	dev_printk(err_level, &adap->dev, "Not using recovery: %s\n", err_str);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	adap->bus_recovery_info = NULL;
 }
 
@@ -451,6 +468,11 @@ static void i2c_device_shutdown(struct device *dev)
 	driver = to_i2c_driver(dev->driver);
 	if (driver->shutdown)
 		driver->shutdown(client);
+<<<<<<< HEAD
+=======
+	else if (client->irq > 0)
+		disable_irq(client->irq);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void i2c_client_dev_release(struct device *dev)
@@ -1280,8 +1302,13 @@ static int i2c_register_adapter(struct i2c_adapter *adap)
 
 	/* create pre-declared device nodes */
 	of_i2c_register_devices(adap);
+<<<<<<< HEAD
 	i2c_acpi_register_devices(adap);
 	i2c_acpi_install_space_handler(adap);
+=======
+	i2c_acpi_install_space_handler(adap);
+	i2c_acpi_register_devices(adap);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (adap->nr < __i2c_first_dynamic_bus_num)
 		i2c_scan_static_board_info(adap);

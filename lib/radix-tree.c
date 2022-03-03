@@ -2184,7 +2184,11 @@ void __rcu **idr_get_free_cmn(struct radix_tree_root *root,
 			offset = radix_tree_find_next_bit(node, IDR_FREE,
 							offset + 1);
 			start = next_index(start, node, offset);
+<<<<<<< HEAD
 			if (start > max)
+=======
+			if (start > max || start == 0)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				return ERR_PTR(-ENOSPC);
 			while (offset == RADIX_TREE_MAP_SIZE) {
 				offset = node->offset + 1;

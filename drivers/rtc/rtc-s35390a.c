@@ -108,7 +108,11 @@ static int s35390a_get_reg(struct s35390a *s35390a, int reg, char *buf, int len)
 
 static int s35390a_init(struct s35390a *s35390a)
 {
+<<<<<<< HEAD
 	char buf;
+=======
+	u8 buf;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	int ret;
 	unsigned initcount = 0;
 

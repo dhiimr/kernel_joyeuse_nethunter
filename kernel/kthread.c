@@ -53,6 +53,10 @@ enum KTHREAD_BITS {
 	KTHREAD_IS_PER_CPU = 0,
 	KTHREAD_SHOULD_STOP,
 	KTHREAD_SHOULD_PARK,
+<<<<<<< HEAD
+=======
+	KTHREAD_IS_PARKED,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static inline void set_kthread_struct(void *kthread)
@@ -169,6 +173,7 @@ void *kthread_probe_data(struct task_struct *task)
 static void __kthread_parkme(struct kthread *self)
 {
 	for (;;) {
+<<<<<<< HEAD
 		/*
 		 * TASK_PARKED is a special state; we must serialize against
 		 * possible pending wakeups to avoid store-store collisions on
@@ -185,6 +190,16 @@ static void __kthread_parkme(struct kthread *self)
 		complete_all(&self->parked);
 		schedule();
 	}
+=======
+		set_current_state(TASK_PARKED);
+		if (!test_bit(KTHREAD_SHOULD_PARK, &self->flags))
+			break;
+		if (!test_and_set_bit(KTHREAD_IS_PARKED, &self->flags))
+			complete(&self->parked);
+		schedule();
+	}
+	clear_bit(KTHREAD_IS_PARKED, &self->flags);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	__set_current_state(TASK_RUNNING);
 }
 
@@ -440,11 +455,43 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
 		return p;
 	kthread_bind(p, cpu);
 	/* CPU hotplug need to bind once again when unparking the thread. */
+<<<<<<< HEAD
 	set_bit(KTHREAD_IS_PER_CPU, &to_kthread(p)->flags);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	to_kthread(p)->cpu = cpu;
 	return p;
 }
 
+<<<<<<< HEAD
+=======
+void kthread_set_per_cpu(struct task_struct *k, int cpu)
+{
+	struct kthread *kthread = to_kthread(k);
+	if (!kthread)
+		return;
+
+	WARN_ON_ONCE(!(k->flags & PF_NO_SETAFFINITY));
+
+	if (cpu < 0) {
+		clear_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
+		return;
+	}
+
+	kthread->cpu = cpu;
+	set_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
+}
+
+bool kthread_is_per_cpu(struct task_struct *k)
+{
+	struct kthread *kthread = to_kthread(k);
+	if (!kthread)
+		return false;
+
+	return test_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * kthread_unpark - unpark a thread created by kthread_create().
  * @k:		thread created by kthread_create().
@@ -457,6 +504,7 @@ void kthread_unpark(struct task_struct *k)
 {
 	struct kthread *kthread = to_kthread(k);
 
+<<<<<<< HEAD
 	/*
 	 * Newly created kthread was parked when the CPU was offline.
 	 * The binding was lost and we need to set it again.
@@ -470,6 +518,24 @@ void kthread_unpark(struct task_struct *k)
 	 * __kthread_parkme() will either see !SHOULD_PARK or get the wakeup.
 	 */
 	wake_up_state(k, TASK_PARKED);
+=======
+	clear_bit(KTHREAD_SHOULD_PARK, &kthread->flags);
+	/*
+	 * We clear the IS_PARKED bit here as we don't wait
+	 * until the task has left the park code. So if we'd
+	 * park before that happens we'd see the IS_PARKED bit
+	 * which might be about to be cleared.
+	 */
+	if (test_and_clear_bit(KTHREAD_IS_PARKED, &kthread->flags)) {
+		/*
+		 * Newly created kthread was parked when the CPU was offline.
+		 * The binding was lost and we need to set it again.
+		 */
+		if (test_bit(KTHREAD_IS_PER_CPU, &kthread->flags))
+			__kthread_bind(k, kthread->cpu, TASK_PARKED);
+		wake_up_state(k, TASK_PARKED);
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(kthread_unpark);
 
@@ -492,6 +558,7 @@ int kthread_park(struct task_struct *k)
 	if (WARN_ON(k->flags & PF_EXITING))
 		return -ENOSYS;
 
+<<<<<<< HEAD
 	set_bit(KTHREAD_SHOULD_PARK, &kthread->flags);
 	if (k != current) {
 		wake_up_process(k);
@@ -505,6 +572,14 @@ int kthread_park(struct task_struct *k)
 		 * get scheduled out.
 		 */
 		WARN_ON_ONCE(!wait_task_inactive(k, TASK_PARKED));
+=======
+	if (!test_bit(KTHREAD_IS_PARKED, &kthread->flags)) {
+		set_bit(KTHREAD_SHOULD_PARK, &kthread->flags);
+		if (k != current) {
+			wake_up_process(k);
+			wait_for_completion(&kthread->parked);
+		}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	return 0;
@@ -842,7 +917,12 @@ void kthread_delayed_work_timer_fn(unsigned long __data)
 	/* Move the work from worker->delayed_work_list. */
 	WARN_ON_ONCE(list_empty(&work->node));
 	list_del_init(&work->node);
+<<<<<<< HEAD
 	kthread_insert_work(worker, work, &worker->work_list);
+=======
+	if (!work->canceling)
+		kthread_insert_work(worker, work, &worker->work_list);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	spin_unlock(&worker->lock);
 }
@@ -964,8 +1044,43 @@ void kthread_flush_work(struct kthread_work *work)
 EXPORT_SYMBOL_GPL(kthread_flush_work);
 
 /*
+<<<<<<< HEAD
  * This function removes the work from the worker queue. Also it makes sure
  * that it won't get queued later via the delayed work's timer.
+=======
+ * Make sure that the timer is neither set nor running and could
+ * not manipulate the work list_head any longer.
+ *
+ * The function is called under worker->lock. The lock is temporary
+ * released but the timer can't be set again in the meantime.
+ */
+static void kthread_cancel_delayed_work_timer(struct kthread_work *work,
+					      unsigned long *flags)
+{
+	struct kthread_delayed_work *dwork =
+		container_of(work, struct kthread_delayed_work, work);
+	struct kthread_worker *worker = work->worker;
+
+	/*
+	 * del_timer_sync() must be called to make sure that the timer
+	 * callback is not running. The lock must be temporary released
+	 * to avoid a deadlock with the callback. In the meantime,
+	 * any queuing is blocked by setting the canceling counter.
+	 */
+	work->canceling++;
+	spin_unlock_irqrestore(&worker->lock, *flags);
+	del_timer_sync(&dwork->timer);
+	spin_lock_irqsave(&worker->lock, *flags);
+	work->canceling--;
+}
+
+/*
+ * This function removes the work from the worker queue.
+ *
+ * It is called under worker->lock. The caller must make sure that
+ * the timer used by delayed work is not running, e.g. by calling
+ * kthread_cancel_delayed_work_timer().
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * The work might still be in use when this function finishes. See the
  * current_work proceed by the worker.
@@ -973,6 +1088,7 @@ EXPORT_SYMBOL_GPL(kthread_flush_work);
  * Return: %true if @work was pending and successfully canceled,
  *	%false if @work was not pending
  */
+<<<<<<< HEAD
 static bool __kthread_cancel_work(struct kthread_work *work, bool is_dwork,
 				  unsigned long *flags)
 {
@@ -995,6 +1111,10 @@ static bool __kthread_cancel_work(struct kthread_work *work, bool is_dwork,
 		work->canceling--;
 	}
 
+=======
+static bool __kthread_cancel_work(struct kthread_work *work)
+{
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * Try to remove the work from a worker list. It might either
 	 * be from worker->work_list or from worker->delayed_work_list.
@@ -1047,11 +1167,31 @@ bool kthread_mod_delayed_work(struct kthread_worker *worker,
 	/* Work must not be used with >1 worker, see kthread_queue_work() */
 	WARN_ON_ONCE(work->worker != worker);
 
+<<<<<<< HEAD
 	/* Do not fight with another command that is canceling this work. */
 	if (work->canceling)
 		goto out;
 
 	ret = __kthread_cancel_work(work, true, &flags);
+=======
+	/*
+	 * Temporary cancel the work but do not fight with another command
+	 * that is canceling the work as well.
+	 *
+	 * It is a bit tricky because of possible races with another
+	 * mod_delayed_work() and cancel_delayed_work() callers.
+	 *
+	 * The timer must be canceled first because worker->lock is released
+	 * when doing so. But the work can be removed from the queue (list)
+	 * only when it can be queued again so that the return value can
+	 * be used for reference counting.
+	 */
+	kthread_cancel_delayed_work_timer(work, &flags);
+	if (work->canceling)
+		goto out;
+	ret = __kthread_cancel_work(work);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 fast_queue:
 	__kthread_queue_delayed_work(worker, dwork, delay);
 out:
@@ -1073,7 +1213,14 @@ static bool __kthread_cancel_work_sync(struct kthread_work *work, bool is_dwork)
 	/* Work must not be used with >1 worker, see kthread_queue_work(). */
 	WARN_ON_ONCE(work->worker != worker);
 
+<<<<<<< HEAD
 	ret = __kthread_cancel_work(work, is_dwork, &flags);
+=======
+	if (is_dwork)
+		kthread_cancel_delayed_work_timer(work, &flags);
+
+	ret = __kthread_cancel_work(work);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (worker->current_work != work)
 		goto out_fast;

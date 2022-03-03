@@ -6,6 +6,7 @@ wil6210-y += netdev.o
 wil6210-y += cfg80211.o
 wil6210-y += pcie_bus.o
 wil6210-$(CONFIG_WIL6210_DEBUGFS) += debugfs.o
+<<<<<<< HEAD
 wil6210-y += sysfs.o
 wil6210-y += wmi.o
 wil6210-y += interrupt.o
@@ -14,6 +15,13 @@ wil6210-y += txrx_edma.o
 wil6210-y += debug.o
 wil6210-y += rx_reorder.o
 wil6210-y += ioctl.o
+=======
+wil6210-y += wmi.o
+wil6210-y += interrupt.o
+wil6210-y += txrx.o
+wil6210-y += debug.o
+wil6210-y += rx_reorder.o
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 wil6210-y += fw.o
 wil6210-y += pm.o
 wil6210-y += pmc.o
@@ -22,6 +30,7 @@ wil6210-y += wil_platform.o
 wil6210-y += ethtool.o
 wil6210-y += wil_crash_dump.o
 wil6210-y += p2p.o
+<<<<<<< HEAD
 wil6210-y += ftm.o
 
 # for tracing framework to find trace.h
@@ -29,3 +38,8 @@ CFLAGS_trace.o := -I$(src)
 
 MSM_11AD_PATH = drivers/platform/msm/msm_11ad
 CFLAGS_wil_platform.o := -I$(MSM_11AD_PATH)
+=======
+
+# for tracing framework to find trace.h
+CFLAGS_trace.o := -I$(src)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

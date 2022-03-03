@@ -38,17 +38,31 @@ bool irq_fixup_move_pending(struct irq_desc *desc, bool force_clear)
 void irq_move_masked_irq(struct irq_data *idata)
 {
 	struct irq_desc *desc = irq_data_to_desc(idata);
+<<<<<<< HEAD
 	struct irq_chip *chip = desc->irq_data.chip;
 
 	if (likely(!irqd_is_setaffinity_pending(&desc->irq_data)))
 		return;
 
 	irqd_clr_move_pending(&desc->irq_data);
+=======
+	struct irq_data *data = &desc->irq_data;
+	struct irq_chip *chip = data->chip;
+
+	if (likely(!irqd_is_setaffinity_pending(data)))
+		return;
+
+	irqd_clr_move_pending(data);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * Paranoia: cpu-local interrupts shouldn't be calling in here anyway.
 	 */
+<<<<<<< HEAD
 	if (irqd_is_per_cpu(&desc->irq_data)) {
+=======
+	if (irqd_is_per_cpu(data)) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		WARN_ON(1);
 		return;
 	}
@@ -73,9 +87,26 @@ void irq_move_masked_irq(struct irq_data *idata)
 	 * For correct operation this depends on the caller
 	 * masking the irqs.
 	 */
+<<<<<<< HEAD
 	if (cpumask_any_and(desc->pending_mask, cpu_online_mask) < nr_cpu_ids)
 		irq_do_set_affinity(&desc->irq_data, desc->pending_mask, false);
 
+=======
+	if (cpumask_any_and(desc->pending_mask, cpu_online_mask) < nr_cpu_ids) {
+		int ret;
+
+		ret = irq_do_set_affinity(data, desc->pending_mask, false);
+		/*
+		 * If the there is a cleanup pending in the underlying
+		 * vector management, reschedule the move for the next
+		 * interrupt. Leave desc->pending_mask intact.
+		 */
+		if (ret == -EBUSY) {
+			irqd_set_move_pending(data);
+			return;
+		}
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cpumask_clear(desc->pending_mask);
 }
 

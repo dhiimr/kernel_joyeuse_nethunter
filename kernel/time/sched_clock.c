@@ -71,9 +71,12 @@ struct clock_data {
 
 static struct hrtimer sched_clock_timer;
 static int irqtime = -1;
+<<<<<<< HEAD
 static u64 suspend_ns;
 static u64 suspend_cycles;
 static u64 resume_cycles;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 core_param(irqtime, irqtime, int, 0400);
 
@@ -278,29 +281,43 @@ static u64 notrace suspended_sched_clock_read(void)
 	return cd.read_data[seq & 1].epoch_cyc;
 }
 
+<<<<<<< HEAD
 int sched_clock_suspend(void)
+=======
+static int sched_clock_suspend(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct clock_read_data *rd = &cd.read_data[0];
 
 	update_sched_clock();
+<<<<<<< HEAD
 
 	suspend_ns = rd->epoch_ns;
 	suspend_cycles = rd->epoch_cyc;
 	pr_info("suspend ns:%17llu	suspend cycles:%17llu\n",
 				rd->epoch_ns, rd->epoch_cyc);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hrtimer_cancel(&sched_clock_timer);
 	rd->read_sched_clock = suspended_sched_clock_read;
 
 	return 0;
 }
 
+<<<<<<< HEAD
 void sched_clock_resume(void)
+=======
+static void sched_clock_resume(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct clock_read_data *rd = &cd.read_data[0];
 
 	rd->epoch_cyc = cd.actual_read_sched_clock();
+<<<<<<< HEAD
 	resume_cycles = rd->epoch_cyc;
 	pr_info("resume cycles:%17llu\n", rd->epoch_cyc);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	hrtimer_start(&sched_clock_timer, cd.wrap_kt, HRTIMER_MODE_REL);
 	rd->read_sched_clock = cd.actual_read_sched_clock;
 }

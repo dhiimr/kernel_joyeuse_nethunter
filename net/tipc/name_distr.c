@@ -224,7 +224,12 @@ static void tipc_publ_purge(struct net *net, struct publication *publ, u32 addr)
 		       publ->key);
 	}
 
+<<<<<<< HEAD
 	kfree_rcu(p, rcu);
+=======
+	if (p)
+		kfree_rcu(p, rcu);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 /**
@@ -287,7 +292,11 @@ static bool tipc_update_nametbl(struct net *net, struct distr_item *i,
 			return true;
 		}
 	} else {
+<<<<<<< HEAD
 		pr_warn("Unrecognized name table message received\n");
+=======
+		pr_warn_ratelimited("Unknown name table message received\n");
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 	return false;
 }

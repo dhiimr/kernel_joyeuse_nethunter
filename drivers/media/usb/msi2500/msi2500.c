@@ -1250,7 +1250,11 @@ static int msi2500_probe(struct usb_interface *intf,
 	}
 
 	dev->master = master;
+<<<<<<< HEAD
 	master->bus_num = 0;
+=======
+	master->bus_num = -1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	master->num_chipselect = 1;
 	master->transfer_one_message = msi2500_transfer_one_message;
 	spi_master_set_devdata(master, dev);

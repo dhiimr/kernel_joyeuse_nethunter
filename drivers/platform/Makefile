@@ -8,4 +8,7 @@ obj-$(CONFIG_MIPS)		+= mips/
 obj-$(CONFIG_OLPC)		+= olpc/
 obj-$(CONFIG_GOLDFISH)		+= goldfish/
 obj-$(CONFIG_CHROME_PLATFORMS)	+= chrome/
+<<<<<<< HEAD
 obj-$(CONFIG_ARCH_QCOM)		+= msm/
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

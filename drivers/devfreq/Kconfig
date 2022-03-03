@@ -73,6 +73,7 @@ config DEVFREQ_GOV_PASSIVE
 	  through sysfs entries. The passive governor recommends that
 	  devfreq device uses the OPP table to get the frequency/voltage.
 
+<<<<<<< HEAD
 config DEVFREQ_GOV_CPUFREQ
 	tristate "CPUfreq"
 	depends on CPU_FREQ
@@ -175,6 +176,10 @@ config DEVFREQ_GOV_QCOM_GPUBW_MON
 	  This governor is unlikely to be useful for non-Adreno
 	  devices.
 
+=======
+comment "DEVFREQ Drivers"
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config ARM_EXYNOS_BUS_DEVFREQ
 	tristate "ARM EXYNOS Generic Memory Bus DEVFREQ Driver"
 	depends on ARCH_EXYNOS || COMPILE_TEST
@@ -203,7 +208,12 @@ config ARM_TEGRA_DEVFREQ
 
 config ARM_RK3399_DMC_DEVFREQ
 	tristate "ARM RK3399 DMC DEVFREQ Driver"
+<<<<<<< HEAD
 	depends on ARCH_ROCKCHIP
+=======
+	depends on (ARCH_ROCKCHIP && HAVE_ARM_SMCCC) || \
+		(COMPILE_TEST && HAVE_ARM_SMCCC)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select DEVFREQ_EVENT_ROCKCHIP_DFI
 	select DEVFREQ_GOV_SIMPLE_ONDEMAND
 	select PM_DEVFREQ_EVENT
@@ -213,6 +223,7 @@ config ARM_RK3399_DMC_DEVFREQ
           It sets the frequency for the memory controller and reads the usage counts
           from hardware.
 
+<<<<<<< HEAD
 config DEVFREQ_SIMPLE_DEV
 	tristate "Device driver for simple clock device with no status info"
 	select DEVFREQ_GOV_PERFORMANCE
@@ -262,6 +273,8 @@ config DEVFREQ_GOV_CDSPL3
 	  CDSP resource manager will use this governor to vote for L3 clock
 	  for IO-coherent traffic generated from CDSP
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 source "drivers/devfreq/event/Kconfig"
 
 endif # PM_DEVFREQ

@@ -72,12 +72,20 @@ static const char *dma_mode_name(unsigned int mode)
 	}
 }
 
+<<<<<<< HEAD
 static int tw686x_dma_mode_get(char *buffer, const struct kernel_param *kp)
+=======
+static int tw686x_dma_mode_get(char *buffer, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	return sprintf(buffer, "%s", dma_mode_name(dma_mode));
 }
 
+<<<<<<< HEAD
 static int tw686x_dma_mode_set(const char *val, const struct kernel_param *kp)
+=======
+static int tw686x_dma_mode_set(const char *val, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	if (!strcasecmp(val, dma_mode_name(TW686X_DMA_MODE_MEMCPY)))
 		dma_mode = TW686X_DMA_MODE_MEMCPY;

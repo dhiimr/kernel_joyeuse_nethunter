@@ -304,6 +304,10 @@ static int nfcmrvl_probe(struct usb_interface *intf,
 
 	/* No configuration for USB */
 	memset(&config, 0, sizeof(config));
+<<<<<<< HEAD
+=======
+	config.reset_n_io = -EINVAL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	nfc_info(&udev->dev, "intf %p id %p\n", intf, id);
 

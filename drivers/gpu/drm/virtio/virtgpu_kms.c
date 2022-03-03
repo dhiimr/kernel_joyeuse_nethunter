@@ -113,8 +113,15 @@ static void virtio_gpu_get_capsets(struct virtio_gpu_device *vgdev,
 					 vgdev->capsets[i].id > 0, 5 * HZ);
 		if (ret == 0) {
 			DRM_ERROR("timed out waiting for cap set %d\n", i);
+<<<<<<< HEAD
 			kfree(vgdev->capsets);
 			vgdev->capsets = NULL;
+=======
+			spin_lock(&vgdev->display_info_lock);
+			kfree(vgdev->capsets);
+			vgdev->capsets = NULL;
+			spin_unlock(&vgdev->display_info_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			return;
 		}
 		DRM_INFO("cap set %d: id %d, max-version %d, max-size %d\n",
@@ -235,6 +242,10 @@ err_ttm:
 err_vbufs:
 	vgdev->vdev->config->del_vqs(vgdev->vdev);
 err_vqs:
+<<<<<<< HEAD
+=======
+	dev->dev_private = NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kfree(vgdev);
 	return ret;
 }

@@ -161,7 +161,10 @@ config MEMORY_HOTPLUG
 	bool "Allow for memory hot-add"
 	depends on SPARSEMEM || X86_64_ACPI_NUMA
 	depends on ARCH_ENABLE_MEMORY_HOTPLUG
+<<<<<<< HEAD
 	depends on ARM64
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 config MEMORY_HOTPLUG_SPARSE
 	def_bool y
@@ -183,6 +186,7 @@ config MEMORY_HOTPLUG_DEFAULT_ONLINE
 	  Say N here if you want the default policy to keep all hot-plugged
 	  memory blocks in 'offline' state.
 
+<<<<<<< HEAD
 config MEMORY_HOTPLUG_MOVABLE_NODE
         bool "Add hot-added memory blocks to ZONE_MOVABLE type"
         default n
@@ -202,6 +206,8 @@ config MEMORY_HOTPLUG_MOVABLE_NODE
 	  Say N here if you want the default policy to add all hot-added
 	  memory blocks in 'ZONE_NORMAL' type.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config MEMORY_HOTREMOVE
 	bool "Allow for memory hot remove"
 	select MEMORY_ISOLATION
@@ -536,6 +542,7 @@ config CMA_DEBUGFS
 	help
 	  Turns on the DebugFS interface for CMA.
 
+<<<<<<< HEAD
 config  CMA_ALLOW_WRITE_DEBUGFS
 	depends on CMA_DEBUGFS
 	bool "Allow CMA debugfs write"
@@ -545,6 +552,8 @@ config  CMA_ALLOW_WRITE_DEBUGFS
 	  cma allocation, so it is not recommended to
 	  enable this option on any production device.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config CMA_AREAS
 	int "Maximum count of the CMA areas"
 	depends on CMA
@@ -668,6 +677,7 @@ config MAX_STACK_SIZE_MB
 
 	  A sane initial value is 80 MB.
 
+<<<<<<< HEAD
 config BALANCE_ANON_FILE_RECLAIM
 	bool "During reclaim treat anon and file backed pages equally"
 	depends on SWAP
@@ -677,6 +687,8 @@ config BALANCE_ANON_FILE_RECLAIM
 	  Swapping anonymous pages out to memory can be efficient enough to justify
 	  treating anonymous and file backed pages equally.
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 # For architectures that support deferred memory initialisation
 config ARCH_SUPPORTS_DEFERRED_STRUCT_PAGE_INIT
 	bool
@@ -746,12 +758,19 @@ config MIGRATE_VMA_HELPER
 
 config HMM
 	bool
+<<<<<<< HEAD
+=======
+	select MMU_NOTIFIER
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select MIGRATE_VMA_HELPER
 
 config HMM_MIRROR
 	bool "HMM mirror CPU page table into a device page table"
 	depends on ARCH_HAS_HMM
+<<<<<<< HEAD
 	select MMU_NOTIFIER
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	select HMM
 	help
 	  Select HMM_MIRROR if you want to mirror range of the CPU page table of a
@@ -795,6 +814,7 @@ config PERCPU_STATS
 	  This feature collects and exposes statistics via debugfs. The
 	  information includes global and per chunk statistics, which can
 	  be used to help understand percpu memory usage.
+<<<<<<< HEAD
 
 config ARCH_SUPPORTS_SPECULATIVE_PAGE_FAULT
        def_bool n
@@ -841,3 +861,5 @@ config PROCESS_RECLAIM
 	 (addr, addr + size-bytes) of the process.
 
 	 Any other value is ignored.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f

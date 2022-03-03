@@ -8,6 +8,7 @@
 #include <linux/of_pci.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 static inline bool __of_pci_pci_compare_id(struct device_node *node,
 					struct pci_dev *dev)
 {
@@ -22,6 +23,8 @@ static inline bool __of_pci_pci_compare_id(struct device_node *node,
 	return true;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline int __of_pci_pci_compare(struct device_node *node,
 				       unsigned int data)
 {
@@ -34,6 +37,7 @@ static inline int __of_pci_pci_compare(struct device_node *node,
 	return devfn == data;
 }
 
+<<<<<<< HEAD
 struct device_node *of_pci_find_child_device(struct pci_dev *dev)
 {
 	struct device_node *node, *node2;
@@ -45,6 +49,16 @@ struct device_node *of_pci_find_child_device(struct pci_dev *dev)
 			if (__of_pci_pci_compare_id(node, dev))
 				return node;
 
+=======
+struct device_node *of_pci_find_child_device(struct device_node *parent,
+					     unsigned int devfn)
+{
+	struct device_node *node, *node2;
+
+	for_each_child_of_node(parent, node) {
+		if (__of_pci_pci_compare(node, devfn))
+			return node;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		/*
 		 * Some OFs create a parent node "multifunc-device" as
 		 * a fake root for all functions of a multi-function

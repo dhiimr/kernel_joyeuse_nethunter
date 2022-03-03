@@ -84,6 +84,11 @@ struct octeon_instr_queue {
 
 	u32 pkt_in_done;
 
+<<<<<<< HEAD
+=======
+	u32 pkts_processed;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/** A spinlock to protect access to the input ring.*/
 	spinlock_t iq_flush_running_lock;
 

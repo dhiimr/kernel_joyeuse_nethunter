@@ -244,7 +244,11 @@ struct chs_geom {
 static unsigned int ide_disks;
 static struct chs_geom ide_disks_chs[MAX_HWIFS * MAX_DRIVES];
 
+<<<<<<< HEAD
 static int ide_set_disk_chs(const char *str, const struct kernel_param *kp)
+=======
+static int ide_set_disk_chs(const char *str, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned int a, b, c = 0, h = 0, s = 0, i, j = 1;
 
@@ -328,7 +332,11 @@ static void ide_dev_apply_params(ide_drive_t *drive, u8 unit)
 
 static unsigned int ide_ignore_cable;
 
+<<<<<<< HEAD
 static int ide_set_ignore_cable(const char *s, const struct kernel_param *kp)
+=======
+static int ide_set_ignore_cable(const char *s, struct kernel_param *kp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int i, j = 1;
 

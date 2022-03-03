@@ -19,6 +19,14 @@ config UNIX
 
 	  Say Y unless you know what you are doing.
 
+<<<<<<< HEAD
+=======
+config UNIX_SCM
+	bool
+	depends on UNIX
+	default y
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 config UNIX_DIAG
 	tristate "UNIX: socket monitoring interface"
 	depends on UNIX

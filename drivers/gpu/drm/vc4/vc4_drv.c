@@ -283,6 +283,10 @@ unbind_all:
 	component_unbind_all(dev, drm);
 gem_destroy:
 	vc4_gem_destroy(drm);
+<<<<<<< HEAD
+=======
+	drm_mode_config_cleanup(drm);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	vc4_bo_cache_destroy(drm);
 dev_unref:
 	drm_dev_unref(drm);

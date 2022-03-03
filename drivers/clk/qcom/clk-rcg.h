@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2013, 2017-2018, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2013, The Linux Foundation. All rights reserved.
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -23,8 +27,11 @@ struct freq_tbl {
 	u8 pre_div;
 	u16 m;
 	u16 n;
+<<<<<<< HEAD
 	unsigned long src_freq;
 #define FIXED_FREQ_SRC   0
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 /**
@@ -159,10 +166,15 @@ extern const struct clk_ops clk_dyn_rcg_ops;
  * @parent_map: map from software's parent index to hardware's src_sel field
  * @freq_tbl: frequency table
  * @current_freq: last cached frequency when using branches with shared RCGs
+<<<<<<< HEAD
  * @enable_safe_config: When set, the RCG is parked at CXO when it's disabled
  * @clkr: regmap clock handle
  * @cfg_off: defines the cfg register offseted from the CMD_RCGR
  * @flags: additional flag parameters for the RCG
+=======
+ * @clkr: regmap clock handle
+ *
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  */
 struct clk_rcg2 {
 	u32			cmd_rcgr;
@@ -171,6 +183,7 @@ struct clk_rcg2 {
 	const struct parent_map	*parent_map;
 	const struct freq_tbl	*freq_tbl;
 	unsigned long		current_freq;
+<<<<<<< HEAD
 	bool			enable_safe_config;
 	struct clk_regmap	clkr;
 	u8			cfg_off;
@@ -178,6 +191,9 @@ struct clk_rcg2 {
 #define FORCE_ENABLE_RCG	BIT(0)
 #define DFS_ENABLE_RCG		BIT(1)
 #define HW_CLK_CTRL_MODE	BIT(2)
+=======
+	struct clk_regmap	clkr;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 #define to_clk_rcg2(_hw) container_of(to_clk_regmap(_hw), struct clk_rcg2, clkr)
@@ -190,10 +206,14 @@ extern const struct clk_ops clk_byte_ops;
 extern const struct clk_ops clk_byte2_ops;
 extern const struct clk_ops clk_pixel_ops;
 extern const struct clk_ops clk_gfx3d_ops;
+<<<<<<< HEAD
 extern const struct clk_ops clk_dp_ops;
 
 extern int clk_rcg2_get_dfs_clock_rate(struct clk_rcg2 *clk,
 				struct device *dev, u8 rcg_flags);
 extern unsigned long
 clk_rcg2_calc_rate(unsigned long rate, u32 m, u32 n, u32 mode, u32 hid_div);
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #endif

@@ -81,7 +81,11 @@ static void read_cache_pages_invalidate_pages(struct address_space *mapping,
  * Hides the details of the LRU cache etc from the filesystems.
  */
 int read_cache_pages(struct address_space *mapping, struct list_head *pages,
+<<<<<<< HEAD
 			int (*filler)(struct file *, struct page *), void *data)
+=======
+			int (*filler)(void *, struct page *), void *data)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	struct page *page;
 	int ret = 0;

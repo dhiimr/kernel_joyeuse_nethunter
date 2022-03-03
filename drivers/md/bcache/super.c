@@ -905,6 +905,10 @@ static void cached_dev_detach_finish(struct work_struct *w)
 	bch_write_bdev_super(dc, &cl);
 	closure_sync(&cl);
 
+<<<<<<< HEAD
+=======
+	calc_cached_dev_sectors(dc->disk.c);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bcache_device_detach(&dc->disk);
 	list_move(&dc->list, &uncached_devices);
 
@@ -1045,12 +1049,20 @@ int bch_cached_dev_attach(struct cached_dev *dc, struct cache_set *c,
 	}
 
 	if (BDEV_STATE(&dc->sb) == BDEV_STATE_DIRTY) {
+<<<<<<< HEAD
 		bch_sectors_dirty_init(&dc->disk);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		atomic_set(&dc->has_dirty, 1);
 		atomic_inc(&dc->count);
 		bch_writeback_queue(dc);
 	}
 
+<<<<<<< HEAD
+=======
+	bch_sectors_dirty_init(&dc->disk);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bch_cached_dev_run(dc);
 	bcache_device_link(&dc->disk, c, "bdev");
 
@@ -1356,6 +1368,10 @@ static void cache_set_free(struct closure *cl)
 	bch_btree_cache_free(c);
 	bch_journal_free(c);
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&bch_register_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for_each_cache(ca, c, i)
 		if (ca) {
 			ca->set = NULL;
@@ -1378,7 +1394,10 @@ static void cache_set_free(struct closure *cl)
 		mempool_destroy(c->search);
 	kfree(c->devices);
 
+<<<<<<< HEAD
 	mutex_lock(&bch_register_lock);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	list_del(&c->list);
 	mutex_unlock(&bch_register_lock);
 
@@ -1401,7 +1420,11 @@ static void cache_set_flush(struct closure *cl)
 	kobject_put(&c->internal);
 	kobject_del(&c->kobj);
 
+<<<<<<< HEAD
 	if (c->gc_thread)
+=======
+	if (!IS_ERR_OR_NULL(c->gc_thread))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kthread_stop(c->gc_thread);
 
 	if (!IS_ERR_OR_NULL(c->root))
@@ -1466,7 +1489,11 @@ void bch_cache_set_unregister(struct cache_set *c)
 }
 
 #define alloc_bucket_pages(gfp, c)			\
+<<<<<<< HEAD
 	((void *) __get_free_pages(__GFP_ZERO|gfp, ilog2(bucket_pages(c))))
+=======
+	((void *) __get_free_pages(__GFP_ZERO|__GFP_COMP|gfp, ilog2(bucket_pages(c))))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 struct cache_set *bch_cache_set_alloc(struct cache_sb *sb)
 {
@@ -1508,6 +1535,10 @@ struct cache_set *bch_cache_set_alloc(struct cache_sb *sb)
 	sema_init(&c->sb_write_mutex, 1);
 	mutex_init(&c->bucket_lock);
 	init_waitqueue_head(&c->btree_cache_wait);
+<<<<<<< HEAD
+=======
+	spin_lock_init(&c->btree_cannibalize_lock);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	init_waitqueue_head(&c->bucket_wait);
 	init_waitqueue_head(&c->gc_wait);
 	sema_init(&c->uuid_write_mutex, 1);
@@ -1559,7 +1590,11 @@ err:
 	return NULL;
 }
 
+<<<<<<< HEAD
 static void run_cache_set(struct cache_set *c)
+=======
+static int run_cache_set(struct cache_set *c)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	const char *err = "cannot allocate memory";
 	struct cached_dev *dc, *t;
@@ -1651,7 +1686,13 @@ static void run_cache_set(struct cache_set *c)
 		if (j->version < BCACHE_JSET_VERSION_UUID)
 			__uuid_write(c);
 
+<<<<<<< HEAD
 		bch_journal_replay(c, &journal);
+=======
+		err = "bcache: replay journal failed";
+		if (bch_journal_replay(c, &journal))
+			goto err;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else {
 		pr_notice("invalidating existing data");
 
@@ -1719,11 +1760,20 @@ static void run_cache_set(struct cache_set *c)
 	flash_devs_run(c);
 
 	set_bit(CACHE_SET_RUNNING, &c->flags);
+<<<<<<< HEAD
 	return;
+=======
+	return 0;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 err:
 	closure_sync(&cl);
 	/* XXX: test this, it's broken */
 	bch_cache_set_error(c, "%s", err);
+<<<<<<< HEAD
+=======
+
+	return -EIO;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static bool can_attach_cache(struct cache *ca, struct cache_set *c)
@@ -1774,7 +1824,18 @@ found:
 	    sysfs_create_link(&c->kobj, &ca->kobj, buf))
 		goto err;
 
+<<<<<<< HEAD
 	if (ca->sb.seq > c->sb.seq) {
+=======
+	/*
+	 * A special case is both ca->sb.seq and c->sb.seq are 0,
+	 * such condition happens on a new created cache device whose
+	 * super block is never flushed yet. In this case c->sb.version
+	 * and other members should be updated too, otherwise we will
+	 * have a mistaken super block version in cache set.
+	 */
+	if (ca->sb.seq > c->sb.seq || c->sb.seq == 0) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		c->sb.version		= ca->sb.version;
 		memcpy(c->sb.set_uuid, ca->sb.set_uuid, 16);
 		c->sb.flags             = ca->sb.flags;
@@ -1787,8 +1848,16 @@ found:
 	ca->set->cache[ca->sb.nr_this_dev] = ca;
 	c->cache_by_alloc[c->caches_loaded++] = ca;
 
+<<<<<<< HEAD
 	if (c->caches_loaded == c->sb.nr_in_set)
 		run_cache_set(c);
+=======
+	if (c->caches_loaded == c->sb.nr_in_set) {
+		err = "failed to run cache set";
+		if (run_cache_set(c) < 0)
+			goto err;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return NULL;
 err:

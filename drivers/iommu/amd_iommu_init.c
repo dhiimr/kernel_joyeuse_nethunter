@@ -30,6 +30,10 @@
 #include <linux/iommu.h>
 #include <linux/kmemleak.h>
 #include <linux/mem_encrypt.h>
+<<<<<<< HEAD
+=======
+#include <linux/iopoll.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/pci-direct.h>
 #include <asm/iommu.h>
 #include <asm/gart.h>
@@ -355,7 +359,11 @@ static void iommu_write_l2(struct amd_iommu *iommu, u8 address, u32 val)
 static void iommu_set_exclusion_range(struct amd_iommu *iommu)
 {
 	u64 start = iommu->exclusion_start & PAGE_MASK;
+<<<<<<< HEAD
 	u64 limit = (start + iommu->exclusion_length) & PAGE_MASK;
+=======
+	u64 limit = (start + iommu->exclusion_length - 1) & PAGE_MASK;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u64 entry;
 
 	if (!iommu->exclusion_start)
@@ -420,6 +428,12 @@ static void iommu_enable(struct amd_iommu *iommu)
 
 static void iommu_disable(struct amd_iommu *iommu)
 {
+<<<<<<< HEAD
+=======
+	if (!iommu->mmio_base)
+		return;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/* Disable command buffer */
 	iommu_feature_disable(iommu, CONTROL_CMDBUF_EN);
 
@@ -767,6 +781,10 @@ static int iommu_ga_log_enable(struct amd_iommu *iommu)
 		status = readl(iommu->mmio_base + MMIO_STATUS_OFFSET);
 		if (status & (MMIO_STATUS_GALOG_RUN_MASK))
 			break;
+<<<<<<< HEAD
+=======
+		udelay(10);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	if (i >= LOOP_TIMEOUT)
@@ -1314,8 +1332,13 @@ static int __init init_iommu_from_acpi(struct amd_iommu *iommu,
 		}
 		case IVHD_DEV_ACPI_HID: {
 			u16 devid;
+<<<<<<< HEAD
 			u8 hid[ACPIHID_HID_LEN] = {0};
 			u8 uid[ACPIHID_UID_LEN] = {0};
+=======
+			u8 hid[ACPIHID_HID_LEN];
+			u8 uid[ACPIHID_UID_LEN];
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			int ret;
 
 			if (h->type != 0x40) {
@@ -1332,6 +1355,10 @@ static int __init init_iommu_from_acpi(struct amd_iommu *iommu,
 				break;
 			}
 
+<<<<<<< HEAD
+=======
+			uid[0] = '\0';
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			switch (e->uidf) {
 			case UID_NOT_PRESENT:
 
@@ -1346,8 +1373,13 @@ static int __init init_iommu_from_acpi(struct amd_iommu *iommu,
 				break;
 			case UID_IS_CHARACTER:
 
+<<<<<<< HEAD
 				memcpy(uid, (u8 *)(&e->uid), ACPIHID_UID_LEN - 1);
 				uid[ACPIHID_UID_LEN - 1] = '\0';
+=======
+				memcpy(uid, &e->uid, e->uidl);
+				uid[e->uidl] = '\0';
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 				break;
 			default:
@@ -1692,7 +1724,11 @@ static const struct attribute_group *amd_iommu_groups[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 static int iommu_init_pci(struct amd_iommu *iommu)
+=======
+static int __init iommu_init_pci(struct amd_iommu *iommu)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	int cap_ptr = iommu->cap_ptr;
 	u32 range, misc, low, high;
@@ -2806,7 +2842,11 @@ static int __init parse_amd_iommu_intr(char *str)
 {
 	for (; *str; ++str) {
 		if (strncmp(str, "legacy", 6) == 0) {
+<<<<<<< HEAD
 			amd_iommu_guest_ir = AMD_IOMMU_GUEST_IR_LEGACY;
+=======
+			amd_iommu_guest_ir = AMD_IOMMU_GUEST_IR_LEGACY_GA;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			break;
 		}
 		if (strncmp(str, "vapic", 5) == 0) {

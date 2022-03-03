@@ -793,7 +793,11 @@ struct bnx2i_hba *bnx2i_alloc_hba(struct cnic_dev *cnic)
 		return NULL;
 	shost->dma_boundary = cnic->pcidev->dma_mask;
 	shost->transportt = bnx2i_scsi_xport_template;
+<<<<<<< HEAD
 	shost->max_id = ISCSI_MAX_CONNS_PER_HBA;
+=======
+	shost->max_id = ISCSI_MAX_CONNS_PER_HBA - 1;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	shost->max_channel = 0;
 	shost->max_lun = 512;
 	shost->max_cmd_len = 16;
@@ -915,12 +919,19 @@ void bnx2i_free_hba(struct bnx2i_hba *hba)
 	INIT_LIST_HEAD(&hba->ep_ofld_list);
 	INIT_LIST_HEAD(&hba->ep_active_list);
 	INIT_LIST_HEAD(&hba->ep_destroy_list);
+<<<<<<< HEAD
 	pci_dev_put(hba->pcidev);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (hba->regview) {
 		pci_iounmap(hba->pcidev, hba->regview);
 		hba->regview = NULL;
 	}
+<<<<<<< HEAD
+=======
+	pci_dev_put(hba->pcidev);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	bnx2i_free_mp_bdt(hba);
 	bnx2i_release_free_cid_que(hba);
 	iscsi_host_free(shost);

@@ -416,9 +416,15 @@ void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
 		     FIXADDR_END);
 	BUG_ON(idx >= __end_of_fixed_addresses);
 
+<<<<<<< HEAD
 	/* we only support device mappings until pgprot_kernel has been set */
 	if (WARN_ON(pgprot_val(prot) != pgprot_val(FIXMAP_PAGE_IO) &&
 		    pgprot_val(pgprot_kernel) == 0))
+=======
+	/* We support only device mappings before pgprot_kernel is set. */
+	if (WARN_ON(pgprot_val(prot) != pgprot_val(FIXMAP_PAGE_IO) &&
+		    pgprot_val(prot) && pgprot_val(pgprot_kernel) == 0))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		return;
 
 	if (pgprot_val(prot))
@@ -1175,10 +1181,35 @@ void __init adjust_lowmem_bounds(void)
 	 */
 	vmalloc_limit = (u64)(uintptr_t)vmalloc_min - PAGE_OFFSET + PHYS_OFFSET;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * The first usable region must be PMD aligned. Mark its start
+	 * as MEMBLOCK_NOMAP if it isn't
+	 */
+	for_each_memblock(memory, reg) {
+		if (!memblock_is_nomap(reg)) {
+			if (!IS_ALIGNED(reg->base, PMD_SIZE)) {
+				phys_addr_t len;
+
+				len = round_up(reg->base, PMD_SIZE) - reg->base;
+				memblock_mark_nomap(reg->base, len);
+			}
+			break;
+		}
+	}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for_each_memblock(memory, reg) {
 		phys_addr_t block_start = reg->base;
 		phys_addr_t block_end = reg->base + reg->size;
 
+<<<<<<< HEAD
+=======
+		if (memblock_is_nomap(reg))
+			continue;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (reg->base < vmalloc_limit) {
 			if (block_end > lowmem_limit)
 				/*
@@ -1586,6 +1617,7 @@ static void __init early_paging_init(const struct machine_desc *mdesc)
 
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_FORCE_PAGES
 /*
  * remap a PMD into pages
@@ -1699,6 +1731,8 @@ static void __init remap_pages(void)
 }
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void __init early_fixmap_shutdown(void)
 {
 	int i;
@@ -1708,13 +1742,20 @@ static void __init early_fixmap_shutdown(void)
 	pmd_clear(fixmap_pmd(va));
 	local_flush_tlb_kernel_page(va);
 
+<<<<<<< HEAD
 	BUILD_BUG_ON(__end_of_permanent_fixed_addresses >
 			__end_of_fixed_addresses);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	for (i = 0; i < __end_of_permanent_fixed_addresses; i++) {
 		pte_t *pte;
 		struct map_desc map;
 
+<<<<<<< HEAD
 		map.virtual = __fix_to_virt(i);
+=======
+		map.virtual = fix_to_virt(i);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		pte = pte_offset_early_fixmap(pmd_off_k(map.virtual), map.virtual);
 
 		/* Only i/o device mappings are supported ATM */
@@ -1743,7 +1784,10 @@ void __init paging_init(const struct machine_desc *mdesc)
 	memblock_set_current_limit(arm_lowmem_limit);
 	dma_contiguous_remap();
 	early_fixmap_shutdown();
+<<<<<<< HEAD
 	remap_pages();
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	devicemaps_init(mdesc);
 	kmap_init();
 	tcm_init();

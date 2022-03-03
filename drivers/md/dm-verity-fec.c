@@ -11,7 +11,10 @@
 
 #include "dm-verity-fec.h"
 #include <linux/math64.h>
+<<<<<<< HEAD
 #include <linux/sysfs.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #define DM_MSG_PREFIX	"verity-fec"
 
@@ -176,11 +179,17 @@ error:
 	if (r < 0 && neras)
 		DMERR_LIMIT("%s: FEC %llu: failed to correct: %d",
 			    v->data_dev->name, (unsigned long long)rsb, r);
+<<<<<<< HEAD
 	else if (r > 0) {
 		DMWARN_LIMIT("%s: FEC %llu: corrected %d errors",
 			     v->data_dev->name, (unsigned long long)rsb, r);
 		atomic_add_unless(&v->fec->corrected, 1, INT_MAX);
 	}
+=======
+	else if (r > 0)
+		DMWARN_LIMIT("%s: FEC %llu: corrected %d errors",
+			     v->data_dev->name, (unsigned long long)rsb, r);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return r;
 }
@@ -439,7 +448,11 @@ int verity_fec_decode(struct dm_verity *v, struct dm_verity_io *io,
 	fio->level++;
 
 	if (type == DM_VERITY_BLOCK_TYPE_METADATA)
+<<<<<<< HEAD
 		block += v->data_blocks;
+=======
+		block = block - v->hash_start + v->data_blocks;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * For RS(M, N), the continuous FEC data is divided into blocks of N
@@ -548,7 +561,10 @@ unsigned verity_fec_status_table(struct dm_verity *v, unsigned sz,
 void verity_fec_dtr(struct dm_verity *v)
 {
 	struct dm_verity_fec *f = v->fec;
+<<<<<<< HEAD
 	struct kobject *kobj = &f->kobj_holder.kobj;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (!verity_fec_is_enabled(v))
 		goto out;
@@ -556,6 +572,10 @@ void verity_fec_dtr(struct dm_verity *v)
 	mempool_destroy(f->rs_pool);
 	mempool_destroy(f->prealloc_pool);
 	mempool_destroy(f->extra_pool);
+<<<<<<< HEAD
+=======
+	mempool_destroy(f->output_pool);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	kmem_cache_destroy(f->cache);
 
 	if (f->data_bufio)
@@ -565,12 +585,15 @@ void verity_fec_dtr(struct dm_verity *v)
 
 	if (f->dev)
 		dm_put_device(v->ti, f->dev);
+<<<<<<< HEAD
 
 	if (kobj->state_initialized) {
 		kobject_put(kobj);
 		wait_for_completion(dm_get_completion_from_kobject(kobj));
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 out:
 	kfree(f);
 	v->fec = NULL;
@@ -659,6 +682,7 @@ int verity_fec_parse_opt_args(struct dm_arg_set *as, struct dm_verity *v,
 	return 0;
 }
 
+<<<<<<< HEAD
 static ssize_t corrected_show(struct kobject *kobj, struct kobj_attribute *attr,
 			      char *buf)
 {
@@ -681,6 +705,8 @@ static struct kobj_type fec_ktype = {
 	.release = dm_kobject_release
 };
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * Allocate dm_verity_fec for v->fec. Must be called before verity_fec_ctr.
  */
@@ -704,10 +730,15 @@ int verity_fec_ctr_alloc(struct dm_verity *v)
  */
 int verity_fec_ctr(struct dm_verity *v)
 {
+<<<<<<< HEAD
 	int r;
 	struct dm_verity_fec *f = v->fec;
 	struct dm_target *ti = v->ti;
 	struct mapped_device *md = dm_table_get_md(ti->table);
+=======
+	struct dm_verity_fec *f = v->fec;
+	struct dm_target *ti = v->ti;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u64 hash_blocks;
 
 	if (!verity_fec_is_enabled(v)) {
@@ -715,6 +746,7 @@ int verity_fec_ctr(struct dm_verity *v)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	/* Create a kobject and sysfs attributes */
 	init_completion(&f->kobj_holder.completion);
 
@@ -725,6 +757,8 @@ int verity_fec_ctr(struct dm_verity *v)
 		return r;
 	}
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	/*
 	 * FEC is computed over data blocks, possible metadata, and
 	 * hash blocks. In other words, FEC covers total of fec_blocks

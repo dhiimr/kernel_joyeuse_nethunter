@@ -10,12 +10,20 @@
 #include <linux/sched/task_stack.h>
 #include <linux/thread_info.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/compat.h>
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <asm/cpufeature.h>
 
 static void ssbd_ssbs_enable(struct task_struct *task)
 {
 	u64 val = is_compat_thread(task_thread_info(task)) ?
+<<<<<<< HEAD
 			COMPAT_PSR_SSBS_BIT : PSR_SSBS_BIT;
+=======
+		  PSR_AA32_SSBS_BIT : PSR_SSBS_BIT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	task_pt_regs(task)->pstate |= val;
 }
@@ -23,7 +31,11 @@ static void ssbd_ssbs_enable(struct task_struct *task)
 static void ssbd_ssbs_disable(struct task_struct *task)
 {
 	u64 val = is_compat_thread(task_thread_info(task)) ?
+<<<<<<< HEAD
 			COMPAT_PSR_SSBS_BIT : PSR_SSBS_BIT;
+=======
+		  PSR_AA32_SSBS_BIT : PSR_SSBS_BIT;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	task_pt_regs(task)->pstate &= ~val;
 }

@@ -1,6 +1,9 @@
 /*
  * Copyright (C) 2013-2017 ARM Limited, All Rights Reserved.
+<<<<<<< HEAD
  * Copyright (C) 2020 XiaoMi, Inc.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  * Author: Marc Zyngier <marc.zyngier@arm.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,7 +32,10 @@
 #include <linux/of_irq.h>
 #include <linux/percpu.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/msm_rtb.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 #include <linux/irqchip.h>
 #include <linux/irqchip/arm-gic-common.h>
@@ -41,10 +47,13 @@
 #include <asm/smp_plat.h>
 #include <asm/virt.h>
 
+<<<<<<< HEAD
 #include <linux/syscore_ops.h>
 #include <linux/suspend.h>
 #include <linux/notifier.h>
 #include <linux/wakeup_reason.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include "irq-gic-common.h"
 
 struct redist_region {
@@ -63,6 +72,7 @@ struct gic_chip_data {
 	u32			nr_redist_regions;
 	unsigned int		irq_nr;
 	struct partition_desc	*ppi_descs[16];
+<<<<<<< HEAD
 #ifdef CONFIG_HIBERNATION
 	unsigned int enabled_irqs[32];
 	unsigned int active_irqs[32];
@@ -71,6 +81,8 @@ struct gic_chip_data {
 	unsigned int enabled_sgis;
 	unsigned int pending_sgis;
 #endif
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 static struct gic_chip_data gic_data __read_mostly;
@@ -85,9 +97,12 @@ static struct gic_kvm_info gic_v3_kvm_info;
 /* Our default, arbitrary priority value. Linux only uses one anyway. */
 #define DEFAULT_PMR_VALUE	0xf0
 
+<<<<<<< HEAD
 static void gic_dist_init(void);
 static void gic_cpu_init(void);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static inline unsigned int gic_irq(struct irq_data *d)
 {
 	return d->hwirq;
@@ -113,7 +128,11 @@ static void gic_do_wait_for_rwp(void __iomem *base)
 {
 	u32 count = 1000000;	/* 1s! */
 
+<<<<<<< HEAD
 	while (readl_relaxed_no_log(base + GICD_CTLR) & GICD_CTLR_RWP) {
+=======
+	while (readl_relaxed(base + GICD_CTLR) & GICD_CTLR_RWP) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		count--;
 		if (!count) {
 			pr_err_ratelimited("RWP timeout, gone fishing\n");
@@ -147,6 +166,7 @@ static u64 __maybe_unused gic_read_iar(void)
 }
 #endif
 
+<<<<<<< HEAD
 /*
  * gic_show_pending_irq - Shows the pending interrupts
  * Note: Interrupts should be disabled on the cpu from which
@@ -184,6 +204,8 @@ unsigned int get_gic_highpri_irq(void)
 	return val;
 }
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static void gic_enable_redist(bool enable)
 {
 	void __iomem *rbase;
@@ -231,8 +253,12 @@ static int gic_peek_irq(struct irq_data *d, u32 offset)
 	else
 		base = gic_data.dist_base;
 
+<<<<<<< HEAD
 	return !!(readl_relaxed_no_log
 		(base + offset + (gic_irq(d) / 32) * 4) & mask);
+=======
+	return !!(readl_relaxed(base + offset + (gic_irq(d) / 32) * 4) & mask);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static void gic_poke_irq(struct irq_data *d, u32 offset)
@@ -384,6 +410,7 @@ static int gic_irq_set_vcpu_affinity(struct irq_data *d, void *vcpu)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 #ifdef CONFIG_HIBERNATION
 extern int in_suspend;
@@ -535,6 +562,8 @@ arch_initcall(gic_init_sys);
 
 #endif
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 static u64 gic_mpidr_to_affinity(unsigned long mpidr)
 {
 	u64 aff;
@@ -557,7 +586,10 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
 		if (likely(irqnr > 15 && irqnr < 1020) || irqnr >= 8192) {
 			int err;
 
+<<<<<<< HEAD
 			uncached_logk(LOGK_IRQ, (void *)(uintptr_t)irqnr);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			if (static_key_true(&supports_deactivate))
 				gic_write_eoir(irqnr);
 			else
@@ -576,7 +608,10 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
 			continue;
 		}
 		if (irqnr < 16) {
+<<<<<<< HEAD
 			uncached_logk(LOGK_IRQ, (void *)(uintptr_t)irqnr);
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			gic_write_eoir(irqnr);
 			if (static_key_true(&supports_deactivate))
 				gic_write_dir(irqnr);
@@ -597,7 +632,11 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
 	} while (irqnr != ICC_IAR1_EL1_SPURIOUS);
 }
 
+<<<<<<< HEAD
 static void gic_dist_init(void)
+=======
+static void __init gic_dist_init(void)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 {
 	unsigned int i;
 	u64 affinity;
@@ -790,8 +829,12 @@ static void gic_cpu_init(void)
 	gic_cpu_config(rbase, gic_redist_wait_for_rwp);
 
 	/* Give LPIs a spin */
+<<<<<<< HEAD
 	if (IS_ENABLED(CONFIG_ARM_GIC_V3_ITS) && gic_dist_supports_lpis() &&
 					!IS_ENABLED(CONFIG_ARM_GIC_V3_ACL))
+=======
+	if (IS_ENABLED(CONFIG_ARM_GIC_V3_ITS) && gic_dist_supports_lpis())
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		its_cpu_init();
 
 	/* initialise system registers */
@@ -948,9 +991,12 @@ static bool gic_dist_security_disabled(void)
 static int gic_cpu_pm_notifier(struct notifier_block *self,
 			       unsigned long cmd, void *v)
 {
+<<<<<<< HEAD
 	if (from_suspend)
 		return NOTIFY_OK;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	if (cmd == CPU_PM_EXIT) {
 		if (gic_dist_security_disabled())
 			gic_enable_redist(true);
@@ -1223,8 +1269,12 @@ static int __init gic_init_bases(void __iomem *dist_base,
 
 	gic_update_vlpi_properties();
 
+<<<<<<< HEAD
 	if (IS_ENABLED(CONFIG_ARM_GIC_V3_ITS) && gic_dist_supports_lpis() &&
 			!IS_ENABLED(CONFIG_ARM_GIC_V3_ACL))
+=======
+	if (IS_ENABLED(CONFIG_ARM_GIC_V3_ITS) && gic_dist_supports_lpis())
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		its_init(handle, &gic_data.rdists, gic_data.domain);
 
 	gic_smp_init();
@@ -1251,6 +1301,34 @@ static int __init gic_validate_dist_version(void __iomem *dist_base)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int get_cpu_number(struct device_node *dn)
+{
+	const __be32 *cell;
+	u64 hwid;
+	int cpu;
+
+	cell = of_get_property(dn, "reg", NULL);
+	if (!cell)
+		return -1;
+
+	hwid = of_read_number(cell, of_n_addr_cells(dn));
+
+	/*
+	 * Non affinity bits must be set to 0 in the DT
+	 */
+	if (hwid & ~MPIDR_HWID_BITMASK)
+		return -1;
+
+	for_each_possible_cpu(cpu)
+		if (cpu_logical_map(cpu) == hwid)
+			return cpu;
+
+	return -1;
+}
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /* Create all possible partitions at boot time */
 static void __init gic_populate_ppi_partitions(struct device_node *gic_node)
 {
@@ -1301,8 +1379,13 @@ static void __init gic_populate_ppi_partitions(struct device_node *gic_node)
 			if (WARN_ON(!cpu_node))
 				continue;
 
+<<<<<<< HEAD
 			cpu = of_cpu_node_to_id(cpu_node);
 			if (WARN_ON(cpu < 0))
+=======
+			cpu = get_cpu_number(cpu_node);
+			if (WARN_ON(cpu == -1))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				continue;
 
 			pr_cont("%pOF[%d] ", cpu_node, cpu);
@@ -1417,11 +1500,15 @@ static int __init gic_of_init(struct device_node *node, struct device_node *pare
 			     redist_stride, &node->fwnode);
 	if (err)
 		goto out_unmap_rdist;
+<<<<<<< HEAD
 #ifdef CONFIG_HIBERNATION
 	err = register_pm_notifier(&gic_notif_block);
 	if (err)
 		goto out_unmap_rdist;
 #endif
+=======
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	gic_populate_ppi_partitions(node);
 	gic_of_setup_kvm_info(node);
 	return 0;
@@ -1445,6 +1532,10 @@ static struct
 	struct redist_region *redist_regs;
 	u32 nr_redist_regions;
 	bool single_redist;
+<<<<<<< HEAD
+=======
+	int enabled_rdists;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	u32 maint_irq;
 	int maint_irq_mode;
 	phys_addr_t vcpu_base;
@@ -1539,8 +1630,15 @@ static int __init gic_acpi_match_gicc(struct acpi_subtable_header *header,
 	 * If GICC is enabled and has valid gicr base address, then it means
 	 * GICR base is presented via GICC
 	 */
+<<<<<<< HEAD
 	if ((gicc->flags & ACPI_MADT_ENABLED) && gicc->gicr_base_address)
 		return 0;
+=======
+	if ((gicc->flags & ACPI_MADT_ENABLED) && gicc->gicr_base_address) {
+		acpi_data.enabled_rdists++;
+		return 0;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/*
 	 * It's perfectly valid firmware can pass disabled GICC entry, driver
@@ -1570,8 +1668,15 @@ static int __init gic_acpi_count_gicr_regions(void)
 
 	count = acpi_table_parse_madt(ACPI_MADT_TYPE_GENERIC_INTERRUPT,
 				      gic_acpi_match_gicc, 0);
+<<<<<<< HEAD
 	if (count > 0)
 		acpi_data.single_redist = true;
+=======
+	if (count > 0) {
+		acpi_data.single_redist = true;
+		count = acpi_data.enabled_rdists;
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	return count;
 }

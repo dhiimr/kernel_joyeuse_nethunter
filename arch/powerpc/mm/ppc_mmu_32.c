@@ -52,7 +52,11 @@ struct batrange {		/* stores address ranges mapped by BATs */
 phys_addr_t v_block_mapped(unsigned long va)
 {
 	int b;
+<<<<<<< HEAD
 	for (b = 0; b < 4; ++b)
+=======
+	for (b = 0; b < ARRAY_SIZE(bat_addrs); ++b)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (va >= bat_addrs[b].start && va < bat_addrs[b].limit)
 			return bat_addrs[b].phys + (va - bat_addrs[b].start);
 	return 0;
@@ -64,7 +68,11 @@ phys_addr_t v_block_mapped(unsigned long va)
 unsigned long p_block_mapped(phys_addr_t pa)
 {
 	int b;
+<<<<<<< HEAD
 	for (b = 0; b < 4; ++b)
+=======
+	for (b = 0; b < ARRAY_SIZE(bat_addrs); ++b)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (pa >= bat_addrs[b].phys
 	    	    && pa < (bat_addrs[b].limit-bat_addrs[b].start)
 		              +bat_addrs[b].phys)

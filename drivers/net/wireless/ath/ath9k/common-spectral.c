@@ -411,7 +411,11 @@ ath_cmn_process_ht20_40_fft(struct ath_rx_status *rs,
 
 		ath_dbg(common, SPECTRAL_SCAN,
 			"Calculated new upper max 0x%X at %i\n",
+<<<<<<< HEAD
 			tmp_mag, i);
+=======
+			tmp_mag, fft_sample_40.upper_max_index);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	} else
 	for (i = dc_pos; i < SPECTRAL_HT20_40_NUM_BINS; i++) {
 		if (fft_sample_40.data[i] == (upper_mag >> max_exp))

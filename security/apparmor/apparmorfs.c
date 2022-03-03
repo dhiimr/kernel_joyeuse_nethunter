@@ -126,17 +126,35 @@ static int aafs_show_path(struct seq_file *seq, struct dentry *dentry)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void aafs_evict_inode(struct inode *inode)
 {
 	truncate_inode_pages_final(&inode->i_data);
 	clear_inode(inode);
 	if (S_ISLNK(inode->i_mode))
 		kfree(inode->i_link);
+=======
+static void aafs_i_callback(struct rcu_head *head)
+{
+	struct inode *inode = container_of(head, struct inode, i_rcu);
+	if (S_ISLNK(inode->i_mode))
+		kfree(inode->i_link);
+	free_inode_nonrcu(inode);
+}
+
+static void aafs_destroy_inode(struct inode *inode)
+{
+	call_rcu(&inode->i_rcu, aafs_i_callback);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 
 static const struct super_operations aafs_super_ops = {
 	.statfs = simple_statfs,
+<<<<<<< HEAD
 	.evict_inode = aafs_evict_inode,
+=======
+	.destroy_inode = aafs_destroy_inode,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	.show_path = aafs_show_path,
 };
 
@@ -358,6 +376,10 @@ static void aafs_remove(struct dentry *dentry)
 			simple_rmdir(dir, dentry);
 		else
 			simple_unlink(dir, dentry);
+<<<<<<< HEAD
+=======
+		d_delete(dentry);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		dput(dentry);
 	}
 	inode_unlock(dir);
@@ -420,7 +442,11 @@ static ssize_t policy_update(u32 mask, const char __user *buf, size_t size,
 	 */
 	error = aa_may_manage_policy(label, ns, mask);
 	if (error)
+<<<<<<< HEAD
 		return error;
+=======
+		goto end_section;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	data = aa_simple_write_to_buffer(buf, size, size, pos);
 	error = PTR_ERR(data);
@@ -428,6 +454,10 @@ static ssize_t policy_update(u32 mask, const char __user *buf, size_t size,
 		error = aa_replace_profiles(ns, label, mask, data);
 		aa_put_loaddata(data);
 	}
+<<<<<<< HEAD
+=======
+end_section:
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	end_current_label_crit_section(label);
 
 	return error;
@@ -1893,9 +1923,12 @@ fail2:
 	return error;
 }
 
+<<<<<<< HEAD
 
 #define list_entry_is_head(pos, head, member) (&pos->member == (head))
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /**
  * __next_ns - find the next namespace to list
  * @root: root namespace to stop search at (NOT NULL)

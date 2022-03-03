@@ -108,7 +108,11 @@ td_free (struct ohci_hcd *hc, struct td *td)
 	if (*prev)
 		*prev = td->td_hash;
 	else if ((td->hwINFO & cpu_to_hc32(hc, TD_DONE)) != 0)
+<<<<<<< HEAD
 		ohci_dbg (hc, "no hash for td %pK\n", td);
+=======
+		ohci_dbg (hc, "no hash for td %p\n", td);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	dma_pool_free (hc->td_cache, td, td->td_dma);
 }
 

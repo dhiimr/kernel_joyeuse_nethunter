@@ -413,7 +413,11 @@ qcaspi_receive(struct qcaspi *qca)
 				skb_put(qca->rx_skb, retcode);
 				qca->rx_skb->protocol = eth_type_trans(
 					qca->rx_skb, qca->rx_skb->dev);
+<<<<<<< HEAD
 				qca->rx_skb->ip_summed = CHECKSUM_UNNECESSARY;
+=======
+				skb_checksum_none_assert(qca->rx_skb);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				netif_rx_ni(qca->rx_skb);
 				qca->rx_skb = netdev_alloc_skb_ip_align(net_dev,
 					net_dev->mtu + VLAN_ETH_HLEN);
@@ -475,7 +479,10 @@ qcaspi_qca7k_sync(struct qcaspi *qca, int event)
 	u16 signature = 0;
 	u16 spi_config;
 	u16 wrbuf_space = 0;
+<<<<<<< HEAD
 	static u16 reset_count;
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	if (event == QCASPI_EVENT_CPUON) {
 		/* Read signature twice, if not valid
@@ -528,6 +535,7 @@ qcaspi_qca7k_sync(struct qcaspi *qca, int event)
 
 		qca->sync = QCASPI_SYNC_RESET;
 		qca->stats.trig_reset++;
+<<<<<<< HEAD
 		reset_count = 0;
 		break;
 	case QCASPI_SYNC_RESET:
@@ -535,6 +543,15 @@ qcaspi_qca7k_sync(struct qcaspi *qca, int event)
 		netdev_dbg(qca->net_dev, "sync: waiting for CPU on, count %u.\n",
 			   reset_count);
 		if (reset_count >= QCASPI_RESET_TIMEOUT) {
+=======
+		qca->reset_count = 0;
+		break;
+	case QCASPI_SYNC_RESET:
+		qca->reset_count++;
+		netdev_dbg(qca->net_dev, "sync: waiting for CPU on, count %u.\n",
+			   qca->reset_count);
+		if (qca->reset_count >= QCASPI_RESET_TIMEOUT) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			/* reset did not seem to take place, try again */
 			qca->sync = QCASPI_SYNC_UNKNOWN;
 			qca->stats.reset_timeout++;

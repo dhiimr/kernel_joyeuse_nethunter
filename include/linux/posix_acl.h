@@ -12,7 +12,10 @@
 #include <linux/bug.h>
 #include <linux/slab.h>
 #include <linux/rcupdate.h>
+<<<<<<< HEAD
 #include <linux/refcount.h>
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 #include <uapi/linux/posix_acl.h>
 
 struct posix_acl_entry {
@@ -25,7 +28,11 @@ struct posix_acl_entry {
 };
 
 struct posix_acl {
+<<<<<<< HEAD
 	refcount_t		a_refcount;
+=======
+	atomic_t		a_refcount;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct rcu_head		a_rcu;
 	unsigned int		a_count;
 	struct posix_acl_entry	a_entries[0];
@@ -42,7 +49,11 @@ static inline struct posix_acl *
 posix_acl_dup(struct posix_acl *acl)
 {
 	if (acl)
+<<<<<<< HEAD
 		refcount_inc(&acl->a_refcount);
+=======
+		atomic_inc(&acl->a_refcount);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return acl;
 }
 
@@ -52,7 +63,11 @@ posix_acl_dup(struct posix_acl *acl)
 static inline void
 posix_acl_release(struct posix_acl *acl)
 {
+<<<<<<< HEAD
 	if (acl && refcount_dec_and_test(&acl->a_refcount))
+=======
+	if (acl && atomic_dec_and_test(&acl->a_refcount))
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		kfree_rcu(acl, a_rcu);
 }
 

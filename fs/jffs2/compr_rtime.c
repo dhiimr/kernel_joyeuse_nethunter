@@ -37,6 +37,12 @@ static int jffs2_rtime_compress(unsigned char *data_in,
 	int outpos = 0;
 	int pos=0;
 
+<<<<<<< HEAD
+=======
+	if (*dstlen <= 3)
+		return -1;
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	memset(positions,0,sizeof(positions));
 
 	while (pos < (*sourcelen) && outpos <= (*dstlen)-2) {

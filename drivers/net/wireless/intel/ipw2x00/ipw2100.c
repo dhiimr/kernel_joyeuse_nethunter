@@ -3220,8 +3220,14 @@ static void ipw2100_tx_send_data(struct ipw2100_priv *priv)
 	}
 }
 
+<<<<<<< HEAD
 static void ipw2100_irq_tasklet(struct ipw2100_priv *priv)
 {
+=======
+static void ipw2100_irq_tasklet(unsigned long data)
+{
+	struct ipw2100_priv *priv = (struct ipw2100_priv *)data;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct net_device *dev = priv->net_dev;
 	unsigned long flags;
 	u32 inta, tmp;
@@ -6027,7 +6033,11 @@ static void ipw2100_rf_kill(struct work_struct *work)
 	spin_unlock_irqrestore(&priv->low_lock, flags);
 }
 
+<<<<<<< HEAD
 static void ipw2100_irq_tasklet(struct ipw2100_priv *priv);
+=======
+static void ipw2100_irq_tasklet(unsigned long data);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 static const struct net_device_ops ipw2100_netdev_ops = {
 	.ndo_open		= ipw2100_open,
@@ -6157,7 +6167,11 @@ static struct net_device *ipw2100_alloc_device(struct pci_dev *pci_dev,
 	INIT_DELAYED_WORK(&priv->rf_kill, ipw2100_rf_kill);
 	INIT_DELAYED_WORK(&priv->scan_event, ipw2100_scan_event);
 
+<<<<<<< HEAD
 	tasklet_init(&priv->irq_tasklet, (void (*)(unsigned long))
+=======
+	tasklet_init(&priv->irq_tasklet,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		     ipw2100_irq_tasklet, (unsigned long)priv);
 
 	/* NOTE:  We do not start the deferred work for status checks yet */

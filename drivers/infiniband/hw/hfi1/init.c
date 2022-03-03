@@ -769,7 +769,12 @@ static int create_workqueues(struct hfi1_devdata *dd)
 			ppd->hfi1_wq =
 				alloc_workqueue(
 				    "hfi%d_%d",
+<<<<<<< HEAD
 				    WQ_SYSFS | WQ_HIGHPRI | WQ_CPU_INTENSIVE,
+=======
+				    WQ_SYSFS | WQ_HIGHPRI | WQ_CPU_INTENSIVE |
+				    WQ_MEM_RECLAIM,
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 				    HFI1_MAX_ACTIVE_WORKQUEUE_ENTRIES,
 				    dd->unit, pidx);
 			if (!ppd->hfi1_wq)
@@ -1137,7 +1142,11 @@ void hfi1_free_ctxtdata(struct hfi1_devdata *dd, struct hfi1_ctxtdata *rcd)
 	rcd->egrbufs.rcvtids = NULL;
 
 	for (e = 0; e < rcd->egrbufs.alloced; e++) {
+<<<<<<< HEAD
 		if (rcd->egrbufs.buffers[e].dma)
+=======
+		if (rcd->egrbufs.buffers[e].addr)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 			dma_free_coherent(&dd->pcidev->dev,
 					  rcd->egrbufs.buffers[e].len,
 					  rcd->egrbufs.buffers[e].addr,

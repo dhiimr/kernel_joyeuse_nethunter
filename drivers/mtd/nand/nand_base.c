@@ -5046,12 +5046,21 @@ EXPORT_SYMBOL_GPL(nand_cleanup);
 /**
  * nand_release - [NAND Interface] Unregister the MTD device and free resources
  *		  held by the NAND device
+<<<<<<< HEAD
  * @mtd: MTD device structure
  */
 void nand_release(struct mtd_info *mtd)
 {
 	mtd_device_unregister(mtd);
 	nand_cleanup(mtd_to_nand(mtd));
+=======
+ * @chip: NAND chip object
+ */
+void nand_release(struct nand_chip *chip)
+{
+	mtd_device_unregister(nand_to_mtd(chip));
+	nand_cleanup(chip);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 }
 EXPORT_SYMBOL_GPL(nand_release);
 

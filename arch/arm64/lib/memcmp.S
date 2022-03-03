@@ -58,7 +58,11 @@ pos		.req	x11
 limit_wd	.req	x12
 mask		.req	x13
 
+<<<<<<< HEAD
 ENTRY(memcmp)
+=======
+WEAK(memcmp)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	cbz	limit, .Lret0
 	eor	tmp1, src1, src2
 	tst	tmp1, #7

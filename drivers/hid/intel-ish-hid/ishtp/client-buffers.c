@@ -90,7 +90,11 @@ int ishtp_cl_alloc_tx_ring(struct ishtp_cl *cl)
 	return	0;
 out:
 	dev_err(&cl->device->dev, "error in allocating Tx pool\n");
+<<<<<<< HEAD
 	ishtp_cl_free_rx_ring(cl);
+=======
+	ishtp_cl_free_tx_ring(cl);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return	-ENOMEM;
 }
 

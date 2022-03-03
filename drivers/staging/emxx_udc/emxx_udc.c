@@ -2159,7 +2159,11 @@ static int _nbu2ss_nuke(struct nbu2ss_udc *udc,
 			struct nbu2ss_ep *ep,
 			int status)
 {
+<<<<<<< HEAD
 	struct nbu2ss_req *req;
+=======
+	struct nbu2ss_req *req, *n;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 	/* Endpoint Disable */
 	_nbu2ss_epn_exit(udc, ep);
@@ -2171,7 +2175,11 @@ static int _nbu2ss_nuke(struct nbu2ss_udc *udc,
 		return 0;
 
 	/* called with irqs blocked */
+<<<<<<< HEAD
 	list_for_each_entry(req, &ep->queue, queue) {
+=======
+	list_for_each_entry_safe(req, n, &ep->queue, queue) {
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		_nbu2ss_ep_done(ep, req, status);
 	}
 

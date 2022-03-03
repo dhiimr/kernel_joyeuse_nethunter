@@ -589,11 +589,18 @@ int drm_mode_plane_set_obj_prop(struct drm_plane *plane,
  * drm_mode_object_find().
  */
 static inline struct drm_plane *drm_plane_find(struct drm_device *dev,
+<<<<<<< HEAD
 		struct drm_file *file_priv,
 		uint32_t id)
 {
 	struct drm_mode_object *mo;
 	mo = drm_mode_object_find(dev, file_priv, id, DRM_MODE_OBJECT_PLANE);
+=======
+		uint32_t id)
+{
+	struct drm_mode_object *mo;
+	mo = drm_mode_object_find(dev, id, DRM_MODE_OBJECT_PLANE);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return mo ? obj_to_plane(mo) : NULL;
 }
 

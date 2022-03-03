@@ -430,6 +430,10 @@ static void palmas_power_off(void)
 {
 	unsigned int addr;
 	int ret, slave;
+<<<<<<< HEAD
+=======
+	u8 powerhold_mask;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	struct device_node *np = palmas_dev->dev->of_node;
 
 	if (of_property_read_bool(np, "ti,palmas-override-powerhold")) {
@@ -437,8 +441,20 @@ static void palmas_power_off(void)
 					  PALMAS_PRIMARY_SECONDARY_PAD2);
 		slave = PALMAS_BASE_TO_SLAVE(PALMAS_PU_PD_OD_BASE);
 
+<<<<<<< HEAD
 		ret = regmap_update_bits(palmas_dev->regmap[slave], addr,
 				PALMAS_PRIMARY_SECONDARY_PAD2_GPIO_7_MASK, 0);
+=======
+		if (of_device_is_compatible(np, "ti,tps65917"))
+			powerhold_mask =
+				TPS65917_PRIMARY_SECONDARY_PAD2_GPIO_5_MASK;
+		else
+			powerhold_mask =
+				PALMAS_PRIMARY_SECONDARY_PAD2_GPIO_7_MASK;
+
+		ret = regmap_update_bits(palmas_dev->regmap[slave], addr,
+					 powerhold_mask, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (ret)
 			dev_err(palmas_dev->dev,
 				"Unable to write PRIMARY_SECONDARY_PAD2 %d\n",

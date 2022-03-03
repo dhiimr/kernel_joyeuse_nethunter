@@ -301,6 +301,11 @@ static struct page *kimage_alloc_pages(gfp_t gfp_mask, unsigned int order)
 {
 	struct page *pages;
 
+<<<<<<< HEAD
+=======
+	if (fatal_signal_pending(current))
+		return NULL;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	pages = alloc_pages(gfp_mask & ~__GFP_ZERO, order);
 	if (pages) {
 		unsigned int count, i;
@@ -471,6 +476,13 @@ static struct page *kimage_alloc_crash_control_pages(struct kimage *image,
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	/* Ensure that these pages are decrypted if SME is enabled. */
+	if (pages)
+		arch_kexec_post_alloc_pages(page_address(pages), 1 << order, 0);
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	return pages;
 }
 
@@ -865,6 +877,10 @@ static int kimage_load_crash_segment(struct kimage *image,
 			result  = -ENOMEM;
 			goto out;
 		}
+<<<<<<< HEAD
+=======
+		arch_kexec_post_alloc_pages(page_address(page), 1, 0);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ptr = kmap(page);
 		ptr += maddr & ~PAGE_MASK;
 		mchunk = min_t(size_t, mbytes,
@@ -882,6 +898,10 @@ static int kimage_load_crash_segment(struct kimage *image,
 			result = copy_from_user(ptr, buf, uchunk);
 		kexec_flush_icache_page(page);
 		kunmap(page);
+<<<<<<< HEAD
+=======
+		arch_kexec_pre_free_pages(page_address(page), 1);
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		if (result) {
 			result = -EFAULT;
 			goto out;

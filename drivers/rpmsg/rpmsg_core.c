@@ -3,7 +3,10 @@
  *
  * Copyright (C) 2011 Texas Instruments, Inc.
  * Copyright (C) 2011 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
  *
  * Ohad Ben-Cohen <ohad@wizery.com>
  * Brian Swetland <swetland@google.com>
@@ -89,7 +92,11 @@ EXPORT_SYMBOL(rpmsg_create_ept);
  */
 void rpmsg_destroy_ept(struct rpmsg_endpoint *ept)
 {
+<<<<<<< HEAD
 	if (ept && ept->ops)
+=======
+	if (ept)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		ept->ops->destroy_ept(ept);
 }
 EXPORT_SYMBOL(rpmsg_destroy_ept);
@@ -291,6 +298,7 @@ int rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src, u32 dst,
 }
 EXPORT_SYMBOL(rpmsg_trysend_offchannel);
 
+<<<<<<< HEAD
 /**
  * rpmsg_get_sigs() - get the signals for this endpoint
  * @ept:	the rpmsg endpoint
@@ -327,6 +335,8 @@ int rpmsg_set_sigs(struct rpmsg_endpoint *ept, u32 sigs)
 }
 EXPORT_SYMBOL(rpmsg_set_sigs);
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 /*
  * match an rpmsg channel with a channel info struct.
  * this is used to make sure we're not creating rpmsg devices for channels
@@ -469,10 +479,13 @@ static int rpmsg_dev_probe(struct device *dev)
 
 		rpdev->ept = ept;
 		rpdev->src = ept->addr;
+<<<<<<< HEAD
 
 		if (rpdrv->signals)
 			ept->sig_cb = rpdrv->signals;
 
+=======
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	}
 
 	err = rpdrv->probe(rpdev);
@@ -483,7 +496,11 @@ static int rpmsg_dev_probe(struct device *dev)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (ept && rpdev->ops->announce_create)
+=======
+	if (rpdev->ops->announce_create)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 		err = rpdev->ops->announce_create(rpdev);
 out:
 	return err;

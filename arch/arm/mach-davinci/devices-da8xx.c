@@ -699,6 +699,12 @@ static struct platform_device da8xx_lcdc_device = {
 	.id		= 0,
 	.num_resources	= ARRAY_SIZE(da8xx_lcdc_resources),
 	.resource	= da8xx_lcdc_resources,
+<<<<<<< HEAD
+=======
+	.dev		= {
+		.coherent_dma_mask	= DMA_BIT_MASK(32),
+	}
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 };
 
 int __init da8xx_register_lcdc(struct da8xx_lcdc_platform_data *pdata)

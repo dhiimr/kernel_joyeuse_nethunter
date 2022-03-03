@@ -49,10 +49,23 @@ struct usb_mixer_elem_list {
 	struct usb_mixer_elem_list *next_id_elem; /* list of controls with same id */
 	struct snd_kcontrol *kctl;
 	unsigned int id;
+<<<<<<< HEAD
+=======
+	bool is_std_info;
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 	usb_mixer_elem_dump_func_t dump;
 	usb_mixer_elem_resume_func_t resume;
 };
 
+<<<<<<< HEAD
+=======
+/* iterate over mixer element list of the given unit id */
+#define for_each_mixer_elem(list, mixer, id)	\
+	for ((list) = (mixer)->id_elems[id]; (list); (list) = (list)->next_id_elem)
+#define mixer_elem_list_to_info(list) \
+	container_of(list, struct usb_mixer_elem_info, head)
+
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 struct usb_mixer_elem_info {
 	struct usb_mixer_elem_list head;
 	unsigned int control;	/* CS or ICN (high byte) */
@@ -80,8 +93,17 @@ void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid);
 int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
 				int request, int validx, int value_set);
 
+<<<<<<< HEAD
 int snd_usb_mixer_add_control(struct usb_mixer_elem_list *list,
 			      struct snd_kcontrol *kctl);
+=======
+int snd_usb_mixer_add_list(struct usb_mixer_elem_list *list,
+			   struct snd_kcontrol *kctl,
+			   bool is_std_info);
+
+#define snd_usb_mixer_add_control(list, kctl) \
+	snd_usb_mixer_add_list(list, kctl, true)
+>>>>>>> 203e04ce76c1190acfe30f7bc11928464f2a9e7f
 
 void snd_usb_mixer_elem_init_std(struct usb_mixer_elem_list *list,
 				 struct usb_mixer_interface *mixer,
